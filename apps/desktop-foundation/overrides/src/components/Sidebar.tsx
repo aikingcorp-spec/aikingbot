@@ -1448,7 +1448,7 @@ export const BotListItem = memo(function BotListItem(props: BotRowProps) {
                 }
               }}
               onEditingChange={setRenaming}
-              className="truncate"
+              className="min-w-[2.5rem] truncate"
               inputClassName="w-full rounded bg-inset px-1 py-0.5 text-[14px] font-medium"
             />
             {bot.chiefOfStaff && !renaming && (
@@ -1457,8 +1457,8 @@ export const BotListItem = memo(function BotListItem(props: BotRowProps) {
               </Crown>
             )}
             {title && !renaming && <span className="sr-only">{`, ${title}`}</span>}
-            {title && !renaming && !iconOnly && (
-              <span aria-hidden="true" data-agent-role-badge className="min-w-0 max-w-[96px] shrink truncate rounded bg-ink/[0.06] px-1.5 text-[12px] font-normal leading-[18px] text-ink-secondary">{title}</span>
+            {title && !renaming && !iconOnly && !showThreads && (
+              <span aria-hidden="true" data-agent-role-badge className="min-w-0 max-w-[96px] shrink-[2] truncate rounded bg-ink/[0.06] px-1.5 text-[12px] font-normal leading-[18px] text-ink-secondary group-hover:hidden group-focus-within:hidden">{title}</span>
             )}
             {onLiveCall && !iconOnly && !renaming && (
               <Phone className="size-3 shrink-0 text-success" role="img" aria-label={t("call.live.badge")} data-testid="live-call-badge">
