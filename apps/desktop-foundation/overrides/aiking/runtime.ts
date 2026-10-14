@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
@@ -14,6 +14,7 @@ let harness: ChildProcess | undefined;
 let electron: ChildProcess | undefined;
 let ui: Awaited<ReturnType<typeof createServer>> | undefined;
 let stopping = false;
+let desktopProfile: string | undefined;
 
 async function stopChild(child: ChildProcess | undefined) {
   if (!child || child.exitCode !== null || child.signalCode !== null) return;
@@ -28,6 +29,7 @@ async function close() {
   if (stopping) return;
   stopping = true;
   await stopChild(electron);
+  if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true });
   await ui?.close();
   if (fixture) await fixture.close();
   else await stopChild(harness);
@@ -45,6 +47,9 @@ try {
     fixture = await launchVerificationServer({ ...process.env, FAKE_CLAUDE_REPLIES: process.env.AIKING_OFFLINE_REPLIES ?? JSON.stringify([
       "AIKINGBOT is running. This reply came through the real chat pipeline using the offline verification provider.",
       "The saved conversation is available. The desktop foundation is ready for the next integration stage.",
+    ]), FAKE_CLAUDE_TOOL_CALLS: process.env.FAKE_CLAUDE_TOOL_CALLS ?? JSON.stringify([
+      { name: "Read", input: { file_path: "offline-fixture.md" }, output: "Offline tool activity fixture" },
+      { name: "Glob", input: { pattern: "*.md" }, output: ["offline-fixture.md"] },
     ]) });
     apiUrl = fixture.info.url;
     dataDir = fixture.info.dataDir;
@@ -91,7 +96,9 @@ try {
     if (debugPort && (!/^\d+$/.test(debugPort) || Number(debugPort) < 1024 || Number(debugPort) > 65535)) {
       throw new Error("AIKING_DESKTOP_DEBUG_PORT must be 1024–65535.");
     }
-    electron = spawn(String(binary), [source, `--user-data-dir=${join(runtime, "profiles/electron")}`,
+    mkdirSync(join(runtime, "profiles"), { recursive: true });
+    desktopProfile = offline ? mkdtempSync(join(runtime, "profiles/electron-verify-")) : join(runtime, "profiles/electron");
+    electron = spawn(String(binary), [source, `--user-data-dir=${desktopProfile}`,
       ...(debugPort ? [`--remote-debugging-port=${debugPort}`, "--remote-debugging-address=127.0.0.1"] : []),
     ], {
       cwd: source, stdio: "inherit", env: { ...process.env, ELECTRON_START_URL: uiUrl },

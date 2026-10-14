@@ -87,6 +87,27 @@ AIKING_VERIFY_CDP=http://127.0.0.1:9223 node apps/desktop-foundation/ui-tour.mjs
 
 The tour writes one screenshot per screen and `<surface>-ui-tour.json` to `.aikingbot-foundation/evidence/stage2/`. On Linux, run Electron as a normal user; it refuses to start as root with its sandbox on.
 
+## Voice and finalization checks
+
+The composer phone button opens Voice: select the microphone/speaker, then choose **Offline test (scripted)**
+or **AIKING Core voice server**. The offline service captures real microphone input and plays a scripted tone;
+it does not perform speech recognition or call an AI provider. The Core option requires a protocol v1 server
+at `wss://…/v1/voice/sessions` (localhost `ws://` is accepted for testing). Existing realtime/turns provider calls
+remain under **Existing provider call options**. Group calls retain their existing provider flow.
+
+With an owned offline stack running:
+
+```sh
+node apps/desktop-foundation/voice-e2e.mjs       # Chromium + fixtures/voice/jfk-16k.wav
+node apps/desktop-foundation/compatibility.mjs # 18 selected compatibility test files
+```
+
+Voice evidence is under `.aikingbot-foundation/evidence/stage2/voice/`. The compatibility runner records its
+three branding expectation changes and 10-second restart-fixture HTTP budget, then restores the upstream
+test files. Offline Electron now uses a new `profiles/electron-verify-*` directory on each launch and removes
+that owned profile when the launcher stops. The normal desktop profile remains `profiles/electron`.
+See [finalization verification](../../docs/stage-2-finalization-verification.md) for results and backend limits.
+
 ## Reused source and boundaries
 
 The complete OSS source is retained, including `src/App.tsx`, the state/store, chat/sidebar/composer, groups, routines, settings, provider/model controls, Apps/MCP/skills, computer/browser panels, `server/`, `shared/` and `electron/`. `LICENSE`, `NOTICE`, `LICENSING.md` and `third_party/` are preserved. AIKING overrides replace product marks, default avatars and active icons; upstream marketing analytics and email collection are disabled. The optional enterprise entitlement checks stay unchanged.

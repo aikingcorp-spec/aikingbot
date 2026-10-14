@@ -121,22 +121,44 @@ khi bật sandbox — chạy bằng user thường, không thêm `--no-sandbox`.
 - "AIKING Toolbox": MCP server stdio nhỏ (chạy bằng `node -e`), có 3 tool — dùng để kiểm chứng offline.
 - Install record lưu ở localStorage (Stage 2) → Stage 3 chuyển sang Core qua `setInstallRecords()`.
 
-### Chặng 3 — Voice: mới có contract, CHƯA triển khai
+### Chặng 3 — Voice client: xong (finalization)
 - Nền đã có: chế độ **live** (OpenAI realtime qua WebRTC, key ở harness, `server/live-call.ts`, `src/lib/live-call-media.ts`)
   và chế độ **turns** (nhận dạng giọng nói của Electron/macOS → agent → TTS `/api/tts/speak`). Cả hai cần provider/OS cụ thể.
-- Đã thêm: `overrides/src/aiking/voice/contract.ts` — trạng thái phiên, mã lỗi, `VoiceTransport`, bộ phận pipeline
-  (STT / agent / TTS), chính sách reconnect, giao thức WebSocket v1 cho Core.
-- Đã thêm: audio thật để test `fixtures/voice/jfk-16k.wav` (phạm vi công cộng).
-- Việc tiếp theo (theo thứ tự): chọn thiết bị (`enumerateDevices`, `setSinkId`) → capture Web Audio 16 kHz + VAD năng lượng →
-  `VoiceSession` (barge-in, reconnect) → transport loopback (mock) + WebSocket theo contract → màn gọi thoại → E2E Chromium với
-  micro giả dùng file WAV trên. Kiểm tra tương thích model / approvals / schedules / computer / browser / remote / multi-agent
-  chưa làm ở lượt này.
+- Contract `overrides/src/aiking/voice/contract.ts` giữ nguyên các interface/giao thức v1. Implementation mới của AIKING:
+  `audio.ts`, `session.ts`, `transports.ts`, `VoiceCall.tsx`; không lấy code OpenBot PolyForm.
+- Chọn micro/loa qua `enumerateDevices`, lưu lựa chọn theo profile; capture `getUserMedia` + AudioWorklet,
+  resample liên tục thành PCM16 mono 16 kHz, frame 320 mẫu (20 ms). VAD năng lượng: mở sau 3 frame có tiếng,
+  kết thúc sau 30 frame yên lặng (600 ms), giữ 200 ms pre-roll.
+- Playback theo sample rate server khai báo; định tuyến loa bằng `AudioContext.setSinkId`, fallback
+  MediaStream + `HTMLAudioElement.setSinkId`; thiết bị không hỗ trợ báo lỗi rõ. Thu âm dùng echo cancellation.
+- `VoiceSession`: permission/error/device-lost, mute, ngắt lời khi người dùng nói lúc agent đang nghĩ/phát audio,
+  cúp máy giải phóng track/context; reconnect 500/1000/2000 ms, tối đa 3 lần, giữ resume token và bot/thread.
+  Không replay audio đã gửi; callback của kết nối cũ không thay đổi phiên mới.
+- `PipelineVoiceTransport` ghép STT → agent → TTS bằng interface, hủy bằng AbortSignal. Loopback offline trả
+  transcript/reply cố định + tone, **không** nhận dạng tiếng nói thật hoặc gọi model thật.
+- `WebSocketVoiceTransport`: handshake `session.start`/`session.ready`, timeout 10 giây, PCM16 little endian,
+  transcript/thinking/audio/end/error, cancel, close; validate message và giới hạn backpressure. `wss://` cho
+  server; chỉ cho `ws://` khi host là loopback. URL có username/password bị từ chối.
+- Màn Voice mở từ composer: chọn service/devices, transcript, meter, mute, interrupt, hangup, retry, minimize.
+  Một phiên giữ đúng agent/thread khi thu nhỏ hoặc đổi màn; lựa chọn provider call cũ vẫn có trong dialog.
+  Group calls tiếp tục dùng implementation cũ. Core voice server/STT/TTS thật thuộc Stage 3.
 
-### Kiểm chứng lượt này
-- `ui-tour.mjs` trên Chromium: **36/36** (dark); 32/32 (light, trước khi thêm bước Marketplace); Advanced mode 31/31 + bỏ qua
-  hợp lệ. Unit test catalog: **5/5** (vitest). Typecheck renderer: pass. Electron chưa chạy lại ở lượt này.
+### Kiểm chứng finalization
+- `ui-tour.mjs`: Chromium **37/37**; Electron **36 pass + 1 skip Account hợp lệ**, 0 lỗi renderer. Có thêm màn
+  Voice. Chromium context mới; Electron profile offline tạo mới mỗi lượt, chạy user `agent`, sandbox bật,
+  không truyền `--no-sandbox`. Lượt light/Advanced/hẹp đã chạy ở pass trước, chưa chạy lại trong finalization này.
+- `voice-e2e.mjs`: **5/5** trên Chromium với micro giả dùng `jfk-16k.wav`: thiết bị/lưu lựa chọn, capture/VAD/
+  loopback/playback 24 kHz, interrupt/mute/minimize/cleanup, WebSocket/reconnect/resume, quyền micro bị từ chối.
+- `compatibility.mjs`: **483/483** test (18 file), gồm Voice 15 test + catalog 5 test; model, tool/peer approval,
+  lịch chạy và restart, computer, browser/password input, remote auth, multi-agent/group routing, gọi provider cũ.
+  Runner tạm đổi 3 kỳ vọng tên OpenMausBot → AIKINGBOT và tăng budget HTTP test restart từ 2 lên 10 giây cho
+  cloud executor; assertion nghiệp vụ/timing scheduler giữ nguyên, file upstream được khôi phục sau test.
+- `verify.mjs`: **12/12** Chromium + **12/12** Electron; typecheck renderer và server, lint file mới: pass.
 - Chạy thật: tạo/gỡ agent, skill, MCP, avatar, New agent, phản hồi qua pipeline (provider **offline giả lập**).
-- Mock / chưa thật: provider AI thật, Composio (chưa có key), MCP Filesystem (cần mạng/npx), voice.
+- Âm thanh capture/playback graph và transport WebSocket chạy thật; transcript/STT/agent/TTS trong E2E là giả lập.
+  Chưa thử nghe bằng loa vật lý, provider AI/STT/TTS thật, Composio, remote/cloud computer thật, installer Windows/macOS.
+- Ma trận tương thích, lệnh tái lập và screenshot bàn giao:
+  [`stage-2-finalization-verification.md`](stage-2-finalization-verification.md).
 
 ### Cần backend / provider thật (Stage 3)
 1. AIKING Core: catalog Marketplace + install records + publish.

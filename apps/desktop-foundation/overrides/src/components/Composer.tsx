@@ -60,7 +60,7 @@ import {
 import { normalizeState } from "@/lib/mascot";
 import { goalCoordinatorForComposer, groupComposerHint, jevRoomRoutingOn, openTaskWorking, roomRespondersForComposer } from "@/lib/group-routing";
 import { PendingApprovalActions, PendingApprovalPanel, pendingApprovals } from "./PendingApproval";
-import { CallButton } from "./CallView";
+import { VoiceCallButton as CallButton } from "@/aiking/voice/VoiceCall";
 import { useDesktopCapabilities } from "./DesktopCapabilities";
 import { ComposerReplyStrip } from "./ReplyQuote";
 import { escapeCancelsReply } from "@/lib/replies";

@@ -32,9 +32,10 @@ const page = cdp
   ? context.pages().find((p) => new URL(p.url()).origin === new URL(info.uiUrl).origin)
   : await context.newPage();
 assert.ok(page, "The owned desktop must show the fixture URL.");
+await page.setViewportSize({ width, height });
 const skin = process.env.AIKING_TOUR_SKIN;
 const advanced = process.env.AIKING_TOUR_ADVANCED === "1";
-if ((skin || advanced) && !cdp) {
+if (!cdp) {
   await context.addInitScript(({ id, on }) => {
     try {
       if (id) localStorage.setItem("omb-skin", id);
@@ -411,6 +412,17 @@ await step("model-picker", async () => {
 });
 await closeOverlays();
 
+await step("voice-call-screen", async () => {
+  await page.getByRole("button", { name: /^Voice call with / }).first().click();
+  const call = page.getByRole("dialog", { name: /^Voice call with / });
+  await call.getByRole("combobox", { name: "Microphone", exact: true }).waitFor();
+  await call.getByRole("combobox", { name: "Speaker", exact: true }).waitFor();
+  assert.equal(await call.getByRole("combobox", { name: "Voice service" }).inputValue(), "loopback");
+  await call.getByText("Existing provider call options", { exact: true }).click();
+  assert.ok(await call.getByRole("button").count() >= 2);
+});
+await button("Close voice call").click();
+
 await step("computer-panel", async () => {
   await button("Agent's computer").click();
   await page.getByRole("button", { name: "Browser" }).or(page.getByRole("tab", { name: "Browser" })).first().waitFor();
@@ -424,7 +436,10 @@ for (const section of ["General", "Appearance", "AI", "Connectors", "Computers",
       await page.getByRole("menuitem", { name: "Settings", exact: true }).click();
     }
     const entry = page.locator(`nav [data-settings-page], nav [data-settings-section]`).filter({ hasText: new RegExp(`^${section}$`) }).first();
-    if (await entry.count() === 0) throw new Skip(`${section} is not offered on this ${surface} host`);
+    if (await entry.count() === 0) {
+      if (section === "Account" || advanced) throw new Skip(`${section} is not offered on this ${surface} host`);
+      throw new Error(`${section} is missing from Settings on this ${surface} host`);
+    }
     await entry.click();
     await page.locator("[data-settings-block], [data-setting-row], [data-setting-card]").first().waitFor();
   });

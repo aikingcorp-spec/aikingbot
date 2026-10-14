@@ -13,6 +13,7 @@ import { cloudSignInDue, spotlightsQuiet, type WelcomeViewer } from "@/lib/onboa
 import { FirstConversationTour } from "@/components/onboarding/FirstConversationTour";
 import { GuidedTour } from "@/components/onboarding/GuidedTour";
 import { LiveCallHost } from "@/components/LiveCallHost";
+import { VoiceCallHost } from "@/aiking/voice/VoiceCall";
 import { ThreadRefsProvider } from "@/components/ThreadRefs";
 import { initAnalytics } from "@/lib/analytics";
 import { parseComputerHelp } from "@/lib/computer-control";
@@ -397,6 +398,7 @@ function Application() {
         <WelcomeGate viewer={viewer} />
         <GuidedTour />
         <LiveCallHost />
+        <VoiceCallHost />
         <FirstConversationTour quiet={spotlightsQuiet(viewer)} />
       </StoreProvider>
     </DesktopCapabilitiesProvider>

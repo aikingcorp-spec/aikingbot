@@ -17,10 +17,20 @@ OpenBot 0.39 với thương hiệu AIKING. Chi tiết, bảng màn hình xong/c�
 - OpenBot mới (PolyForm Noncommercial) chỉ được quan sát qua ảnh/đo đạc. Không copy code.
 - Electron trên Linux: chạy bằng user thường (sandbox bật). Root bị Electron từ chối — không thêm `--no-sandbox`.
 
-Lượt 2 (Stage 2 finalization): Chặng 1 (UI) và Chặng 2 (Marketplace catalog + install thật) xong; Chặng 3 (Voice) mới có
-contract `overrides/src/aiking/voice/contract.ts` + audio test. Trạng thái chi tiết và việc tiếp theo: mục
-"Stage 2 finalization" trong `docs/stage-2-ui-parity.md`. Việc đầu tiên cho agent kế tiếp: triển khai Voice theo contract,
-rồi chạy lại `ui-tour.mjs` trên Chromium và Electron (Electron chạy bằng user thường). Phần Core bên dưới (mục 0–9) là lịch sử v0.2.
+Stage 2 finalization: UI, Marketplace/install và Voice client đã triển khai. Voice có chọn micro/loa, Web Audio
+PCM16 16 kHz/20 ms, VAD, barge-in, reconnect, pipeline STT/agent/TTS, loopback offline và WebSocket v1 theo
+`overrides/src/aiking/voice/contract.ts`. Nút Voice trong composer mở màn gọi; gọi provider cũ vẫn có trong
+"Existing provider call options". Loopback chỉ trả transcript/reply theo kịch bản và tone, không phải STT/AI thật.
+
+Kiểm chứng: UI tour Chromium 37/37; Electron 36 pass + Account bỏ qua hợp lệ (user thường, sandbox bật,
+profile offline mới). Voice E2E Chromium với `fixtures/voice/jfk-16k.wav`: 5/5; tương thích: 483/483 test;
+Stage 1 verify: 12/12 mỗi surface; typecheck renderer + server: pass. Chi tiết và điều chỉnh fixture ở
+[`docs/stage-2-finalization-verification.md`](docs/stage-2-finalization-verification.md).
+
+Việc tiếp theo là Stage 3: Core voice server `/v1/voice/sessions`, STT/TTS thật, resolve model theo bot/thread,
+approval gate và lưu transcript trên server. Giao thức v1 chưa có event approval/group routing; không dùng
+giọng nói để tự phê duyệt tool. Remote/cloud computer, provider và connector thật vẫn chưa được xác minh.
+Phần Core bên dưới (mục 0–9) là lịch sử v0.2.
 
 ## 0. Bối cảnh và luật làm việc (bắt buộc)
 

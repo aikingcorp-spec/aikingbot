@@ -1,5 +1,4 @@
-// Copyright (c) 2026 AIKING. Voice contract for stage 3. Interfaces only:
-// no implementation ships in stage 2 (see docs/stage-2-ui-parity.md → Voice).
+// Copyright (c) 2026 AIKING. Voice contract for stage 3.
 // Audio on the wire: 16 kHz mono PCM16 frames of 20 ms from the client;
 // the server declares its own output sample rate per reply.
 
