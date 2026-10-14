@@ -15,6 +15,37 @@ afterEach(async () => {
 });
 
 describe("CentralAuthManager", () => {
+  it("signs in as the local account without contacting the account service, and keeps it at sign-out", async () => {
+    const root = await createRoot();
+    const request = vi.fn(async () => Response.json({}));
+    const localAccount = {
+      id: "00000000-0000-4000-8000-000000000001",
+      email: "local@aikingbot.localhost",
+      name: "Local user",
+      avatarUrl: null,
+    };
+    const manager = new CentralAuthManager({
+      apiUrl: "http://127.0.0.1:3100",
+      storagePath: join(root, "session.bin"),
+      encrypt: (value) => Buffer.from(value),
+      decrypt: (value) => value.toString(),
+      fetch: request,
+      localAccount,
+    });
+
+    expect(await runCauseEffect(manager.initialize())).toEqual({ status: "signed_in", user: localAccount });
+    expect(manager.getSignedInUser()).toEqual(localAccount);
+    await expect(runCauseEffect(manager.refreshProfile())).resolves.toEqual({
+      status: "signed_in",
+      user: localAccount,
+    });
+    await expect(
+      runCauseEffect(manager.requestAuthorized("/v1/me", { method: "GET" }, (value) => value)),
+    ).rejects.toThrow();
+    expect(await runCauseEffect(manager.logout())).toEqual({ status: "signed_in", user: localAccount });
+    expect(request).not.toHaveBeenCalled();
+  });
+
   it("refreshes profiles on demand without polling or emitting unchanged identities", async () => {
     vi.useFakeTimers();
     const root = await createRoot();

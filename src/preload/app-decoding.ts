@@ -106,7 +106,13 @@ export function decodeAppInfo(value: unknown): AppInfo {
   const { platform, variant } = info;
   if (!isOneOf(["darwin", "win32", "linux"] as const, platform)) throw new Error("Invalid platform.");
   if (!isOneOf(["production", "dev", "preview"] as const, variant)) throw new Error("Invalid variant.");
-  return { name: requiredString(info, "name"), version: requiredString(info, "version"), platform, variant };
+  return {
+    name: requiredString(info, "name"),
+    version: requiredString(info, "version"),
+    platform,
+    variant,
+    ...(info.localOnly === true ? { localOnly: true } : {}),
+  };
 }
 
 export function decodeAppSetupState(value: unknown): AppSetupState {

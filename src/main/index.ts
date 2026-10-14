@@ -40,6 +40,7 @@ import {
 import { hostAllowsTenantLaunch } from "./host-update-coordinator";
 import { takeHostedServerEnvironment } from "./hosted-server-bootstrap";
 import { takeHostingDeveloperKey } from "./hosted-server-service";
+import { installHostedServiceGuard } from "./hosted-services";
 import { accountIpcHandlers } from "./ipc/account-handlers";
 import { acpRegistryIpcHandlers } from "./ipc/acp-registry-handlers";
 import { agentAdminIpcHandlers } from "./ipc/agent-admin-handlers";
@@ -931,6 +932,7 @@ if (!hasSingleInstanceLock) {
         }
       }
       if (process.platform === "darwin") app.dock?.setIcon(appIconPath);
+      if (installHostedServiceGuard()) logger.info("AIKINGBOT runs in local-only mode: hosted services are off.");
       configureContentSecurityPolicy();
       configureRendererPermissions();
       await Effect.runPromise(windows.restoreMainWindowBounds());

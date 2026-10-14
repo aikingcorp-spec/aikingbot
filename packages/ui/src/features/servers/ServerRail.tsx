@@ -53,7 +53,8 @@ interface ServerRailProps extends ServerActionCallbacks {
   servers: ServerSummary[];
   onSelect: (serverId: string) => void;
   onReorder: (serverIds: string[]) => void;
-  onAdd: () => void;
+  /** Absent when servers cannot be added, as in local-only mode: the add button is then hidden. */
+  onAdd?: (() => void) | undefined;
   /** True when the plus button opens the hosted server plans, where the user can also join with an invite. */
   addCreatesServer?: boolean | undefined;
 }
@@ -332,29 +333,31 @@ export function ServerRail(props: ServerRailProps) {
             </For>
           </ul>
         </Show>
-        <Tooltip.Root
-          placement="right"
-          gutter={10}
-          openDelay={SERVER_RAIL_TOOLTIP_OPEN_DELAY}
-          closeDelay={0}
-          skipDelayDuration={300}
-        >
-          <Tooltip.Trigger
-            type="button"
-            class={`${buttonVariants({ variant: "outline", size: "sm" })} server-rail-button server-rail-action`}
-            aria-label={t(props.addCreatesServer ? "server.rail.add" : "server.rail.addRemote")}
-            data-cuelume-open=""
-            data-cuelume-emphasis="subtle"
-            onClick={props.onAdd}
+        <Show when={props.onAdd}>
+          <Tooltip.Root
+            placement="right"
+            gutter={10}
+            openDelay={SERVER_RAIL_TOOLTIP_OPEN_DELAY}
+            closeDelay={0}
+            skipDelayDuration={300}
           >
-            <span class="server-rail-monogram">+</span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Content class="server-rail-tooltip">
-              {t(props.addCreatesServer ? "server.rail.add" : "server.rail.addRemote")}
-            </Tooltip.Content>
-          </Tooltip.Portal>
-        </Tooltip.Root>
+            <Tooltip.Trigger
+              type="button"
+              class={`${buttonVariants({ variant: "outline", size: "sm" })} server-rail-button server-rail-action`}
+              aria-label={t(props.addCreatesServer ? "server.rail.add" : "server.rail.addRemote")}
+              data-cuelume-open=""
+              data-cuelume-emphasis="subtle"
+              onClick={props.onAdd}
+            >
+              <span class="server-rail-monogram">+</span>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content class="server-rail-tooltip">
+                {t(props.addCreatesServer ? "server.rail.add" : "server.rail.addRemote")}
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Show>
         <span class="sr-only" aria-live="polite">
           {announcement()}
         </span>

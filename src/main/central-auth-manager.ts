@@ -81,6 +81,11 @@ interface CentralAuthManagerOptions {
   startupRequestTimeoutMs?: number;
   startupRetryDelaysMs?: readonly number[];
   emailCodeRequestTimeoutMs?: number;
+  /**
+   * In local-only mode the app has no account service, and this account stands in for the signed-in
+   * user. It holds no session token, so every request to the account service fails as signed out.
+   */
+  localAccount?: CentralAuthUser | null;
 }
 
 /** The persistent Mobile Connect link of this desktop. The account service keeps only its hash. */
@@ -173,6 +178,7 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
       startupRequestTimeoutMs: options.startupRequestTimeoutMs ?? STARTUP_REQUEST_TIMEOUT_MS,
       startupRetryDelaysMs: options.startupRetryDelaysMs ?? STARTUP_RETRY_DELAYS_MS,
       emailCodeRequestTimeoutMs: options.emailCodeRequestTimeoutMs ?? EMAIL_CODE_REQUEST_TIMEOUT_MS,
+      localAccount: options.localAccount ?? null,
     };
   }
 
@@ -1280,6 +1286,8 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
   readonly #initialize = Effect.fn("CentralAuth.initialize")(function* (
     this: CentralAuthManager,
   ): Effect.fn.Return<CentralAuthState, CentralAuthOperationError, CentralAuthTransport> {
+    const localAccount = this.#options.localAccount;
+    if (localAccount) return this.#setState({ status: "signed_in", user: structuredClone(localAccount) });
     this.#setState({ status: "loading" });
     if (this.#options.canPersist()) {
       const attempt4 = yield* Effect.gen({ self: this }, function* () {
@@ -1514,6 +1522,8 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
       this: CentralAuthManager,
     ): Effect.fn.Return<CentralAuthState, CentralAuthOperationError, CentralAuthTransport> {
       this.#emailCodeRequest = null;
+      // The local account is the only user of a local-only app, so there is nothing to sign out of.
+      if (this.#options.localAccount) return this.getState();
       if (this.#sessionToken) {
         const attempt8 = yield* Effect.gen({ self: this }, function* () {
           yield* this.#authorizedRequestEffect("/v1/auth/logout", { method: "POST" }, decodeVoid);

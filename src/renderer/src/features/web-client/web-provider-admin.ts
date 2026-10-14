@@ -64,8 +64,8 @@ const CODE_LOGIN_POLL_MS = 3000;
  */
 const WEB_EXTERNAL_DESTINATIONS: Partial<Record<ExternalDestination, string>> = {
   "opencode-auth": "https://opencode.ai/auth",
-  feedback: "https://x.com/intent/post?text=Feedback%20for%20AIKINGBOT%20%40norbertbodziony%3A%20",
-  message: "https://x.com/norbertbodziony",
+  feedback: "https://github.com/aikingcorp-spec/aikingx_bot/issues/new",
+  message: "https://aikingx.com/",
 };
 
 export function openWebDestination(destination: ExternalDestination): Promise<void> {

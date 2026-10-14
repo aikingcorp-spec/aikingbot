@@ -20,6 +20,7 @@ import type { AgentMemoryLimitPreferenceStore } from "../agent-memory-limit-pref
 import { readAnalyticsPreference, writeAnalyticsPreference } from "../analytics-preference-store";
 import type { ApprovalAutomation } from "../approval-automation-store";
 import type { BusyMessageModePreferenceStore } from "../busy-message-mode-preference-store";
+import { localOnlyMode } from "../hosted-services";
 import type { LanguageService } from "../language-service";
 import type { LogoColorService } from "../logo-color-service";
 import { MAC_PERMISSION_URLS } from "../mac-permission-urls";
@@ -57,8 +58,8 @@ export const EXTERNAL_DESTINATIONS: Record<ExternalDestination, string> = {
   "opencode-install": "https://opencode.ai/docs/",
   "opencode-auth": "https://opencode.ai/auth",
   "claude-install": "https://code.claude.com/docs",
-  feedback: "https://x.com/intent/post?text=Feedback%20for%20AIKINGBOT%20%40norbertbodziony%3A%20",
-  message: "https://x.com/norbertbodziony",
+  feedback: "https://github.com/aikingcorp-spec/aikingx_bot/issues/new",
+  message: "https://aikingx.com/",
   "grok-bot-export": GROK_BOT_EXPORT_URL,
   "hosted-server-contact": HOSTED_SERVER_CONTACT_URL,
   "mac-screen-recording": MAC_PERMISSION_URLS["screen-recording"],
@@ -124,7 +125,13 @@ export function appIpcHandlers({
         }
         // electron-vite starts a script, so Electron reports its own version in development.
         const version = app.isPackaged ? app.getVersion() : developmentVersion;
-        return { name: app.getName(), version, platform, variant: appVariant };
+        return {
+          name: app.getName(),
+          version,
+          platform,
+          variant: appVariant,
+          ...(localOnlyMode() ? { localOnly: true } : {}),
+        };
       }),
       getSetupState: handler(() => runCauseEffect(readSetupState(setupFile))),
       getAnalyticsPreference: handler(() => Effect.runPromise(readAnalyticsPreference(analyticsPreferenceFile))),

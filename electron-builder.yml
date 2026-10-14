@@ -19,8 +19,8 @@ electronFuses:
   grantFileProtocolExtraPrivileges: false
 publish:
   provider: github
-  owner: nightly-labs
-  repo: aikingbot
+  owner: aikingcorp-spec
+  repo: aikingx_bot
 files:
   - out/**/*
   - package.json

@@ -10,6 +10,8 @@ export interface AppInfo {
   version: string;
   platform: DesktopPlatform;
   variant: AppVariant;
+  /** True when the app runs without any account service: cloud sign-in, teams, remote pairing and hosted servers are off. */
+  localOnly?: boolean;
 }
 
 /** The phase list is the source of truth: `UpdatePhase` is derived from it. */

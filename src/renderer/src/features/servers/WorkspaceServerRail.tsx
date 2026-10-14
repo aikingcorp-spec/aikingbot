@@ -54,7 +54,7 @@ export function WorkspaceServerRail() {
         servers={orderedServers()}
         onSelect={select}
         onReorder={(serverIds) => void reorderServers(serverIds)}
-        onAdd={add}
+        onAdd={platform.appInfo()?.localOnly ? undefined : add}
         addCreatesServer={addCreatesServer()}
         {...callbacks}
       />

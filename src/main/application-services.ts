@@ -137,6 +137,7 @@ import { applyHostedServerAccount, type HostedServerEnvironment } from "./hosted
 import { HostedServerMemory } from "./hosted-server-memory";
 import { HostedServerDesktopService, withHostingDeveloperKey } from "./hosted-server-service";
 import { HostedServerStartRetry } from "./hosted-server-start-retry";
+import { hostedServicesEnabled, LOCAL_ACCOUNT, localOnlyMode } from "./hosted-services";
 import { HostedSiteDesktopService } from "./hosted-site-service";
 import { IdleRestart } from "./idle-restart";
 import { loadIngressQueueKey } from "./ingress-queue-key";
@@ -731,6 +732,7 @@ export async function createApplicationServices({
     mobileConnectApiUrl: readMobileConnectApiUrl(process.env.AIKINGBOT_MOBILE_AUTH_API_URL, centralAuthApiUrl),
     storagePath: join(app.getPath("userData"), CENTRAL_AUTH_FILE),
     ...safeStorageCipher("error.app.macSecureStorageUnavailable"),
+    localAccount: localOnlyMode() ? LOCAL_ACCOUNT : null,
   });
   // Registered before `initialize()`, which publishes `{ status: "loading" }` synchronously: the
   // listener therefore runs on the next line with most of this function's services still unbuilt.
@@ -2073,6 +2075,7 @@ export async function createApplicationServices({
     existsSync(HOSTED_UPDATE_TRIGGER);
   const updatesEnabled =
     app.isPackaged &&
+    hostedServicesEnabled() &&
     (hostedInstaller || (supportsInstalledUpdates(process.platform) && updateMetadataAvailable)) &&
     isValidSemver(currentVersion);
   if (app.isPackaged && updateMetadataAvailable && !isValidSemver(currentVersion)) {

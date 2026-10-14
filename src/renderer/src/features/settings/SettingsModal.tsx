@@ -118,13 +118,16 @@ export function SettingsModal(props: SettingsModalProps) {
   const isMac = () => props.appInfo?.platform === "darwin";
   // Linux builds carry no speech recognition runtime.
   const hasVoice = () => voiceSupported(props.appInfo?.platform);
+  // A local-only app has no account service, so the tabs that read the account are left out.
+  const accountTab = (tab: string) =>
+    props.appInfo?.localOnly === true && (tab === "profile" || tab === "billing" || tab === "mobile-connect");
   createEffect(
     () => {
       const tab = props.open ? props.openTab : undefined;
       return tab === "hosted-servers" ? "billing" : tab;
     },
     (tab) => {
-      if (tab) setActiveTab(tab);
+      if (tab) setActiveTab(accountTab(tab) ? "general" : tab);
     },
   );
   const visibleNavItems = () =>
@@ -132,6 +135,7 @@ export function SettingsModal(props: SettingsModalProps) {
       (item) =>
         (item.value !== "dynamic-island" || isMac()) &&
         (item.value !== "voice" || hasVoice()) &&
+        !accountTab(item.value) &&
         item.value !== "hosted-servers",
     );
 
@@ -149,9 +153,7 @@ export function SettingsModal(props: SettingsModalProps) {
         (value === "voice" && hasVoice()) ||
         (value === "dynamic-island" && isMac()) ||
         value === "computer-use" ||
-        value === "profile" ||
-        value === "billing" ||
-        value === "mobile-connect" ||
+        ((value === "profile" || value === "billing" || value === "mobile-connect") && !accountTab(value)) ||
         value === "updates"
       ) {
         setActiveTab(value);

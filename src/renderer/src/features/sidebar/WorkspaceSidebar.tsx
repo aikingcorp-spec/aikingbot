@@ -205,7 +205,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
       onExpand={layout.expandSidebar}
       onOpenSearch={() => setGlobalSearchVisibility(true)}
       footer={
-        <Show when={!platform.landingPreview && !mobileAppDismissed()}>
+        <Show when={!platform.landingPreview && !platform.appInfo()?.localOnly && !mobileAppDismissed()}>
           <SidebarMobileAppCard
             onOpenInstall={() => openAppSettings(null, "mobile-connect")}
             onDismiss={() => {

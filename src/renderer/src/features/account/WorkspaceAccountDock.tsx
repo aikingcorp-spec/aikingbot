@@ -77,7 +77,7 @@ export function WorkspaceAccountDock(props: { account: () => CentralAuthUser }) 
           return targetKey ? auth.refreshAccountUsage(targetKey) : Promise.resolve({ limits: [] });
         }}
         onUpdateAction={updates.runAction}
-        onLogout={platform.landingPreview ? undefined : auth.logoutCentralAccount}
+        onLogout={platform.landingPreview || platform.appInfo()?.localOnly ? undefined : auth.logoutCentralAccount}
         onOpenExternal={(destination) => appPort().openExternal(destination)}
         onOpenSettings={openAppSettings}
         onOpenSkills={() => setSkillsMarketplaceOpen(true)}
