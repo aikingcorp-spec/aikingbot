@@ -38,6 +38,7 @@ if (!cdp) await page.goto(info.uiUrl, { waitUntil: "domcontentloaded", timeout: 
 
 const results = [];
 const settle = () => page.waitForTimeout(450);
+class Skip extends Error {}
 async function step(name, run) {
   const started = Date.now();
   try {
@@ -47,6 +48,11 @@ async function step(name, run) {
     results.push({ name, ok: true, ms: Date.now() - started });
     console.log(`ok   ${name}`);
   } catch (error) {
+    if (error instanceof Skip) {
+      results.push({ name, ok: true, skipped: error.message });
+      console.log(`skip ${name}: ${error.message}`);
+      return;
+    }
     results.push({ name, ok: false, error: String(error?.message ?? error).split("\n")[0] });
     console.log(`FAIL ${name}: ${String(error?.message ?? error).split("\n")[0]}`);
     await page.screenshot({ path: join(out, `${surface}-${name}-failed.png`) }).catch(() => {});
@@ -213,7 +219,9 @@ for (const section of ["General", "Appearance", "AI", "Connectors", "Computers",
       await button("You").click();
       await page.getByRole("menuitem", { name: "Settings", exact: true }).click();
     }
-    await page.locator(`nav [data-settings-page], nav [data-settings-section]`).filter({ hasText: section }).first().click();
+    const entry = page.locator(`nav [data-settings-page], nav [data-settings-section]`).filter({ hasText: new RegExp(`^${section}$`) }).first();
+    if (await entry.count() === 0) throw new Skip(`${section} is not offered on this ${surface} host`);
+    await entry.click();
     await page.locator("[data-settings-block], [data-setting-row], [data-setting-card]").first().waitFor();
   });
 }

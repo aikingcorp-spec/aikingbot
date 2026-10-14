@@ -1,5 +1,6 @@
 // Generates overrides/src/locales/en.json from the pinned upstream catalog:
-// AIKINGBOT calls its assistants "agents", as the OpenBot reference does.
+// AIKINGBOT calls its assistants "agents", as the OpenBot reference does, and
+// names itself AIKINGBOT where upstream text names the product.
 // Placeholders such as {bot}, product names (AIKINGBOT, OpenMausBot) and real
 // chat-platform bots (a Telegram or Slack bot) keep their words.
 //   node apps/desktop-foundation/terminology.mjs
@@ -13,7 +14,11 @@ const target = join(root, "overrides/src/locales/en.json");
 
 const PLATFORM_KEYS = /^(telegram|slack|discord|whop|whatsapp|twilio)\b/i;
 const PLATFORM_BEFORE = /(Telegram|Slack|Discord|Whop|WhatsApp|Twilio|chat|Chat|the platform's)\s+$/;
-const PHRASES = [[/\bbot-to-bot\b/g, "agent-to-agent"], [/\bBot-to-bot\b/g, "Agent-to-agent"], [/\bbot-derived\b/g, "agent-derived"], [/\bbots\/groups\b/g, "agents/groups"]];
+// Upstream product names in interface text read as AIKINGBOT. Lowercase CLI
+// names (openmausbot ...) and the About credit (a component) are unchanged.
+const PRODUCT = [[/\bOpenMausBot\b/g, "AIKINGBOT"], [/\bMausBot\b/g, "AIKINGBOT"], [/\bOpenMausMobile\b/g, "AIKINGBOT Mobile"],
+  [/\bOpenMaus-managed\b/g, "AIKINGBOT-managed"], [/\bOpenMaus\b/g, "AIKINGBOT"], [/\bcompatible Maus\b/g, "compatible agent"]];
+const PHRASES = [...PRODUCT, [/\bbot-to-bot\b/g, "agent-to-agent"], [/\bBot-to-bot\b/g, "Agent-to-agent"], [/\bbot-derived\b/g, "agent-derived"], [/\bbots\/groups\b/g, "agents/groups"]];
 const WORD = /\b(an?\s+)?(bots?|Bots?|BOTS?)\b/g;
 
 function agentWord(word) {
@@ -66,4 +71,4 @@ for (const [key, value] of Object.entries(upstream)) {
 Object.assign(out, ADDED);
 mkdirSync(dirname(target), { recursive: true });
 writeFileSync(target, `${JSON.stringify(out, null, 2)}\n`);
-console.log(`Wrote ${target}: ${changed} of ${Object.keys(upstream).length} strings use "agent".`);
+console.log(`Wrote ${target}: ${changed} of ${Object.keys(upstream).length} strings changed.`);
