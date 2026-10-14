@@ -4,7 +4,9 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMediaToolsServer, frameSize } from "../demo/media-tools-server.ts";
-import { McpHub, renderToolResult } from "../src/mcp/mcp-hub.ts";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpHub, renderToolResult, riskFromAnnotations } from "../src/mcp/mcp-hub.ts";
+import { ToolRegistry } from "../src/runtime/tools.ts";
 
 const hubs: McpHub[] = [];
 afterEach(async () => {
@@ -33,7 +35,7 @@ describe("McpHub", () => {
 		const hub = await hubWithMediaServer();
 		const [tool] = hub.definitions();
 		expect(tool?.name).toBe("mcp__media__frame_size");
-		expect(tool?.input_schema.required).toEqual(["ratio", "long_edge"]);
+		expect(tool?.inputSchema.required).toEqual(["ratio", "long_edge"]);
 	});
 
 	test("routes a call to the server and returns its text", async () => {
@@ -73,9 +75,58 @@ describe("McpHub", () => {
 			command: process.execPath,
 			args: [join(import.meta.dir, "..", "demo", "media-tools-server.ts")],
 		});
-		expect(tools).toEqual(["mcp__media__frame_size"]);
+		expect(tools).toEqual([
+			"mcp__media__frame_size",
+			"mcp__media__shot_timing",
+			"mcp__media__submit_render",
+			"mcp__media__purge_renders",
+		]);
 		const outcome = await hub.call("mcp__media__frame_size", { ratio: "9:16", long_edge: 1920 });
 		expect(outcome?.content).toBe('{"width":1080,"height":1920}');
+	});
+});
+
+describe("tool risk and capability metadata", () => {
+	test("risk follows MCP annotation defaults: unannotated tools are dangerous", () => {
+		expect(riskFromAnnotations({ readOnlyHint: true })).toBe("read");
+		expect(riskFromAnnotations({ readOnlyHint: false, destructiveHint: false })).toBe("side_effect");
+		expect(riskFromAnnotations({ readOnlyHint: false })).toBe("dangerous");
+		expect(riskFromAnnotations(undefined)).toBe("dangerous");
+	});
+
+	test("hub reads risk and capability from the server, and operator overrides win", async () => {
+		const hub = new McpHub();
+		hubs.push(hub);
+		const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
+		await createMediaToolsServer().connect(serverSide);
+		await hub.connect("media", clientSide, { toolRisk: { shot_timing: "side_effect" } });
+		const byName = Object.fromEntries(hub.toolInfo().map((t) => [t.name, t]));
+		expect(byName.mcp__media__frame_size?.risk).toBe("read");
+		expect(byName.mcp__media__frame_size?.capability?.outputs).toEqual(["frame-spec"]);
+		expect(byName.mcp__media__shot_timing?.risk).toBe("side_effect");
+		expect(byName.mcp__media__submit_render?.risk).toBe("side_effect");
+		expect(byName.mcp__media__purge_renders?.risk).toBe("dangerous");
+	});
+
+	test("a slow MCP tool is cut off by the registry timeout", async () => {
+		const server = new McpServer({ name: "slow", version: "0" });
+		server.registerTool("wait", { annotations: { readOnlyHint: true } }, async () => {
+			await Bun.sleep(2_000);
+			return { content: [{ type: "text", text: "late" }] };
+		});
+		const hub = new McpHub();
+		hubs.push(hub);
+		const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
+		await server.connect(serverSide);
+		await hub.connect("slow", clientSide);
+		const events: string[] = [];
+		const registry = new ToolRegistry([hub], { timeoutMs: 50 }, (e) => events.push(e.type));
+		const started = Date.now();
+		const outcome = await registry.call("mcp__slow__wait", {});
+		expect(Date.now() - started).toBeLessThan(1_000);
+		expect(outcome).toMatchObject({ isError: true });
+		expect(outcome.content).toContain("timed out after 50 ms");
+		expect(events).toEqual(["timeout"]);
 	});
 });
 

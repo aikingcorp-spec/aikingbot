@@ -6,10 +6,8 @@
 
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import type Anthropic from "@anthropic-ai/sdk";
 import type { AgentRuntime, RunResult } from "../runtime/agent-runtime.ts";
-
-type MessageParam = Anthropic.Beta.BetaMessageParam;
+import type { Message as MessageParam } from "../runtime/model.ts";
 
 export class ChatSession {
 	private constructor(
@@ -58,11 +56,11 @@ export class ChatSession {
 /**
  * A run that stopped at the step limit ends with tool results and no
  * assistant reply. Keep it: the next user message follows tool results,
- * which the API accepts. Only a trailing assistant `tool_use` turn without
+ * which the API accepts. Only a trailing assistant `tool_call` turn without
  * results would be invalid, so that one is removed.
  */
 function dropIncompleteTail(history: MessageParam[]): void {
 	const last = history.at(-1);
 	if (last?.role !== "assistant" || typeof last.content === "string") return;
-	if (last.content.some((b) => b.type === "tool_use")) history.pop();
+	if (last.content.some((b) => b.type === "tool_call")) history.pop();
 }

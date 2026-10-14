@@ -4,17 +4,68 @@
 // their tools to the agent runtime. Tool names are namespaced as
 // `mcp__<server>__<tool>` so two servers can export the same tool name.
 
-import type Anthropic from "@anthropic-ai/sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
-import type { ToolOutcome, ToolSource } from "../runtime/tools.ts";
+import type { GuardedToolDefinition, ToolCallContext, ToolOutcome, ToolRisk, ToolSource } from "../runtime/tools.ts";
 
-export interface StdioServerConfig {
+export interface ServerOptions {
+	/**
+	 * Risk per MCP tool name, set by the operator. Overrides the server's own
+	 * annotations, which are hints from the server and not trusted to lower risk.
+	 */
+	toolRisk?: Record<string, ToolRisk>;
+}
+
+export interface StdioServerConfig extends ServerOptions {
 	command: string;
 	args?: string[];
 	cwd?: string;
 	env?: Record<string, string>;
+}
+
+/** Inputs and outputs a tool declares under `_meta["aiking/capability"]`. */
+export interface ToolCapability {
+	tasks: string[];
+	inputs: string[];
+	outputs: string[];
+}
+
+export interface McpToolInfo {
+	name: string;
+	server: string;
+	description: string;
+	risk: ToolRisk;
+	capability?: ToolCapability;
+}
+
+export const CAPABILITY_META_KEY = "aiking/capability";
+
+interface ToolAnnotations {
+	readOnlyHint?: boolean;
+	destructiveHint?: boolean;
+}
+
+/**
+ * Risk from MCP tool annotations, following the spec defaults: a tool is
+ * not read-only and is destructive unless it says otherwise. So a tool
+ * without annotations is treated as dangerous.
+ */
+export function riskFromAnnotations(annotations: ToolAnnotations | undefined): ToolRisk {
+	if (annotations?.readOnlyHint === true) return "read";
+	if (annotations?.destructiveHint === false) return "side_effect";
+	return "dangerous";
+}
+
+function strings(value: unknown): string[] {
+	return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+}
+
+function capabilityFromMeta(meta: Record<string, unknown> | undefined): ToolCapability | undefined {
+	const raw = meta?.[CAPABILITY_META_KEY];
+	if (typeof raw !== "object" || raw === null) return undefined;
+	const c = raw as Record<string, unknown>;
+	return { tasks: strings(c.tasks), inputs: strings(c.inputs), outputs: strings(c.outputs) };
 }
 
 const SERVER_NAME = /^[a-zA-Z0-9-]{1,24}$/;
@@ -24,7 +75,8 @@ const MAX_RESULT_CHARS = 50_000;
 interface ConnectedServer {
 	client: Client;
 	tools: Map<string, string>; // exposed name -> MCP tool name
-	definitions: Anthropic.Tool[];
+	definitions: GuardedToolDefinition[];
+	info: McpToolInfo[];
 }
 
 export function exposedToolName(server: string, tool: string): string {
@@ -57,27 +109,28 @@ export class McpHub implements ToolSource {
 	private readonly servers = new Map<string, ConnectedServer>();
 
 	/** Connects one server over any MCP transport (stdio, HTTP, in-memory). */
-	async connect(name: string, transport: Transport): Promise<string[]> {
+	async connect(name: string, transport: Transport, options: ServerOptions = {}): Promise<string[]> {
 		if (!SERVER_NAME.test(name)) throw new Error(`invalid MCP server name "${name}"`);
 		if (this.servers.has(name)) throw new Error(`MCP server "${name}" is already connected`);
 
-		const client = new Client({ name: "aiking-core", version: "0.1.0" });
+		const client = new Client({ name: "aiking-core", version: "0.2.0" });
 		await client.connect(transport);
 		try {
 			const { tools } = await client.listTools();
 			const map = new Map<string, string>();
-			const definitions: Anthropic.Tool[] = [];
+			const definitions: GuardedToolDefinition[] = [];
+			const info: McpToolInfo[] = [];
 			for (const tool of tools) {
 				const exposed = exposedToolName(name, tool.name);
 				if (!TOOL_NAME.test(exposed)) continue; // Name the model API cannot accept.
 				map.set(exposed, tool.name);
-				definitions.push({
-					name: exposed,
-					description: tool.description ?? `MCP tool ${tool.name} from ${name}.`,
-					input_schema: tool.inputSchema as Anthropic.Tool.InputSchema,
-				});
+				const description = tool.description ?? `MCP tool ${tool.name} from ${name}.`;
+				const risk = options.toolRisk?.[tool.name] ?? riskFromAnnotations(tool.annotations);
+				definitions.push({ name: exposed, description, risk, inputSchema: tool.inputSchema });
+				const capability = capabilityFromMeta(tool._meta);
+				info.push({ name: exposed, server: name, description, risk, ...(capability ? { capability } : {}) });
 			}
-			this.servers.set(name, { client, tools: map, definitions });
+			this.servers.set(name, { client, tools: map, definitions, info });
 			return [...map.keys()];
 		} catch (error) {
 			await client.close();
@@ -95,19 +148,29 @@ export class McpHub implements ToolSource {
 				env: config.env,
 				stderr: "pipe",
 			}),
+			{ toolRisk: config.toolRisk },
 		);
 	}
 
-	definitions(): Anthropic.Tool[] {
+	definitions(): GuardedToolDefinition[] {
 		return [...this.servers.values()].flatMap((s) => s.definitions);
 	}
 
-	async call(name: string, input: unknown): Promise<ToolOutcome | undefined> {
+	/** Tool metadata for capability discovery. */
+	toolInfo(): McpToolInfo[] {
+		return [...this.servers.values()].flatMap((s) => s.info);
+	}
+
+	async call(name: string, input: unknown, context?: ToolCallContext): Promise<ToolOutcome | undefined> {
 		for (const server of this.servers.values()) {
 			const toolName = server.tools.get(name);
 			if (toolName === undefined) continue;
 			const args = typeof input === "object" && input !== null ? (input as Record<string, unknown>) : {};
-			const result = await server.client.callTool({ name: toolName, arguments: args });
+			const result = await server.client.callTool(
+				{ name: toolName, arguments: args },
+				undefined,
+				context ? { signal: context.signal, timeout: context.timeoutMs } : undefined,
+			);
 			return renderToolResult(result);
 		}
 		return undefined;

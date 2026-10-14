@@ -1,26 +1,30 @@
 // Copyright (c) 2026 AIKING. All rights reserved.
 
 import { describe, expect, test } from "bun:test";
-import type Anthropic from "@anthropic-ai/sdk";
 import { AgentRuntime, type RuntimeEvent } from "../src/runtime/agent-runtime.ts";
-import { lastToolResult, ScriptedModel, textBlock, toolUseBlock } from "../src/runtime/scripted-model.ts";
-import { type ToolOutcome, ToolRegistry, type ToolSource } from "../src/runtime/tools.ts";
+import type { StopReason, ToolResultBlock } from "../src/runtime/model.ts";
+import { lastToolResult, ScriptedModel, textBlock, toolCall } from "../src/runtime/scripted-model.ts";
+import { type ToolOutcome, ToolRegistry, type ToolRisk, type ToolSource } from "../src/runtime/tools.ts";
 
-function source(handlers: Record<string, (input: unknown) => ToolOutcome | Promise<ToolOutcome>>): ToolSource {
+function source(
+	handlers: Record<string, (input: unknown) => ToolOutcome | Promise<ToolOutcome>>,
+	risk: ToolRisk = "read",
+): ToolSource {
 	return {
 		definitions: () =>
-			Object.keys(handlers).map((name) => ({ name, input_schema: { type: "object" as const, properties: {} } })),
+			Object.keys(handlers).map((name) => ({ name, risk, inputSchema: { type: "object" as const, properties: {} } })),
 		call: async (name, input) => handlers[name]?.(input),
 	};
 }
 
 const echo = source({ echo: (input) => ({ content: JSON.stringify(input), isError: false }) });
+const resultsOf = (m: unknown) => (m as { content: ToolResultBlock[] }).content;
 
 describe("AgentRuntime", () => {
 	test("runs tools until the model ends its turn", async () => {
 		const model = new ScriptedModel([
-			() => ({ content: [toolUseBlock("echo", { v: 1 })], stop_reason: "tool_use" }),
-			(req) => ({ content: [textBlock(`got ${lastToolResult(req)}`)], stop_reason: "end_turn" }),
+			() => ({ content: [toolCall("echo", { v: 1 })], stopReason: "tool_use" }),
+			(req) => ({ content: [textBlock(`got ${lastToolResult(req)}`)], stopReason: "end_turn" }),
 		]);
 		const events: RuntimeEvent[] = [];
 		const runtime = new AgentRuntime({
@@ -31,10 +35,11 @@ describe("AgentRuntime", () => {
 		});
 		const result = await runtime.run([{ role: "user", content: "hi" }]);
 
-		expect(result).toMatchObject({ status: "completed", text: 'got {"v":1}', steps: 2 });
+		expect(result).toMatchObject({ status: "completed", text: 'got {"v":1}', steps: 2, toolCalls: 1 });
 		expect(result.added.map((m) => m.role)).toEqual(["assistant", "user", "assistant"]);
-		expect(events.map((e) => e.type)).toEqual(["tool_call", "tool_result", "text"]);
-		expect(model.requests[0]?.tools.map((t) => t.name)).toEqual(["echo"]);
+		expect(events.filter((e) => e.type !== "usage").map((e) => e.type)).toEqual(["tool_call", "tool_result", "text"]);
+		// Risk is policy data and never sent to the model.
+		expect(model.requests[0]?.tools).toEqual([{ name: "echo", description: undefined, inputSchema: { type: "object", properties: {} } }]);
 	});
 
 	test("returns all parallel tool results in one user message, in call order", async () => {
@@ -46,38 +51,36 @@ describe("AgentRuntime", () => {
 			fast: () => ({ content: "fast", isError: false }),
 		});
 		const model = new ScriptedModel([
-			() => ({ content: [toolUseBlock("slow", {}), toolUseBlock("fast", {})], stop_reason: "tool_use" }),
-			() => ({ content: [textBlock("done")], stop_reason: "end_turn" }),
+			() => ({ content: [toolCall("slow", {}), toolCall("fast", {})], stopReason: "tool_use" }),
+			() => ({ content: [textBlock("done")], stopReason: "end_turn" }),
 		]);
 		const result = await new AgentRuntime({ model, tools: new ToolRegistry([slow]), system: "s" }).run([
 			{ role: "user", content: "go" },
 		]);
-		const toolMessage = result.added[1] as Anthropic.Beta.BetaMessageParam;
-		const blocks = toolMessage.content as Anthropic.Beta.BetaToolResultBlockParam[];
-		expect(blocks.map((b) => b.content)).toEqual(["slow", "fast"]);
+		expect(resultsOf(result.added[1]).map((b) => b.content)).toEqual(["slow", "fast"]);
 	});
 
-	test("an unknown or throwing tool becomes an is_error result and the loop continues", async () => {
+	test("an unknown or throwing tool becomes an error result and the loop continues", async () => {
 		const failing = source({
 			boom: () => {
 				throw new Error("disk full");
 			},
 		});
 		const model = new ScriptedModel([
-			() => ({ content: [toolUseBlock("boom", {}), toolUseBlock("missing", {})], stop_reason: "tool_use" }),
-			() => ({ content: [textBlock("recovered")], stop_reason: "end_turn" }),
+			() => ({ content: [toolCall("boom", {}), toolCall("missing", {})], stopReason: "tool_use" }),
+			() => ({ content: [textBlock("recovered")], stopReason: "end_turn" }),
 		]);
 		const result = await new AgentRuntime({ model, tools: new ToolRegistry([failing]), system: "s" }).run([
 			{ role: "user", content: "go" },
 		]);
-		const blocks = result.added[1]?.content as Anthropic.Beta.BetaToolResultBlockParam[];
-		expect(blocks.every((b) => b.is_error === true)).toBe(true);
+		const blocks = resultsOf(result.added[1]);
+		expect(blocks.every((b) => b.isError)).toBe(true);
 		expect(blocks[0]?.content).toContain("disk full");
 		expect(result.status).toBe("completed");
 	});
 
 	test("stops at the step limit", async () => {
-		const loop = () => ({ content: [toolUseBlock("echo", {})], stop_reason: "tool_use" as const });
+		const loop = () => ({ content: [toolCall("echo", {})], stopReason: "tool_use" as const });
 		const model = new ScriptedModel([loop, loop, loop]);
 		const result = await new AgentRuntime({ model, tools: new ToolRegistry([echo]), system: "s", maxSteps: 2 }).run([
 			{ role: "user", content: "go" },
@@ -86,19 +89,78 @@ describe("AgentRuntime", () => {
 		expect(model.requests).toHaveLength(2);
 	});
 
+	test("caps tool calls per turn and per run; every call still gets a result", async () => {
+		let runs = 0;
+		const counter = source({ count: () => ((runs += 1), { content: "ok", isError: false }) });
+		const three = () => ({
+			content: [toolCall("count", {}), toolCall("count", {}), toolCall("count", {})],
+			stopReason: "tool_use" as const,
+		});
+		const model = new ScriptedModel([three, three, () => ({ content: [textBlock("x")], stopReason: "end_turn" })]);
+		const events: RuntimeEvent[] = [];
+		const result = await new AgentRuntime({
+			model,
+			tools: new ToolRegistry([counter]),
+			system: "s",
+			maxToolCallsPerStep: 2,
+			maxToolCalls: 3,
+			onEvent: (e) => events.push(e),
+		}).run([{ role: "user", content: "go" }]);
+
+		expect(runs).toBe(3); // 2 in turn one (third over per-turn cap), 1 in turn two (run cap).
+		expect(result.status).toBe("tool_limit");
+		expect(result.toolCalls).toBe(3);
+		expect(resultsOf(result.added[1]).map((b) => b.isError)).toEqual([false, false, true]);
+		expect(resultsOf(result.added[3]).map((b) => b.isError)).toEqual([false, true, true]);
+		expect(events.filter((e) => e.type === "tool_limit")).toHaveLength(3);
+	});
+
 	test.each([
 		["max_tokens", "max_tokens"],
 		["refusal", "refusal"],
-		["model_context_window_exceeded", "context_exhausted"],
-	] as const)("stop_reason %s ends the run as %s without running tools", async (stopReason, status) => {
+		["context_exhausted", "context_exhausted"],
+	] as const)("stop reason %s ends the run as %s without running tools", async (stopReason: StopReason, status) => {
 		let called = false;
 		const spy = source({ echo: () => ((called = true), { content: "", isError: false }) });
-		const model = new ScriptedModel([() => ({ content: [toolUseBlock("echo", {})], stop_reason: stopReason })]);
+		const model = new ScriptedModel([() => ({ content: [toolCall("echo", {})], stopReason })]);
 		const result = await new AgentRuntime({ model, tools: new ToolRegistry([spy]), system: "s" }).run([
 			{ role: "user", content: "go" },
 		]);
 		expect(result.status).toBe(status);
 		expect(called).toBe(false);
+	});
+
+	test("accumulates cost per served model and reports fallbacks", async () => {
+		const usage = (model: string, i: number, o: number) => ({
+			model,
+			inputTokens: i,
+			outputTokens: o,
+			cacheReadTokens: 0,
+			cacheWriteTokens: 0,
+		});
+		const model = new ScriptedModel([
+			() => ({
+				content: [toolCall("echo", {})],
+				stopReason: "tool_use",
+				model: "claude-opus-5-5",
+				usage: [usage("claude-opus-5-5", 1_000_000, 0)],
+			}),
+			() => ({
+				content: [textBlock("ok")],
+				stopReason: "end_turn",
+				model: "claude-opus-5",
+				usage: [usage("claude-opus-5-5", 0, 100_000), usage("claude-opus-5", 0, 1_000_000)],
+				fallbacks: [{ from: "claude-opus-5-5", to: "claude-opus-5", reason: "refusal" }],
+			}),
+		]);
+		const result = await new AgentRuntime({ model, tools: new ToolRegistry([echo]), system: "s" }).run([
+			{ role: "user", content: "go" },
+		]);
+		expect(result.servedBy).toEqual(["claude-opus-5-5", "claude-opus-5"]);
+		expect(result.fallbacks).toEqual([{ from: "claude-opus-5-5", to: "claude-opus-5", reason: "refusal" }]);
+		// opus-5-5: 1M in x $4 + 0.1M out x $20 = 6; opus-5: 1M out x $25 = 25.
+		expect(result.cost.usd).toBeCloseTo(31, 6);
+		expect(result.cost.unpricedModels).toEqual([]);
 	});
 
 	test("rejects duplicate tool names across sources", () => {

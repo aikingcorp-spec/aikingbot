@@ -1,55 +1,63 @@
 // Copyright (c) 2026 AIKING. All rights reserved.
 //
 // Offline ModelClient that replays scripted turns. Used by tests and by the
-// demo when no Claude API credentials are available. Each step receives the
+// demo when no API credentials are available. Each step receives the
 // request, so a script can read tool results before it answers.
 
-import type Anthropic from "@anthropic-ai/sdk";
-import type { ModelClient, ModelRequest } from "./agent-runtime.ts";
+import type { ContentBlock, ModelClient, ModelRequest, ModelResponse, StopReason } from "./model.ts";
 
-type Block = Anthropic.Beta.BetaContentBlock;
-export type ScriptStep = (request: ModelRequest) => { content: Block[]; stop_reason: Anthropic.Beta.BetaStopReason };
+export interface ScriptTurn {
+	content: ContentBlock[];
+	stopReason: StopReason;
+	/** Optional overrides for tests of usage, fallback and cost handling. */
+	model?: string;
+	usage?: ModelResponse["usage"];
+	fallbacks?: ModelResponse["fallbacks"];
+}
+export type ScriptStep = (request: ModelRequest) => ScriptTurn;
 
 let nextId = 0;
 
-export function textBlock(text: string): Block {
-	return { type: "text", text, citations: null } as Block;
+export function textBlock(text: string): ContentBlock {
+	return { type: "text", text };
 }
 
-export function toolUseBlock(name: string, input: Record<string, unknown>): Block {
+export function toolCall(name: string, input: Record<string, unknown>): ContentBlock {
 	nextId += 1;
-	return { type: "tool_use", id: `toolu_scripted_${nextId}`, name, input } as Block;
+	return { type: "tool_call", id: `call_scripted_${nextId}`, name, input };
 }
 
 /** Last tool_result text in the request, for scripts that react to tools. */
 export function lastToolResult(request: ModelRequest): string {
+	return toolResults(request).at(-1) ?? "";
+}
+
+/** All tool_result texts of the last user message, in call order. */
+export function toolResults(request: ModelRequest): string[] {
 	const last = request.messages.at(-1);
-	if (!last || typeof last.content === "string") return "";
-	const result = [...last.content].reverse().find((b) => b.type === "tool_result");
-	if (!result || result.type !== "tool_result") return "";
-	return typeof result.content === "string" ? result.content : JSON.stringify(result.content);
+	if (!last || typeof last.content === "string") return [];
+	return last.content.flatMap((b) => (b.type === "tool_result" ? [b.content] : []));
 }
 
 export class ScriptedModel implements ModelClient {
+	readonly provider = "scripted";
 	readonly requests: ModelRequest[] = [];
 	private index = 0;
 
 	constructor(private readonly steps: ScriptStep[]) {}
 
-	async create(request: ModelRequest) {
+	async create(request: ModelRequest): Promise<ModelResponse> {
 		this.requests.push({ ...request, messages: [...request.messages] });
 		const step = this.steps[this.index++];
 		if (!step) throw new Error("scripted model has no more steps");
-		const { content, stop_reason } = step(request);
+		const turn = step(request);
+		const model = turn.model ?? "scripted";
 		return {
-			id: `msg_scripted_${this.index}`,
-			type: "message",
-			role: "assistant",
-			model: "scripted",
-			content,
-			stop_reason,
-			stop_sequence: null,
-			usage: { input_tokens: 0, output_tokens: 0 },
-		} as unknown as Anthropic.Beta.BetaMessage;
+			content: turn.content,
+			stopReason: turn.stopReason,
+			model,
+			usage: turn.usage ?? [{ model, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 }],
+			fallbacks: turn.fallbacks ?? [],
+		};
 	}
 }
