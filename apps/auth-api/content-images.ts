@@ -12,7 +12,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import type { Plugin } from "vite";
 import type { RivalMarkName } from "./src/components/compare/rival-mark-shapes";
 import { COMPARISONS } from "./src/content/compare";
@@ -60,13 +60,13 @@ export interface ContentImageJob {
   markRow?: readonly ContentImageMark[] | undefined;
 }
 
-/** A compared product's mark, or OpenBot's own logo. */
-export type ContentImageMark = RivalMarkName | "openbot";
+/** A compared product's mark, or AIKINGBOT's own logo. */
+export type ContentImageMark = RivalMarkName | "aikingbot";
 
 export interface ContentImageLockup {
   rivalMark: RivalMarkName;
   rivalName: string;
-  /** The left side when it is not OpenBot: a matchup of two other products. */
+  /** The left side when it is not AIKINGBOT: a matchup of two other products. */
   left?: { mark: RivalMarkName; name: string } | undefined;
 }
 
@@ -74,7 +74,7 @@ export type ContentArtManifest = Record<string, string>;
 
 export function contentImages(): Plugin {
   return {
-    name: "openbot-content-images",
+    name: "aikingbot-content-images",
     apply: "build",
     async generateBundle() {
       if (this.environment.name !== "client") return;
@@ -131,7 +131,7 @@ function comparisonLockup(collection: ContentCollection, slug: string): ContentI
   const page = collection.id === "compare" ? COMPARISONS[slug] : undefined;
   switch (page?.kind) {
     case undefined:
-    case "openbot":
+    case "aikingbot":
       return page && { rivalMark: page.rival.mark, rivalName: page.rival.name };
     case "matchup": {
       const [a, b] = page.products;

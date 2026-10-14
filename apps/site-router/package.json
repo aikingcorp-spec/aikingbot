@@ -1,10 +1,10 @@
 {
-  "name": "@openbot/site-router",
+  "name": "@aikingbot/site-router",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@openbot/contracts": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
     "effect": "catalog:"
   },
   "scripts": {

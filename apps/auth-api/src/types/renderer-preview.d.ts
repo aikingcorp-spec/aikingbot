@@ -1,9 +1,9 @@
-declare module "@openbot/renderer-preview" {
+declare module "@aikingbot/renderer-preview" {
   import type { JSX } from "@solidjs/web";
 
-  export interface OpenBotPlaygroundProps {
+  export interface AIKINGBOTPlaygroundProps {
     variant?: "default" | "landing";
   }
 
-  export function OpenBotPlayground(props: OpenBotPlaygroundProps): JSX.Element;
+  export function AIKINGBOTPlayground(props: AIKINGBOTPlaygroundProps): JSX.Element;
 }

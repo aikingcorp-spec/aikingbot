@@ -1,19 +1,19 @@
-import { sha256 } from "@noble/hashes/sha2.js";
 import {
+  AIKINGBOT_CONTROL_PLANE_ORIGIN,
+  AIKINGBOT_INVITE_ORIGIN,
   createInviteUrl,
   type InviteLinkOptions,
   inviteUseCount,
   isPermanentInvite,
-  OPENBOT_CONTROL_PLANE_ORIGIN,
-  OPENBOT_INVITE_ORIGIN,
   parseInviteUrl,
   selfHostedApiOrigin,
-} from "@openbot/contracts/invite-links";
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
-import { decodeRemoteSession, decodeRemoteSessionTicket } from "@openbot/contracts/remote-control-plane";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { referenceFrom, safeReference } from "@openbot/user-errors/reference";
+} from "@aikingbot/contracts/invite-links";
+import type { MobileConnectHostBinding } from "@aikingbot/contracts/mobile-connect";
+import { decodeRemoteSession, decodeRemoteSessionTicket } from "@aikingbot/contracts/remote-control-plane";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { referenceFrom, safeReference } from "@aikingbot/user-errors/reference";
+import { sha256 } from "@noble/hashes/sha2.js";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
 import { bytesToBase64Url } from "./base64";
 import { runTeamEffect } from "./effect-boundary";
@@ -383,13 +383,13 @@ export class RemoteTeamDirectoryClient {
 
   /**
    * The account service an invitation names. The public website serves the same Worker as
-   * `api.openbot.run`, but an invitation must name `api.openbot.run`: the desktop and mobile apps
+   * `api.aikingbot.aikingx.com`, but an invitation must name `api.aikingbot.aikingx.com`: the desktop and mobile apps
    * accept only that address.
    */
   #inviteApiUrl(): string {
     const url = new URL(this.#apiUrl);
-    return this.#authentication.kind === "browser" && url.origin === OPENBOT_INVITE_ORIGIN
-      ? new URL(OPENBOT_CONTROL_PLANE_ORIGIN).toString()
+    return this.#authentication.kind === "browser" && url.origin === AIKINGBOT_INVITE_ORIGIN
+      ? new URL(AIKINGBOT_CONTROL_PLANE_ORIGIN).toString()
       : url.toString();
   }
 
@@ -407,8 +407,8 @@ export class RemoteTeamDirectoryClient {
       // These production origins serve the same account Worker. Requests still use this client's origin.
       const publicWebsiteInvite =
         this.#authentication.kind === "browser" &&
-        origin === "https://openbot.run" &&
-        inviteOrigin === "https://api.openbot.run";
+        origin === "https://aikingbot.aikingx.com" &&
+        inviteOrigin === "https://api.aikingbot.aikingx.com";
       if (inviteOrigin !== origin && !publicWebsiteInvite) {
         return yield* directoryFailure(sourceText("error.remote.inviteOtherService"));
       }
@@ -501,7 +501,7 @@ export class RemoteTeamDirectoryClient {
                     ? { Authorization: `Bearer ${this.#authentication.token}` }
                     : {}),
                   ...(browser
-                    ? { "X-OpenBot-Browser": "1", "Content-Type": "application/json" }
+                    ? { "X-AIKINGBOT-Browser": "1", "Content-Type": "application/json" }
                     : options.body
                       ? { "Content-Type": "application/json" }
                       : {}),

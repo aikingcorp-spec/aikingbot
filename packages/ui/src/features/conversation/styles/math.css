@@ -9,5 +9,5 @@
 /* KaTeX gives display math a vertical margin; the message already spaces its blocks. */
 .message-math-display > * {
   margin: 0;
-  padding: var(--openbot-space-1) 0;
+  padding: var(--aikingbot-space-1) 0;
 }

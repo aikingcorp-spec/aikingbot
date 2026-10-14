@@ -18,7 +18,7 @@ import {
 
 // The test folder must not be under the temporary folders, which the sandbox allows. The test runner
 // can move `HOME` there, so the folder is in the checkout.
-const TEST_PARENT = join(process.cwd(), ".openbot-build", "confinement-test");
+const TEST_PARENT = join(process.cwd(), ".aikingbot-build", "confinement-test");
 
 let root: string;
 let workspace: string;

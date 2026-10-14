@@ -1,4 +1,4 @@
-import { CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl } from "@openbot/contracts/chat-preview";
+import { CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl } from "@aikingbot/contracts/chat-preview";
 
 type Mermaid = typeof import("mermaid")["default"];
 
@@ -48,7 +48,7 @@ export function mermaidDiagram(source: string): Promise<MermaidDiagram> {
   const cached = diagramCache.get(source);
   if (cached) return cached;
   diagramCount += 1;
-  const id = `openbot-mermaid-${diagramCount}`;
+  const id = `aikingbot-mermaid-${diagramCount}`;
   const diagram = drawDiagram(id, source);
   if (diagramCache.size >= DIAGRAM_CACHE_LIMIT) {
     const oldest = diagramCache.keys().next();

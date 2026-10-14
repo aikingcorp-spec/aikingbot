@@ -5,7 +5,7 @@ import {
   type AppSetupState,
   defaultProviderModel,
   PICKER_PROVIDERS,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 /**
  * The provider, and the model, that a new agent starts on when the catalog lists them: the saved

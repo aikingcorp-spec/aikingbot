@@ -1,10 +1,10 @@
-import type { AgentEvent, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import { reconcileQueuesWithRuntimeWork } from "@openbot/team-client/dynamic-island-coordinator";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
-import { classifyUserError } from "@openbot/user-errors";
+import type { AgentEvent, AgentRuntimeSnapshot } from "@aikingbot/contracts/ipc";
+import { cleanAgentMessageText } from "@aikingbot/team-client/agent-message-text";
+import { reconcileQueuesWithRuntimeWork } from "@aikingbot/team-client/dynamic-island-coordinator";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
+import { classifyUserError } from "@aikingbot/user-errors";
 import { flush, onSettled } from "solid-js";
 import { withoutAgent } from "../../app-message-projection";
 import { playCompletionSoundForAgentEvent } from "../../completion-sound";

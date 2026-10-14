@@ -1,7 +1,7 @@
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
-import { redactText } from "@openbot/logging";
-import type { OpenBotDatabase } from "../openbot-database";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
+import type { ConversationMessage } from "@aikingbot/contracts/ipc";
+import { redactText } from "@aikingbot/logging";
+import type { AIKINGBOTDatabase } from "../aikingbot-database";
 import { HANDOFF_END, HANDOFF_START, renderHandoffMessage } from "./delivery-content";
 
 const HANDOFF_CHARACTERS = 32_000;
@@ -9,7 +9,7 @@ const OLDER_CHARACTERS = 4_000;
 const STEPS_CHARACTERS = 2_000;
 const HEADER_CHARACTERS = 2_000;
 const RECENT_CHARACTERS = 24_000;
-type HistoryRow = ReturnType<OpenBotDatabase["readAgentHistory"]>["messages"][number];
+type HistoryRow = ReturnType<AIKINGBOTDatabase["readAgentHistory"]>["messages"][number];
 
 /** Cuts redacted text at both ends, so a large request keeps its final instructions. */
 function historyExcerpt(text: string, limit: number): string {
@@ -26,7 +26,7 @@ function render(message: ConversationMessage, names: ReadonlyMap<string, string>
 
 /** Reads only enough recent pages for the packet. The complete history stays in SQLite. */
 export function readHandoffHistory(
-  database: OpenBotDatabase,
+  database: AIKINGBOTDatabase,
   agentId: string,
   threadId: string,
   names: ReadonlyMap<string, string>,
@@ -65,7 +65,7 @@ export function renderProviderHandoff(
   const header = [
     HANDOFF_START,
     "Previous conversation excerpts. Current profile and developer instructions take precedence. Do not repeat completed work.",
-    "Omitted details remain available: discover openbot.history_search and openbot.history_read. These tools read only this conversation after its latest context reset. Excerpts are not a complete summary.",
+    "Omitted details remain available: discover aikingbot.history_search and aikingbot.history_read. These tools read only this conversation after its latest context reset. Excerpts are not a complete summary.",
     "--- recent messages ---",
   ].join("\n");
   const stepLines: string[] = [];

@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentProviderId } from "@openbot/contracts/ipc";
+import type { AgentProviderId } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { listFolderSkills } from "./skill-folder-discovery";
@@ -10,7 +10,7 @@ let root = "";
 let workspacePath = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-skill-folders-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-skill-folders-"));
   workspacePath = join(root, "workspace");
   await mkdir(workspacePath);
 });
@@ -54,12 +54,12 @@ describe("listFolderSkills", () => {
     ]);
   });
 
-  it("leaves out skills OpenBot installed, installs in progress and folders without SKILL.md", async () => {
+  it("leaves out skills AIKINGBOT installed, installs in progress and folders without SKILL.md", async () => {
     const content = "---\nname: notes\ndescription: Notes.\n---\n";
     await writeSkill(workspacePath, ".agents/skills", "notes", content);
-    const managed = await writeSkill(workspacePath, ".agents/skills", "openbot-data", content);
-    await writeFile(join(managed, ".openbot-managed.json"), "{}");
-    await writeSkill(workspacePath, ".agents/skills", "notes.openbot-stage-1", content);
+    const managed = await writeSkill(workspacePath, ".agents/skills", "aikingbot-data", content);
+    await writeFile(join(managed, ".aikingbot-managed.json"), "{}");
+    await writeSkill(workspacePath, ".agents/skills", "notes.aikingbot-stage-1", content);
     await mkdir(join(workspacePath, ".agents/skills/empty"), { recursive: true });
 
     await expect(list("codex", ["notes"])).resolves.toEqual([]);

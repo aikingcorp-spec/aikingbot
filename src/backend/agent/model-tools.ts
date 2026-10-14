@@ -1,6 +1,6 @@
-import type { AgentModelOption, AgentReasoningEffort } from "@openbot/contracts/ipc";
-import { AGENT_PROVIDERS, defaultProviderModel } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentModelOption, AgentReasoningEffort } from "@aikingbot/contracts/ipc";
+import { AGENT_PROVIDERS, defaultProviderModel } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { AgentProvider } from "../agent-client";
 import { providerLabel } from "./thread-items";
 

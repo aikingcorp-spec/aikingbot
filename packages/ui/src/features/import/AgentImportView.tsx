@@ -3,8 +3,8 @@ import type {
   AgentImportPreviewAgent,
   AgentImportPreviewChannel,
   AgentImportResult,
-} from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@aikingbot/i18n";
 import {
   Button,
   Checkbox,
@@ -22,7 +22,7 @@ import {
   Tooltip,
   TriangleAlert,
   Upload,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";
@@ -35,7 +35,7 @@ import { AgentAvatar } from "../agents/AgentAvatar";
 export type AgentImportPhase = "idle" | "reading" | "review" | "importing" | "done";
 
 /** What the user says to the export agent. It is also the copy button's value. */
-export const AGENT_IMPORT_PROMPT = "Export my agents for OpenBot";
+export const AGENT_IMPORT_PROMPT = "Export my agents for AIKINGBOT";
 
 /**
  * How the user gets the export agent into Grok Bot. `agent`: install the ready one from its link.
@@ -44,9 +44,9 @@ export const AGENT_IMPORT_PROMPT = "Export my agents for OpenBot";
 export type AgentImportSetup = "agent" | "skill";
 
 /** The name of the export agent on its Grok Bot page. */
-const EXPORT_AGENT_NAME = "OpenBot export";
+const EXPORT_AGENT_NAME = "AIKINGBOT export";
 const EXPORT_SKILL_FILE = "SKILL.md";
-const EXPORT_SKILL_ID = "openbot-export";
+const EXPORT_SKILL_ID = "aikingbot-export";
 
 type CountKind = "agent" | "channel" | "skill" | "routine" | "memory" | "file";
 
@@ -158,7 +158,7 @@ function ImportGuide(props: {
               <SlidingTabs.ContentSlot>
                 <SlidingTabs.Content value="agent" class="agent-import-setup-panel">
                   <div class="agent-import-card">
-                    <AgentAvatar seed="openbot-export" class="storage-row-avatar" />
+                    <AgentAvatar seed="aikingbot-export" class="storage-row-avatar" />
                     <span class="agent-import-card-copy">
                       <span class="agent-import-card-name">{EXPORT_AGENT_NAME}</span>
                       <span class="agent-import-card-meta">{t("import.guide.agentMeta")}</span>

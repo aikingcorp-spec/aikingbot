@@ -2,13 +2,13 @@ import { execFileSync } from "node:child_process";
 import { chmod, copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { z } from "zod";
 import { type AgentRuntimeLock, loadAgentRuntimeLock } from "./agent-runtime-lock";
 import { rejectNonRegularFiles, sha256 } from "./remote-desktop-runtime-release";
 import { escapeRegExp, installValidatedTree, isCurrentInstallation, safeArchivePathParts } from "./runtime-install";
 
-const logger = createOpenBotLogger("install-claude-runtime");
+const logger = createAIKINGBOTLogger("install-claude-runtime");
 
 export type ClaudeRuntimeTarget = "darwin-arm64" | "darwin-x64" | "linux-x64" | "linux-arm64" | "win32-x64";
 
@@ -50,7 +50,7 @@ export async function installClaudeRuntime(
 
   const url = `${lock.claude.registry}/${artifact.package}/-/${artifact.asset}`;
   const response = await fetchImpl(url, {
-    headers: { "User-Agent": "OpenBot-runtime-installer" },
+    headers: { "User-Agent": "AIKINGBOT-runtime-installer" },
     redirect: "follow",
   });
   if (!response.ok) throw new Error(`Claude runtime download failed with HTTP ${response.status}.`);
@@ -59,7 +59,7 @@ export async function installClaudeRuntime(
     throw new Error(`The ${target} Claude runtime archive checksum is invalid.`);
   }
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-claude-install-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-claude-install-"));
   try {
     const archive = join(temporaryRoot, artifact.asset);
     const extracted = join(temporaryRoot, "extracted");

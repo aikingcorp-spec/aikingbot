@@ -1,4 +1,4 @@
-import { Button, Check, ChevronRight, Spinner, TriangleAlert } from "@openbot/ui";
+import { Button, Check, ChevronRight, Spinner, TriangleAlert } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createUniqueId, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";

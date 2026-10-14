@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/team-client",
+  "name": "@aikingbot/team-client",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -37,9 +37,9 @@
   "dependencies": {
     "@noble/ed25519": "3.1.0",
     "@noble/hashes": "catalog:",
-    "@openbot/contracts": "workspace:*",
-    "@openbot/i18n": "workspace:*",
-    "@openbot/user-errors": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
+    "@aikingbot/i18n": "workspace:*",
+    "@aikingbot/user-errors": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

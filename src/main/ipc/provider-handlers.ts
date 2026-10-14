@@ -2,10 +2,10 @@ import { Effect } from "effect";
 // Signing in to a provider, storing the optional provider API keys, and downloading the CLI
 // runtimes the providers need.
 
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
-import type { AgentProviderId, SetProviderApiKeyInput } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@aikingbot/contracts/agent-providers";
+import type { AgentProviderId, SetProviderApiKeyInput } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { shell } from "electron";
 import { AgentLifecycleFailed, type AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
@@ -121,7 +121,7 @@ export function parseProviderApiKeyInput(value: unknown): SetProviderApiKeyInput
 
 export function parseManagedProviderId(value: unknown): ManagedProviderId {
   const provider = parseProviderId(value);
-  if (!isManagedRuntimeProvider(provider)) throw new Error("OpenBot does not manage this provider's CLI.");
+  if (!isManagedRuntimeProvider(provider)) throw new Error("AIKINGBOT does not manage this provider's CLI.");
   return provider;
 }
 

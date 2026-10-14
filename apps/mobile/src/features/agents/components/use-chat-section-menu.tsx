@@ -1,5 +1,5 @@
+import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@aikingbot/contracts/ipc";
 import type { MenuAction } from "@expo/ui/community/menu";
-import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
 import { Link } from "expo-router";
 import { useRef, useState } from "react";
 import { showFailureAlert } from "@/features/analytics/failure-reports";

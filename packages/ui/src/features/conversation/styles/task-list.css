@@ -1,8 +1,8 @@
 /* Task list: the chat block of a plan an agent works through. */
 
 .task-list {
-  --task-list-glyph: var(--openbot-icon-sm);
-  --task-list-ease: var(--openbot-ease-out);
+  --task-list-glyph: var(--aikingbot-icon-sm);
+  --task-list-ease: var(--aikingbot-ease-out);
   /* The open is slower than the close: rows settle in one after another, and leave together. */
   --task-list-open: 320ms;
   --task-list-close: 200ms;
@@ -12,10 +12,10 @@
 
   box-sizing: border-box;
   width: min(100%, 448px);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
 }
 
 /* The ghost button is the whole header row, so it takes the card corners and the row height.
@@ -28,18 +28,18 @@
   height: auto;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-3);
-  border-radius: var(--openbot-radius-card);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-regular);
-  padding: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
+  border-radius: var(--aikingbot-radius-card);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-regular);
+  padding: var(--aikingbot-space-3);
   text-align: left;
 }
 
 .task-list .task-list-header:focus-visible {
   outline: 0;
-  box-shadow: 0 0 0 1px var(--openbot-text-muted);
+  box-shadow: 0 0 0 1px var(--aikingbot-text-muted);
 }
 
 .task-list-summary-glyph {
@@ -59,13 +59,13 @@
 }
 
 .task-list-donut-track {
-  stroke: var(--openbot-border-strong);
+  stroke: var(--aikingbot-border-strong);
 }
 
 .task-list-donut-value {
-  stroke: var(--openbot-text-primary);
+  stroke: var(--aikingbot-text-primary);
   stroke-linecap: round;
-  transition: stroke-dashoffset var(--openbot-duration-slow) var(--task-list-ease);
+  transition: stroke-dashoffset var(--aikingbot-duration-slow) var(--task-list-ease);
 }
 
 /* The title and the running task share one cell, and swap with a blur when the list closes. */
@@ -73,8 +73,8 @@
   display: grid;
   min-width: 0;
   flex: 1;
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .task-list-title-layer {
@@ -90,11 +90,11 @@
 }
 
 .task-list-title-name {
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .task-list-title-task {
-  font-weight: var(--openbot-weight-regular);
+  font-weight: var(--aikingbot-weight-regular);
 }
 
 .task-list-title[data-showing="task"] .task-list-title-name,
@@ -104,11 +104,11 @@
 }
 
 .task-list-title[data-showing="task"] .task-list-title-name {
-  transform: translateY(calc(-1 * var(--openbot-space-1)));
+  transform: translateY(calc(-1 * var(--aikingbot-space-1)));
 }
 
 .task-list-title[data-showing="title"] .task-list-title-task {
-  transform: translateY(var(--openbot-space-1));
+  transform: translateY(var(--aikingbot-space-1));
 }
 
 /* The next task enters from below while the list stays closed. */
@@ -117,19 +117,19 @@
 }
 
 .task-list-count {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
   font-variant-numeric: tabular-nums;
-  line-height: var(--openbot-leading-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .task-list-chevron {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   transform: rotate(-90deg);
-  transition: transform var(--openbot-duration-normal) var(--task-list-ease);
+  transition: transform var(--aikingbot-duration-normal) var(--task-list-ease);
 }
 
 .task-list[data-open] .task-list-chevron {
@@ -153,13 +153,13 @@
   overflow: hidden;
   min-height: 0;
   margin: 0;
-  padding: 0 var(--openbot-space-3);
+  padding: 0 var(--aikingbot-space-3);
   list-style: none;
   transition: padding var(--task-list-close) var(--task-list-close-ease);
 }
 
 .task-list[data-open] .task-list-items {
-  padding-bottom: var(--openbot-space-3);
+  padding-bottom: var(--aikingbot-space-3);
   transition: padding var(--task-list-open) var(--task-list-ease);
 }
 
@@ -169,11 +169,11 @@
   display: flex;
   min-width: 0;
   align-items: flex-start;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-0-5) 0;
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-0-5) 0;
   filter: blur(var(--task-list-blur));
   opacity: 0;
-  transform: translateY(calc(-1 * var(--openbot-space-1))) scale(0.98);
+  transform: translateY(calc(-1 * var(--aikingbot-space-1))) scale(0.98);
   transform-origin: left top;
   transition:
     opacity var(--task-list-close) var(--task-list-close-ease),
@@ -195,7 +195,7 @@
 .task-list-item-mark {
   display: inline-flex;
   width: var(--task-list-glyph);
-  height: var(--openbot-leading-md);
+  height: var(--aikingbot-leading-md);
   flex: 0 0 auto;
   align-items: center;
 }
@@ -204,18 +204,18 @@
   position: relative;
   min-width: 0;
   flex: 1;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
-  transition: color var(--openbot-duration-normal) var(--task-list-ease);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
+  transition: color var(--aikingbot-duration-normal) var(--task-list-ease);
 }
 
 .task-list-item[data-state="pending"] .task-list-item-label {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .task-list-item[data-state="done"] .task-list-item-label {
-  color: var(--openbot-text-dim);
+  color: var(--aikingbot-text-dim);
 }
 
 /* The strike line draws from the start of the text when the task is done. */
@@ -233,7 +233,7 @@
   content: "";
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform var(--openbot-duration-slow) var(--task-list-ease);
+  transition: transform var(--aikingbot-duration-slow) var(--task-list-ease);
 }
 
 .task-list-item[data-state="done"] .task-list-item-text::after {
@@ -243,7 +243,7 @@
 .task-list-item[data-state="active"] .task-list-item-text,
 .task-list-title[data-showing="task"] .task-list-title-task-text {
   display: inline-block;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   animation: task-list-pulse 1.6s ease-in-out infinite;
   animation-play-state: var(--task-list-play-state, running);
 }
@@ -261,22 +261,22 @@
 
 /* The same roll as the update island: each settled value lifts in from below and sharpens. */
 .task-list-item-progress {
-  --digit-dur: var(--openbot-duration-overlay);
-  --digit-distance: var(--openbot-space-1);
-  --digit-blur: var(--openbot-space-0-5);
+  --digit-dur: var(--aikingbot-duration-overlay);
+  --digit-distance: var(--aikingbot-space-1);
+  --digit-blur: var(--aikingbot-space-0-5);
   --digit-stagger: 40ms;
 
   display: inline-flex;
   min-width: 4ch;
   flex: 0 0 auto;
   justify-content: flex-end;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  line-height: var(--openbot-leading-md);
-  padding: 0 var(--openbot-space-1-5);
+  line-height: var(--aikingbot-leading-md);
+  padding: 0 var(--aikingbot-space-1-5);
 }
 
 /* One glyph for all states. Each layer shows for its own state, so a change animates in place. */
@@ -289,42 +289,42 @@
 .task-list-mark circle,
 .task-list-mark path {
   transition:
-    opacity var(--openbot-duration-normal) var(--task-list-ease),
-    transform var(--openbot-duration-normal) var(--task-list-ease),
-    stroke-dashoffset var(--openbot-duration-slow) var(--task-list-ease);
+    opacity var(--aikingbot-duration-normal) var(--task-list-ease),
+    transform var(--aikingbot-duration-normal) var(--task-list-ease),
+    stroke-dashoffset var(--aikingbot-duration-slow) var(--task-list-ease);
   transform-box: fill-box;
   transform-origin: center;
 }
 
 .task-list-mark-pending {
   opacity: 0;
-  stroke: var(--openbot-text-dim);
+  stroke: var(--aikingbot-text-dim);
   stroke-dasharray: 1.2 2;
   stroke-width: 1.5;
 }
 
 .task-list-mark-track {
   opacity: 0;
-  stroke: var(--openbot-border-strong);
+  stroke: var(--aikingbot-border-strong);
   stroke-width: 1.5;
 }
 
 .task-list-mark-arc {
   opacity: 0;
-  stroke: var(--openbot-text-primary);
+  stroke: var(--aikingbot-text-primary);
   stroke-dasharray: 12 100;
   stroke-linecap: round;
   stroke-width: 1.5;
 }
 
 .task-list-mark-fill {
-  fill: var(--openbot-text-dim);
+  fill: var(--aikingbot-text-dim);
   opacity: 0;
   transform: scale(0.4);
 }
 
 .task-list-mark-check {
-  stroke: var(--openbot-bg-canvas);
+  stroke: var(--aikingbot-bg-canvas);
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   stroke-linecap: round;
@@ -333,7 +333,7 @@
 }
 
 .task-list-mark-cross {
-  stroke: var(--openbot-bg-canvas);
+  stroke: var(--aikingbot-bg-canvas);
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   stroke-linecap: round;
@@ -360,14 +360,14 @@
 }
 
 .task-list-mark[data-state="failed"] .task-list-mark-fill {
-  fill: var(--openbot-danger);
+  fill: var(--aikingbot-danger);
 }
 
 /* The check and the cross draw after the disc has filled. */
 .task-list-mark[data-state="done"] .task-list-mark-check,
 .task-list-mark[data-state="failed"] .task-list-mark-cross {
   stroke-dashoffset: 0;
-  transition-delay: var(--openbot-duration-fast);
+  transition-delay: var(--aikingbot-duration-fast);
 }
 
 @keyframes task-list-turn {
@@ -380,7 +380,7 @@
   from {
     filter: blur(var(--task-list-blur));
     opacity: 0;
-    transform: translateY(var(--openbot-space-1));
+    transform: translateY(var(--aikingbot-space-1));
   }
 }
 

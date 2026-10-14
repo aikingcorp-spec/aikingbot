@@ -1,5 +1,5 @@
-import { classifyFailure, type FailureProperties, type NotificationMetadata } from "@openbot/telemetry";
-import { errorReference } from "@openbot/user-errors";
+import { classifyFailure, type FailureProperties, type NotificationMetadata } from "@aikingbot/telemetry";
+import { errorReference } from "@aikingbot/user-errors";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { createEffect, createSignal, omit, onSettled } from "solid-js";
 import {
@@ -68,7 +68,7 @@ function promiseToast<T>(
 ) {
   if (!data) return sonnerToast.promise(promise, data);
   const { report, ...options } = data;
-  const id = options.id ?? `openbot-promise-${++promiseId}`;
+  const id = options.id ?? `aikingbot-promise-${++promiseId}`;
   const failed = (error: unknown): never => {
     rememberReport(id, {
       operation: report?.operation ?? "other",

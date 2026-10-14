@@ -1,6 +1,6 @@
-import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@aikingbot/contracts/ipc";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";

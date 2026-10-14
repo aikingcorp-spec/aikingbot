@@ -5,8 +5,8 @@
  * shape and the runtime that executes a run belong to the app and are not decided here.
  */
 
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
-import type { EventFilter } from "@openbot/contracts/ipc-events";
+import type { RoutineSchedule } from "@aikingbot/contracts/ipc";
+import type { EventFilter } from "@aikingbot/contracts/ipc-events";
 
 /** A webhook that starts a routine: where requests go, and which of them start a run. */
 export interface DiagramRoutineWebhook {

@@ -1,6 +1,6 @@
-import { Button, Folder, X } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+import { Button, Folder, X } from "@aikingbot/ui";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { useText } from "@aikingbot/ui/text";
 import { Show } from "solid-js";
 import { FileList } from "./FileList";
 import { fileCountLabel, type StoredFileAction, type StoredFileRow } from "./files-view";

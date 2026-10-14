@@ -4,7 +4,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer, type Server, type Socket } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { CuaDriverDaemonClient } from "./cua-driver-daemon-client";
@@ -58,7 +58,7 @@ describe("CuaDriverDaemonClient", () => {
   let daemon: ReturnType<typeof fakeDaemon> | null = null;
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), "openbot-cua-read-"));
+    directory = await mkdtemp(join(tmpdir(), "aikingbot-cua-read-"));
     socketPath = join(directory, "driver.sock");
   });
 
@@ -80,10 +80,10 @@ describe("CuaDriverDaemonClient", () => {
     // The whole point of this client: the reads the rim makes many times a second cost no process
     // and no second connection.
     expect(daemon.requests.slice(0, 2)).toEqual([
-      { method: "call", name: "list_windows", args: {}, session_id: "openbot-highlight", client_kind: "cli" },
+      { method: "call", name: "list_windows", args: {}, session_id: "aikingbot-highlight", client_kind: "cli" },
       { method: "sessions_list", client_kind: "cli" },
     ]);
-    // Reported as OpenBot's own, so the rim does not read its own lease as an agent at work.
+    // Reported as AIKINGBOT's own, so the rim does not read its own lease as an agent at work.
     expect(daemon.requests.every((request) => request.client_kind === "cli")).toBe(true);
   });
 
@@ -97,7 +97,7 @@ describe("CuaDriverDaemonClient", () => {
 
     expect(daemon.requests.at(-1)).toEqual({
       method: "session_end",
-      session_id: "openbot-highlight",
+      session_id: "aikingbot-highlight",
       client_kind: "cli",
     });
   });

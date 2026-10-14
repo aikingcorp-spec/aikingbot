@@ -1,5 +1,5 @@
 // @vitest-environment node
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentService } from "../agent-service";
 import {
@@ -57,8 +57,8 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
   });
 
   it("compacts a pressured agent context before draining its next queued message", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "DONE";
-    process.env.OPENBOT_FAKE_CONTEXT_USAGE = "82000";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "DONE";
+    process.env.AIKINGBOT_FAKE_CONTEXT_USAGE = "82000";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     const events: AgentEvent[] = [];
@@ -148,7 +148,7 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
   });
 
   it("publishes empty context immediately when the provider changes", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const fixture = await startService(root, { output: "DONE" });
     service = fixture.service;
     const snapshots: AgentEvent[] = [];
@@ -194,7 +194,7 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
     await waitFor(() => service?.getRuntimeSnapshot().contextStates?.[0]?.usage?.usedTokens === 29826);
     for (const status of ["running", "completed"] as const) {
       fixture.client.emit("notification", {
-        method: "openbot/context-compaction",
+        method: "aikingbot/context-compaction",
         params: { threadId: session.externalSessionId, status, tokens: { before: 29839, after: 3750 } },
       });
       await waitFor(() => service?.getRuntimeSnapshot().contextStates?.[0]?.compaction?.status === status);
@@ -208,8 +208,8 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
   });
 
   it("does not compact context below the safety threshold", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "DONE";
-    process.env.OPENBOT_FAKE_CONTEXT_USAGE = "79000";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "DONE";
+    process.env.AIKINGBOT_FAKE_CONTEXT_USAGE = "79000";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(service.initialize());
@@ -220,10 +220,10 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
   });
 
   it("continues queued work when an MCP server changes while the context is compacting", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "DONE";
-    process.env.OPENBOT_FAKE_CONTEXT_USAGE = "82000";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "DONE";
+    process.env.AIKINGBOT_FAKE_CONTEXT_USAGE = "82000";
     // Long enough to save a server inside the compaction, which is the window the deadlock needs.
-    process.env.OPENBOT_FAKE_COMPACTION_DELAY = "400";
+    process.env.AIKINGBOT_FAKE_COMPACTION_DELAY = "400";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(service.initialize());
@@ -262,9 +262,9 @@ describe.sequential("ContextCompaction: pressure, threshold and failure", () => 
   });
 
   it("continues queued work when context compaction is unavailable", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "DONE";
-    process.env.OPENBOT_FAKE_CONTEXT_USAGE = "82000";
-    process.env.OPENBOT_FAKE_COMPACTION_ERROR = "1";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "DONE";
+    process.env.AIKINGBOT_FAKE_CONTEXT_USAGE = "82000";
+    process.env.AIKINGBOT_FAKE_COMPACTION_ERROR = "1";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     const events: AgentEvent[] = [];

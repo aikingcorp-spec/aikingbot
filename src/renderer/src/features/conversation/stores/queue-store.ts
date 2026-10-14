@@ -1,5 +1,5 @@
-import type { QueueDelivery } from "@openbot/contracts/ipc";
-import { agentActivityExitDuration } from "@openbot/ui/features/conversation/activity-timing";
+import type { QueueDelivery } from "@aikingbot/contracts/ipc";
+import { agentActivityExitDuration } from "@aikingbot/ui/features/conversation/activity-timing";
 import { type Accessor, createEffect, createMemo, createSignal, onCleanup, untrack } from "solid-js";
 import { agentAwaitingReplies } from "../../../awaiting-replies";
 import { activeQueueDeliveries, presentQueueDeliveries, queuedDeliveriesInOrder } from "../../../queue-reconciliation";

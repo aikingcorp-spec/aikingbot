@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 // @vitest-environment node
 
-import type { ComputerUseState, MacPermissionId } from "@openbot/contracts/ipc";
+import type { ComputerUseState, MacPermissionId } from "@aikingbot/contracts/ipc";
 import { describe, expect, it, vi } from "vitest";
 
 type TrustedInvoke = (event: { senderFrame: { url: string }; sender?: { id: number } }, payload: unknown) => unknown;
@@ -16,7 +16,7 @@ vi.mock("electron", () => ({
 const { computerUseIpcHandlers } = await import("./computer-use-handlers");
 const { PermissionHelpFailed } = await import("../computer-use-permission-help-window");
 
-const APP_FRAME = { sender: { id: 99 }, senderFrame: { url: "openbot-app://app/index.html" } };
+const APP_FRAME = { sender: { id: 99 }, senderFrame: { url: "aikingbot-app://app/index.html" } };
 const HELP_WINDOW_FRAME = { ...APP_FRAME, sender: { id: 7 } };
 
 const READY: ComputerUseState = {
@@ -99,7 +99,7 @@ describe("the Computer Use endpoints", () => {
   });
 
   // The card the user drags carries the bundle macOS holds responsible, which in a development
-  // build is Electron and not OpenBot.
+  // build is Electron and not AIKINGBOT.
   it("names the application the System Settings list will show", async () => {
     const { permissionApp } = bind();
 

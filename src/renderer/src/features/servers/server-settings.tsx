@@ -10,8 +10,8 @@ import type {
   TeamInviteSummary,
   TeamPresenceMember,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, flush, onCleanup } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { createSimpleContext } from "../../simple-context";
@@ -423,7 +423,7 @@ const ServerSettings = createSimpleContext({
      * The MCP list.
      *
      * It is read when the MCP section opens, not when the dialog opens, because most visits to this
-     * dialog never reach that section. Nothing connects here: OpenBot connects only when the user
+     * dialog never reach that section. Nothing connects here: AIKINGBOT connects only when the user
      * asks for a test, and the providers make their own connections when an agent starts.
      */
     async function refreshMcpServers(): Promise<void> {

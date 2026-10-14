@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { realpathSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, normalize, sep } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type AgentEvent,
   type AgentSummary,
@@ -19,16 +19,16 @@ import {
   type DeleteChannelMemoryInput,
   type QueueHold,
   type UpdateChannelMemoryInput,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Exit, Fiber, Result, Schema, Scope } from "effect";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import { type ChannelOperationError, channelFailure, channelResult, channelSync } from "./channel-effects";
 import { ChannelHistory, type ChannelTextModel, isMemberThinking } from "./channel-history";
 import { ChannelMemoryStore } from "./channel-memory-store";
 import { type ChannelAssignment, ChannelStore } from "./channel-store";
 import type { DeliveryContext, MailboxStore } from "./mailbox-store";
-import type { OpenBotDatabase } from "./openbot-database";
 import { extractJsonObject, StructuredOutputError } from "./structured-output";
 
 export interface ChannelHooks {
@@ -137,7 +137,7 @@ export class ChannelService {
   readonly #activeAssignments = new Map<string, string>();
 
   constructor(
-    database: OpenBotDatabase,
+    database: AIKINGBOTDatabase,
     readonly mailbox: MailboxStore,
     readonly hooks: ChannelHooks,
   ) {
@@ -2357,7 +2357,7 @@ export class ChannelService {
   }, Effect.uninterruptible).bind(this);
 }
 
-const RETIRE_ACTOR = { id: "openbot", name: "OpenBot" };
+const RETIRE_ACTOR = { id: "aikingbot", name: "AIKINGBOT" };
 
 function terminal(task: ChannelTask): boolean {
   return task.state === "completed" || task.state === "cancelled";

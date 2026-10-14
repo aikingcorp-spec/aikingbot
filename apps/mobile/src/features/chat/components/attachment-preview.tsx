@@ -1,7 +1,7 @@
-import { attachmentFileExtension } from "@openbot/contracts/attachment-files";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
-import { MOBILE_ATTACHMENT_BYTES, type RemoteFileUpload } from "@openbot/team-client/remote-peer";
+import { attachmentFileExtension } from "@aikingbot/contracts/attachment-files";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
+import type { MobileTranslate } from "@aikingbot/i18n/mobile";
+import { MOBILE_ATTACHMENT_BYTES, type RemoteFileUpload } from "@aikingbot/team-client/remote-peer";
 import { useQuery } from "@tanstack/react-query";
 import { File, Paths } from "expo-file-system";
 import { Image } from "expo-image";

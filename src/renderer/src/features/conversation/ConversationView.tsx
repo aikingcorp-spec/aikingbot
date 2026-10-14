@@ -1,5 +1,5 @@
-import { MessageSelectionActions } from "@openbot/ui/features/conversation/SelectionActions";
-import { useText } from "@openbot/ui/text";
+import { MessageSelectionActions } from "@aikingbot/ui/features/conversation/SelectionActions";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, Show } from "solid-js";
 import { ConversationComposer } from "./ConversationComposer";
 import { ConversationHeader } from "./ConversationHeader";

@@ -1,6 +1,6 @@
 import { chmod, copyFile, mkdir, rename } from "node:fs/promises";
 import { join } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { parseMuseVersion, parsePiVersion } from "../backend/cli";
 import { sha256File } from "../backend/file-hash";

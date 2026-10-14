@@ -24,7 +24,7 @@ export const messages = {
   "marketplace.tab.agents": "Агенты",
   "marketplace.tab.skills": "Навыки",
 
-  "marketplace.plugins.missing": "Этого плагина нет в каталоге OpenBot.",
+  "marketplace.plugins.missing": "Этого плагина нет в каталоге AIKINGBOT.",
 
   "marketplace.agents.loadingDetail": "Загрузка сведений об агенте…",
   "marketplace.agents.skills": "Навыки",
@@ -34,7 +34,7 @@ export const messages = {
 
   "marketplace.skill.loading": "Загрузка навыка",
   "marketplace.skill.update": "Обновить навык",
-  "marketplace.try.readFailed": "OpenBot не удалось прочитать навыки этого агента. Повторите попытку.",
+  "marketplace.try.readFailed": "AIKINGBOT не удалось прочитать навыки этого агента. Повторите попытку.",
   "marketplace.try.enable": "Чтобы попробовать этот навык, включите его в настройках агента.",
   "marketplace.try.repair": "Чтобы попробовать этот навык, восстановите его в настройках агента.",
   "marketplace.try.update": "Чтобы попробовать эту версию, обновите навык.",
@@ -177,7 +177,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "Экспортируйте маркетинговые иконки в 2x для сборки приложения.",
   "marketplace.plugin.paper.tagline": "Холст для дизайна на HTML и CSS",
   "marketplace.plugin.paper.description":
-    "Paper позволяет агентам читать и изменять файл дизайна, открытый в Paper Desktop: изучать артборды, выделение, вычисленные стили, JSX и токены, а также создавать и менять фреймы, текст и стили. Установите Paper Desktop, запустите его хотя бы раз и откройте файл перед началом работы. OpenBot запускает Paper CLI, который устанавливает Paper Desktop. Ключ для Paper не нужен. Инструменты записи меняют открытый файл, поэтому проверяйте каждое изменение перед тем, как его одобрить.",
+    "Paper позволяет агентам читать и изменять файл дизайна, открытый в Paper Desktop: изучать артборды, выделение, вычисленные стили, JSX и токены, а также создавать и менять фреймы, текст и стили. Установите Paper Desktop, запустите его хотя бы раз и откройте файл перед началом работы. AIKINGBOT запускает Paper CLI, который устанавливает Paper Desktop. Ключ для Paper не нужен. Инструменты записи меняют открытый файл, поэтому проверяйте каждое изменение перед тем, как его одобрить.",
   "marketplace.plugin.paper.app":
     "Читает и изменяет открытый файл Paper Desktop через локальный сервер MCP, к которому подключается Paper CLI. Нужен Paper Desktop с открытым файлом.",
   "marketplace.plugin.paper.prompt.implement":

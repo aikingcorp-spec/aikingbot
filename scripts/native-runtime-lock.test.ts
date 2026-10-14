@@ -64,12 +64,12 @@ describe("native runtime lock", () => {
 
   it("keeps the embedded runtime on WebRTC without audio or WebSocket media", async () => {
     const patch = await readFile(
-      resolve("vendor/remote-desktop/patches/moonlight-web-stream-v2.10.0-openbot.patch"),
+      resolve("vendor/remote-desktop/patches/moonlight-web-stream-v2.10.0-aikingbot.patch"),
       "utf8",
     );
 
     expect(patch).toContain("allow_transport_websockets: false");
-    expect(patch).toContain("OpenBot embedded mode rejects WebSocket media transport");
+    expect(patch).toContain("AIKINGBOT embedded mode rejects WebSocket media transport");
     expect(patch).toContain('settings.dataTransport = "webrtc"');
     expect(patch).toContain("let _ = (audio_config, stream_config)");
     expect(patch).toContain('-import { WebSocketTransport } from "./transport/web_socket.js"');
@@ -81,11 +81,11 @@ describe("native runtime lock", () => {
 
   it("adds the authenticated Sunshine native display endpoint", async () => {
     const patch = await readFile(
-      resolve("vendor/remote-desktop/patches/sunshine-v2026.516.143833-openbot.patch"),
+      resolve("vendor/remote-desktop/patches/sunshine-v2026.516.143833-aikingbot.patch"),
       "utf8",
     );
 
-    expect(patch).toContain('server.resource["^/api/openbot/displays$"]["GET"]');
+    expect(patch).toContain('server.resource["^/api/aikingbot/displays$"]["GET"]');
     expect(patch).toContain("if (!authenticate(response, request))");
     expect(patch).toContain("platf::display_names");
   });
@@ -99,7 +99,7 @@ async function releaseLockValue() {
     remoteDesktop: {
       ...structuredClone(lock.remoteDesktop),
       artifactRelease: {
-        repository: "nightly-labs/openbot",
+        repository: "aikingcorp-spec/aikingx_bot",
         tag: createRemoteDesktopReleaseTag(digest),
         inputDigest: digest,
         manifestAsset: "remote-desktop-runtime-manifest.json" as const,

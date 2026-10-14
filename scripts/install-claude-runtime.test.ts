@@ -60,7 +60,7 @@ describe.runIf(process.platform !== "win32")("bundled Claude installer", () => {
 });
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-claude-runtime-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-claude-runtime-test-"));
   temporaryPaths.push(root);
   return root;
 }

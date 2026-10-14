@@ -7,7 +7,7 @@ import {
   agentProviderDescriptor,
   agentProviderName,
   isAgentProvider,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { currentText, type TextValue } from "../../text";
 
 type UsageText = Pick<TextValue, "t" | "format">;

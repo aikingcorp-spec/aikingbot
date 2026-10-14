@@ -50,7 +50,7 @@ mock. The separate web preview implements the browser runtime with that same moc
   `v2/hosting/servers/:id/wake` and `/checkout`), and the account's hosted site list/delete
   (`v1/sites`), which the web client no longer calls: sites are in Server settings > Sites, through
   the host's `hosted-sites-v1`. It is not a general account or host proxy.
-  Every write needs the same origin and `X-OpenBot-Browser: 1`; all send JSON except the avatar
+  Every write needs the same origin and `X-AIKINGBOT-Browser: 1`; all send JSON except the avatar
   upload, which sends the image bytes. A site delete also needs an `Idempotency-Key`. A host logo is
   given to a member of that host, for its current `logoKey` only.
 - The account dock uses the single-row layout on every browser. Its menu has usage, Profile, Billing,
@@ -64,7 +64,7 @@ mock. The separate web preview implements the browser runtime with that same moc
   desktop only.
 - Sign-in credentials are cookie-only. The browser receives a short connection ticket for the
   existing Signal handshake. Session creation, ticket issue and end are bound to its credential.
-- The production website accepts invitation links for `https://api.openbot.run`; the request still
+- The production website accepts invitation links for `https://api.aikingbot.aikingx.com`; the request still
   goes to its own origin. Other services are refused. Host fingerprints are checked before use.
 - One tab can connect to a given host with an account. Other accounts and hosts have separate
   locks. A second tab gets an explicit message instead of replacing the first tab's peer.
@@ -79,7 +79,7 @@ mock. The separate web preview implements the browser runtime with that same moc
 - The rail order is kept in this browser, per account. The server menu has Mute, Notification
   settings, Usage and Settings. Mute and notification level are kept in this browser, per account
   and host (`web-notification-preferences.ts`). They control browser notifications and the
-  completion sound, with the same rules as the desktop (`@openbot/team-client/agent-notifications`).
+  completion sound, with the same rules as the desktop (`@aikingbot/team-client/agent-notifications`).
   A browser notification shows only while a tab is open and no tab of the app has focus; the tabs
   share the focused tab in local storage, because the tab that speaks for a host is often in the
   background. The browser asks for permission on the first prompt that the user sends, or when the
@@ -198,7 +198,7 @@ loads about 100 relative ES modules, and it starts a module Worker from `import.
 A Service Worker cannot control an opaque iframe. To serve the viewer there, the client would
 have to rewrite and bundle the host's code.
 
-A possible design uses a separate viewer origin, for example `viewer.openbot.run`, on the same
+A possible design uses a separate viewer origin, for example `viewer.aikingbot.aikingx.com`, on the same
 Worker. That origin serves only a trusted bootstrap page and a Service Worker. The Service Worker
 sends viewer requests to the web app. The web app sends them over the host connection, limited
 to one remote-screen session. On 2026-09-23 the user decided not to add this origin for the MVP.

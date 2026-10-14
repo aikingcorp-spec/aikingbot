@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentEvent, AttachmentImportEvent, AttachmentSummary, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { runTeamEffect } from "@openbot/team-client";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentEvent, AttachmentImportEvent, AttachmentSummary, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   deleteSharedTable,
   installAgentSkill,
@@ -15,9 +15,9 @@ import {
   setAgentSkillEnabled,
   uninstallAgentSkill,
   unpublishAgentTemplate,
-} from "@openbot/team-client/team-admin-requests";
-import { listInstalledSkills, type TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/team-client/team-admin-requests";
+import { listInstalledSkills, type TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
+import { currentText } from "@aikingbot/ui/text";
 import { Effect } from "effect";
 import { onCleanup } from "solid-js";
 import type { ConversationRuntime } from "../conversation/conversation-runtime";
@@ -45,9 +45,9 @@ function webHostAdmin(
       return {
         read: (agentId: string) =>
           runTeamEffect(readAgentSessionSettings(request(), agentId).pipe(Effect.mapError((error) => error.cause))),
-        set: (input: import("@openbot/contracts/ipc").SetAgentSessionSettingInput) =>
+        set: (input: import("@aikingbot/contracts/ipc").SetAgentSessionSettingInput) =>
           runTeamEffect(setAgentSessionSetting(request(), input).pipe(Effect.mapError((error) => error.cause))),
-        reset: (input: import("@openbot/contracts/ipc").ResetAgentSessionSettingInput) =>
+        reset: (input: import("@aikingbot/contracts/ipc").ResetAgentSessionSettingInput) =>
           runTeamEffect(resetAgentSessionSetting(request(), input).pipe(Effect.mapError((error) => error.cause))),
         ...(onHostEvent
           ? {

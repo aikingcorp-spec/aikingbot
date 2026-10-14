@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import { isSkillCategory, SKILL_DESCRIPTION_MAX_LENGTH, type SkillCategory } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isSkillCategory, SKILL_DESCRIPTION_MAX_LENGTH, type SkillCategory } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Result, Schema } from "effect";
 import { unzipSync } from "fflate";
 import { parse as parseYaml } from "yaml";

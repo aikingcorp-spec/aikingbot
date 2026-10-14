@@ -478,5 +478,5 @@ function dimension(value: number): number {
 }
 
 function pathname(path: string): string {
-  return new URL(path, "http://openbot.invalid").pathname;
+  return new URL(path, "http://aikingbot.invalid").pathname;
 }

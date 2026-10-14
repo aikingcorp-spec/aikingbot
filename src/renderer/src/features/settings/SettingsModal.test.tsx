@@ -1,4 +1,4 @@
-import type { HostedServerList, HostedServerSummary } from "@openbot/contracts/hosted-servers";
+import type { HostedServerList, HostedServerSummary } from "@aikingbot/contracts/hosted-servers";
 import type {
   AccountSession,
   AppLogoColor,
@@ -7,9 +7,9 @@ import type {
   DesktopPlatform,
   MobileConnectedDevice,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import { DEFAULT_GENERAL_SETTINGS } from "@openbot/ui/features/settings/app-settings";
+} from "@aikingbot/contracts/ipc";
+import { toast } from "@aikingbot/ui";
+import { DEFAULT_GENERAL_SETTINGS } from "@aikingbot/ui/features/settings/app-settings";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -45,7 +45,7 @@ function logoColorPort() {
 
 // Every describe block renders the modal, and the General tab is open by default.
 beforeEach(() => {
-  vi.stubGlobal("openbot", logoColorPort());
+  vi.stubGlobal("aikingbot", logoColorPort());
 });
 
 describe("SettingsModal", () => {
@@ -109,7 +109,7 @@ describe("SettingsModal", () => {
           onOpenChange={setOpen}
           value={value()}
           onValueChange={setValue}
-          appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+          appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
           updateStatus={idleUpdateStatus}
           onUpdateAction={vi.fn(async () => undefined)}
           account={account}
@@ -120,14 +120,14 @@ describe("SettingsModal", () => {
       </>
     ));
 
-    const launchSwitch = screen.getByRole("switch", { name: "Launch OpenBot at login" });
+    const launchSwitch = screen.getByRole("switch", { name: "Launch AIKINGBOT at login" });
     await fireEvent.click(launchSwitch);
     expect(value().launchAtLogin).toBe(false);
 
     const select = screen.getByRole("button", { name: /^Open external links in/ });
     await fireEvent.pointerDown(select, { pointerType: "mouse", button: 0 });
-    await fireEvent.click(screen.getByRole("option", { name: "OpenBot" }));
-    expect(value().externalLinkTarget).toBe("OpenBot");
+    await fireEvent.click(screen.getByRole("option", { name: "AIKINGBOT" }));
+    expect(value().externalLinkTarget).toBe("AIKINGBOT");
     await fireEvent.click(screen.getByRole("switch", { name: "Share product analytics" }));
     expect(value().productAnalytics).toBe(false);
 
@@ -135,8 +135,8 @@ describe("SettingsModal", () => {
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "General" })).not.toBeInTheDocument());
     await fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
 
-    expect(await screen.findByRole("switch", { name: "Launch OpenBot at login" })).not.toBeChecked();
-    expect(screen.getByRole("button", { name: /^Open external links in/ })).toHaveTextContent("OpenBot");
+    expect(await screen.findByRole("switch", { name: "Launch AIKINGBOT at login" })).not.toBeChecked();
+    expect(screen.getByRole("button", { name: /^Open external links in/ })).toHaveTextContent("AIKINGBOT");
     expect(screen.getByRole("switch", { name: "Share product analytics" })).not.toBeChecked();
 
     await fireEvent.click(screen.getByRole("tab", { name: "Updates" }));
@@ -184,7 +184,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={status()}
         onUpdateAction={onUpdateAction}
         account={account}
@@ -196,7 +196,7 @@ describe("SettingsModal", () => {
     await fireEvent.click(screen.getByRole("tab", { name: "Updates" }));
     await fireEvent.click(screen.getByRole("button", { name: "Check for updates" }));
     await waitFor(() => expect(onUpdateAction).toHaveBeenCalledOnce());
-    expect(await screen.findByText("OpenBot is up to date on the Stable track.")).toBeInTheDocument();
+    expect(await screen.findByText("AIKINGBOT is up to date on the Stable track.")).toBeInTheDocument();
   });
 
   it("reports host management instead of tenant update controls on a managed host", async () => {
@@ -207,7 +207,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.16.0", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.16.0", platform: "darwin", variant: "dev" }}
         updateStatus={{ ...idleUpdateStatus, phase: "up-to-date", currentVersion: "0.16.0", managedByHost: true }}
         onUpdateAction={onUpdateAction}
         account={account}
@@ -218,7 +218,7 @@ describe("SettingsModal", () => {
 
     await fireEvent.click(screen.getByRole("tab", { name: "Updates" }));
     expect(await screen.findByText("Managed by Host")).toBeInTheDocument();
-    expect(screen.getByText(/managed automatically by OpenBot Host Manager/)).toBeInTheDocument();
+    expect(screen.getByText(/managed automatically by AIKINGBOT Host Manager/)).toBeInTheDocument();
     expect(screen.getByText(/Up to date/)).toBeInTheDocument();
     // The host owns both the shared application and the download schedule, so neither the manual
     // action nor the per-user download preference can change anything.
@@ -245,7 +245,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.16.0", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.16.0", platform: "darwin", variant: "dev" }}
         updateStatus={status()}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
@@ -255,13 +255,13 @@ describe("SettingsModal", () => {
     ));
 
     await fireEvent.click(screen.getByRole("tab", { name: "Updates" }));
-    expect(await screen.findByText(/Downloading OpenBot v0.17.0 · 42%/)).toBeInTheDocument();
+    expect(await screen.findByText(/Downloading AIKINGBOT v0.17.0 · 42%/)).toBeInTheDocument();
 
     setStatus((current) => ({ ...current, phase: "ready", progress: null }));
     expect(await screen.findByText(/Waiting for the other users of this Mac to be idle/)).toBeInTheDocument();
 
     setStatus((current) => ({ ...current, phase: "installing" }));
-    expect(await screen.findByText("Installing OpenBot v0.17.0…")).toBeInTheDocument();
+    expect(await screen.findByText("Installing AIKINGBOT v0.17.0…")).toBeInTheDocument();
     expect(screen.getByText("Managed by Host")).toBeInTheDocument();
   });
 
@@ -275,7 +275,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={onUpdateAction}
         account={account}
@@ -301,7 +301,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={currentAccount()}
@@ -332,7 +332,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={{ ...account, name: "Jose\u0301" }}
@@ -357,7 +357,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
@@ -405,7 +405,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={currentAccount()}
@@ -440,14 +440,15 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
         onUpdateAccountName={vi.fn(async () => undefined)}
         onUpdateAccountAvatar={vi.fn(async () => undefined)}
         onCreateMobileConnect={async () => ({
-          qrData: "openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=mobile-ticket_success_1234567890",
+          qrData:
+            "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=mobile-ticket_success_1234567890",
           expiresAt: Date.now() + 120_000,
         })}
         onListMobileConnectedDevices={onListMobileConnectedDevices}
@@ -479,7 +480,7 @@ describe("SettingsModal", () => {
       expect(onListMobileConnectedDevices).toHaveBeenCalledTimes(requestsBeforePolling + 1);
 
       expect(screen.getByText("Phone connected")).toBeInTheDocument();
-      expect(screen.getByText("Norbert’s iPhone is ready to use OpenBot.")).toBeInTheDocument();
+      expect(screen.getByText("Norbert’s iPhone is ready to use AIKINGBOT.")).toBeInTheDocument();
       expect(screen.getByRole("table")).toBeInTheDocument();
 
       await vi.advanceTimersByTimeAsync(1_200);
@@ -510,7 +511,8 @@ describe("SettingsModal", () => {
       .mockImplementationOnce(() => initialDevices)
       .mockResolvedValue([existingDevice]);
     const onCreateMobileConnect = vi.fn(async () => ({
-      qrData: "openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=mobile-ticket_baseline_1234567890",
+      qrData:
+        "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=mobile-ticket_baseline_1234567890",
       expiresAt: Date.now() + 120_000,
     }));
     const view = render(() => (
@@ -519,7 +521,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
@@ -558,7 +560,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
@@ -607,7 +609,7 @@ describe("SettingsModal", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}
@@ -696,7 +698,7 @@ describe("notification settings", () => {
         onOpenChange={() => undefined}
         value={DEFAULT_GENERAL_SETTINGS}
         onValueChange={() => undefined}
-        appInfo={{ name: "OpenBot", version: "0.2.1", platform, variant: "dev" }}
+        appInfo={{ name: "AIKINGBOT", version: "0.2.1", platform, variant: "dev" }}
         updateStatus={idleUpdateStatus}
         onUpdateAction={vi.fn(async () => undefined)}
         account={account}

@@ -12,8 +12,8 @@ import type {
   ExternalDestination,
   ProviderApiKeyState,
   ProviderApiKeyStatus,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -25,7 +25,7 @@ import {
   Field,
   Input,
   OctagonX,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createSignal, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
 

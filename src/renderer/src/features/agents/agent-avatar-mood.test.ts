@@ -1,5 +1,5 @@
-import type { AgentApproval, QueueSnapshot } from "@openbot/contracts/ipc";
-import { type AgentAvatarMoodsInput, computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
+import type { AgentApproval, QueueSnapshot } from "@aikingbot/contracts/ipc";
+import { type AgentAvatarMoodsInput, computeAgentAvatarMoods } from "@aikingbot/ui/features/agents/agent-avatar-mood";
 import { describe, expect, it } from "vitest";
 
 const APPROVAL: AgentApproval = {

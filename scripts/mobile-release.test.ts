@@ -23,7 +23,7 @@ const dispatch = (script: string) => {
   const manifest = z
     .object({ scripts: z.record(z.string(), z.string()) })
     .parse(JSON.parse(readFileSync(join(root, "package.json"), "utf8")));
-  const directory = mkdtempSync(join(tmpdir(), "openbot-mobile-dispatch-"));
+  const directory = mkdtempSync(join(tmpdir(), "aikingbot-mobile-dispatch-"));
   try {
     writeFileSync(join(directory, "package.json"), JSON.stringify({ scripts: manifest.scripts }));
     mkdirSync(join(directory, "apps/mobile"), { recursive: true });
@@ -88,7 +88,7 @@ describe("iOS release", () => {
   });
 
   it("uploads only an existing IPA using the API key and propagates upload failures", () => {
-    const directory = mkdtempSync(join(tmpdir(), "openbot-ios-upload-"));
+    const directory = mkdtempSync(join(tmpdir(), "aikingbot-ios-upload-"));
     const ipa = join(directory, "release.ipa");
     const harness = fastlaneHarness(
       "ios",
@@ -100,7 +100,7 @@ describe("iOS release", () => {
       end
       def upload_to_testflight(**options)
         expected = {api_key: {token: "fake-token"}, ipa: ENV.fetch("IPA_PATH"),
-          app_identifier: "run.openbot.mobile", skip_waiting_for_build_processing: true, distribute_external: false}
+          app_identifier: "run.aikingbot.mobile", skip_waiting_for_build_processing: true, distribute_external: false}
         raise "Wrong upload destination or options" unless options == expected
         raise "Apple rejected the upload" if ENV["TEST_UPLOAD_FAILURE"] == "1"
         puts "uploaded"
@@ -162,13 +162,13 @@ describe("Android release", () => {
   });
 
   it("uploads only an existing AAB to a testing track and propagates upload failures", () => {
-    const directory = mkdtempSync(join(tmpdir(), "openbot-android-upload-"));
+    const directory = mkdtempSync(join(tmpdir(), "aikingbot-android-upload-"));
     const aab = join(directory, "release.aab");
     const harness = fastlaneHarness(
       "android",
       `
       def upload_to_play_store(**options)
-        expected = {package_name: "run.openbot.mobile", aab: ENV.fetch("AAB_PATH"), json_key_data: "test-service-account",
+        expected = {package_name: "run.aikingbot.mobile", aab: ENV.fetch("AAB_PATH"), json_key_data: "test-service-account",
           track: ENV.fetch("PLAY_TRACK"), release_status: ENV.fetch("PLAY_RELEASE_STATUS"), skip_upload_apk: true,
           skip_upload_metadata: true, skip_upload_changelogs: true, skip_upload_images: true, skip_upload_screenshots: true}
         raise "Wrong upload destination or options" unless options == expected

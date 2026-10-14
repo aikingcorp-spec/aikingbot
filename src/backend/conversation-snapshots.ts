@@ -1,7 +1,7 @@
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import type { AgentProviderId, ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { isImageGenerationAspectRatio } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
+import type { AgentProviderId, ConversationMessage, ConversationSnapshot } from "@aikingbot/contracts/ipc";
+import { isImageGenerationAspectRatio } from "@aikingbot/contracts/ipc";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { displayMessageReferences, type TeammatePrompt, teammatePrompts } from "./agent/delivery-content";
 import { imageGenerationFailure, isImageGenerationItem } from "./agent/image-generation";
 import type { DeliveryContext } from "./mailbox-store";
@@ -42,7 +42,7 @@ export function snapshotFromThread(
 }
 
 /**
- * Converts one bounded provider item page into OpenBot messages.
+ * Converts one bounded provider item page into AIKINGBOT messages.
  *
  * `itemOffset` keeps timestamps stable when a provider splits one turn over several pages. The
  * caller must release the item page after this function returns; this function keeps no provider

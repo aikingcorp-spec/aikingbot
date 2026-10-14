@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { Plugin } from "vite";
 
 /** The route where a story publishes a visual reply page and where the frame loads it. `ChatVisual.stories.tsx` uses it too. */
-const CHAT_VISUAL_PAGES_ROUTE = "/__openbot/chat-visual";
+const CHAT_VISUAL_PAGES_ROUTE = "/__aikingbot/chat-visual";
 
 /** A collage carries its images as data URLs, so a page can be a few megabytes. */
 const PAGE_LIMIT = 8 * 1024 * 1024;
@@ -15,7 +15,7 @@ const PAGE_LIMIT = 8 * 1024 * 1024;
 export function chatVisualPages(): Plugin {
   const pages = new Map<string, Buffer>();
   return {
-    name: "openbot-chat-visual-pages",
+    name: "aikingbot-chat-visual-pages",
     configureServer(server) {
       server.middlewares.use(CHAT_VISUAL_PAGES_ROUTE, (request, response) => {
         if (request.method === "POST") {

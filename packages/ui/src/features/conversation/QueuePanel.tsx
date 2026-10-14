@@ -1,8 +1,8 @@
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { InstalledSkill, QueueDelivery, QueueHold, QueueSteerFallback } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, ConfirmDialog } from "@openbot/ui";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { expandChatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { InstalledSkill, QueueDelivery, QueueHold, QueueSteerFallback } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, ConfirmDialog } from "@aikingbot/ui";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createEffect, createMemo, createSignal, createUniqueId, For, onCleanup, Show, untrack } from "solid-js";
 import { createVerticalDragPreview } from "../../components/createVerticalDragPreview";
 import type { AgentProfile } from "../../data";

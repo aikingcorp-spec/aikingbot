@@ -1,4 +1,4 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 
 /** The part of a host browser tab that the phone uses. */
 export interface MobileBrowserTab {

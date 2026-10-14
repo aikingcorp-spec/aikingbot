@@ -9,7 +9,7 @@ export const messages = {
   "remoteDesktop.workspaceLabel": "Controllo remoto",
   "remoteDesktop.displayLabel": "Schermo remoto",
   "remoteDesktop.selectDisplay": "Seleziona schermo",
-  "remoteDesktop.backToOpenBot": "Torna a OpenBot",
+  "remoteDesktop.backToAIKINGBOT": "Torna a AIKINGBOT",
   "remoteDesktop.disconnect": "Disconnetti",
   "remoteDesktop.viewerTitle": "Desktop remoto Sunshine",
   "remoteDesktop.viewerLoadFailed": "Impossibile caricare il visualizzatore Moonlight.",
@@ -19,7 +19,7 @@ export const messages = {
   "remoteDesktop.openFailed": "Impossibile aprire il desktop",
   "remoteDesktop.notSharingTitle": "{name} non sta condividendo lo schermo",
   "remoteDesktop.notSharingDescription":
-    "L'host impedisce a OpenBot di registrare lo schermo. Su quel computer apri Impostazioni di Sistema → Privacy e sicurezza → Registrazione schermo, attiva OpenBot, poi riprova da qui.",
+    "L'host impedisce a AIKINGBOT di registrare lo schermo. Su quel computer apri Impostazioni di Sistema → Privacy e sicurezza → Registrazione schermo, attiva AIKINGBOT, poi riprova da qui.",
   "remoteDesktop.setup.check.screenRecording": "Registrazione schermo",
   "remoteDesktop.setup.check.accessibility": "Accessibilità",
   "remoteDesktop.setup.check.service": "Servizio Sunshine",
@@ -40,7 +40,7 @@ export const messages = {
   "remoteDesktop.setup.startFailed": "Impossibile avviare il test del desktop remoto.",
   "remoteDesktop.setup.connectionLost": "La connessione di prova è stata persa.",
   "remoteDesktop.setup.hostUpdateRequired":
-    "Aggiorna OpenBot sull'host per controllare i permessi e testare il desktop remoto.",
+    "Aggiorna AIKINGBOT sull'host per controllare i permessi e testare il desktop remoto.",
   "remoteDesktop.setup.permissions": "Permessi",
   "remoteDesktop.setup.checked": "Controllato",
   "remoteDesktop.setup.checkAgain": "Controlla di nuovo",

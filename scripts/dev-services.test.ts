@@ -25,21 +25,21 @@ describe("development service runner", () => {
       createDevelopmentServiceSpec("test-client", environment),
     ];
 
-    expect(developmentProfileToSeed(specs({}), missing)?.profile).toMatch(/OpenBot Dev$/u);
+    expect(developmentProfileToSeed(specs({}), missing)?.profile).toMatch(/AIKINGBOT Dev$/u);
     expect(
-      developmentProfileToSeed(specs({ OPENBOT_DEV_INSTANCE_ID: `wt-${"a".repeat(64)}` }), missing)?.profile,
-    ).toMatch(/OpenBot Dev wt-a{64}$/u);
+      developmentProfileToSeed(specs({ AIKINGBOT_DEV_INSTANCE_ID: `wt-${"a".repeat(64)}` }), missing)?.profile,
+    ).toMatch(/AIKINGBOT Dev wt-a{64}$/u);
   });
 
   it("seeds the profile the app child opens, not the one the shared environment names", () => {
     // A busy default renderer port makes the app take the port as its instance id. Reading the
-    // shared environment here would seed `OpenBot Dev` and start the app on an empty profile.
-    const app = createDevelopmentServiceSpec("app", { OPENBOT_DEV_INSTANCE_ID: "5174" });
+    // shared environment here would seed `AIKINGBOT Dev` and start the app on an empty profile.
+    const app = createDevelopmentServiceSpec("app", { AIKINGBOT_DEV_INSTANCE_ID: "5174" });
 
     const seed = developmentProfileToSeed([app], () => false);
 
-    expect(seed?.profile).toMatch(/OpenBot Dev 5174$/u);
-    expect(seed?.env.OPENBOT_DEV_INSTANCE_ID).toBe("5174");
+    expect(seed?.profile).toMatch(/AIKINGBOT Dev 5174$/u);
+    expect(seed?.env.AIKINGBOT_DEV_INSTANCE_ID).toBe("5174");
   });
 
   it("leaves an existing profile and an app-less target alone", () => {
@@ -48,8 +48,8 @@ describe("development service runner", () => {
   });
 
   it("provisions the technical remote member only for the test-client harness", () => {
-    expect(developmentEnvironmentForTarget("app", {}).OPENBOT_DEV_TEST_CLIENT_ENABLED).toBe("0");
-    expect(developmentEnvironmentForTarget("test-client", {}).OPENBOT_DEV_TEST_CLIENT_ENABLED).toBe("1");
+    expect(developmentEnvironmentForTarget("app", {}).AIKINGBOT_DEV_TEST_CLIENT_ENABLED).toBe("0");
+    expect(developmentEnvironmentForTarget("test-client", {}).AIKINGBOT_DEV_TEST_CLIENT_ENABLED).toBe("1");
   });
 
   it("builds the local Signal command with the Auth API development keys", () => {
@@ -64,30 +64,30 @@ describe("development service runner", () => {
     const app = createDevelopmentServiceSpec("app", {});
     const testClient = createDevelopmentServiceSpec("test-client", {});
 
-    expect(app.env.OPENBOT_APP_VARIANT).toBe("dev");
-    expect(app.env.OPENBOT_DEV_PROFILE).toBe("app");
-    expect(app.env.OPENBOT_DEV_RENDERER_PORT).toBe("5173");
+    expect(app.env.AIKINGBOT_APP_VARIANT).toBe("dev");
+    expect(app.env.AIKINGBOT_DEV_PROFILE).toBe("app");
+    expect(app.env.AIKINGBOT_DEV_RENDERER_PORT).toBe("5173");
     expect(app.args).toContain("out-dev-app");
-    expect(testClient.env.OPENBOT_APP_VARIANT).toBe("dev");
-    expect(testClient.env.OPENBOT_DEV_PROFILE).toBe("test-client");
-    expect(testClient.env.OPENBOT_DEV_RENDERER_PORT).toBe("5174");
-    expect(testClient.env.OPENBOT_DEV_HOST_AUTO_START).toBeUndefined();
+    expect(testClient.env.AIKINGBOT_APP_VARIANT).toBe("dev");
+    expect(testClient.env.AIKINGBOT_DEV_PROFILE).toBe("test-client");
+    expect(testClient.env.AIKINGBOT_DEV_RENDERER_PORT).toBe("5174");
+    expect(testClient.env.AIKINGBOT_DEV_HOST_AUTO_START).toBeUndefined();
     expect(testClient.args).toContain("out-dev-test-client");
   });
 
   it("keeps selected development ports in the child environment", () => {
-    const api = createDevelopmentServiceSpec("api", { OPENBOT_API_PORT: "3110" });
+    const api = createDevelopmentServiceSpec("api", { AIKINGBOT_API_PORT: "3110" });
     const app = createDevelopmentServiceSpec("app", {
-      OPENBOT_API_PORT: "3110",
-      OPENBOT_AUTH_API_URL: "http://127.0.0.1:3110",
-      OPENBOT_DEV_RENDERER_PORT: "5180",
-      OPENBOT_DEV_REMOTE_DEBUGGING_PORT: "9340",
+      AIKINGBOT_API_PORT: "3110",
+      AIKINGBOT_AUTH_API_URL: "http://127.0.0.1:3110",
+      AIKINGBOT_DEV_RENDERER_PORT: "5180",
+      AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT: "9340",
     });
 
-    expect(api.env.OPENBOT_API_PORT).toBe("3110");
-    expect(app.env.OPENBOT_AUTH_API_URL).toBe("http://127.0.0.1:3110");
-    expect(app.env.OPENBOT_DEV_RENDERER_PORT).toBe("5180");
-    expect(app.env.OPENBOT_DEV_REMOTE_DEBUGGING_PORT).toBe("9340");
+    expect(api.env.AIKINGBOT_API_PORT).toBe("3110");
+    expect(app.env.AIKINGBOT_AUTH_API_URL).toBe("http://127.0.0.1:3110");
+    expect(app.env.AIKINGBOT_DEV_RENDERER_PORT).toBe("5180");
+    expect(app.env.AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT).toBe("9340");
   });
 
   it("strips Electron runtime flags from every child environment", () => {
@@ -111,13 +111,13 @@ describe("development service runner", () => {
       lo0: [{ address: "127.0.0.1", family: "IPv4" as const, internal: true }],
     };
     expect(selectMobileConnectLanAddress(interfaces)).toBe("192.168.1.143");
-    const environment = { OPENBOT_API_PORT: "3100", OPENBOT_AUTH_API_URL: "http://127.0.0.1:3100" };
+    const environment = { AIKINGBOT_API_PORT: "3100", AIKINGBOT_AUTH_API_URL: "http://127.0.0.1:3100" };
 
     configureMobileConnectDevelopmentNetwork(["api", "remote", "app"], environment, interfaces);
 
     expect(environment).toMatchObject({
-      OPENBOT_API_HOST: "0.0.0.0",
-      OPENBOT_MOBILE_AUTH_API_URL: "http://192.168.1.143:3100",
+      AIKINGBOT_API_HOST: "0.0.0.0",
+      AIKINGBOT_MOBILE_AUTH_API_URL: "http://192.168.1.143:3100",
       REMOTE_AUTH_WEBHOOK_URL: "http://127.0.0.1:3101/internal/auth-events",
       REMOTE_CONTROL_PLANE_URL: "http://127.0.0.1:3100",
       REMOTE_SIGNAL_HOST: "0.0.0.0",
@@ -132,19 +132,19 @@ describe("development service runner", () => {
     const interfaces = {
       en0: [{ address: "192.168.1.143", family: "IPv4" as const, internal: false }],
     };
-    const apiOnly = { OPENBOT_API_PORT: "3100" };
+    const apiOnly = { AIKINGBOT_API_PORT: "3100" };
     configureMobileConnectDevelopmentNetwork(["api"], apiOnly, interfaces);
-    expect(apiOnly).not.toHaveProperty("OPENBOT_API_HOST");
+    expect(apiOnly).not.toHaveProperty("AIKINGBOT_API_HOST");
 
-    const loopback = { OPENBOT_API_PORT: "3100", OPENBOT_API_HOST: "127.0.0.1" };
+    const loopback = { AIKINGBOT_API_PORT: "3100", AIKINGBOT_API_HOST: "127.0.0.1" };
     configureMobileConnectDevelopmentNetwork(["api", "app"], loopback, interfaces);
-    expect(loopback).not.toHaveProperty("OPENBOT_MOBILE_AUTH_API_URL");
+    expect(loopback).not.toHaveProperty("AIKINGBOT_MOBILE_AUTH_API_URL");
   });
 
   it("keeps an explicit development remote role override", () => {
-    const app = createDevelopmentServiceSpec("app", { OPENBOT_DEV_REMOTE_ROLE: "none" });
+    const app = createDevelopmentServiceSpec("app", { AIKINGBOT_DEV_REMOTE_ROLE: "none" });
 
-    expect(app.env.OPENBOT_DEV_REMOTE_ROLE).toBe("none");
+    expect(app.env.AIKINGBOT_DEV_REMOTE_ROLE).toBe("none");
   });
 
   it("rejects unknown targets and options", () => {
@@ -182,15 +182,15 @@ describe("development service runner", () => {
 
   it("publishes every port the stack listens on, so the next worktree walks past all of them", () => {
     const specs = [
-      createDevelopmentServiceSpec("api", { OPENBOT_API_PORT: "3110" }),
+      createDevelopmentServiceSpec("api", { AIKINGBOT_API_PORT: "3110" }),
       createDevelopmentServiceSpec("remote", { REMOTE_SIGNAL_PORT: "3111", REMOTE_HEALTH_PORT: "3112" }),
       createDevelopmentServiceSpec("app", {
-        OPENBOT_DEV_RENDERER_PORT: "5180",
-        OPENBOT_DEV_REMOTE_DEBUGGING_PORT: "9340",
+        AIKINGBOT_DEV_RENDERER_PORT: "5180",
+        AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT: "9340",
       }),
       createDevelopmentServiceSpec("test-client", {
-        OPENBOT_DEV_RENDERER_PORT: "5181",
-        OPENBOT_DEV_REMOTE_DEBUGGING_PORT: "9341",
+        AIKINGBOT_DEV_RENDERER_PORT: "5181",
+        AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT: "9341",
       }),
     ];
 

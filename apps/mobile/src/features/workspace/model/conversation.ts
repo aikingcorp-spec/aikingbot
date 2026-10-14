@@ -1,6 +1,6 @@
-import type { ConversationPage, ConversationSearchPage, QueuedMessageReceipt } from "@openbot/contracts/ipc";
-import { type ConversationMessage, type ConversationSnapshot, isConversationMessage } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import type { ConversationPage, ConversationSearchPage, QueuedMessageReceipt } from "@aikingbot/contracts/ipc";
+import { type ConversationMessage, type ConversationSnapshot, isConversationMessage } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 
 export function decodeConversation(value: unknown): ConversationSnapshot {
   if (

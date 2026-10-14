@@ -7,7 +7,7 @@ import { isolateTestEnvironment } from "./hermetic-environment";
 // Runs before each test file, ahead of its imports, so no module can read the
 // real HOME first. Each file gets its own home, so files cannot share state
 // through it.
-const home = mkdtempSync(join(tmpdir(), "openbot-test-home-"));
+const home = mkdtempSync(join(tmpdir(), "aikingbot-test-home-"));
 isolateTestEnvironment(process.env, home);
 
 afterAll(() => {

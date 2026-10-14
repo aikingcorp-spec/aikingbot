@@ -1,4 +1,4 @@
-import type { RemoteTeamPeerActions } from "@openbot/team-client/remote-peer";
+import type { RemoteTeamPeerActions } from "@aikingbot/team-client/remote-peer";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { STORY_AGENT_SUMMARIES } from "../../preview/fixtures";
 import { createWebWorkspaceRuntime, decodeWebConversationPage } from "./web-runtime";
@@ -287,12 +287,12 @@ describe("browser workspace runtime", () => {
   it("keeps trusted host keys separate by account and rejects replacement identities", async () => {
     const runtime = create();
     await runtime.connect(host);
-    expect(localStorage.getItem("openbot.web.host-key:one:host")).toBe("key-one");
+    expect(localStorage.getItem("aikingbot.web.host-key:one:host")).toBe("key-one");
     await expect(runtime.connect({ ...host, devicePublicKey: "key-two" })).rejects.toThrow("identity changed");
-    expect(localStorage.getItem("openbot.web.host-key:one:host")).toBe("key-one");
+    expect(localStorage.getItem("aikingbot.web.host-key:one:host")).toBe("key-one");
     const other = create("two");
     await other.connect({ ...host, devicePublicKey: "key-two" });
-    expect(localStorage.getItem("openbot.web.host-key:two:host")).toBe("key-two");
+    expect(localStorage.getItem("aikingbot.web.host-key:two:host")).toBe("key-two");
     await runtime.dispose();
     await other.dispose();
   });

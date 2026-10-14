@@ -4,7 +4,7 @@
  * the same id the layout used - see `SIDEBAR_DRAG_SELECTORS`.
  */
 
-import { Badge, Button } from "@openbot/ui";
+import { Badge, Button } from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { TeamPersonAvatar, teamMemberName } from "../team/TeamPersonAvatar";

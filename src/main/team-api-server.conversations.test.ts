@@ -1,32 +1,32 @@
-import { analyticsRange, emptyAnalyticsTotals } from "@openbot/contracts/ipc";
+import { analyticsRange, emptyAnalyticsTotals } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 // @vitest-environment node
 
 // What a remote client reads back from one agent service: the agent list, the conversation and
 // its capability-filtered shape. `src/main/team-api/route-agent-conversation.ts`.
 
-import type { AccountUsage, AgentSummary, ConversationWithReadState, CreateAgentInput } from "@openbot/contracts/ipc";
+import type { AccountUsage, AgentSummary, ConversationWithReadState, CreateAgentInput } from "@aikingbot/contracts/ipc";
 import {
   hostedSiteConversationEventItemType,
   hostedSiteConversationEventText,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   routineConversationEventItemType,
   routineRunConversationEventItemType,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import {
   TEAM_BOOTSTRAP_CAPABILITIES,
   TEAM_CURRENT_CAPABILITIES,
   TEAM_HISTORY_EXTENT_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/team-protocol/current";
 import {
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V1_CAPABILITIES,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { TEAM_PROTOCOL_V5 } from "@openbot/contracts/team-protocol/v5";
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
+} from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { TEAM_PROTOCOL_V5 } from "@aikingbot/contracts/team-protocol/v5";
+import { TEAM_PROTOCOL_V7 } from "@aikingbot/contracts/team-protocol/v7";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import {
   createAgents,

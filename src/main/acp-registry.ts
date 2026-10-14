@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AcpRegistryEntry,
   AcpRegistryInstallation,
@@ -10,10 +10,10 @@ import type {
   CustomAgentResult,
   CustomAgentSummary,
   SaveCustomAgentInput,
-} from "@openbot/contracts/ipc";
-import { isNewCustomAgentId } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { isNewCustomAgentId } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
 import { type RegistryAgent, readAcpRegistry } from "./acp-registry-catalog";
 import { prepareRegistryAgent, type RegistryPrepared, registryDistributions } from "./acp-registry-install";

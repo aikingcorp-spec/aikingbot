@@ -1,17 +1,17 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { IPC_ENDPOINTS } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
+import { IPC_ENDPOINTS } from "@aikingbot/contracts/ipc";
 import { expect, it, vi } from "vitest";
 import { parseAgentRequest } from "../main/ipc/agent-inputs";
 import { requireString } from "../main/ipc/validation";
 
 const bridge = vi.hoisted(() => {
   vi.stubGlobal("window", { addEventListener: () => {} });
-  const api: { current: OpenBotDesktopApi | null } = { current: null };
+  const api: { current: AIKINGBOTDesktopApi | null } = { current: null };
   return { api, invoke: vi.fn() };
 });
 vi.mock("electron", () => ({
   contextBridge: {
-    exposeInMainWorld: (_name: string, api: OpenBotDesktopApi) => {
+    exposeInMainWorld: (_name: string, api: AIKINGBOTDesktopApi) => {
       bridge.api.current = api;
     },
   },

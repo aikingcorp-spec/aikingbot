@@ -5,9 +5,9 @@ import { Effect } from "effect";
 // The embedded browser over the wire: `src/main/team-api/route-browser.ts`.
 
 import { EventEmitter } from "node:events";
-import type { BrowserTab } from "@openbot/contracts/ipc";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V6 } from "@openbot/contracts/team-protocol/v6";
+import type { BrowserTab } from "@aikingbot/contracts/ipc";
+import { TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V6 } from "@aikingbot/contracts/team-protocol/v6";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createAgents,
@@ -98,8 +98,8 @@ describe("TeamApiServer browser", () => {
     expect(activate).not.toHaveBeenCalled();
 
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-team-v1",
-      `openbot-token.${member.sessionToken}`,
+      "aikingbot-team-v1",
+      `aikingbot-token.${member.sessionToken}`,
     ]);
     const presence = nextJsonEvent(socket);
     await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));

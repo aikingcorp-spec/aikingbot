@@ -1,13 +1,13 @@
-import type { CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import type { AcpRegistrySettingsApi } from "@openbot/ui/features/custom-providers/AcpRegistrySettings";
-import type { CustomAgentSettingsApi } from "@openbot/ui/features/custom-providers/CustomAgentSettings";
-import { providerDiagnosticsText } from "@openbot/ui/features/provider-diagnostics/provider-diagnostics";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
-import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
-import type { BitwardenConnectorPanelProps } from "@openbot/ui/features/settings/BitwardenConnectorPanel";
-import type { HostedSiteDeleteResult } from "@openbot/ui/features/settings/stores/hosted-sites-store";
-import { currentText } from "@openbot/ui/text";
+import type { CentralAuthUser, ServerSummary } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import type { AcpRegistrySettingsApi } from "@aikingbot/ui/features/custom-providers/AcpRegistrySettings";
+import type { CustomAgentSettingsApi } from "@aikingbot/ui/features/custom-providers/CustomAgentSettings";
+import { providerDiagnosticsText } from "@aikingbot/ui/features/provider-diagnostics/provider-diagnostics";
+import { LeaveServerDialog } from "@aikingbot/ui/features/servers/LeaveServerDialog";
+import { RestartServerDialog } from "@aikingbot/ui/features/servers/RestartServerDialog";
+import type { BitwardenConnectorPanelProps } from "@aikingbot/ui/features/settings/BitwardenConnectorPanel";
+import type { HostedSiteDeleteResult } from "@aikingbot/ui/features/settings/stores/hosted-sites-store";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, Loading, Show } from "solid-js";
 import { actionToast } from "./action-toast";
 import { desktopAnalytics } from "./analytics";
@@ -209,7 +209,7 @@ function SkillsMarketplace(props: {
 }
 
 /**
- * A shared agent from an `openbot://agents/<id>` link. It is added where a marketplace agent is: on
+ * A shared agent from an `aikingbot://agents/<id>` link. It is added where a marketplace agent is: on
  * the selected joined server when this account administers it, otherwise on this computer.
  */
 function SharedAgentInstall() {
@@ -694,7 +694,7 @@ function ServerSettings(props: {
           onePasswordConnector={props.onePasswordConnector}
           bitwardenConnector={props.bitwardenConnector}
           // Slack and Discord are connected on the computer that runs the agents. Their pages open in
-          // this computer's browser and return to its `openbot://` link, which main sends on to a
+          // this computer's browser and return to its `aikingbot://` link, which main sends on to a
           // joined server. A Telegram chat links to the host by its `t.me` code.
           slackConnector={messagingFor(server(), slack, hostSlack)}
           discordConnector={messagingFor(server(), discord, hostDiscord)}

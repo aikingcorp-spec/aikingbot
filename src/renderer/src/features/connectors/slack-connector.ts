@@ -1,10 +1,10 @@
-import type { SlackOverview } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
+import type { SlackOverview } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
 import type {
   SlackOrchestratorChoice,
   SlackOrchestratorModels,
-} from "@openbot/ui/features/settings/SlackIntegrationPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/settings/SlackIntegrationPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type SlackConnectorPort, slackConnectorPort } from "./slack-connector-port";

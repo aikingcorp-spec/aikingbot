@@ -7,7 +7,8 @@ describe("Mobile Connect URLs", () => {
   it("binds pairing to the scanned desktop and rejects a substituted redemption", () => {
     const host = { hostId: "host-a", fingerprint: "a".repeat(43) };
     expect(
-      parseMobileConnectUrl(createMobileConnectUrl({ apiUrl: "https://api.openbot.run", ticket, host }))?.host,
+      parseMobileConnectUrl(createMobileConnectUrl({ apiUrl: "https://api.aikingbot.aikingx.com", ticket, host }))
+        ?.host,
     ).toEqual(host);
     expect(validateMobileConnectHostBinding(host, host)).toEqual(host);
     expect(() => validateMobileConnectHostBinding(host, { ...host, hostId: "host-b" })).toThrow("different desktop");
@@ -15,13 +16,15 @@ describe("Mobile Connect URLs", () => {
       "different desktop",
     );
     expect(
-      parseMobileConnectUrl(`openbot://mobile-connect?api=https://api.openbot.run&ticket=${ticket}&host=host-a`),
+      parseMobileConnectUrl(
+        `aikingbot://mobile-connect?api=https://api.aikingbot.aikingx.com&ticket=${ticket}&host=host-a`,
+      ),
     ).toBeNull();
   });
   it("round-trips an HTTPS account API and one-time ticket", () => {
-    const url = createMobileConnectUrl({ apiUrl: "https://api.openbot.run", ticket });
+    const url = createMobileConnectUrl({ apiUrl: "https://api.aikingbot.aikingx.com", ticket });
 
-    expect(parseMobileConnectUrl(url)).toEqual({ apiUrl: "https://api.openbot.run", ticket });
+    expect(parseMobileConnectUrl(url)).toEqual({ apiUrl: "https://api.aikingbot.aikingx.com", ticket });
   });
 
   it("allows HTTP only for loopback and private LAN development APIs", () => {
@@ -41,13 +44,19 @@ describe("Mobile Connect URLs", () => {
   });
 
   it("rejects other schemes, hosts, parameters, and malformed tickets", () => {
-    expect(parseMobileConnectUrl(`https://mobile-connect?api=https://api.openbot.run&ticket=${ticket}`)).toBeNull();
-    expect(parseMobileConnectUrl(`openbot://other?api=https://api.openbot.run&ticket=${ticket}`)).toBeNull();
+    expect(
+      parseMobileConnectUrl(`https://mobile-connect?api=https://api.aikingbot.aikingx.com&ticket=${ticket}`),
+    ).toBeNull();
+    expect(
+      parseMobileConnectUrl(`aikingbot://other?api=https://api.aikingbot.aikingx.com&ticket=${ticket}`),
+    ).toBeNull();
     expect(
       parseMobileConnectUrl(
-        `openbot://mobile-connect?api=https://api.openbot.run&ticket=${ticket}&redirect=https://evil.example`,
+        `aikingbot://mobile-connect?api=https://api.aikingbot.aikingx.com&ticket=${ticket}&redirect=https://evil.example`,
       ),
     ).toBeNull();
-    expect(parseMobileConnectUrl("openbot://mobile-connect?api=https://api.openbot.run&ticket=short")).toBeNull();
+    expect(
+      parseMobileConnectUrl("aikingbot://mobile-connect?api=https://api.aikingbot.aikingx.com&ticket=short"),
+    ).toBeNull();
   });
 });

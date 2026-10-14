@@ -14,7 +14,7 @@ const body = {
   environment: "production",
   sessionId: "phone-session",
   sealed: "c2VhbGVk",
-  sound: "openbot",
+  sound: "aikingbot",
   timestamp: 1_790_000_000,
 };
 
@@ -28,7 +28,7 @@ describe("notification relay", () => {
         privateKey: await exportPKCS8(privateKey),
         keyId: "KEY1234567",
         teamId: "ZTRDTUL87R",
-        topic: "run.openbot.mobile",
+        topic: "run.aikingbot.mobile",
       },
       fetch,
     );
@@ -40,12 +40,12 @@ describe("notification relay", () => {
     expect(url).toBe(`https://api.push.apple.com/3/device/${token}`);
     expect(init?.headers).toMatchObject({
       "apns-push-type": "alert",
-      "apns-topic": "run.openbot.mobile",
+      "apns-topic": "run.aikingbot.mobile",
       "apns-priority": "10",
       "apns-expiration": String(body.timestamp + 24 * 60 * 60),
     });
     expect(JSON.parse(String(init?.body))).toEqual({
-      aps: { alert: { title: "OpenBot" }, "mutable-content": 1, sound: "openbot-task.wav" },
+      aps: { alert: { title: "AIKINGBOT" }, "mutable-content": 1, sound: "aikingbot-task.wav" },
       sealed: body.sealed,
     });
   });

@@ -6,18 +6,18 @@ import {
   type BillingInterval,
   type BillingPlanId,
   isBillingAmount,
-} from "@openbot/contracts/billing";
+} from "@aikingbot/contracts/billing";
 import {
   HOSTED_SERVER_ERRORS,
   HOSTED_SERVER_SIZE_NAMES,
   type HostedServerError,
   type HostedServerSize,
-} from "@openbot/contracts/hosted-servers";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/hosted-servers";
+import { isOneOf } from "@aikingbot/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 
 /** The same OpenPanel project as the desktop app and the website. ANALYTICS.md is the contract. */
-const OPENPANEL_API_URL = "https://analytics.openbot.run/api";
+const OPENPANEL_API_URL = "https://analytics.aikingbot.aikingx.com/api";
 /** The current generation. The `account_api` events are new and change no older event. */
 export const ACCOUNT_ANALYTICS_SCHEMA_VERSION = 9;
 const SEND_TIMEOUT_MS = 5_000;

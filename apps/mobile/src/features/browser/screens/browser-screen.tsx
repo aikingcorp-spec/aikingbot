@@ -1,5 +1,5 @@
+import type { BrowserViewContextMenu, BrowserViewInput } from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import { type MenuAction, type MenuComponentRef, MenuView } from "@expo/ui/community/menu";
-import type { BrowserViewContextMenu, BrowserViewInput } from "@openbot/contracts/team-protocol/browser-view-v1";
 import * as Clipboard from "expo-clipboard";
 import { GlassView } from "expo-glass-effect";
 import { router, useLocalSearchParams } from "expo-router";

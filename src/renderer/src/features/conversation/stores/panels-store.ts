@@ -4,8 +4,8 @@ import {
   canPreviewAttachment,
   type FileAction,
   type WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
 import { createMemo, createSignal } from "solid-js";
 import { attachmentFilePreview } from "../attachment-preview";
 import { conversationRuntime } from "../conversation-runtime";
@@ -25,9 +25,9 @@ export interface PanelsStoreDeps {
   props: ConversationProps;
   rightPanels: () => Record<string, RightPanelMode>;
   setRightPanels: (update: (current: Record<string, RightPanelMode>) => Record<string, RightPanelMode>) => void;
-  settingsProvider: () => import("@openbot/contracts/ipc").AgentProviderId;
-  settingsModel: () => import("@openbot/contracts/ipc").AgentModelId;
-  settingsReasoning: () => import("@openbot/contracts/ipc").AgentReasoningEffort;
+  settingsProvider: () => import("@aikingbot/contracts/ipc").AgentProviderId;
+  settingsModel: () => import("@aikingbot/contracts/ipc").AgentModelId;
+  settingsReasoning: () => import("@aikingbot/contracts/ipc").AgentReasoningEffort;
   setBrowserPipBounds: (bounds: BrowserBounds | null) => void;
   sidebarFilePreview: () => SidebarFilePreview | null;
   setSidebarFilePreview: (preview: SidebarFilePreview | null) => void;
@@ -106,7 +106,7 @@ export function createPanelsStore(deps: PanelsStoreDeps) {
   function saveBrowserPipBounds(bounds: BrowserBounds) {
     deps.setBrowserPipBounds(bounds);
     window.localStorage.setItem(
-      "openbot:browser-pip-native-bounds",
+      "aikingbot:browser-pip-native-bounds",
       [bounds.x, bounds.y, bounds.width, bounds.height].join(","),
     );
   }

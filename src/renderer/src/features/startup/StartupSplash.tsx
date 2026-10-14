@@ -1,6 +1,6 @@
-import { AppLogo, type AppLogoVariant } from "@openbot/brand";
-import { APP_LOGO_EYE_POINTS } from "@openbot/brand/app-logo-shape";
-import { useText } from "@openbot/ui/text";
+import { AppLogo, type AppLogoVariant } from "@aikingbot/brand";
+import { APP_LOGO_EYE_POINTS } from "@aikingbot/brand/app-logo-shape";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, onSettled } from "solid-js";
 
 // The fade takes the overlay duration. If no `animationend` comes, the splash ends this time after the

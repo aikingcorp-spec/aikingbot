@@ -1,5 +1,5 @@
-import { canPreviewAttachment, type StoredFileRow } from "@openbot/contracts/ipc";
-import { ConversationFilesPanel } from "@openbot/ui/features/files/ConversationFilesPanel";
+import { canPreviewAttachment, type StoredFileRow } from "@aikingbot/contracts/ipc";
+import { ConversationFilesPanel } from "@aikingbot/ui/features/files/ConversationFilesPanel";
 import { createStorageUsage } from "./storage-usage";
 
 /** Chat > Files: every file of one chat, in the side-panel slot the file preview also uses. */

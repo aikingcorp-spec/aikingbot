@@ -1,7 +1,7 @@
 import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
+import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "./effect-boundary";
 import { SidebarLayoutStore } from "./sidebar-layout-store";
@@ -13,7 +13,7 @@ afterEach(async () => {
 });
 
 async function createStore(): Promise<{ root: string; path: string; store: SidebarLayoutStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-sidebar-layout-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-sidebar-layout-"));
   roots.push(root);
   const path = join(root, "sidebar-layout.json");
   const store = new SidebarLayoutStore(path);

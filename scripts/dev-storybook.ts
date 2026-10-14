@@ -9,7 +9,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { cliSpawnTarget } from "../src/backend/cli";
 import { withDevPortAllocation } from "./dev-automation/port-allocation";
 import {
@@ -23,7 +23,7 @@ import {
 import { findAvailablePort, stopOwnedProcesses } from "./dev-services";
 import { resolvePackageBin } from "./package-bin";
 
-const logger = createOpenBotLogger("dev-storybook");
+const logger = createAIKINGBOTLogger("dev-storybook");
 
 const scriptsRoot = dirname(fileURLToPath(import.meta.url));
 const projectRoot = dirname(scriptsRoot);
@@ -46,7 +46,7 @@ export function parseStorybookInvocation(args: string[]): StorybookInvocation {
   if (conflicting) {
     throw new Error(
       "Storybook's port is allocated per worktree, so --port cannot be passed through. " +
-        "Set OPENBOT_STORYBOOK_PORT to change where the search starts.",
+        "Set AIKINGBOT_STORYBOOK_PORT to change where the search starts.",
     );
   }
   return {
@@ -74,7 +74,7 @@ function readPreferredPort(value: string | undefined): number {
   if (value === undefined || value.trim() === "") return DEFAULT_STORYBOOK_PORT;
   const port = Number(value);
   if (!Number.isInteger(port) || port < 1_024 || port > 65_535) {
-    throw new Error("OPENBOT_STORYBOOK_PORT must be an integer from 1024 to 65535.");
+    throw new Error("AIKINGBOT_STORYBOOK_PORT must be an integer from 1024 to 65535.");
   }
   return port;
 }
@@ -98,7 +98,7 @@ async function main(): Promise<void> {
       }
       logger.warn(`This worktree already runs Storybook:\n${detail}`);
     }
-    const preferred = readPreferredPort(process.env.OPENBOT_STORYBOOK_PORT);
+    const preferred = readPreferredPort(process.env.AIKINGBOT_STORYBOOK_PORT);
     const allocated = await findAvailablePort(preferred, new Set(), heldDevStackPorts(records));
     if (allocated !== preferred) logger.info(`Storybook port ${preferred} is busy. Using ${allocated}.`);
     const record = createStorybookStackRecord(allocated, process.pid, Date.now());

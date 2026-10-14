@@ -1,4 +1,4 @@
-import type { AgentPromptQuestion } from "@openbot/contracts/ipc";
+import type { AgentPromptQuestion } from "@aikingbot/contracts/ipc";
 import {
   ArrowUp,
   Bubble,
@@ -10,9 +10,9 @@ import {
   MessageFooter,
   Plus,
   Textarea,
-} from "@openbot/ui";
-import { QuestionPromptBubble, type QuestionPromptBubbleProps } from "@openbot/ui/components/QuestionPromptBubble";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
+} from "@aikingbot/ui";
+import { QuestionPromptBubble, type QuestionPromptBubbleProps } from "@aikingbot/ui/components/QuestionPromptBubble";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

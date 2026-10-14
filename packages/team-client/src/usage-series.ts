@@ -1,4 +1,4 @@
-import type { AnalyticsDay, AnalyticsProviderDay } from "@openbot/contracts/ipc";
+import type { AnalyticsDay, AnalyticsProviderDay } from "@aikingbot/contracts/ipc";
 
 // The one series a report without a provider split still draws. It cannot collide with a
 // provider column: the fallback returns it as the whole series list.

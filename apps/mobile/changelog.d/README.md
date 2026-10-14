@@ -1,6 +1,6 @@
 # Unreleased mobile notes
 
-The notes of the OpenBot iPhone app. They are separate from the notes of the desktop app and the
+The notes of the AIKINGBOT iPhone app. They are separate from the notes of the desktop app and the
 web client in [`changelog.d/`](../../../changelog.d/README.md), and the public `/changelog` page shows
 them in its Mobile tab.
 

@@ -5,25 +5,25 @@
   container-type: inline-size;
   width: 100%;
   max-width: 520px;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-3);
 }
 
 .marketplace-suggestion-header {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 /* The listing icon keeps its tile border here, as on a dark chat its own fill meets the card. */
 .marketplace-suggestion .marketplace-suggestion-icon {
-  width: var(--openbot-control-lg);
-  height: var(--openbot-control-lg);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-primary);
+  width: var(--aikingbot-control-lg);
+  height: var(--aikingbot-control-lg);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-primary);
 }
 
 .marketplace-suggestion .marketplace-suggestion-icon img {
@@ -43,7 +43,7 @@
   }
 
   .marketplace-suggestion-heading {
-    flex-basis: calc(100% - var(--openbot-control-lg) - var(--openbot-control-md) - 2 * var(--openbot-space-3));
+    flex-basis: calc(100% - var(--aikingbot-control-lg) - var(--aikingbot-control-md) - 2 * var(--aikingbot-space-3));
   }
 
   .marketplace-suggestion-action {
@@ -59,10 +59,10 @@
 .marketplace-suggestion-title {
   overflow: hidden;
   margin: 0;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-md);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -76,9 +76,9 @@
 
 .marketplace-suggestion-description {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -90,41 +90,41 @@
 }
 
 .marketplace-suggestion-done[data-slot="badge"] {
-  gap: var(--openbot-space-1-5);
-  border-radius: var(--openbot-radius-pill);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  gap: var(--aikingbot-space-1-5);
+  border-radius: var(--aikingbot-radius-pill);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .marketplace-suggestion-done svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .marketplace-suggestion-unavailable {
   display: flex;
   margin: 0;
-  gap: var(--openbot-space-2);
-  border-top: 1px solid var(--openbot-border);
-  padding-top: var(--openbot-space-3);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  gap: var(--aikingbot-space-2);
+  border-top: 1px solid var(--aikingbot-border);
+  padding-top: var(--aikingbot-space-3);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .marketplace-suggestion-unavailable svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  margin-top: var(--openbot-space-0-5);
-  color: var(--openbot-text-muted);
+  margin-top: var(--aikingbot-space-0-5);
+  color: var(--aikingbot-text-muted);
 }
 
 .marketplace-suggestion-dismissed {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }

@@ -10,8 +10,8 @@ import {
   type DynamicIslandPreference,
   type DynamicIslandPresentation,
   IPC_ENDPOINTS,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import type { BrowserWindow, Display, Rectangle } from "electron";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -292,7 +292,7 @@ describe("dynamic island window geometry", () => {
     const controller = new DynamicIslandWindowController({
       platform: "darwin",
       preferencePath: join(root, "preference.json"),
-      logger: createOpenBotLogger("test", (line) => lines.push(line)),
+      logger: createAIKINGBOTLogger("test", (line) => lines.push(line)),
       createWindow: (bounds) => {
         const window = new FakeWindow(80 + windows.length, bounds);
         windows.push(window);
@@ -725,7 +725,7 @@ class FakeWindow extends EventEmitter {
 }
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-dynamic-island-window-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-dynamic-island-window-"));
   roots.push(root);
   return root;
 }

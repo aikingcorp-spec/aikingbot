@@ -3,8 +3,8 @@
 //
 // No JSX here, for the same reason `content-collection.ts` holds none.
 
-import type { ProviderLogoVariant } from "@openbot/brand";
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import type { ProviderLogoVariant } from "@aikingbot/brand";
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
 import { RIVAL_MARK_SHAPES, type RivalMarkName } from "../components/compare/rival-mark-shapes";
 import { COMPARE_COLLECTION } from "./compare";
 
@@ -56,7 +56,7 @@ export const LANDING_FEATURES: readonly LandingFeature[] = [
     id: "local",
     title: "Stored on your computer",
     description:
-      "Workspaces, conversations, files and browser data stay on the computer that runs OpenBot, not on our servers.",
+      "Workspaces, conversations, files and browser data stay on the computer that runs AIKINGBOT, not on our servers.",
   },
   {
     id: "persist",
@@ -67,7 +67,7 @@ export const LANDING_FEATURES: readonly LandingFeature[] = [
   {
     id: "browser",
     title: "A built-in browser",
-    description: "Agents open, read and control pages in a browser that is built into OpenBot.",
+    description: "Agents open, read and control pages in a browser that is built into AIKINGBOT.",
   },
   {
     id: "queue",
@@ -113,7 +113,7 @@ export const LANDING_TEAM_REPLY: LandingTeamMessage = {
   text: "Thanks. I closed the issue.",
 };
 
-/** The channel the team picture shows, and the line OpenBot writes when the task changes owner. */
+/** The channel the team picture shows, and the line AIKINGBOT writes when the task changes owner. */
 export const LANDING_TEAM_CHANNEL = "launch";
 export const LANDING_TEAM_HANDOFF = "Ada gave the task to Linus";
 
@@ -163,7 +163,7 @@ export const LANDING_PERSIST_AFTER: LandingPersistReply = {
   text: "I continue from the billing migration. Next is its test.",
 };
 
-/** What stays on the computer that runs OpenBot. */
+/** What stays on the computer that runs AIKINGBOT. */
 export const LANDING_LOCAL_DATA: readonly string[] = ["Workspaces", "Conversations", "Files", "Browser data"];
 
 /**
@@ -203,7 +203,7 @@ function isRivalMarkName(slug: string): slug is RivalMarkName {
 }
 
 /**
- * Every OpenBot comparison, labelled "OpenBot vs …": each title starts with
+ * Every AIKINGBOT comparison, labelled "AIKINGBOT vs …": each title starts with
  * that, and the part after the colon is too long for a card. The slug of each is
  * also the name of the compared product's mark. A matchup or the roundup has a
  * slug that names no mark, so it is not in this list.

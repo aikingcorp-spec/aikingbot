@@ -1,15 +1,15 @@
 import { join, resolve } from "node:path";
-import { parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import { parseInviteUrl, selfHostedApiOrigin } from "@aikingbot/contracts/invite-links";
 import {
   type AgentEvent,
   type AppLogoColor,
   type CentralAuthState,
   type HostStatus,
   IPC_ENDPOINTS,
-} from "@openbot/contracts/ipc";
-import { createFormat, resolveLocale, translateFor } from "@openbot/i18n";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
-import { createRemoteDirectoryRefresh } from "@openbot/team-client/remote-directory";
+} from "@aikingbot/contracts/ipc";
+import { createFormat, resolveLocale, translateFor } from "@aikingbot/i18n";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
+import { createRemoteDirectoryRefresh } from "@aikingbot/team-client/remote-directory";
 import { Effect, Semaphore } from "effect";
 import {
   app,
@@ -103,7 +103,7 @@ import { TeardownRegistry } from "./teardown-registry";
 import type { TraceFile } from "./trace-file";
 import { setIpcCallObserver } from "./trusted-ipc";
 
-const logger = createOpenBotLogger("main");
+const logger = createAIKINGBOTLogger("main");
 
 // Electron keeps running after both events: an unhandled rejection only prints a warning, and a
 // monitor leaves the default exception handling in place. These add a redacted log line and a
@@ -127,23 +127,23 @@ try {
 }
 
 const commandLineUserDataDirectory = app.commandLine.getSwitchValue("user-data-dir").trim();
-const developmentProfile = !app.isPackaged ? readDevelopmentProfile(process.env.OPENBOT_DEV_PROFILE) : null;
+const developmentProfile = !app.isPackaged ? readDevelopmentProfile(process.env.AIKINGBOT_DEV_PROFILE) : null;
 const developmentRemoteRole =
   !app.isPackaged &&
-  (process.env.OPENBOT_DEV_REMOTE_ROLE === "host" || process.env.OPENBOT_DEV_REMOTE_ROLE === "client")
-    ? process.env.OPENBOT_DEV_REMOTE_ROLE
+  (process.env.AIKINGBOT_DEV_REMOTE_ROLE === "host" || process.env.AIKINGBOT_DEV_REMOTE_ROLE === "client")
+    ? process.env.AIKINGBOT_DEV_REMOTE_ROLE
     : null;
-const developmentTestClientEnabled = !app.isPackaged && process.env.OPENBOT_DEV_TEST_CLIENT_ENABLED === "1";
+const developmentTestClientEnabled = !app.isPackaged && process.env.AIKINGBOT_DEV_TEST_CLIENT_ENABLED === "1";
 // Before any child process starts: this removes the single-use claim from the environment they inherit.
 const hostedServer = takeHostedServerEnvironment(process.env, app.isPackaged, process.platform);
 const hostingDeveloperKey = takeHostingDeveloperKey(process.env, app.isPackaged);
 const serverMode = takeServerModeEnvironment(process.env, app.isPackaged, process.platform);
 const inviteLinkOptions = {
   allowLocalDevelopmentApiUrl: developmentRemoteRole !== null,
-  selfHostedApiOrigin: selfHostedApiOrigin(process.env.OPENBOT_AUTH_API_URL),
+  selfHostedApiOrigin: selfHostedApiOrigin(process.env.AIKINGBOT_AUTH_API_URL),
 };
 const developmentRemoteDebuggingPort = !app.isPackaged
-  ? readDevelopmentRemoteDebuggingPort(process.env.OPENBOT_DEV_REMOTE_DEBUGGING_PORT)
+  ? readDevelopmentRemoteDebuggingPort(process.env.AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT)
   : null;
 // Electron exposes FedCM without an account chooser, so every request fails with a NetworkError.
 // Sites such as Google Sign-In use FedCM when it exists and fall back to their popup when it does not.
@@ -165,16 +165,16 @@ if (commandLineUserDataDirectory) {
       app.getPath("appData"),
       developmentUserDataName(
         developmentProfile ?? "app",
-        readDevelopmentInstanceId(process.env.OPENBOT_DEV_INSTANCE_ID),
+        readDevelopmentInstanceId(process.env.AIKINGBOT_DEV_INSTANCE_ID),
       ),
     ),
   );
 }
-app.setName("OpenBot");
+app.setName("AIKINGBOT");
 app.enableSandbox();
-if (process.platform === "win32") app.setAppUserModelId("app.openbot.desktop");
+if (process.platform === "win32") app.setAppUserModelId("app.aikingbot.desktop");
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
-const appVariant = readAppVariant(process.env.OPENBOT_APP_VARIANT, app.isPackaged);
+const appVariant = readAppVariant(process.env.AIKINGBOT_APP_VARIANT, app.isPackaged);
 if (!app.isPackaged) guardDevelopmentOutput([process.stdout, process.stderr], () => app.quit());
 const appIconPath = resolveAppIconPath({
   variant: appVariant,
@@ -185,42 +185,42 @@ const appIconPath = resolveAppIconPath({
 });
 protocol.registerSchemesAsPrivileged([
   {
-    scheme: "openbot-app",
+    scheme: "aikingbot-app",
     privileges: { standard: true, secure: true, supportFetchAPI: true },
   },
   // `stream` lets an <audio> or <video> element play a file from the scheme: without it the
   // element cannot make the range requests that playback needs.
   {
-    scheme: "openbot-attachment",
+    scheme: "aikingbot-attachment",
     privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true },
   },
   {
-    scheme: "openbot-remote-attachment",
+    scheme: "aikingbot-remote-attachment",
     privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true },
   },
   // A visual reply page. It needs no fetch or CORS support: only a frame loads it.
   {
-    scheme: "openbot-visual",
+    scheme: "aikingbot-visual",
     privileges: { standard: true, secure: true },
   },
   {
-    scheme: "openbot-remote-visual",
+    scheme: "aikingbot-remote-visual",
     privileges: { standard: true, secure: true },
   },
   {
-    scheme: "openbot-avatar",
+    scheme: "aikingbot-avatar",
     privileges: { standard: true, secure: true, supportFetchAPI: true },
   },
   {
-    scheme: "openbot-remote-avatar",
+    scheme: "aikingbot-remote-avatar",
     privileges: { standard: true, secure: true, supportFetchAPI: true },
   },
   {
-    scheme: "openbot-server-logo",
+    scheme: "aikingbot-server-logo",
     privileges: { standard: true, secure: true, supportFetchAPI: true },
   },
   {
-    scheme: "openbot-remote-server-logo",
+    scheme: "aikingbot-remote-server-logo",
     privileges: { standard: true, secure: true, supportFetchAPI: true },
   },
 ]);
@@ -257,7 +257,7 @@ type RendererDeepLink = Exclude<DeepLink, { kind: "mcp-auth" | "slack-workspace"
 let pendingDeepLink: RendererDeepLink | null = takeRendererDeepLink(findDeepLink(process.argv, inviteLinkOptions));
 let deepLinkReceiverReady = false;
 
-const MAIN_WINDOW_STATE_FILE = "openbot-main-window-state-v1.json";
+const MAIN_WINDOW_STATE_FILE = "aikingbot-main-window-state-v1.json";
 
 if (!app.isPackaged) {
   const quitAfterDevelopmentSignal = () => app.quit();
@@ -366,17 +366,17 @@ function applyAppIconColor(color: AppLogoColor): void {
 }
 
 /**
- * Outside macOS, closing the main window ends OpenBot.
+ * Outside macOS, closing the main window ends AIKINGBOT.
  *
  * `window-all-closed` cannot carry that on its own any more. The Computer Use overlays are hidden
  * between actions and closed only after a minute of idle, and a hidden window is still a window,
- * so the event may never arrive: the user would close the last window they can see and leave OpenBot
+ * so the event may never arrive: the user would close the last window they can see and leave AIKINGBOT
  * and the driver running with no way back to them.
  */
 function attachQuitOnMainWindowClose(window: BrowserWindow): void {
   if (process.platform === "darwin") return;
   window.on("closed", () => {
-    // `quit`, not a teardown of its own: `before-quit` below is what OpenBot shuts down through,
+    // `quit`, not a teardown of its own: `before-quit` below is what AIKINGBOT shuts down through,
     // and it already ignores a second request while the first one runs.
     app.quit();
   });
@@ -643,7 +643,7 @@ function requestDesktopNotificationPermission(
       preference,
       showWelcome: () => {
         if (!Notification.isSupported()) return;
-        showRetainedNotification(new Notification({ title: "OpenBot", body: translate("notification.welcome") }));
+        showRetainedNotification(new Notification({ title: "AIKINGBOT", body: translate("notification.welcome") }));
       },
     }),
   );
@@ -902,7 +902,7 @@ if (!hasSingleInstanceLock) {
     .whenReady()
     .then(async () => {
       // Startup marks for `dev:bench`, which reads them over the inspector. They change nothing.
-      performance.mark("openbot:when-ready");
+      performance.mark("aikingbot:when-ready");
       if (!(await Effect.runPromise(hostAllowsTenantLaunch()))) {
         app.quit();
         return;
@@ -917,8 +917,8 @@ if (!hasSingleInstanceLock) {
       // (`build/installer.nsh`), and each start writes it again for installs from before that script.
       // A Windows development build does not register: the handler would be bare `electron.exe`.
       // A macOS development build does not register either: macOS ignores the path and arguments and
-      // names the `com.github.Electron` bundle, so the link took `openbot://` from an installed
-      // OpenBot and opened some worktree's bare Electron.app. `bun run dev:slack` has a loopback return.
+      // names the `com.github.Electron` bundle, so the link took `aikingbot://` from an installed
+      // AIKINGBOT and opened some worktree's bare Electron.app. `bun run dev:slack` has a loopback return.
       await Effect.runPromise(
         installLinuxDesktopEntry({ platform: process.platform, environment: process.env, iconPath: appIconPath }),
       );
@@ -926,8 +926,8 @@ if (!hasSingleInstanceLock) {
         process.platform === "linux" ||
         ((process.platform === "darwin" || process.platform === "win32") && app.isPackaged)
       ) {
-        if (!app.setAsDefaultProtocolClient("openbot")) {
-          logger.warn("Unable to register the openbot:// scheme. Invitation links will not open OpenBot.");
+        if (!app.setAsDefaultProtocolClient("aikingbot")) {
+          logger.warn("Unable to register the aikingbot:// scheme. Invitation links will not open AIKINGBOT.");
         }
       }
       if (process.platform === "darwin") app.dock?.setIcon(appIconPath);
@@ -956,7 +956,7 @@ if (!hasSingleInstanceLock) {
         prepareForUpdateInstall,
       });
       services = built;
-      performance.mark("openbot:services-built");
+      performance.mark("aikingbot:services-built");
       // `forwardCentralAuth` reaches the host, the remote servers and analytics only through
       // `services`, so every account change announced during construction was dropped.
       // `createApplicationServices` bound the local host to the one state it read and attributed the
@@ -1112,7 +1112,7 @@ if (!hasSingleInstanceLock) {
         logger.error("Unable to initialize Dynamic Island:", toLogValue(error)),
       );
       await windows.loadRenderer(mainWindow);
-      performance.mark("openbot:renderer-loaded");
+      performance.mark("aikingbot:renderer-loaded");
       // `sendToRenderer` dropped the server changes made while the window loaded: the host list and
       // the connection of the selected server. The renderer can have read the list before them.
       forwardServers(remoteServers.list());
@@ -1147,7 +1147,7 @@ if (!hasSingleInstanceLock) {
         })
       ) {
         void runCauseEffect(built.centralAuthInitialization.pipe(Effect.flatMap(() => host.start()))).catch((error) =>
-          logger.error("Unable to republish this OpenBot:", toLogValue(error)),
+          logger.error("Unable to republish this AIKINGBOT:", toLogValue(error)),
         );
       }
       void runCauseEffect(built.agentInitialization.start()).catch((error) => {
@@ -1214,7 +1214,7 @@ if (!hasSingleInstanceLock) {
         return;
       }
       const message = error instanceof Error ? error.message : String(error);
-      logger.error("OpenBot failed to start:", toLogValue(error));
+      logger.error("AIKINGBOT failed to start:", toLogValue(error));
       // A server has nobody at its virtual display to close the box, and the box blocks the quit.
       if (!serverMode && !hostedServer) {
         // The services, and with them the saved language, may not exist yet. Then the system language applies.
@@ -1260,7 +1260,7 @@ const SHUTDOWN_DEADLINE_MS = 30_000;
 
 function forceExitAfterShutdownDeadline(): void {
   setTimeout(() => {
-    logger.error(`OpenBot did not quit within ${SHUTDOWN_DEADLINE_MS} ms and will exit now.`);
+    logger.error(`AIKINGBOT did not quit within ${SHUTDOWN_DEADLINE_MS} ms and will exit now.`);
     app.exit(0);
   }, SHUTDOWN_DEADLINE_MS);
 }

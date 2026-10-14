@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { Typography } from "heroui-native";
 import { ChevronDown } from "lucide-react-native";
 import { useEffect, useState } from "react";
@@ -69,12 +69,12 @@ interface PlanColors {
 
 function usePlanColors(): PlanColors {
   const [primary, muted, dim, border, track, canvas] = useCSSVariable([
-    "--openbot-text-primary",
-    "--openbot-text-muted",
-    "--openbot-text-dim",
-    "--openbot-border",
-    "--openbot-border-strong",
-    "--openbot-bg-native-canvas",
+    "--aikingbot-text-primary",
+    "--aikingbot-text-muted",
+    "--aikingbot-text-dim",
+    "--aikingbot-border",
+    "--aikingbot-border-strong",
+    "--aikingbot-bg-native-canvas",
   ]);
   return {
     primary: String(primary),

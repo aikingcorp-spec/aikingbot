@@ -2,12 +2,12 @@
  * Builds the boat named snapshot that hosted servers are created from:
  *
  *   BOAT_TEMPLATE_API_KEY=... bun scripts/hosting/build-boat-template.ts --version=0.9.0 \
- *     --appimage-url=https://.../OpenBot-0.9.0-x86_64.AppImage --appimage-sha256=<hex> \
+ *     --appimage-url=https://.../AIKINGBOT-0.9.0-x86_64.AppImage --appimage-sha256=<hex> \
  *     --auth-api-url=https://<test worker origin>
  *
  * It creates a builder sandbox with no account env, runs provision.sh there, checks the install,
- * saves the builder as `openbot-server-<version>`, and deletes the builder. The builder never starts
- * OpenBot, so the template holds no host identity and no session. The key needs sandbox, files,
+ * saves the builder as `aikingbot-server-<version>`, and deletes the builder. The builder never starts
+ * AIKINGBOT, so the template holds no host identity and no session. The key needs sandbox, files,
  * commands, and named snapshot access; the Worker's key must not have that access.
  */
 
@@ -15,27 +15,27 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, registerSecretValue, toLogValue } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, registerSecretValue, toLogValue } from "@aikingbot/logging";
 
-const logger = createOpenBotLogger("build-boat-template");
+const logger = createAIKINGBOTLogger("build-boat-template");
 const BOAT_API_URL = "https://boat.dev/api/v1";
 const TEMPLATE_FILES = [
   "provision.sh",
   "packages.txt",
-  "openbot-hosted-server",
-  "openbot-hosted-env",
-  "openbot-hosted-update",
-  "openbot",
-  "openbot-hosted.apparmor",
-  "openbot.service",
-  "openbot-update.service",
-  "openbot-update.timer",
-  "openbot-update-apply.service",
-  "openbot-update-request.path",
-  "openbot-update-request.service",
+  "aikingbot-hosted-server",
+  "aikingbot-hosted-env",
+  "aikingbot-hosted-update",
+  "aikingbot",
+  "aikingbot-hosted.apparmor",
+  "aikingbot.service",
+  "aikingbot-update.service",
+  "aikingbot-update.timer",
+  "aikingbot-update-apply.service",
+  "aikingbot-update-request.path",
+  "aikingbot-update-request.service",
 ];
-const REMOTE_DIRECTORY = "/tmp/openbot-template";
+const REMOTE_DIRECTORY = "/tmp/aikingbot-template";
 const READY_STATES = new Set(["ready", "idle", "running"]);
 const FAILED_STATES = new Set(["error", "cancelled", "archived"]);
 const hostingRoot = dirname(fileURLToPath(import.meta.url));
@@ -108,18 +108,18 @@ async function main(): Promise<void> {
       boat,
       builderId,
       [
-        "test -x /opt/OpenBot/app/openbot",
-        `test "$(sed -n 's/^X-AppImage-Version=//p' /opt/OpenBot/app/*.desktop)" = ${shellQuote(options.version)}`,
-        "systemctl is-enabled --quiet openbot.service",
-        "! systemctl is-active --quiet openbot.service",
+        "test -x /opt/AIKINGBOT/app/aikingbot",
+        `test "$(sed -n 's/^X-AppImage-Version=//p' /opt/AIKINGBOT/app/*.desktop)" = ${shellQuote(options.version)}`,
+        "systemctl is-enabled --quiet aikingbot.service",
+        "! systemctl is-active --quiet aikingbot.service",
         // With more than one unit, `is-enabled` passes when one of them is enabled.
-        "systemctl is-enabled --quiet openbot-update.timer",
-        "systemctl is-enabled --quiet openbot-update-apply.service",
-        "systemctl is-enabled --quiet openbot-update-request.path",
-        "! systemctl is-active --quiet openbot-update.timer",
-        'test ! -e "$HOME/.config/OpenBot"',
-        'test ! -e "$HOME/.config/openbot-hosted"',
-        'test -z "$(ls -A /srv/openbot-hosted)"',
+        "systemctl is-enabled --quiet aikingbot-update.timer",
+        "systemctl is-enabled --quiet aikingbot-update-apply.service",
+        "systemctl is-enabled --quiet aikingbot-update-request.path",
+        "! systemctl is-active --quiet aikingbot-update.timer",
+        'test ! -e "$HOME/.config/AIKINGBOT"',
+        'test ! -e "$HOME/.config/aikingbot-hosted"',
+        'test -z "$(ls -A /srv/aikingbot-hosted)"',
         `rm -rf ${REMOTE_DIRECTORY}`,
       ].join(" && "),
     );
@@ -291,7 +291,7 @@ function parseOptions(args: string[]): TemplateOptions {
   if (authApiUrl.protocol !== "https:") throw new Error("--auth-api-url must use HTTPS.");
   const name =
     args.find((argument) => argument.startsWith("--name="))?.slice(7) ??
-    `openbot-server-${version.replaceAll(".", "-")}`;
+    `aikingbot-server-${version.replaceAll(".", "-")}`;
   if (!/^[a-z0-9][a-z0-9-]{0,62}$/u.test(name)) throw new Error("--name must be a boat snapshot name.");
   return {
     name,

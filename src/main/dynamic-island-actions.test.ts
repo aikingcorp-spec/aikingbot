@@ -1,4 +1,4 @@
-import type { ConversationMessageSender } from "@openbot/contracts/ipc";
+import type { ConversationMessageSender } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 // @vitest-environment node
 

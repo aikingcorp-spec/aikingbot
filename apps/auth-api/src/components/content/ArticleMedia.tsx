@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { children, createSignal, onSettled, Show } from "solid-js";
 import { ArticleGradient } from "./ArticleGradient";

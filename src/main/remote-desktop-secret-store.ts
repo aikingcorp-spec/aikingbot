@@ -26,7 +26,7 @@ export const loadOrCreateRemoteDesktopCredentials = Effect.fn("RemoteDesktopCred
   if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) return yield* loaded.failure;
   const { credentials, encrypted } = yield* Effect.try({
     try: () => {
-      const credentials = { username: "openbot", password: randomBytes(32).toString("base64url") };
+      const credentials = { username: "aikingbot", password: randomBytes(32).toString("base64url") };
       return { credentials, encrypted: cipher.encrypt(JSON.stringify(credentials)) };
     },
     catch: (cause) => new PreferenceFileFailure({ cause }),

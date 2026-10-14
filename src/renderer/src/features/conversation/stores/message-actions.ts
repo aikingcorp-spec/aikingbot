@@ -2,11 +2,11 @@ import {
   attachmentReferenceIds,
   expandAttachmentReferences,
   removeAttachmentReferences,
-} from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { InstalledSkill, MessageReaction } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/attachment-references";
+import { expandChatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { InstalledSkill, MessageReaction } from "@aikingbot/contracts/ipc";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { currentText } from "@aikingbot/ui/text";
 import { desktopAnalytics } from "../../../analytics";
 import { writeClipboardText } from "../../../clipboard";
 import type { StoredQueueEdit } from "../composer-draft";

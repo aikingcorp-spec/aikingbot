@@ -1,5 +1,5 @@
-import type { AccountUsage, AgentStatus } from "@openbot/contracts/ipc";
-import type { TextValue } from "@openbot/ui/text";
+import type { AccountUsage, AgentStatus } from "@aikingbot/contracts/ipc";
+import type { TextValue } from "@aikingbot/ui/text";
 import { type Accessor, createEffect, createMemo, createSignal, onCleanup, untrack } from "solid-js";
 import type { WebWorkspace } from "./web-client-context";
 

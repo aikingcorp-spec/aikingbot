@@ -4,7 +4,7 @@ import { concatBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 
 /**
  * The host updates the iOS Live Activity through Apple Push Notification service while iOS suspends
- * the app. The update goes through the OpenBot relay and Apple, so the host seals it with keys that
+ * the app. The update goes through the AIKINGBOT relay and Apple, so the host seals it with keys that
  * only the phone and the host know, and the widget extension opens it.
  *
  * The widget extension runs plain JavaScript with no crypto library, so the seal uses only
@@ -30,7 +30,7 @@ export interface LiveActivityKeys {
 
 export function liveActivityKeys(secret: Uint8Array): LiveActivityKeys {
   if (secret.length !== LIVE_ACTIVITY_SECRET_BYTES) throw new Error("The Live Activity secret has a wrong size.");
-  const derive = (label: string) => hmac(sha256, secret, utf8ToBytes(`openbot live activity ${label}`));
+  const derive = (label: string) => hmac(sha256, secret, utf8ToBytes(`aikingbot live activity ${label}`));
   return { seal: derive("seal"), tag: derive("tag"), action: derive("action") };
 }
 
@@ -39,7 +39,7 @@ export function liveActivityKeys(secret: Uint8Array): LiveActivityKeys {
  * a host cannot seal content or sign a button link for another host.
  */
 export function liveActivityHostSecret(phoneSecret: Uint8Array, serverId: string): Uint8Array {
-  return hmac(sha256, phoneSecret, utf8ToBytes(`openbot live activity host ${serverId}`));
+  return hmac(sha256, phoneSecret, utf8ToBytes(`aikingbot live activity host ${serverId}`));
 }
 
 /** Seals `text` for the widget extension. Use a new random `nonce` for each seal. */

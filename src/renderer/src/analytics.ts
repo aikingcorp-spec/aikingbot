@@ -7,18 +7,18 @@ import {
   type AppInfo,
   type CentralAuthUser,
   isAgentModel,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isFunction, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
+} from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord, isFunction, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { normalizeEmailAddress } from "@aikingbot/contracts/validation";
 import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
 import { configureDesktopReports, configureErrorReports } from "./error-reports";
 import { MARKETPLACE_PLUGINS } from "./features/settings/marketplace-plugin-catalog";
 
-export const OPENPANEL_API_URL = "https://analytics.openbot.run/api";
+export const OPENPANEL_API_URL = "https://analytics.aikingbot.aikingx.com/api";
 const OPENPANEL_CLIENT_ID = "6c989975-87ef-4f0c-857e-ab449a65b5c2";
 const MAX_PENDING_EVENTS = 100;
 const ANALYTICS_SCHEMA_VERSION = 7;
-const CURATED_LISTING_PATTERN = /^openbot-curated-(?:skill|agent)-([a-z0-9][a-z0-9-]{0,63})$/u;
+const CURATED_LISTING_PATTERN = /^aikingbot-curated-(?:skill|agent)-([a-z0-9][a-z0-9-]{0,63})$/u;
 const PLUGIN_SLUGS = new Set(MARKETPLACE_PLUGINS.map((plugin) => plugin.slug));
 
 type ServerKind = "local" | "remote" | "unknown";
@@ -132,7 +132,7 @@ export interface DesktopAnalyticsEvents {
     action: "view" | "install" | "update" | "uninstall" | "publish" | "enable" | "disable";
     result: AnalyticsResult;
     failure_code?: string;
-    /** A listing id or plugin slug. Only OpenBot's own curated listings and plugins are sent. */
+    /** A listing id or plugin slug. Only AIKINGBOT's own curated listings and plugins are sent. */
     listing_slug?: string;
   };
   memory_action: {

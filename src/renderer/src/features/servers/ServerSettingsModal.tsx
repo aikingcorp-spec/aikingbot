@@ -8,9 +8,9 @@ import type {
   TeamInviteSummary,
   TeamPresenceMember,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { classifyFailure } from "@openbot/telemetry";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { classifyFailure } from "@aikingbot/telemetry";
 import {
   Alert,
   AlertActions,
@@ -34,16 +34,16 @@ import {
   Tabs,
   Text,
   UsersRound,
-} from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { BitwardenConnectorPanelProps } from "@openbot/ui/features/settings/BitwardenConnectorPanel";
-import { SaveBarDock, SettingsDialogShell } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { SettingsHostedSitesTab } from "@openbot/ui/features/settings/SettingsHostedSitesTab";
+} from "@aikingbot/ui";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import type { BitwardenConnectorPanelProps } from "@aikingbot/ui/features/settings/BitwardenConnectorPanel";
+import { SaveBarDock, SettingsDialogShell } from "@aikingbot/ui/features/settings/SettingsDialogShell";
+import { SettingsHostedSitesTab } from "@aikingbot/ui/features/settings/SettingsHostedSitesTab";
 import {
   createSettingsHostedSitesStore,
   type HostedSiteDeleteResult,
-} from "@openbot/ui/features/settings/stores/hosted-sites-store";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/settings/stores/hosted-sites-store";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { ConnectorsPanel, type ConnectorsPanelDetail } from "../connectors/ConnectorsPanel";
@@ -98,7 +98,7 @@ export interface ServerSettingsModalProps {
    * The Remove section appears only when a caller supplies this.
    */
   onRemoveServer?: (() => Promise<void>) | undefined;
-  /** Opens the macOS pane that grants OpenBot screen recording, for the host that was refused it. */
+  /** Opens the macOS pane that grants AIKINGBOT screen recording, for the host that was refused it. */
   onOpenScreenRecordingSettings: () => Promise<void>;
   /** Asks the host to read the grant again, so the owner who gave it sees the warning go. */
   onRecheckScreenRecording: () => Promise<void>;

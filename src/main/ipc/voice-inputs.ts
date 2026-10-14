@@ -10,8 +10,8 @@ import {
   type VoiceStream,
   type VoiceStreamAudio,
   type VoiceTranscriptionInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { isObject } from "./validation";
 
 export function parseVoiceTranscription(input: unknown): VoiceTranscriptionInput {

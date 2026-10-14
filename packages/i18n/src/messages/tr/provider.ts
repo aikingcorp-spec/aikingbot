@@ -31,7 +31,7 @@ export const messages = {
 
   "provider.status.off": "Kapalı",
   "provider.gemini.hostSignIn":
-    "Gemini'yi bağlamak için ana makinede OpenBot'u açın ve Ayarlar > Sağlayıcılar bölümünde Bağlan'ı seçin. Google ile oturum açmak için o ana makinede bir tarayıcı gerekir. Uzaktan oturum açma desteklenmez.",
+    "Gemini'yi bağlamak için ana makinede AIKINGBOT'u açın ve Ayarlar > Sağlayıcılar bölümünde Bağlan'ı seçin. Google ile oturum açmak için o ana makinede bir tarayıcı gerekir. Uzaktan oturum açma desteklenmez.",
   "provider.key.free": "Ücretsiz",
 
   "provider.action.connect": "Bağlan",
@@ -57,19 +57,19 @@ export const messages = {
   "provider.aria.cancelSignIn": "{name} oturum açmasını iptal et",
   "provider.aria.apiKey": "{name} API anahtarı",
   "provider.connecting.browserHint": "Bir tarayıcı sayfası açılırsa oturum açmayı tamamlayın.",
-  "provider.connecting.cancelFailed": "OpenBot, {name} oturum açma işlemini iptal edemedi. Yeniden deneyin.",
+  "provider.connecting.cancelFailed": "AIKINGBOT, {name} oturum açma işlemini iptal edemedi. Yeniden deneyin.",
   "provider.aria.install": "{name} sağlayıcısını yükle",
   "provider.aria.signIn": "{name} giriş yap",
   "provider.aria.codeFallback": "{name} için kod ile giriş yap",
   "provider.aria.moreActions": "{name} için diğer eylemler",
 
-  "provider.aria.use": "OpenBot'ta {name} kullan",
+  "provider.aria.use": "AIKINGBOT'ta {name} kullan",
   "provider.use.inUse": {
     one: "{agents}, {name} kullanıyor. Bu ajanın modelini değiştirin, ardından {name} sağlayıcısını kapatın.",
     other: "{agents}, {name} kullanıyor. Bu ajanların modelini değiştirin, ardından {name} sağlayıcısını kapatın.",
   },
   "provider.codeLogin.title": "Bir kod ile {name} hesabına giriş yapın",
-  "provider.codeLogin.description": "Telefonunuzda veya başka bir tarayıcıda tamamlayın. OpenBot burada bekler.",
+  "provider.codeLogin.description": "Telefonunuzda veya başka bir tarayıcıda tamamlayın. AIKINGBOT burada bekler.",
   "provider.codeLogin.starting": "{name} kaynağından bir kod alınıyor…",
   "provider.codeLogin.qrLabel": "{name} giriş sayfası için QR kodu",
   "provider.codeLogin.open": "Aç",
@@ -90,10 +90,10 @@ export const messages = {
   "provider.codeLogin.pageDescription": "Bu sayfa {host} üzerindeki tarayıcıda açık. Burada oturum açın.",
   "provider.codeLogin.relayStarting": "{name} oturum açma işlemi {host} üzerinde başlatılıyor…",
   "provider.codeLogin.pageOpening": "{name} oturum açma sayfası {host} üzerinde açılıyor…",
-  "provider.codeLogin.linkStep": "{name} hesabına giriş yapın. OpenBot kendiliğinden devam eder.",
-  "provider.useApp.title": "{name} bağlantısını OpenBot uygulamasında yapın",
+  "provider.codeLogin.linkStep": "{name} hesabına giriş yapın. AIKINGBOT kendiliğinden devam eder.",
+  "provider.useApp.title": "{name} bağlantısını AIKINGBOT uygulamasında yapın",
   "provider.useApp.description":
-    "{name} girişi onu başlatan bilgisayara döner ve bir tarayıcı sekmesi bunu alamaz. {name} bağlantısını OpenBot uygulamasında yapın. Uygulama girişi kendiliğinden tamamlar.",
+    "{name} girişi onu başlatan bilgisayara döner ve bir tarayıcı sekmesi bunu alamaz. {name} bağlantısını AIKINGBOT uygulamasında yapın. Uygulama girişi kendiliğinden tamamlar.",
   "provider.useApp.download": "Uygulamayı indir",
 
   "provider.picker.noEndpoints": "Henüz uç nokta yok",

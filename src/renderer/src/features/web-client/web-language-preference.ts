@@ -1,7 +1,7 @@
-import { type AppLanguage, DEFAULT_APP_LANGUAGE, isAppLanguage } from "@openbot/contracts/app-language";
+import { type AppLanguage, DEFAULT_APP_LANGUAGE, isAppLanguage } from "@aikingbot/contracts/app-language";
 import { createSignal, onCleanup } from "solid-js";
 
-const STORAGE_KEY = "openbot.web.language";
+const STORAGE_KEY = "aikingbot.web.language";
 
 type LanguageStorage = Pick<Storage, "getItem" | "setItem">;
 

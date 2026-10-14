@@ -22,30 +22,30 @@ import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "./runti
 export const MCP_SERVERS_CAPABILITY = "mcp-servers-v1";
 
 /**
- * The names OpenBot gives its own in-process bridge servers (`claude-client.ts`). A user
+ * The names AIKINGBOT gives its own in-process bridge servers (`claude-client.ts`). A user
  * configuration may not take either one: on Claude the record key would collide, and on the other
  * providers the agent would be offered two servers with one name.
  */
-export const RESERVED_MCP_SERVER_NAMES = ["openbot", "openbot_browser"] as const;
+export const RESERVED_MCP_SERVER_NAMES = ["aikingbot", "aikingbot_browser"] as const;
 
 /**
- * The name and id OpenBot gives the Computer Use driver when it hands it to a provider.
+ * The name and id AIKINGBOT gives the Computer Use driver when it hands it to a provider.
  *
- * Deliberately not in `RESERVED_MCP_SERVER_NAMES`. That list means "OpenBot's own in-process
+ * Deliberately not in `RESERVED_MCP_SERVER_NAMES`. That list means "AIKINGBOT's own in-process
  * bridges, which never leave this process", and `usableMcpServers` uses it as a drop filter. This
  * server does leave: it is a real stdio command the provider spawns, so putting the name there
  * would delete the entry on its way out. A user still may not take the name, which
  * `mcpConfigErrors` enforces on its own below.
  */
 export const COMPUTER_USE_MCP_SERVER_NAME = "computer_use";
-export const COMPUTER_USE_MCP_SERVER_ID = "openbot-computer-use";
+export const COMPUTER_USE_MCP_SERVER_ID = "aikingbot-computer-use";
 
 /**
  * The id and address of the GitHub MCP server that the built-in GitHub connection hands to agents.
  * The name is the one the retired GitHub plugin gave its row, so a row the user added keeps its
  * place: when an enabled row has this name, the built-in entry is not added.
  */
-export const GITHUB_CONNECTOR_MCP_SERVER_ID = "openbot-github";
+export const GITHUB_CONNECTOR_MCP_SERVER_ID = "aikingbot-github";
 export const GITHUB_CONNECTOR_MCP_SERVER_NAME = "github";
 export const GITHUB_CONNECTOR_MCP_SERVER_URL = "https://api.githubcopilot.com/mcp/";
 
@@ -84,7 +84,7 @@ export interface McpServerConfig {
  * What one test connection found: the tools the server offered, or the sentence that says why it
  * did not answer.
  *
- * Nothing stores this. OpenBot connects only when the user asks it to, because a connection is not
+ * Nothing stores this. AIKINGBOT connects only when the user asks it to, because a connection is not
  * free - an http server can want an OAuth sign-in, a cold `npx` can take a minute, and a server can
  * do real work at startup. A stored result would also be a claim about right now that nothing keeps
  * true. The providers make their own connections when an agent starts.
@@ -214,7 +214,7 @@ export function mcpConfigErrors(config: McpServerConfig): McpConfigErrors {
   else if (name.length > INPUT_LIMITS.mcpServerName)
     errors.name = `Use ${INPUT_LIMITS.mcpServerName} characters or fewer for the name.`;
   else if (isReservedMcpServerName(name) || name.toLowerCase() === COMPUTER_USE_MCP_SERVER_NAME)
-    errors.name = `OpenBot already uses the name ${name}.`;
+    errors.name = `AIKINGBOT already uses the name ${name}.`;
   if (config.transport === "stdio") {
     if (!config.command.trim()) errors.command = "Enter the command that launches this server.";
     return errors;
@@ -342,7 +342,7 @@ const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost"]);
 
 /**
  * The loopback address that a sign-in page sends the browser back to, or `null`. A sign-in that returns
- * to another address, such as `openbot://`, has no callback to listen for. The host names it, and the
+ * to another address, such as `aikingbot://`, has no callback to listen for. The host names it, and the
  * client reads it again from the page it opens, so a host cannot name a port that the page does not use.
  */
 export function loopbackCallback(pageUrl: string): NonNullable<SignInRelayStatus["callback"]> | null {

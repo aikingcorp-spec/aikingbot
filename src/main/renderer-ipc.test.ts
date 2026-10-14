@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { IPC_ENDPOINTS, type VoiceModelStatus } from "@openbot/contracts/ipc";
+import { IPC_ENDPOINTS, type VoiceModelStatus } from "@aikingbot/contracts/ipc";
 import { describe, expect, it, vi } from "vitest";
 import { type RendererIpcWindow, sendToRenderer } from "./renderer-ipc";
 

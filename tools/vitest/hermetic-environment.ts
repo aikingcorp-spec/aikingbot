@@ -3,7 +3,7 @@ import { join } from "node:path";
 // What a test process may inherit from the shell that started it.
 //
 // A developer runs the suite from a shell that holds provider keys, a real home
-// directory with `~/OpenBot` and the app profile under it, and sometimes the
+// directory with `~/AIKINGBOT` and the app profile under it, and sometimes the
 // environment of a coding agent. None of that may reach a test: a key lets a
 // fake-provider test call a real provider, and a real home lets a path bug write
 // into the developer's own conversations. Every profile path is derived from

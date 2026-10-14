@@ -1,8 +1,8 @@
 import {
   PUSH_NOTIFICATIONS_CAPABILITY,
   PUSH_NOTIFICATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notifications-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { readPushRegistration } from "../push-notification-store";
 import type { PushNotificationService } from "../push-notifications";
 import { HttpError } from "./http-error";

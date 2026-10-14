@@ -1,6 +1,6 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { isUpdateActivePhase, isUpdateBusyPhase } from "@openbot/contracts/ipc";
-import { Button, Download, RefreshCw, Spinner } from "@openbot/ui";
+import type { UpdateStatus } from "@aikingbot/contracts/ipc";
+import { isUpdateActivePhase, isUpdateBusyPhase } from "@aikingbot/contracts/ipc";
+import { Button, Download, RefreshCw, Spinner } from "@aikingbot/ui";
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js";
 import { createDigitRoll } from "../../digit-roll";
 import { useText } from "../../text";
@@ -11,7 +11,7 @@ import { rendererDuration } from "../conversation/activity-timing";
 // it is built from; keep this in step with `--panel-close-dur` in
 // account-update-island.css.
 function islandCloseDuration(): number {
-  return rendererDuration("--openbot-duration-slow", 200) + rendererDuration("--openbot-duration-normal", 160);
+  return rendererDuration("--aikingbot-duration-slow", 200) + rendererDuration("--aikingbot-duration-normal", 160);
 }
 
 interface AccountUpdateIslandProps {

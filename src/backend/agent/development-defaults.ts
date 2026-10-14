@@ -1,4 +1,4 @@
-import type { AgentModelId, AgentModelOption, AgentProviderId, AgentReasoningEffort } from "@openbot/contracts/ipc";
+import type { AgentModelId, AgentModelOption, AgentProviderId, AgentReasoningEffort } from "@aikingbot/contracts/ipc";
 
 /**
  * What a new agent starts on in a development build, in place of the built-in `codex` default.
@@ -21,7 +21,7 @@ export const DEVELOPMENT_DEFAULT_REASONING_EFFORT: AgentReasoningEffort = "mediu
  *
  * Two conditions, because the catalog alone does not say a model can answer. `opencode-go/` is the
  * paid tier: without an OpenCode Go key, and without the user's own OpenCode sign-in, the CLI lists
- * the free tier only -- but a CLI that lists the Go catalog from a sign-in OpenBot cannot see is
+ * the free tier only -- but a CLI that lists the Go catalog from a sign-in AIKINGBOT cannot see is
  * still one whose provider has to be installed, current and signed in before an agent reaches it.
  * A model that fails either test is not a default, it is a first turn that answers
  * "Invalid API key.".

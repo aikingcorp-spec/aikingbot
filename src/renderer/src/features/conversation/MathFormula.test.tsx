@@ -1,4 +1,4 @@
-import { MarkdownMessageText } from "@openbot/ui/features/conversation/MarkdownMessageText";
+import { MarkdownMessageText } from "@aikingbot/ui/features/conversation/MarkdownMessageText";
 import { render } from "@solidjs/testing-library";
 import { expect, it, vi } from "vitest";
 

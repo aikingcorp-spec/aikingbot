@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/ui",
+  "name": "@aikingbot/ui",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -147,8 +147,8 @@
     "./features/custom-providers/ProviderDetectionSettings": "./src/features/custom-providers/ProviderDetectionSettings.tsx",
     "./features/custom-providers/custom-acp-agent-form": "./src/features/custom-providers/custom-acp-agent-form.ts",
     "./features/custom-providers/custom-provider-presets": "./src/features/custom-providers/custom-provider-presets.ts",
-    "./features/dynamic-island/OpenBotDynamicIsland": "./src/features/dynamic-island/OpenBotDynamicIsland.tsx",
-    "./features/dynamic-island/openbot-dynamic-island-motion": "./src/features/dynamic-island/openbot-dynamic-island-motion.ts",
+    "./features/dynamic-island/AIKINGBOTDynamicIsland": "./src/features/dynamic-island/AIKINGBOTDynamicIsland.tsx",
+    "./features/dynamic-island/aikingbot-dynamic-island-motion": "./src/features/dynamic-island/aikingbot-dynamic-island-motion.ts",
     "./features/remote-desktop/RemoteCompatibilityScreen": "./src/features/remote-desktop/RemoteCompatibilityScreen.tsx",
     "./features/servers/AddServerDialog": "./src/features/servers/AddServerDialog.tsx",
     "./features/servers/HostedServerPricing": "./src/features/servers/HostedServerPricing.tsx",
@@ -329,16 +329,16 @@
     "./features/conversation/ConversationHeader": "./src/features/conversation/ConversationHeader.tsx"
   },
   "dependencies": {
-    "@openbot/contracts": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
     "@kobalte/core": "catalog:",
     "class-variance-authority": "catalog:",
     "lucide-solid": "catalog:",
     "solid-sonner": "catalog:",
     "solid-recharts": "catalog:",
     "qrcode": "catalog:",
-    "@openbot/brand": "workspace:*",
-    "@openbot/team-client": "workspace:*",
-    "@openbot/user-errors": "workspace:*",
+    "@aikingbot/brand": "workspace:*",
+    "@aikingbot/team-client": "workspace:*",
+    "@aikingbot/user-errors": "workspace:*",
     "@norbert_bodziony/bloub": "catalog:",
     "@speed-highlight/core": "catalog:",
     "fflate": "catalog:",
@@ -347,8 +347,8 @@
     "mermaid": "catalog:",
     "@tanstack/virtual-core": "catalog:",
     "zod": "catalog:",
-    "@openbot/i18n": "workspace:*",
-    "@openbot/telemetry": "workspace:*"
+    "@aikingbot/i18n": "workspace:*",
+    "@aikingbot/telemetry": "workspace:*"
   },
   "peerDependencies": {
     "solid-js": "2.0.0-rc.0",

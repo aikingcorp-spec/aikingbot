@@ -1,4 +1,4 @@
-import { createSlackWorkspaceKeyPair, openSlackWorkspaceGrant } from "@openbot/contracts/slack-workspace-grant";
+import { createSlackWorkspaceKeyPair, openSlackWorkspaceGrant } from "@aikingbot/contracts/slack-workspace-grant";
 import { describe, expect, it, vi } from "vitest";
 import { runApiEffect } from "../src/server/effect-runtime";
 import { SlackAppService } from "../src/server/slack-app";
@@ -6,13 +6,13 @@ import { migratedDatabase, sqliteD1 } from "./sqlite-d1";
 
 const owner = { id: "owner", email: "owner@example.com", name: null, avatarUrl: null };
 const other = { id: "other", email: "other@example.com", name: null, avatarUrl: null };
-const redirectUri = "https://openbot.run/v2/slack/callback";
+const redirectUri = "https://aikingbot.aikingx.com/v2/slack/callback";
 const secrets = { SLACK_CLIENT_ID: "client", SLACK_CLIENT_SECRET: "secret", SLACK_STATE_SECRET: "s".repeat(32) };
 
 // The bot token reads and writes a whole workspace, and the workspace link decides which computer
 // gets its messages. The Worker must never return the token in clear, must not act on a state it did
 // not sign, and must not let another account take a workspace from its host.
-describe("OpenBot Slack app install", () => {
+describe("AIKINGBOT Slack app install", () => {
   it("seals the bot token to the host that asked and links the workspace to that host", async () => {
     const { service, database, fetch } = setup();
     const host = await createSlackWorkspaceKeyPair();

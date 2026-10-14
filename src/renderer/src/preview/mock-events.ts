@@ -1,10 +1,10 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 import type {
   EventRoutine,
   EventRoutineOwner,
   EventStatus,
   SaveEventRoutineInput,
-} from "@openbot/contracts/ipc-events";
+} from "@aikingbot/contracts/ipc-events";
 import { clone } from "./mock-support";
 
 function sameOwner(left: EventRoutineOwner, right: EventRoutineOwner): boolean {
@@ -17,7 +17,7 @@ function mockSecret(): string {
 }
 
 /** The preview host's event routines. Like the real host, it makes each webhook URL and secret itself. */
-export function createMockEvents(): OpenBotDesktopApi["events"] {
+export function createMockEvents(): AIKINGBOTDesktopApi["events"] {
   let routines: EventRoutine[] = [];
   let sequence = 0;
   const status: EventStatus = { supported: true, connected: true };
@@ -43,7 +43,7 @@ export function createMockEvents(): OpenBotDesktopApi["events"] {
         timezone: input.timezone,
         trigger:
           input.trigger.kind === "webhook"
-            ? { ...clone(input.trigger), url: `https://hooks.example.test/openbot/${id}` }
+            ? { ...clone(input.trigger), url: `https://hooks.example.test/aikingbot/${id}` }
             : clone(input.trigger),
         ...(input.limitPolicy === undefined ? {} : { limitPolicy: input.limitPolicy }),
         ...(input.missedPolicy === undefined ? {} : { missedPolicy: input.missedPolicy }),

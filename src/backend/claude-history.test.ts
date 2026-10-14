@@ -10,7 +10,7 @@ import { claudeHistoryReader } from "./claude-history";
 import { isRecord } from "./protocol";
 
 const SESSION_ID = "123e4567-e89b-12d3-a456-426614174000";
-const PROJECT_DIR = "/openbot-history-fixture";
+const PROJECT_DIR = "/aikingbot-history-fixture";
 
 const roots: string[] = [];
 
@@ -53,9 +53,9 @@ function record(input: TranscriptFixture, newline = true): string {
 async function fixture(
   lines: string,
 ): Promise<{ root: string; path: string; reader: ReturnType<typeof claudeHistoryReader> }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-claude-history-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-claude-history-test-"));
   roots.push(root);
-  const project = join(root, "projects", "-openbot-history-fixture");
+  const project = join(root, "projects", "-aikingbot-history-fixture");
   await mkdir(project, { recursive: true });
   const path = join(project, `${SESSION_ID}.jsonl`);
   await writeFile(path, lines);
@@ -65,7 +65,7 @@ async function fixture(
     reader: claudeHistoryReader({
       configDirectory: root,
       indexDirectory: join(root, "state"),
-      projectDirectoryName: "-openbot-history-fixture",
+      projectDirectoryName: "-aikingbot-history-fixture",
     }),
   };
 }

@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { z } from "zod";
 
 const memoryId = z.string().min(1).max(INPUT_LIMITS.identifier);

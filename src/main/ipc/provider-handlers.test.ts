@@ -11,10 +11,10 @@ const { parseProviderApiKeyInput, parseProviderUseInput } = await import("./prov
 /*
  * The only place a renderer-supplied secret enters the main process. Everything this decoder accepts
  * is handed to the operating system's cipher and written to disk, so each rule is a limit on what
- * OpenBot agrees to keep.
+ * AIKINGBOT agrees to keep.
  */
 describe("parseProviderApiKeyInput", () => {
-  it("takes a key for a provider OpenBot knows", () => {
+  it("takes a key for a provider AIKINGBOT knows", () => {
     expect(parseProviderApiKeyInput({ provider: "opencode", key: "  zen-key-value  " })).toEqual({
       provider: "opencode",
       // Trimmed, because a key pasted from a web page carries the newline with it and the CLI

@@ -1,5 +1,5 @@
-import type { AppInfo } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { AppInfo } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { OpenPanelBase } from "@openpanel/web";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -11,7 +11,7 @@ import {
 } from "./analytics";
 
 const PRODUCTION_APP: AppInfo = {
-  name: "OpenBot",
+  name: "AIKINGBOT",
   version: "1.2.3",
   platform: "darwin",
   variant: "production",
@@ -299,8 +299,8 @@ describe("desktop analytics", () => {
         result: "succeeded",
         listing_slug,
       }).listing_slug;
-    expect(listing("openbot-curated-skill-pdf")).toBe("pdf");
-    expect(listing("openbot-curated-agent-chief-of-staff")).toBe("chief-of-staff");
+    expect(listing("aikingbot-curated-skill-pdf")).toBe("pdf");
+    expect(listing("aikingbot-curated-agent-chief-of-staff")).toBe("chief-of-staff");
     expect(listing("linear")).toBe("linear");
     expect(listing("4f1c2a8e-9b7d-4c3e-8a1f-2d6e5b9c0a7f")).toBeUndefined();
     expect(listing("my-private-plugin")).toBeUndefined();

@@ -5,12 +5,12 @@ import type {
   CreateAgentMemoryInput,
   DeleteAgentMemoryInput,
   UpdateAgentMemoryInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import type { Mock } from "vitest";
 import { afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
 import { type AnalyticsEventName, type DesktopAnalyticsEvents, desktopAnalytics } from "../../analytics";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { AgentMemoriesModal } from "./AgentMemoriesModal";
 import { agentMemoriesPort } from "./memories-port";
 
@@ -31,7 +31,7 @@ let createMemory: Mock<(input: CreateAgentMemoryInput) => Promise<AgentMemory>>;
 let updateMemory: Mock<(input: UpdateAgentMemoryInput) => Promise<AgentMemory>>;
 let deleteMemory: Mock<(input: DeleteAgentMemoryInput) => Promise<void>>;
 let clearMemories: Mock<(agentId: string) => Promise<void>>;
-let activeMock: MockOpenBotControls | undefined;
+let activeMock: MockAIKINGBOTControls | undefined;
 const trackMemoryAnalytics = vi.fn();
 
 function trackScopedMemoryAnalytics<Name extends AnalyticsEventName>(
@@ -78,7 +78,7 @@ beforeEach(() => {
     memoryState = memoryState.filter((item) => item.agentId !== agentId);
   });
 
-  activeMock = createMockOpenBot();
+  activeMock = createMockAIKINGBOT();
   activeMock.api.agent.listMemories = listMemories;
   activeMock.api.agent.getMemorySelection = vi.fn(async () => null);
   activeMock.api.agent.createMemory = createMemory;
@@ -89,7 +89,7 @@ beforeEach(() => {
     emitAgentEvent = listener;
     return () => undefined;
   });
-  window.openbot = activeMock.api;
+  window.aikingbot = activeMock.api;
 });
 
 describe("AgentMemoriesModal", () => {
@@ -100,8 +100,8 @@ describe("AgentMemoriesModal", () => {
       usedBytes: 0,
       budgetBytes: 8192,
     };
-    window.openbot.agent.getMemorySelection = vi.fn(async () => state);
-    const saveSelection = vi.fn<typeof window.openbot.agent.setMemoryInclusion>(async ({ changes }) => {
+    window.aikingbot.agent.getMemorySelection = vi.fn(async () => state);
+    const saveSelection = vi.fn<typeof window.aikingbot.agent.setMemoryInclusion>(async ({ changes }) => {
       const change = changes[0];
       const previous = state.selections[0];
       assert(change && previous);
@@ -118,7 +118,7 @@ describe("AgentMemoriesModal", () => {
       };
       return state;
     });
-    window.openbot.agent.setMemoryInclusion = saveSelection;
+    window.aikingbot.agent.setMemoryInclusion = saveSelection;
     render(() => (
       <AgentMemoriesModal
         port={agentMemoriesPort("chief", "Chief", 64)}

@@ -5,7 +5,7 @@ import { Effect } from "effect";
 // deliberate and frozen by `storage-v1`: every member reads sizes, chat titles and file names;
 // only an owner or an admin deletes a file or clears caches and logs.
 
-import { decodeStorageUsage, type GetStorageUsageInput, type StorageUsage } from "@openbot/contracts/ipc";
+import { decodeStorageUsage, type GetStorageUsageInput, type StorageUsage } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { StorageNotFoundError } from "../backend/storage-usage";
 import { createTeamApiFixture, stopTeamApiFixtures, type TeamApiOptions } from "./team-api-server-test-harness";
@@ -79,8 +79,8 @@ describe("Team API storage access", () => {
     const { base } = await fixture.start({ storage });
     const headers = {
       Authorization: `Bearer ${await fixture.signIn()}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "storage-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "storage-v1",
       "Content-Type": "application/json",
     };
     const invite = await Effect.runPromise(fixture.store.createInvite("member"));
@@ -91,7 +91,7 @@ describe("Team API storage access", () => {
 
     // Without the capability the routes answer 400: the connection did not ask for the feature.
     expect(
-      (await post("/v1/storage/usage", { scope: "host" }, { ...headers, "OpenBot-Capabilities": "" })).status,
+      (await post("/v1/storage/usage", { scope: "host" }, { ...headers, "AIKINGBOT-Capabilities": "" })).status,
     ).toBe(400);
 
     const read = await post("/v1/storage/usage", { scope: "host", force: true }, asMember);

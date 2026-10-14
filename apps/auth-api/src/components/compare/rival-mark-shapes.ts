@@ -13,7 +13,7 @@
 // no mark apart from the OpenAI blossom. Antigravity is the arch from the icon.svg that
 // Google LLC gave to the ACP registry (agentclientprotocol/registry, antigravity-acp).
 
-import { CLAUDE_PATH, CODEX_PATH, CURSOR_PATH } from "@openbot/brand/provider-logo-shape";
+import { CLAUDE_PATH, CODEX_PATH, CURSOR_PATH } from "@aikingbot/brand/provider-logo-shape";
 
 export type RivalMarkName =
   | "antigravity"

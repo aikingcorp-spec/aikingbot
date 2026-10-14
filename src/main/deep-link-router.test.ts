@@ -1,11 +1,14 @@
-import { createAgentTemplateShareUrl, createOpenBotAgentTemplateUrl } from "@openbot/contracts/agent-template-links";
-import { createInviteUrl } from "@openbot/contracts/invite-links";
-import { createOpenBotPluginUrl, createPluginShareUrl } from "@openbot/contracts/plugin-links";
+import {
+  createAgentTemplateShareUrl,
+  createAIKINGBOTAgentTemplateUrl,
+} from "@aikingbot/contracts/agent-template-links";
+import { createInviteUrl } from "@aikingbot/contracts/invite-links";
+import { createAIKINGBOTPluginUrl, createPluginShareUrl } from "@aikingbot/contracts/plugin-links";
 import { describe, expect, it } from "vitest";
 import { findDeepLink, MCP_OAUTH_REDIRECT_URL, parseDeepLink } from "./deep-link-router";
 
 const invitePayload = {
-  apiUrl: "https://studio-mac-k7m4q2pz-host.openbot.run/",
+  apiUrl: "https://studio-mac-k7m4q2pz-host.aikingbot.aikingx.com/",
   serverId: "00000000-0000-4000-8000-000000000000",
   fingerprint: "a".repeat(43),
   token: "b".repeat(43),
@@ -18,22 +21,22 @@ describe("the deep link router", () => {
   });
 
   it("reads a plugin link in both of its forms", () => {
-    expect(parseDeepLink(createOpenBotPluginUrl("aave"))).toEqual({ kind: "plugin", slug: "aave" });
+    expect(parseDeepLink(createAIKINGBOTPluginUrl("aave"))).toEqual({ kind: "plugin", slug: "aave" });
     expect(parseDeepLink(createPluginShareUrl("aave"))).toEqual({ kind: "plugin", slug: "aave" });
   });
 
   it("reads an agent template link in both of its forms", () => {
     const id = "Ab3_-xYz0123456789abcd";
-    expect(parseDeepLink(createOpenBotAgentTemplateUrl(id))).toEqual({ kind: "agent-template", id });
+    expect(parseDeepLink(createAIKINGBOTAgentTemplateUrl(id))).toEqual({ kind: "agent-template", id });
     expect(parseDeepLink(createAgentTemplateShareUrl(id))).toEqual({ kind: "agent-template", id });
-    expect(parseDeepLink(`${createOpenBotAgentTemplateUrl(id)}?code=grant-abc&state=run-xyz`)).toBeNull();
-    expect(parseDeepLink("openbot://agents/short")).toBeNull();
+    expect(parseDeepLink(`${createAIKINGBOTAgentTemplateUrl(id)}?code=grant-abc&state=run-xyz`)).toBeNull();
+    expect(parseDeepLink("aikingbot://agents/short")).toBeNull();
   });
 
   it.each([
-    ["an unknown openbot:// host", "openbot://something-else/aave"],
-    ["a bare scheme", "openbot://"],
-    ["an ordinary web page", "https://openbot.run/news"],
+    ["an unknown aikingbot:// host", "aikingbot://something-else/aave"],
+    ["a bare scheme", "aikingbot://"],
+    ["an ordinary web page", "https://aikingbot.aikingx.com/news"],
     ["a command-line argument", "--enable-logging"],
     ["an empty string", ""],
   ])("gives nothing for %s", (_reason, value) => {
@@ -44,7 +47,7 @@ describe("the deep link router", () => {
      invitation's token in it. */
   it("never reads an invitation as a plugin", () => {
     expect(parseDeepLink(inviteUrl)?.kind).toBe("invite");
-    expect(parseDeepLink("openbot://join")).toBeNull();
+    expect(parseDeepLink("aikingbot://join")).toBeNull();
   });
 
   it("refuses a local development invitation unless that is allowed", () => {
@@ -73,7 +76,7 @@ describe("the deep link router", () => {
       ["no state", `${MCP_OAUTH_REDIRECT_URL}?code=grant-abc`],
       ["an error instead of a grant", `${MCP_OAUTH_REDIRECT_URL}?error=access_denied&state=run-xyz`],
       ["nothing at all", MCP_OAUTH_REDIRECT_URL],
-      ["another scheme", "https://openbot.run/mcp-auth?code=grant-abc&state=run-xyz"],
+      ["another scheme", "https://aikingbot.aikingx.com/mcp-auth?code=grant-abc&state=run-xyz"],
     ])("gives nothing for %s", (_reason, value) => {
       expect(parseDeepLink(value)).toBeNull();
     });
@@ -81,33 +84,33 @@ describe("the deep link router", () => {
     /* A sealed Slack bot token is a secret too. It is its own kind, which `index.ts` keeps in main,
        and never another scheme or a half link. */
     it("reads the Slack install link as its own kind", () => {
-      expect(parseDeepLink("openbot://slack-workspace?nonce=nonce-1&grant=sealed")).toEqual({
+      expect(parseDeepLink("aikingbot://slack-workspace?nonce=nonce-1&grant=sealed")).toEqual({
         kind: "slack-workspace",
         nonce: "nonce-1",
         grant: "sealed",
       });
-      expect(parseDeepLink("openbot://slack-workspace?nonce=nonce-1")).toBeNull();
-      expect(parseDeepLink("https://openbot.run/slack-workspace?nonce=nonce-1&grant=sealed")).toBeNull();
+      expect(parseDeepLink("aikingbot://slack-workspace?nonce=nonce-1")).toBeNull();
+      expect(parseDeepLink("https://aikingbot.aikingx.com/slack-workspace?nonce=nonce-1&grant=sealed")).toBeNull();
     });
 
     /* A plugin link carries no query, so the host it owns cannot be reached with a grant on it -
        which is what keeps the grant out of the one kind that is forwarded to a renderer. */
     it("never reads a plugin link as a grant", () => {
-      expect(parseDeepLink(`${createOpenBotPluginUrl("canva")}?code=grant-abc&state=run-xyz`)).toBeNull();
-      expect(parseDeepLink(createOpenBotPluginUrl("canva"))).toEqual({ kind: "plugin", slug: "canva" });
+      expect(parseDeepLink(`${createAIKINGBOTPluginUrl("canva")}?code=grant-abc&state=run-xyz`)).toBeNull();
+      expect(parseDeepLink(createAIKINGBOTPluginUrl("canva"))).toEqual({ kind: "plugin", slug: "canva" });
     });
   });
 
   describe("findDeepLink", () => {
     it("finds the first link among ordinary arguments", () => {
-      expect(findDeepLink(["/path/to/OpenBot", "--enable-logging", createOpenBotPluginUrl("canva")])).toEqual({
+      expect(findDeepLink(["/path/to/AIKINGBOT", "--enable-logging", createAIKINGBOTPluginUrl("canva")])).toEqual({
         kind: "plugin",
         slug: "canva",
       });
     });
 
     it("gives nothing when no argument is a link", () => {
-      expect(findDeepLink(["/path/to/OpenBot", "--enable-logging"])).toBeNull();
+      expect(findDeepLink(["/path/to/AIKINGBOT", "--enable-logging"])).toBeNull();
     });
   });
 });

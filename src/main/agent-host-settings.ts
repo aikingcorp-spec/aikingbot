@@ -9,8 +9,8 @@ import {
   agentAutomationAllowed,
   agentComputerUseEnabled,
   type UpdateAgentHostSettingsInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { AgentService } from "../backend/agent-service";
 import { causeHelpers } from "../backend/effect-boundary";
 import { AgentNotFoundError } from "./agent-admin-settings";

@@ -1,4 +1,4 @@
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@aikingbot/brand";
 import type { JSX } from "@solidjs/web";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 // The site's stylesheet, not the desktop app's. It is imported here rather than in
@@ -7,12 +7,12 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 // here it arrives only once this story is opened.
 import "../../styles.css";
 import "./ArticleMedia.stories.css";
-import aChannel from "../../content/guides/media/openbot-101/a-channel.webp";
-import aThread from "../../content/guides/media/openbot-101/a-thread.webp";
-import pickAModel from "../../content/guides/media/openbot-101/pick-a-model.webp";
+import aChannel from "../../content/guides/media/aikingbot-101/a-channel.webp";
+import aThread from "../../content/guides/media/aikingbot-101/a-thread.webp";
+import pickAModel from "../../content/guides/media/aikingbot-101/pick-a-model.webp";
 import { formatArticleDate } from "../../lib/content-collection";
 import { GUIDES_COLLECTION } from "../../lib/guides";
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 import { Button } from "../ui/button";
 import { ArticleGradient } from "./ArticleGradient";
 import { ArticleImage } from "./ArticleMedia";
@@ -20,9 +20,9 @@ import { ArticleImage } from "./ArticleMedia";
 // The string the mount's colours are drawn from. A real article passes its own
 // title, so a mounted picture matches the artwork on the card the reader arrived
 // from; here it is a control, so the colour families can be compared.
-const ARTICLE_TITLE = "OpenBot 101";
-const GUIDE = GUIDES_COLLECTION.articles.find((article) => article.slug === "openbot-101");
-if (!GUIDE) throw new Error("OpenBot 101 must be in the guides registry.");
+const ARTICLE_TITLE = "AIKINGBOT 101";
+const GUIDE = GUIDES_COLLECTION.articles.find((article) => article.slug === "aikingbot-101");
+if (!GUIDE) throw new Error("AIKINGBOT 101 must be in the guides registry.");
 
 const meta = {
   title: "Site/Article media",
@@ -34,13 +34,13 @@ type Story = StoryObj<typeof meta>;
 function StoryHeader() {
   return (
     <header class="landing-header">
-      <a class="landing-brand" href="/" aria-label="OpenBot home">
+      <a class="landing-brand" href="/" aria-label="AIKINGBOT home">
         <AppLogo variant="production" class="landing-brand-logo" />
-        <span>OpenBot</span>
+        <span>AIKINGBOT</span>
       </a>
       <div class="site-header-actions">
         <Button
-          href={OPENBOT_LINKS.contact}
+          href={AIKINGBOT_LINKS.contact}
           target="_blank"
           rel={EXTERNAL_LINK_REL}
           variant="secondary"
@@ -90,7 +90,7 @@ export const ProductShot: Story = {
 
 /**
  * How a mounted screenshot reads on a real article page: the same header, title,
- * hero artwork and column as /guides/openbot-101, with the article gradient moving
+ * hero artwork and column as /guides/aikingbot-101, with the article gradient moving
  * around the pictures.
  */
 export const InTheArticle: Story = {
@@ -116,8 +116,8 @@ export const InTheArticle: Story = {
           </div>
           <div class="post-prose">
             <p>
-              I built OpenBot because I wanted teammates, not chats. A chat window forgets. A teammate keeps the folder
-              it works in, the history of what it did, and a name you can call it by.
+              I built AIKINGBOT because I wanted teammates, not chats. A chat window forgets. A teammate keeps the
+              folder it works in, the history of what it did, and a name you can call it by.
             </p>
             <p>
               Four things belong to an agent, and all four survive a restart and a change of model: a workspace, a
@@ -143,8 +143,8 @@ export const InTheArticle: Story = {
             <h2>Install it, then connect a provider</h2>
             <p>
               Take the installer from GitHub Releases. Then give it a provider. In onboarding, in Settings or in the
-              model picker, select a provider and press Download: OpenBot installs and pins its own managed copy of that
-              command-line tool.
+              model picker, select a provider and press Download: AIKINGBOT installs and pins its own managed copy of
+              that command-line tool.
             </p>
             <ArticleImage
               src={pickAModel}
@@ -237,16 +237,18 @@ export const MountPad: Story = {
 export const ColourFamilies: Story = {
   render: () => (
     <ProseColumn>
-      {["OpenBot 101", "WTF Is OpenBot?", "One agent, many providers", "Run the team server yourself"].map((title) => (
-        <ArticleImage
-          src={pickAModel}
-          alt="The model picker open on the ChatGPT tab, showing the installed Codex CLI version and a list of GPT models."
-          width={1440}
-          height={1484}
-          mountOn={title}
-          caption={title}
-        />
-      ))}
+      {["AIKINGBOT 101", "WTF Is AIKINGBOT?", "One agent, many providers", "Run the team server yourself"].map(
+        (title) => (
+          <ArticleImage
+            src={pickAModel}
+            alt="The model picker open on the ChatGPT tab, showing the installed Codex CLI version and a list of GPT models."
+            width={1440}
+            height={1484}
+            mountOn={title}
+            caption={title}
+          />
+        ),
+      )}
     </ProseColumn>
   ),
 };

@@ -7,7 +7,7 @@ import { randomBytes } from "node:crypto";
 import { writeFile } from "node:fs/promises";
 import { request as httpRequest } from "node:http";
 import { join } from "node:path";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
+import { ATTACHMENT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, describe, expect, it } from "vitest";
 import { createAgents, createTeamApiFixture, stopTeamApiFixtures } from "./team-api-server-test-harness";
 
@@ -36,7 +36,7 @@ describe("TeamApiServer files", () => {
   it("downloads authenticated shared files through the remote API", async () => {
     const { root, start, signIn } = await createTeamApiFixture("shared-file", { configure: true });
     const filePath = join(root, "report.csv");
-    await writeFile(filePath, "name,value\nOpenBot,1\n");
+    await writeFile(filePath, "name,value\nAIKINGBOT,1\n");
     const agents = createAgents({
       resolveSharedFile: (path) =>
         Effect.sync(() => ({
@@ -55,16 +55,22 @@ describe("TeamApiServer files", () => {
     const { base } = await start({ agents });
 
     const token = await signIn();
-    const response = await fetch(`${base}/v1/shared-files?path=${encodeURIComponent("~/OpenBot/Shared/report.csv")}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      `${base}/v1/shared-files?path=${encodeURIComponent("~/AIKINGBOT/Shared/report.csv")}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     expect(response.status).toBe(200);
     expect(response.headers.get("content-disposition")).toContain("report.csv");
-    expect(await response.text()).toBe("name,value\nOpenBot,1\n");
+    expect(await response.text()).toBe("name,value\nAIKINGBOT,1\n");
 
-    const oversized = await fetch(`${base}/v1/shared-files?path=${encodeURIComponent("~/OpenBot/Shared/large.csv")}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const oversized = await fetch(
+      `${base}/v1/shared-files?path=${encodeURIComponent("~/AIKINGBOT/Shared/large.csv")}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     expect(oversized.status).toBe(413);
 
     const unauthorized = await fetch(`${base}/v1/shared-files?path=Shared/report.csv`);
@@ -80,7 +86,7 @@ describe("TeamApiServer files", () => {
     );
     expect(workspaceResponse.status).toBe(200);
     expect(workspaceResponse.headers.get("content-disposition")).toContain("chief-page.tsx");
-    expect(await workspaceResponse.text()).toBe("name,value\nOpenBot,1\n");
+    expect(await workspaceResponse.text()).toBe("name,value\nAIKINGBOT,1\n");
 
     const unauthorizedWorkspace = await fetch(`${base}/v1/workspace-files?botId=chief&path=app/page.tsx`);
     expect(unauthorizedWorkspace.status).toBe(401);

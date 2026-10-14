@@ -6,13 +6,13 @@ import { Effect } from "effect";
 // messaging core, and the Telegram driver with its updates parser and transport. Signal is a local
 // fake: it passes each update as Signal does after it checked Telegram's secret header, and it
 // answers each Bot API call. Signal's own checks are in `remote/api/test`. Only the provider is
-// faked, as in every agent service test. Writes .openbot-build/telegram-e2e/report.json.
+// faked, as in every agent service test. Writes .aikingbot-build/telegram-e2e/report.json.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import type { TelegramCallResult } from "@openbot/contracts/signal-protocol/telegram-route";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import type { TelegramCallResult } from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentService } from "../agent-service";
 import {
@@ -30,9 +30,9 @@ import { type MessagingCredentials, MessagingService } from "./messaging-service
 import type { IngressHandler, MessagingIngress, TelegramGateway } from "./messaging-types";
 import { telegramDriver } from "./telegram/telegram-driver";
 
-const REPORT_DIR = resolve(import.meta.dirname, "../../../.openbot-build/telegram-e2e");
+const REPORT_DIR = resolve(import.meta.dirname, "../../../.aikingbot-build/telegram-e2e");
 const BOT_ID = "7000000001";
-const BOT_USERNAME = "OpenBotTestBot";
+const BOT_USERNAME = "AIKINGBOTTestBot";
 const CHAT_ID = "-1001234567890";
 const CODE = "c".repeat(43);
 const ALICE = { id: 111, is_bot: false, first_name: "Alice" };
@@ -46,7 +46,7 @@ interface TelegramCall {
 }
 
 /**
- * Signal with the OpenBot bot: it passes the chat's updates and answers the host's Bot API calls. As
+ * Signal with the AIKINGBOT bot: it passes the chat's updates and answers the host's Bot API calls. As
  * the real socket, it is open only while something holds it, and a call fails when it is closed.
  */
 class FakeSignal implements MessagingIngress {
@@ -276,7 +276,7 @@ describe.sequential("Telegram messaging end to end", () => {
     await waitFor(() => signal.texts().includes("CODEX_DONE"));
     const [start] = turnStarts(client);
     const prompt = start ? promptOf(start) : "";
-    expect(prompt).toContain("Message from a Telegram user. This person is not the OpenBot user.");
+    expect(prompt).toContain("Message from a Telegram user. This person is not the AIKINGBOT user.");
     expect(prompt).toContain("Telegram chat: Team chat");
     expect(prompt).toContain("Author: Alice (Telegram user 111)");
     expect(prompt).toContain("--- message ---\nhello");
@@ -287,8 +287,8 @@ describe.sequential("Telegram messaging end to end", () => {
     const reactions = signal.of("setMessageReaction").map((call) => JSON.stringify(call.params.reaction));
     expect(reactions).toEqual(['[{"type":"emoji","emoji":"👀"}]', "[]", '[{"type":"emoji","emoji":"👌"}]']);
 
-    // A reply to OpenBot in the same chain continues the conversation without a mention. A message of
-    // another chain that does not name OpenBot is not for it.
+    // A reply to AIKINGBOT in the same chain continues the conversation without a mention. A message of
+    // another chain that does not name AIKINGBOT is not for it.
     const botMessage = working?.messageId ?? 0;
     await signal.send(
       message(300, "not for the bot", {

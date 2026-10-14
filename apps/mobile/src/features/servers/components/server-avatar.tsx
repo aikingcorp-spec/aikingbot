@@ -68,10 +68,10 @@ export function ServerAvatar({
   const logo = logoUri === undefined ? (saved.data ?? null) : logoUri;
   const [failedUri, setFailedUri] = useState<string | null>(null);
   const logoFailed = logo === failedUri;
-  const success = String(useCSSVariable("--openbot-success"));
-  const warning = String(useCSSVariable("--openbot-warning"));
-  const danger = String(useCSSVariable("--openbot-danger"));
-  const offline = String(useCSSVariable("--openbot-text-dim"));
+  const success = String(useCSSVariable("--aikingbot-success"));
+  const warning = String(useCSSVariable("--aikingbot-warning"));
+  const danger = String(useCSSVariable("--aikingbot-danger"));
+  const offline = String(useCSSVariable("--aikingbot-text-dim"));
   const dot =
     server.state === "online"
       ? success

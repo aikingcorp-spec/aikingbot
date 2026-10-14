@@ -30,6 +30,6 @@
   align-items: center;
   justify-content: center;
   min-width: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-xs);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-xs);
 }

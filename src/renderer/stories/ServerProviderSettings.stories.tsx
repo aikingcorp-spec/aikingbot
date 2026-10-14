@@ -6,10 +6,10 @@ import type {
   CustomProviderSummary,
   ProviderRuntimeSnapshot,
   ServerSummary,
-} from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
-import type { ProviderDetection } from "@openbot/ui/features/custom-providers/detected-providers";
-import type { ProviderDetectionSettingsValue } from "@openbot/ui/features/custom-providers/ProviderDetectionSettings";
+} from "@aikingbot/contracts/ipc";
+import { Toaster, toast } from "@aikingbot/ui";
+import type { ProviderDetection } from "@aikingbot/ui/features/custom-providers/detected-providers";
+import type { ProviderDetectionSettingsValue } from "@aikingbot/ui/features/custom-providers/ProviderDetectionSettings";
 import { createSignal, onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -17,7 +17,7 @@ import { createProviderRuntimeStore } from "../src/features/provider-updates/pro
 import { ServerSettingsModal } from "../src/features/servers/ServerSettingsModal";
 import { STORY_HOST_STATUS, STORY_INVITES, STORY_PRESENCE, STORY_SERVERS } from "../src/preview/fixtures";
 import { createStoryDetection, STORY_DETECTED_PROVIDERS } from "./detected-providers-fixture";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 import { createFakeConnection } from "./provider-connection-fixture";
 
 const localServer = localStoryServer();
@@ -125,8 +125,8 @@ function ServerProvidersStory(props: {
   offProviders?: readonly AgentProviderId[];
   providerUsers?: Partial<Record<AgentProviderId, readonly string[]>>;
 }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot({
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT({
     ...(props.providerUpdate
       ? {
           providerRuntimeSnapshot: {
@@ -139,11 +139,11 @@ function ServerProvidersStory(props: {
     ...(props.providerUpdateFailure ? { providerRuntimeFailure: true } : {}),
   });
   const runtimes = createProviderRuntimeStore(() => (props.providerUpdate ? mock.api.providerRuntimes : undefined));
-  window.openbot = mock.api;
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
     toast.dismiss();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   const [preference, setPreference] = createSignal<AppSetupState>({
     completed: true,

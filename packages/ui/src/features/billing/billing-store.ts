@@ -1,4 +1,4 @@
-import type { BillingPortalRequest, BillingState } from "@openbot/contracts/billing";
+import type { BillingPortalRequest, BillingState } from "@aikingbot/contracts/billing";
 import { createEffect, createStore, untrack } from "solid-js";
 import { currentText } from "../../text";
 

@@ -11,7 +11,7 @@ let root: string;
 let store: MailboxStore;
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-mailbox-cleanup-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-mailbox-cleanup-"));
   store = new MailboxStore(join(root, "user-data"), join(root, "Shared"));
   await runCauseEffect(store.initialize());
 });

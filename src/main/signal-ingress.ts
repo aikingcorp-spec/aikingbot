@@ -1,22 +1,22 @@
-import type { MessagingPlatform } from "@openbot/contracts/ipc";
-import { decodeSignalServerMessage } from "@openbot/contracts/signal-protocol/decode";
-import { type DiscordApiRequest, decodeDiscordApiError } from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_API_PATH } from "@openbot/contracts/signal-protocol/discord-route";
-import { INGRESS_QUEUE_CAPABILITY, openQueuedDelivery } from "@openbot/contracts/signal-protocol/ingress-queue";
+import type { MessagingPlatform } from "@aikingbot/contracts/ipc";
+import { decodeSignalServerMessage } from "@aikingbot/contracts/signal-protocol/decode";
+import { type DiscordApiRequest, decodeDiscordApiError } from "@aikingbot/contracts/signal-protocol/discord-api";
+import { DISCORD_API_PATH } from "@aikingbot/contracts/signal-protocol/discord-route";
+import { INGRESS_QUEUE_CAPABILITY, openQueuedDelivery } from "@aikingbot/contracts/signal-protocol/ingress-queue";
 import {
   SIGNAL_PROTOCOL_VERSION,
   type SignalClientMessage,
   type SignalServerMessage,
   SLACK_DELIVERY_RESPONSE_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
+} from "@aikingbot/contracts/signal-protocol/messages";
 import {
   TELEGRAM_CAPABILITY,
   type TelegramCallMethod,
   type TelegramCallParams,
   type TelegramCallResult,
-} from "@openbot/contracts/signal-protocol/telegram-route";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { Context, Effect, Exit, Layer, ManagedRuntime, Option, Result, Scope, Semaphore } from "effect";
 import WebSocket from "ws";
 import {
@@ -34,7 +34,7 @@ import type { IngressQueueKey } from "./ingress-queue-key";
 import { type RemoteWorkflowError, remoteDecode } from "./remote-service-effects";
 import { downloadTelegramFile, signalHttpOrigin, uploadTelegramFile } from "./telegram-files";
 
-const logger = createOpenBotLogger("signal-ingress");
+const logger = createAIKINGBOTLogger("signal-ingress");
 
 const BACKOFF_START_MS = 2_000;
 const BACKOFF_LIMIT_MS = 5 * 60_000;
@@ -81,7 +81,7 @@ class SignalIngressAccount extends Context.Service<
     webhookRoute(hostId: string): Effect.Effect<string, RemoteWorkflowError>;
     telegramRoute(hostId: string): Effect.Effect<string | null>;
   }
->()("openbot/main/SignalIngressAccount") {
+>()("aikingbot/main/SignalIngressAccount") {
   static layer(options: SignalIngressOptions) {
     return Layer.succeed(
       SignalIngressAccount,

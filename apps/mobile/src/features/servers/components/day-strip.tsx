@@ -1,4 +1,4 @@
-import { addCalendarDays, type CalendarDay } from "@openbot/team-client/routine-calendar-dates";
+import { addCalendarDays, type CalendarDay } from "@aikingbot/team-client/routine-calendar-dates";
 import { Typography } from "heroui-native";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";

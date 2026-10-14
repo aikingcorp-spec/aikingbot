@@ -1,10 +1,10 @@
 // The embedded browser and its picture-in-picture window.
 
-import { type BrowserDisplayState, LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { decodeBrowserViewInputValue } from "@openbot/contracts/team-protocol/browser-view-v1";
-import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { sourceText } from "@openbot/i18n/source";
+import { type BrowserDisplayState, LOCAL_SERVER_ID } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { decodeBrowserViewInputValue } from "@aikingbot/contracts/team-protocol/browser-view-v1";
+import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { BrowserHost } from "../../backend/browser-host";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { BrowserPictureInPicture } from "../browser-picture-in-picture";

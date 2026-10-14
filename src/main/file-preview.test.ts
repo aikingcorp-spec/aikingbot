@@ -3,7 +3,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
+import { ATTACHMENT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { filePreviewFromBytes, localFilePreview, mimeTypeForName } from "./file-preview";
@@ -64,7 +64,7 @@ describe("file previews", () => {
   });
 
   it("does not transfer bytes for unsupported local files", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-file-preview-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-file-preview-"));
     temporaryDirectories.push(directory);
     const path = join(directory, "archive.zip");
     await writeFile(path, new Uint8Array([1, 2, 3]));

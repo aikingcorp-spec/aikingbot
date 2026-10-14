@@ -2,12 +2,12 @@ import type {
   RoutineCalendar as HostCalendar,
   RoutineCalendarInput,
   RoutineCalendarRunStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   RoutineCalendar,
   type RoutineCalendarRoutine,
   type RoutineCalendarStatus,
-} from "@openbot/ui/features/conversation/RoutineCalendar";
+} from "@aikingbot/ui/features/conversation/RoutineCalendar";
 import { createMemo, createSignal, createStore, onSettled } from "solid-js";
 import { useNavigation } from "../../navigation";
 import { useAgents } from "../agents/agents-context";

@@ -1,6 +1,6 @@
-import { DynamicIslandCoordinator } from "@openbot/team-client/dynamic-island-coordinator";
-import type { DynamicIslandText } from "@openbot/team-client/dynamic-island-presentation";
-import { currentText } from "@openbot/ui/text";
+import { DynamicIslandCoordinator } from "@aikingbot/team-client/dynamic-island-coordinator";
+import type { DynamicIslandText } from "@aikingbot/team-client/dynamic-island-presentation";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, flush, onSettled, untrack } from "solid-js";
 import { usePlatform } from "../../platform";
 import { createSimpleContext } from "../../simple-context";

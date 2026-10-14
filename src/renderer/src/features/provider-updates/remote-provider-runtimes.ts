@@ -3,7 +3,7 @@ import type {
   ProviderRuntimeSnapshot,
   ProviderRuntimeStatus,
   ProviderRuntimesDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 /** How often a download on the host is read again while it runs. */
 const POLL_MS = 1000;

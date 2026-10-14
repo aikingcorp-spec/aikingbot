@@ -1,4 +1,4 @@
-import type { ManagedProviderId } from "@openbot/contracts/agent-providers";
+import type { ManagedProviderId } from "@aikingbot/contracts/agent-providers";
 import type {
   AgentProviderId,
   AgentStatus,
@@ -6,19 +6,19 @@ import type {
   CustomProviderSummary,
   ProviderRuntimeStatus,
   SaveCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
-import type { ProviderCodeLoginState } from "@openbot/ui/components/ProviderCodeLoginDialog";
+} from "@aikingbot/contracts/ipc";
+import { Toaster, toast } from "@aikingbot/ui";
+import type { ProviderCodeLoginState } from "@aikingbot/ui/components/ProviderCodeLoginDialog";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ProviderConnectionApi } from "../../components/provider-connection-api";
 import { STORY_AGENT_STATUS } from "../../preview/fixtures";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { FirstRunFlow } from "./FirstRunFlow";
 
-let activeMock: MockOpenBotControls | undefined;
-const previousApi = window.openbot;
+let activeMock: MockAIKINGBOTControls | undefined;
+const previousApi = window.aikingbot;
 
 /** The connection of this computer: Connect is the browser sign-in, and the ⋯ menu offers nothing. */
 function browserConnection(connect: (provider: AgentProviderId) => unknown = vi.fn()): ProviderConnectionApi {
@@ -45,7 +45,7 @@ function browserConnection(connect: (provider: AgentProviderId) => unknown = vi.
 afterEach(() => {
   activeMock?.dispose();
   activeMock = undefined;
-  window.openbot = previousApi;
+  window.aikingbot = previousApi;
   toast.dismiss();
   vi.restoreAllMocks();
 });
@@ -53,8 +53,8 @@ afterEach(() => {
 function renderFlow(
   options: { onSave?: (provider: AgentProviderId) => Promise<void>; platform?: "darwin" | "win32" | "linux" } = {},
 ) {
-  activeMock = createMockOpenBot();
-  window.openbot = activeMock.api;
+  activeMock = createMockAIKINGBOT();
+  window.aikingbot = activeMock.api;
   const view = render(() => (
     <>
       <FirstRunFlow
@@ -93,7 +93,7 @@ describe("FirstRunFlow", () => {
     await fireEvent.click(claude);
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
 
-    expect(await view.findByRole("heading", { name: "OpenBot might control your computer" })).toBeInTheDocument();
+    expect(await view.findByRole("heading", { name: "AIKINGBOT might control your computer" })).toBeInTheDocument();
     await fireEvent.click(view.getByRole("button", { name: "Back" }));
     expect(await view.findByRole("heading", { name: "Connect your plan" })).toBeInTheDocument();
     expect(
@@ -110,7 +110,7 @@ describe("FirstRunFlow", () => {
     const providers = view.getByRole("radiogroup", { name: "Default provider" });
     await fireEvent.click(within(providers).getByRole("radio", { name: /Grok/ }));
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    await fireEvent.click(view.getByRole("button", { name: "Open OpenBot" }));
+    await fireEvent.click(view.getByRole("button", { name: "Open AIKINGBOT" }));
 
     // A built-in provider records no model: it keeps its own default.
     await waitFor(() => expect(onSave).toHaveBeenCalledWith("grok", null));
@@ -119,16 +119,16 @@ describe("FirstRunFlow", () => {
   it("requests optional macOS permissions before continuing", async () => {
     const view = renderFlow();
     await openPlanStep();
-    const openPermission = vi.spyOn((activeMock?.api ?? window.openbot).computerUse, "openPermissionPane");
+    const openPermission = vi.spyOn((activeMock?.api ?? window.aikingbot).computerUse, "openPermissionPane");
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    expect(await view.findByRole("heading", { name: "OpenBot might control your computer" })).toBeInTheDocument();
+    expect(await view.findByRole("heading", { name: "AIKINGBOT might control your computer" })).toBeInTheDocument();
     await waitFor(() => expect(view.getByRole("button", { name: "Grant Screen Recording" })).toBeInTheDocument());
     expect(view.getByRole("button", { name: "Grant Accessibility" })).toBeInTheDocument();
 
     await fireEvent.click(view.getByRole("button", { name: "Grant Screen Recording" }));
     await waitFor(() => expect(openPermission).toHaveBeenCalledWith("screen-recording"));
 
-    expect(view.getByRole("button", { name: "Open OpenBot" })).toBeEnabled();
+    expect(view.getByRole("button", { name: "Open AIKINGBOT" })).toBeEnabled();
   });
 
   it("keeps onboarding open when saving setup fails", async () => {
@@ -138,17 +138,17 @@ describe("FirstRunFlow", () => {
     const view = renderFlow({ onSave });
     await openPlanStep();
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    await fireEvent.click(view.getByRole("button", { name: "Open OpenBot" }));
+    await fireEvent.click(view.getByRole("button", { name: "Open AIKINGBOT" }));
 
     expect(await view.findByRole("alert")).toHaveTextContent("Setup failed.");
-    expect(view.getByRole("heading", { name: "OpenBot might control your computer" })).toBeInTheDocument();
-    expect(view.getByRole("button", { name: "Open OpenBot" })).toBeEnabled();
+    expect(view.getByRole("heading", { name: "AIKINGBOT might control your computer" })).toBeInTheDocument();
+    expect(view.getByRole("button", { name: "Open AIKINGBOT" })).toBeEnabled();
     expect(onSave).toHaveBeenCalledWith("codex", null);
   });
 
   it("counts a saved endpoint in the custom row and selects that row after the save", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const [customProviders, setCustomProviders] = createSignal<CustomProviderSummary[]>([]);
     const onAddCustomProvider = vi.fn(async (value: SaveCustomProviderInput): Promise<CustomProviderRestart> => {
       setCustomProviders((current) => [
@@ -203,15 +203,15 @@ describe("FirstRunFlow", () => {
     // Setup records the provider that runs the endpoint, plus the endpoint's own first model, which
     // is what makes it the model a new agent starts on: the provider alone cannot name it.
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    await fireEvent.click(view.getByRole("button", { name: "Open OpenBot" }));
+    await fireEvent.click(view.getByRole("button", { name: "Open AIKINGBOT" }));
     await waitFor(() => expect(onSave).toHaveBeenCalledWith("opencode", "studio-local/glm-5-air"));
   });
 
   // The model belongs to the endpoint. Once the endpoint is gone the step must not store its model
   // on the first agent, which would start that agent on a provider that cannot answer.
   it("drops the endpoint's model from setup after the endpoint is removed", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     // A second endpoint stays behind, so the custom row keeps the choice and only the model of the
     // removed endpoint can explain an empty model in setup.
     const [customProviders, setCustomProviders] = createSignal<CustomProviderSummary[]>([
@@ -267,7 +267,7 @@ describe("FirstRunFlow", () => {
 
     await waitFor(() => expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument());
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    await fireEvent.click(view.getByRole("button", { name: "Open OpenBot" }));
+    await fireEvent.click(view.getByRole("button", { name: "Open AIKINGBOT" }));
     // The removed endpoint's model is gone from setup; the endpoint still saved supplies the model
     // instead, because the custom row is still the choice and a choice with no model would start the
     // first agent on a hosted one.
@@ -278,8 +278,8 @@ describe("FirstRunFlow", () => {
   // selects Custom without touching the dialog. Nothing in this component has seen its models, so
   // the model has to come from the list main sends.
   it("records a model of an endpoint saved before this screen opened", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const onSave = vi.fn(async (_provider: AgentProviderId) => undefined);
     const view = render(() => (
       <FirstRunFlow
@@ -304,14 +304,14 @@ describe("FirstRunFlow", () => {
     const providers = view.getByRole("radiogroup", { name: "Default provider" });
     await fireEvent.click(within(providers).getByRole("radio", { name: /Custom provider/ }));
     await fireEvent.click(view.getByRole("button", { name: "Next" }));
-    await fireEvent.click(view.getByRole("button", { name: "Open OpenBot" }));
+    await fireEvent.click(view.getByRole("button", { name: "Open AIKINGBOT" }));
 
     await waitFor(() => expect(onSave).toHaveBeenCalledWith("opencode", "house-router/gpt-oss-120b"));
   });
 
   it("keeps provider downloads independent and blocks Next until the selected provider connects", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const initialAgentStatus: AgentStatus = {
       ...STORY_AGENT_STATUS,
       providers: (STORY_AGENT_STATUS.providers ?? []).map(({ connectionState: _connectionState, ...provider }) => ({
@@ -393,8 +393,8 @@ describe("FirstRunFlow", () => {
   });
 
   it("keeps the downloads reachable while the local providers are still being checked", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     // What a first run looks like before main answers: nothing downloaded, no provider checked yet,
     // and the agent runtime still starting. Every action on the screen used to be disabled here,
     // with nothing to press and nothing said, which is the state reported in issue #643.
@@ -451,8 +451,8 @@ describe("FirstRunFlow", () => {
   });
 
   it("connects the selected provider from the main button and says so", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const agentStatus: AgentStatus = {
       ...STORY_AGENT_STATUS,
       providers: (STORY_AGENT_STATUS.providers ?? []).map((provider) => ({
@@ -487,8 +487,8 @@ describe("FirstRunFlow", () => {
   });
 
   it("starts free on OpenCode without a sign-in and opens when it is ready", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const [agentStatus, setAgentStatus] = createSignal<AgentStatus>({
       ...STORY_AGENT_STATUS,
       providers: [
@@ -559,15 +559,15 @@ describe("FirstRunFlow", () => {
     await openPlanStep();
 
     await fireEvent.click(view.getByRole("button", { name: "Start free instead" }));
-    expect(await view.findByRole("heading", { name: "OpenBot might control your computer" })).toBeInTheDocument();
+    expect(await view.findByRole("heading", { name: "AIKINGBOT might control your computer" })).toBeInTheDocument();
     // Back returns to the first question, not to the plan the user left.
     await fireEvent.click(view.getByRole("button", { name: "Back" }));
     expect(await view.findByRole("heading", { name: "Build your AI team." })).toBeInTheDocument();
   });
 
   it("names the step Next is waiting for as the selected provider moves through it", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     const agentStatus: AgentStatus = {
       ...STORY_AGENT_STATUS,
       providers: (STORY_AGENT_STATUS.providers ?? []).map((provider) => ({
@@ -634,8 +634,8 @@ describe("FirstRunFlow", () => {
   });
 
   it("offers no OpenCode download to a user who installed the CLI already", async () => {
-    activeMock = createMockOpenBot();
-    window.openbot = activeMock.api;
+    activeMock = createMockAIKINGBOT();
+    window.aikingbot = activeMock.api;
     // An empty managed directory is the normal state for anyone with their own OpenCode install, so
     // the row has to read the provider's answer and not the directory: the alternative offers a
     // ~46 MB download to a user whose CLI already works.

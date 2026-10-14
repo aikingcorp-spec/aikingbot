@@ -35,8 +35,8 @@ Shared/
 !apps/mobile/src/shared/
 !apps/mobile/src/shared/**
 index-*.css
-.openbot-browser-test/
-.openbot-build/
+.aikingbot-browser-test/
+.aikingbot-build/
 .worktrees/
 # Claude Code creates git worktrees here; they carry a nested biome.json.
 .claude/worktrees/
@@ -60,4 +60,4 @@ keys
 /TASKS.md
 
 # Persistent local development identity and migration recovery.
-.openbot/
+.aikingbot/

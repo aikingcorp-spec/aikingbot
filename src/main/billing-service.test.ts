@@ -1,4 +1,4 @@
-import { parseBillingPortalRequest } from "@openbot/contracts/billing";
+import { parseBillingPortalRequest } from "@aikingbot/contracts/billing";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { type BillingAuthClient, BillingDesktopService } from "./billing-service";

@@ -3,15 +3,15 @@
  * see: a header on an http server, an environment value on a command, written byte for byte.
  */
 
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
-import { isPluginAppConfig } from "@openbot/ui/features/settings/marketplace-plugins";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import { translateFor } from "@aikingbot/i18n";
+import { isPluginAppConfig } from "@aikingbot/ui/features/settings/marketplace-plugins";
 import {
   applyMcpFlow,
   type McpKeyFlow,
   mcpFlowComplete,
   mcpFlowError,
-} from "@openbot/ui/features/settings/mcp-connect-auth";
+} from "@aikingbot/ui/features/settings/mcp-connect-auth";
 import { describe, expect, it } from "vitest";
 import { createPluginAppConfig, MARKETPLACE_PLUGINS } from "./marketplace-plugin-catalog";
 

@@ -1,13 +1,13 @@
 ---
-name: openbot-export
-description: Export the user's Grok Bot agents into one .zip file that OpenBot imports, with instructions, avatars, skills, routines, memories, group chats, and optional workspace files. Use when the user asks to export, move, or migrate their agents to OpenBot.
-example-prompt: Export my agents for OpenBot
+name: aikingbot-export
+description: Export the user's Grok Bot agents into one .zip file that AIKINGBOT imports, with instructions, avatars, skills, routines, memories, group chats, and optional workspace files. Use when the user asks to export, move, or migrate their agents to AIKINGBOT.
+example-prompt: Export my agents for AIKINGBOT
 ---
 
-# Export agents for OpenBot
+# Export agents for AIKINGBOT
 
-Make one `.zip` file that the user opens in OpenBot at **Server settings → Import**. OpenBot reads
-it on the user's computer. Nothing is uploaded. The format is strict: OpenBot rejects the whole
+Make one `.zip` file that the user opens in AIKINGBOT at **Server settings → Import**. AIKINGBOT reads
+it on the user's computer. Nothing is uploaded. The format is strict: AIKINGBOT rejects the whole
 file when the manifest is invalid, so follow the format below exactly.
 
 ## Workflow
@@ -21,10 +21,10 @@ file when the manifest is invalid, so follow the format below exactly.
    - workspace files, only if the user agrees (step 2).
 
    Do not export the agent that runs this skill. It exists only to make the export, so leave it out
-   of the agent list and out of `openbot-import.json`, even when the user asks for all agents. Also
-   leave this skill (`openbot-export`) out of every agent's skills.
+   of the agent list and out of `aikingbot-import.json`, even when the user asks for all agents. Also
+   leave this skill (`aikingbot-export`) out of every agent's skills.
 
-   Also list every group chat, where several agents talk together. OpenBot imports a group chat as a
+   Also list every group chat, where several agents talk together. AIKINGBOT imports a group chat as a
    channel. For each group chat, collect:
    - name, one-line topic (title), and its shared instructions;
    - the agents in it, and the lead agent if it has one;
@@ -45,25 +45,25 @@ file when the manifest is invalid, so follow the format below exactly.
 
 4. **Remove secrets.** Do not export `.env` files, private keys, API keys, tokens, passwords, or
    cookies, in files or in instructions. Replace a secret in instructions with
-   `<ask the user for …>`. OpenBot rejects the archive if it contains a file named `.env*` or
+   `<ask the user for …>`. AIKINGBOT rejects the archive if it contains a file named `.env*` or
    `*private*key*`, a nested archive (`.zip`, `.tar`, `.gz`, `.7z`, `.rar`), or a `.git` or
    `node_modules` folder, so leave those out.
 
-5. **Build the folder** (see Format) and write `openbot-import.json` last.
+5. **Build the folder** (see Format) and write `aikingbot-import.json` last.
 
 6. **Check it** with the checklist below. Then zip the folder contents into
-   `~/Downloads/.openbot-export-<YYYY-MM-DD>.zip.part`. When the zip is complete, rename it to
-   `~/Downloads/openbot-export-<YYYY-MM-DD>.zip`. The rename replaces an older export with the
-   same name in one step, so OpenBot never reads a half-written file.
+   `~/Downloads/.aikingbot-export-<YYYY-MM-DD>.zip.part`. When the zip is complete, rename it to
+   `~/Downloads/aikingbot-export-<YYYY-MM-DD>.zip`. The rename replaces an older export with the
+   same name in one step, so AIKINGBOT never reads a half-written file.
 
 7. **Tell the user**, only after the rename, the path, the number of agents and group chats, and
-   anything you left out. Tell them to open OpenBot, go to **Server settings → Import**, and choose
+   anything you left out. Tell them to open AIKINGBOT, go to **Server settings → Import**, and choose
    the file.
 
 ## Format
 
 ```
-openbot-import.json
+aikingbot-import.json
 agents/<key>/avatar.png                 optional; PNG, JPEG, or WebP, 512 KB or less
 agents/<key>/skills/<skill>/SKILL.md    one folder for each skill
 agents/<key>/files/…                    optional workspace files
@@ -74,11 +74,11 @@ agents/<key>/files/…                    optional workspace files
 hyphen. When you make a key from a long agent name, keep only the first words. All paths for an
 agent must start with `agents/<key>/`.
 
-`openbot-import.json`:
+`aikingbot-import.json`:
 
 ```json
 {
-  "format": "openbot-agent-import",
+  "format": "aikingbot-agent-import",
   "version": 1,
   "source": { "app": "grok-bot", "exportedAt": "2026-09-23T10:00:00Z" },
   "agents": [
@@ -138,7 +138,7 @@ Field rules:
 | `skills` | Up to 32 folder paths. Each folder has `SKILL.md` at its root, which starts with YAML frontmatter that has `name` (80 characters or fewer) and `description`. Each skill folder is 10 MB and 200 files or fewer. |
 | `routines` | Up to 64. `name` is 80 characters or fewer. `instruction` is the prompt that runs. `timezone` is an IANA name, such as `America/New_York`. |
 | `memories` | Up to 64 strings, 500 characters or fewer each. |
-| `files` | Folder path or `null`. OpenBot copies it to `imported/` in the agent's workspace. |
+| `files` | Folder path or `null`. AIKINGBOT copies it to `imported/` in the agent's workspace. |
 
 Channel field rules:
 
@@ -172,17 +172,17 @@ Use one of these shapes. Times are 24-hour `HH:MM` in the routine's time zone. D
 | Every N minutes, hours, or days | `{ "kind": "interval", "amount": 30, "unit": "minutes" }` |
 | Cron expression | `{ "kind": "custom", "expression": "0 9 * * 1-5" }` |
 
-When a schedule does not fit a shape, use `custom` with a cron expression. OpenBot skips a routine
+When a schedule does not fit a shape, use `custom` with a cron expression. AIKINGBOT skips a routine
 with an invalid schedule and tells the user; the rest of the agent still imports.
 
 ## Checklist
 
-- [ ] `openbot-import.json` is at the root of the zip, not inside a subfolder you added by mistake.
-- [ ] `format` is `openbot-agent-import` and `version` is `1`.
+- [ ] `aikingbot-import.json` is at the root of the zip, not inside a subfolder you added by mistake.
+- [ ] `format` is `aikingbot-agent-import` and `version` is `1`.
 - [ ] Each `key` is unique and 64 characters or fewer, and each path starts with `agents/<key>/`.
 - [ ] Each skill folder has `SKILL.md` with frontmatter.
-- [ ] The agent that runs this skill is not in `openbot-import.json`.
-- [ ] No agent has an `openbot-export` skill folder.
+- [ ] The agent that runs this skill is not in `aikingbot-import.json`.
+- [ ] No agent has an `aikingbot-export` skill folder.
 - [ ] Every group chat is in `channels`, unless none of its agents are exported.
 - [ ] Each channel has at least one `members` entry, each member is an agent `key` in this export, and
       `lead` is one of the members or `null`.

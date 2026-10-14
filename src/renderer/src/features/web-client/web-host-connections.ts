@@ -1,14 +1,14 @@
-import { type AgentEvent, type AgentSummary, isAgentSummary } from "@openbot/contracts/ipc";
-import { guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { teamProtocolUpdateDirection } from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protocol/v7-base";
-import type { RemoteTeamHost } from "@openbot/team-client/remote-directory";
-import type { createRemoteTeamPeer, RemoteTeamPeerActions } from "@openbot/team-client/remote-peer";
-import { createRemoteConnectionRecovery } from "@openbot/team-client/remote-recovery";
-import { currentText } from "@openbot/ui/text";
-import { referenceFrom } from "@openbot/user-errors";
+import { type AgentEvent, type AgentSummary, isAgentSummary } from "@aikingbot/contracts/ipc";
+import { guardedListDecoder } from "@aikingbot/contracts/ipc-decoding";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { teamProtocolUpdateDirection } from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { decodeTeamProtocolSupportV7Base } from "@aikingbot/contracts/team-protocol/v7-base";
+import type { RemoteTeamHost } from "@aikingbot/team-client/remote-directory";
+import type { createRemoteTeamPeer, RemoteTeamPeerActions } from "@aikingbot/team-client/remote-peer";
+import { createRemoteConnectionRecovery } from "@aikingbot/team-client/remote-recovery";
+import { currentText } from "@aikingbot/ui/text";
+import { referenceFrom } from "@aikingbot/user-errors";
 import {
   type acquireWebHostLock,
   decodeWebHostTabMessage,

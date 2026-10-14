@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentApprovalPermissions,
   AgentPromptQuestion,
   AgentPromptResolution,
   RespondToBrowserTakeoverInput,
-} from "@openbot/contracts/ipc";
-import { COMPUTER_USE_MCP_SERVER_NAME } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { COMPUTER_USE_MCP_SERVER_NAME } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { type DynamicToolResult, getArray, getRecord, getString, isRecord } from "../protocol";
 
 const MCP_ELICITATION_DECISION_ID = "mcp-elicitation-decision";
@@ -272,7 +272,7 @@ export function browserTakeoverResult(decision: RespondToBrowserTakeoverInput["d
 }
 
 export function browserTakeoverError(
-  message = "OpenBot could not create a browser takeover request.",
+  message = "AIKINGBOT could not create a browser takeover request.",
 ): DynamicToolResult {
   return {
     success: false,

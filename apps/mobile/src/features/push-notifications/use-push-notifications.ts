@@ -1,10 +1,10 @@
 import {
   PUSH_NOTIFICATIONS_ROUTES,
   type PushNotificationRegistration,
-} from "@openbot/contracts/team-protocol/push-notifications-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { encodeLiveActivityBytes } from "@openbot/team-client/live-activity-seal";
-import { pushNotificationKeys } from "@openbot/team-client/push-notification-seal";
+} from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { encodeLiveActivityBytes } from "@aikingbot/team-client/live-activity-seal";
+import { pushNotificationKeys } from "@aikingbot/team-client/push-notification-seal";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLiveActivityHost } from "@/features/live-activity/model/live-activity-host";
 import { liveActivityHostKeys, loadLiveActivitySecret } from "@/features/live-activity/model/live-activity-keys";

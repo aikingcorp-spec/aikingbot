@@ -1,6 +1,6 @@
-import type { AgentEvent, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
-import type { LiveActivityPushRegistration } from "@openbot/contracts/team-protocol/live-activity-push-v1";
+import type { AgentEvent, AgentRuntimeSnapshot } from "@aikingbot/contracts/ipc";
+import type { LiveActivityRelayPush } from "@aikingbot/contracts/live-activity-relay";
+import type { LiveActivityPushRegistration } from "@aikingbot/contracts/team-protocol/live-activity-push-v1";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { type LiveActivityPushAgents, LiveActivityPushService, LiveActivitySendFailure } from "./live-activity-push";
@@ -124,7 +124,7 @@ describe("LiveActivityPushService", () => {
     const send = vi.fn(async (_push: LiveActivityRelayPush) => "sent" as const);
     const push = service(send);
     snapshot.pendingApprovals.push(approval("ada", "npm test"));
-    expect(push.showsEvent("session-1", { sound: "openbot" }, null)).toBe(false);
+    expect(push.showsEvent("session-1", { sound: "aikingbot" }, null)).toBe(false);
 
     push.register("session-1", viewer, registration);
     await vi.runOnlyPendingTimersAsync();
@@ -134,10 +134,10 @@ describe("LiveActivityPushService", () => {
     expect(push.showsEvent("session-1", null, null)).toBe(true);
     // A host that restarted got the token now, but the phone knows that iOS started the activity 8 hours ago.
     expect(push.showsEvent("session-1", null, Date.now() - 8 * 60 * 60 * 1000)).toBe(false);
-    expect(push.showsEvent("session-1", { sound: "openbot" }, Date.now() - 60_000)).toBe(true);
+    expect(push.showsEvent("session-1", { sound: "aikingbot" }, Date.now() - 60_000)).toBe(true);
     await vi.runOnlyPendingTimersAsync();
     expect(send).toHaveBeenCalledTimes(2);
-    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({ priority: 10, alert: { sound: "openbot" } }));
+    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({ priority: 10, alert: { sound: "aikingbot" } }));
 
     await vi.advanceTimersByTimeAsync(8 * 60 * 60 * 1000);
     expect(push.showsEvent("session-1", { sound: "default" }, null)).toBe(false);

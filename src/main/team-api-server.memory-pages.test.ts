@@ -3,29 +3,29 @@ import {
   type AgentMemorySelectionState,
   isAgentSummary,
   type SetAgentMemoryInclusionInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   AGENT_MEMORIES_CAPABILITY,
   AGENT_MEMORIES_PAGE_ROUTE,
   AGENT_MEMORIES_PAGE_SIZE,
   AGENT_MEMORY_INCLUSION_ROUTE,
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
-} from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol/v1";
+} from "@aikingbot/contracts/team-protocol/agent-memories-v1";
+import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@aikingbot/contracts/team-protocol/v1";
 import {
   decodeTeamProtocolV2Json,
   decodeTeamProtocolV2RpcFrame,
   encodeTeamProtocolV2Frame,
-} from "@openbot/contracts/team-protocol/v2";
-import { decodeTeamProtocolV3CurrentHttpResponse } from "@openbot/contracts/team-protocol/v3-adapter";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/v2";
+import { decodeTeamProtocolV3CurrentHttpResponse } from "@aikingbot/contracts/team-protocol/v3-adapter";
+import { sourceText } from "@aikingbot/i18n/source";
 import {
   type AgentMemoriesRequest,
   setAgentMemoryInclusion as changeInclusion,
   readAgentMemories,
   readAgentMemorySelection,
   TeamRequestError,
-} from "@openbot/team-client/team-api-requests";
+} from "@aikingbot/team-client/team-api-requests";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import agentFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";

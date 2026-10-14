@@ -1,5 +1,5 @@
-import type { BrowserTakeoverRequest } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { BrowserTakeoverRequest } from "@aikingbot/contracts/ipc";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { useIsFocused } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import {
@@ -330,7 +330,7 @@ function RoutineMarkerRow({
   muted: ViewStyle["backgroundColor"];
 }) {
   const { t } = useText();
-  const [success, danger] = useCSSVariable(["--openbot-success-text", "--openbot-danger-text"]);
+  const [success, danger] = useCSSVariable(["--aikingbot-success-text", "--aikingbot-danger-text"]);
   const Icon = ROUTINE_MARKER_ICONS[message.event];
   const color =
     message.event === "succeeded"
@@ -605,7 +605,7 @@ const MessageRow = memo(function MessageRow({
 /** Under a user message whose turn failed. A reason that is missing or not safe to show uses the fallback. */
 function TurnFailure({ reason }: { reason: string | undefined }) {
   const { t, errorMessage } = useText();
-  const [danger] = useCSSVariable(["--openbot-danger-text"]);
+  const [danger] = useCSSVariable(["--aikingbot-danger-text"]);
   const text = errorMessage(reason, t("mobile.chat.failure.fallback"));
   return (
     <View
@@ -710,9 +710,9 @@ export function ChatMessageList({
     }
   }, [approvals, agentsById, target.name, t]);
   const [userForegroundColor, themeForegroundColor, themeMutedColor] = useCSSVariable([
-    "--openbot-text-on-light",
-    "--openbot-text-primary",
-    "--openbot-text-muted",
+    "--aikingbot-text-on-light",
+    "--aikingbot-text-primary",
+    "--aikingbot-text-muted",
   ]);
   const userForeground = String(userForegroundColor);
   const themeForeground = String(themeForegroundColor);

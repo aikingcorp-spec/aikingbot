@@ -1,6 +1,7 @@
 import type {
   AgentEvent,
   AgentSummary,
+  AIKINGBOTDesktopApi,
   ConfigureHostInput,
   CreateTeamInviteInput,
   DirectConversationSnapshot,
@@ -11,7 +12,6 @@ import type {
   HostStatus,
   InviteSummary,
   JoinServerInput,
-  OpenBotDesktopApi,
   RemoteDesktopSession,
   SendDirectMessageInput,
   ServerSummary,
@@ -21,7 +21,7 @@ import type {
   TeamPresenceSnapshot,
   TeamSessionSummary,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   STORY_DIRECT_SNAPSHOTS,
   STORY_DIRECT_THREADS,
@@ -128,7 +128,7 @@ export function createMockTeam(
     emit(remoteDesktopListeners, sessionsValue);
   }
 
-  const serversApi: OpenBotDesktopApi["servers"] = {
+  const serversApi: AIKINGBOTDesktopApi["servers"] = {
     setMuted: async ({ serverId, muted, durationMs }) => {
       if (!servers.some((server) => server.id === serverId)) throw new Error("Remote server not found.");
       const notificationsMutedUntil = muted && durationMs !== undefined ? Date.now() + durationMs : null;
@@ -180,7 +180,7 @@ export function createMockTeam(
     previewInvite: async () => ({
       serverId: "00000000-0000-4000-8000-000000000000",
       serverName: "Joined workspace",
-      apiHostname: "story-host.openbot.run",
+      apiHostname: "story-host.aikingbot.aikingx.com",
       role: "member",
       expiresAt: "2026-09-19T10:00:00.000Z",
       emailBound: false,
@@ -340,7 +340,7 @@ export function createMockTeam(
     },
   };
 
-  const host: OpenBotDesktopApi["host"] = {
+  const host: AIKINGBOTDesktopApi["host"] = {
     getStatus: async () => clone(hostStatus),
     configure: async (input: ConfigureHostInput) => {
       hostStatus = {
@@ -401,7 +401,7 @@ export function createMockTeam(
       role: input.role,
       expiresAt: "2026-09-19T10:00:00.000Z",
       usedAt: null,
-      inviteUrl: "https://openbot.run/join?invite=mock-invite",
+      inviteUrl: "https://aikingbot.aikingx.com/join?invite=mock-invite",
       email: input.email ?? null,
       permanent: input.permanent ?? false,
       useCount: 0,
@@ -412,11 +412,11 @@ export function createMockTeam(
     },
   };
 
-  const remoteDesktop: OpenBotDesktopApi["remoteDesktop"] = {
+  const remoteDesktop: AIKINGBOTDesktopApi["remoteDesktop"] = {
     checkSetup: async () => ({
       platform: "darwin",
       hostName: "Mac mini",
-      username: "openbot",
+      username: "aikingbot",
       checkedAt: new Date().toISOString(),
       screenRecording: hostStatus.remoteDesktopScreenRecordingDenied ? "blocked" : "allowed",
       accessibility: "blocked",

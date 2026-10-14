@@ -1,4 +1,4 @@
-import { CONTEXT_RESET_ITEM_TYPE } from "@openbot/contracts/ipc";
+import { CONTEXT_RESET_ITEM_TYPE } from "@aikingbot/contracts/ipc";
 import { ORDER_KEY_COLUMNS, ORDER_KEY_DESC, ORDERED_THREAD_MESSAGES } from "./conversation-queries";
 import type { DatabaseCore } from "./database-core";
 import {

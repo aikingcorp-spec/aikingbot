@@ -4,18 +4,18 @@ import {
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type Routine,
   routineRunConversationEvent,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ROUTINE_NO_UPDATE_MARKER, ROUTINE_NO_UPDATE_TOOL } from "./agent/routine-quiet-runs";
 import { AgentRoutineStore } from "./agent-routine-store";
 import type { AgentService } from "./agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   createTestService,
   FakeAgentClient,
   firstInputText,
   notification,
-  openBotToolPayload,
   startAgentTestFixture,
   stopAgentTestFixture,
   stores,
@@ -68,8 +68,8 @@ async function runRoutine(options: {
   let toolStatus: unknown;
   const answerAfterTool = async (client: FakeAgentClient, threadId: string, turnId: string) => {
     await waitFor(() => mailbox.findDeliveriesByTurn(agent.id, turnId).length > 0);
-    const { result } = await callOpenBotTool(client, threadId, ROUTINE_NO_UPDATE_TOOL, {}, turnId);
-    toolStatus = openBotToolPayload(result).status;
+    const { result } = await callAIKINGBOTTool(client, threadId, ROUTINE_NO_UPDATE_TOOL, {}, turnId);
+    toolStatus = aikingBotToolPayload(result).status;
     const item = { id: `${turnId}:assistant`, type: "agentMessage", text: options.output };
     client.emit("notification", notification("item/completed", { threadId, turnId, item }));
     client.emit(
@@ -165,7 +165,7 @@ describe.sequential("AgentService: routine runs that answer only the no-update m
   it("posts nothing for a scheduled run that answers only the marker", async () => {
     const result = await runRoutine({ output: `  ${ROUTINE_NO_UPDATE_MARKER}\n`, kind: "scheduled" });
 
-    // OpenBot adds no marker instruction of its own: the user writes it in the routine task.
+    // AIKINGBOT adds no marker instruction of its own: the user writes it in the routine task.
     expect(result.prompt).not.toContain("answer with exactly");
     expect(result.assistantTexts).toEqual([]);
     // The run keeps its compact marker and its history entry.

@@ -2,7 +2,7 @@ import {
   type EventFilterDraft,
   eventFilterPointerValid,
   MASKED_WEBHOOK_SECRET,
-} from "@openbot/contracts/event-filter-value";
+} from "@aikingbot/contracts/event-filter-value";
 import {
   Button,
   ChevronDown,
@@ -17,7 +17,7 @@ import {
   Text,
   Webhook,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, createUniqueId, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";

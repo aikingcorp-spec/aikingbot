@@ -1,4 +1,4 @@
-import type { DeleteSharedTableInput, OpenBotDesktopApi, SharedTable } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi, DeleteSharedTableInput, SharedTable } from "@aikingbot/contracts/ipc";
 
 /**
  * What the conversation domain reaches in main: agent and direct message pages, sends, reads,
@@ -6,7 +6,7 @@ import type { DeleteSharedTableInput, OpenBotDesktopApi, SharedTable } from "@op
  */
 export interface ConversationPort {
   agent: Pick<
-    OpenBotDesktopApi["agent"],
+    AIKINGBOTDesktopApi["agent"],
     | "readAgentSessionSettings"
     | "setAgentSessionSetting"
     | "resetAgentSessionSetting"
@@ -21,11 +21,11 @@ export interface ConversationPort {
     | "sendMessage"
   >;
   browser: Pick<
-    OpenBotDesktopApi["browser"],
+    AIKINGBOTDesktopApi["browser"],
     "capturePreview" | "onLiveViewEvent" | "sendLiveViewInput" | "startLiveView" | "stopLiveView"
   >;
   servers: Pick<
-    OpenBotDesktopApi["servers"],
+    AIKINGBOTDesktopApi["servers"],
     | "listDirectThreads"
     | "markDirectRead"
     | "onDirectMessage"
@@ -34,12 +34,12 @@ export interface ConversationPort {
     | "sendDirectMessage"
     | "setDirectTyping"
   >;
-  storage: Pick<OpenBotDesktopApi["storage"], "openLocation">;
+  storage: Pick<AIKINGBOTDesktopApi["storage"], "openLocation">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function conversationPort(): ConversationPort {
-  return window.openbot;
+  return window.aikingbot;
 }
 
 /** The tables every agent shares. The web client reaches them on the host through the Team API. */

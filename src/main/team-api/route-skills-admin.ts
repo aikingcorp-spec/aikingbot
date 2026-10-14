@@ -1,5 +1,5 @@
-import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/skills-admin-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseInstallSkill, parseSetEnabledSkill, parseUninstallSkill } from "../ipc/app-inputs";
 import type { TeamApiAdmin } from "./dependencies";

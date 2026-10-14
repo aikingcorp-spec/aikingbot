@@ -17,7 +17,7 @@ export const messages = {
   "customProvider.error.providerIdPattern":
     "Bir harf veya rakamla başlayan küçük harfler, rakamlar, kısa çizgiler veya alt çizgiler kullanın.",
   "customProvider.error.providerIdLength": "Sağlayıcı kimliğini en fazla {max} karakter tutun.",
-  "customProvider.error.providerIdBuiltIn": "OpenBot'ta zaten {id} adında bir sağlayıcı var. Başka bir kimlik seçin.",
+  "customProvider.error.providerIdBuiltIn": "AIKINGBOT'ta zaten {id} adında bir sağlayıcı var. Başka bir kimlik seçin.",
   "customProvider.error.providerIdSaved":
     "{id} adlı bir uç nokta zaten kayıtlı. Önce onu kaldırın veya başka bir kimlik seçin.",
   "customProvider.error.displayNameRequired": "Bir görünen ad girin.",
@@ -41,16 +41,16 @@ export const messages = {
   "customProvider.error.baseUrlCredential": "Kimlik bilgilerini URL'ye değil, bir başlığa koyun.",
 
   // Kaydetme veya kaldırma işleminden sonraki not. OpenCode'un yeni listeyi ne zaman okuduğunu belirtir.
-  "customProvider.saved.restarted": "Kaydedildi. OpenBot modelleri yüklüyor.",
+  "customProvider.saved.restarted": "Kaydedildi. AIKINGBOT modelleri yüklüyor.",
   "customProvider.saved.skippedBusy":
     "Kaydedildi. OpenCode listeyi geçerli görev durduktan sonra okur. Ardından Bağlan'a basın.",
   "customProvider.saved.notRunning": "Kaydedildi. OpenCode bir sonraki başlatılışında listeyi okur.",
-  "customProvider.removed.restarted": "Kaldırıldı. OpenBot modelleri yüklüyor.",
+  "customProvider.removed.restarted": "Kaldırıldı. AIKINGBOT modelleri yüklüyor.",
   "customProvider.removed.skippedBusy":
     "Kaldırıldı. OpenCode listeyi geçerli görev durduktan sonra okur. Ardından Bağlan'a basın.",
   "customProvider.removed.notRunning": "Kaldırıldı. OpenCode bir sonraki başlatılışında listeyi okur.",
-  "customProvider.saveFailed": "OpenBot bu uç noktayı kaydedemedi.",
-  "customProvider.removeFailed": "OpenBot {name} ögesini kaldıramadı.",
+  "customProvider.saveFailed": "AIKINGBOT bu uç noktayı kaydedemedi.",
+  "customProvider.removeFailed": "AIKINGBOT {name} ögesini kaldıramadı.",
   "customProvider.saveUnavailable": "Bu derleme bir uç noktayı kaydedemez.",
   "customProvider.removeUnavailable": "Bu derleme bir uç noktayı kaldıramaz.",
 
@@ -82,7 +82,7 @@ export const messages = {
   "customProvider.header.add": "Başlık ekle",
   "customProvider.submit": "Gönder",
 
-  // Model keşfi. OpenBot uç noktaya model listesini sorar ve kullanıcı listeden seçer.
+  // Model keşfi. AIKINGBOT uç noktaya model listesini sorar ve kullanıcı listeden seçer.
   "customProvider.discovery.find": "Modelleri bul",
   "customProvider.discovery.refresh": "Tekrar bul",
   "customProvider.discovery.loading": "{url} adresine modelleri soruluyor.",
@@ -114,12 +114,12 @@ export const messages = {
     other: "Çalışıyor · {count} model",
   },
 
-  // Sağlayıcı adımında ve Ayarlar'da otomatik algılama. OpenBot yerel model sunucularını
+  // Sağlayıcı adımında ve Ayarlar'da otomatik algılama. AIKINGBOT yerel model sunucularını
   // varsayılan adreslerinde ve PATH'teki bilinen ACP ajanı komutlarını arar.
   "customProvider.detected.title": "Bu bilgisayarda bulundu",
   "customProvider.detected.scanning": "Yerel modeller ve ajanlar aranıyor.",
   "customProvider.detected.scanAgain": "Tekrar tara",
-  "customProvider.detected.empty": "OpenBot yerel bir model sunucusu veya ACP ajanı bulamadı.",
+  "customProvider.detected.empty": "AIKINGBOT yerel bir model sunucusu veya ACP ajanı bulamadı.",
   "customProvider.detected.add": "Ekle",
   "customProvider.detected.addLabel": "{name} sağlayıcısını ekle",
   "customProvider.detected.added": "Eklendi",
@@ -137,10 +137,10 @@ export const messages = {
   // Taramanın baktığı yer. Varsayılan adresler ve PATH her zaman bunun bir parçasıdır.
   "customProvider.detection.title": "Yerel algılama",
   "customProvider.detection.saveFailed": "Algılama ayarları kaydedilemedi.",
-  "customProvider.detection.description": "OpenBot'un yerel model sunucularını ve ACP ajanlarını arayacağı yerler.",
+  "customProvider.detection.description": "AIKINGBOT'un yerel model sunucularını ve ACP ajanlarını arayacağı yerler.",
   "customProvider.detection.enabled": "Yerel modelleri ve ajanları ara",
   "customProvider.detection.enabledDescription":
-    "OpenBot, Ollama ve LM Studio'nun varsayılan adreslerini kontrol eder ve PATH'inizde bilinen ACP ajanlarını arar.",
+    "AIKINGBOT, Ollama ve LM Studio'nun varsayılan adreslerini kontrol eder ve PATH'inizde bilinen ACP ajanlarını arar.",
   "customProvider.detection.addresses": "Diğer model sunucusu adresleri",
   "customProvider.detection.address.label": "{number}. adres",
   "customProvider.detection.address.remove": "{number}. adresi kaldır",
@@ -161,7 +161,7 @@ export const messages = {
   "customProvider.acp.agentId": "Ajan kimliği",
   "customProvider.acp.agentIdHint": "Küçük harfler, rakamlar veya kısa çizgiler. Daha sonra değiştiremezsiniz.",
   "customProvider.acp.command": "Komut",
-  "customProvider.acp.commandHint": "Başlatılacak program. OpenBot bunu PATH'inizde arar.",
+  "customProvider.acp.commandHint": "Başlatılacak program. AIKINGBOT bunu PATH'inizde arar.",
   "customProvider.acp.args": "Bağımsız değişkenler",
   "customProvider.acp.argsHint":
     "Bağımsız değişkenleri boşluklarla ayırın. Boşluk içeren bir bağımsız değişkenin etrafına tırnak işareti koyun.",
@@ -172,7 +172,7 @@ export const messages = {
   "customProvider.acp.env.add": "Değişken ekle",
   "customProvider.acp.check": "Bağlantı",
   "customProvider.acp.checkRun": "Ajanı kontrol et",
-  "customProvider.acp.checkIdle": "OpenBot, yanıt verdiğinden emin olmak için komutu bir kez başlatır.",
+  "customProvider.acp.checkIdle": "AIKINGBOT, yanıt verdiğinden emin olmak için komutu bir kez başlatır.",
   "customProvider.acp.checking": "{command} başlatılıyor.",
   "customProvider.acp.checkOk": "{name} yanıt verdi",
   "customProvider.acp.checkOkVersion": "{name} {version} yanıt verdi",
@@ -180,7 +180,7 @@ export const messages = {
   "customProvider.acp.checkFailed": "Ajan yanıt vermedi",
   "customProvider.acp.trustTitle": "Bu komut bilgisayarınızda çalışır",
   "customProvider.acp.trustDescription":
-    "OpenBot bunu kullanıcı hesabınızla başlatır. Ajan dosyaları okuyabilir, değiştirebilir ve komutlar çalıştırabilir. Yalnızca güvendiğiniz bir ajanı ekleyin.",
+    "AIKINGBOT bunu kullanıcı hesabınızla başlatır. Ajan dosyaları okuyabilir, değiştirebilir ve komutlar çalıştırabilir. Yalnızca güvendiğiniz bir ajanı ekleyin.",
   "customProvider.acp.submit": "Ajan ekle",
   "customProvider.acp.editTitle": "Özel ACP ajanını düzenle",
   "customProvider.acp.submitEdit": "Ajanı kaydet",
@@ -195,9 +195,9 @@ export const messages = {
   "customProvider.acp.error.agentIdPattern":
     "Bir harf veya rakamla başlayan küçük harfler, rakamlar veya kısa çizgiler kullanın. En fazla 40 karakter kullanın.",
 
-  // Ayarlar'daki kullanıcının kendi ACP ajanları. Her biri OpenBot'un bu bilgisayarda başlattığı bir komuttur.
+  // Ayarlar'daki kullanıcının kendi ACP ajanları. Her biri AIKINGBOT'un bu bilgisayarda başlattığı bir komuttur.
   "customProvider.agents.title": "Özel ajanlar",
-  "customProvider.agents.description": "OpenBot'un bu bilgisayarda başlattığı ACP ajanları.",
+  "customProvider.agents.description": "AIKINGBOT'un bu bilgisayarda başlattığı ACP ajanları.",
   "customProvider.agents.empty": "Henüz özel ajan yok.",
   "customProvider.agents.add": "Ajan ekle",
   "customProvider.agents.restart": "Ajanları yeniden başlat",
@@ -212,11 +212,11 @@ export const messages = {
   "customProvider.agents.deleteLabel": "{name} ajanını sil",
   "customProvider.agents.confirmDescription":
     "Kayıtlı değişkenleri atılır ve bunu kullanan her ajan varsayılan bir modele geçer.",
-  "customProvider.agents.saveFailed": "OpenBot bu ajanı kaydedemedi.",
-  "customProvider.agents.saved.restarted": "Kaydedildi. OpenBot özel ajanları yeniden başlattı.",
+  "customProvider.agents.saveFailed": "AIKINGBOT bu ajanı kaydedemedi.",
+  "customProvider.agents.saved.restarted": "Kaydedildi. AIKINGBOT özel ajanları yeniden başlattı.",
   "customProvider.agents.saved.skippedBusy": "Kaydedildi. Özel ajanlar geçerli görev durduktan sonra yeniden başlar.",
   "customProvider.agents.saved.notRunning": "Kaydedildi. Özel ajanlar bir sonraki başlatılışlarında bunu okur.",
-  "customProvider.agents.removed.restarted": "Kaldırıldı. OpenBot özel ajanları yeniden başlattı.",
+  "customProvider.agents.removed.restarted": "Kaldırıldı. AIKINGBOT özel ajanları yeniden başlattı.",
   "customProvider.agents.removed.skippedBusy": "Kaldırıldı. Özel ajanlar geçerli görev durduktan sonra yeniden başlar.",
   "customProvider.agents.removed.notRunning": "Kaldırıldı. Özel ajanlar bir sonraki başlatılışlarında bunu okur.",
 

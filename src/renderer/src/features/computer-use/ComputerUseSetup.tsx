@@ -1,5 +1,5 @@
-import type { ComputerUseState, MacPermissionId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { ComputerUseState, MacPermissionId } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Alert,
   AlertActions,
@@ -24,8 +24,8 @@ import {
   SettingsSection,
   Skeleton,
   TriangleAlert,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, For, onCleanup, onSettled, Show } from "solid-js";
 import { computerUsePort } from "./computer-use-port";
 
@@ -41,7 +41,7 @@ export interface ComputerUseSetupProps {
 
 /**
  * How each grant is described. Which of them apply is the driver's answer, never this table: only
- * macOS puts a permission between OpenBot and the desktop, and a row shown elsewhere would name a
+ * macOS puts a permission between AIKINGBOT and the desktop, and a row shown elsewhere would name a
  * setting the user cannot find.
  */
 const PERMISSION_DETAILS: Record<
@@ -99,7 +99,7 @@ export function ComputerUseSetup(props: ComputerUseSetupProps) {
   }
 
   // A grant is given in System Settings, outside this window, and the driver reports only what it
-  // sees when it is asked. Coming back to OpenBot is the moment the answer may have changed, so the
+  // sees when it is asked. Coming back to AIKINGBOT is the moment the answer may have changed, so the
   // panel asks again rather than keeping a row that is granted already.
   const recheckOnReturn = () => {
     if (showPermissions()) void loadState();
@@ -166,7 +166,7 @@ export function ComputerUseSetup(props: ComputerUseSetupProps) {
       </Show>
 
       {/*
-       * One alert for every fault, the missing driver included. OpenBot carries the driver, so a
+       * One alert for every fault, the missing driver included. AIKINGBOT carries the driver, so a
        * build without one is a fault of that build and not a thing the user installs by hand; the
        * panel therefore names no command and offers the same way back as the rest.
        */}

@@ -13,12 +13,12 @@ body:has(.dynamic-island-surface),
   display: flex;
   justify-content: center;
   background: transparent;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-sans);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-sans);
   user-select: none;
 }
 
-.openbot-dynamic-island-transition-root {
+.aikingbot-dynamic-island-transition-root {
   display: contents;
 }
 
@@ -81,30 +81,30 @@ body:has(.dynamic-island-surface),
   inset: 0;
 }
 
-.openbot-dynamic-island-transition-root[data-mode-transitioning="true"] .dynamic-island-mode-layer {
+.aikingbot-dynamic-island-transition-root[data-mode-transitioning="true"] .dynamic-island-mode-layer {
   will-change: opacity, transform;
 }
 
-.openbot-dynamic-island-transition-root[data-mode-transitioning="true"]
+.aikingbot-dynamic-island-transition-root[data-mode-transitioning="true"]
   .dynamic-island-mode-layer[data-island-mode-layer="incoming"] {
   opacity: 0;
   transform: none;
 }
 
-.openbot-dynamic-island-transition-root[data-mode-transitioning="true"]
+.aikingbot-dynamic-island-transition-root[data-mode-transitioning="true"]
   .dynamic-island-mode-swap[data-island-mode-slot="expanded"]
   > .dynamic-island-mode-layer[data-island-mode-layer="incoming"] {
   transform: scale(0.965);
 }
 
-.openbot-dynamic-island-transition-root[data-mode-transitioning="true"]
+.aikingbot-dynamic-island-transition-root[data-mode-transitioning="true"]
   .dynamic-island[data-layout-state="expanded"]
   .dynamic-island-mode-swap[data-island-mode-slot="compact-leading"]
   > .dynamic-island-mode-layer[data-island-mode-layer="incoming"] {
   transform: none;
 }
 
-.openbot-dynamic-island-transition-root[data-mode-transitioning="true"]
+.aikingbot-dynamic-island-transition-root[data-mode-transitioning="true"]
   .dynamic-island-mode-layer[data-island-mode-layer="incoming"]
   [data-island-motion-content] {
   filter: blur(4px);
@@ -124,11 +124,11 @@ body:has(.dynamic-island-surface),
   width: 100%;
   height: 100%;
   flex: 0 0 auto;
-  border-radius: var(--openbot-radius-xs);
+  border-radius: var(--aikingbot-radius-xs);
   transition:
-    border-radius var(--openbot-duration-slow) var(--openbot-ease-out),
-    filter var(--openbot-duration-slow) var(--openbot-ease-out),
-    scale var(--openbot-duration-slow) var(--openbot-ease-out);
+    border-radius var(--aikingbot-duration-slow) var(--aikingbot-ease-out),
+    filter var(--aikingbot-duration-slow) var(--aikingbot-ease-out),
+    scale var(--aikingbot-duration-slow) var(--aikingbot-ease-out);
 }
 
 /* While the island moves, the logo blurs more than the ear around it, so it reads as a shape in
@@ -145,7 +145,7 @@ body:has(.dynamic-island-surface),
 }
 
 .dynamic-island-shell[data-compact-motion="large"] .dynamic-island-surface-logo {
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
 }
 
 .dynamic-island-external.dynamic-island-idle .dynamic-island-surface-logo {
@@ -164,22 +164,22 @@ body:has(.dynamic-island-surface),
 
 /* The idle greeting is a little larger than the 14px trailing slot of a status. */
 .dynamic-island-idle .dynamic-island-trailing-content {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
 }
 
 .dynamic-island-surface-idle-greeting {
   position: relative;
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
   display: block;
   flex: 0 0 auto;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  font-size: var(--openbot-text-xl);
+  font-size: var(--aikingbot-text-xl);
   line-height: 1;
   transition:
-    opacity var(--openbot-duration-slow) var(--openbot-ease-out),
-    scale var(--openbot-duration-slow) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-slow) var(--aikingbot-ease-out),
+    scale var(--aikingbot-duration-slow) var(--aikingbot-ease-out);
 }
 
 /* While the island moves, the greeting gets a little fainter, as much as the move is large. When
@@ -248,9 +248,9 @@ body:has(.dynamic-island-surface),
   place-items: center;
   opacity: 0;
   transition:
-    opacity 600ms var(--openbot-ease-in-out),
-    scale 650ms var(--openbot-ease-in-out),
-    filter 600ms var(--openbot-ease-in-out);
+    opacity 600ms var(--aikingbot-ease-in-out),
+    scale 650ms var(--aikingbot-ease-in-out),
+    filter 600ms var(--aikingbot-ease-in-out);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -341,7 +341,7 @@ body:has(.dynamic-island-surface),
   transform: translate3d(0, 0, 0);
   transform-origin: center;
   transition:
-    opacity var(--openbot-duration-fast) var(--openbot-ease-out),
+    opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
     transform 450ms var(--dynamic-island-shared-ease);
 }
 
@@ -350,8 +350,8 @@ body:has(.dynamic-island-surface),
   width: 20px;
   height: 20px;
   flex: 0 0 auto;
-  border: 1px solid var(--openbot-bg-notch);
-  border-radius: var(--openbot-radius-pill);
+  border: 1px solid var(--aikingbot-bg-notch);
+  border-radius: var(--aikingbot-radius-pill);
 }
 
 .dynamic-island-surface-compact-identity {
@@ -361,21 +361,21 @@ body:has(.dynamic-island-surface),
 .dynamic-island-surface-compact-name {
   position: absolute;
   top: 50%;
-  left: calc(100% + var(--openbot-space-1-5));
+  left: calc(100% + var(--aikingbot-space-1-5));
   width: max-content;
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-sm);
   text-align: left;
   text-overflow: ellipsis;
   transform: translateY(-50%);
-  transition: opacity var(--openbot-duration-fast) var(--openbot-ease-out);
+  transition: opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-surface-status-badge {
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .dynamic-island-surface-status-badge-label {
@@ -385,21 +385,21 @@ body:has(.dynamic-island-surface),
 }
 
 .dynamic-island-surface-status-badge-icon {
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .dynamic-island-surface-question-badge {
-  background: var(--openbot-question-badge-soft);
-  color: var(--openbot-question-badge-text);
+  background: var(--aikingbot-question-badge-soft);
+  color: var(--aikingbot-question-badge-text);
 }
 
 .dynamic-island-surface-message-badge {
-  background: var(--openbot-message-badge-soft);
-  color: var(--openbot-message-badge-text);
+  background: var(--aikingbot-message-badge-soft);
+  color: var(--aikingbot-message-badge-text);
 }
 
 .dynamic-island-surface-working-badge .ui-spinner {
-  border-color: var(--openbot-success-soft);
+  border-color: var(--aikingbot-success-soft);
   border-top-color: currentColor;
 }
 
@@ -418,7 +418,7 @@ body:has(.dynamic-island-surface),
 }
 
 .dynamic-island-working[data-state="expanded"] .dynamic-island-surface-avatar-stack > * {
-  transition-duration: var(--openbot-duration-fast), var(--dynamic-island-shared-duration);
+  transition-duration: var(--aikingbot-duration-fast), var(--dynamic-island-shared-duration);
 }
 
 .dynamic-island-working[data-state="expanded"] .dynamic-island-surface-avatar-stack > :nth-child(2) {
@@ -431,18 +431,18 @@ body:has(.dynamic-island-surface),
 
 @media (prefers-reduced-motion: reduce) {
   .dynamic-island-surface-avatar-stack > * {
-    transition-duration: var(--openbot-duration-hover);
+    transition-duration: var(--aikingbot-duration-hover);
   }
 }
 
 .dynamic-island-surface-approval-badge {
-  background: var(--openbot-approval-badge-soft);
-  color: var(--openbot-warning);
+  background: var(--aikingbot-approval-badge-soft);
+  color: var(--aikingbot-warning);
 }
 
 .dynamic-island-surface-takeover-badge {
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
 }
 
 .dynamic-island-surface-content-swap {
@@ -470,26 +470,26 @@ body:has(.dynamic-island-surface),
 
 .dynamic-island-surface-row {
   min-width: 0;
-  width: calc(100% + 2 * var(--openbot-space-2));
+  width: calc(100% + 2 * var(--aikingbot-space-2));
   height: auto;
   min-height: 44px;
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
   align-items: center;
-  gap: var(--openbot-space-2);
-  margin-inline: calc(-1 * var(--openbot-space-2));
+  gap: var(--aikingbot-space-2);
+  margin-inline: calc(-1 * var(--aikingbot-space-2));
   border: 0;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
-  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
   color: inherit;
   cursor: pointer;
   font: inherit;
   outline: none;
   text-align: left;
   transition:
-    background-color var(--openbot-duration-normal) var(--openbot-ease-out),
-    transform var(--openbot-duration-normal) var(--openbot-ease-out);
+    background-color var(--aikingbot-duration-normal) var(--aikingbot-ease-out),
+    transform var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-surface-row .dynamic-island-surface-avatar,
@@ -500,7 +500,7 @@ body:has(.dynamic-island-surface),
 
 @media (hover: hover) and (pointer: fine) {
   .dynamic-island-surface-row:hover {
-    background: var(--openbot-hover);
+    background: var(--aikingbot-hover);
   }
 }
 
@@ -509,10 +509,10 @@ body:has(.dynamic-island-surface),
 }
 
 .dynamic-island-surface-row:focus-visible {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
   box-shadow:
-    inset 0 0 0 1px var(--openbot-border-focus),
-    0 0 0 3px var(--openbot-accent-soft);
+    inset 0 0 0 1px var(--aikingbot-border-focus),
+    0 0 0 3px var(--aikingbot-accent-soft);
 }
 
 .dynamic-island-surface-row-group {
@@ -522,20 +522,20 @@ body:has(.dynamic-island-surface),
 
 /* The stop button sits over the end of the row, so the row keeps the place the avatars move to. */
 .dynamic-island-surface-row-group:has(.dynamic-island-surface-row-stop) .dynamic-island-surface-row {
-  padding-right: calc(var(--openbot-control-sm) + var(--openbot-space-2));
+  padding-right: calc(var(--aikingbot-control-sm) + var(--aikingbot-space-2));
 }
 
 .dynamic-island-surface-row-stop {
   position: absolute;
   top: 50%;
   right: 0;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   transform: translateY(-50%);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .dynamic-island-surface-row-stop:hover {
-    color: var(--openbot-danger-text);
+    color: var(--aikingbot-danger-text);
   }
 }
 
@@ -548,34 +548,34 @@ body:has(.dynamic-island-surface),
 
 .dynamic-island-surface-row strong {
   overflow: hidden;
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-sm);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .dynamic-island-surface-row small {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-regular);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-regular);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .dynamic-island-message-first-panel {
   display: grid;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .dynamic-island-message-first-unread {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-regular);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-regular);
   font-variant-numeric: tabular-nums;
-  line-height: var(--openbot-leading-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .dynamic-island-message-first-footer {
@@ -583,14 +583,14 @@ body:has(.dynamic-island-surface),
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
-  border-top: 1px solid var(--openbot-border);
-  padding-top: var(--openbot-space-2);
+  gap: var(--aikingbot-space-3);
+  border-top: 1px solid var(--aikingbot-border);
+  padding-top: var(--aikingbot-space-2);
 }
 
 .dynamic-island-message-first-footer .ui-button {
   min-width: 92px;
-  transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-message-first-footer .ui-button:active {
@@ -598,49 +598,49 @@ body:has(.dynamic-island-surface),
 }
 
 .dynamic-island-message-first-footer svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .dynamic-island-surface-attention-panel {
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .dynamic-island-reply {
   position: relative;
   min-width: 0;
   display: grid;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   margin: 0;
 }
 
 .dynamic-island-reply .dynamic-island-reply-input {
-  height: var(--openbot-control-md);
-  border-color: var(--openbot-border);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-hover);
-  padding-right: calc(var(--openbot-control-md) + var(--openbot-space-1));
-  padding-left: var(--openbot-space-3);
-  font-size: var(--openbot-text-sm);
+  height: var(--aikingbot-control-md);
+  border-color: var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-hover);
+  padding-right: calc(var(--aikingbot-control-md) + var(--aikingbot-space-1));
+  padding-left: var(--aikingbot-space-3);
+  font-size: var(--aikingbot-text-sm);
   user-select: text;
 }
 
 .dynamic-island-reply .dynamic-island-reply-input:focus-visible {
-  border-color: var(--openbot-border-focus);
+  border-color: var(--aikingbot-border-focus);
 }
 
 .dynamic-island-reply-send {
   position: absolute;
-  top: calc((var(--openbot-control-md) - var(--openbot-control-xs)) / 2);
-  right: calc((var(--openbot-control-md) - var(--openbot-control-xs)) / 2);
-  border-radius: var(--openbot-radius-pill);
+  top: calc((var(--aikingbot-control-md) - var(--aikingbot-control-xs)) / 2);
+  right: calc((var(--aikingbot-control-md) - var(--aikingbot-control-xs)) / 2);
+  border-radius: var(--aikingbot-radius-pill);
 }
 
 .dynamic-island-reply-send svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .dynamic-island-surface-question-step .dynamic-island-reply {
@@ -651,14 +651,14 @@ body:has(.dynamic-island-surface),
   min-width: 0;
   width: 100%;
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .dynamic-island-surface-command {
   min-width: 0;
   display: grid;
   gap: 3px;
-  border-left: 1px solid var(--openbot-warning);
+  border-left: 1px solid var(--aikingbot-warning);
   padding: 2px 0 2px 10px;
 }
 
@@ -667,15 +667,15 @@ body:has(.dynamic-island-surface),
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .dynamic-island-surface-command-meta small,
 .dynamic-island-surface-command-meta span {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -691,10 +691,10 @@ body:has(.dynamic-island-surface),
 
 .dynamic-island-surface-command code {
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -703,22 +703,22 @@ body:has(.dynamic-island-surface),
   min-width: 0;
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr);
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: baseline;
 }
 
 .dynamic-island-surface-context-line small,
 .dynamic-island-surface-more {
-  color: var(--openbot-text-dim);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-dim);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 div.dynamic-island-surface-context-line span {
   overflow: hidden;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -743,10 +743,10 @@ div.dynamic-island-surface-context-line span {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   border: 0;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-question-option-soft);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-question-option-soft);
   padding: 7px 10px;
   color: inherit;
   cursor: pointer;
@@ -754,8 +754,8 @@ div.dynamic-island-surface-context-line span {
   text-align: left;
   outline: none;
   transition:
-    background-color var(--openbot-duration-fast) var(--openbot-ease-out),
-    transform var(--openbot-duration-fast) var(--openbot-ease-out);
+    background-color var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    transform var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-surface-question-option-copy {
@@ -772,17 +772,17 @@ div.dynamic-island-surface-context-line span {
 }
 
 .dynamic-island-surface-question-option-copy strong {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .dynamic-island-surface-question-option-copy small {
   min-width: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .dynamic-island-surface-question-option-index {
@@ -791,38 +791,38 @@ div.dynamic-island-surface-context-line span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-question-option-hover);
-  color: var(--openbot-question-option);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-question-option-hover);
+  color: var(--aikingbot-question-option);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .dynamic-island-surface-question-options button:hover:not(:disabled):not([data-disabled]) {
-    background: var(--openbot-question-option-hover);
+    background: var(--aikingbot-question-option-hover);
   }
 }
 
 .dynamic-island-surface-question-options button:active:not(:disabled):not([data-disabled]) {
-  background: var(--openbot-question-option-pressed);
+  background: var(--aikingbot-question-option-pressed);
   transform: scale(0.96);
 }
 
 .dynamic-island-surface-question-options button:focus-visible {
   box-shadow:
-    inset 0 0 0 1px var(--openbot-question-option),
-    0 0 0 3px var(--openbot-question-option-soft);
+    inset 0 0 0 1px var(--aikingbot-question-option),
+    0 0 0 3px var(--aikingbot-question-option-soft);
 }
 
 .dynamic-island-surface-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--openbot-space-1);
-  border-top: 1px solid var(--openbot-border);
-  padding-top: var(--openbot-space-2);
+  gap: var(--aikingbot-space-1);
+  border-top: 1px solid var(--aikingbot-border);
+  padding-top: var(--aikingbot-space-2);
 }
 
 .dynamic-island-surface-action-error {
@@ -830,19 +830,19 @@ div.dynamic-island-surface-context-line span {
   margin: 0 auto 0 0;
   flex: 1 1 auto;
   align-self: center;
-  color: var(--openbot-danger-text);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-danger-text);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .dynamic-island-surface-actions svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .dynamic-island-surface-attention-panel .ui-button {
-  transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-surface-attention-panel .ui-button:active {
@@ -857,10 +857,10 @@ div.dynamic-island-surface-context-line span {
   display: inline-flex;
   align-items: baseline;
   padding-top: 2px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  line-height: var(--openbot-leading-sm);
+  line-height: var(--aikingbot-leading-sm);
   white-space: nowrap;
 }
 
@@ -898,7 +898,7 @@ div.dynamic-island-surface-context-line span {
 }
 
 .dynamic-island-surface-animated-row {
-  animation: dynamic-island-surface-row-in var(--openbot-duration-slow) var(--openbot-ease-out) both;
+  animation: dynamic-island-surface-row-in var(--aikingbot-duration-slow) var(--aikingbot-ease-out) both;
 }
 
 .dynamic-island-surface-row-group:nth-child(2) .dynamic-island-surface-animated-row {

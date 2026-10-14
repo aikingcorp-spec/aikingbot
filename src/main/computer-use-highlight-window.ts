@@ -2,14 +2,14 @@ import type {
   ComputerUseCoveredArea,
   ComputerUseCursorPoint,
   ComputerUseHighlightPlacement,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger, type Logger, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { createAIKINGBOTLogger, type Logger, toLogValue } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Schema } from "effect";
 import type { BrowserWindow, Rectangle } from "electron";
 import type { ComputerUseHighlightTarget } from "./computer-use-target-window";
 import type { CuaDriverFailure } from "./cua-driver-effects";
 
-const logger = createOpenBotLogger("computer-use-highlight");
+const logger = createAIKINGBOTLogger("computer-use-highlight");
 
 /**
  * How often the driver is asked where the agent is working.
@@ -90,10 +90,10 @@ export interface ComputerUseHighlightControllerOptions<W extends HighlightOverla
 /**
  * Keeps one transparent overlay over the window an agent is working in.
  *
- * The overlay is OpenBot's own. A cursor says where one click lands and says nothing about which
+ * The overlay is AIKINGBOT's own. A cursor says where one click lands and says nothing about which
  * window the next twenty actions belong to, so this marks the target window while the agent holds
  * the desktop and hides the moment it lets go. It also carries the agent cursor itself wherever the
- * driver draws none, which is every display layout in OpenBot.
+ * driver draws none, which is every display layout in AIKINGBOT.
  *
  * There is one overlay for each display, because macOS draws a window on one display only. Each
  * covers its own display and stays there, and only the rim inside it moves, so following a window

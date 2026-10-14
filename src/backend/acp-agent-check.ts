@@ -16,12 +16,12 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { ClientSideConnection, type InitializeResponse, ndJsonStream } from "@agentclientprotocol/sdk";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { CUSTOM_AGENT_LIMITS, type CustomAgentCheckResult } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
-import { OPENBOT_ACP_CLIENT_CAPABILITIES, OPENBOT_ACP_CLIENT_INFO } from "./acp-client";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { CUSTOM_AGENT_LIMITS, type CustomAgentCheckResult } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
+import { AIKINGBOT_ACP_CLIENT_CAPABILITIES, AIKINGBOT_ACP_CLIENT_INFO } from "./acp-client";
 import { cliSpawnTarget } from "./cli";
 import { stopWindowsProcessTree } from "./windows-process-tree";
 import { TimeoutError } from "./with-timeout";
@@ -29,7 +29,7 @@ import { TimeoutError } from "./with-timeout";
 const AGENT_CHECK_TIMEOUT_MS = 20_000;
 const STOP_GRACE_MS = 2_000;
 const DETAIL_LIMIT = 300;
-const OPENBOT_ACP_PROTOCOL_VERSION = 1;
+const AIKINGBOT_ACP_PROTOCOL_VERSION = 1;
 
 export interface AgentCheckTarget {
   /** The resolved file, from `resolveAgentCommand`. */
@@ -46,7 +46,7 @@ export interface AgentCheckTarget {
  */
 export const checkAcpAgent = Effect.fn("AcpAgent.check")((target: AgentCheckTarget) =>
   Effect.acquireUseRelease(
-    providerCall(() => mkdtemp(join(tmpdir(), "openbot-agent-check-"))),
+    providerCall(() => mkdtemp(join(tmpdir(), "aikingbot-agent-check-"))),
     (folder) =>
       Effect.gen(function* () {
         const secrets = Object.values(target.env).filter((value) => value.length >= 4);
@@ -90,9 +90,9 @@ export const checkAcpAgent = Effect.fn("AcpAgent.check")((target: AgentCheckTarg
           );
           const initialization = yield* providerCall(() =>
             connection.initialize({
-              protocolVersion: OPENBOT_ACP_PROTOCOL_VERSION,
-              clientCapabilities: OPENBOT_ACP_CLIENT_CAPABILITIES,
-              clientInfo: OPENBOT_ACP_CLIENT_INFO,
+              protocolVersion: AIKINGBOT_ACP_PROTOCOL_VERSION,
+              clientCapabilities: AIKINGBOT_ACP_CLIENT_CAPABILITIES,
+              clientInfo: AIKINGBOT_ACP_CLIENT_INFO,
             }),
           ).pipe(
             Effect.raceFirst(Deferred.await(ended)),
@@ -102,7 +102,7 @@ export const checkAcpAgent = Effect.fn("AcpAgent.check")((target: AgentCheckTarg
                 Effect.fail(providerFailure(new TimeoutError(sourceText("error.provider.customAgentCheckTimedOut")))),
             }),
           );
-          if (initialization.protocolVersion !== OPENBOT_ACP_PROTOCOL_VERSION) {
+          if (initialization.protocolVersion !== AIKINGBOT_ACP_PROTOCOL_VERSION) {
             return yield* providerFailure(
               new CheckFailure(
                 sourceText("error.provider.customAgentProtocolVersion", {

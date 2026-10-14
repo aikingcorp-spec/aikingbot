@@ -1,5 +1,5 @@
-import type { DynamicIslandApprovalItem, DynamicIslandPresentation } from "@openbot/contracts/ipc";
-import { mobileTranslateFor } from "@openbot/i18n/mobile";
+import type { DynamicIslandApprovalItem, DynamicIslandPresentation } from "@aikingbot/contracts/ipc";
+import { mobileTranslateFor } from "@aikingbot/i18n/mobile";
 import { describe, expect, it } from "vitest";
 import {
   LIVE_ACTIVITY_LIST_URL,
@@ -75,7 +75,7 @@ describe("Live Activity buttons", () => {
       unreadCount: 3,
       message: { agent, messageId: "message-1", text: "Hej!", createdAt: "2026-09-24T10:00:00.000Z" },
     };
-    const row = (name: string) => ({ name, count: 1, avatar: "", url: `openbot://live-activity?agent=${name}` });
+    const row = (name: string) => ({ name, count: 1, avatar: "", url: `aikingbot://live-activity?agent=${name}` });
     const view = (count: number) =>
       liveActivityProps(
         message,

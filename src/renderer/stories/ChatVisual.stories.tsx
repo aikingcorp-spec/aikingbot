@@ -1,14 +1,14 @@
-import { ArrowUp, Button, Plus } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
-import { ConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
+import { ArrowUp, Button, Plus } from "@aikingbot/ui";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ChatVisual } from "@aikingbot/ui/features/conversation/ChatVisual";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
+import { ConversationHeader } from "@aikingbot/ui/features/conversation/ConversationHeader";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, For, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { OpenBotPlayground } from "../src/preview/OpenBotPlayground";
+import { AIKINGBOTPlayground } from "../src/preview/AIKINGBOTPlayground";
 import {
   CDN_CHART,
   COMPARISON_MOCKUP,
@@ -74,7 +74,7 @@ const meta = {
   argTypes: { html: { control: false } },
   parameters: { layout: "fullscreen" },
   render: (args) => (
-    <main style={{ width: "min(656px, 100vw)", padding: "var(--openbot-space-6)" }}>
+    <main style={{ width: "min(656px, 100vw)", padding: "var(--aikingbot-space-6)" }}>
       <VisualStage {...args} />
     </main>
   ),
@@ -216,9 +216,9 @@ export const PhoneWidth: Story = {
     <main
       style={{
         width: "360px",
-        padding: "var(--openbot-space-4)",
+        padding: "var(--aikingbot-space-4)",
         display: "grid",
-        gap: "var(--openbot-space-6)",
+        gap: "var(--aikingbot-space-6)",
       }}
     >
       <For each={EXCHANGES.filter((exchange) => !exchange.state)}>
@@ -364,7 +364,7 @@ function AppShellStage(props: { onOpenLink: (url: string) => void }) {
   });
   return (
     <div ref={shell} class="chat-visual-app">
-      <OpenBotPlayground />
+      <AIKINGBOTPlayground />
       <Show when={content()}>
         {(mount) => (
           <Portal mount={mount()}>

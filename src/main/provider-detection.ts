@@ -5,20 +5,20 @@
 // headers only when the user leaves them blank and the address keeps the saved origin, so an edited
 // address never receives the old credentials.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   DetectedAcpAgent,
   DetectedModelServer,
   DiscoverModelsInput,
   DiscoverModelsResult,
   ProviderDetectionSettings,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   customProviderEndpointKey,
   DEFAULT_MODEL_SERVERS,
   isNewCustomProviderId,
   sameCustomProviderOrigin,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { Context, Effect, Exit, Fiber, Layer, ManagedRuntime, Scope } from "effect";
 import { scanAcpAgents } from "../backend/acp-agent-scan";
 import type { CustomProviderConfig } from "../backend/opencode-config";
@@ -99,7 +99,7 @@ class ProviderDiscovery extends Context.Service<
     scanAgents(): Effect.Effect<DetectedAcpAgent[]>;
     discoverModels(input: DiscoverModelsInput): Effect.Effect<DiscoverModelsResult, ProbeError>;
   }
->()("openbot/main/ProviderDiscovery") {
+>()("aikingbot/main/ProviderDiscovery") {
   static layer(dependencies: ProviderDetectionDependencies) {
     return Layer.effect(
       ProviderDiscovery,

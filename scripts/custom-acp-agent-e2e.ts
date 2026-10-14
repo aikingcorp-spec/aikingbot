@@ -2,7 +2,7 @@
 // the `acp` provider driver with its router over real agent processes. Two fake agents speak ACP over
 // stdio and give the same session id, so the router must keep them apart. A fake cipher replaces the
 // operating system's secret storage, which exists only in Electron.
-// `bun scripts/custom-acp-agent-e2e.ts`. Writes .openbot-build/custom-acp-agent-e2e/report.json.
+// `bun scripts/custom-acp-agent-e2e.ts`. Writes .aikingbot-build/custom-acp-agent-e2e/report.json.
 import assert from "node:assert/strict";
 import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -17,7 +17,7 @@ import { requireProviderDriver } from "../src/backend/provider-drivers";
 import { CustomAgentStore } from "../src/main/custom-agent-store";
 import type { CustomProviderCipher } from "../src/main/custom-provider-store";
 
-const OUT = resolve(import.meta.dirname, "../.openbot-build/custom-acp-agent-e2e");
+const OUT = resolve(import.meta.dirname, "../.aikingbot-build/custom-acp-agent-e2e");
 const SECRET = "sk-e2e-agent-secret";
 
 const FAKE_AGENT = `#!/usr/bin/env node
@@ -100,7 +100,7 @@ const cipher: CustomProviderCipher = {
   decrypt: (value) => Buffer.from(value.map((byte) => byte ^ 0x5a)).toString("utf8"),
 };
 
-const root = await mkdtemp(join(tmpdir(), "openbot-custom-agent-e2e-"));
+const root = await mkdtemp(join(tmpdir(), "aikingbot-custom-agent-e2e-"));
 const report: Report = { passed: false };
 const clients: AgentClient[] = [];
 

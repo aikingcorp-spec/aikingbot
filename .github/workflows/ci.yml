@@ -20,7 +20,7 @@ env:
   GIT_CONFIG_VALUE_0: main
   # No job here builds the native mobile app, so the postinstall skips the React Native Skia
   # library copy. The jobs that install with `--ignore-scripts` skip it already.
-  OPENBOT_SKIP_SKIA: "1"
+  AIKINGBOT_SKIP_SKIA: "1"
 
 jobs:
   detect:
@@ -219,7 +219,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: transfer-budget-${{ matrix.shard }}
-          path: .openbot-build/transfer-budget/
+          path: .aikingbot-build/transfer-budget/
           if-no-files-found: ignore
 
   tests-sites:
@@ -373,7 +373,7 @@ jobs:
         run: bun run build-storybook
         env:
           # This output is not published. Skip Solid's per-component docgen analysis.
-          OPENBOT_STORYBOOK_CHECK: "true"
+          AIKINGBOT_STORYBOOK_CHECK: "true"
 
   all-checks-pass:
     # A summary of every job. Branch protection requires `Check`, not this job. A lane that
@@ -447,11 +447,11 @@ jobs:
           BOAT_API_KEY: ${{ secrets.BOAT_API_KEY }}
           BOAT_WEBHOOK_SECRET: ${{ secrets.BOAT_WEBHOOK_SECRET }}
           # GitHub refuses an Actions secret name that starts with GITHUB_. The Worker name is GITHUB_APP_PRIVATE_KEY.
-          OPENBOT_GITHUB_APP_PRIVATE_KEY: ${{ secrets.OPENBOT_GITHUB_APP_PRIVATE_KEY }}
+          AIKINGBOT_GITHUB_APP_PRIVATE_KEY: ${{ secrets.AIKINGBOT_GITHUB_APP_PRIVATE_KEY }}
           APNS_PRIVATE_KEY: ${{ secrets.APNS_PRIVATE_KEY }}
           APNS_KEY_ID: ${{ secrets.APNS_KEY_ID }}
         run: |
-          secrets_path="$RUNNER_TEMP/openbot-worker-secrets.json"
+          secrets_path="$RUNNER_TEMP/aikingbot-worker-secrets.json"
           umask 077
           SECRETS_PATH="$secrets_path" bun -e '
             const smtp = process.env.EMAIL_SMTP_PASSWORD;
@@ -492,7 +492,7 @@ jobs:
               if (present.length !== names.length) throw new Error(`Set ${names.join(" and ")} together.`);
               for (const name of names) optional[name] = process.env[name].trim();
             }
-            const githubAppKey = process.env.OPENBOT_GITHUB_APP_PRIVATE_KEY?.trim();
+            const githubAppKey = process.env.AIKINGBOT_GITHUB_APP_PRIVATE_KEY?.trim();
             if (githubAppKey) optional.GITHUB_APP_PRIVATE_KEY = githubAppKey;
             const stripeKey = optional.STRIPE_SECRET_KEY;
             if (stripeKey && !stripeKey.startsWith("sk_live_") && !stripeKey.startsWith("rk_live_")) {
@@ -546,28 +546,28 @@ jobs:
         run: |
           verification_dir="$(mktemp -d)"
           trap 'rm -rf "$verification_dir"' EXIT
-          curl --fail --silent --show-error --retry 5 --retry-all-errors https://openbot.run/ >/dev/null
+          curl --fail --silent --show-error --retry 5 --retry-all-errors https://aikingbot.aikingx.com/ >/dev/null
           join_status="$(curl --silent --show-error --retry 5 --retry-all-errors \
             --max-redirs 0 --dump-header "$verification_dir/join.headers" \
             --output "$verification_dir/join.html" --write-out '%{http_code}' \
-            https://openbot.run/join)"
+            https://aikingbot.aikingx.com/join)"
           test "$join_status" = "200"
           tr -d '\r' < "$verification_dir/join.headers" | grep -Eiq '^cache-control:.*no-store'
           tr -d '\r' < "$verification_dir/join.headers" | grep -Eiq '^referrer-policy:.*no-referrer'
           association_status="$(curl --silent --show-error --retry 5 --retry-all-errors \
             --max-redirs 0 --dump-header "$verification_dir/association.headers" \
             --output "$verification_dir/association.json" --write-out '%{http_code}' \
-            https://openbot.run/.well-known/apple-app-site-association)"
+            https://aikingbot.aikingx.com/.well-known/apple-app-site-association)"
           test "$association_status" = "200"
           tr -d '\r' < "$verification_dir/association.headers" | grep -Eiq '^content-type: application/json'
-          jq -e '.applinks.details == [{"appID":"ZTRDTUL87R.app.openbot.desktop","paths":["/join"]},{"appID":"ZTRDTUL87R.run.openbot.mobile","paths":["/join","/agents/*"]}]' \
+          jq -e '.applinks.details == [{"appID":"ZTRDTUL87R.app.aikingbot.desktop","paths":["/join"]},{"appID":"ZTRDTUL87R.run.aikingbot.mobile","paths":["/join","/agents/*"]}]' \
             "$verification_dir/association.json" >/dev/null
-          curl --fail --silent --show-error --retry 5 --retry-all-errors https://api.openbot.run/health/live >/dev/null
-          curl --fail --silent --show-error --retry 5 --retry-all-errors https://api.openbot.run/health/ready >/dev/null
+          curl --fail --silent --show-error --retry 5 --retry-all-errors https://api.aikingbot.aikingx.com/health/live >/dev/null
+          curl --fail --silent --show-error --retry 5 --retry-all-errors https://api.aikingbot.aikingx.com/health/ready >/dev/null
           site_status="$(curl --silent --show-error --retry 5 --retry-all-errors \
             --max-redirs 0 --dump-header "$verification_dir/site-router.headers" \
             --output "$verification_dir/site-router.txt" --write-out '%{http_code}' \
-            https://deployment-smoke-check.openbot.site/)"
+            https://deployment-smoke-check.aikingbot-sites.aikingx.com/)"
           case "$SITE_HOSTING_EXPECTED_ENABLED" in
             true) test "$site_status" = "404" ;;
             false) test "$site_status" = "503" ;;

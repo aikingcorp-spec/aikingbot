@@ -20,27 +20,27 @@
   height: 100%;
   overflow: hidden;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
   padding: 0;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .image-gallery-tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .image-gallery-tile:focus-visible {
-  outline: 2px solid var(--openbot-border-focus);
+  outline: 2px solid var(--aikingbot-border-focus);
   outline-offset: 2px;
 }
 
 .image-gallery-tile-missing > svg {
-  width: var(--openbot-space-6);
-  height: var(--openbot-space-6);
+  width: var(--aikingbot-space-6);
+  height: var(--aikingbot-space-6);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -53,14 +53,14 @@
  * that its empty stage can take the click that closes it. */
 .ui-dialog-overlay.image-lightbox-backdrop {
   position: fixed;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   inset: 0;
-  background: var(--openbot-bg-overlay);
+  background: var(--aikingbot-bg-overlay);
 }
 
 .ui-dialog-content.image-lightbox {
   position: fixed;
-  z-index: calc(var(--openbot-layer-dialog) + 1);
+  z-index: calc(var(--aikingbot-layer-dialog) + 1);
   inset: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -70,14 +70,14 @@
   border-radius: 0;
   box-shadow: none;
   background: transparent;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   outline: none;
   -webkit-app-region: no-drag;
 }
 
 .image-lightbox-chrome {
-  animation: image-lightbox-fade-in var(--openbot-duration-overlay) var(--openbot-ease-out);
-  transition: opacity var(--openbot-duration-fast) var(--openbot-ease-out);
+  animation: image-lightbox-fade-in var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
+  transition: opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .image-lightbox[data-closing] .image-lightbox-chrome {
@@ -89,15 +89,15 @@
   min-width: 0;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 .image-lightbox-caption {
   display: flex;
   min-width: 0;
   align-items: baseline;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .image-lightbox-name {
@@ -109,15 +109,15 @@
 
 .image-lightbox-position {
   flex: none;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .image-lightbox-actions {
   display: flex;
   flex: none;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .image-lightbox-stage {
@@ -142,7 +142,7 @@
   /* Fixed tracks, so the image's percentage limits resolve and a tall image fits the stage. */
   grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
-  padding: 0 calc(var(--openbot-space-8) * 2);
+  padding: 0 calc(var(--aikingbot-space-8) * 2);
   transform: translateX(calc(var(--image-lightbox-slide) * 100%));
 }
 
@@ -150,7 +150,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   user-select: none;
   will-change: transform;
 }
@@ -163,23 +163,23 @@
 
 .image-lightbox-error {
   margin: 0;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .image-lightbox-step {
   position: absolute;
   top: 50%;
   translate: 0 -50%;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control);
 }
 
 .image-lightbox-step-previous {
-  left: var(--openbot-space-4);
+  left: var(--aikingbot-space-4);
 }
 
 .image-lightbox-step-next {
-  right: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
 }
 
 .image-lightbox-strip {
@@ -189,24 +189,24 @@
   overflow-x: auto;
   /* `safe` keeps the first thumbnails reachable when the strip is wider than the window. */
   justify-content: safe center;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-3) var(--openbot-space-4) var(--openbot-space-4);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4) var(--aikingbot-space-4);
   scrollbar-width: none;
 }
 
 .image-lightbox-thumb {
   flex: none;
-  width: var(--openbot-control-xl);
-  height: var(--openbot-control-xl);
+  width: var(--aikingbot-control-xl);
+  height: var(--aikingbot-control-xl);
   overflow: hidden;
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
   padding: 0;
   opacity: 0.5;
-  transition: opacity var(--openbot-duration-fast) var(--openbot-ease-out);
+  transition: opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .image-lightbox-thumb[aria-current="true"] {
-  box-shadow: 0 0 0 2px var(--openbot-text-primary);
+  box-shadow: 0 0 0 2px var(--aikingbot-text-primary);
   opacity: 1;
 }
 
@@ -219,7 +219,7 @@
 .image-lightbox-thumb:focus-visible,
 .image-lightbox-step:focus-visible,
 .image-lightbox-action:focus-visible {
-  outline: 2px solid var(--openbot-border-focus);
+  outline: 2px solid var(--aikingbot-border-focus);
   outline-offset: 2px;
 }
 

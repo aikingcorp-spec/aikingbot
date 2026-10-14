@@ -1,6 +1,6 @@
 # AWS ECS
 
-You can run the [OpenBot image](docker.md) as an Amazon ECS service on an EC2 instance. AWS Fargate
+You can run the [AIKINGBOT image](docker.md) as an Amazon ECS service on an EC2 instance. AWS Fargate
 is not supported (see [Fargate](#fargate)). The service is a normal Remote host of your account, as
 any [Docker](docker.md) container. It publishes no port.
 
@@ -8,7 +8,7 @@ Read [Docker](docker.md) first. This page gives only the ECS settings for its op
 
 ## Instance
 
-Use one EC2 instance for OpenBot, with the Amazon ECS-optimized Amazon Linux 2023 AMI. OpenBot
+Use one EC2 instance for AIKINGBOT, with the Amazon ECS-optimized Amazon Linux 2023 AMI. AIKINGBOT
 needs the [seccomp profile](docker.md#security) of the image, and an ECS task definition cannot
 set a seccomp profile: `dockerSecurityOptions` accepts only `no-new-privileges`, `apparmor:`,
 `label:` and `credentialspec:`. So the Docker daemon of the instance uses the profile for each
@@ -33,19 +33,19 @@ version=<version>
 device=/dev/sdf
 # The data volume. mkfs runs only on a volume with no file system.
 blkid "$device" || mkfs -t xfs "$device"
-mkdir -p /srv/openbot-data
-echo "UUID=$(blkid -s UUID -o value "$device") /srv/openbot-data xfs defaults,nofail 0 2" >>/etc/fstab
-mount /srv/openbot-data
-chown 1000:1000 /srv/openbot-data
+mkdir -p /srv/aikingbot-data
+echo "UUID=$(blkid -s UUID -o value "$device") /srv/aikingbot-data xfs defaults,nofail 0 2" >>/etc/fstab
+mount /srv/aikingbot-data
+chown 1000:1000 /srv/aikingbot-data
 # The seccomp profile of that image version, and no-new-privileges, for each container.
 [ ! -e /etc/docker/daemon.json ] || { echo "Add the two keys to /etc/docker/daemon.json." >&2; exit 1; }
-curl -fsSL -o /etc/docker/openbot-seccomp.json \
-  "https://raw.githubusercontent.com/nightly-labs/openbot/v$version/docker/seccomp.json"
+curl -fsSL -o /etc/docker/aikingbot-seccomp.json \
+  "https://raw.githubusercontent.com/aikingcorp-spec/aikingx_bot/v$version/docker/seccomp.json"
 cat >/etc/docker/daemon.json <<'EOF'
-{ "seccomp-profile": "/etc/docker/openbot-seccomp.json", "no-new-privileges": true }
+{ "seccomp-profile": "/etc/docker/aikingbot-seccomp.json", "no-new-privileges": true }
 EOF
 systemctl restart docker
-echo ECS_CLUSTER=openbot >>/etc/ecs/ecs.config
+echo ECS_CLUSTER=aikingbot >>/etc/ecs/ecs.config
 ```
 
 The user data runs only on the first start of an instance. When you change the image version, get
@@ -55,16 +55,16 @@ the profile of that version again.
 
 ```json
 {
-  "family": "openbot",
+  "family": "aikingbot",
   "requiresCompatibilities": ["EC2"],
   "networkMode": "bridge",
-  "taskRoleArn": "arn:aws:iam::<account>:role/openbot-task",
-  "executionRoleArn": "arn:aws:iam::<account>:role/openbot-execution",
-  "volumes": [{ "name": "data", "host": { "sourcePath": "/srv/openbot-data" } }],
+  "taskRoleArn": "arn:aws:iam::<account>:role/aikingbot-task",
+  "executionRoleArn": "arn:aws:iam::<account>:role/aikingbot-execution",
+  "volumes": [{ "name": "data", "host": { "sourcePath": "/srv/aikingbot-data" } }],
   "containerDefinitions": [
     {
-      "name": "openbot",
-      "image": "ghcr.io/nightly-labs/openbot:<version>",
+      "name": "aikingbot",
+      "image": "ghcr.io/aikingcorp-spec/aikingx_bot:<version>",
       "essential": true,
       "memory": 4096,
       "linuxParameters": { "sharedMemorySize": 1024 },
@@ -73,9 +73,9 @@ the profile of that version again.
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/openbot",
+          "awslogs-group": "/ecs/aikingbot",
           "awslogs-region": "<region>",
-          "awslogs-stream-prefix": "openbot",
+          "awslogs-stream-prefix": "aikingbot",
           "awslogs-create-group": "true"
         }
       }
@@ -87,15 +87,15 @@ the profile of that version again.
 | Setting | Docker option | Why |
 | --- | --- | --- |
 | `sharedMemorySize: 1024` | `--shm-size 1g` | Chromium uses shared memory. |
-| `stopTimeout: 60` | `--stop-timeout 60` | OpenBot stops its agents and closes its database before it exits. |
-| `host.sourcePath` | `-v openbot-data:/data` | All data is in `/data`. |
+| `stopTimeout: 60` | `--stop-timeout 60` | AIKINGBOT stops its agents and closes its database before it exits. |
+| `host.sourcePath` | `-v aikingbot-data:/data` | All data is in `/data`. |
 | `daemon.json` | `--security-opt` | See [Instance](#instance). |
 
 The image starts `tini` as process 1. Do not set `initProcessEnabled`.
 
 To give a provider API key from AWS Secrets Manager or SSM Parameter Store, add `secrets` to the
 container, for example `{ "name": "XAI_API_KEY", "valueFrom": "<secret ARN>" }`. The execution
-role must be able to read it. Agents can read each variable of OpenBot (see
+role must be able to read it. Agents can read each variable of AIKINGBOT (see
 [Environment](docker.md#environment)).
 
 The task role is for ECS Exec only. Agents can read the credentials of the task role, so do not give
@@ -118,17 +118,17 @@ ECS Exec opens a terminal in the container. The task role needs `ssmmessages:Cre
 then:
 
 ```sh
-aws ecs execute-command --cluster openbot --task <task ID> --container openbot \
-  --interactive --command "openbot login"
+aws ecs execute-command --cluster aikingbot --task <task ID> --container aikingbot \
+  --interactive --command "aikingbot login"
 ```
 
-`openbot status`, `logout` and `name` work in the same way. The log is in the CloudWatch log group
-`/ecs/openbot`, not in `openbot logs`.
+`aikingbot status`, `logout` and `name` work in the same way. The log is in the CloudWatch log group
+`/ecs/aikingbot`, not in `aikingbot logs`.
 
 ## Network
 
 The task only connects out. Allow HTTPS to the hosts in
-[A company firewall or proxy blocks OpenBot](TROUBLESHOOTING.md#a-company-firewall-or-proxy-blocks-openbot),
+[A company firewall or proxy blocks AIKINGBOT](TROUBLESHOOTING.md#a-company-firewall-or-proxy-blocks-aikingbot),
 to your providers, and the UDP and TCP ports of the TURN relay for remote use. The security group
 needs no inbound rule.
 
@@ -144,7 +144,7 @@ Fargate cannot run the image with the Electron sandbox on:
 - `dockerSecurityOptions` is not valid on Fargate, and Fargate adds no capability other than
   `SYS_PTRACE`. If the default profile of Fargate refuses user namespaces, the container stops with a
   message about the seccomp profile.
-- Fargate stores data on EFS, a network file system. The OpenBot database uses the SQLite WAL mode,
+- Fargate stores data on EFS, a network file system. The AIKINGBOT database uses the SQLite WAL mode,
   which [does not work over a network file system](https://www.sqlite.org/wal.html).
 
 Fargate does not let you set the shared memory size. When `/dev/shm` is smaller than 1 GiB, the image
@@ -157,5 +157,5 @@ Do not turn off the sandbox to use Fargate. Use EC2, or a [hosted server](hosted
 This setup was not tested on AWS. Not confirmed: the user data on the ECS-optimized Amazon Linux 2023
 AMI, a user namespace on that AMI with the profile of the image, the start of the image on Fargate,
 the user that ECS Exec uses, the `/dev/sdf` link to the NVMe device, and the effect of
-`no-new-privileges` in `daemon.json` on the ECS agent and ECS Exec. From its script, the `openbot` command works as root and as the
+`no-new-privileges` in `daemon.json` on the ECS agent and ECS Exec. From its script, the `aikingbot` command works as root and as the
 user of the image.

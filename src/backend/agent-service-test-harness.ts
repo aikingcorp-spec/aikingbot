@@ -9,8 +9,8 @@ import { EventEmitter } from "node:events";
 import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentEvent, BrowserControlState, BrowserTab, QueueSnapshot } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import type { AgentEvent, BrowserControlState, BrowserTab, QueueSnapshot } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { afterAll, expect, vi } from "vitest";
 import type { BrowserUploadHooks } from "./agent/browser-uploads";
 import type { AgentClient, AgentProvider } from "./agent-client";
@@ -63,31 +63,31 @@ export const EMPTY_LAYOUT = {
 };
 
 const FAKE_RUNTIME_ENV_VARS = [
-  "OPENBOT_FAKE_CODEX_LOG",
-  "OPENBOT_FAKE_AGENT_TOOL",
-  "OPENBOT_FAKE_AGENT_TOOL_PATHS",
-  "OPENBOT_FAKE_AGENT_TOOL_CALLS",
-  "OPENBOT_FAKE_THREAD_READ_DELAY",
-  "OPENBOT_FAKE_AUTO_COMPLETE",
-  "OPENBOT_FAKE_CONTEXT_USAGE",
-  "OPENBOT_FAKE_COMPACTION_ERROR",
-  "OPENBOT_FAKE_COMPACTION_DELAY",
-  "OPENBOT_FAKE_ARCHIVED_THREAD",
-  "OPENBOT_FAKE_TURN_START_RESPONSE_DELAY",
-  "OPENBOT_FAKE_WARNING",
-  "OPENBOT_FAKE_CLAUDE_LOGIN_LOG",
-  "OPENBOT_FAKE_CODEX_CONFIG",
+  "AIKINGBOT_FAKE_CODEX_LOG",
+  "AIKINGBOT_FAKE_AGENT_TOOL",
+  "AIKINGBOT_FAKE_AGENT_TOOL_PATHS",
+  "AIKINGBOT_FAKE_AGENT_TOOL_CALLS",
+  "AIKINGBOT_FAKE_THREAD_READ_DELAY",
+  "AIKINGBOT_FAKE_AUTO_COMPLETE",
+  "AIKINGBOT_FAKE_CONTEXT_USAGE",
+  "AIKINGBOT_FAKE_COMPACTION_ERROR",
+  "AIKINGBOT_FAKE_COMPACTION_DELAY",
+  "AIKINGBOT_FAKE_ARCHIVED_THREAD",
+  "AIKINGBOT_FAKE_TURN_START_RESPONSE_DELAY",
+  "AIKINGBOT_FAKE_WARNING",
+  "AIKINGBOT_FAKE_CLAUDE_LOGIN_LOG",
+  "AIKINGBOT_FAKE_CODEX_CONFIG",
 ] as const;
 
 const PROVIDER_PATH_ENV_VARS = [
-  "OPENBOT_CODEX_PATH",
-  "OPENBOT_CLAUDE_PATH",
-  "OPENBOT_GROK_PATH",
-  "OPENBOT_OPENCODE_PATH",
-  "OPENBOT_CURSOR_PATH",
-  "OPENBOT_CLINE_PATH",
-  "OPENBOT_PI_PATH",
-  "OPENBOT_MUSE_PATH",
+  "AIKINGBOT_CODEX_PATH",
+  "AIKINGBOT_CLAUDE_PATH",
+  "AIKINGBOT_GROK_PATH",
+  "AIKINGBOT_OPENCODE_PATH",
+  "AIKINGBOT_CURSOR_PATH",
+  "AIKINGBOT_CLINE_PATH",
+  "AIKINGBOT_PI_PATH",
+  "AIKINGBOT_MUSE_PATH",
 ] as const;
 
 /** Provider paths as they were before any shard touched them. */
@@ -99,23 +99,23 @@ const originalProviderPaths = new Map(PROVIDER_PATH_ENV_VARS.map((name) => [name
  * so the fake-runtime variables and the fixture layout live in one place.
  */
 export async function startAgentTestFixture(): Promise<{ root: string; logPath: string }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-agent-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-agent-test-"));
   const logPath = join(root, "protocol.jsonl");
-  process.env.OPENBOT_FAKE_CODEX_LOG = logPath;
-  process.env.OPENBOT_CODEX_PATH = await fakeCodexCli();
-  process.env.OPENBOT_CLAUDE_PATH = join(root, "missing-claude");
-  process.env.OPENBOT_GROK_PATH = join(root, "missing-grok");
-  process.env.OPENBOT_OPENCODE_PATH = join(root, "missing-opencode");
-  process.env.OPENBOT_CURSOR_PATH = join(root, "missing-cursor");
-  process.env.OPENBOT_CLINE_PATH = join(root, "missing-cline");
-  process.env.OPENBOT_PI_PATH = join(root, "missing-pi");
-  process.env.OPENBOT_MUSE_PATH = join(root, "missing-muse");
+  process.env.AIKINGBOT_FAKE_CODEX_LOG = logPath;
+  process.env.AIKINGBOT_CODEX_PATH = await fakeCodexCli();
+  process.env.AIKINGBOT_CLAUDE_PATH = join(root, "missing-claude");
+  process.env.AIKINGBOT_GROK_PATH = join(root, "missing-grok");
+  process.env.AIKINGBOT_OPENCODE_PATH = join(root, "missing-opencode");
+  process.env.AIKINGBOT_CURSOR_PATH = join(root, "missing-cursor");
+  process.env.AIKINGBOT_CLINE_PATH = join(root, "missing-cline");
+  process.env.AIKINGBOT_PI_PATH = join(root, "missing-pi");
+  process.env.AIKINGBOT_MUSE_PATH = join(root, "missing-muse");
   return { root, logPath };
 }
 
 /**
  * Reverses startAgentTestFixture: stops the service, restores real timers and
- * the original provider paths, clears every OPENBOT_FAKE_* variable a test may
+ * the original provider paths, clears every AIKINGBOT_FAKE_* variable a test may
  * have set, and removes the temporary root.
  */
 export async function stopAgentTestFixture(root: string, service: AgentService | null): Promise<void> {
@@ -389,7 +389,7 @@ export class FakeAgentClient extends EventEmitter implements AgentClient {
   }
 }
 
-export async function callOpenBotTool(
+export async function callAIKINGBOTTool(
   client: FakeAgentClient,
   threadId: string,
   tool: string,
@@ -397,7 +397,7 @@ export async function callOpenBotTool(
   turnId = "routine-tool-turn",
   callId: string = randomUUID(),
 ): Promise<{ result?: unknown; error?: RpcError }> {
-  const id = `openbot-tool-${randomUUID()}`;
+  const id = `aikingbot-tool-${randomUUID()}`;
   client.emit("request", {
     id,
     method: "item/tool/call",
@@ -405,7 +405,7 @@ export async function callOpenBotTool(
       threadId,
       turnId,
       callId,
-      namespace: "openbot",
+      namespace: "aikingbot",
       tool,
       arguments: args,
     },
@@ -419,16 +419,16 @@ export async function callOpenBotTool(
   return { error: client.errors.find((item) => item.id === id)?.error };
 }
 
-export function openBotToolPayload(result: unknown): DynamicRecord {
+export function aikingBotToolPayload(result: unknown): DynamicRecord {
   const contentItems = paramsRecord(result)?.contentItems;
   const text = Array.isArray(contentItems) ? getString(contentItems[0], "text") : null;
-  if (!text) throw new Error("The OpenBot tool response has no text payload.");
+  if (!text) throw new Error("The AIKINGBOT tool response has no text payload.");
   const payload = JSON.parse(text);
-  if (!isDynamicRecord(payload)) throw new Error("The OpenBot tool response payload is invalid.");
+  if (!isDynamicRecord(payload)) throw new Error("The AIKINGBOT tool response payload is invalid.");
   return payload;
 }
 
-export async function expectOpenBotToolError(
+export async function expectAIKINGBOTToolError(
   client: FakeAgentClient,
   threadId: string,
   tool: string,
@@ -436,13 +436,13 @@ export async function expectOpenBotToolError(
   message: string,
   turnId?: string,
 ): Promise<void> {
-  const result = await callOpenBotTool(client, threadId, tool, args, turnId);
+  const result = await callAIKINGBOTTool(client, threadId, tool, args, turnId);
   expect(result.result).toBeUndefined();
   expect(result.error?.message).toContain(message);
 }
 
-/** A tool that refuses with `openBotToolFailure`: the model reads the reason, no JSON-RPC fault. */
-export async function expectOpenBotToolFailure(
+/** A tool that refuses with `aikingBotToolFailure`: the model reads the reason, no JSON-RPC fault. */
+export async function expectAIKINGBOTToolFailure(
   client: FakeAgentClient,
   threadId: string,
   tool: string,
@@ -450,10 +450,10 @@ export async function expectOpenBotToolFailure(
   message: string,
   turnId?: string,
 ): Promise<void> {
-  const result = await callOpenBotTool(client, threadId, tool, args, turnId);
+  const result = await callAIKINGBOTTool(client, threadId, tool, args, turnId);
   expect(result.error).toBeUndefined();
   expect(paramsRecord(result.result)?.success).toBe(false);
-  expect(openBotToolPayload(result.result).error).toContain(message);
+  expect(aikingBotToolPayload(result.result).error).toContain(message);
 }
 
 export function notification(method: string, params: unknown): AppServerNotification {
@@ -678,7 +678,7 @@ export async function waitFor(check: () => boolean | undefined | Promise<boolean
  * The fake CLIs, written once for each test file and not once for each test. macOS checks an
  * executable the first time it runs from a new path, and that check cost about 200 ms in every test
  * that wrote its own copy. A fake's source is fixed: a test changes what it does through the
- * `OPENBOT_FAKE_*` variables, so no test can change the file that the next test runs.
+ * `AIKINGBOT_FAKE_*` variables, so no test can change the file that the next test runs.
  */
 let fakeCliDirectory: Promise<string> | null = null;
 const fakeClis = new Map<string, Promise<string>>();
@@ -691,7 +691,7 @@ function sharedFakeCli(name: string, source: string): Promise<string> {
   let executable = fakeClis.get(name);
   if (!executable) {
     executable = (async () => {
-      fakeCliDirectory ??= mkdtemp(join(tmpdir(), "openbot-fake-cli-"));
+      fakeCliDirectory ??= mkdtemp(join(tmpdir(), "aikingbot-fake-cli-"));
       const path = join(await fakeCliDirectory, name);
       await writeFile(path, source, { mode: 0o755 });
       return path;
@@ -710,15 +710,15 @@ if (process.argv.includes("--version")) {
   process.stdout.write("codex-cli 0.156.0\\n");
   process.exit(0);
 }
-const log = process.env.OPENBOT_FAKE_CODEX_LOG;
-const configRead = process.env.OPENBOT_FAKE_CODEX_CONFIG
-  ? JSON.parse(process.env.OPENBOT_FAKE_CODEX_CONFIG)
+const log = process.env.AIKINGBOT_FAKE_CODEX_LOG;
+const configRead = process.env.AIKINGBOT_FAKE_CODEX_CONFIG
+  ? JSON.parse(process.env.AIKINGBOT_FAKE_CODEX_CONFIG)
   : ${JSON.stringify(codexConfigRead())};
 let buffer = "";
 let threadCounter = 0;
 let turnCounter = 0;
 const turns = new Map();
-let archivedThread = process.env.OPENBOT_FAKE_ARCHIVED_THREAD === "1";
+let archivedThread = process.env.AIKINGBOT_FAKE_ARCHIVED_THREAD === "1";
 process.stdout.on("error", (error) => {
   if (error.code === "EPIPE") process.exit(0);
   throw error;
@@ -782,7 +782,7 @@ process.stdin.on("data", (chunk) => {
         const data = all.slice(offset, offset + message.params.limit).map(({ items, ...turn }) => turn);
         const nextCursor = offset + data.length < all.length ? String(offset + data.length) : null;
         const respond = () => write({ id: message.id, result: { data, nextCursor } });
-        const delay = Number(process.env.OPENBOT_FAKE_THREAD_READ_DELAY || 0);
+        const delay = Number(process.env.AIKINGBOT_FAKE_THREAD_READ_DELAY || 0);
         if (delay > 0) setTimeout(respond, delay);
         else respond();
       }
@@ -795,7 +795,7 @@ process.stdin.on("data", (chunk) => {
       if (message.method === "thread/read") {
         const capturedTurns = JSON.parse(JSON.stringify([...turns.values()]));
         const respond = () => write({ id: message.id, result: { thread: { id: message.params.threadId, turns: capturedTurns } } });
-        const delay = Number(process.env.OPENBOT_FAKE_THREAD_READ_DELAY || 0);
+        const delay = Number(process.env.AIKINGBOT_FAKE_THREAD_READ_DELAY || 0);
         if (delay > 0) setTimeout(respond, delay);
         else respond();
       }
@@ -803,23 +803,23 @@ process.stdin.on("data", (chunk) => {
         const turnId = "turn-" + (++turnCounter);
         turns.set(turnId, { id: turnId, status: "inProgress", items: [] });
         const respondToStart = () => write({ id: message.id, result: { turn: { id: turnId, status: "inProgress", items: [] } } });
-        const startResponseDelay = Number(process.env.OPENBOT_FAKE_TURN_START_RESPONSE_DELAY || 0);
+        const startResponseDelay = Number(process.env.AIKINGBOT_FAKE_TURN_START_RESPONSE_DELAY || 0);
         if (startResponseDelay > 0) setTimeout(respondToStart, startResponseDelay);
         else respondToStart();
         write({ method: "turn/started", params: { threadId: message.params.threadId, turn: { id: turnId } } });
-        if (process.env.OPENBOT_FAKE_WARNING) {
-          write({ method: "warning", params: { threadId: message.params.threadId, message: process.env.OPENBOT_FAKE_WARNING } });
+        if (process.env.AIKINGBOT_FAKE_WARNING) {
+          write({ method: "warning", params: { threadId: message.params.threadId, message: process.env.AIKINGBOT_FAKE_WARNING } });
         }
-        if (process.env.OPENBOT_FAKE_CONTEXT_USAGE) {
-          const totalTokens = Number(process.env.OPENBOT_FAKE_CONTEXT_USAGE);
+        if (process.env.AIKINGBOT_FAKE_CONTEXT_USAGE) {
+          const totalTokens = Number(process.env.AIKINGBOT_FAKE_CONTEXT_USAGE);
           write({ method: "thread/tokenUsage/updated", params: { threadId: message.params.threadId, turnId, tokenUsage: { total: { totalTokens }, last: { totalTokens }, modelContextWindow: 100000 } } });
         }
         write({ method: "item/agentMessage/delta", params: { threadId: message.params.threadId, turnId, itemId: "message-" + turnId, delta: "Streaming" } });
-        if (process.env.OPENBOT_FAKE_AGENT_TOOL === "1" && turnCounter === 1) {
-          setTimeout(() => write({ id: "agent-tool-1", method: "item/tool/call", params: { threadId: message.params.threadId, turnId, callId: "call-1", namespace: "openbot", tool: "send_message", arguments: { recipientAgentIds: ["sales-outbound", "inbox-manager"], text: "Please prepare your reports.", paths: JSON.parse(process.env.OPENBOT_FAKE_AGENT_TOOL_PATHS || "[]") } } }), 30);
+        if (process.env.AIKINGBOT_FAKE_AGENT_TOOL === "1" && turnCounter === 1) {
+          setTimeout(() => write({ id: "agent-tool-1", method: "item/tool/call", params: { threadId: message.params.threadId, turnId, callId: "call-1", namespace: "aikingbot", tool: "send_message", arguments: { recipientAgentIds: ["sales-outbound", "inbox-manager"], text: "Please prepare your reports.", paths: JSON.parse(process.env.AIKINGBOT_FAKE_AGENT_TOOL_PATHS || "[]") } } }), 30);
         }
-        if (process.env.OPENBOT_FAKE_AGENT_TOOL_CALLS && turnCounter === 1) {
-          const calls = JSON.parse(process.env.OPENBOT_FAKE_AGENT_TOOL_CALLS);
+        if (process.env.AIKINGBOT_FAKE_AGENT_TOOL_CALLS && turnCounter === 1) {
+          const calls = JSON.parse(process.env.AIKINGBOT_FAKE_AGENT_TOOL_CALLS);
           calls.forEach((call, index) => setTimeout(() => write({
             id: "agent-tool-configured-" + index,
             method: "item/tool/call",
@@ -827,15 +827,15 @@ process.stdin.on("data", (chunk) => {
               threadId: message.params.threadId,
               turnId,
               callId: "configured-call-" + index,
-              namespace: "openbot",
+              namespace: "aikingbot",
               tool: call.tool,
               arguments: call.arguments,
             },
           }), 30 + index * 30));
         }
-        if (process.env.OPENBOT_FAKE_AUTO_COMPLETE) {
+        if (process.env.AIKINGBOT_FAKE_AUTO_COMPLETE) {
           setTimeout(() => {
-            const text = process.env.OPENBOT_FAKE_AUTO_COMPLETE;
+            const text = process.env.AIKINGBOT_FAKE_AUTO_COMPLETE;
             const item = { type: "agentMessage", id: "message-" + turnId, text, phase: "final_answer" };
             const turn = turns.get(turnId);
             if (turn) {
@@ -848,7 +848,7 @@ process.stdin.on("data", (chunk) => {
         }
       }
       if (message.method === "thread/compact/start") {
-        if (process.env.OPENBOT_FAKE_COMPACTION_ERROR === "1") {
+        if (process.env.AIKINGBOT_FAKE_COMPACTION_ERROR === "1") {
           write({ id: message.id, error: { code: -32601, message: "Compaction unavailable" } });
           newline = buffer.indexOf("\\n");
           continue;
@@ -860,7 +860,7 @@ process.stdin.on("data", (chunk) => {
         write({ method: "item/started", params: { threadId: message.params.threadId, turnId, item } });
         write({ method: "item/completed", params: { threadId: message.params.threadId, turnId, item } });
         const finish = () => write({ method: "turn/completed", params: { threadId: message.params.threadId, turn: { id: turnId, status: "completed" } } });
-        const compactionDelay = Number(process.env.OPENBOT_FAKE_COMPACTION_DELAY || 0);
+        const compactionDelay = Number(process.env.AIKINGBOT_FAKE_COMPACTION_DELAY || 0);
         if (compactionDelay > 0) setTimeout(finish, compactionDelay);
         else finish();
       }
@@ -944,8 +944,8 @@ export function pendingFakeClaudeCli(): Promise<string> {
 if [ "$1" = "--version" ]; then
   printf '%s\\n' '2.1.246 (Claude Code)'
 elif [ "$1" = "auth" ] && [ "$2" = "login" ]; then
-  printf '%s\\n' 'started' >> "$OPENBOT_FAKE_CLAUDE_LOGIN_LOG"
-  trap 'printf "%s\\n" "stopped" >> "$OPENBOT_FAKE_CLAUDE_LOGIN_LOG"; exit 143' TERM INT
+  printf '%s\\n' 'started' >> "$AIKINGBOT_FAKE_CLAUDE_LOGIN_LOG"
+  trap 'printf "%s\\n" "stopped" >> "$AIKINGBOT_FAKE_CLAUDE_LOGIN_LOG"; exit 143' TERM INT
   while :; do sleep 0.1; done
 elif [ "$1" = "auth" ]; then
   printf '%s' '{"loggedIn":false}'

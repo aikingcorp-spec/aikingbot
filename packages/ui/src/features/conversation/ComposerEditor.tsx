@@ -1,9 +1,9 @@
-import { attachmentReferenceIds } from "@openbot/contracts/attachment-references";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@openbot/contracts/ipc";
-import { Badge, Blocks, Listbox, Puzzle } from "@openbot/ui";
-import { usesTouchLayout } from "@openbot/ui/utils";
+import { attachmentReferenceIds } from "@aikingbot/contracts/attachment-references";
+import { serializeChatTagReference } from "@aikingbot/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@aikingbot/contracts/ipc";
+import { Badge, Blocks, Listbox, Puzzle } from "@aikingbot/ui";
+import { usesTouchLayout } from "@aikingbot/ui/utils";
 import { Dynamic, Portal } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createUniqueId, For, onCleanup, onSettled, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";

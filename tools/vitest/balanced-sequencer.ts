@@ -8,7 +8,7 @@ import { BaseSequencer, type TestSpecification } from "vitest/node";
  *
  * `--shard` on its own sorts the files by size and cuts the sorted list into contiguous pieces, so
  * the biggest files land together. That is close to the worst split this suite can take, because
- * size does not predict duration here: `openbot-database.test.ts` is the largest file in the repo
+ * size does not predict duration here: `aikingbot-database.test.ts` is the largest file in the repo
  * and runs in 1.8s, while `grok-client.test.ts` is half its size and takes 53s. Measured against
  * the recorded durations, two built-in shards put 643s of the 693s in one of them.
  *

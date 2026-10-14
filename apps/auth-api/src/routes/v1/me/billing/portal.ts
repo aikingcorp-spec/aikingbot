@@ -1,4 +1,4 @@
-import { parseBillingPortalRequest } from "@openbot/contracts/billing";
+import { parseBillingPortalRequest } from "@aikingbot/contracts/billing";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { runApiResponse } from "../../../../server/effect-runtime";

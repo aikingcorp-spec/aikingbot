@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { CentralAuthManager, readCentralAuthApiUrl, readMobileConnectApiUrl } from "./central-auth-manager";
@@ -92,7 +92,7 @@ describe("CentralAuthManager", () => {
     await runCauseEffect(first.initialize());
     const created = await runCauseEffect(first.createMobileConnectLink(host));
     expect(created).toEqual({
-      url: `openbot://mobile-connect?api=http%3A%2F%2F127.0.0.1%3A3100&ticket=${link}&host=${host.hostId}&fingerprint=${host.fingerprint}`,
+      url: `aikingbot://mobile-connect?api=http%3A%2F%2F127.0.0.1%3A3100&ticket=${link}&host=${host.hostId}&fingerprint=${host.fingerprint}`,
       createdAt: 1_000,
     });
     expect(Buffer.from(await readFile(storagePath, "utf8"), "base64").toString()).toMatch(/^encrypted:/u);
@@ -308,7 +308,7 @@ describe("CentralAuthManager", () => {
       await runCauseEffect(manager.createMobileConnect({ hostId: serverId, fingerprint: "a".repeat(43) })),
     ).toMatchObject({
       qrData: expect.stringMatching(
-        /^openbot:\/\/mobile-connect\?api=http%3A%2F%2F192\.168\.1\.143%3A3100&ticket=mobile-ticket_1234567890abcdefghijklmnop&host=00000000-0000-4000-8000-000000000000&fingerprint=a{43}$/u,
+        /^aikingbot:\/\/mobile-connect\?api=http%3A%2F%2F192\.168\.1\.143%3A3100&ticket=mobile-ticket_1234567890abcdefghijklmnop&host=00000000-0000-4000-8000-000000000000&fingerprint=a{43}$/u,
       ),
     });
     expect(await runCauseEffect(manager.listMobileConnectedDevices())).toEqual([
@@ -345,7 +345,7 @@ describe("CentralAuthManager", () => {
         email: "alice@example.com",
         serverName: "Studio Mac",
         inviteUrl:
-          "https://openbot.run/join?api=https%3A%2F%2Fstudio-mac-k7m4q2pz-host.openbot.run%2F&server=00000000-0000-4000-8000-000000000000&fingerprint=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&invite=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "https://aikingbot.aikingx.com/join?api=https%3A%2F%2Fstudio-mac-k7m4q2pz-host.aikingbot.aikingx.com%2F&server=00000000-0000-4000-8000-000000000000&fingerprint=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&invite=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         role: "member",
       }),
     );
@@ -403,7 +403,7 @@ describe("CentralAuthManager", () => {
       if (path === "/v1/team-auth/ticket") {
         return Response.json({ ticket: "memory-ticket", expiresAt: 20_000 });
       }
-      return Response.json({ service: "openbot-auth-api", status: "ok" });
+      return Response.json({ service: "aikingbot-auth-api", status: "ok" });
     });
     const options = {
       apiUrl: "http://127.0.0.1:3100",
@@ -454,7 +454,7 @@ describe("CentralAuthManager", () => {
       if (path === "/v1/team-auth/ticket") {
         return Response.json({ ticket: "memory-ticket", expiresAt: 20_000 });
       }
-      return Response.json({ service: "openbot-auth-api", status: "ok" });
+      return Response.json({ service: "aikingbot-auth-api", status: "ok" });
     });
     const manager = new CentralAuthManager({
       apiUrl: "http://127.0.0.1:3100",
@@ -785,7 +785,7 @@ describe("CentralAuthManager", () => {
         attempts.push(Date.now() - startedAt);
         expect(new URL(input.toString()).pathname).toBe("/health/live");
         if (attempts.length < 3) throw new TypeError("fetch failed");
-        return Response.json({ service: "openbot-auth-api", status: "ok" });
+        return Response.json({ service: "aikingbot-auth-api", status: "ok" });
       })
       .mockName("health fetch");
     const manager = new CentralAuthManager({
@@ -894,7 +894,7 @@ describe("CentralAuthManager", () => {
     });
 
     await expect(concurrentRetry).resolves.toEqual(await initialization);
-    fetchMock.mockResolvedValueOnce(Response.json({ service: "openbot-auth-api", status: "ok" }));
+    fetchMock.mockResolvedValueOnce(Response.json({ service: "aikingbot-auth-api", status: "ok" }));
     await expect(runCauseEffect(manager.retry())).resolves.toEqual({
       status: "signed_out",
     });
@@ -908,7 +908,7 @@ describe("CentralAuthManager", () => {
       new Response("<html>Web Page Blocked</html>", { status: 401, headers: { "Content-Type": "text/html" } });
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(async () => blockPage());
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath,
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -923,7 +923,7 @@ describe("CentralAuthManager", () => {
       issue: {
         code: "auth_api_unavailable",
         message:
-          "A firewall or proxy on this network blocked OpenBot from reaching api.openbot.run. Ask your network administrator to allow api.openbot.run, then try again.",
+          "A firewall or proxy on this network blocked AIKINGBOT from reaching api.aikingbot.aikingx.com. Ask your network administrator to allow api.aikingbot.aikingx.com, then try again.",
       },
     });
     await expect(readFile(storagePath, "utf8")).resolves.toBe(Buffer.from("session-token").toString("base64"));
@@ -932,7 +932,7 @@ describe("CentralAuthManager", () => {
     fetchMock.mockReset().mockRejectedValue(certificateError);
     await expect(runCauseEffect(manager.retry())).resolves.toMatchObject({
       status: "error",
-      issue: { message: expect.stringContaining("blocked OpenBot from reaching api.openbot.run") },
+      issue: { message: expect.stringContaining("blocked AIKINGBOT from reaching api.aikingbot.aikingx.com") },
     });
   });
 
@@ -940,7 +940,7 @@ describe("CentralAuthManager", () => {
     const root = await createRoot();
     const requests: Request[] = [];
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath: join(root, "session.bin"),
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -976,7 +976,7 @@ describe("CentralAuthManager", () => {
       ),
     ).resolves.toMatchObject({
       status: "signed_in",
-      user: { avatarUrl: "https://api.openbot.run/v1/avatars/user-1?v=image-1" },
+      user: { avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/user-1?v=image-1" },
     });
     expect(requests.at(-1)?.method).toBe("PUT");
     expect(requests.at(-1)?.headers.get("Content-Type")).toBe("image/png");
@@ -1002,7 +1002,7 @@ describe("CentralAuthManager", () => {
     });
     let verifications = 0;
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath,
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1062,7 +1062,7 @@ describe("CentralAuthManager", () => {
     const storagePath = join(root, "session.bin");
     let verifications = 0;
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath,
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1116,7 +1116,7 @@ describe("CentralAuthManager", () => {
     const storagePath = join(root, "session.bin");
     let verifications = 0;
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath,
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1169,7 +1169,7 @@ describe("CentralAuthManager", () => {
     const root = await createRoot();
     const requests: Request[] = [];
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath: join(root, "session.bin"),
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1218,7 +1218,7 @@ describe("CentralAuthManager", () => {
       finishName = resolve;
     });
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath: join(root, "session.bin"),
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1278,7 +1278,7 @@ describe("CentralAuthManager", () => {
       status: "signed_in",
       user: {
         name: "New name",
-        avatarUrl: "https://api.openbot.run/v1/avatars/user-1?v=new",
+        avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/user-1?v=new",
       },
     });
   });
@@ -1294,7 +1294,7 @@ describe("CentralAuthManager", () => {
       finishLogout = resolve;
     });
     const manager = new CentralAuthManager({
-      apiUrl: "https://api.openbot.run",
+      apiUrl: "https://api.aikingbot.aikingx.com",
       storagePath: join(root, "session.bin"),
       encrypt: (value) => Buffer.from(value),
       decrypt: (value) => value.toString(),
@@ -1345,20 +1345,22 @@ describe("CentralAuthManager", () => {
 
   it("accepts only HTTPS and local HTTP API origins", () => {
     expect(readCentralAuthApiUrl(undefined)).toBe("http://127.0.0.1:3100");
-    expect(readCentralAuthApiUrl(undefined, "https://api.openbot.run")).toBe("https://api.openbot.run");
+    expect(readCentralAuthApiUrl(undefined, "https://api.aikingbot.aikingx.com")).toBe(
+      "https://api.aikingbot.aikingx.com",
+    );
     expect(readCentralAuthApiUrl("https://auth.example.com")).toBe("https://auth.example.com");
     expect(() => readCentralAuthApiUrl("http://auth.example.com")).toThrow("HTTPS");
-    expect(readMobileConnectApiUrl("http://192.168.1.143:3100", "https://api.openbot.run")).toBe(
+    expect(readMobileConnectApiUrl("http://192.168.1.143:3100", "https://api.aikingbot.aikingx.com")).toBe(
       "http://192.168.1.143:3100",
     );
-    expect(() => readMobileConnectApiUrl("http://203.0.113.10:3100", "https://api.openbot.run")).toThrow(
+    expect(() => readMobileConnectApiUrl("http://203.0.113.10:3100", "https://api.aikingbot.aikingx.com")).toThrow(
       "Invalid Mobile Connect payload",
     );
   });
 });
 
 async function createRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-central-auth-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-central-auth-"));
   roots.push(root);
   return root;
 }

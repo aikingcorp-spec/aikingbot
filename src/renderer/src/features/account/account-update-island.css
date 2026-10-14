@@ -1,40 +1,41 @@
 .account-update-island {
-  --panel-open-dur: calc(var(--openbot-duration-slow) + var(--openbot-duration-slow));
-  --panel-close-dur: calc(var(--openbot-duration-slow) + var(--openbot-duration-normal));
-  --panel-translate-y: calc(100% - var(--openbot-space-3));
-  --panel-blur: var(--openbot-space-0-5);
-  --panel-ease: var(--openbot-ease-out);
-  --text-swap-dur: var(--openbot-duration-normal);
-  --text-swap-translate-y: var(--openbot-space-1);
-  --text-swap-blur: var(--openbot-space-0-5);
-  --text-swap-ease: var(--openbot-ease-in-out);
-  --digit-dur: var(--openbot-duration-slow);
-  --digit-distance: var(--openbot-space-1);
-  --digit-stagger: calc(var(--openbot-duration-fast) - var(--openbot-duration-dialog));
-  --digit-blur: var(--openbot-space-0-5);
-  --digit-ease: var(--openbot-ease-out);
+  --panel-open-dur: calc(var(--aikingbot-duration-slow) + var(--aikingbot-duration-slow));
+  --panel-close-dur: calc(var(--aikingbot-duration-slow) + var(--aikingbot-duration-normal));
+  --panel-translate-y: calc(100% - var(--aikingbot-space-3));
+  --panel-blur: var(--aikingbot-space-0-5);
+  --panel-ease: var(--aikingbot-ease-out);
+  --text-swap-dur: var(--aikingbot-duration-normal);
+  --text-swap-translate-y: var(--aikingbot-space-1);
+  --text-swap-blur: var(--aikingbot-space-0-5);
+  --text-swap-ease: var(--aikingbot-ease-in-out);
+  --digit-dur: var(--aikingbot-duration-slow);
+  --digit-distance: var(--aikingbot-space-1);
+  --digit-stagger: calc(var(--aikingbot-duration-fast) - var(--aikingbot-duration-dialog));
+  --digit-blur: var(--aikingbot-space-0-5);
+  --digit-ease: var(--aikingbot-ease-out);
   --digit-dir-x: 0;
   --digit-dir-y: 1;
 
   position: absolute;
   z-index: 0;
-  right: var(--openbot-space-4);
-  bottom: var(--openbot-control-xl);
-  left: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
+  bottom: var(--aikingbot-control-xl);
+  left: var(--aikingbot-space-4);
   display: grid;
-  min-height: calc(var(--openbot-control-xl) + var(--openbot-radius-card));
+  min-height: calc(var(--aikingbot-control-xl) + var(--aikingbot-radius-card));
   align-items: center;
   border: 0;
-  border-radius: var(--openbot-radius-lg) var(--openbot-radius-lg) var(--openbot-radius-md) var(--openbot-radius-md);
-  background: var(--openbot-accent-strong);
-  box-shadow: 0 0 0 1px var(--openbot-accent-soft);
-  -webkit-backdrop-filter: blur(var(--openbot-space-3));
-  backdrop-filter: blur(var(--openbot-space-3));
-  padding: calc(var(--openbot-space-1) + 1px) var(--openbot-space-1-5)
-    calc(var(--openbot-space-4) + var(--openbot-space-1) - 1px);
+  border-radius: var(--aikingbot-radius-lg) var(--aikingbot-radius-lg) var(--aikingbot-radius-md)
+    var(--aikingbot-radius-md);
+  background: var(--aikingbot-accent-strong);
+  box-shadow: 0 0 0 1px var(--aikingbot-accent-soft);
+  -webkit-backdrop-filter: blur(var(--aikingbot-space-3));
+  backdrop-filter: blur(var(--aikingbot-space-3));
+  padding: calc(var(--aikingbot-space-1) + 1px) var(--aikingbot-space-1-5)
+    calc(var(--aikingbot-space-4) + var(--aikingbot-space-1) - 1px);
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-accent-text);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-accent-text);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,10 +81,10 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--openbot-accent-text);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-accent-text);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-sm);
   white-space: nowrap;
 }
 
@@ -128,32 +129,37 @@
 .account-update-island__action-shell {
   position: relative;
   display: grid;
-  width: calc(var(--openbot-control-xl) + var(--openbot-control-xl) + var(--openbot-space-6) + var(--openbot-space-1));
-  min-width: calc(var(--openbot-control-xl) + var(--openbot-control-xl) + var(--openbot-space-3));
+  width: calc(
+    var(--aikingbot-control-xl) +
+    var(--aikingbot-control-xl) +
+    var(--aikingbot-space-6) +
+    var(--aikingbot-space-1)
+  );
+  min-width: calc(var(--aikingbot-control-xl) + var(--aikingbot-control-xl) + var(--aikingbot-space-3));
   flex-shrink: 0;
 }
 
 .account-update-island__action.ui-button {
   width: 100%;
-  height: var(--openbot-control-sm);
-  min-height: var(--openbot-control-sm);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-surface-light);
-  box-shadow: 0 1px 2px var(--openbot-shadow-popover-ambient);
-  padding: 0 var(--openbot-space-3) 0 var(--openbot-space-2);
-  color: var(--openbot-text-on-light);
+  height: var(--aikingbot-control-sm);
+  min-height: var(--aikingbot-control-sm);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-surface-light);
+  box-shadow: 0 1px 2px var(--aikingbot-shadow-popover-ambient);
+  padding: 0 var(--aikingbot-space-3) 0 var(--aikingbot-space-2);
+  color: var(--aikingbot-text-on-light);
   transition:
-    box-shadow var(--openbot-duration-normal) var(--openbot-ease-out),
-    transform var(--openbot-duration-fast) var(--openbot-ease-out);
+    box-shadow var(--aikingbot-duration-normal) var(--aikingbot-ease-out),
+    transform var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .account-update-island__action.ui-button::after {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: calc(100% + var(--openbot-space-4));
-  min-width: var(--openbot-control-xl);
-  height: var(--openbot-control-xl);
+  width: calc(100% + var(--aikingbot-space-4));
+  min-width: var(--aikingbot-control-xl);
+  height: var(--aikingbot-control-xl);
   transform: translate(-50%, -50%);
   content: "";
 }
@@ -167,13 +173,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .account-update-island__action-label {
-  min-width: calc(var(--openbot-control-xl) + var(--openbot-space-3));
-  color: var(--openbot-text-on-light);
-  font-weight: var(--openbot-weight-semibold);
+  min-width: calc(var(--aikingbot-control-xl) + var(--aikingbot-space-3));
+  color: var(--aikingbot-text-on-light);
+  font-weight: var(--aikingbot-weight-semibold);
   text-align: left;
 }
 
@@ -181,8 +187,8 @@
   display: inline-grid;
   align-items: baseline;
   grid-template-columns: 3ch max-content;
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -232,24 +238,24 @@
 }
 
 .account-update-island__action-shell[data-downloading="true"] .account-update-island__action-label {
-  min-width: var(--openbot-control-md);
+  min-width: var(--aikingbot-control-md);
   text-align: center;
 }
 
 .account-update-island__action-shell[data-downloading="true"] .account-update-island__action.ui-button {
-  padding-inline: var(--openbot-space-2);
+  padding-inline: var(--aikingbot-space-2);
 }
 
 .account-update-island__icon.t-icon-swap {
-  --icon-swap-dur: var(--openbot-duration-overlay);
-  --icon-swap-blur: var(--openbot-space-0-5);
+  --icon-swap-dur: var(--aikingbot-duration-overlay);
+  --icon-swap-blur: var(--aikingbot-space-0-5);
   --icon-swap-start-scale: 0.25;
-  --icon-swap-ease: var(--openbot-ease-in-out);
+  --icon-swap-ease: var(--aikingbot-ease-in-out);
 
   position: relative;
   display: inline-grid;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
   place-items: center;
 }
@@ -268,13 +274,13 @@
 }
 
 .account-update-island__icon.t-icon-swap svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .account-update-island__icon.t-icon-swap .ui-spinner {
-  border-color: var(--openbot-text-dim-on-light);
+  border-color: var(--aikingbot-text-dim-on-light);
   border-top-color: currentColor;
 }
 
@@ -298,11 +304,11 @@
 
 @media (hover: hover) and (pointer: fine) {
   .account-update-island__action.ui-button:hover:not(:disabled):not([data-disabled]) {
-    background: var(--openbot-surface-light);
+    background: var(--aikingbot-surface-light);
     box-shadow:
-      0 0 0 1px var(--openbot-text-dim-on-light),
-      0 1px 2px var(--openbot-shadow-popover-ambient);
-    color: var(--openbot-text-on-light);
+      0 0 0 1px var(--aikingbot-text-dim-on-light),
+      0 1px 2px var(--aikingbot-shadow-popover-ambient);
+    color: var(--aikingbot-text-on-light);
   }
 }
 

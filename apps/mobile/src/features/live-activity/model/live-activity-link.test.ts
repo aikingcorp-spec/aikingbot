@@ -3,8 +3,8 @@ import {
   LIVE_ACTIVITY_URL,
   type LiveActivityAction,
   liveActivityActionUrl,
-} from "@openbot/team-client/live-activity-props";
-import { LIVE_ACTIVITY_SECRET_BYTES, liveActivityKeys } from "@openbot/team-client/live-activity-seal";
+} from "@aikingbot/team-client/live-activity-props";
+import { LIVE_ACTIVITY_SECRET_BYTES, liveActivityKeys } from "@aikingbot/team-client/live-activity-seal";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   type LiveActivityRequest,

@@ -1,7 +1,7 @@
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
-import type { CentralAuthUser, UpdateAgentInput } from "@openbot/contracts/ipc";
-import { hasVisibleToasts } from "@openbot/ui";
-import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
+import type { AgentProviderId } from "@aikingbot/contracts/agent-providers";
+import type { CentralAuthUser, UpdateAgentInput } from "@aikingbot/contracts/ipc";
+import { hasVisibleToasts } from "@aikingbot/ui";
+import { unloadedHistory } from "@aikingbot/ui/features/conversation/ChatScrollRail";
 import { createMemo } from "solid-js";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
 import { useNavigation } from "../../navigation";

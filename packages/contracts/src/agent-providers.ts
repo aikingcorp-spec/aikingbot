@@ -4,7 +4,7 @@ import type { ExternalDestination } from "./ipc-app-auth";
 import { isOneOf } from "./runtime-values";
 
 /**
- * The coding agents OpenBot can drive, and everything about one that is the same wherever it is
+ * The coding agents AIKINGBOT can drive, and everything about one that is the same wherever it is
  * named. A provider used to be written out by hand about twenty times - five copies of the same
  * literal chain, four renderer lists, a preload destructure that threw on an id it did not know,
  * an analytics regex - so adding one meant finding every copy, and missing one was silent.
@@ -47,7 +47,7 @@ export interface AgentProviderDescriptor {
   readonly onboardingDescription: string;
   /** What to tell a user whose provider needs a credential before it can answer. */
   readonly signInMessage: string;
-  /** Where "install it yourself" leads. `null` means OpenBot ships the CLI and there is nowhere to go. */
+  /** Where "install it yourself" leads. `null` means AIKINGBOT ships the CLI and there is nowhere to go. */
   readonly installGuideLink: ExternalDestination | null;
   /** The model a new agent starts on. A provider lists its own models, so this id can be missing. */
   readonly defaultModel: AgentModelId;
@@ -61,7 +61,7 @@ export interface AgentProviderDescriptor {
   /** Left-to-right order in the model picker and top-to-bottom in the onboarding list. */
   readonly pickerOrder: number;
   /**
-   * The sign-in that this computer's driver runs when the browser callback cannot reach OpenBot.
+   * The sign-in that this computer's driver runs when the browser callback cannot reach AIKINGBOT.
    * `device`: a device code or a link that the user finishes on any device. `paste`: a code that
    * the user pastes back, which only a computer where `pasteCodeSignInSupported` can run. `null`:
    * none. It mirrors the driver's `codeSignIn` in `src/backend/provider-drivers.ts`, and
@@ -79,7 +79,7 @@ export interface AgentProviderDescriptor {
    */
   readonly signInPageEnd: "callback" | "page";
   /**
-   * The workspace skill folders the CLI reads by itself, in its own order. OpenBot writes only
+   * The workspace skill folders the CLI reads by itself, in its own order. AIKINGBOT writes only
    * `.agents/skills` and `.claude/skills`, so each list names at least one of them.
    * Sources: the Codex "build skills" guide, the Claude Code skills guide, the opencode skills guide
    * and the skill paths in Google's Antigravity ACP server, in the Cursor CLI and in the Cline CLI.
@@ -98,7 +98,7 @@ export interface AgentProviderDescriptor {
    */
   readonly steer: "native" | "deferred";
   /**
-   * Whether OpenBot can read the plan's remaining usage. `false`: the CLI exposes no usage reading,
+   * Whether AIKINGBOT can read the plan's remaining usage. `false`: the CLI exposes no usage reading,
    * so the dock says the provider does not report usage instead of waiting for a reading. Declared
    * here because the renderer cannot see the drivers; set it to `true` with a driver's usage read
    * (Codex and Claude read it themselves, Grok and OpenCode through `readRateLimits`).
@@ -115,7 +115,7 @@ const AGENT_PROVIDER_DESCRIPTOR_TABLE = {
     id: "codex",
     displayName: "ChatGPT",
     cliName: "Codex CLI",
-    onboardingDescription: "Included with OpenBot",
+    onboardingDescription: "Included with AIKINGBOT",
     signInMessage: "Connect ChatGPT to continue.",
     installGuideLink: null,
     defaultModel: "gpt-6-luna",
@@ -133,7 +133,7 @@ const AGENT_PROVIDER_DESCRIPTOR_TABLE = {
     id: "claude",
     displayName: "Claude",
     cliName: "Claude Code",
-    onboardingDescription: "Included with OpenBot",
+    onboardingDescription: "Included with AIKINGBOT",
     signInMessage: "Connect Claude to continue.",
     installGuideLink: "claude-install",
     defaultModel: "claude-haiku-5-5",
@@ -151,7 +151,7 @@ const AGENT_PROVIDER_DESCRIPTOR_TABLE = {
     id: "grok",
     displayName: "Grok",
     cliName: "Grok CLI",
-    onboardingDescription: "Included with OpenBot",
+    onboardingDescription: "Included with AIKINGBOT",
     signInMessage: "Run `grok login` or set XAI_API_KEY to use Grok.",
     installGuideLink: null,
     defaultModel: "grok-4.6",
@@ -249,7 +249,7 @@ const AGENT_PROVIDER_DESCRIPTOR_TABLE = {
     id: "pi",
     displayName: "Pi",
     cliName: "Pi CLI",
-    onboardingDescription: "Included with OpenBot",
+    onboardingDescription: "Included with AIKINGBOT",
     signInMessage: "Use /login in Pi on the host computer. Close Pi when sign-in is complete.",
     installGuideLink: null,
     defaultModel: "",
@@ -267,7 +267,7 @@ const AGENT_PROVIDER_DESCRIPTOR_TABLE = {
     id: "muse",
     displayName: "Muse",
     cliName: "Muse CLI",
-    onboardingDescription: "Included with OpenBot",
+    onboardingDescription: "Included with AIKINGBOT",
     signInMessage: "Sign in to Muse on the host computer to continue.",
     installGuideLink: null,
     defaultModel: "",
@@ -333,7 +333,7 @@ export const PICKER_PROVIDERS: readonly AgentProviderId[] = AGENT_PROVIDER_DESCR
   .map((descriptor) => descriptor.id);
 
 /**
- * The providers whose CLI OpenBot downloads and pins itself, as a literal tuple rather than a
+ * The providers whose CLI AIKINGBOT downloads and pins itself, as a literal tuple rather than a
  * filter over the descriptors: `ManagedProviderId` is what makes `ProviderRuntimeSnapshot.providers`
  * a total record, so every reader gets a status without a guard, and a managed provider that has no
  * runtime entry is a compile error instead of an empty download card.
@@ -418,7 +418,7 @@ export function customAgentIdOfModel(model: string): string | null {
 }
 
 /**
- * The tools OpenBot downloads for the MCP servers rather than for an agent: a JavaScript runtime,
+ * The tools AIKINGBOT downloads for the MCP servers rather than for an agent: a JavaScript runtime,
  * so that `npx some-server` starts on a machine that has never had Node.
  *
  * A separate id space, not a fifth managed provider. `ManagedProviderId` is what makes
@@ -443,7 +443,7 @@ export function isManagedToolRuntime(id: string): id is ManagedToolRuntimeId {
  * neither OpenCode endpoint authenticates, so this trailing word is the only thing that
  * separates a model any user can run from one that bills. The picker labels a model with it and the
  * catalog order picks the default from it, and those two have to agree -- a "Free" badge on a model
- * OpenBot would never default to, or a default that quietly bills, is the same bug twice.
+ * AIKINGBOT would never default to, or a default that quietly bills, is the same bug twice.
  *
  * Only a trailing word counts. Anything looser would catch a model named for something else that
  * happens to contain "free".

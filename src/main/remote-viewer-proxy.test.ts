@@ -1,5 +1,5 @@
 import { EventEmitter, once } from "node:events";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { assert, describe, expect, it } from "vitest";
 import WebSocket from "ws";

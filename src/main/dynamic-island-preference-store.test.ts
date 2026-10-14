@@ -120,7 +120,7 @@ describe("dynamic island preference store", () => {
 });
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-dynamic-island-preference-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-dynamic-island-preference-"));
   roots.push(root);
   await mkdir(root, { recursive: true });
   return root;

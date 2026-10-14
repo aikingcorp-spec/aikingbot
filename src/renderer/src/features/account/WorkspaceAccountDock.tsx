@@ -1,5 +1,5 @@
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
-import { StaticAccountDock } from "@openbot/ui/features/account/StaticAccountDock";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
+import { StaticAccountDock } from "@aikingbot/ui/features/account/StaticAccountDock";
 import { createEffect, createMemo, Loading, untrack } from "solid-js";
 import { appPort } from "../../app-port";
 import { useLayout } from "../../layout";

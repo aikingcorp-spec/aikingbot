@@ -1,5 +1,5 @@
 /**
- * Opens the props that the host sealed with `sealLiveActivity` from `@openbot/team-client`, or
+ * Opens the props that the host sealed with `sealLiveActivity` from `@aikingbot/team-client`, or
  * returns `null` when the tag does not match. The keys are base64url text.
  *
  * The widget extension runs it in a bare JavaScript context with no crypto library. The `widget`

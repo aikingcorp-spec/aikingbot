@@ -3,8 +3,8 @@
  * sign-in the host opened, and a click on Allow stands in for the sign-in that the host took.
  */
 
-import type { BrowserLiveViewEvent } from "@openbot/contracts/ipc";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
+import type { BrowserLiveViewEvent } from "@aikingbot/contracts/ipc";
+import type { BrowserViewRuntime } from "@aikingbot/ui/features/browser/BrowserLiveView";
 import { createStore } from "solid-js";
 
 const WIDTH = 1024;
@@ -90,7 +90,7 @@ async function drawConsentPage(name: string): Promise<Uint8Array> {
     context.fillText(name, WIDTH / 2, 210);
     context.font = "20px sans-serif";
     context.fillStyle = "#55554f";
-    context.fillText("OpenBot wants to use your account.", WIDTH / 2, 268);
+    context.fillText("AIKINGBOT wants to use your account.", WIDTH / 2, 268);
     context.fillText("Signed in as ada@example.com", WIDTH / 2, 300);
     context.strokeStyle = "#e2e2de";
     context.beginPath();

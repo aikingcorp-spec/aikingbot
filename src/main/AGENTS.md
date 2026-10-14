@@ -27,7 +27,7 @@ below.
   loading windows. Its endpoint argument must be a direct `IPC_ENDPOINTS.group.name` reference;
   do not use a string literal or an intermediate variable. Handlers do not name channels; groups do.
 - Add a channel in one change across `ipc-endpoints.ts`, `src/main/ipc/`, `src/preload/index.ts`
-  and `src/renderer/src/preview/mock-openbot.ts`. See
+  and `src/renderer/src/preview/mock-aikingbot.ts`. See
   [contract rules](../../packages/contracts/AGENTS.md) for coverage, including the untyped preload.
 
 ## Trust boundary
@@ -77,7 +77,7 @@ with a fabricated sender frame. Services that can be tested without Electron sho
 ## Interface text
 
 An error or status text that can reach a user is `sourceText(key, params)` from
-`@openbot/i18n/source`, not a literal. Its English must stay the same, byte for byte: remote
+`@aikingbot/i18n/source`, not a literal. Its English must stay the same, byte for byte: remote
 clients and older versions read it. Dialogs, menus and window titles use `language.translate`.
 Errors that only a malformed payload or a programming error can cause stay English. See
 [docs/i18n.md](../../docs/i18n.md#text-from-another-process).
@@ -92,7 +92,7 @@ Keep `index.ts` as the dispatcher and lifecycle module. Do not move these respon
 | `main-window.ts` | Every `BrowserWindow`, renderer URLs, menu, bounds recorder |
 | `main-window-state.ts` | Reading, resolving and debounce-writing saved window position |
 | `teardown-registry.ts` | Shutdown sequence |
-| `development-remote-bootstrap.ts` | Dev-only `OPENBOT_DEV_REMOTE_ROLE` account and connection |
+| `development-remote-bootstrap.ts` | Dev-only `AIKINGBOT_DEV_REMOTE_ROLE` account and connection |
 | `session-configuration.ts` | Renderer CSP, bundle protocol, permissions, attachment/avatar/logo protocols |
 | `renderer-forwarders.ts` | Service events sent to the renderer |
 | `ipc/*-handlers.ts` | IPC endpoints by domain |

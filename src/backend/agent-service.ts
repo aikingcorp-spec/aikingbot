@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { agentProviderDescriptor } from "@aikingbot/contracts/agent-providers";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentAnalyticsInput,
   AgentEvent,
@@ -88,7 +88,7 @@ import type {
   UpdateChannelRoutineInput,
   UpdateQueuedMessageInput,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   agentAutomationAllowed,
   type BusyMessageMode,
@@ -97,15 +97,16 @@ import {
   isContextResetMarker,
   type QueueSteerFallback,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { ContextResetBusyError } from "@openbot/contracts/team-protocol/context-reset-v1";
-import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { classifyFailure } from "@openbot/telemetry";
+} from "@aikingbot/contracts/ipc";
+import { ContextResetBusyError } from "@aikingbot/contracts/team-protocol/context-reset-v1";
+import type { QueueEditRequest } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
+import { classifyFailure } from "@aikingbot/telemetry";
 import { Deferred, Effect, Exit, Fiber, Result, Schema, Scope, Semaphore } from "effect";
 import { AgentMemories } from "./agent/agent-memories";
 import { AgentRemoval, type AgentRemovalFailed } from "./agent/agent-removal";
+import { AIKINGBOTToolRouter } from "./agent/aikingbot-tool-router";
 import type { ApprovalAutomationPolicy } from "./agent/approval-automation";
 import { AttachmentGateway } from "./agent/attachment-gateway";
 import { AttentionRegistry, type LocalAttentionResponse } from "./agent/attention-registry";
@@ -135,7 +136,6 @@ import {
   startingChoice,
   startingModel,
 } from "./agent/model-choice";
-import { OpenBotToolRouter } from "./agent/openbot-tool-router";
 import { ProfileClients } from "./agent/profile-clients";
 import {
   GenerationUsageLimitError,
@@ -193,7 +193,7 @@ import {
   resolveWorkspaceFile,
 } from "./workspace-paths";
 
-const logger = createOpenBotLogger("agent-service");
+const logger = createAIKINGBOTLogger("agent-service");
 
 /**
  * Only the application knows which managed CLIs it downloaded, so a caller that says nothing gets
@@ -278,10 +278,10 @@ export interface AgentServiceOptions {
   computerUseMcpServer?: () => McpServerConfig | null;
   /**
    * The built-in GitHub connection of this computer, or `null`. Read at each spawn and each hand-off,
-   * for the same reason as `computerUseMcpServer`: the user connects and disconnects while OpenBot runs.
+   * for the same reason as `computerUseMcpServer`: the user connects and disconnects while AIKINGBOT runs.
    */
   githubConnector?: GitHubConnectorSource | null;
-  /** The 1Password vault the user shared with OpenBot, or `null`. The browser fills logins from it. */
+  /** The 1Password vault the user shared with AIKINGBOT, or `null`. The browser fills logins from it. */
   passwordVault?: PasswordVault | null;
   /**
    * The memory of a hosted server, or `null` on each other computer. With it, no new turn starts
@@ -344,7 +344,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   readonly #compaction: ContextCompaction;
   readonly #duplication: DuplicationGate;
   readonly #removal: AgentRemoval;
-  readonly #tools: OpenBotToolRouter;
+  readonly #tools: AIKINGBOTToolRouter;
   readonly #sidebarLayout: AgentSidebar | null;
   readonly #localSkillTools?: () => LocalSkillTools;
   readonly #routineFlowTools: (() => RoutineFlowTools) | undefined;
@@ -492,7 +492,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       hooks: {
         bindClient: (client) => {
           client.on("notification", (notification) => {
-            if (notification.method === "openbot/sessionSettings/updated") {
+            if (notification.method === "aikingbot/sessionSettings/updated") {
               const threadId = getString(notification.params, "threadId");
               const agentId = threadId ? this.#conversation.agentForThread(threadId) : undefined;
               if (agentId) this.#emit({ type: "agent-session-settings-changed", agentId });
@@ -1035,7 +1035,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         listAgents: () => this.listAgents(),
       },
     });
-    this.#tools = new OpenBotToolRouter({
+    this.#tools = new AIKINGBOTToolRouter({
       capturedSteps: (session) => this.#threads.capturedWorkSteps(session).pipe(toToolOperationFailed),
       store,
       mailbox,
@@ -1449,7 +1449,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   /**
    * The MCP servers this machine holds.
    *
-   * Configurations only: OpenBot holds no connection of its own to report. A connection is made
+   * Configurations only: AIKINGBOT holds no connection of its own to report. A connection is made
    * when the user asks for a test, and when an agent starts - and the second is the provider's own.
    */
   listMcpServers(): McpServerConfig[] {

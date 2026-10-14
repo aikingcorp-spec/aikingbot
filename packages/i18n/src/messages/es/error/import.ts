@@ -3,9 +3,9 @@ import type { messages as source } from "../../en/error/import";
 
 export const messages = {
   "error.import.manifestNotJson": "{manifest} no es JSON válido.",
-  "error.import.notAgentExport": "{manifest} no es una exportación de agentes de OpenBot.",
+  "error.import.notAgentExport": "{manifest} no es una exportación de agentes de AIKINGBOT.",
   "error.import.newerExportSkill":
-    "Esta exportación se creó con una habilidad de exportación más reciente. Actualiza OpenBot e inténtalo de nuevo.",
+    "Esta exportación se creó con una habilidad de exportación más reciente. Actualiza AIKINGBOT e inténtalo de nuevo.",
   "error.import.noAgents": "La exportación no contiene agentes.",
   "error.import.tooManyAgents": "La exportación contiene más de {limit} agentes.",
   "error.import.tooManyChannels": "La exportación contiene más de {limit} canales.",

@@ -1,5 +1,5 @@
-import type { QueueDelivery, QueueSnapshot } from "@openbot/contracts/ipc";
-import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
+import type { QueueDelivery, QueueSnapshot } from "@aikingbot/contracts/ipc";
+import type { QueueEditRequest } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { waitFor } from "@testing-library/dom";
 import { act } from "react";
@@ -266,7 +266,7 @@ it("routes steer, delete and reorder to the original host and expected turn", as
 });
 
 it("clears a rejected begin but preserves an uncertain begin for recovery", async () => {
-  const { QueueEditRejectedError } = await import("@openbot/contracts/team-protocol/queue-edit-v1");
+  const { QueueEditRejectedError } = await import("@aikingbot/contracts/team-protocol/queue-edit-v1");
   boundary.editQueue.mockRejectedValueOnce(new QueueEditRejectedError("Already held"));
   const view = mount();
   await act(async () => {

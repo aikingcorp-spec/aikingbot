@@ -1,7 +1,7 @@
-import { customAgentIdOfModel } from "@openbot/contracts/agent-providers";
-import type { AgentModelId, AgentModelOption, AgentProviderStatus, CreateAgentInput } from "@openbot/contracts/ipc";
-import { defaultProviderModel, PICKER_PROVIDERS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { customAgentIdOfModel } from "@aikingbot/contracts/agent-providers";
+import type { AgentModelId, AgentModelOption, AgentProviderStatus, CreateAgentInput } from "@aikingbot/contracts/ipc";
+import { defaultProviderModel, PICKER_PROVIDERS } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { AgentProvider } from "../agent-client";
 import { DEFAULT_AGENT_PROVIDER } from "../agent-store";
 import { DEVELOPMENT_DEFAULT_PROVIDER, developmentStartingModel } from "./development-defaults";

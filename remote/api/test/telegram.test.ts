@@ -3,8 +3,8 @@ import {
   createIngressQueueKeyPair,
   importIngressQueuePrivateKey,
   openQueuedDelivery,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
-import type { TelegramCallMethod, TelegramCallParams } from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/ingress-queue";
+import type { TelegramCallMethod, TelegramCallParams } from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { Effect } from "effect";
 import { exportJWK, SignJWT } from "jose";
 import { describe, expect, it, vi } from "vitest";
@@ -185,7 +185,7 @@ describe("Telegram route", () => {
     });
     // A hello without a Telegram route is valid, with no chat.
     const ingress = await connect("ingress", null);
-    const start = JSON.stringify({ message: { chat: { id: -300 }, text: `/start@openbot_bot ${LINK_CODE}` } });
+    const start = JSON.stringify({ message: { chat: { id: -300 }, text: `/start@aikingbot_bot ${LINK_CODE}` } });
     expect((await postUpdate(start)).status).toBe(200);
     expect(links).toEqual([[BOT_ID, "-300", LINK_CODE]]);
     expect(Buffer.from(JSON.parse(ingress.messages.at(-1) ?? "{}").bodyBase64, "base64").toString()).toBe(start);
@@ -222,7 +222,7 @@ describe("Telegram route", () => {
     const ingress = await connect("ingress", [{ id: "-100" }]);
 
     // Only the reduced result reaches the host, never the Bot API's whole answer.
-    expect((await call(ingress, "getMe", {})).result).toEqual({ botId: BOT_ID, username: "openbot_bot" });
+    expect((await call(ingress, "getMe", {})).result).toEqual({ botId: BOT_ID, username: "aikingbot_bot" });
     expect((await call(ingress, "sendMessage", { chat_id: -100, text: "hi" })).result).toEqual({ messageId: 42 });
 
     const file = await call(ingress, "getFile", { chat_id: -100, file_id: "file-1" });
@@ -317,7 +317,7 @@ async function telegramRoute(provider: Partial<RemoteTokenProvider> = {}, routeW
     );
     const results = new Map(
       Object.entries({
-        getMe: { id: Number(BOT_ID), is_bot: true, first_name: "OpenBot", username: "openbot_bot" },
+        getMe: { id: Number(BOT_ID), is_bot: true, first_name: "AIKINGBOT", username: "aikingbot_bot" },
         sendMessage: { message_id: 42, chat: { id: -100 }, text: "private text" },
         getFile: { file_id: "file-1", file_unique_id: "u", file_size: 10, file_path: "documents/file_1.pdf" },
         sendDocument: { message_id: 43, chat: { id: -100 } },
@@ -371,7 +371,7 @@ async function telegramRoute(provider: Partial<RemoteTokenProvider> = {}, routeW
           chats: chats.map((chat) => ({ id: chat.id, botId: BOT_ID, linkedAt: chat.linkedAt ?? 1_000 })),
         })
           .setProtectedHeader({ alg: "ES256", kid: "route-1" })
-          .setAudience("openbot-telegram-route")
+          .setAudience("aikingbot-telegram-route")
           .setIssuedAt(now - 60)
           .setExpirationTime(now + 300)
           .sign(privateKey)
@@ -437,8 +437,8 @@ async function telegramRoute(provider: Partial<RemoteTokenProvider> = {}, routeW
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "OpenBot-Timestamp": timestamp,
-          "OpenBot-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
+          "AIKINGBOT-Timestamp": timestamp,
+          "AIKINGBOT-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
         },
         body,
       }),
@@ -452,7 +452,7 @@ async function telegramRoute(provider: Partial<RemoteTokenProvider> = {}, routeW
 function hostTickets(): RemoteTokenProvider {
   const now = Math.floor(Date.now() / 1_000);
   const claims: RemoteTicketClaims = {
-    aud: "openbot-remote",
+    aud: "aikingbot-remote",
     jti: "host-jti",
     sessionId: "host-session",
     hostId: "host-1",

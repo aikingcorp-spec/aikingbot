@@ -45,7 +45,7 @@ export const messages = {
   "provider.status.checking": "Проверка",
   "provider.status.off": "Выключено",
   "provider.gemini.hostSignIn":
-    "Чтобы подключить Gemini, откройте OpenBot на хосте и нажмите «Подключить» в разделе «Настройки» > «Провайдеры». Для входа в Google на этом хосте нужен браузер. Удалённый вход не поддерживается.",
+    "Чтобы подключить Gemini, откройте AIKINGBOT на хосте и нажмите «Подключить» в разделе «Настройки» > «Провайдеры». Для входа в Google на этом хосте нужен браузер. Удалённый вход не поддерживается.",
 
   "provider.key.free": "Бесплатно",
 
@@ -72,13 +72,13 @@ export const messages = {
   "provider.aria.cancelSignIn": "Отменить вход в {name}",
   "provider.aria.apiKey": "Ключ API {name}",
   "provider.connecting.browserHint": "Завершите вход, если откроется страница в браузере.",
-  "provider.connecting.cancelFailed": "OpenBot не удалось отменить вход в {name}. Попробуйте ещё раз.",
+  "provider.connecting.cancelFailed": "AIKINGBOT не удалось отменить вход в {name}. Попробуйте ещё раз.",
   "provider.aria.install": "Установить: {name}",
   "provider.aria.signIn": "Войти в {name}",
   "provider.aria.codeFallback": "Войти в {name} по коду",
   "provider.aria.moreActions": "Другие действия для {name}",
 
-  "provider.aria.use": "Использовать {name} в OpenBot",
+  "provider.aria.use": "Использовать {name} в AIKINGBOT",
   "provider.use.inUse": {
     one: "{name} используется: {agents}. Смените модель этого агента, затем выключите {name}.",
     few: "{name} используется: {agents}. Смените модель этих агентов, затем выключите {name}.",
@@ -87,7 +87,7 @@ export const messages = {
   },
 
   "provider.codeLogin.title": "Вход в {name} по коду",
-  "provider.codeLogin.description": "Завершите вход на телефоне или в другом браузере. OpenBot ждёт здесь.",
+  "provider.codeLogin.description": "Завершите вход на телефоне или в другом браузере. AIKINGBOT ждёт здесь.",
   "provider.codeLogin.starting": "Получаем код от {name}…",
   "provider.codeLogin.qrLabel": "QR-код страницы входа в {name}",
   "provider.codeLogin.open": "Открыть",
@@ -108,10 +108,10 @@ export const messages = {
   "provider.codeLogin.pageDescription": "Эта страница открыта в браузере на {host}. Войдите здесь.",
   "provider.codeLogin.relayStarting": "Запуск входа в {name} на {host}…",
   "provider.codeLogin.pageOpening": "Открываем страницу входа {name} на {host}…",
-  "provider.codeLogin.linkStep": "Войдите в {name}. OpenBot продолжит сам.",
-  "provider.useApp.title": "Подключите {name} в приложении OpenBot",
+  "provider.codeLogin.linkStep": "Войдите в {name}. AIKINGBOT продолжит сам.",
+  "provider.useApp.title": "Подключите {name} в приложении AIKINGBOT",
   "provider.useApp.description":
-    "Вход в {name} возвращается на компьютер, который его начал, а вкладка браузера не может его принять. Подключите {name} в приложении OpenBot. Приложение завершит вход само.",
+    "Вход в {name} возвращается на компьютер, который его начал, а вкладка браузера не может его принять. Подключите {name} в приложении AIKINGBOT. Приложение завершит вход само.",
   "provider.useApp.download": "Скачать приложение",
 
   "provider.picker.noEndpoints": "Эндпоинтов пока нет",

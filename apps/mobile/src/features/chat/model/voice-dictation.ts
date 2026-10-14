@@ -1,4 +1,4 @@
-import type { MobileTextKey, MobileTranslate } from "@openbot/i18n/mobile";
+import type { MobileTextKey, MobileTranslate } from "@aikingbot/i18n/mobile";
 import type { ExpoSpeechRecognitionErrorCode } from "expo-speech-recognition";
 import { localeName } from "./language-names";
 

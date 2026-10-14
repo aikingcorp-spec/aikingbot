@@ -1,6 +1,6 @@
-import type { BitwardenConnectorStatus, OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi, BitwardenConnectorStatus } from "@aikingbot/contracts/ipc";
 
-export function createMockBitwardenConnector(): OpenBotDesktopApi["bitwardenConnector"] {
+export function createMockBitwardenConnector(): AIKINGBOTDesktopApi["bitwardenConnector"] {
   let connected = false;
   const listeners = new Set<(status: BitwardenConnectorStatus) => void>();
   const change = (value: boolean) => {

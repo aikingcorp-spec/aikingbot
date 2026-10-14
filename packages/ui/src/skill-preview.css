@@ -2,14 +2,14 @@
 
 .skill-preview {
   display: grid;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   min-width: 0;
 }
 .skill-preview-heading {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  column-gap: var(--openbot-space-3);
-  row-gap: var(--openbot-space-3);
+  column-gap: var(--aikingbot-space-3);
+  row-gap: var(--aikingbot-space-3);
   align-items: center;
 }
 .skill-preview-heading .agent-skill-icon {
@@ -34,21 +34,21 @@
   margin: 0;
 }
 .skill-preview-heading h2 {
-  font-size: var(--openbot-text-2xl);
-  font-weight: var(--openbot-weight-medium);
+  font-size: var(--aikingbot-text-2xl);
+  font-weight: var(--aikingbot-weight-medium);
   overflow-wrap: anywhere;
 }
 .skill-preview-heading p,
 .skill-preview-description {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-lg);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-lg);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
 .skill-preview-heading .skill-preview-creator {
-  margin-top: var(--openbot-space-1);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-md);
+  margin-top: var(--aikingbot-space-1);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-md);
 }
 .skill-preview-card {
   position: relative;
@@ -57,8 +57,8 @@
   min-height: 160px;
   overflow: hidden;
   isolation: isolate;
-  border-radius: var(--openbot-radius-xl);
-  padding: var(--openbot-space-6);
+  border-radius: var(--aikingbot-radius-xl);
+  padding: var(--aikingbot-space-6);
 }
 .skill-preview-gradient,
 .skill-preview-gradient canvas {
@@ -71,7 +71,7 @@
      overflow clip to such a layer, so each level clips itself with clip-path, which does hold. */
   overflow: hidden;
   border-radius: inherit;
-  clip-path: inset(0 round var(--openbot-radius-xl));
+  clip-path: inset(0 round var(--aikingbot-radius-xl));
 }
 /* The artwork stays behind the content by paint order alone. A z-index of its own puts it on a
    stacking context that Firefox paints without the rounded clip, and the card's corners come back
@@ -82,14 +82,14 @@
 .skill-preview-request {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   width: min(100%, 520px);
   min-width: 0;
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-canvas);
-  padding: var(--openbot-space-3);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-lg);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-canvas);
+  padding: var(--aikingbot-space-3);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-lg);
   line-height: 1.5;
 }
 .skill-preview-request p {
@@ -105,8 +105,8 @@
 }
 .skill-preview-unavailable {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
 }
 .skill-preview-description > :first-child {
   margin-top: 0;
@@ -116,8 +116,8 @@
 }
 
 .skill-preview-request .ui-icon-button {
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-border);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-border);
 }
 .agent-skills-modal:has(.agent-skill-detail) {
   width: min(760px, calc(100vw - 32px));
@@ -224,8 +224,8 @@
    declarations are invalid at computed-value time, so the chip loses its fill to `transparent`
    rather than falling back to the accent fill the base rule gives it. */
 .skill-preview-request .skill-preview-chip {
-  color: color-mix(in srgb, var(--skill-logo-color, var(--openbot-accent-text)), var(--openbot-text-primary) 35%);
-  background: color-mix(in srgb, var(--skill-logo-color, var(--openbot-accent-text)) 18%, transparent);
+  color: color-mix(in srgb, var(--skill-logo-color, var(--aikingbot-accent-text)), var(--aikingbot-text-primary) 35%);
+  background: color-mix(in srgb, var(--skill-logo-color, var(--aikingbot-accent-text)) 18%, transparent);
 }
 
 .agent-skills-tabs {
@@ -238,9 +238,9 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   flex-shrink: 0;
-  margin: var(--openbot-space-3);
+  margin: var(--aikingbot-space-3);
 }
 
 .agent-skills-tab-content {
@@ -255,7 +255,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 .agent-skills-tab-slot {
   flex: 1;
@@ -271,7 +271,7 @@
 }
 
 .agent-local-library:not(.agent-skill-detail) {
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   padding: 0;
 }
 .agent-local-skill-row:has(.agent-skill-update) {

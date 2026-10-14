@@ -66,7 +66,7 @@ describe("which instance records a forgotten stack takes with it", () => {
     return {
       service: "app",
       instanceId: "5173",
-      profile: "OpenBot Dev",
+      profile: "AIKINGBOT Dev",
       projectRoot: "/worktrees/one",
       rendererPort: 5_173,
       remoteDebuggingPort: 9_333,

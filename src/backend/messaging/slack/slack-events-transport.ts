@@ -1,4 +1,4 @@
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import type {
   ConnectionIdentity,
@@ -21,7 +21,7 @@ export interface SlackEventsTransportOptions {
 }
 
 /**
- * The inbound half of one workspace's OpenBot app: the Events API, which Slack posts to Signal.
+ * The inbound half of one workspace's AIKINGBOT app: the Events API, which Slack posts to Signal.
  * Signal checks Slack's signature, which only it can, and passes the workspace's requests to this
  * host. This holds the ingress socket open while it runs and answers at once. The agent's work
  * starts after the answer, because Slack gives up after three seconds.

@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, ChevronDown, Dialog, ExternalLink, Heading, IconButton, Text, TriangleAlert, X } from "@openbot/ui";
+import { AppLogo } from "@aikingbot/brand";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, ChevronDown, Dialog, ExternalLink, Heading, IconButton, Text, TriangleAlert, X } from "@aikingbot/ui";
 import { createEffect, createMemo, createSignal, createUniqueId, For, Match, onSettled, Show, Switch } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { useText } from "../../text";

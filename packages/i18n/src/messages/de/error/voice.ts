@@ -9,8 +9,8 @@ export const messages = {
   "error.voice.modelUnavailable": "Das Sprachmodell ist nicht verfügbar.",
   "error.voice.transcriptionTimedOut": "Die Zeit für die Sprachtranskription ist abgelaufen.",
   "error.voice.prepareRequired":
-    "Lokale Sprachtranskription ist nicht verfügbar. Führe `bun run voice:prepare` aus und starte OpenBot neu.",
-  "error.voice.transcriptionFailed": "OpenBot konnte diese Aufnahme nicht transkribieren.",
+    "Lokale Sprachtranskription ist nicht verfügbar. Führe `bun run voice:prepare` aus und starte AIKINGBOT neu.",
+  "error.voice.transcriptionFailed": "AIKINGBOT konnte diese Aufnahme nicht transkribieren.",
   "error.voice.cloud.keyRequired": "Füge deinen ElevenLabs-API-Schlüssel unter Einstellungen → Sprache hinzu.",
   "error.voice.cloud.keyRejected":
     "ElevenLabs hat den API-Schlüssel nicht akzeptiert. Prüfe den Schlüssel unter Einstellungen → Sprache.",

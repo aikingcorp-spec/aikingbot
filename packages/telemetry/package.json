@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/telemetry",
+  "name": "@aikingbot/telemetry",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "typecheck": "bun ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@openbot/contracts": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

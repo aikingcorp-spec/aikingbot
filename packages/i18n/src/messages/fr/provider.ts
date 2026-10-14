@@ -37,7 +37,7 @@ export const messages = {
 
   "provider.status.off": "Désactivé",
   "provider.gemini.hostSignIn":
-    "Pour connecter Gemini, ouvrez OpenBot sur l’hôte et sélectionnez Connecter dans Réglages > Fournisseurs. La connexion Google nécessite un navigateur sur cet hôte. La connexion à distance n’est pas prise en charge.",
+    "Pour connecter Gemini, ouvrez AIKINGBOT sur l’hôte et sélectionnez Connecter dans Réglages > Fournisseurs. La connexion Google nécessite un navigateur sur cet hôte. La connexion à distance n’est pas prise en charge.",
   // Which account tier the OpenCode row runs on. It shows only while it adds to the runtime
   // badge: a saved key leaves the runtime "Connected" to speak for the row.
   "provider.key.free": "Gratuit",
@@ -67,19 +67,19 @@ export const messages = {
   "provider.aria.cancelSignIn": "Annuler la connexion à {name}",
   "provider.aria.apiKey": "Clé d’API {name}",
   "provider.connecting.browserHint": "Terminez la connexion si une page du navigateur s’ouvre.",
-  "provider.connecting.cancelFailed": "OpenBot n’a pas pu annuler la connexion à {name}. Réessayez.",
+  "provider.connecting.cancelFailed": "AIKINGBOT n’a pas pu annuler la connexion à {name}. Réessayez.",
   "provider.aria.install": "Installer {name}",
   "provider.aria.signIn": "Se connecter à {name}",
   "provider.aria.codeFallback": "Se connecter à {name} avec un code",
   "provider.aria.moreActions": "Autres actions pour {name}",
 
-  "provider.aria.use": "Utiliser {name} dans OpenBot",
+  "provider.aria.use": "Utiliser {name} dans AIKINGBOT",
   "provider.use.inUse": {
     one: "{agents} utilise {name}. Changez le modèle de cet agent, puis désactivez {name}.",
     other: "{agents} utilisent {name}. Changez le modèle de ces agents, puis désactivez {name}.",
   },
   "provider.codeLogin.title": "Se connecter à {name} avec un code",
-  "provider.codeLogin.description": "Terminez sur votre téléphone ou dans un autre navigateur. OpenBot attend ici.",
+  "provider.codeLogin.description": "Terminez sur votre téléphone ou dans un autre navigateur. AIKINGBOT attend ici.",
   "provider.codeLogin.starting": "Obtention d’un code auprès de {name}…",
   "provider.codeLogin.qrLabel": "Code QR de la page de connexion de {name}",
   "provider.codeLogin.open": "Ouvrez",
@@ -100,10 +100,10 @@ export const messages = {
   "provider.codeLogin.pageDescription": "Cette page est ouverte dans le navigateur de {host}. Connectez-vous ici.",
   "provider.codeLogin.relayStarting": "Démarrage de la connexion à {name} sur {host}…",
   "provider.codeLogin.pageOpening": "Ouverture de la page de connexion de {name} sur {host}…",
-  "provider.codeLogin.linkStep": "Connectez-vous à {name}. OpenBot continue tout seul.",
-  "provider.useApp.title": "Connectez {name} dans l’app OpenBot",
+  "provider.codeLogin.linkStep": "Connectez-vous à {name}. AIKINGBOT continue tout seul.",
+  "provider.useApp.title": "Connectez {name} dans l’app AIKINGBOT",
   "provider.useApp.description":
-    "La connexion à {name} revient sur l’ordinateur qui l’a lancée, et un onglet du navigateur ne peut pas la recevoir. Connectez {name} dans l’app OpenBot. L’app termine la connexion toute seule.",
+    "La connexion à {name} revient sur l’ordinateur qui l’a lancée, et un onglet du navigateur ne peut pas la recevoir. Connectez {name} dans l’app AIKINGBOT. L’app termine la connexion toute seule.",
   "provider.useApp.download": "Télécharger l’app",
 
   "provider.picker.noEndpoints": "Aucun point de terminaison pour l’instant",

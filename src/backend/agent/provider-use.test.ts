@@ -24,7 +24,7 @@ afterEach(async () => {
 
 describe("provider switches", () => {
   it("generates a new profile with an on provider when the preferred provider is off", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const draft = {
       name: "Researcher",
       title: "Research assistant",
@@ -67,7 +67,7 @@ describe("provider switches", () => {
     await runCauseEffect(service.refreshProviders());
     expect(clients.filter((client) => client.provider === "codex")).toHaveLength(0);
     expect(service.listModels().filter((model) => model.provider === "codex")).toEqual([]);
-    await expect(runCauseEffect(service.connectProvider("codex", vi.fn()))).rejects.toThrow("is off in OpenBot");
+    await expect(runCauseEffect(service.connectProvider("codex", vi.fn()))).rejects.toThrow("is off in AIKINGBOT");
     await runCauseEffect(service.setProviderOn("codex", true));
     expect(service.listModels().some((model) => model.provider === "codex")).toBe(true);
     await runCauseEffect(service.setProviderOn("codex", false));

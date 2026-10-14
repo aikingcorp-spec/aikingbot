@@ -1,9 +1,9 @@
 // The Telegram route: how a Telegram update finds the host that answers it, and how that host
 // answers without the bot token.
 //
-// One OpenBot bot serves every user. Its token is in Signal only: a host that had it could read and
+// One AIKINGBOT bot serves every user. Its token is in Signal only: a host that had it could read and
 // post in every chat of every user. Telegram posts each update to
-// `https://signal.openbot.run/v1/telegram/updates/<bot ID>` with a secret header. Signal checks the
+// `https://signal.aikingbot.aikingx.com/v1/telegram/updates/<bot ID>` with a secret header. Signal checks the
 // header, reads the chat ID, and passes the update to the `ingress` socket that holds a route ticket
 // for that chat. The host calls the Bot API through the same socket (`telegram-call`): Signal
 // accepts only the methods below, with only the parameters below, and only for the chats routed to
@@ -19,7 +19,7 @@
 // the account service links to that host, and it expires: the host asks for a new one each time its
 // `ingress` socket connects.
 
-export const TELEGRAM_ROUTE_AUDIENCE = "openbot-telegram-route";
+export const TELEGRAM_ROUTE_AUDIENCE = "aikingbot-telegram-route";
 
 /** Followed by `/<bot ID>`. */
 export const TELEGRAM_UPDATES_PATH = "/v1/telegram/updates";
@@ -76,7 +76,7 @@ export interface TelegramRouteClaims {
 export interface TelegramRouteChat {
   // The chat ID, as a decimal string.
   id: string;
-  // The OpenBot bot in the chat. The production and development bots can share a chat.
+  // The AIKINGBOT bot in the chat. The production and development bots can share a chat.
   botId: string;
   // When the account service linked the chat to the host, in milliseconds. Signal keeps a chat with
   // its newest link, so a host that lost the chat cannot take it back with an older ticket.

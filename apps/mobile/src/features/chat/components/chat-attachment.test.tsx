@@ -1,4 +1,4 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import { act, type PropsWithChildren, type Ref, useEffect, useImperativeHandle, useRef, useState } from "react";

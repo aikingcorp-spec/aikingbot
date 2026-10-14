@@ -3,7 +3,7 @@ import type {
   AttachmentImportEvent,
   AttachmentSummary,
   ConversationPage,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { render, waitFor } from "@solidjs/testing-library";
 import { flush } from "solid-js";
 import { assert, beforeEach, describe, expect, it, vi } from "vitest";
@@ -683,10 +683,10 @@ describe("web workspace state", () => {
     const app = harness({ listHosts, connect, acceptInvite });
     await waitFor(() => expect(app.workspace().state.hostsLoaded).toBe(true));
 
-    await expect(app.workspace().joinInvite(" https://openbot.run/join?token=one ")).rejects.toThrow(
+    await expect(app.workspace().joinInvite(" https://aikingbot.aikingx.com/join?token=one ")).rejects.toThrow(
       "The invitation was accepted, but the host is offline. Try again.",
     );
-    await app.workspace().joinInvite("https://openbot.run/join?token=one");
+    await app.workspace().joinInvite("https://aikingbot.aikingx.com/join?token=one");
 
     expect(acceptInvite).toHaveBeenCalledOnce();
     expect(connect).toHaveBeenCalledTimes(2);
@@ -704,7 +704,7 @@ describe("web workspace state", () => {
     const app = harness({ acceptInvite: vi.fn().mockResolvedValue(host) });
     const workspace = await connected(app);
 
-    await workspace.joinInvite("https://openbot.run/join?token=two");
+    await workspace.joinInvite("https://aikingbot.aikingx.com/join?token=two");
 
     expect(app.runtime.acceptInvite).toHaveBeenCalledOnce();
     expect(app.runtime.connect).toHaveBeenCalledTimes(2);

@@ -3,11 +3,11 @@ import {
   type LiveActivityKeys,
   liveActivityHostSecret,
   liveActivityKeys,
-} from "@openbot/team-client/live-activity-seal";
+} from "@aikingbot/team-client/live-activity-seal";
 import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 
-const key = "openbot.mobile.live-activity-secret.v1";
+const key = "aikingbot.mobile.live-activity-secret.v1";
 
 /** The secret and keys that one host has. */
 export interface LiveActivityHostKeys {
@@ -21,7 +21,7 @@ const hosts = new Map<string, LiveActivityHostKeys>();
 
 /**
  * The phone secret. Each host gets its own secret made from it, which seals the Live Activity
- * content and signs its button links. So Apple and the OpenBot relay cannot read or change an
+ * content and signs its button links. So Apple and the AIKINGBOT relay cannot read or change an
  * update, and one host cannot sign an action for another.
  */
 export function loadLiveActivitySecret(): Promise<Uint8Array> {

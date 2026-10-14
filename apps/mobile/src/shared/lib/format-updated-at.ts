@@ -1,4 +1,4 @@
-import type { AppFormat } from "@openbot/i18n/mobile";
+import type { AppFormat } from "@aikingbot/i18n/mobile";
 import { currentText } from "@/shared/lib/text";
 
 export function formatUpdatedAt(value: string | null, format: AppFormat = currentText().format): string {

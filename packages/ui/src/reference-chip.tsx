@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@aikingbot/i18n";
 import type { JSX } from "@solidjs/web";
 import { Show } from "solid-js";
 import { Button } from "./button";

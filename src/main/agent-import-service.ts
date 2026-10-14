@@ -13,8 +13,8 @@ import { type ArchiveOperationError, archiveCall, archiveFailure, archiveResult,
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, extname, isAbsolute, join, resolve } from "node:path";
-import { AVATAR_MIME_TYPES, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { AVATAR_MIME_TYPES, isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_IMPORT_LIMITS,
   type AgentImportChannel,
@@ -30,8 +30,8 @@ import {
   type CreateChannelRoutineInput,
   type CreateRoutineInput,
   isChannelDraft,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { unzipSync, zipSync } from "fflate";
 import type { AgentService } from "../backend/agent-service";
 import type { ChannelService } from "../backend/channel-service";
@@ -49,8 +49,8 @@ import type { SkillMarketplaceFailure } from "./skill-marketplace-service";
 import { inspectArchive, isUnsafeArchivePath } from "./skill-package";
 
 /** Skill folders are copied here, published to the local library, and removed again. */
-const SKILL_STAGING = ".openbot/import-skills";
-/** Workspace files of an imported agent go under this folder, so they never replace OpenBot's own. */
+const SKILL_STAGING = ".aikingbot/import-skills";
+/** Workspace files of an imported agent go under this folder, so they never replace AIKINGBOT's own. */
 const IMPORTED_FILES = "imported";
 
 export interface AgentImportAgents {

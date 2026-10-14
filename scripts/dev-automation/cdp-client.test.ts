@@ -60,7 +60,7 @@ describe("findRendererPages", () => {
   const app = { url: () => "http://localhost:5173/", evaluate: async () => "object" };
   const visitedLocalSite = { url: () => "http://localhost:5173/", evaluate: async () => "undefined" };
 
-  it("drives only a page that carries the OpenBot preload bridge", async () => {
+  it("drives only a page that carries the AIKINGBOT preload bridge", async () => {
     await expect(findRendererPages([visitedLocalSite, app])).resolves.toEqual([app]);
     await expect(findRendererPages([visitedLocalSite])).resolves.toEqual([]);
   });
@@ -209,7 +209,7 @@ describe("redactSensitiveSnapshotValues", () => {
 });
 
 describe("resolveScreenshotPath", () => {
-  const root = "/tmp/openbot/.openbot-build/dev-automation";
+  const root = "/tmp/aikingbot/.aikingbot-build/dev-automation";
 
   it("names a timestamped file inside the build directory by default", () => {
     expect(resolveScreenshotPath(root, null, 1_700_000_000_000)).toBe(`${root}/screenshot-1700000000000.png`);
@@ -275,8 +275,8 @@ describe("parseWaitTarget", () => {
 
 describe("resolveScreenshotPath containment", () => {
   it("refuses a destination reached through a symbolic link", () => {
-    const root = mkdtempSync(join(tmpdir(), "openbot-shot-root-"));
-    const outside = mkdtempSync(join(tmpdir(), "openbot-shot-outside-"));
+    const root = mkdtempSync(join(tmpdir(), "aikingbot-shot-root-"));
+    const outside = mkdtempSync(join(tmpdir(), "aikingbot-shot-outside-"));
     // Lexically inside the build directory, but the write would land in
     // `outside` - which is how a read-only command could overwrite tracked
     // code without --allow-mutations.
@@ -292,8 +292,8 @@ describe("resolveScreenshotPath containment", () => {
 
 describe("resolveWritablePath", () => {
   it("holds a CPU report to the same containment the screenshots get", () => {
-    const root = mkdtempSync(join(tmpdir(), "openbot-cpu-root-"));
-    const outside = mkdtempSync(join(tmpdir(), "openbot-cpu-outside-"));
+    const root = mkdtempSync(join(tmpdir(), "aikingbot-cpu-root-"));
+    const outside = mkdtempSync(join(tmpdir(), "aikingbot-cpu-outside-"));
     expect(resolveWritablePath(root, "base.json", ".json", "CPU reports")).toBe(join(root, "base.json"));
     expect(resolveWritablePath(root, "run-1/after.json", ".json", "CPU reports")).toBe(
       join(root, "run-1", "after.json"),
@@ -316,14 +316,14 @@ describe("reportableScreenshotPath", () => {
   it("drops the absolute prefix the developer's home directory carries", () => {
     expect(
       reportableScreenshotPath(
-        "/Users/jan@example.com/work/tree/.openbot-build/shot.png",
+        "/Users/jan@example.com/work/tree/.aikingbot-build/shot.png",
         "/Users/jan@example.com/work/tree",
       ),
-    ).toBe(".openbot-build/shot.png");
+    ).toBe(".aikingbot-build/shot.png");
   });
 
   it("refuses a name it would have to redact, instead of returning one that cannot be reopened", () => {
-    expect(() => reportableScreenshotPath("/tree/.openbot-build/token=abcdef123456.png", "/tree")).toThrow(
+    expect(() => reportableScreenshotPath("/tree/.aikingbot-build/token=abcdef123456.png", "/tree")).toThrow(
       "would be redacted",
     );
   });

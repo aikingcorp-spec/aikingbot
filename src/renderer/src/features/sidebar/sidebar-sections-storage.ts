@@ -1,7 +1,7 @@
 import { z } from "zod";
 export type SidebarCollapsedByServer = Record<string, string[]>;
 
-export const SIDEBAR_COLLAPSED_STORAGE_KEY = "openbot:sidebar-collapsed:v1";
+export const SIDEBAR_COLLAPSED_STORAGE_KEY = "aikingbot:sidebar-collapsed:v1";
 
 type SidebarCollapsedStorage = Pick<Storage, "getItem" | "setItem">;
 

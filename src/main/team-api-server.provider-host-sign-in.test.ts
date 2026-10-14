@@ -4,7 +4,7 @@
 // A started sign-in opens a private tab that the administrator drives through the live view, so
 // `requireAdmin` is the whole gate. The page's link stays on the host: a reply carries the tab only.
 
-import { PROVIDER_HOST_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/provider-host-sign-in-v1";
+import { PROVIDER_HOST_SIGN_IN_ROUTES } from "@aikingbot/contracts/team-protocol/provider-host-sign-in-v1";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { createTeamApiFixture, stopTeamApiFixtures, type TeamApiOptions } from "./team-api-server-test-harness";
@@ -29,15 +29,15 @@ describe("Team API provider host sign-in", () => {
     const token = await fixture.signIn();
     const headers = {
       Authorization: `Bearer ${token}`,
-      "OpenBot-Protocol-Version": "7",
-      "OpenBot-Capabilities": "provider-host-sign-in-v1",
+      "AIKINGBOT-Protocol-Version": "7",
+      "AIKINGBOT-Capabilities": "provider-host-sign-in-v1",
       "Content-Type": "application/json",
     };
     const post = (route: string, body: unknown, extra: Record<string, string> = {}) =>
       fetch(`${base}${route}`, { method: "POST", headers: { ...headers, ...extra }, body: JSON.stringify(body) });
 
     expect(
-      (await post(PROVIDER_HOST_SIGN_IN_ROUTES.start, { provider: "antigravity" }, { "OpenBot-Capabilities": "" }))
+      (await post(PROVIDER_HOST_SIGN_IN_ROUTES.start, { provider: "antigravity" }, { "AIKINGBOT-Capabilities": "" }))
         .status,
     ).toBe(400);
 
@@ -58,7 +58,7 @@ describe("Team API provider host sign-in", () => {
     expect(signIns.calls).toEqual(["start:antigravity", "cancel:antigravity"]);
 
     const compatibility = await (
-      await fetch(`${base}/v1/compatibility`, { headers: { "OpenBot-Protocol-Version": "7" } })
+      await fetch(`${base}/v1/compatibility`, { headers: { "AIKINGBOT-Protocol-Version": "7" } })
     ).json();
     expect(compatibility.capabilities).toContain("provider-host-sign-in-v1");
   });

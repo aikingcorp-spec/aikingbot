@@ -1,13 +1,13 @@
 import { createHash } from "node:crypto";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
+import { expandAttachmentReferences } from "@aikingbot/contracts/attachment-references";
+import { expandChatTagReferences } from "@aikingbot/contracts/chat-tag-references";
 import type {
   AgentSummary,
   AgentWait,
   ConversationSnapshot,
   QueueDeliveryStatus,
   RoutineRun,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { wokenWaitsPromptText } from "../agent-waits/agent-waits";
 import type { DeliveryContext } from "../mailbox-store";
 import { quietRoutineRun, ROUTINE_NO_UPDATE_TOOL } from "./routine-quiet-runs";
@@ -79,14 +79,14 @@ export interface DeliveryPromptSources {
   executionText?: string;
 }
 
-const TEAMMATE_HEADER = "Message from OpenBot teammate";
+const TEAMMATE_HEADER = "Message from AIKINGBOT teammate";
 const NO_ANSWER_LINE = "The sender does not want an answer. This message passes information to you.";
 const COLLABORATOR_SEPARATOR = "--- collaborator message ---";
 const ATTACHED_FILES_HEADER = "\n\nAttached local files:\n";
 const NO_ANSWER_FROM = "No answer comes from ";
 const NO_ANSWER_REASON = ": the request to them ended before they answered. Do not wait for them.";
 /** The first words of a provider handoff. */
-export const HANDOFF_START = "Continue this OpenBot conversation.";
+export const HANDOFF_START = "Continue this AIKINGBOT conversation.";
 /** The last line of a provider handoff. */
 export const HANDOFF_END = "--- end previous transcript ---";
 /** Between a provider handoff and the prompt of the turn that takes it. */
@@ -190,19 +190,19 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
       ? [
           "This is a reply to a message you sent earlier.",
           "Surface or summarize the result naturally for the user, and start with the name of the teammate.",
-          "When the reply reports blocked work, do not repeat that work with the same tools. Give the user the blocker and the action from its Unblock line. When OpenBot has a plugin for the service and that plugin is not in your tools, end your answer with the plugin sentence from your instructions.",
+          "When the reply reports blocked work, do not repeat that work with the same tools. Give the user the blocker and the action from its Unblock line. When AIKINGBOT has a plugin for the service and that plugin is not in your tools, end your answer with the plugin sentence from your instructions.",
           "Reply to the teammate only when the message requests another action, or when you have new information that unblocks its work. Do not send it the same request again. Otherwise do not send an acknowledgement and avoid reply loops.",
         ]
       : delivery.expectsReply === false
         ? [
             NO_ANSWER_LINE,
             "Use it if it changes your work, and continue with what you were doing.",
-            "Do not send a reply, an acknowledgement, or a result for it. OpenBot sends the sender nothing back.",
+            "Do not send a reply, an acknowledgement, or a result for it. AIKINGBOT sends the sender nothing back.",
           ]
         : [
-            `After completing the request, send a concise result back to ${senderName} with openbot.send_message.`,
+            `After completing the request, send a concise result back to ${senderName} with aikingbot.send_message.`,
             `Use recipientAgentIds ["${senderAgentId}"], replyToMessageId "${delivery.messageId}", and expectsReply false.`,
-            "Format the reply as three lines: Status: done | partial | blocked, Result: <concrete outcome>, Evidence: <file, test, command, or none>. When Status is blocked, add a fourth line, Unblock: <the one action that unblocks the task>. When OpenBot has a plugin for the service and that plugin is not in your tools, that action is the plugin sentence from your instructions.",
+            "Format the reply as three lines: Status: done | partial | blocked, Result: <concrete outcome>, Evidence: <file, test, command, or none>. When Status is blocked, add a fourth line, Unblock: <the one action that unblocks the task>. When AIKINGBOT has a plugin for the service and that plugin is not in your tools, that action is the plugin sentence from your instructions.",
             "Do not acknowledge without a Status line. Do not leave the sender waiting for a result.",
           ];
     text = [
@@ -222,7 +222,7 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
     const testRun = run !== null && !quietRoutineRun(run);
     const runKind = testRun ? "manual Test run" : run?.source ? `${run.source} run` : "scheduled run";
     text = [
-      "Execute one run of an existing OpenBot routine now.",
+      "Execute one run of an existing AIKINGBOT routine now.",
       `Routine name: ${delivery.sender.routineName}`,
       `Run type: ${runKind}`,
       `Scheduled for: ${delivery.sender.scheduledFor}`,

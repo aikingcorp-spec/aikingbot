@@ -1,4 +1,4 @@
-# Releasing OpenBot
+# Releasing AIKINGBOT
 
 For iOS builds uploaded to TestFlight through GitHub Actions, see
 [the mobile release guide](../apps/mobile/README.md#github-actions-testflight-release). For Android
@@ -6,20 +6,20 @@ builds uploaded to Google Play, see
 [the Google Play release guide](../apps/mobile/README.md#github-actions-google-play-release).
 The mobile workflows are separate from the desktop tag release described below.
 
-OpenBot updates are published through GitHub Releases and installed with `electron-updater`.
+AIKINGBOT updates are published through GitHub Releases and installed with `electron-updater`.
 macOS requires every auto-updatable build to be signed with a Developer ID Application certificate.
 The release workflow also notarizes and staples the macOS application before publishing it. A Windows
 x64 tag release is signed with Azure Artifact Signing (see [Windows signing](#windows-signing)). Linux
 releases are unsigned, and the Linux AppImage carries no signature.
 All three platforms must pass before one release is published. A release also requires the pinned
 Sunshine and Moonlight Web runtime artifacts. GitHub Actions downloads those artifacts, checks SHA-256, and
-verifies their native executables as part of the final OpenBot package. Release packages are not built
+verifies their native executables as part of the final AIKINGBOT package. Release packages are not built
 on a developer machine.
 
 Codex, Claude, and Grok runtimes are optional downloads. They are not part of the application package.
 Release CI downloads the pinned macOS, Windows, and Linux provider artifacts as control artifacts. It
 checks their SHA-256 values, versions, licenses, and vendor signatures without copying them into
-OpenBot. Linux has no code-signature contract to check, so its provider artifacts are verified by
+AIKINGBOT. Linux has no code-signature contract to check, so its provider artifacts are verified by
 SHA-256 and version only.
 
 Installed apps do not wait for a release to get a new provider CLI: they offer the latest upstream
@@ -30,11 +30,11 @@ blocked version is no longer offered, but it stays on the computers that already
 
 ## One-time GitHub setup
 
-Create the `release` environment in `nightly-labs/openbot`, then add these environment secrets:
+Create the `release` environment in `aikingcorp-spec/aikingx_bot`, then add these environment secrets:
 
 - `CSC_LINK` — a base64-encoded Developer ID Application `.p12` file.
 - `MAC_PROVISIONING_PROFILE` — the base64-encoded Developer ID provisioning profile for
-  `app.openbot.desktop`, with the `applinks:openbot.run` entitlement.
+  `app.aikingbot.desktop`, with the `applinks:aikingbot.aikingx.com` entitlement.
 - `CSC_KEY_PASSWORD` — the application `.p12` export password.
 - `CSC_INSTALLER_LINK` — a base64-encoded **Developer ID Installer** `.p12` file for team `ZTRDTUL87R`.
 - `CSC_INSTALLER_KEY_PASSWORD` — the installer `.p12` export password.
@@ -52,17 +52,17 @@ The Docker image needs no secret: the `docker-publish` job pushes with `GITHUB_T
 even when the source repository is public. A successful push does not confirm public access.
 
 After the first push, a package administrator must open the
-[OpenBot package](https://github.com/orgs/nightly-labs/packages/container/package/openbot):
+[AIKINGBOT package](https://github.com/orgs/nightly-labs/packages/container/package/aikingbot):
 
 1. Open **Package settings** and set **Change visibility** to **Public**.
-2. Check that the package is linked to `nightly-labs/openbot`. The Dockerfile sets the
+2. Check that the package is linked to `aikingcorp-spec/aikingx_bot`. The Dockerfile sets the
    `org.opencontainers.image.source` label for this link.
-3. Under **Manage Actions access**, check that `nightly-labs/openbot` has write access.
+3. Under **Manage Actions access**, check that `aikingcorp-spec/aikingx_bot` has write access.
 
 If **Public** is disabled by organization administrators, an organization owner must enable
 **Public** under **Package creation** in the
 [organization package settings](https://github.com/organizations/nightly-labs/settings/packages).
-Make OpenBot public, then restore the previous organization policy. Existing public packages stay
+Make AIKINGBOT public, then restore the previous organization policy. Existing public packages stay
 public when this creation permission is disabled again.
 
 If a release pushed its image but users cannot pull it, check these settings first. Changing
@@ -73,8 +73,8 @@ Check access with an empty Docker configuration, so a saved login cannot hide th
 
 ```sh
 anonymous_config=$(mktemp -d)
-docker --config "$anonymous_config" manifest inspect ghcr.io/nightly-labs/openbot:latest
-docker --config "$anonymous_config" manifest inspect ghcr.io/nightly-labs/openbot:0.30.0
+docker --config "$anonymous_config" manifest inspect ghcr.io/aikingcorp-spec/aikingx_bot:latest
+docker --config "$anonymous_config" manifest inspect ghcr.io/aikingcorp-spec/aikingx_bot:0.30.0
 rm -rf "$anonymous_config"
 ```
 
@@ -85,9 +85,9 @@ place. Correct the package settings, then run the failed job again.
 ## Hosted-server snapshots
 
 After GitHub publication, `Publish boat server snapshot` builds the Linux x64 release into a boat
-named snapshot (`openbot-server-production-<version>` with dots replaced by hyphens), then selects
+named snapshot (`aikingbot-server-production-<version>` with dots replaced by hyphens), then selects
 it for new production servers. It uses the tagged hosting scripts,
-the published `SHA256SUMS-linux.txt`, and `https://api.openbot.run`. The builder checks the AppImage
+the published `SHA256SUMS-linux.txt`, and `https://api.aikingbot.aikingx.com`. The builder checks the AppImage
 checksum and installed version and requires an empty host profile before saving the snapshot.
 Existing servers and the test Worker do not change.
 
@@ -112,7 +112,7 @@ that count. Confirm that neither Worker nor any pending create needs a snapshot 
 
 A successful job reports the selected version in its Actions summary. Verify the first rollout by
 creating a temporary production server and checking its initial installed version. Record the
-result under `.openbot-build/`; remove only that temporary server after the check. This remote check
+result under `.aikingbot-build/`; remove only that temporary server after the check. This remote check
 is separate from local checks and requires production access.
 
 ## Windows signing
@@ -123,14 +123,14 @@ A tag build signs the Windows release with Azure Artifact Signing. It needs no s
   holds the Public Trust certificate profile `SYNTHETIFY`, issued to
   `SYNTHETIFY LABS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ`. Microsoft issues a new short-lived
   certificate each day with the same subject.
-- The Entra app registration `openbot-release-signing` has the **Artifact Signing Certificate Profile
+- The Entra app registration `aikingbot-release-signing` has the **Artifact Signing Certificate Profile
   Signer** role on that profile only. Its federated credential trusts the subject
-  `repo:nightly-labs@100160810/openbot@1332461149:environment:release`, because this repository uses
+  `repo:nightly-labs@100160810/aikingbot@1332461149:environment:release`, because this repository uses
   GitHub's immutable OIDC subject format. A dry run has no environment, so it cannot sign.
 - The `windows` job logs in with `azure/login`, caches a token for the signing service, and runs
   `bun run dist:win --config electron-builder.windows-signing.yml`, then runs `az account clear`, so
   the steps after the build have no Azure session. That overlay adds
-  `win.azureSignOptions` and `forceCodeSigning`. electron-builder signs `OpenBot.exe`, every `.exe` from
+  `win.azureSignOptions` and `forceCodeSigning`. electron-builder signs `AIKINGBOT.exe`, every `.exe` from
   `extraResources` (the remote desktop runtime and the Computer Use driver), the NSIS
   installer, and its uninstaller. It does not sign the `.node` and `.dll` files of the voice runtime,
   because the overlay sets no `win.signExts`. The provider CLIs are not packaged on Windows, so their
@@ -153,7 +153,7 @@ certificate builds download reputation.
 ## Build the remote desktop runtime
 
 `native-runtime.lock.json` pins the upstream source for Sunshine `v2026.516.143833` and Moonlight Web
-`v2.10.0` by full commit and source archive SHA-256. Each entry also records the reviewable OpenBot
+`v2.10.0` by full commit and source archive SHA-256. Each entry also records the reviewable AIKINGBOT
 patch applied to that source. Build on the target platform:
 
 ```bash
@@ -170,7 +170,7 @@ Use this source build only to make or reproduce a runtime version. The
 `.github/workflows/remote-desktop-runtime.yml` workflow builds macOS ARM64, macOS x64 and Windows x64 when the
 recipe or a pinned input changes. It publishes an immutable GitHub prerelease named
 `remote-desktop-runtime-<input-digest>`. The prerelease contains the three deterministic archives, SPDX
-SBOMs, build provenance, and `remote-desktop-runtime-manifest.json`. It is not an OpenBot application
+SBOMs, build provenance, and `remote-desktop-runtime-manifest.json`. It is not an AIKINGBOT application
 update and it must never contain `latest.yml`.
 
 PR pushes do not cancel an active runtime build. The next run reuses a successful native build
@@ -218,7 +218,7 @@ assets in an existing runtime prerelease. Increase `recipeVersion` when the buil
 ### Sunshine security backports (runtime recipe 12)
 
 The Sunshine upstream base remains `v2026.516.143833` to keep the tested macOS input backend.
-The OpenBot patch includes these upstream security changes and regression tests:
+The AIKINGBOT patch includes these upstream security changes and regression tests:
 
 - `1583e7c4a7e99538c7700315a1d2a2101c6d2812`: validate input packets before queueing and
   dispatch (GHSA-26q2-58j6-qmvv and GHSA-6w33-pjh7-p77c).
@@ -232,16 +232,16 @@ The OpenBot patch includes these upstream security changes and regression tests:
 Backport adaptations retain the older platform APIs and test fixtures. Native CI builds and runs
 only the relevant packet, pairing, REST authorization, and certificate regression tests. The local
 Moonlight client uses a random pairing name and approves only its matching loopback request ID.
-Moonlight now builds from the same upstream commit with the existing OpenBot patch and a fix
+Moonlight now builds from the same upstream commit with the existing AIKINGBOT patch and a fix
 that sends the configured pairing name instead of the upstream hard-coded name.
 The published runtime uses a new recipe/input digest; no existing release assets are replaced.
 The Linux GUI capability advisory GHSA-fp6g-27w5-489j does not apply: the Linux runtime is built
-with the tray off, and OpenBot gives Sunshine no file capabilities.
+with the tray off, and AIKINGBOT gives Sunshine no file capabilities.
 
 ### Linux runtime (recipe 14)
 
 The `linux-x64` target builds on Ubuntu 24.04 with GCC 14, X11 capture and software encoding only
-(CUDA, DRM, KWin, VAAPI, Vulkan, Wayland, portal and tray are off). The OpenBot patch adds an XTest
+(CUDA, DRM, KWin, VAAPI, Vulkan, Wayland, portal and tray are off). The AIKINGBOT patch adds an XTest
 input backend, because Xvfb does not read uinput devices. It also links libcap when DRM is off and
 adds a `vaMapBuffer2` shim, because the prebuilt FFmpeg needs libva 2.21 and Ubuntu 24.04 has 2.20.
 The runtime uses the system libraries of Ubuntu 24.04; the hosted server template installs them.
@@ -277,7 +277,7 @@ packages have no license file, so set `licenseSha256` to the SHA-256 of `LICENSE
 
 ## Pin the OpenCode CLI
 
-`native-runtime.lock.json` also pins the OpenCode CLI that OpenBot downloads for the OpenCode
+`native-runtime.lock.json` also pins the OpenCode CLI that AIKINGBOT downloads for the OpenCode
 provider before its first update check answers, by npm platform package, asset SHA-256, extracted binary SHA-256, byte counts, and the
 MIT license file it takes from the `opencode-ai` npm package. Codex, Claude, and Grok are pinned
 in the same file by hand; OpenCode has a script, because the version, both platform packages, and
@@ -304,7 +304,7 @@ before release.
 ## Pin the Computer Use driver
 
 `native-runtime.lock.json` pins `cua-driver`, the third-party binary that gives every provider
-Computer Use, by release tag, asset SHA-256, and one SHA-256 for each file OpenBot ships. Unlike the
+Computer Use, by release tag, asset SHA-256, and one SHA-256 for each file AIKINGBOT ships. Unlike the
 provider CLIs, the driver is packaged rather than downloaded on demand, so the release carries it and
 the user installs nothing.
 
@@ -327,7 +327,7 @@ check both that the driver is present and that no other platform's is. The macOS
 `dist:linux`.
 
 On macOS the driver arrives signed by Cua AI with the hardened runtime, a secure timestamp, and the
-Automation entitlement. `mac.signIgnore` keeps that signature: re-signing it under OpenBot's
+Automation entitlement. `mac.signIgnore` keeps that signature: re-signing it under AIKINGBOT's
 inherited entitlements would drop the entitlement and break the driver's Automation route.
 Notarization accepts a nested binary signed by another Developer ID team, and
 `verify-macos-package.ts` fails if the Cua AI authority or the hardened runtime flag is ever lost.
@@ -356,8 +356,8 @@ an older machine with an illegal instruction and no message, which would reach t
 server that never starts.
 
 Move this pin at release preparation, with the release-upgrade-safety audit, and not on a schedule:
-a pinned runtime is OpenBot's supply chain, and a Bun security release only reaches users through an
-OpenBot release. One reviewed commit per release.
+a pinned runtime is AIKINGBOT's supply chain, and a Bun security release only reaches users through an
+AIKINGBOT release. One reviewed commit per release.
 
 ## Release notes
 
@@ -413,8 +413,8 @@ text requires a new app release. Missing entries do not cause a network fallback
 
 The installed desktop version comes from `AppInfo`, not an available update or a remote server.
 In development, `AppInfo` uses `package.json`; Electron otherwise reports its own version.
-The local app profile keeps the highest consumed version in `openbot:whats-new-version`. On the
-first launch of this feature, an existing `openbot:analytics-app-version` can supply the previous
+The local app profile keeps the highest consumed version in `aikingbot:whats-new-version`. On the
+first launch of this feature, an existing `aikingbot:analytics-app-version` can supply the previous
 version; the dialog does not enable analytics. A profile with no previous version gets a silent
 baseline, so onboarding is not covered by release notes. Stable `x.y.z` releases participate;
 unknown versions and prerelease builds do not advance the marker. Downgrades do not lower it.
@@ -433,7 +433,7 @@ Start from a clean, up-to-date `main` branch. For the first release, `package.js
 `CHANGELOG.md` are already prepared as `0.1.0`; after CI passes, create its annotated tag directly:
 
 ```bash
-git tag -a v0.1.0 -m "OpenBot v0.1.0"
+git tag -a v0.1.0 -m "AIKINGBOT v0.1.0"
 git push origin v0.1.0
 ```
 
@@ -455,14 +455,14 @@ git add package.json CHANGELOG.md changelog.d
 git commit -m "release: prepare vX.Y.Z"
 git push origin main
 bun run release:preflight
-git tag -a vX.Y.Z -m "OpenBot vX.Y.Z"
+git tag -a vX.Y.Z -m "AIKINGBOT vX.Y.Z"
 # When Signal changed since the previous tag, deploy and check Signal from
 # vX.Y.Z now (preflight item 16). Push the tag only after that.
 git push origin vX.Y.Z
 ```
 
 Pushing the version tag runs `.github/workflows/release.yml`.
-The tag workflow starts only after `https://openbot.run/join` and the Apple association file return
+The tag workflow starts only after `https://aikingbot.aikingx.com/join` and the Apple association file return
 direct `200` responses with the required security headers, MIME type, app IDs, and paths: `/join`
 for the desktop app, and `/join` and `/agents/*` for the mobile app.
 
@@ -489,14 +489,14 @@ The workflow:
    the ZIP whose name contains `arm64` on Apple silicon and the other ZIP on Intel.
 10. builds a Docker image (`docker/Dockerfile`) from each Linux AppImage on a runner of that
     architecture, after it checks the AppImage against its `SHA256SUMS` file. It starts each image
-    with `docker/seccomp.json`, waits for `openbot status`, and stops it, which must exit with 0;
-11. after the GitHub Release is published, pushes both images to `ghcr.io/nightly-labs/openbot`
+    with `docker/seccomp.json`, waits for `aikingbot status`, and stops it, which must exit with 0;
+11. after the GitHub Release is published, pushes both images to `ghcr.io/aikingcorp-spec/aikingx_bot`
     with the tags `<version>-amd64` and `<version>-arm64`, joins them under `<version>`, `v<version>`,
     `latest` and `sha-<commit>`, and attests the build provenance of that image. It then checks
     anonymous access to both architectures. See [Docker](docker.md).
 
 Users can verify a downloaded artifact with
-`gh attestation verify <file> --repo nightly-labs/openbot`.
+`gh attestation verify <file> --repo aikingcorp-spec/aikingx_bot`.
 
 Before a tag, run the release path without publishing:
 
@@ -527,9 +527,9 @@ It logs in to Azure, then signs a throwaway executable once immediately and once
 the delay between login and signing in a release build. It uploads and publishes nothing. Run it once
 after a change to the Azure setup or to `electron-builder.windows-signing.yml`, before the next tag.
 
-Installed OpenBot builds check for updates shortly after launch and every four minutes. New versions
+Installed AIKINGBOT builds check for updates shortly after launch and every four minutes. New versions
 download automatically while **Automatically download updates** is on, which is the default and is
-persisted per user in `openbot-update-preference-v1.json`; with the setting off, a download starts
+persisted per user in `aikingbot-update-preference-v1.json`; with the setting off, a download starts
 only on a user action. The account popover shows the current state and lets the user download an
 available version, then restart into it. The restart action appears as
 soon as the download completes, and no platform installs without that
@@ -541,7 +541,7 @@ The voice runtime (the sherpa-onnx N-API addon and ONNX Runtime, from the pinned
 npm packages) is part of the macOS and Windows applications, in `voice/runtime`. Linux ships no voice
 runtime and no remote desktop runtime, so voice prompts and remote desktop report themselves as
 unavailable there. The NVIDIA Parakeet TDT 0.6B v3 int8 model is not part of an application or update
-artifact. OpenBot downloads its four pinned files on first voice use, checks the size and SHA-256 of
+artifact. AIKINGBOT downloads its four pinned files on first voice use, checks the size and SHA-256 of
 each, and keeps the verified files in `runtimes/parakeet-tdt-0.6b-v3-int8` in the user data directory
 for later offline use. The optional Whisper large-v3 turbo int8 model, which takes a fixed dictation
 language, is downloaded the same way only when the user selects Download in Settings > Voice. Its
@@ -588,23 +588,23 @@ Before creating the first tag or any later release:
 11. confirm the canary update does not crash in `CFURLConnectionSynchronous`, preserves data, starts
     the new version, and can run three provider downloads with restricted memory;
 12. on Windows 10 and 11 x64, confirm that normal exit, restart, and sign-out do not start NSIS, while
-    `Restart and install` does start it. With OpenBot closed and with it open, confirm that Open
-    OpenBot on a `/join` page opens OpenBot and shows the invitation once, and that uninstall
-    removes `HKCU\Software\Classes\openbot`;
-13. on Ubuntu 24.04 x64 with the AppArmor profile from `build/linux/openbot.apparmor` installed,
-    confirm the AppImage starts with the sandbox on, that `xdg-open 'openbot://join?...'` focuses the
+    `Restart and install` does start it. With AIKINGBOT closed and with it open, confirm that Open
+    AIKINGBOT on a `/join` page opens AIKINGBOT and shows the invitation once, and that uninstall
+    removes `HKCU\Software\Classes\aikingbot`;
+13. on Ubuntu 24.04 x64 with the AppArmor profile from `build/linux/aikingbot.apparmor` installed,
+    confirm the AppImage starts with the sandbox on, that `xdg-open 'aikingbot://join?...'` focuses the
     running application, that a provider downloads in-app, that the server rail is drawn, and that the
     microphone control is absent;
 14. confirm `CHANGELOG.md` describes the version and the working tree is clean;
 15. create and push the version commit, and create the tag locally, only after CI passes on `main`;
-16. read the running Signal commit from `curl -fsS https://signal.openbot.run/health/live`. If it is
+16. read the running Signal commit from `curl -fsS https://signal.aikingbot.aikingx.com/health/live`. If it is
     missing or `unknown`, or if `git diff --quiet <running commit> <new tag> -- remote packages/contracts/src/signal-protocol`
     finds changes, deploy Signal from the local tag before you push the tag. Compare with the running
     commit, not with the previous tag: an earlier release can have left Signal behind. Pushing the tag starts the
     release workflow, and nothing in it waits for Signal. Use the Signal-only procedure in
     [remote-session-deployment.md](remote-session-deployment.md#deployment-procedure--requires-separate-approval);
     the `.agents/skills/signal-deploy/` skill adds the checks before and after it.
-    Confirm that `curl -fsS https://signal.openbot.run/health/live` shows the tag commit. A client
+    Confirm that `curl -fsS https://signal.aikingbot.aikingx.com/health/live` shows the tag commit. A client
     that needs a newer Signal fails until then: v0.33.0 shipped webhook routines while Signal was older
     than #1520, so every webhook route answered 404 (#1661);
 17. push the tag.
@@ -632,19 +632,19 @@ or checksum generation fails; it never publishes a release with the Host package
 Expected macOS assets:
 
 ```text
-OpenBot-<VERSION>-arm64.dmg
-OpenBot-<VERSION>-arm64.zip
-OpenBot-Host-<VERSION>-arm64.pkg
+AIKINGBOT-<VERSION>-arm64.dmg
+AIKINGBOT-<VERSION>-arm64.zip
+AIKINGBOT-Host-<VERSION>-arm64.pkg
 latest-mac.yml
 SHA256SUMS-macos.txt
-OpenBot-<VERSION>-macos.spdx.json
-OpenBot-Host-<VERSION>-macos.spdx.json
-OpenBot-<VERSION>-macos.sigstore.json
-OpenBot-<VERSION>-x64.dmg
-OpenBot-<VERSION>-x64.zip
+AIKINGBOT-<VERSION>-macos.spdx.json
+AIKINGBOT-Host-<VERSION>-macos.spdx.json
+AIKINGBOT-<VERSION>-macos.sigstore.json
+AIKINGBOT-<VERSION>-x64.dmg
+AIKINGBOT-<VERSION>-x64.zip
 SHA256SUMS-macos-x64.txt
-OpenBot-<VERSION>-macos-x64.spdx.json
-OpenBot-<VERSION>-macos-x64.sigstore.json
+AIKINGBOT-<VERSION>-macos-x64.spdx.json
+AIKINGBOT-<VERSION>-macos-x64.sigstore.json
 ```
 
 The macOS checksum file covers the DMG, ZIP, and Host PKG. The existing provenance step consumes
@@ -653,11 +653,11 @@ The publish job downloads `release-macos` and `release-macos-x64` and publishes 
 other assets. `SHA256SUMS-macos-x64.txt` covers the x64 DMG and ZIP.
 `latest-mac.yml` still describes only Electron application updates; a `.pkg` reference is rejected.
 
-After verifying OpenBot.app, the macOS job:
+After verifying AIKINGBOT.app, the macOS job:
 
 1. runs native account tests without creating users;
 2. imports the application and installer certificates into a temporary, isolated keychain;
-3. compiles standalone ARM64 `host-manager` and `openbot-host` executables with Bun, and the native
+3. compiles standalone ARM64 `host-manager` and `aikingbot-host` executables with Bun, and the native
    account helper with Swift; no target-machine runtime or compiler is required;
 4. signs all executables with **Developer ID Application**, hardened runtime and timestamp, and
    checks their fixed identifiers and team `ZTRDTUL87R`;

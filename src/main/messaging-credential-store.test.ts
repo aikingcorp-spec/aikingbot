@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -16,7 +16,7 @@ const cipher = {
 const TOKENS = { botToken: "xoxb-1-2-storedbottokenvalue", appToken: "xapp-1-A-storedapptokenvalue" };
 
 async function createStore(): Promise<{ path: string; store: MessagingCredentialStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-messaging-credentials-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-messaging-credentials-"));
   const path = join(root, "messaging.json");
   const store = new MessagingCredentialStore(path, cipher);
   await Effect.runPromise(store.load());

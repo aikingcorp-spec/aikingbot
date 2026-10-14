@@ -398,7 +398,7 @@ describe("Team protocol v1", () => {
       model: "gpt-5.6-luna",
       reasoningEffort: "medium",
       threadId: null,
-      workspacePath: "/Users/dev/OpenBot/Agents/agent-1",
+      workspacePath: "/Users/dev/AIKINGBOT/Agents/agent-1",
       preview: "",
       updatedAt: null,
       avatarSeed: "first-bot",

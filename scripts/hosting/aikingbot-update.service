@@ -1,0 +1,14 @@
+# Downloads and unpacks a newer AIKINGBOT release next to the running one. aikingbot-update.timer starts
+# it; aikingbot-update-apply.service moves the release into place at the next start of the server.
+[Unit]
+Description=Stage an AIKINGBOT update
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/AIKINGBOT/hosted/aikingbot-hosted-update stage
+Nice=19
+IOSchedulingClass=idle
+CPUWeight=idle
+TimeoutStartSec=30min

@@ -1,4 +1,4 @@
-import { NotificationObserver, Toaster } from "@openbot/ui";
+import { NotificationObserver, Toaster } from "@aikingbot/ui";
 import { AppAccessGate } from "./AppView";
 import { type AppProps, AppProviders } from "./app-providers";
 import { reportNotification } from "./error-reports";

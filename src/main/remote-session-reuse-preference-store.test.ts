@@ -14,9 +14,9 @@ afterEach(async () => {
 });
 
 async function preferencePath(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-remote-session-reuse-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-session-reuse-"));
   directories.push(directory);
-  return join(directory, "openbot-remote-session-reuse-preference-v1.json");
+  return join(directory, "aikingbot-remote-session-reuse-preference-v1.json");
 }
 
 describe("RemoteSessionReusePreferenceStore", () => {

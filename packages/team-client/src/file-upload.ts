@@ -1,11 +1,11 @@
-import { sha256 } from "@noble/hashes/sha2.js";
 import {
   decodeTeamProtocolV2FileControlFrame,
   encodeTeamProtocolV2FileChunk,
   encodeTeamProtocolV2Frame,
   TEAM_PROTOCOL_V2_MAX_FILE_BYTES,
-} from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
+import { sha256 } from "@noble/hashes/sha2.js";
 import { Deferred, Effect, Schema } from "effect";
 
 export class FileTransferError extends Schema.TaggedError<FileTransferError>()("FileTransferError", {

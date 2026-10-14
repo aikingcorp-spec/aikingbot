@@ -1,11 +1,11 @@
-import type { McpServerConfig, TestMcpServerInput } from "@openbot/contracts/ipc";
+import type { McpServerConfig, TestMcpServerInput } from "@aikingbot/contracts/ipc";
 import { render, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vitest";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { ServerSettingsProvider, useServerSettings } from "./server-settings";
 import { ServersProvider } from "./servers-context";
 
-let mock: MockOpenBotControls | undefined;
+let mock: MockAIKINGBOTControls | undefined;
 
 afterEach(() => {
   mock?.dispose();
@@ -40,7 +40,7 @@ const DRAFT: McpServerConfig = {
   name: "Draft",
   transport: "stdio",
   enabled: false,
-  command: "openbot-no-such-command",
+  command: "aikingbot-no-such-command",
   args: [],
   env: [],
   envPassthrough: [],
@@ -58,7 +58,7 @@ async function openLocalSettings(): Promise<ServerSettingsStore> {
 
 describe("server settings MCP", () => {
   it("tests a draft without saving it", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     const sent: TestMcpServerInput[] = [];
     const test: typeof mock.api.agent.testMcpServer = async (input, serverId) => {
       sent.push(input);
@@ -66,7 +66,7 @@ describe("server settings MCP", () => {
       if (!answer) throw new Error("The test did not answer.");
       return answer;
     };
-    window.openbot = { ...mock.api, agent: { ...mock.api.agent, testMcpServer: test } };
+    window.aikingbot = { ...mock.api, agent: { ...mock.api.agent, testMcpServer: test } };
 
     const store = await openLocalSettings();
     await store.refreshMcpServers();
@@ -82,7 +82,7 @@ describe("server settings MCP", () => {
   // Nothing waits for this promise - the modal asks for the list when its MCP section appears - so
   // an unreported failure would leave the panel saying the server holds no MCP servers at all.
   it("reports a failed list read instead of showing an empty list", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     let failing = true;
     const list: typeof mock.api.agent.listMcpServers = async (serverId) => {
       if (failing) throw new Error("The host is not reachable.");
@@ -90,7 +90,7 @@ describe("server settings MCP", () => {
       if (!answer) throw new Error("The list did not answer.");
       return answer;
     };
-    window.openbot = { ...mock.api, agent: { ...mock.api.agent, listMcpServers: list } };
+    window.aikingbot = { ...mock.api, agent: { ...mock.api.agent, listMcpServers: list } };
 
     const store = await openLocalSettings();
     await store.refreshMcpServers();
@@ -106,8 +106,8 @@ describe("server settings MCP", () => {
   // The two loads start from different events, so one counter would let either one discard the
   // other's reply: the MCP list would stay empty with no second request to fill it.
   it("keeps the MCP list when a settings refresh runs beside it", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
 
     const store = await openLocalSettings();
     const mcp = store.refreshMcpServers();
@@ -121,7 +121,7 @@ describe("server settings MCP", () => {
   // The user can leave the MCP section and come back, which starts a read while the rows on screen
   // are still actionable. A removal that answers first must not be undone by that read.
   it("keeps a removed server out when an earlier list read answers late", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     let gate: Promise<void> | null = null;
     const list: typeof mock.api.agent.listMcpServers = async (serverId) => {
       // The list is read before the wait, so this answers with the servers as they were then.
@@ -130,7 +130,7 @@ describe("server settings MCP", () => {
       if (gate) await gate;
       return answer;
     };
-    window.openbot = { ...mock.api, agent: { ...mock.api.agent, listMcpServers: list } };
+    window.aikingbot = { ...mock.api, agent: { ...mock.api.agent, listMcpServers: list } };
 
     const store = await openLocalSettings();
     await store.refreshMcpServers();
@@ -150,8 +150,8 @@ describe("server settings MCP", () => {
   });
 
   it("takes the whole list from a save reply", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
 
     const store = await openLocalSettings();
     await store.refreshMcpServers();

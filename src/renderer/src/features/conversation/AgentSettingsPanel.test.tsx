@@ -1,10 +1,10 @@
 import SharedAgentSettingsPanel, {
   type AgentRuntimeSettings,
-} from "@openbot/ui/features/conversation/AgentSettingsPanel";
+} from "@aikingbot/ui/features/conversation/AgentSettingsPanel";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import { STORY_AGENT_STATUS, STORY_AGENTS, STORY_MODELS } from "../../preview/fixtures";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import AgentSettingsPanel from "./AgentSettingsPanel";
 import { AgentSkillsModal } from "./AgentSkillsModal";
 
@@ -12,7 +12,7 @@ const [firstAgent, secondAgent] = STORY_AGENTS;
 assert(firstAgent);
 assert(secondAgent);
 
-let mock: MockOpenBotControls | undefined;
+let mock: MockAIKINGBOTControls | undefined;
 
 afterEach(() => {
   mock?.dispose();
@@ -21,7 +21,7 @@ afterEach(() => {
 
 describe("AgentSettingsPanel", () => {
   it("saves through callbacks without a desktop preload", async () => {
-    vi.stubGlobal("openbot", undefined);
+    vi.stubGlobal("aikingbot", undefined);
     const onUpdateAgent = vi.fn(async () => undefined);
     try {
       const view = render(() => (
@@ -55,8 +55,8 @@ describe("AgentSettingsPanel", () => {
   it("saves edited instructions while the field stays focused", async () => {
     vi.useFakeTimers();
     try {
-      mock = createMockOpenBot();
-      window.openbot = mock.api;
+      mock = createMockAIKINGBOT();
+      window.aikingbot = mock.api;
       const onUpdateAgent = vi.fn(async () => undefined);
       render(() => (
         <AgentSettingsPanel
@@ -90,8 +90,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("flushes pasted instructions when the settings panel closes", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const onUpdateAgent = vi.fn(async () => undefined);
     const view = render(() => (
       <AgentSettingsPanel
@@ -122,8 +122,8 @@ describe("AgentSettingsPanel", () => {
   it("queues a newer instruction behind an active save", async () => {
     vi.useFakeTimers();
     try {
-      mock = createMockOpenBot();
-      window.openbot = mock.api;
+      mock = createMockAIKINGBOT();
+      window.aikingbot = mock.api;
       let finishFirstSave!: () => void;
       const firstSave = new Promise<void>((resolve) => {
         finishFirstSave = resolve;
@@ -169,8 +169,8 @@ describe("AgentSettingsPanel", () => {
 
   // The Files row and the view it opens share one read, so the row's total is the view's total.
   it("opens an agent's files from its settings and returns to them", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const getUsage = vi.spyOn(mock.api.storage, "getUsage");
     render(() => (
       <AgentSettingsPanel
@@ -205,8 +205,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("opens a requested skill in the existing management modal", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     render(() => (
       <AgentSkillsModal
         open
@@ -223,8 +223,8 @@ describe("AgentSettingsPanel", () => {
     await waitFor(() => expect(toggle).not.toBeChecked());
   });
   it("keeps keyboard focus on the skill switch after saving", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     render(() => (
       <AgentSkillsModal open agentId="chief" agentName="Chief" onOpenChange={vi.fn()} onCountChange={vi.fn()} />
     ));
@@ -236,8 +236,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("enables a library skill for this agent and shares its state across filters", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const install = vi.spyOn(mock.api.skills, "localInstall");
     render(() => (
       <AgentSkillsModal open agentId="research" agentName="Research" onOpenChange={vi.fn()} onCountChange={vi.fn()} />
@@ -258,8 +258,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("filters enabled skills and restores disabled skills in All", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     render(() => (
       <AgentSkillsModal open agentId="chief" agentName="Chief" onOpenChange={vi.fn()} onCountChange={vi.fn()} />
     ));
@@ -272,8 +272,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("starts skill creation and closes the preview", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const create = vi.fn();
     const close = vi.fn();
     render(() => (
@@ -292,8 +292,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("adds a shared local skill to the selected agent and then tries it", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const install = vi.spyOn(mock.api.skills, "localInstall");
     const onTry = vi.fn();
     render(() => (
@@ -326,8 +326,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("updates a local revision explicitly and keeps the skill disabled", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const [skill] = await mock.api.skills.localList();
     assert(skill);
     await mock.api.skills.localInstall({ agentId: "chief", skillId: skill.id, revision: 1 });
@@ -353,8 +353,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("retries a failed local library read and returns to assigned skills", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const list = mock.api.skills.localList;
     mock.api.skills.localList = vi.fn(async () => {
       throw new Error("offline");
@@ -372,8 +372,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it.each([false, true])("enables a skill before Try and handles failure=%s", async (fails) => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const detail = await mock.api.skills.get("skill-source-check");
     vi.spyOn(mock.api.skills, "get").mockResolvedValue({ ...detail, version: 2 });
     const enable = vi.spyOn(mock.api.skills, "setEnabled");
@@ -407,8 +407,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("requires an update before trying a different preview version", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const onTrySkill = vi.fn();
     render(() => (
       <AgentSkillsModal
@@ -427,8 +427,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("updates a skill from its chip without opening the detail", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const install = vi.spyOn(mock.api.skills, "install");
     render(() => (
       <AgentSkillsModal open agentId="chief" agentName="Chief" onOpenChange={vi.fn()} onCountChange={vi.fn()} />
@@ -441,8 +441,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("requires confirmation before replacing a modified skill", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const installed = await mock.api.skills.listInstalled("chief");
     const original = installed.find((item) => item.skillId === "skill-release-notes");
     if (!original) throw new Error("Missing skill fixture");
@@ -463,8 +463,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("lists a workspace skill folder read-only with its problem", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     vi.spyOn(mock.api.skills, "listInstalled").mockResolvedValue([
       {
         skillId: "workspace:deploy",
@@ -484,13 +484,13 @@ describe("AgentSettingsPanel", () => {
       <AgentSkillsModal open agentId="chief" agentName="Chief" onOpenChange={vi.fn()} onCountChange={onCountChange} />
     ));
     const row = await screen.findByRole("button", { name: /^deploy/ });
-    // OpenBot did not assign this skill, so the "Skills N assigned" count leaves it out.
+    // AIKINGBOT did not assign this skill, so the "Skills N assigned" count leaves it out.
     expect(onCountChange).toHaveBeenLastCalledWith(0);
     expect(screen.queryByRole("switch", { name: "Enable deploy" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "More for deploy" })).not.toBeInTheDocument();
     await fireEvent.click(row);
     expect(
-      await screen.findByText("OpenBot did not install this skill. Edit or remove it in .agents/skills/deploy."),
+      await screen.findByText("AIKINGBOT did not install this skill. Edit or remove it in .agents/skills/deploy."),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Claude Code does not read .agents/skills. Copy this folder to .claude/skills."),
@@ -500,8 +500,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("does not read this computer's library for a remote local skill", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const [skill] = await mock.api.skills.localList();
     assert(skill);
     vi.spyOn(mock.api.agent, "listInstalledSkills").mockResolvedValue([
@@ -536,8 +536,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("preserves settings after a failed save and a visit to Usage", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     // Sol does not run under Claude, and Claude does not offer Extra high, so a rejected save has
     // all three runtime fields to put back at once.
     const runtimeSettings: AgentRuntimeSettings = {
@@ -582,7 +582,7 @@ describe("AgentSettingsPanel", () => {
     expect(screen.getByRole("button", { name: "Agent model: GPT-5.6 Sol" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Agent reasoning level/ })).toHaveTextContent("Extra high");
     await fireEvent.click(screen.getByRole("button", { name: "Advanced" }));
-    expect(screen.getByText("/mock/OpenBot/Agents/chief")).toBeInTheDocument();
+    expect(screen.getByText("/mock/AIKINGBOT/Agents/chief")).toBeInTheDocument();
     await fireEvent.click(screen.getByRole("button", { name: "Back to settings" }));
     await fireEvent.click(screen.getByRole("button", { name: /^Permissions/u }));
     expect(screen.getByText(/full computer access/)).toBeInTheDocument();
@@ -635,8 +635,8 @@ describe("AgentSettingsPanel", () => {
   });
 
   it("states that Claude acts without approval prompts", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     render(() => (
       <AgentSettingsPanel
         onOpenUsage={vi.fn()}

@@ -1,5 +1,5 @@
-import { ATTACHMENT_FILE_EXTENSIONS, attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import { ATTACHMENT_FILE_EXTENSIONS, attachmentMimeTypeForName } from "@aikingbot/contracts/attachment-files";
+import { MOBILE_ATTACHMENT_BYTES } from "@aikingbot/team-client/remote-peer";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
@@ -244,7 +244,7 @@ it("rejects formats the selected host does not accept, with the file name, and k
   expect(state().items.map((item) => item.name)).toEqual(["notes.txt"]);
   expect(native.alert).toHaveBeenCalledWith(
     "Could not add attachment",
-    "clip.mov: the host computer does not accept MOV files. Update OpenBot there to attach them.",
+    "clip.mov: the host computer does not accept MOV files. Update AIKINGBOT there to attach them.",
   );
 });
 

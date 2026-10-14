@@ -1,4 +1,4 @@
-import { TELEGRAM_BOT_ID_PATTERN } from "@openbot/contracts/signal-protocol/telegram-route";
+import { TELEGRAM_BOT_ID_PATTERN } from "@aikingbot/contracts/signal-protocol/telegram-route";
 
 export interface RemoteApiConfig {
   host: string;
@@ -23,13 +23,13 @@ export interface RemoteApiConfig {
   // The repository commit of this build, from the image. `/health/live` shows it, so a deploy can be
   // compared with a release tag. `unknown` for a build without it.
   sourceCommit: string;
-  // The signing secret of each OpenBot Slack app, production and development, which share this
+  // The signing secret of each AIKINGBOT Slack app, production and development, which share this
   // Signal. A request must name the app whose secret signed it. Without one, the Slack route answers 503.
   slackSigningSecrets: SlackSigningSecret[];
-  // The OpenBot Telegram bots, production and development, which share this Signal. Without them,
+  // The AIKINGBOT Telegram bots, production and development, which share this Signal. Without them,
   // the Telegram routes answer 404 and `ready` names no `telegram` capability.
   telegram: TelegramConfig | null;
-  // The OpenBot Discord bot. Without it, Signal keeps no Gateway connection and the Discord API route
+  // The AIKINGBOT Discord bot. Without it, Signal keeps no Gateway connection and the Discord API route
   // answers 503.
   discord: DiscordBotConfig | null;
 }
@@ -158,7 +158,7 @@ export function readRemoteApiConfig(environment: Record<string, string | undefin
     maximumConnectionsPerIp: positiveInteger(environment.REMOTE_MAX_CONNECTIONS_PER_IP, 32),
     maximumMessagesPerMinute: positiveInteger(environment.REMOTE_MAX_MESSAGES_PER_MINUTE, 600),
     trustProxy: environment.REMOTE_TRUST_PROXY === "true",
-    sourceCommit: optional(environment.OPENBOT_SOURCE_COMMIT) ?? "unknown",
+    sourceCommit: optional(environment.AIKINGBOT_SOURCE_COMMIT) ?? "unknown",
     slackSigningSecrets: readSlackSigningSecrets(environment.SLACK_SIGNING_SECRET),
     telegram: readTelegramConfig(environment),
     discord: readDiscordBot(environment.DISCORD_BOT_TOKEN, environment.DISCORD_APPLICATION_ID),

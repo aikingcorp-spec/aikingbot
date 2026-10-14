@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { MESSAGING_PLATFORMS, type MessagingPlatform } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
+import { MESSAGING_PLATFORMS, type MessagingPlatform } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@aikingbot/contracts/runtime-values";
+import type { AIKINGBOTDatabase } from "../aikingbot-database";
 import { deleteAggregateHistory } from "../database/database-core";
 import {
   databaseRow,
@@ -9,7 +10,6 @@ import {
   requiredNumberColumn,
   requiredStringColumn,
 } from "../database/database-rows";
-import type { OpenBotDatabase } from "../openbot-database";
 
 /** One workspace of a platform, where every agent of this computer can answer. */
 export interface MessagingConnectionRecord {
@@ -61,9 +61,9 @@ const LINK_LIST_LIMIT = 200;
  * payload holds ids only: the event log is append-only and must not keep external text.
  */
 export class MessagingStore {
-  readonly #database: OpenBotDatabase;
+  readonly #database: AIKINGBOTDatabase;
 
-  constructor(database: OpenBotDatabase) {
+  constructor(database: AIKINGBOTDatabase) {
     this.#database = database;
   }
 
@@ -185,7 +185,7 @@ export class MessagingStore {
     const existing = this.linkByKey(input.connectionId, input.platformChannelId, input.threadKey);
     if (existing) return existing;
     const linkId = `messaging-link-${randomUUID()}`;
-    const threadId = `openbot-thread-${randomUUID()}`;
+    const threadId = `aikingbot-thread-${randomUUID()}`;
     this.#database.dispatch(
       `messaging-thread:${linkId}`,
       [

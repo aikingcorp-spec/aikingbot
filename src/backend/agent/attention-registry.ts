@@ -12,10 +12,10 @@ import type {
   RespondToBrowserSecretInput,
   RespondToBrowserTakeoverInput,
   RespondToPromptInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_RUNTIME_ATTENTION_LIMIT } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { AGENT_RUNTIME_ATTENTION_LIMIT } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, redactText, toLogValue } from "@aikingbot/logging";
 import { Deferred, Effect, Result, Schema } from "effect";
 import type { AgentClient } from "../agent-client";
 import type { BrowserOperationError } from "../browser-effects";
@@ -58,7 +58,7 @@ import {
 import { compactRuntimeApproval, compactRuntimeQuestion } from "./runtime-snapshot";
 import { isDynamicToolCall } from "./thread-items";
 
-const logger = createOpenBotLogger("attention-registry");
+const logger = createAIKINGBOTLogger("attention-registry");
 
 interface PendingPrompt {
   client: AgentClient;
@@ -146,7 +146,7 @@ export interface AttentionRegistryOptions {
   emitError(code: string, error: unknown, agentId?: string): void;
   emitRuntimeSnapshot(): void;
   /**
-   * The vault the user shared with OpenBot, or null. A password or authenticator request for a login
+   * The vault the user shared with AIKINGBOT, or null. A password or authenticator request for a login
    * saved there is filled without a card: putting the login in the shared vault is the consent.
    */
   passwordVault?: PasswordVault | null;
@@ -217,14 +217,14 @@ export class AttentionRegistry {
         .map((pending) => ({
           requestId: this.#localHandle(pending),
           questions: structuredClone(pending.questions),
-          requiresOpenBot: pending.questions.some(localQuestionNeedsOpenBot),
+          requiresAIKINGBOT: pending.questions.some(localQuestionNeedsAIKINGBOT),
         })),
       approvals: [...this.#approvals.values()]
         .filter((pending) => pending.approval.agentId === agentId)
         .map((pending) => ({ ...structuredClone(pending.approval), requestId: this.#localHandle(pending) })),
       browserTakeovers: [...this.#takeovers.values()]
         .filter((pending) => pending.request.agentId === agentId)
-        .map((pending) => ({ requestId: this.#localHandle(pending), requiresOpenBot: true })),
+        .map((pending) => ({ requestId: this.#localHandle(pending), requiresAIKINGBOT: true })),
     };
   }
 
@@ -237,7 +237,7 @@ export class AttentionRegistry {
       const pending = [...this.#prompts.values()].find(
         (entry) => entry.agentId === agentId && this.#localHandles.get(entry) === input.requestId,
       );
-      if (!pending || pending.questions.some(localQuestionNeedsOpenBot)) {
+      if (!pending || pending.questions.some(localQuestionNeedsAIKINGBOT)) {
         return yield* attentionStep(() => {
           throw new InactiveAttentionRequest(sourceText("error.backend.promptInactive"));
         });
@@ -591,7 +591,7 @@ export class AttentionRegistry {
     this.#takeovers.set(requestId, pending);
     return yield* Effect.gen({ self: this }, function* () {
       // The card is only shown once the tab has actually been handed over -- references invalidated,
-      // diagnostics cleared, any recording stopped. Asking the user for control OpenBot then failed to
+      // diagnostics cleared, any recording stopped. Asking the user for control AIKINGBOT then failed to
       // give them would leave the agent acting on the page underneath them.
       const prepare = Effect.gen({ self: this }, function* () {
         if (params.tool === "submit_secret") {
@@ -693,7 +693,7 @@ export class AttentionRegistry {
         contentItems: [
           {
             type: "inputText",
-            text: "OpenBot could not create a user question.",
+            text: "AIKINGBOT could not create a user question.",
           },
         ],
       });
@@ -771,7 +771,7 @@ export class AttentionRegistry {
       client.respond(request.id, { action: "decline", content: null, _meta: null });
       this.#emitError(
         "mcp_safety_handoff",
-        "A local plugin requested an unsupported security hand-off, so OpenBot declined it.",
+        "A local plugin requested an unsupported security hand-off, so AIKINGBOT declined it.",
         agentId,
       );
       return;
@@ -928,7 +928,7 @@ export class AttentionRegistry {
     }
     if (request.method === "applyPatchApproval" || request.method === "execCommandApproval") {
       client.respond(request.id, {
-        decision: { denied: { rejection: "OpenBot could not identify this approval." } },
+        decision: { denied: { rejection: "AIKINGBOT could not identify this approval." } },
       });
       return;
     }
@@ -1057,7 +1057,7 @@ class AttentionOperationFailed extends Schema.TaggedError<AttentionOperationFail
 }) {}
 
 /** Redacted choice labels and IDs cannot be sent back as the provider's original values. */
-function localQuestionNeedsOpenBot(question: AgentPromptQuestion): boolean {
+function localQuestionNeedsAIKINGBOT(question: AgentPromptQuestion): boolean {
   return (
     question.isSecret ||
     redactText(question.id) !== question.id ||

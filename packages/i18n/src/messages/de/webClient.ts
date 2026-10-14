@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "OpenBot wird geladen…",
+  "webClient.loading": "AIKINGBOT wird geladen…",
   "webClient.loadingLine.wake": "Agenten werden geweckt…",
   "webClient.loadingLine.coffee": "Kaffee für die Agenten wird eingeschenkt…",
   "webClient.loadingLine.tokens": "Tokens werden an den Fingern abgezählt…",
@@ -22,11 +22,11 @@ export const messages = {
   "webClient.notice.hostsFailed": "Deine Computer konnten nicht geladen werden",
   "webClient.notice.connectComputer": "Verbinde deinen Computer",
   "webClient.connect.description":
-    "Starte OpenBot auf deinem Computer, um über diesen Browser mit deinen Agenten zu chatten. Du kannst auch mit einer Einladung einem Computer beitreten.",
-  "webClient.connect.stepInstall": "Installiere und öffne OpenBot auf deinem Computer.",
+    "Starte AIKINGBOT auf deinem Computer, um über diesen Browser mit deinen Agenten zu chatten. Du kannst auch mit einer Einladung einem Computer beitreten.",
+  "webClient.connect.stepInstall": "Installiere und öffne AIKINGBOT auf deinem Computer.",
   "webClient.connect.stepSignIn": "Melde dich mit deiner E-Mail-Adresse an.",
   "webClient.connect.stepRemote": "Aktiviere den Fernzugriff.",
-  "webClient.notice.download": "OpenBot herunterladen",
+  "webClient.notice.download": "AIKINGBOT herunterladen",
   "webClient.notice.join": "Mit Einladung beitreten",
   "webClient.notice.refreshHosts": "Hosts aktualisieren",
   "webClient.agent.modelsFailed": "Die Modelle des Hosts konnten nicht geladen werden.",
@@ -37,7 +37,7 @@ export const messages = {
   "webClient.error.usageOffline": "Verbinde dich mit deinem Host, um die Nutzung anzuzeigen.",
   "webClient.error.desktopOnly": "Diese Aktion ist in der Desktop-App verfügbar.",
   "webClient.settings.preferences.title": "Einstellungen",
-  "webClient.settings.preferences.description": "Wähle die Sprache und Töne von OpenBot in diesem Browser.",
+  "webClient.settings.preferences.description": "Wähle die Sprache und Töne von AIKINGBOT in diesem Browser.",
   "webClient.error.checkConversation": "Prüfe die Unterhaltung, bevor du erneut sendest.",
   "webClient.error.hostReported": "Der Host hat einen Fehler gemeldet. Prüfe die Unterhaltung und den Host-Status.",
   "webClient.error.requestFailed": "Die Anfrage ist fehlgeschlagen.",
@@ -68,7 +68,7 @@ export const messages = {
   "webClient.error.identityChanged": "Die Identität des Hosts hat sich geändert. Verbindung abgelehnt.",
   "webClient.error.connectionUnavailable": "Die Host-Verbindung ist nicht verfügbar.",
   "webClient.error.incompatible":
-    "Dieser Host ist nicht mit OpenBot Web kompatibel. Aktualisiere den Host und lade diese Seite neu.",
+    "Dieser Host ist nicht mit AIKINGBOT Web kompatibel. Aktualisiere den Host und lade diese Seite neu.",
   "webClient.error.sendUnconfirmed":
     "Die Zustellung der Nachricht ist nicht bestätigt. Aktualisiere, bevor du sie erneut sendest.",
   "webClient.error.fileType": "Aktualisiere den Host, um diesen Dateityp anzuhängen.",
@@ -76,7 +76,7 @@ export const messages = {
   "webClient.error.duplication": "Dieser Host unterstützt das Duplizieren von Agenten nicht.",
   "webClient.error.connectServerFirst": "Verbinde dich zuerst mit diesem Server.",
   "webClient.error.agentInstallNotAllowed":
-    "Nur Eigentümer oder Administratoren können hier einen Agenten hinzufügen. Der Host muss eine aktuelle OpenBot-Version ausführen.",
+    "Nur Eigentümer oder Administratoren können hier einen Agenten hinzufügen. Der Host muss eine aktuelle AIKINGBOT-Version ausführen.",
   "webClient.error.linkDesktopOnly": "Dieser Link öffnet sich nur in der Desktop-App.",
   "webClient.error.saveEndpointOffline": "Verbinde dich mit deinem Host, um einen Endpunkt zu speichern.",
   "webClient.error.removeEndpointOffline": "Verbinde dich mit deinem Host, um einen Endpunkt zu entfernen.",

@@ -3,4 +3,4 @@ export {
   articleGradient,
   articleGradientCss,
   articleGradientUniforms,
-} from "@openbot/brand/article-gradient";
+} from "@aikingbot/brand/article-gradient";

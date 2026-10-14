@@ -1,8 +1,8 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir, rm } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { DISCORD_ORCHESTRATOR_AVATAR } from "@openbot/contracts/discord-app";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { DISCORD_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/discord-app";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AddMessagingOrchestratorInput,
   AddTelegramOrchestratorInput,
@@ -17,14 +17,14 @@ import type {
   MessagingOverview,
   MessagingPlatform,
   RespondToApprovalInput,
-} from "@openbot/contracts/ipc";
-import { MESSAGING_CONNECTION_STATES } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { TELEGRAM_LINK_CODE_TTL_SECONDS } from "@openbot/contracts/signal-protocol/telegram-route";
-import { SLACK_ORCHESTRATOR_AVATAR } from "@openbot/contracts/slack-app";
-import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@openbot/contracts/telegram-app";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { MESSAGING_CONNECTION_STATES } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { TELEGRAM_LINK_CODE_TTL_SECONDS } from "@aikingbot/contracts/signal-protocol/telegram-route";
+import { SLACK_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/slack-app";
+import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/telegram-app";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, redactText } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Result, Schema, Scope } from "effect";
 import type { AgentLifecycleFailed } from "../agent-service";
 import { causeHelpers } from "../effect-boundary";
@@ -64,7 +64,7 @@ import { type TelegramAppPort, telegramLinkUrl } from "./telegram/telegram-conne
 import { telegramOrchestratorMemories, telegramOrchestratorProfile } from "./telegram/telegram-orchestrator";
 import { parseTelegramUpdate, telegramLink, telegramRemoval } from "./telegram/telegram-updates";
 
-const logger = createOpenBotLogger("messaging");
+const logger = createAIKINGBOTLogger("messaging");
 
 /** The tokens of each connection, kept by the main process in encrypted storage, by connection id. */
 export interface MessagingCredentials {
@@ -102,7 +102,7 @@ export interface MessagingServiceOptions {
   /** A private folder for files that arrive, until the mailbox has copied them. */
   downloadsRoot: string;
   /**
-   * The Signal relay of the OpenBot Slack and Discord apps. Without it and `slackApp` or
+   * The Signal relay of the AIKINGBOT Slack and Discord apps. Without it and `slackApp` or
    * `discordApp`, no workspace of that platform can connect.
    */
   ingress?: MessagingIngress;
@@ -110,7 +110,7 @@ export interface MessagingServiceOptions {
   discordApp?: DiscordAppPort;
   /** Only tests change this. */
   slackOrigin?: string;
-  /** The account service half of the OpenBot Telegram bot. Without it and `ingress`, no chat can connect. */
+  /** The account service half of the AIKINGBOT Telegram bot. Without it and `ingress`, no chat can connect. */
   telegramApp?: TelegramAppPort;
   /** Where the Slack, Discord and Telegram Orchestrators go in the sidebar: an Integrations section. */
   sidebar?: Pick<SidebarLayoutStore, "getSnapshot" | "mutate">;
@@ -166,7 +166,7 @@ const MENTION_MARKERS = /[\uE000-\uE001]/g;
 /**
  * Owns the live connections to chat platform workspaces: it starts and stops each one's transport,
  * picks the agent of each new conversation with the router agent, turns inbound messages into agent
- * work through `MessagingThreads`, posts status and answers back as OpenBot, and relays approvals
+ * work through `MessagingThreads`, posts status and answers back as AIKINGBOT, and relays approvals
  * and stop requests. It never stores a token: `MessagingCredentials` does. It is platform-agnostic;
  * everything a platform does goes through its `MessagingDriver`.
  */
@@ -395,7 +395,7 @@ export class MessagingService {
   });
 
   /**
-   * Opens the OpenBot Slack app's install in the browser, or only returns it when `opensPage` is false.
+   * Opens the AIKINGBOT Slack app's install in the browser, or only returns it when `opensPage` is false.
    * A deep link to `completeSlackWorkspace` ends it.
    */
   readonly connectSlackWorkspace = Effect.fn("MessagingService.connectSlackWorkspace")(function* (
@@ -459,7 +459,7 @@ export class MessagingService {
   }, Effect.uninterruptible).bind(this);
 
   /**
-   * Opens the OpenBot Discord app's install in the browser, or only returns it when `opensPage` is
+   * Opens the AIKINGBOT Discord app's install in the browser, or only returns it when `opensPage` is
    * false. A deep link to `completeDiscordGuild` ends it.
    */
   readonly connectDiscordGuild = Effect.fn("MessagingService.connectDiscordGuild")(function* (
@@ -503,7 +503,7 @@ export class MessagingService {
   }, Effect.uninterruptible).bind(this);
 
   /**
-   * Unlinks the guild, then stops its connection and forgets it. OpenBot stays in the guild until a
+   * Unlinks the guild, then stops its connection and forgets it. AIKINGBOT stays in the guild until a
    * guild admin removes it. When the unlink fails, nothing changes, so the user can try again: the
    * guild stays linked to this host until the account service unlinks it.
    */
@@ -668,7 +668,7 @@ export class MessagingService {
 
   /**
    * The bot leaves the chat, and the chat is unlinked from this host. The conversations stay in
-   * OpenBot, and a later link of the same chat gives them back their agents.
+   * AIKINGBOT, and a later link of the same chat gives them back their agents.
    */
   readonly disconnectTelegramChat = Effect.fn("MessagingService.disconnectTelegramChat")(function* (
     this: MessagingService,
@@ -773,7 +773,9 @@ export class MessagingService {
       yield* live.adapter
         .post(
           { platformChannelId: chatId, replyThreadId: null },
-          { text: sourceText("status.messaging.telegramLinked", { bot: botUsername ? `@${botUsername}` : "OpenBot" }) },
+          {
+            text: sourceText("status.messaging.telegramLinked", { bot: botUsername ? `@${botUsername}` : "AIKINGBOT" }),
+          },
         )
         .pipe(Effect.catch((failure) => Effect.sync(() => this.#warn(failure.cause))));
   }, Effect.uninterruptible);
@@ -873,7 +875,7 @@ export class MessagingService {
     });
     // After `start`: a transport takes deliveries only once it has its sink.
     for (const ready of [...(this.#transportWaiters.get(record.connectionId) ?? [])]) ready();
-    // So people can mention OpenBot in any public channel without inviting it first. Channels made
+    // So people can mention AIKINGBOT in any public channel without inviting it first. Channels made
     // while the host was off are joined here too.
     const join = live.adapter.joinPublicPlaces?.();
     if (join)
@@ -925,7 +927,7 @@ export class MessagingService {
     if (FATAL_STATES.has(state)) {
       this.#threads.store.updateConnection(live.record.connectionId, { lastErrorCode: state });
       logger.warn("A messaging connection stopped.", { platform: live.record.platform, state });
-      // The workspace uninstalled OpenBot or revoked its token, or the bot left the Telegram chat:
+      // The workspace uninstalled AIKINGBOT or revoked its token, or the bot left the Telegram chat:
       // Signal stops routing it here.
       const unlink:
         | Effect.Effect<void, DiscordConnectFailed | SlackConnectFailed | MessagingOperationFailed>
@@ -1528,7 +1530,7 @@ function refusal(failure: MessagingAdapterError): string {
     cause instanceof SlackApiError || cause instanceof DiscordApiError || cause instanceof TelegramCallError
       ? cause.code
       : "no_answer";
-  return `The platform refused the call: ${code}. Check the connection and place ids with openbot.messaging_list_places.`;
+  return `The platform refused the call: ${code}. Check the connection and place ids with aikingbot.messaging_list_places.`;
 }
 
 function token(): string {

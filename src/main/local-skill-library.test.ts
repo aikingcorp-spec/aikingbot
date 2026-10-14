@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -20,7 +20,7 @@ const network = vi.fn(async () => {
 const markdown = (body: string) =>
   `---\nname: Weekly summary\ndescription: Summarize the week.\nexample-prompt: Summarize this week.\n---\n${body}`;
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-local-skills-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-local-skills-"));
   const testAgent = (id: string): AgentSummary => ({
     id,
     name: id,
@@ -179,7 +179,7 @@ describe("local skill library", () => {
       state: "installed",
     });
     await expect(
-      readFile(join(agents[0].workspacePath, ".openbot/skills-disabled/weekly-summary/old.md")),
+      readFile(join(agents[0].workspacePath, ".aikingbot/skills-disabled/weekly-summary/old.md")),
     ).rejects.toThrow();
   });
 
@@ -196,7 +196,7 @@ describe("local skill library", () => {
 
   it("does not overwrite a damaged installation record", async () => {
     const skill = await runCauseEffect(library.create("writer", "draft"));
-    const directory = join(agents[0].workspacePath, ".openbot");
+    const directory = join(agents[0].workspacePath, ".aikingbot");
     await mkdir(directory);
     const path = join(directory, "skills-lock.json");
     await writeFile(path, "damaged record");

@@ -5,7 +5,7 @@ import { Effect } from "effect";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ChannelRoutine, ChannelTask } from "@openbot/contracts/ipc";
+import type { ChannelRoutine, ChannelTask } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores } from "./agent-service-test-harness";
 import { ChannelRoutineScheduler } from "./channel-routine-scheduler";
@@ -37,7 +37,7 @@ beforeEach(async () => {
   busy = false;
   generate.mockReset();
   generate.mockImplementation(() => Effect.succeed(JSON.stringify({ agentId: "agent-a" })));
-  root = await mkdtemp(join(tmpdir(), "openbot-channel-routines-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-channel-routines-"));
   data = stores(root);
   await runCauseEffect(data.store.initialize());
   await runCauseEffect(data.mailbox.initialize());

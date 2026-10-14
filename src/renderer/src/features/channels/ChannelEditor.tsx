@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { Channel, ChannelDraft } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { Channel, ChannelDraft } from "@aikingbot/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -13,13 +13,13 @@ import {
   Search,
   Textarea,
   Tooltip,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { SettingsField, SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { ChannelMemberRow } from "@openbot/ui/features/channels/ChannelMemberRow";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { createScrollFades } from "@aikingbot/ui/components/createScrollFades";
+import { SettingsField, SettingsLinkGroup, SettingsLinkRow } from "@aikingbot/ui/components/SettingsPanel";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { ChannelMemberRow } from "@aikingbot/ui/features/channels/ChannelMemberRow";
+import { ContentExitMotion } from "@aikingbot/ui/menu-motion";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createStore, For, onSettled, Show } from "solid-js";
 import { useChannels } from "./channels-context";
 import { matchesAgentSearch, toggleChannelMember } from "./channels-draft";

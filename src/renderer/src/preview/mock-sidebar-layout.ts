@@ -1,4 +1,4 @@
-import type { SidebarLayoutAction, SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
+import type { SidebarLayoutAction, SidebarLayoutSnapshot } from "@aikingbot/contracts/ipc";
 
 export function applySidebarLayoutAction(
   layout: SidebarLayoutSnapshot,

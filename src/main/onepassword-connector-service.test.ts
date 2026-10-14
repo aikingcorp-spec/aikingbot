@@ -24,7 +24,7 @@ const cipher = {
 let directory: string;
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), "openbot-onepassword-"));
+  directory = await mkdtemp(join(tmpdir(), "aikingbot-onepassword-"));
 });
 
 afterEach(async () => {
@@ -37,7 +37,7 @@ type Websites = Array<{ url: string; autofillBehavior: string }>;
 function fakeClient(current: { websites?: () => Websites; get?: <T>(item: T) => Promise<T> } = {}): OnePasswordClient {
   const indexed: Websites = [{ url: "https://github.com", autofillBehavior: "AnywhereOnWebsite" }];
   return {
-    vaults: { list: async () => [{ id: "vault-1", title: "Shared with OpenBot" }] },
+    vaults: { list: async () => [{ id: "vault-1", title: "Shared with AIKINGBOT" }] },
     items: {
       list: async () => [{ id: "login-1", title: "GitHub", category: "Login", websites: indexed }],
       get: async () => {
@@ -60,7 +60,7 @@ function fakeCli(accounts: Array<{ account_uuid: string; email: string; url: str
     if (args[0] === "--version") return "2.30.0\n";
     if (command === "account list") return JSON.stringify(accounts);
     if (command === "vault list") return "[]";
-    if (command === "vault create") return JSON.stringify({ id: "vault-1", name: "Shared with OpenBot" });
+    if (command === "vault create") return JSON.stringify({ id: "vault-1", name: "Shared with AIKINGBOT" });
     if (command === "service-account create") return `${TOKEN}\n`;
     throw new Error(`Unexpected command: ${args.join(" ")}`);
   });
@@ -99,7 +99,7 @@ describe("OnePasswordConnectorService", () => {
 
     const status = await runCauseEffect(connector.connect({ accountId: null }));
 
-    expect(status).toMatchObject({ state: "connected", vaultNames: ["Shared with OpenBot"], loginCount: 1 });
+    expect(status).toMatchObject({ state: "connected", vaultNames: ["Shared with AIKINGBOT"], loginCount: 1 });
     expect(JSON.stringify(status)).not.toContain(TOKEN);
     const create = cli.mock.calls.find(([, args]) => args[0] === "service-account")?.[1];
     expect(create).toEqual(expect.arrayContaining(["--vault", "vault-1:read_items", "--account", "account-1"]));
@@ -269,11 +269,11 @@ describe("OnePasswordConnectorService", () => {
   it("walks the setup from no CLI, through Install, to an app integration that is off", async () => {
     let installed = false;
     const { connector } = service(fakeCli([]), {
-      findCli: () => Effect.sync(() => (installed ? ["/openbot/1password-cli/2.39.0/op"] : [])),
+      findCli: () => Effect.sync(() => (installed ? ["/aikingbot/1password-cli/2.39.0/op"] : [])),
       installCli: () =>
         Effect.sync(() => {
           installed = true;
-          return "/openbot/1password-cli/2.39.0/op";
+          return "/aikingbot/1password-cli/2.39.0/op";
         }),
     });
 

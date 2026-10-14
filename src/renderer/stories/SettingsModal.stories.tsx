@@ -1,6 +1,6 @@
-import type { AvatarImageInput, CentralAuthUser, MobileConnectedDevice, UpdateStatus } from "@openbot/contracts/ipc";
-import { Button, Heading, Text, Toaster, toast } from "@openbot/ui";
-import { DEFAULT_GENERAL_SETTINGS } from "@openbot/ui/features/settings/app-settings";
+import type { AvatarImageInput, CentralAuthUser, MobileConnectedDevice, UpdateStatus } from "@aikingbot/contracts/ipc";
+import { Button, Heading, Text, Toaster, toast } from "@aikingbot/ui";
+import { DEFAULT_GENERAL_SETTINGS } from "@aikingbot/ui/features/settings/app-settings";
 import { createSignal, onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -8,10 +8,10 @@ import { SettingsModal } from "../src/features/settings/SettingsModal";
 import type { SettingsTab } from "../src/features/settings/settings-tabs";
 import { createMockBilling } from "../src/preview/mock-billing";
 import type { MockVoiceOptions } from "../src/preview/mock-voice";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 import { previewStorySoundSettings } from "./sound-feedback-fixture";
 
-const storyAppInfo = { name: "OpenBot", version: "0.2.1", platform: "darwin", variant: "dev" } as const;
+const storyAppInfo = { name: "AIKINGBOT", version: "0.2.1", platform: "darwin", variant: "dev" } as const;
 const storyAccount: CentralAuthUser = {
   id: "user-1",
   email: "person@example.com",
@@ -41,14 +41,14 @@ function SettingsModalStory(props: {
   /** The downloaded dictation models and the saved voice setting. */
   voice?: MockVoiceOptions;
 }) {
-  const previousApi = window.openbot;
+  const previousApi = window.aikingbot;
   const billingApi = createMockBilling();
-  const mock = createMockOpenBot(props.voice);
-  window.openbot = mock.api;
+  const mock = createMockAIKINGBOT(props.voice);
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
     toast.dismiss();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   const hostedServersApi = {
     ...mock.api.hostedServers,
@@ -102,7 +102,7 @@ function SettingsModalStory(props: {
   async function createMobileConnect(): Promise<{ qrData: string; expiresAt: number }> {
     return {
       qrData:
-        "openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=storybook-mobile-ticket_1234567890abcdef",
+        "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=storybook-mobile-ticket_1234567890abcdef",
       expiresAt: Date.now() + 120_000,
     };
   }
@@ -174,7 +174,7 @@ const meta = {
     onUpdateAccountAvatar: fn(async () => undefined),
     onCreateMobileConnect: fn(async () => ({
       qrData:
-        "openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=storybook-mobile-ticket_1234567890abcdef",
+        "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=storybook-mobile-ticket_1234567890abcdef",
       expiresAt: Date.now() + 120_000,
     })),
   },

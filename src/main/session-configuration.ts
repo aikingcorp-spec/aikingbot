@@ -12,8 +12,8 @@
 
 import { readFile, stat } from "node:fs/promises";
 import { extname, isAbsolute, relative, resolve } from "node:path";
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@aikingbot/contracts/chat-visual";
+import { LOCAL_SERVER_ID } from "@aikingbot/contracts/ipc";
 import { app, session } from "electron";
 import type { AgentService } from "../backend/agent-service";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -30,7 +30,7 @@ export function configureContentSecurityPolicy(): void {
   const policy = buildContentSecurityPolicy(
     app.isPackaged,
     process.env.REMOTE_SIGNAL_URL,
-    readSelfHostedSignalOrigin(process.env.OPENBOT_AUTH_API_URL, process.env.OPENBOT_REMOTE_SIGNAL_URL),
+    readSelfHostedSignalOrigin(process.env.AIKINGBOT_AUTH_API_URL, process.env.AIKINGBOT_REMOTE_SIGNAL_URL),
   );
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -72,7 +72,7 @@ export interface AttachmentProtocolDependencies {
 }
 
 export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: AttachmentProtocolDependencies): void {
-  session.defaultSession.protocol.handle("openbot-attachment", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-attachment", async (request) => {
     try {
       const url = new URL(request.url);
       const id = url.pathname.split("/").filter(Boolean).at(-1);
@@ -92,7 +92,7 @@ export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: 
       return new Response("Not found", { status: 404 });
     }
   });
-  session.defaultSession.protocol.handle("openbot-remote-attachment", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-remote-attachment", async (request) => {
     try {
       const url = new URL(request.url);
       const serverId = decodeURIComponent(url.hostname);
@@ -115,7 +115,7 @@ export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: 
   });
   // A visual reply page: an HTML attachment with the frame script, in a sandbox. See
   // `chat-visual-protocol.ts`.
-  session.defaultSession.protocol.handle("openbot-visual", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-visual", async (request) => {
     try {
       const url = new URL(request.url);
       const id = url.hostname === "file" ? url.pathname.split("/").filter(Boolean).at(-1) : undefined;
@@ -128,7 +128,7 @@ export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: 
       return new Response("Not found", { status: 404 });
     }
   });
-  session.defaultSession.protocol.handle("openbot-remote-visual", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-remote-visual", async (request) => {
     try {
       const url = new URL(request.url);
       const serverId = decodeURIComponent(url.hostname);
@@ -141,7 +141,7 @@ export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: 
       return new Response("Not found", { status: 404 });
     }
   });
-  session.defaultSession.protocol.handle("openbot-avatar", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-avatar", async (request) => {
     try {
       const url = new URL(request.url);
       if (url.hostname !== "agent") return new Response("Not found", { status: 404 });
@@ -161,7 +161,7 @@ export function configureAttachmentProtocol({ mailbox, agents, remoteServers }: 
       return new Response("Not found", { status: 404 });
     }
   });
-  session.defaultSession.protocol.handle("openbot-remote-avatar", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-remote-avatar", async (request) => {
     try {
       const url = new URL(request.url);
       const serverId = decodeURIComponent(url.hostname);
@@ -189,7 +189,7 @@ export interface ServerLogoProtocolDependencies {
 }
 
 export function configureServerLogoProtocols({ teamStore, remoteServers }: ServerLogoProtocolDependencies): void {
-  session.defaultSession.protocol.handle("openbot-server-logo", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-server-logo", async (request) => {
     try {
       const url = new URL(request.url);
       const logo = teamStore.resolveLogo();
@@ -207,7 +207,7 @@ export function configureServerLogoProtocols({ teamStore, remoteServers }: Serve
       return new Response("Not found", { status: 404 });
     }
   });
-  session.defaultSession.protocol.handle("openbot-remote-server-logo", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-remote-server-logo", async (request) => {
     try {
       const url = new URL(request.url);
       const serverId = decodeURIComponent(url.hostname);
@@ -229,7 +229,7 @@ export function configureServerLogoProtocols({ teamStore, remoteServers }: Serve
 
 export function configureApplicationProtocol(): void {
   const rendererRoot = resolve(__dirname, "../renderer");
-  session.defaultSession.protocol.handle("openbot-app", async (request) => {
+  session.defaultSession.protocol.handle("aikingbot-app", async (request) => {
     try {
       const url = new URL(request.url);
       if (url.host !== "app") return new Response("Not found", { status: 404 });

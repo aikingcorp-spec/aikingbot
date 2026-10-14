@@ -1,5 +1,5 @@
-import { CHAT_VISUAL_FRAME_SANDBOX } from "@openbot/contracts/chat-visual";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
+import { CHAT_VISUAL_FRAME_SANDBOX } from "@aikingbot/contracts/chat-visual";
+import { ChatVisual } from "@aikingbot/ui/features/conversation/ChatVisual";
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 

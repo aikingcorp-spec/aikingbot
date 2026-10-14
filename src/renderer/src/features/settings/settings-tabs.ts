@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Bell,
   CircleArrowDown,
@@ -10,7 +10,7 @@ import {
   Settings,
   Smartphone,
   UserRound,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 
 export type SettingsTab =
   | "general"

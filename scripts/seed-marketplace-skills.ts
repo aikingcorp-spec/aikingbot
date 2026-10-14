@@ -4,7 +4,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { SkillCategory } from "@openbot/contracts/ipc";
+import type { SkillCategory } from "@aikingbot/contracts/ipc";
 import { zipSync } from "fflate";
 
 interface SeedSkill {
@@ -19,7 +19,7 @@ interface SeedSkill {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const authApiRoot = join(projectRoot, "apps", "auth-api");
 const wrangler = join(authApiRoot, "node_modules", ".bin", "wrangler");
-const localSkillsBucket = "openbot-skills-test";
+const localSkillsBucket = "aikingbot-skills-test";
 const encoder = new TextEncoder();
 const seededAt = Date.parse("2026-08-25T10:00:00.000Z");
 
@@ -27,49 +27,49 @@ const creators = {
   ada: {
     id: "seed-skills-ada",
     subject: "seed-skills-ada",
-    email: "ada.skills@openbot.local",
+    email: "ada.skills@aikingbot.local",
     name: "Ada",
   },
   linus: {
     id: "seed-skills-linus",
     subject: "seed-skills-linus",
-    email: "linus.skills@openbot.local",
+    email: "linus.skills@aikingbot.local",
     name: "Linus",
   },
   grace: {
     id: "seed-skills-grace",
     subject: "seed-skills-grace",
-    email: "grace.skills@openbot.local",
+    email: "grace.skills@aikingbot.local",
     name: "Grace",
   },
   margaret: {
     id: "seed-skills-margaret",
     subject: "seed-skills-margaret",
-    email: "margaret.skills@openbot.local",
+    email: "margaret.skills@aikingbot.local",
     name: "Margaret",
   },
   alan: {
     id: "seed-skills-alan",
     subject: "seed-skills-alan",
-    email: "alan.skills@openbot.local",
+    email: "alan.skills@aikingbot.local",
     name: "Alan",
   },
   katherine: {
     id: "seed-skills-katherine",
     subject: "seed-skills-katherine",
-    email: "katherine.skills@openbot.local",
+    email: "katherine.skills@aikingbot.local",
     name: "Katherine",
   },
   donald: {
     id: "seed-skills-donald",
     subject: "seed-skills-donald",
-    email: "donald.skills@openbot.local",
+    email: "donald.skills@aikingbot.local",
     name: "Donald",
   },
   barbara: {
     id: "seed-skills-barbara",
     subject: "seed-skills-barbara",
-    email: "barbara.skills@openbot.local",
+    email: "barbara.skills@aikingbot.local",
     name: "Barbara",
   },
 } as const;
@@ -355,7 +355,7 @@ skills.push(
 );
 
 async function main(): Promise<void> {
-  const staging = await mkdtemp(join(tmpdir(), "openbot-skill-seed-"));
+  const staging = await mkdtemp(join(tmpdir(), "aikingbot-skill-seed-"));
   try {
     const records = [];
     for (const [index, skill] of skills.entries()) {
@@ -390,7 +390,7 @@ async function main(): Promise<void> {
 
     const sqlPath = join(staging, "seed.sql");
     await writeFile(sqlPath, seedSql(records));
-    await runWrangler(["d1", "execute", "openbot-auth", "--local", "--file", sqlPath, "--yes"]);
+    await runWrangler(["d1", "execute", "aikingbot-auth", "--local", "--file", sqlPath, "--yes"]);
     process.stdout.write(
       `Seeded ${records.length} approved marketplace skills across ${Object.keys(creators).length} creators.\n`,
     );

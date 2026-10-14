@@ -1,4 +1,4 @@
-import { formatLocale, resolveLocale, type TranslatedLocale } from "@openbot/i18n/mobile";
+import { formatLocale, resolveLocale, type TranslatedLocale } from "@aikingbot/i18n/mobile";
 import { useEffect, useMemo, useState } from "react";
 import { AppState } from "react-native";
 import { useAppLanguage } from "@/features/settings/model/app-language";
@@ -24,7 +24,7 @@ export function currentLocale(): TranslatedLocale {
 
 export function useText(): MobileText {
   const language = useAppLanguage((state) => state.value);
-  // The phone's language can change in iOS Settings while OpenBot is in the background, so it is
+  // The phone's language can change in iOS Settings while AIKINGBOT is in the background, so it is
   // read again each time the app becomes active.
   const [systemLocale, setSystemLocale] = useState(phoneLocale);
   useEffect(() => {

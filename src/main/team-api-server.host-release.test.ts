@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
-import type { HostReleaseStatus } from "@openbot/contracts/ipc";
-import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@openbot/contracts/team-protocol/host-release-v1";
+import type { HostReleaseStatus } from "@aikingbot/contracts/ipc";
+import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@aikingbot/contracts/team-protocol/host-release-v1";
 import { Deferred, Effect } from "effect";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { HostReleaseService } from "./host-release-service";
@@ -9,11 +9,11 @@ import { createTeamApiFixture, stopTeamApiFixtures } from "./team-api-server-tes
 afterEach(stopTeamApiFixtures);
 const report: { scenario: string; status: HostReleaseStatus }[] = [];
 afterAll(async () => {
-  await mkdir(".openbot-build", { recursive: true });
-  await writeFile(".openbot-build/host-release-report.json", JSON.stringify(report, null, 2));
+  await mkdir(".aikingbot-build", { recursive: true });
+  await writeFile(".aikingbot-build/host-release-report.json", JSON.stringify(report, null, 2));
 });
 
-function manifest(version: string, asset = `OpenBot-${version}-x86_64.AppImage`) {
+function manifest(version: string, asset = `AIKINGBOT-${version}-x86_64.AppImage`) {
   return new Response(`version: ${version}\nfiles:\n  - url: ${asset}\n`);
 }
 
@@ -34,7 +34,7 @@ async function setup(
     packaged: options.packaged ?? true,
     platform: options.platform ?? "linux",
     arch: options.arch ?? "x64",
-    environment: options.environment ?? { OPENBOT_HOSTED_SERVER: "1" },
+    environment: options.environment ?? { AIKINGBOT_HOSTED_SERVER: "1" },
     installationMode: options.mode ?? null,
     updateStatus: () => ({ phase: "unsupported", managedByHost: options.managed ?? false }),
     fetch: options.fetch ?? vi.fn(async () => manifest("0.26.0")),
@@ -43,8 +43,8 @@ async function setup(
   const { base } = await fixture.start({ admin: { release } });
   const headers = {
     Authorization: `Bearer ${await fixture.signIn()}`,
-    "OpenBot-Protocol-Version": "3",
-    "OpenBot-Capabilities": HOST_RELEASE_CAPABILITY,
+    "AIKINGBOT-Protocol-Version": "3",
+    "AIKINGBOT-Capabilities": HOST_RELEASE_CAPABILITY,
     "Content-Type": "application/json",
   };
   const post = (path: string, override = headers) =>
@@ -68,7 +68,7 @@ describe("host-release-v1", () => {
     const invite = await Effect.runPromise(fixture.store.createInvite("member"));
     const member = await Effect.runPromise(fixture.store.acceptInvite(invite.token, "member", "member password"));
     for (const route of Object.values(HOST_RELEASE_ROUTES)) {
-      expect((await post(route, { ...headers, "OpenBot-Capabilities": "" })).status).toBe(400);
+      expect((await post(route, { ...headers, "AIKINGBOT-Capabilities": "" })).status).toBe(400);
       expect((await post(route, { ...headers, Authorization: "" })).status).toBe(401);
     }
     expect(requestFeed).not.toHaveBeenCalled();
@@ -102,7 +102,7 @@ describe("host-release-v1", () => {
     { name: "network failure", response: () => Promise.reject(new Error("private-network-detail")) },
     { name: "feed unavailable", response: async () => new Response("private-service-detail", { status: 503 }) },
     { name: "malformed feed", response: async () => new Response("version: false") },
-    { name: "wrong architecture", response: async () => manifest("0.26.0", "OpenBot-0.26.0-arm64.AppImage") },
+    { name: "wrong architecture", response: async () => manifest("0.26.0", "AIKINGBOT-0.26.0-arm64.AppImage") },
     { name: "prerelease", response: async () => manifest("0.26.0-beta.1") },
     { name: "oversized feed", response: async () => new Response("x".repeat(65_537)) },
   ])("returns safe retryable status after $name", async ({ name, response }) => {
@@ -119,7 +119,7 @@ describe("host-release-v1", () => {
 
   it.each([
     { name: "host manager", managed: true, method: "host-manager" },
-    { name: "system service", mode: "self", environment: { OPENBOT_SERVER: "1" }, method: "system" },
+    { name: "system service", mode: "self", environment: { AIKINGBOT_SERVER: "1" }, method: "system" },
     { name: "container", mode: "container", method: "container" },
     { name: "manual installation", environment: {}, method: "manual" },
   ])("identifies the update path for $name", async ({ name, method, ...options }) => {

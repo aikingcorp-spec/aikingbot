@@ -1,7 +1,7 @@
-// The Signal protocol's server half: the shapes come from `@openbot/contracts/signal-protocol`, and
+// The Signal protocol's server half: the shapes come from `@aikingbot/contracts/signal-protocol`, and
 // what stays here is the validation of untrusted *client* input - byte limits, identifier patterns
 // and a closed discriminated union that a client-side decoder has no reason to carry. The other
-// direction is `@openbot/contracts/signal-protocol/decode`, which is what a peer runs over this
+// direction is `@aikingbot/contracts/signal-protocol/decode`, which is what a peer runs over this
 // service's output. One validator per trust direction, on purpose.
 //
 // The re-exports below are what the rest of this workspace imports, so moving the types out did not
@@ -11,13 +11,13 @@ import {
   type SignalClientMessage,
   type SignalServerMessage,
   SLACK_DELIVERY_RESPONSE_BYTES_LIMIT,
-} from "@openbot/contracts/signal-protocol/messages";
+} from "@aikingbot/contracts/signal-protocol/messages";
 import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_TEXT_LIMIT,
   type TelegramCallMethod,
   type TelegramCallParams,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { z } from "zod";
 
 export type {
@@ -28,17 +28,17 @@ export type {
   SlackDeliveryKind,
   SlackDeliveryStatus,
   WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
+} from "@aikingbot/contracts/signal-protocol/messages";
 export {
   SIGNAL_MESSAGE_BYTES_LIMIT,
   SIGNAL_TURN_CREDENTIAL_TTL_SECONDS,
   SLACK_DELIVERY_BODY_BYTES_LIMIT,
-} from "@openbot/contracts/signal-protocol/messages";
-export type { RemoteTicketClaims } from "@openbot/contracts/signal-protocol/ticket";
+} from "@aikingbot/contracts/signal-protocol/messages";
+export type { RemoteTicketClaims } from "@aikingbot/contracts/signal-protocol/ticket";
 export {
   REMOTE_TICKET_AUDIENCE,
   REMOTE_TICKET_PROTOCOL_VERSION,
-} from "@openbot/contracts/signal-protocol/ticket";
+} from "@aikingbot/contracts/signal-protocol/ticket";
 
 const identifierSchema = z
   .string()

@@ -1,7 +1,7 @@
 import { RequestError } from "@agentclientprotocol/sdk";
-import { agentProviderName, COMPUTER_USE_MCP_SERVER_NAME } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { agentProviderName, COMPUTER_USE_MCP_SERVER_NAME } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { type AgentProvider, RequestTimeoutError } from "../agent-client";
 import { AppServerError } from "../app-server-client";
 import {
@@ -26,7 +26,7 @@ export function isArchivedThreadError(error: unknown): boolean {
  * The provider refused the session's own history. Grok keeps the `encrypted_content` of each
  * reasoning item in its session and sends it back on every request, and xAI accepts it only from
  * the caller it was issued to. After a sign-in to another account or a new API key, each turn of
- * that session fails the same way, so only a new session, given the OpenBot transcript, recovers.
+ * that session fails the same way, so only a new session, given the AIKINGBOT transcript, recovers.
  */
 export function isForeignReasoningError(message: string): boolean {
   return /\bencrypted_content\b.*\bnot issued to this caller\b/i.test(message);
@@ -97,7 +97,7 @@ type ToolUsageKind =
 
 /**
  * One finished tool step. `server` and `tool` are the provider's raw names, not yet safe to send:
- * the main process keeps them only for OpenBot's own servers and catalog plugins.
+ * the main process keeps them only for AIKINGBOT's own servers and catalog plugins.
  */
 export interface ToolUsage {
   kind: ToolUsageKind;
@@ -184,7 +184,7 @@ export function toolUsage(item: ThreadItem): ToolUsage | null {
   if (claudeKind) return { kind: claudeKind, failed };
   const mcp = /^mcp__(.+?)__(.+)$/u.exec(name);
   if (!mcp?.[1] || !mcp[2]) return { kind: "other", failed };
-  // A server name can contain `__`, so `mcp__openbot__acme__list` does not show where the server
+  // A server name can contain `__`, so `mcp__aikingbot__acme__list` does not show where the server
   // name stops. Such a step keeps no names: a user's server must never pass as a built-in one.
   if (mcp[2].includes("__")) return { kind: "mcp", failed };
   return { kind: "mcp", server: mcp[1], tool: mcp[2], failed };

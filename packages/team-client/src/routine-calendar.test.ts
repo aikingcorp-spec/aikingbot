@@ -2,7 +2,7 @@ import { Effect } from "effect";
 
 // @vitest-environment node
 
-import type { RoutineCalendarOwner, RoutineFields, RoutineRunFields, RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineCalendarOwner, RoutineFields, RoutineRunFields, RoutineSchedule } from "@aikingbot/contracts/ipc";
 import { describe, expect, it, vi } from "vitest";
 import { buildRoutineCalendar, type RoutineCalendarSource } from "./routine-calendar";
 

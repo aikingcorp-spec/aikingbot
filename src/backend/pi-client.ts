@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { access, writeFile } from "node:fs/promises";
 import { isAbsolute } from "node:path";
-import { type DynamicRecord, isBoolean, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { type DynamicRecord, isBoolean, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Effect, Exit, Schema, Scope, Semaphore } from "effect";
 import { secretElicitationField } from "./agent/prompts";
 import type { AgentClient, DiagnosticOrigin } from "./agent-client";
@@ -109,7 +109,7 @@ interface ClientEvents {
   diagnostic: [string, DiagnosticOrigin?];
 }
 
-/** Owns Pi's native sessions. The database owns OpenBot history and agent identity. */
+/** Owns Pi's native sessions. The database owns AIKINGBOT history and agent identity. */
 export class PiAgentClient extends EventEmitter<ClientEvents> implements AgentClient {
   readonly contextCompaction = "request";
   readonly provider = "pi";
@@ -532,7 +532,7 @@ export class PiAgentClient extends EventEmitter<ClientEvents> implements AgentCl
 
   #notify(method: string, thread: PiThread, params: DynamicRecord): void {
     // Usage contains only validated numeric counters. Generic secret-name matching masks `*Tokens`.
-    const safe = method === "openbot/usage" ? params : JSON.parse(this.#redact(JSON.stringify(params)));
+    const safe = method === "aikingbot/usage" ? params : JSON.parse(this.#redact(JSON.stringify(params)));
     this.emit("notification", {
       method,
       params: {
@@ -629,7 +629,7 @@ export class PiAgentClient extends EventEmitter<ClientEvents> implements AgentCl
     yield* thread.rpc.request({ type: "get_session_stats" }, 2_000).pipe(
       Effect.flatMap((stats) => providerSync(() => Schema.decodeUnknownSync(PiSessionUsage)(stats))),
       Effect.map(({ tokens }) =>
-        this.#notify("openbot/usage", thread, {
+        this.#notify("aikingbot/usage", thread, {
           usage: {
             inputTokens: tokens.input + tokens.cacheRead + tokens.cacheWrite,
             outputTokens: tokens.output,

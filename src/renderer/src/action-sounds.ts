@@ -1,8 +1,8 @@
-import { SOUND_THEMES, type SoundChoice, type SoundTheme } from "@openbot/ui/features/settings/app-settings";
+import { SOUND_THEMES, type SoundChoice, type SoundTheme } from "@aikingbot/ui/features/settings/app-settings";
 import { bind, type PlayOptions, play, type SoundName, setEnabled, setTheme } from "cuelume";
 
-const ACTION_SOUNDS_STORAGE_KEY = "openbot:action-sounds-enabled";
-const ACTION_SOUNDS_THEME_STORAGE_KEY = "openbot:action-sounds-theme";
+const ACTION_SOUNDS_STORAGE_KEY = "aikingbot:action-sounds-enabled";
+const ACTION_SOUNDS_THEME_STORAGE_KEY = "aikingbot:action-sounds-theme";
 
 type PreferenceStorage = Pick<Storage, "getItem">;
 

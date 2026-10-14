@@ -16,7 +16,7 @@ export const messages = {
   "customProvider.error.providerIdPattern":
     "Verwende Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche. Beginne mit einem Buchstaben oder einer Zahl.",
   "customProvider.error.providerIdLength": "Die Anbieter-ID muss kürzer als {max} Zeichen sein.",
-  "customProvider.error.providerIdBuiltIn": "OpenBot hat bereits einen Anbieter namens {id}. Wähle eine andere ID.",
+  "customProvider.error.providerIdBuiltIn": "AIKINGBOT hat bereits einen Anbieter namens {id}. Wähle eine andere ID.",
   "customProvider.error.providerIdSaved":
     "Ein Endpunkt namens {id} ist bereits gespeichert. Entferne ihn zuerst oder wähle eine andere ID.",
   "customProvider.error.displayNameRequired": "Gib einen Anzeigenamen ein.",
@@ -38,16 +38,16 @@ export const messages = {
   "customProvider.error.baseUrlInvalid": "Gib eine vollständige URL ein, zum Beispiel {example}.",
   "customProvider.error.baseUrlProtocol": "Verwende eine http://- oder https://-URL.",
   "customProvider.error.baseUrlCredential": "Trage die Zugangsdaten in einen Header ein, nicht in die URL.",
-  "customProvider.saved.restarted": "Gespeichert. OpenBot lädt die Modelle.",
+  "customProvider.saved.restarted": "Gespeichert. AIKINGBOT lädt die Modelle.",
   "customProvider.saved.skippedBusy":
     "Gespeichert. OpenCode liest die Liste, sobald die aktuelle Aufgabe beendet ist. Drücke dann „Verbinden“.",
   "customProvider.saved.notRunning": "Gespeichert. OpenCode liest die Liste beim nächsten Start.",
-  "customProvider.removed.restarted": "Entfernt. OpenBot lädt die Modelle.",
+  "customProvider.removed.restarted": "Entfernt. AIKINGBOT lädt die Modelle.",
   "customProvider.removed.skippedBusy":
     "Entfernt. OpenCode liest die Liste, sobald die aktuelle Aufgabe beendet ist. Drücke dann „Verbinden“.",
   "customProvider.removed.notRunning": "Entfernt. OpenCode liest die Liste beim nächsten Start.",
-  "customProvider.saveFailed": "OpenBot konnte diesen Endpunkt nicht speichern.",
-  "customProvider.removeFailed": "OpenBot konnte {name} nicht entfernen.",
+  "customProvider.saveFailed": "AIKINGBOT konnte diesen Endpunkt nicht speichern.",
+  "customProvider.removeFailed": "AIKINGBOT konnte {name} nicht entfernen.",
   "customProvider.saveUnavailable": "Diese Version kann keinen Endpunkt speichern.",
   "customProvider.removeUnavailable": "Diese Version kann keinen Endpunkt entfernen.",
   "customProvider.form.title": "Eigenen Anbieter hinzufügen",
@@ -109,7 +109,7 @@ export const messages = {
   "customProvider.detected.title": "Auf diesem Computer gefunden",
   "customProvider.detected.scanning": "Lokale Modelle und Agenten werden gesucht.",
   "customProvider.detected.scanAgain": "Erneut suchen",
-  "customProvider.detected.empty": "OpenBot hat keinen lokalen Modellserver oder ACP-Agenten gefunden.",
+  "customProvider.detected.empty": "AIKINGBOT hat keinen lokalen Modellserver oder ACP-Agenten gefunden.",
   "customProvider.detected.add": "Hinzufügen",
   "customProvider.detected.addLabel": "{name} hinzufügen",
   "customProvider.detected.added": "Hinzugefügt",
@@ -125,10 +125,10 @@ export const messages = {
   "customProvider.detected.showHidden": "Ausgeblendete anzeigen ({count})",
   "customProvider.detection.title": "Lokale Erkennung",
   "customProvider.detection.saveFailed": "Die Erkennungseinstellungen konnten nicht gespeichert werden.",
-  "customProvider.detection.description": "Wo OpenBot nach lokalen Modellservern und ACP-Agenten sucht.",
+  "customProvider.detection.description": "Wo AIKINGBOT nach lokalen Modellservern und ACP-Agenten sucht.",
   "customProvider.detection.enabled": "Nach lokalen Modellen und Agenten suchen",
   "customProvider.detection.enabledDescription":
-    "OpenBot prüft die Standardadressen von Ollama und LM Studio und sucht in deinem PATH nach bekannten ACP-Agenten.",
+    "AIKINGBOT prüft die Standardadressen von Ollama und LM Studio und sucht in deinem PATH nach bekannten ACP-Agenten.",
   "customProvider.detection.addresses": "Weitere Modellserver-Adressen",
   "customProvider.detection.address.label": "Adresse {number}",
   "customProvider.detection.address.remove": "Adresse {number} entfernen",
@@ -147,7 +147,7 @@ export const messages = {
   "customProvider.acp.agentId": "Agenten-ID",
   "customProvider.acp.agentIdHint": "Kleinbuchstaben, Zahlen oder Bindestriche. Du kannst die ID später nicht ändern.",
   "customProvider.acp.command": "Befehl",
-  "customProvider.acp.commandHint": "Das zu startende Programm. OpenBot sucht es in deinem PATH.",
+  "customProvider.acp.commandHint": "Das zu startende Programm. AIKINGBOT sucht es in deinem PATH.",
   "customProvider.acp.args": "Argumente",
   "customProvider.acp.argsHint":
     "Trenne Argumente mit Leerzeichen. Setze Argumente mit Leerzeichen in Anführungszeichen.",
@@ -158,7 +158,7 @@ export const messages = {
   "customProvider.acp.env.add": "Variable hinzufügen",
   "customProvider.acp.check": "Verbindung",
   "customProvider.acp.checkRun": "Agent prüfen",
-  "customProvider.acp.checkIdle": "OpenBot startet den Befehl einmal, um zu prüfen, ob er antwortet.",
+  "customProvider.acp.checkIdle": "AIKINGBOT startet den Befehl einmal, um zu prüfen, ob er antwortet.",
   "customProvider.acp.checking": "{command} wird gestartet.",
   "customProvider.acp.checkOk": "{name} hat geantwortet",
   "customProvider.acp.checkOkVersion": "{name} {version} hat geantwortet",
@@ -166,7 +166,7 @@ export const messages = {
   "customProvider.acp.checkFailed": "Der Agent hat nicht geantwortet",
   "customProvider.acp.trustTitle": "Dieser Befehl wird auf deinem Computer ausgeführt",
   "customProvider.acp.trustDescription":
-    "OpenBot startet ihn mit deinem Benutzerkonto. Der Agent kann Dateien lesen und ändern sowie Befehle ausführen. Füge nur Agenten hinzu, denen du vertraust.",
+    "AIKINGBOT startet ihn mit deinem Benutzerkonto. Der Agent kann Dateien lesen und ändern sowie Befehle ausführen. Füge nur Agenten hinzu, denen du vertraust.",
   "customProvider.acp.submit": "Agent hinzufügen",
   "customProvider.acp.editTitle": "Eigenen ACP-Agenten bearbeiten",
   "customProvider.acp.submitEdit": "Agent speichern",
@@ -182,7 +182,7 @@ export const messages = {
   "customProvider.acp.error.agentIdPattern":
     "Verwende Kleinbuchstaben, Zahlen oder Bindestriche. Beginne mit einem Buchstaben oder einer Zahl. Verwende höchstens 40 Zeichen.",
   "customProvider.agents.title": "Eigene Agenten",
-  "customProvider.agents.description": "ACP-Agenten, die OpenBot auf diesem Computer startet.",
+  "customProvider.agents.description": "ACP-Agenten, die AIKINGBOT auf diesem Computer startet.",
   "customProvider.agents.empty": "Noch keine eigenen Agenten.",
   "customProvider.agents.add": "Agent hinzufügen",
   "customProvider.agents.restart": "Agenten neu starten",
@@ -198,12 +198,12 @@ export const messages = {
   "customProvider.agents.deleteLabel": "{name} löschen",
   "customProvider.agents.confirmDescription":
     "Seine gespeicherten Variablen werden verworfen. Jeder Agent, der ihn verwendet, wechselt zu einem Standardmodell.",
-  "customProvider.agents.saveFailed": "OpenBot konnte diesen Agenten nicht speichern.",
-  "customProvider.agents.saved.restarted": "Gespeichert. OpenBot hat die eigenen Agenten neu gestartet.",
+  "customProvider.agents.saveFailed": "AIKINGBOT konnte diesen Agenten nicht speichern.",
+  "customProvider.agents.saved.restarted": "Gespeichert. AIKINGBOT hat die eigenen Agenten neu gestartet.",
   "customProvider.agents.saved.skippedBusy":
     "Gespeichert. Die eigenen Agenten starten neu, sobald die aktuelle Aufgabe beendet ist.",
   "customProvider.agents.saved.notRunning": "Gespeichert. Die eigenen Agenten lesen die Änderung beim nächsten Start.",
-  "customProvider.agents.removed.restarted": "Entfernt. OpenBot hat die eigenen Agenten neu gestartet.",
+  "customProvider.agents.removed.restarted": "Entfernt. AIKINGBOT hat die eigenen Agenten neu gestartet.",
   "customProvider.agents.removed.skippedBusy":
     "Entfernt. Die eigenen Agenten starten neu, sobald die aktuelle Aufgabe beendet ist.",
   "customProvider.agents.removed.notRunning": "Entfernt. Die eigenen Agenten lesen die Änderung beim nächsten Start.",

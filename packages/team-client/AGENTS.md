@@ -1,6 +1,6 @@
 # `packages/team-client`
 
-`@openbot/team-client` holds the Team connection code that desktop, mobile, and the public web
+`@aikingbot/team-client` holds the Team connection code that desktop, mobile, and the public web
 client share: the remote directory, the authenticated WebRTC peer, recovery, file transfer, and
 WebRTC framing. It also holds the Dynamic Island state (`dynamic-island-coordinator.ts`), which the
 macOS island and the iOS Live Activity both read, so the two show the same event for the same state.
@@ -15,7 +15,7 @@ charts draw the same areas.
   [contract rules](../contracts/AGENTS.md).
 - Keep the code independent of Electron, Node, and the DOM beyond WebRTC and `fetch`. Mobile runs it
   in React Native. Pass platform objects in as arguments, as `TeamClientFetch` does.
-- Do not re-export `@openbot/contracts/team-protocol` from `index.ts`. The comment there says why.
+- Do not re-export `@aikingbot/contracts/team-protocol` from `index.ts`. The comment there says why.
   Each module has its own subpath in `package.json`.
 - Do not log tokens, tickets, or message bodies.
 

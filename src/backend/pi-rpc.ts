@@ -2,7 +2,7 @@ import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { StringDecoder } from "node:string_decoder";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { RequestTimeoutError } from "./agent-client";
 import type { SpawnTarget } from "./process-confinement";

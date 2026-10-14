@@ -8,8 +8,8 @@ import {
   hostedSiteConversationEventText,
   type McpServerConfig,
   routineRunConversationEventItemType,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { OpenPanelBase } from "@openpanel/web";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -68,8 +68,8 @@ function hostedSiteMessage(
   const terminalSite = {
     siteId: "site-1",
     title: "Hosted site",
-    hostname: "hosted-site-23456789ab.openbot.site",
-    url: "https://hosted-site-23456789ab.openbot.site",
+    hostname: "hosted-site-23456789ab.aikingbot-sites.aikingx.com",
+    url: "https://hosted-site-23456789ab.aikingbot-sites.aikingx.com",
   };
   const details =
     action === "publish" && status !== "succeeded"
@@ -380,7 +380,9 @@ describe("host analytics", () => {
       failure_code: "interrupted",
       profileId: "owner-1",
     });
-    expect(JSON.stringify(vi.mocked(client.track).mock.calls)).not.toContain("hosted-site-23456789ab.openbot.site");
+    expect(JSON.stringify(vi.mocked(client.track).mock.calls)).not.toContain(
+      "hosted-site-23456789ab.aikingbot-sites.aikingx.com",
+    );
   });
 
   it("ignores hosted-site history even when it contains running and terminal markers", () => {
@@ -996,7 +998,7 @@ describe("usage analytics", () => {
     analytics.handleAgentEvent({ type: "turn-started", ...turn, threadId: "thread", origin: "user" });
     analytics.handleToolUsage({ ...turn, kind: "mcp", server: "linear", tool: "create_issue", failed: false });
     analytics.handleToolUsage({ ...turn, kind: "mcp", server: "linear", tool: "create_issue", failed: true });
-    analytics.handleToolUsage({ ...turn, kind: "mcp", server: "openbot_browser", tool: "navigate", failed: false });
+    analytics.handleToolUsage({ ...turn, kind: "mcp", server: "aikingbot_browser", tool: "navigate", failed: false });
     // A server the user named `github` that the catalog does not recognize is the user's own.
     analytics.handleToolUsage({ ...turn, kind: "mcp", server: "github", tool: "private_lookup", failed: false });
     // A server the user named `computer use` reports under the built-in name, and stays custom.
@@ -1115,7 +1117,7 @@ describe("usage analytics", () => {
 describe("resource analytics", () => {
   const PRIVATE_PID = 987_654;
 
-  // A provider CLI that OpenBot started, an MCP server under it, and a tool of the user's own.
+  // A provider CLI that AIKINGBOT started, an MCP server under it, and a tool of the user's own.
   function closedDay() {
     const processes = parsePsOutput(
       [

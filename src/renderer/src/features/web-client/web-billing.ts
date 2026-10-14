@@ -1,7 +1,7 @@
-import { parseBillingSessionUrl, parseBillingState } from "@openbot/contracts/billing";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import type { BillingCalls } from "@openbot/ui/features/billing/billing-store";
-import { currentText } from "@openbot/ui/text";
+import { parseBillingSessionUrl, parseBillingState } from "@aikingbot/contracts/billing";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import type { BillingCalls } from "@aikingbot/ui/features/billing/billing-store";
+import { currentText } from "@aikingbot/ui/text";
 
 const REQUEST_TIMEOUT_MS = 15_000;
 
@@ -21,7 +21,7 @@ export function createWebBillingCalls(
       credentials: "same-origin",
       cache: "no-store",
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      headers: post ? { "Content-Type": "application/json", "X-OpenBot-Browser": "1" } : {},
+      headers: post ? { "Content-Type": "application/json", "X-AIKINGBOT-Browser": "1" } : {},
       ...(post ? { body } : {}),
     }).catch(() => {
       throw new Error(errorMessage(null));

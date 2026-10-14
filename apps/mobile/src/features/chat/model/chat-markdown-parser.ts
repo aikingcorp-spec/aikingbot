@@ -1,5 +1,5 @@
-import { blockChatMath, chatMathBlockStart, chatMathStart, inlineChatMath } from "@openbot/contracts/chat-math";
-import { chatTagReferences } from "@openbot/contracts/chat-tag-references";
+import { blockChatMath, chatMathBlockStart, chatMathStart, inlineChatMath } from "@aikingbot/contracts/chat-math";
+import { chatTagReferences } from "@aikingbot/contracts/chat-tag-references";
 import { Marked } from "marked";
 
 export const markdown = new Marked({

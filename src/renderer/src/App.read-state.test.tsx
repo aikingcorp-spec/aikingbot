@@ -5,7 +5,7 @@ import {
   type DirectConversationPage,
   type DirectConversationSnapshot,
   type DirectThreadSummary,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { flush } from "solid-js";
 import { expect, it, vi } from "vitest";
@@ -19,7 +19,7 @@ import {
   emitDynamicIslandAction,
   emitPresence,
   emitServers,
-  installOpenbotStub,
+  installAIKINGBOTStub,
   presenceMember,
   testConversationPage,
   testServer,
@@ -51,9 +51,9 @@ function UsageProbe() {
   );
 }
 
-describe("OpenBot connected desktop shell", () => {
+describe("AIKINGBOT connected desktop shell", () => {
   beforeEach(() => {
-    installOpenbotStub();
+    installAIKINGBOTStub();
   });
 
   it.each(["older response", "older failure", "latest failure"])(
@@ -100,13 +100,13 @@ describe("OpenBot connected desktop shell", () => {
           },
         },
       ];
-      vi.mocked(window.openbot.servers.listDirectThreads).mockResolvedValueOnce(threads);
+      vi.mocked(window.aikingbot.servers.listDirectThreads).mockResolvedValueOnce(threads);
       await refresh();
       flush();
       expect(screen.getByLabelText("Direct unread")).toHaveTextContent("2");
       let resolvePending: ((value: DirectThreadSummary[]) => void) | undefined;
       let rejectPending: ((error: Error) => void) | undefined;
-      vi.mocked(window.openbot.servers.listDirectThreads).mockReturnValueOnce(
+      vi.mocked(window.aikingbot.servers.listDirectThreads).mockReturnValueOnce(
         new Promise((resolve, reject) => {
           resolvePending = resolve;
           rejectPending = reject;
@@ -114,7 +114,7 @@ describe("OpenBot connected desktop shell", () => {
       );
       const pending = refresh();
       if (outcome !== "latest failure") {
-        vi.mocked(window.openbot.servers.listDirectThreads).mockResolvedValueOnce(threads);
+        vi.mocked(window.aikingbot.servers.listDirectThreads).mockResolvedValueOnce(threads);
         await refresh();
       }
       if (outcome === "older response") resolvePending?.([]);
@@ -129,8 +129,8 @@ describe("OpenBot connected desktop shell", () => {
     "refreshes the open direct conversation on reconnect (%s)",
     async (outcome) => {
       const remote = { ...testServer("remote-1", true), connectionSequence: 1 };
-      vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([remote]);
-      vi.mocked(window.openbot.servers.getPresence).mockResolvedValue({
+      vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([remote]);
+      vi.mocked(window.aikingbot.servers.getPresence).mockResolvedValue({
         serverId: remote.id,
         updatedAt: "2026-09-08T00:00:00Z",
         members: [
@@ -156,7 +156,7 @@ describe("OpenBot connected desktop shell", () => {
         readState: { unreadCount: 0, firstUnreadMessageId: null, throughSequence: revision },
         pageInfo: { hasOlder: false, olderCursor: null },
       });
-      vi.mocked(window.openbot.servers.readDirectConversationPage).mockResolvedValueOnce(
+      vi.mocked(window.aikingbot.servers.readDirectConversationPage).mockResolvedValueOnce(
         page("Cached direct message", 1),
       );
       let loadedMessage: () => string | undefined = () => undefined;
@@ -187,12 +187,12 @@ describe("OpenBot connected desktop shell", () => {
         resolvePage = resolve;
         rejectPage = reject;
       });
-      vi.mocked(window.openbot.servers.readDirectConversationPage).mockReturnValueOnce(pendingPage);
+      vi.mocked(window.aikingbot.servers.readDirectConversationPage).mockReturnValueOnce(pendingPage);
       emitServers?.([{ ...remote, connectionSequence: 2 }]);
-      await waitFor(() => expect(window.openbot.servers.readDirectConversationPage).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(window.aikingbot.servers.readDirectConversationPage).toHaveBeenCalledTimes(2));
       expect(screen.getByText("Cached direct message")).toBeInTheDocument();
       if (outcome === "late response") {
-        vi.mocked(window.openbot.servers.readDirectConversationPage).mockResolvedValueOnce(
+        vi.mocked(window.aikingbot.servers.readDirectConversationPage).mockResolvedValueOnce(
           page("Missed direct message", 3),
         );
         emitServers?.([{ ...remote, connectionSequence: 3 }]);
@@ -217,7 +217,7 @@ describe("OpenBot connected desktop shell", () => {
         await screen.findByText("Received during refresh");
       }
       if (outcome === "sent message") {
-        vi.mocked(window.openbot.servers.sendDirectMessage).mockResolvedValueOnce({
+        vi.mocked(window.aikingbot.servers.sendDirectMessage).mockResolvedValueOnce({
           id: "sent-3",
           threadId: "direct-1",
           senderMemberId: "self",
@@ -249,13 +249,13 @@ describe("OpenBot connected desktop shell", () => {
   );
 
   it("clears desktop unread state when the same member reads on another device", async () => {
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValue(
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValue(
       testConversationPage("chief", [], {
         readState: { unreadCount: 1, firstUnreadMessageId: "reply", throughMessageId: null },
       }),
     );
     let unreadCount = 1;
-    vi.mocked(window.openbot.agent.listConversationReads).mockImplementation(async () => ({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockImplementation(async () => ({
       chief: {
         unreadCount,
         firstUnreadMessageId: unreadCount ? "reply" : null,
@@ -280,7 +280,7 @@ describe("OpenBot connected desktop shell", () => {
     unreadCount = 0;
     emitAgentEvent?.({ type: "conversation-invalidated", agentId: "chief", revision: 1 });
     await waitFor(() => expect(screen.getByLabelText("Unread replies")).toHaveTextContent("0"));
-    expect(window.openbot.agent.markConversationRead).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.markConversationRead).not.toHaveBeenCalled();
   });
 
   it.each(["commentary", "answer"])("loads past commentary-only pages after a latest %s", async (latestKind) => {
@@ -292,7 +292,7 @@ describe("OpenBot connected desktop shell", () => {
       createdAt: "2026-08-30T02:02:00.000Z",
       status: "completed" as const,
     });
-    vi.mocked(window.openbot.agent.readConversationPage).mockImplementation(async (input) => {
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockImplementation(async (input) => {
       if (input.anchor?.type !== "before") {
         return testConversationPage(
           "chief",
@@ -321,7 +321,7 @@ describe("OpenBot connected desktop shell", () => {
     });
     const older = Promise.withResolvers<ConversationPage>();
     const readOlder = vi.fn().mockReturnValue(older.promise);
-    vi.mocked(window.openbot.agent.readConversationPage).mockImplementation(async (input) =>
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockImplementation(async (input) =>
       input.anchor?.type === "before" ? readOlder() : page,
     );
     let conversation: ReturnType<typeof useConversation> | undefined;
@@ -358,10 +358,10 @@ describe("OpenBot connected desktop shell", () => {
       });
       const older = Promise.withResolvers<ConversationPage>();
       const read = Promise.withResolvers<ConversationReadState>();
-      vi.mocked(window.openbot.agent.readConversationPage).mockImplementation(async (input) =>
+      vi.mocked(window.aikingbot.agent.readConversationPage).mockImplementation(async (input) =>
         input.anchor?.type === "before" ? older.promise : page,
       );
-      vi.mocked(window.openbot.agent.markConversationRead).mockReturnValue(read.promise);
+      vi.mocked(window.aikingbot.agent.markConversationRead).mockReturnValue(read.promise);
       let conversation: ReturnType<typeof useConversation> | undefined;
       function Probe() {
         conversation = useConversation();
@@ -382,7 +382,7 @@ describe("OpenBot connected desktop shell", () => {
       );
       const pendingOlder = conversation?.loadOlderAgentMessages("chief");
       const pendingRead = conversation?.markAgentMessagesRead("chief", "reply");
-      await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalled());
+      await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalled());
       flush(() => conversation?.removeConversation("chief"));
       expect(screen.getByRole("status", { name: "Cached conversations" })).toHaveTextContent("Empty");
       if (outcome === "resolve") older.resolve(page);
@@ -396,10 +396,10 @@ describe("OpenBot connected desktop shell", () => {
 
   it("keeps a successful realtime read when a pending reload resolves later", async () => {
     let resolveInitialPage: ((page: ConversationPage) => void) | undefined;
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({
       chief: { unreadCount: 0, firstUnreadMessageId: null, throughMessageId: null },
     });
-    vi.mocked(window.openbot.agent.readConversationPage).mockImplementationOnce(
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveInitialPage = resolve;
@@ -413,7 +413,7 @@ describe("OpenBot connected desktop shell", () => {
     ]);
 
     emitAgentEvent?.({ type: "conversation-page", page: unreadPage });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce());
     await waitFor(() => expect(screen.queryByRole("status", { name: "1 new message" })).not.toBeInTheDocument());
 
     resolveInitialPage?.(unreadPage);
@@ -425,10 +425,10 @@ describe("OpenBot connected desktop shell", () => {
   it("restores a newer unread reply when its queued read fails", async () => {
     let resolveFirstRead: ((state: NonNullable<ConversationPage["readState"]>) => void) | undefined;
     let rejectSecondRead: ((error: Error) => void) | undefined;
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({
       chief: { unreadCount: 0, firstUnreadMessageId: null, throughMessageId: null },
     });
-    vi.mocked(window.openbot.agent.markConversationRead)
+    vi.mocked(window.aikingbot.agent.markConversationRead)
       .mockImplementationOnce(
         () =>
           new Promise((resolve) => {
@@ -450,7 +450,7 @@ describe("OpenBot connected desktop shell", () => {
         agentReply("reply-read-a", "First queued reply", "2026-08-30T02:02:00.000Z"),
       ]),
     });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce());
 
     emitAgentEvent?.({
       type: "conversation-page",
@@ -467,11 +467,11 @@ describe("OpenBot connected desktop shell", () => {
       ),
     });
     await screen.findByText("Newer queued reply");
-    expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce();
+    expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce();
 
     resolveFirstRead?.({ unreadCount: 0, firstUnreadMessageId: null, throughMessageId: "reply-read-a" });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledTimes(2));
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValueOnce(
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledTimes(2));
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValueOnce(
       testConversationPage("chief", [agentReply("reply-read-b", "Newer queued reply", "2026-08-30T02:03:00.000Z")], {
         revision: 3,
         readState: { unreadCount: 1, firstUnreadMessageId: "reply-read-b", throughMessageId: "reply-read-a" },
@@ -489,8 +489,8 @@ describe("OpenBot connected desktop shell", () => {
     let selectedServerId = "local";
     let returningToLocal = false;
     let rejectLocalRead: ((error: Error) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => {
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => {
       selectedServerId = serverId;
       returningToLocal = serverId === "local";
       return [
@@ -498,7 +498,7 @@ describe("OpenBot connected desktop shell", () => {
         { ...remote, active: serverId === "remote-1" },
       ];
     });
-    vi.mocked(window.openbot.agent.readConversationPage).mockImplementation(async (input) => {
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockImplementation(async (input) => {
       if (selectedServerId === "remote-1") {
         return testConversationPage(
           input.agentId,
@@ -519,7 +519,7 @@ describe("OpenBot connected desktop shell", () => {
       }
       return testConversationPage(input.agentId);
     });
-    vi.mocked(window.openbot.agent.listConversationReads)
+    vi.mocked(window.aikingbot.agent.listConversationReads)
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce({
         chief: { unreadCount: 1, firstUnreadMessageId: "reply-remote", throughMessageId: null },
@@ -527,7 +527,7 @@ describe("OpenBot connected desktop shell", () => {
       .mockResolvedValueOnce({
         chief: { unreadCount: 1, firstUnreadMessageId: "reply-local", throughMessageId: null },
       });
-    vi.mocked(window.openbot.agent.markConversationRead).mockImplementationOnce(
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockImplementationOnce(
       () =>
         new Promise((_, reject) => {
           rejectLocalRead = reject;
@@ -542,11 +542,11 @@ describe("OpenBot connected desktop shell", () => {
         agentReply("reply-local", "Local visible reply", "2026-08-30T02:02:00.000Z"),
       ]),
     });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce());
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
-    await waitFor(() => expect(window.openbot.agent.listConversationReads).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.agent.listConversationReads).toHaveBeenCalledTimes(2));
     await screen.findByText("Remote loaded reply");
     expect(screen.getByRole("status", { name: "1 new message" })).toBeInTheDocument();
     rejectLocalRead?.(new Error("Local read unavailable"));
@@ -561,15 +561,15 @@ describe("OpenBot connected desktop shell", () => {
     await screen.findByText("Remote unread reply");
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce();
+    expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce();
     expect(screen.queryByText("Local read unavailable")).not.toBeInTheDocument();
     expect(screen.getByRole("status", { name: "1 new message" })).toBeInTheDocument();
 
     await fireEvent.click(screen.getByRole("button", { name: "Local server" }));
-    await waitFor(() => expect(window.openbot.agent.listConversationReads).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(window.aikingbot.agent.listConversationReads).toHaveBeenCalledTimes(3));
     await screen.findByText("Local reply after returning");
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenNthCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenNthCalledWith(
         2,
         { agentId: "chief", throughMessageId: "reply-local" },
         "local",
@@ -582,12 +582,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolveFirstRead: ((state: NonNullable<ConversationPage["readState"]>) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockResolvedValueOnce([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockResolvedValueOnce([
       { ...local, active: false },
       { ...remote, active: true },
     ]);
-    vi.mocked(window.openbot.agent.markConversationRead)
+    vi.mocked(window.aikingbot.agent.markConversationRead)
       .mockImplementationOnce(
         () =>
           new Promise((resolve) => {
@@ -609,7 +609,7 @@ describe("OpenBot connected desktop shell", () => {
         agentReply("reply-first-local", "First local reply", "2026-08-30T02:02:00.000Z"),
       ]),
     });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce());
 
     emitAgentEvent?.({
       type: "conversation-page",
@@ -626,18 +626,18 @@ describe("OpenBot connected desktop shell", () => {
       ),
     });
     await screen.findByText("Second local reply");
-    expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce();
+    expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce();
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.agent.listConversationReads).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.agent.listConversationReads).toHaveBeenCalledTimes(2));
     resolveFirstRead?.({
       unreadCount: 1,
       firstUnreadMessageId: "reply-second-local",
       throughMessageId: "reply-first-local",
     });
 
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledTimes(2));
-    expect(window.openbot.agent.markConversationRead).toHaveBeenNthCalledWith(
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledTimes(2));
+    expect(window.aikingbot.agent.markConversationRead).toHaveBeenNthCalledWith(
       2,
       { agentId: "chief", throughMessageId: "reply-second-local" },
       "local",
@@ -655,8 +655,8 @@ describe("OpenBot connected desktop shell", () => {
       [agentReply("reply-current-revision", "Current revision reply", "2026-08-30T02:03:00.000Z")],
       { revision: 2, readState: unreadState },
     );
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({ chief: unreadState });
-    vi.mocked(window.openbot.agent.readConversation).mockResolvedValue({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({ chief: unreadState });
+    vi.mocked(window.aikingbot.agent.readConversation).mockResolvedValue({
       agentId: "chief",
       threadId: currentPage.threadId,
       activeTurnId: null,
@@ -672,7 +672,7 @@ describe("OpenBot connected desktop shell", () => {
     // test measures microtask order instead of the revision guard.
     await screen.findByText("Current revision reply");
 
-    vi.mocked(window.openbot.agent.readConversationPage)
+    vi.mocked(window.aikingbot.agent.readConversationPage)
       .mockResolvedValueOnce(
         testConversationPage(
           "chief",
@@ -684,11 +684,11 @@ describe("OpenBot connected desktop shell", () => {
         ),
       )
       .mockResolvedValueOnce(currentPage);
-    const readsBeforeOpen = vi.mocked(window.openbot.agent.readConversationPage).mock.calls.length;
+    const readsBeforeOpen = vi.mocked(window.aikingbot.agent.readConversationPage).mock.calls.length;
     await fireEvent.click(screen.getByRole("button", { name: /Chief/ }));
 
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "chief",
           throughMessageId: "reply-current-revision",
@@ -696,7 +696,7 @@ describe("OpenBot connected desktop shell", () => {
         "local",
       ),
     );
-    expect(window.openbot.agent.markConversationRead).not.toHaveBeenCalledWith(
+    expect(window.aikingbot.agent.markConversationRead).not.toHaveBeenCalledWith(
       {
         agentId: "chief",
         throughMessageId: "reply-stale-revision",
@@ -706,7 +706,7 @@ describe("OpenBot connected desktop shell", () => {
     // Opening reads once and the stale revision costs a second read. Falling
     // back to whatever was already on screen would reach the same read state
     // with one, so the count is what says the reload was retried.
-    expect(vi.mocked(window.openbot.agent.readConversationPage).mock.calls.length - readsBeforeOpen).toBe(2);
+    expect(vi.mocked(window.aikingbot.agent.readConversationPage).mock.calls.length - readsBeforeOpen).toBe(2);
     await waitFor(() => expect(screen.queryByRole("status", { name: "1 new message" })).not.toBeInTheDocument());
   });
 
@@ -717,7 +717,7 @@ describe("OpenBot connected desktop shell", () => {
       agentReply("reply-automatic-first", "First automatic reply", "2026-08-30T02:03:00.000Z"),
     ]);
     emitAgentEvent?.({ type: "conversation-page", page: firstPage });
-    await waitFor(() => expect(window.openbot.agent.markConversationRead).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledOnce());
 
     await fireEvent.click(screen.getByRole("button", { name: /Sales Outbound/ }));
     await screen.findByRole("heading", { name: "Sales Outbound" });
@@ -737,11 +737,11 @@ describe("OpenBot connected desktop shell", () => {
       },
     );
     emitAgentEvent?.({ type: "conversation-page", page: newerPage });
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValueOnce(newerPage);
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValueOnce(newerPage);
 
     await fireEvent.click(screen.getByRole("button", { name: /Chief/ }));
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenNthCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenNthCalledWith(
         2,
         { agentId: "chief", throughMessageId: "reply-explicit-newer" },
         "local",
@@ -756,10 +756,10 @@ describe("OpenBot connected desktop shell", () => {
       firstUnreadMessageId: "agent-new-1",
       throughMessageId: "agent-old",
     };
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({
       chief: readState,
     });
-    vi.mocked(window.openbot.agent.readConversation).mockResolvedValue({
+    vi.mocked(window.aikingbot.agent.readConversation).mockResolvedValue({
       agentId: "chief",
       threadId: "thread-chief",
       activeTurnId: null,
@@ -801,7 +801,7 @@ describe("OpenBot connected desktop shell", () => {
         agentReply("agent-new-2", "Second unseen answer", "2026-08-19T09:02:00.000Z"),
       ],
     });
-    vi.mocked(window.openbot.agent.markConversationRead).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockResolvedValueOnce({
       unreadCount: 0,
       firstUnreadMessageId: null,
       throughMessageId: "agent-new-2",
@@ -815,7 +815,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(screen.getByRole("button", { name: "Jump to 2 new messages" }));
 
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "chief",
           throughMessageId: "agent-new-2",
@@ -828,22 +828,22 @@ describe("OpenBot connected desktop shell", () => {
 
   it("keeps a reply unread while the open agent chat is in the background and clears it on focus", async () => {
     const unreadPage = unreadConversationPage("chief", [
-      agentReply("agent-background-answer", "Ready while OpenBot was in the background", "2026-08-19T09:03:00.000Z"),
+      agentReply("agent-background-answer", "Ready while AIKINGBOT was in the background", "2026-08-19T09:03:00.000Z"),
     ]);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await waitFor(() => expect(emitDynamicIslandAction).toBeDefined());
-    vi.mocked(window.openbot.agent.markConversationRead).mockClear();
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValue(unreadPage);
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockClear();
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValue(unreadPage);
 
     window.dispatchEvent(new Event("blur"));
     emitAgentEvent?.({ type: "conversation-page", page: unreadPage });
 
-    expect(await screen.findByText("Ready while OpenBot was in the background")).toBeInTheDocument();
+    expect(await screen.findByText("Ready while AIKINGBOT was in the background")).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "1 new message" })).toBeInTheDocument();
-    expect(window.openbot.agent.markConversationRead).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.markConversationRead).not.toHaveBeenCalled();
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "message",
         message: { messageId: "agent-background-answer" },
       }),
@@ -852,7 +852,7 @@ describe("OpenBot connected desktop shell", () => {
     window.dispatchEvent(new Event("focus"));
 
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "chief",
           throughMessageId: "agent-background-answer",
@@ -862,7 +862,7 @@ describe("OpenBot connected desktop shell", () => {
     );
     await waitFor(() => expect(screen.queryByRole("status", { name: "1 new message" })).not.toBeInTheDocument());
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "idle",
       }),
     );
@@ -886,8 +886,8 @@ describe("OpenBot connected desktop shell", () => {
     window.dispatchEvent(new Event("blur"));
     emitAgentEvent?.({ type: "conversation-page", page: oldPage });
     expect(await screen.findByRole("status", { name: "1 new message" })).toBeInTheDocument();
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValue(oldPage);
-    vi.mocked(window.openbot.agent.markConversationRead)
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValue(oldPage);
+    vi.mocked(window.aikingbot.agent.markConversationRead)
       .mockReset()
       .mockImplementationOnce(
         () =>
@@ -903,7 +903,7 @@ describe("OpenBot connected desktop shell", () => {
 
     window.dispatchEvent(new Event("focus"));
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         { agentId: "chief", throughMessageId: "agent-focus-old" },
         "local",
       ),
@@ -917,7 +917,7 @@ describe("OpenBot connected desktop shell", () => {
     });
 
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         { agentId: "chief", throughMessageId: "agent-focus-new" },
         "local",
       ),
@@ -931,7 +931,7 @@ describe("OpenBot connected desktop shell", () => {
     ]);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    vi.mocked(window.openbot.agent.markConversationRead).mockClear();
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockClear();
 
     window.dispatchEvent(new Event("blur"));
     emitAgentEvent?.({ type: "conversation-page", page: unreadPage });
@@ -940,20 +940,20 @@ describe("OpenBot connected desktop shell", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /Sales Outbound/ })).toHaveTextContent("1 new reply"),
     );
-    expect(window.openbot.agent.markConversationRead).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.markConversationRead).not.toHaveBeenCalled();
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "message",
         message: { agent: { id: "sales-outbound" }, messageId: "sales-background-answer" },
       }),
     );
 
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValue(unreadPage);
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValue(unreadPage);
     const sales = screen.getByRole("button", { name: /Sales Outbound/ });
     await fireEvent.click(sales);
 
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "sales-outbound",
           throughMessageId: "sales-background-answer",
@@ -963,7 +963,7 @@ describe("OpenBot connected desktop shell", () => {
     );
     await waitFor(() => expect(sales).not.toHaveTextContent("1 new reply"));
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "idle",
       }),
     );
@@ -976,7 +976,7 @@ describe("OpenBot connected desktop shell", () => {
     });
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.readConversation).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.readConversation).toHaveBeenCalledWith("chief"));
 
     emitAgentEvent?.({
       type: "conversation-delta",
@@ -997,7 +997,7 @@ describe("OpenBot connected desktop shell", () => {
     expect(screen.queryByRole("status", { name: "1 new message" })).not.toBeInTheDocument();
     expect(screen.queryByRole("separator", { name: "New messages" })).not.toBeInTheDocument();
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "chief",
           throughMessageId: "agent-visible-answer",
@@ -1012,7 +1012,7 @@ describe("OpenBot connected desktop shell", () => {
     const reply = `${"A long answer sentence. ".repeat(20)}The end of the answer.`;
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.readConversation).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.readConversation).toHaveBeenCalledWith("chief"));
 
     emitAgentEvent?.({
       type: "runtime-snapshot",
@@ -1049,7 +1049,7 @@ describe("OpenBot connected desktop shell", () => {
     const createdAt = "2026-08-19T09:03:00.000Z";
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.readConversation).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.readConversation).toHaveBeenCalledWith("chief"));
 
     // Main adds text to the message before the buffered delta that carries it is sent.
     emitAgentEvent?.({
@@ -1095,8 +1095,8 @@ describe("OpenBot connected desktop shell", () => {
       </AppProviders>
     ));
     await screen.findByRole("heading", { name: "Chief" });
-    vi.mocked(window.openbot.agent.markConversationRead).mockClear();
-    vi.mocked(window.openbot.agent.readConversationPage).mockResolvedValue(unreadPage);
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockClear();
+    vi.mocked(window.aikingbot.agent.readConversationPage).mockResolvedValue(unreadPage);
 
     fireEvent.click(screen.getByRole("button", { name: "Open usage" }));
     flush();
@@ -1105,7 +1105,7 @@ describe("OpenBot connected desktop shell", () => {
     // The report leaves the conversation mounted and aria-hidden, so the reply is still in the DOM
     // while it is covered - which is the same reason it must not count as seen.
     expect(await screen.findByText("Ready while the report was open")).toBeInTheDocument();
-    expect(window.openbot.agent.markConversationRead).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.markConversationRead).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole("button", { name: "Close usage" }));
     expect(await screen.findByRole("status", { name: "1 new message" })).toBeInTheDocument();
@@ -1120,12 +1120,12 @@ describe("OpenBot connected desktop shell", () => {
       createdAt: "2026-08-19T09:05:00.000Z",
       status: "completed" as const,
     };
-    vi.mocked(window.openbot.agent.searchConversationMessages).mockResolvedValue({
+    vi.mocked(window.aikingbot.agent.searchConversationMessages).mockResolvedValue({
       results: [{ agentId: "sales-outbound", message: result }],
       total: 1,
       nextCursor: null,
     });
-    vi.mocked(window.openbot.agent.readConversation).mockImplementation(async (agentId) => ({
+    vi.mocked(window.aikingbot.agent.readConversation).mockImplementation(async (agentId) => ({
       agentId,
       threadId: null,
       activeTurnId: null,
@@ -1153,7 +1153,7 @@ describe("OpenBot connected desktop shell", () => {
     // the match, and a read behind the report is a read of messages nobody saw.
     await fireEvent.keyDown(window, { key: "k", metaKey: true });
     await fireEvent.click(await screen.findByRole("tab", { name: "Messages" }));
-    await fireEvent.input(screen.getByRole("combobox", { name: "Search OpenBot" }), { target: { value: "report" } });
+    await fireEvent.input(screen.getByRole("combobox", { name: "Search AIKINGBOT" }), { target: { value: "report" } });
     await fireEvent.click(await screen.findByRole("option", { name: /Found while the report was open/ }));
 
     expect(await screen.findByRole("heading", { name: "Sales Outbound" })).toBeInTheDocument();
@@ -1165,10 +1165,10 @@ describe("OpenBot connected desktop shell", () => {
       firstUnreadMessageId: "sales-new",
       throughMessageId: null,
     };
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({
       "sales-outbound": unreadState,
     });
-    vi.mocked(window.openbot.agent.readConversation).mockImplementation(async (agentId) =>
+    vi.mocked(window.aikingbot.agent.readConversation).mockImplementation(async (agentId) =>
       agentId === "sales-outbound"
         ? {
             agentId,
@@ -1194,7 +1194,7 @@ describe("OpenBot connected desktop shell", () => {
 
     expect(await screen.findByText("A new sales reply")).toBeInTheDocument();
     await waitFor(() =>
-      expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
         {
           agentId: "sales-outbound",
           throughMessageId: "sales-new",
@@ -1212,10 +1212,10 @@ describe("OpenBot connected desktop shell", () => {
       firstUnreadMessageId: "agent-new",
       throughMessageId: null,
     };
-    vi.mocked(window.openbot.agent.listConversationReads).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.agent.listConversationReads).mockResolvedValueOnce({
       chief: readState,
     });
-    vi.mocked(window.openbot.agent.readConversation).mockResolvedValue({
+    vi.mocked(window.aikingbot.agent.readConversation).mockResolvedValue({
       agentId: "chief",
       threadId: "thread-chief",
       activeTurnId: null,
@@ -1232,7 +1232,7 @@ describe("OpenBot connected desktop shell", () => {
         agentReply("agent-new", "Unseen answer", "2026-08-19T09:01:00.000Z"),
       ],
     });
-    vi.mocked(window.openbot.agent.markConversationRead).mockRejectedValueOnce(new Error("Read state unavailable"));
+    vi.mocked(window.aikingbot.agent.markConversationRead).mockRejectedValueOnce(new Error("Read state unavailable"));
 
     render(() => <App />);
     const banner = await screen.findByRole("status", { name: "1 new message" });
@@ -1242,7 +1242,7 @@ describe("OpenBot connected desktop shell", () => {
     expect(await screen.findByText("Read state unavailable")).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "1 new message" })).toBeInTheDocument();
     expect(screen.getByRole("separator", { name: "New messages" })).toBeInTheDocument();
-    expect(window.openbot.agent.markConversationRead).toHaveBeenCalledWith(
+    expect(window.aikingbot.agent.markConversationRead).toHaveBeenCalledWith(
       {
         agentId: "chief",
         throughMessageId: "agent-new",

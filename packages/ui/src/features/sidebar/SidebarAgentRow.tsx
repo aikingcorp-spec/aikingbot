@@ -5,7 +5,7 @@
  * group is not a place in the layout, and its tooltip says what the agent waits for.
  */
 
-import { Badge, buttonVariants, Clock3, ContextMenu, Lock, Tooltip } from "@openbot/ui";
+import { Badge, buttonVariants, Clock3, ContextMenu, Lock, Tooltip } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createStore, Show } from "solid-js";
 import type { AgentProfile } from "../../data";

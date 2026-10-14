@@ -1,5 +1,5 @@
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
 import type { MenuComponentRef } from "@expo/ui/community/menu";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { BlurView } from "expo-blur";
 import { Link } from "expo-router";

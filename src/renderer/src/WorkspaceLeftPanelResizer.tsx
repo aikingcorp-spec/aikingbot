@@ -1,5 +1,5 @@
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import { useText } from "@openbot/ui/text";
+import { PanelResizer } from "@aikingbot/ui/components/PanelResizer";
+import { useText } from "@aikingbot/ui/text";
 import { savePanelWidth } from "./components/panel-width-storage";
 import { useLayout } from "./layout";
 import {

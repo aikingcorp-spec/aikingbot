@@ -4,9 +4,9 @@
  * these, and the diagram workspace story shows the same chat when an agent is open.
  */
 
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import type { AvatarImageInput, UpdateAgentInput } from "@openbot/contracts/ipc";
-import type { AgentMessage as RendererAgentMessage } from "@openbot/ui/data";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import type { AvatarImageInput, UpdateAgentInput } from "@aikingbot/contracts/ipc";
+import type { AgentMessage as RendererAgentMessage } from "@aikingbot/ui/data";
 import { onCleanup, type ParentProps } from "solid-js";
 import { fn } from "storybook/test";
 import { AuthProvider } from "../src/features/account/account-context";
@@ -29,7 +29,7 @@ import {
   STORY_REMOTE_DESKTOP_SESSION,
   STORY_SERVERS,
 } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 export const CONVERSATION_STORY_ATTACHMENT = requireFixture(STORY_ATTACHMENTS[0], "Story attachment");
 
@@ -71,7 +71,7 @@ export const CONVERSATION_STORY_MESSAGES: RendererAgentMessage[] = STORY_CONVERS
 
 /**
  * The domains `ConversationView` and its panels read through `use*()`, nested in the order
- * `app-providers.tsx` uses. Each one talks to the mocked `window.openbot` the story installs.
+ * `app-providers.tsx` uses. Each one talks to the mocked `window.aikingbot` the story installs.
  */
 export function StoryAppProviders(props: ParentProps) {
   return (
@@ -144,13 +144,13 @@ export const CONVERSATION_STORY_ARGS: Parameters<typeof Conversation>[0] = {
 
 /** The agent chat as the app shows it, on a mocked bridge, for a story that composes screens. */
 export function StoryAgentConversation(props: { agent: Parameters<typeof Conversation>[0]["agent"] }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot();
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT();
   const controller = createConversationController({ onTypingChange: CONVERSATION_STORY_ARGS.onTypingChange });
-  window.openbot = mock.api;
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return (
     <div class="conversation-story-frame">

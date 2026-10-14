@@ -1,5 +1,5 @@
-import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-sign-in-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseCancelMcpSignIn, parseRemoveMcpServer, parseTestMcpServer } from "../ipc/mcp-inputs";
 import type { TeamApiMcpSignIns } from "./dependencies";

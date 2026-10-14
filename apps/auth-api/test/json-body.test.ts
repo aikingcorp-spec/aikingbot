@@ -4,7 +4,7 @@ import { JSON_BODY_LIMIT, readJsonObject, readMultipartFormData, readRequestByte
 
 describe("readJsonObject", () => {
   it("reads a JSON object within the request limit", async () => {
-    const request = new Request("https://openbot.run/test", {
+    const request = new Request("https://aikingbot.aikingx.com/test", {
       method: "POST",
       body: JSON.stringify({ email: "owner@example.com" }),
     });
@@ -13,7 +13,7 @@ describe("readJsonObject", () => {
   });
 
   it("rejects non-object JSON", async () => {
-    const request = new Request("https://openbot.run/test", {
+    const request = new Request("https://aikingbot.aikingx.com/test", {
       method: "POST",
       body: "[]",
     });
@@ -25,7 +25,7 @@ describe("readJsonObject", () => {
   });
 
   it("rejects a streamed body above the request limit", async () => {
-    const request = new Request("https://openbot.run/test", {
+    const request = new Request("https://aikingbot.aikingx.com/test", {
       method: "POST",
       body: JSON.stringify({ value: "x".repeat(JSON_BODY_LIMIT) }),
     });
@@ -42,7 +42,7 @@ describe("readMultipartFormData", () => {
     const form = new FormData();
     form.set("category", "productivity");
     form.set("bundle", new File(["bundle"], "skill.zip", { type: "application/zip" }));
-    const request = new Request("https://openbot.run/v1/skills/", { method: "POST", body: form });
+    const request = new Request("https://aikingbot.aikingx.com/v1/skills/", { method: "POST", body: form });
 
     const parsed = await Effect.runPromise(readMultipartFormData(request, 4_096));
 
@@ -51,7 +51,7 @@ describe("readMultipartFormData", () => {
   });
 
   it("rejects multipart bodies above the request limit", async () => {
-    const request = new Request("https://openbot.run/v1/skills/", {
+    const request = new Request("https://aikingbot.aikingx.com/v1/skills/", {
       method: "POST",
       headers: { "Content-Type": "multipart/form-data; boundary=test" },
       body: '--test\r\nContent-Disposition: form-data; name="value"\r\n\r\nlarge\r\n--test--\r\n',
@@ -66,7 +66,7 @@ describe("readMultipartFormData", () => {
 
 describe("readRequestBytes", () => {
   it("cancels an undeclared streamed body above a custom limit", async () => {
-    const request = new Request("https://openbot.run/v1/sites/reports", {
+    const request = new Request("https://aikingbot.aikingx.com/v1/sites/reports", {
       method: "POST",
       body: "x".repeat(4_097),
     });

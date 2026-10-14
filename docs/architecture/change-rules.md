@@ -58,7 +58,7 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
    fix it. A context reaches another one with `use*()` only downwards, in the nesting order of
    `app-providers.tsx`, or through a provider prop; a command that writes to several domains lives
    in a leaf context or a bridge component mounted under all of them. Views, contexts and stores
-   do not read `window.openbot`. They call a `<domain>-port.ts` module, which lists the bridge calls
+   do not read `window.aikingbot`. They call a `<domain>-port.ts` module, which lists the bridge calls
    its domain makes, or a narrow API object that a caller can replace (`conversation-runtime.ts`,
    `provider-key-api.ts`). Cycles are rejected by `noImportCycles`, so an upward edge must be
    `import type`.
@@ -69,7 +69,7 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
    renders, and passes a value down as a prop when two of them would otherwise derive it twice. A
    component that assembles another one's props is how the god controller grew back last time.
 9. Do not add temporary compatibility paths without a removal condition and a test for that condition. Released Team API protocol adapters are permanent by default and follow the policy below.
-10. Log through `@openbot/logging` (`ts-log` Logger), never bare `console.*` - Biome's `noConsole`
+10. Log through `@aikingbot/logging` (`ts-log` Logger), never bare `console.*` - Biome's `noConsole`
     enforces this in `src`, `scripts` and `packages`. The remote-desktop build recipe files listed in
     the `Require a recipe version bump` step of `.github/workflows/remote-desktop-runtime.yml` are
     exempt: any edit to them, cosmetic or not, forces `remoteDesktop.recipeVersion` up and a full
@@ -78,7 +78,7 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
     structured param. Patterns cannot find a secret with no label, such as a token in an error
     text, so a store that loads a secret passes the value to `registerSecretValue`, and every later
     line masks that exact value. The provider credential store and the MCP store (for header and
-    environment names that look secret) do this. `info` and above is written by default; `OPENBOT_LOG_LEVEL` lowers the
+    environment names that look secret) do this. `info` and above is written by default; `AIKINGBOT_LOG_LEVEL` lowers the
     threshold. Machine-readable stdout (piped JSON, tags, harness URLs) uses
     `process.stdout.write` with a `// Machine-readable:` comment instead. Dev automation
     (`scripts/dev-automation`, `bun run dev:automation`) drives the already-running dev app over its
@@ -89,13 +89,13 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
     `scripts/dev-automation/instance-registry.ts`). That directory does not follow `TMPDIR`, which can
     differ from one shell to the next, so every command reads the registry the stack wrote to. The
     file in which a dev host hands its test client the connection is there too, one for each stack.
-    Automation resolves the record of the worktree it runs in, verifies the renderer port and the `window.openbot` preload bridge before driving a
+    Automation resolves the record of the worktree it runs in, verifies the renderer port and the `window.aikingbot` preload bridge before driving a
     page, and refuses `click` or `type` on an instance it only inferred. A second registry beside it
     (`scripts/dev-automation/stack-registry.ts`) records every port and pid a whole dev stack holds,
     Storybook included, and `scripts/dev-automation/port-allocation.ts` serializes read, choose and
     publish behind one machine-wide lock: probing a port and binding it seconds later is a check
     followed by a use, so two runners starting together both used to win 5173 and the unsuffixed
-    `OpenBot Dev` profile with it. Ownership of that lock is a generation rather than a path: taking
+    `AIKINGBOT Dev` profile with it. Ownership of that lock is a generation rather than a path: taking
     it means creating the next numbered file with an exclusive create, so who owns it is decided by
     a step the kernel makes atomic and never by a delete. Once a lock path exists it stays, and nothing ever
     frees it: releasing replaces the contents with a released marker in one `rename` onto the same
@@ -134,7 +134,7 @@ the typecheck of each project that a staged file affects, and CI runs the remain
 for the local rules, and [check design notes](../development-checks.md#check-coverage) for what each CI
 job covers.
 
-The Storybook CI job builds all stories with `OPENBOT_STORYBOOK_CHECK=true`. This skips Solid's
+The Storybook CI job builds all stories with `AIKINGBOT_STORYBOOK_CHECK=true`. This skips Solid's
 automatic prop documentation analysis. The job checks compilation and does not publish its output.
 Local Storybook keeps this analysis. Both paths use one Solid compiler plugin.
 

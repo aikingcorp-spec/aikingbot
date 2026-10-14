@@ -1,4 +1,4 @@
-import type { AgentApproval, AgentEvent, AgentRuntimeApproval, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
+import type { AgentApproval, AgentEvent, AgentRuntimeApproval, AgentRuntimeSnapshot } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { approvalIsPartial, dropApproval, type PendingApproval, reducePendingApprovals } from "./pending-approvals";
 

@@ -1,10 +1,10 @@
-import { decodeTeamProtocolV1Event, encodeTeamProtocolV1Event } from "@openbot/contracts/team-protocol/v1";
+import { decodeTeamProtocolV1Event, encodeTeamProtocolV1Event } from "@aikingbot/contracts/team-protocol/v1";
 import { assert, describe, expect, it } from "vitest";
 import { browserInputAction } from "./browser-tool-actions";
 import {
+  AIKINGBOT_BROWSER_NAMESPACE,
   BROWSER_DYNAMIC_TOOLS,
   BROWSER_TOOL_DEFINITIONS,
-  OPENBOT_BROWSER_NAMESPACE,
   parseBrowserToolArguments,
   parseBrowserToolCall,
 } from "./browser-tools";
@@ -16,7 +16,7 @@ describe("browser tool catalog", () => {
     assert(namespace);
     const dynamicNames = namespace.tools.map((definition) => definition.name);
 
-    expect(namespace.name).toBe(OPENBOT_BROWSER_NAMESPACE);
+    expect(namespace.name).toBe(AIKINGBOT_BROWSER_NAMESPACE);
     expect(dynamicNames).toEqual(names);
     expect(new Set(names).size).toBe(names.length);
     expect(names).toEqual(

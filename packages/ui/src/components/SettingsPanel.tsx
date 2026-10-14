@@ -1,4 +1,4 @@
-import { Button, ChevronRight, FieldContext } from "@openbot/ui";
+import { Button, ChevronRight, FieldContext } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createUniqueId, Show } from "solid-js";
 import { useText } from "../text";

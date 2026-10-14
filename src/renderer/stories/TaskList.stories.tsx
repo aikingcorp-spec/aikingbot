@@ -1,4 +1,4 @@
-import { TaskList, type TaskListItem } from "@openbot/ui/features/conversation/TaskList";
+import { TaskList, type TaskListItem } from "@aikingbot/ui/features/conversation/TaskList";
 import { createSignal, onSettled } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -28,7 +28,7 @@ const meta = {
   title: "Conversation/Task list",
   component: TaskList,
   render: (args) => (
-    <main style={{ width: "min(560px, 100vw)", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "min(560px, 100vw)", padding: "var(--aikingbot-space-4)" }}>
       <TaskList {...args} />
     </main>
   ),
@@ -85,7 +85,7 @@ export const Live: Story = {
       return tasks(doneCount, (step() % stepsPerTask) / stepsPerTask);
     };
     return (
-      <main style={{ width: "min(560px, 100vw)", padding: "var(--openbot-space-4)" }}>
+      <main style={{ width: "min(560px, 100vw)", padding: "var(--aikingbot-space-4)" }}>
         <TaskList {...args} items={items()} />
       </main>
     );

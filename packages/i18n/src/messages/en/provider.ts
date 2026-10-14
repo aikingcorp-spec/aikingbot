@@ -32,7 +32,7 @@ export const messages = defineMessages("provider", {
   "provider.status.checking": "Checking",
   "provider.status.off": "Off",
   "provider.gemini.hostSignIn":
-    "To connect Gemini, open OpenBot on the host and select Connect in Settings > Providers. Google sign-in needs a browser on that host. Remote sign-in is not supported.",
+    "To connect Gemini, open AIKINGBOT on the host and select Connect in Settings > Providers. Google sign-in needs a browser on that host. Remote sign-in is not supported.",
 
   // Which account tier the OpenCode row runs on. It shows only while it adds to the runtime
   // badge: a saved key leaves the runtime "Connected" to speak for the row.
@@ -63,15 +63,15 @@ export const messages = defineMessages("provider", {
   "provider.aria.cancelSignIn": "Cancel the {name} sign-in",
   "provider.aria.apiKey": "{name} API key",
   "provider.connecting.browserHint": "Finish the sign-in if a browser page opens.",
-  "provider.connecting.cancelFailed": "OpenBot could not cancel the {name} sign-in. Try again.",
+  "provider.connecting.cancelFailed": "AIKINGBOT could not cancel the {name} sign-in. Try again.",
   "provider.aria.install": "Install {name}",
   "provider.aria.signIn": "Sign in to {name}",
   "provider.aria.codeFallback": "Log in to {name} with a code",
   "provider.aria.moreActions": "More actions for {name}",
 
-  // The switch that turns a provider on or off in OpenBot. While an agent uses the provider, the
+  // The switch that turns a provider on or off in AIKINGBOT. While an agent uses the provider, the
   // switch stays on and the row names the agents.
-  "provider.aria.use": "Use {name} in OpenBot",
+  "provider.aria.use": "Use {name} in AIKINGBOT",
   "provider.use.inUse": {
     one: "{agents} uses {name}. Change the model of this agent, then turn {name} off.",
     other: "{agents} use {name}. Change the model of these agents, then turn {name} off.",
@@ -79,7 +79,7 @@ export const messages = defineMessages("provider", {
 
   // The dialog that signs in to a provider with a code on another device.
   "provider.codeLogin.title": "Log in to {name} with a code",
-  "provider.codeLogin.description": "Finish on your phone or another browser. OpenBot waits here.",
+  "provider.codeLogin.description": "Finish on your phone or another browser. AIKINGBOT waits here.",
   "provider.codeLogin.starting": "Getting a code from {name}…",
   "provider.codeLogin.qrLabel": "QR code for the {name} login page",
   "provider.codeLogin.open": "Open",
@@ -100,12 +100,12 @@ export const messages = defineMessages("provider", {
   "provider.codeLogin.pageDescription": "This page is open in the browser on {host}. Sign in here.",
   "provider.codeLogin.relayStarting": "Starting the {name} sign-in on {host}…",
   "provider.codeLogin.pageOpening": "Opening the {name} sign-in page on {host}…",
-  "provider.codeLogin.linkStep": "Log in to {name}. OpenBot continues by itself.",
+  "provider.codeLogin.linkStep": "Log in to {name}. AIKINGBOT continues by itself.",
 
-  // A provider that only the OpenBot app can sign in, from a browser tab.
-  "provider.useApp.title": "Connect {name} in the OpenBot app",
+  // A provider that only the AIKINGBOT app can sign in, from a browser tab.
+  "provider.useApp.title": "Connect {name} in the AIKINGBOT app",
   "provider.useApp.description":
-    "The {name} sign-in returns to the computer that started it, and a browser tab cannot receive it. Connect {name} in the OpenBot app. The app finishes the sign-in by itself.",
+    "The {name} sign-in returns to the computer that started it, and a browser tab cannot receive it. Connect {name} in the AIKINGBOT app. The app finishes the sign-in by itself.",
   "provider.useApp.download": "Get the app",
 
   // The agent model picker.

@@ -26,7 +26,7 @@ describe("plugin catalog source", () => {
   });
 
   it("matches the checked-in outputs byte for byte, without touching the repository", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-plugin-catalog-test-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-plugin-catalog-test-"));
     temporaryRoots.push(root);
     const generated = {
       sourceRoot: paths.sourceRoot,
@@ -165,8 +165,8 @@ describe("plugin catalog validation", () => {
   });
 
   it("refuses a reserved server name", () => {
-    const reserved = pluginWithServer({ ...httpServer, name: "openbot" });
-    expect(() => validatePlugin("example", reserved, false, updatedAt)).toThrow("OpenBot already uses the name");
+    const reserved = pluginWithServer({ ...httpServer, name: "aikingbot" });
+    expect(() => validatePlugin("example", reserved, false, updatedAt)).toThrow("AIKINGBOT already uses the name");
   });
 
   it("refuses a second app", () => {
@@ -180,7 +180,7 @@ describe("plugin catalog validation", () => {
     expect(() => validatePlugin("example", second, false, updatedAt)).toThrow("exactly one app");
   });
 
-  /* OpenBot signs in for itself and adds the header when it hands the server over, which it can
+  /* AIKINGBOT signs in for itself and adds the header when it hands the server over, which it can
      only do for an http server. A stdio listing asking for a sign-in is asking for a bridge. */
   it("refuses a sign-in flow on a server it cannot sign in to", () => {
     const stdioSignIn = pluginWithServer({

@@ -1,5 +1,5 @@
-import { Button, PanelRight, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { Button, PanelRight, X } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { render } from "@solidjs/web";
 import "../../styles.css";
 import { I18nProvider } from "../../i18n-context";

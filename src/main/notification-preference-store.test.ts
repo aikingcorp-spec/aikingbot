@@ -56,7 +56,7 @@ describe("notification permission request", () => {
 });
 
 async function preferencePath(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-notification-preference-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-notification-preference-"));
   roots.push(root);
   return join(root, "notification-preference.json");
 }

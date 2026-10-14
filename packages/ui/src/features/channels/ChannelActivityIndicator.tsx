@@ -1,4 +1,4 @@
-import type { AppTranslate } from "@openbot/i18n";
+import type { AppTranslate } from "@aikingbot/i18n";
 import { createMemo, For } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

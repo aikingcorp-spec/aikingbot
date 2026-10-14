@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { listManagedSkillsForChat, ManagedSkillService } from "./managed-skill-service";
@@ -14,32 +14,32 @@ afterEach(async () => {
 
 describe("managed site hosting skill", () => {
   it("installs the skill creation guide beside the hosting guide", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-skill-creator-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-skill-creator-"));
     roots.push(root);
     const workspace = join(root, "workspace");
     await mkdir(workspace);
     await expect(Effect.runPromise(listManagedSkillsForChat(agent(workspace)))).resolves.toEqual([]);
-    const source = join(process.cwd(), "resources/managed-skills/openbot-skill-creator/SKILL.md");
+    const source = join(process.cwd(), "resources/managed-skills/aikingbot-skill-creator/SKILL.md");
     await Effect.runPromise(
-      new ManagedSkillService(source, undefined, undefined, "openbot-skill-creator").syncAgent(agent(workspace)),
+      new ManagedSkillService(source, undefined, undefined, "aikingbot-skill-creator").syncAgent(agent(workspace)),
     );
     for (const provider of ["codex", "claude"] as const) {
       await expect(Effect.runPromise(listManagedSkillsForChat({ ...agent(workspace), provider }))).resolves.toEqual([
-        expect.objectContaining({ skillId: "openbot-skill-creator", origin: "managed", enabled: true }),
+        expect.objectContaining({ skillId: "aikingbot-skill-creator", origin: "managed", enabled: true }),
       ]);
     }
     for (const provider of [".agents", ".claude"]) {
-      const content = await readFile(join(workspace, provider, "skills/openbot-skill-creator/SKILL.md"), "utf8");
+      const content = await readFile(join(workspace, provider, "skills/aikingbot-skill-creator/SKILL.md"), "utf8");
       expect(content).toContain("create_skill");
       expect(content).toContain("expectedRevision");
     }
   });
 
   it("synchronizes the managed skill for Codex, Grok, and Claude locations", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-managed-skill-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-managed-skill-"));
     roots.push(root);
     const source = join(root, "SKILL.md");
-    const content = "---\nname: openbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
+    const content = "---\nname: aikingbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
     await writeFile(source, content);
     const workspacePath = join(root, "workspace");
     await mkdir(workspacePath);
@@ -48,30 +48,30 @@ describe("managed site hosting skill", () => {
     await Effect.runPromise(new ManagedSkillService(source).syncAgent(managedAgent));
 
     await expect(
-      readFile(join(workspacePath, ".agents", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(workspacePath, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
     await expect(
-      readFile(join(workspacePath, ".claude", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(workspacePath, ".claude", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
 
     const updated = content.replace("Rules", "Updated rules");
     await writeFile(source, updated);
     await Effect.runPromise(new ManagedSkillService(source).syncAgent(managedAgent));
     await expect(
-      readFile(join(workspacePath, ".agents", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(workspacePath, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(updated);
   });
 
   it("preserves and reports an unowned skill collision", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-managed-skill-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-managed-skill-"));
     roots.push(root);
     const source = join(root, "SKILL.md");
-    const content = "---\nname: openbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
-    const userContent = "---\nname: openbot-site-hosting\ndescription: User skill.\n---\n\nKeep this file.\n";
+    const content = "---\nname: aikingbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
+    const userContent = "---\nname: aikingbot-site-hosting\ndescription: User skill.\n---\n\nKeep this file.\n";
     await writeFile(source, content);
     const workspacePath = join(root, "workspace");
-    const userTarget = join(workspacePath, ".agents", "skills", "openbot-site-hosting", "SKILL.md");
-    await mkdir(join(workspacePath, ".agents", "skills", "openbot-site-hosting"), { recursive: true });
+    const userTarget = join(workspacePath, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md");
+    await mkdir(join(workspacePath, ".agents", "skills", "aikingbot-site-hosting"), { recursive: true });
     await writeFile(userTarget, userContent);
     const collisions: string[] = [];
 
@@ -81,16 +81,16 @@ describe("managed site hosting skill", () => {
 
     await expect(readFile(userTarget, "utf8")).resolves.toBe(userContent);
     await expect(
-      readFile(join(workspacePath, ".claude", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(workspacePath, ".claude", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
     expect(collisions).toEqual([userTarget]);
   });
 
   it("continues synchronization when one workspace target is inaccessible", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-managed-skill-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-managed-skill-"));
     roots.push(root);
     const source = join(root, "SKILL.md");
-    const content = "---\nname: openbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
+    const content = "---\nname: aikingbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
     await writeFile(source, content);
     const blockedWorkspace = join(root, "blocked-workspace");
     const healthyWorkspace = join(root, "healthy-workspace");
@@ -109,29 +109,29 @@ describe("managed site hosting skill", () => {
     ).resolves.toBeUndefined();
 
     await expect(
-      readFile(join(blockedWorkspace, ".claude", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(blockedWorkspace, ".claude", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
     await expect(
-      readFile(join(healthyWorkspace, ".agents", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(healthyWorkspace, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
     await expect(
-      readFile(join(healthyWorkspace, ".claude", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(healthyWorkspace, ".claude", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
-    expect(failures).toEqual([join(blockedWorkspace, ".agents", "skills", "openbot-site-hosting", "SKILL.md")]);
+    expect(failures).toEqual([join(blockedWorkspace, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md")]);
   });
 
   it("rejects managed-skill directories that are symlinks outside the workspace", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-managed-skill-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-managed-skill-"));
     roots.push(root);
     const source = join(root, "SKILL.md");
-    const content = "---\nname: openbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
+    const content = "---\nname: aikingbot-site-hosting\ndescription: Host static sites.\n---\n\nRules\n";
     await writeFile(source, content);
     const workspacePath = join(root, "workspace");
     const outside = join(root, "outside");
     await mkdir(workspacePath);
     await mkdir(outside);
     await mkdir(join(workspacePath, ".agents", "skills"), { recursive: true });
-    await symlink(outside, join(workspacePath, ".agents", "skills", "openbot-site-hosting"));
+    await symlink(outside, join(workspacePath, ".agents", "skills", "aikingbot-site-hosting"));
     const failures: string[] = [];
 
     await Effect.runPromise(
@@ -146,9 +146,9 @@ describe("managed site hosting skill", () => {
       code: "ENOENT",
     });
     await expect(
-      readFile(join(workspacePath, ".claude", "skills", "openbot-site-hosting", "SKILL.md"), "utf8"),
+      readFile(join(workspacePath, ".claude", "skills", "aikingbot-site-hosting", "SKILL.md"), "utf8"),
     ).resolves.toBe(content);
-    expect(failures).toEqual([join(workspacePath, ".agents", "skills", "openbot-site-hosting", "SKILL.md")]);
+    expect(failures).toEqual([join(workspacePath, ".agents", "skills", "aikingbot-site-hosting", "SKILL.md")]);
   });
 });
 

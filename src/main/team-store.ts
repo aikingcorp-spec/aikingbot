@@ -11,9 +11,9 @@ import { constants } from "node:fs";
 import { copyFile, mkdir, readFile, rm } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { promisify } from "node:util";
-import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { permanentInviteExpiresAt } from "@openbot/contracts/invite-links";
+import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { permanentInviteExpiresAt } from "@aikingbot/contracts/invite-links";
 import type {
   AvatarImageInput,
   CentralAuthUser,
@@ -21,10 +21,10 @@ import type {
   TeamMemberSummary,
   TeamRole,
   TeamSessionSummary,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress, slugifyTeamServerName } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { normalizeEmailAddress, slugifyTeamServerName } from "@aikingbot/contracts/validation";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Deferred, Effect, Layer, Result, Schema } from "effect";
 import { type WriteJsonFileOptions, writeFileAtomically } from "../backend/atomic-json-file";
 import { RemoteWorkflowError, remoteCall, remoteDecode } from "./remote-service-effects";
@@ -42,7 +42,7 @@ class TeamStoreFiles extends Context.Service<
       options?: WriteJsonFileOptions,
     ): Effect.Effect<void, RemoteWorkflowError>;
   }
->()("openbot/main/TeamStoreFiles") {
+>()("aikingbot/main/TeamStoreFiles") {
   static readonly layer = Layer.succeed(
     TeamStoreFiles,
     TeamStoreFiles.of({
@@ -111,7 +111,7 @@ interface StoredTeam {
 }
 
 /**
- * The file holds one host per OpenBot account, so switching accounts cannot hand the
+ * The file holds one host per AIKINGBOT account, so switching accounts cannot hand the
  * new account the previous one's server. `hosts` is append-only - a host is never
  * removed when its owner signs out, because this file is user data with no backup.
  */

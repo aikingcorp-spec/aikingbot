@@ -35,10 +35,10 @@ export interface UsageChartSeries {
 
 /** The provider colors of the desktop chart. An unknown provider takes the muted series color. */
 export function useUsageSeriesColor(): (provider: string) => string {
-  const codex = String(useCSSVariable("--openbot-chart-series-codex"));
-  const claude = String(useCSSVariable("--openbot-chart-series-claude"));
-  const grok = String(useCSSVariable("--openbot-chart-series-grok"));
-  const other = String(useCSSVariable("--openbot-chart-series-other"));
+  const codex = String(useCSSVariable("--aikingbot-chart-series-codex"));
+  const claude = String(useCSSVariable("--aikingbot-chart-series-claude"));
+  const grok = String(useCSSVariable("--aikingbot-chart-series-grok"));
+  const other = String(useCSSVariable("--aikingbot-chart-series-other"));
   // Stable while the theme stays, so the chart series it colors do not change on every render.
   return useCallback(
     (provider: string) => {
@@ -227,8 +227,8 @@ export function UsageChart({
   /** What VoiceOver reads for the chart: the selected day, or a hint. */
   value: string;
 }) {
-  const gridColor = String(useCSSVariable("--openbot-border-strong"));
-  const mutedColor = String(useCSSVariable("--openbot-text-muted"));
+  const gridColor = String(useCSSVariable("--aikingbot-border-strong"));
+  const mutedColor = String(useCSSVariable("--aikingbot-text-muted"));
   const [width, setWidth] = useState(0);
   const plotWidth = Math.max(0, width - AXIS_WIDTH);
   const max = Math.max(0, ...series.flatMap((item) => item.values.map((day) => day ?? 0)));

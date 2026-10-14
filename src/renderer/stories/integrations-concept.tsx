@@ -1,4 +1,4 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import {
   Alert,
   AlertActions,
@@ -36,9 +36,9 @@ import {
   TriangleAlert,
   UsersRound,
   X,
-} from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { PluginIcon } from "@openbot/ui/features/marketplace/PluginIcon";
+} from "@aikingbot/ui";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { PluginIcon } from "@aikingbot/ui/features/marketplace/PluginIcon";
 import {
   GitHubMark,
   type IntegrationStatus,
@@ -48,14 +48,14 @@ import {
   Stepper,
   WizardContent,
   type WizardProps,
-} from "@openbot/ui/features/settings/IntegrationLayout";
-import { SettingsDialogShell } from "@openbot/ui/features/settings/SettingsDialogShell";
+} from "@aikingbot/ui/features/settings/IntegrationLayout";
+import { SettingsDialogShell } from "@aikingbot/ui/features/settings/SettingsDialogShell";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { STORY_AGENT_SUMMARIES, STORY_MARKETPLACE_PLUGINS } from "./fixtures";
 
 // Concept only. The copy is literal on purpose: a direction is chosen first, and the real
-// components then get catalog keys. Brand marks stay here until they move to @openbot/brand.
+// components then get catalog keys. Brand marks stay here until they move to @aikingbot/brand.
 
 /* ---------------------------------------------------------------- brand marks */
 
@@ -767,12 +767,12 @@ export function SlackAddAgentPanel(props: { step: SlackStep; caption: string }) 
       case 2:
         return {
           title: "Create the Slack app",
-          description: "OpenBot fills in the app settings. You only confirm in Slack.",
+          description: "AIKINGBOT fills in the app settings. You only confirm in Slack.",
         };
       case 3:
         return {
           title: "Install it in your workspace",
-          description: "Slack asks you to allow the app. OpenBot waits here.",
+          description: "Slack asks you to allow the app. AIKINGBOT waits here.",
         };
       case 4:
         return { title: "Where does it listen?", description: "You can change channels later." };
@@ -914,7 +914,7 @@ export function DiscordAddAgentPanel(props: { step: 0 | 1 | 2 | 3; caption: stri
       case 1:
         return {
           title: "Paste the bot token",
-          description: "Bot → Reset Token in the Developer Portal. OpenBot keeps it on this computer.",
+          description: "Bot → Reset Token in the Developer Portal. AIKINGBOT keeps it on this computer.",
         };
       case 2:
         return { title: "Invite Chief to your server", description: "Discord asks which server and what it can do." };
@@ -1031,7 +1031,7 @@ export function AgentConnectedApps(props: { agent: ConceptAgent }) {
       </div>
       <SettingsSection
         title="Connected apps"
-        description="What this agent can reach outside OpenBot."
+        description="What this agent can reach outside AIKINGBOT."
         actions={
           <Button type="button" size="sm" variant="ghost">
             Open Integrations

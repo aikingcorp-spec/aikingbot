@@ -3,8 +3,8 @@ import { EventEmitter } from "node:events";
 import { createReadStream, existsSync } from "node:fs";
 import { mkdir, open, rename, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
-import type { LocalVoiceModelId, VoiceModelStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { LocalVoiceModelId, VoiceModelStatus } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Fiber, Result, Schema, Scope, Stream } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 

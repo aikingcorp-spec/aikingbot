@@ -5,20 +5,20 @@
   box-sizing: border-box;
   min-width: 0;
   max-width: 100%;
-  height: var(--openbot-space-6);
+  height: var(--aikingbot-space-6);
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
   overflow: hidden;
   border: 0;
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-border);
-  padding: var(--openbot-space-1) var(--openbot-space-1-5) var(--openbot-space-1) var(--openbot-space-1);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-border);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1-5) var(--aikingbot-space-1) var(--aikingbot-space-1);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 500;
-  line-height: var(--openbot-space-4);
+  line-height: var(--aikingbot-space-4);
   vertical-align: middle;
   white-space: nowrap;
   text-decoration: none;
@@ -28,23 +28,23 @@
 .reference-chip[data-kind="mcp"],
 .reference-chip[data-kind="plugin"],
 .reference-chip[data-kind="skill"] {
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
 }
 
 .reference-chip[data-kind="agent"]:hover {
-  background: var(--openbot-border-strong);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-border-strong);
+  color: var(--aikingbot-text-primary);
 }
 
 .reference-chip .reference-chip-icon {
   display: inline-grid;
-  width: var(--openbot-space-4);
-  height: var(--openbot-space-4);
-  flex: 0 0 var(--openbot-space-4);
+  width: var(--aikingbot-space-4);
+  height: var(--aikingbot-space-4);
+  flex: 0 0 var(--aikingbot-space-4);
   place-items: center;
   overflow: hidden;
-  border-radius: var(--openbot-radius-xs);
+  border-radius: var(--aikingbot-radius-xs);
   color: inherit;
 }
 

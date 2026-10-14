@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process";
-import type { AgentProviderStatus } from "@openbot/contracts/ipc";
-import { redactText } from "@openbot/logging";
+import type { AgentProviderStatus } from "@aikingbot/contracts/ipc";
+import { redactText } from "@aikingbot/logging";
 import { Effect, Schema } from "effect";
 import { type AgentProvider, RequestTimeoutError } from "../agent-client";
 import { CodexCliError } from "../cli";
@@ -53,7 +53,7 @@ export function providerFailureStatus(
     // A CLI that did not answer in time is not broken, so the message must not ask for a reinstall.
     if (error.code === "timeout") return { state: "error", version: version ?? null, message };
     // An app update can require a newer CLI than the one in the runtime store.
-    // Keep the version error so the user can update the provider in OpenBot.
+    // Keep the version error so the user can update the provider in AIKINGBOT.
     if (error.code === "outdated") {
       return { state: "outdated", version: version ?? null, message };
     }
@@ -61,8 +61,8 @@ export function providerFailureStatus(
       const label = provider === "codex" ? "ChatGPT" : "Claude";
       const bundledMessage =
         error.code === "missing"
-          ? `OpenBot's included ${label} runtime is missing. Reinstall OpenBot.`
-          : `OpenBot could not start its included ${label} runtime. Update or reinstall OpenBot.`;
+          ? `AIKINGBOT's included ${label} runtime is missing. Reinstall AIKINGBOT.`
+          : `AIKINGBOT could not start its included ${label} runtime. Update or reinstall AIKINGBOT.`;
       return { state: "error", version: version ?? null, message: bundledMessage };
     }
     if (error.code === "missing") {

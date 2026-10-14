@@ -68,7 +68,7 @@ const config: KnipConfig = {
         "solid-sonner",
         // `scripts/mobile-ios.ts` resolves the Expo CLI that `apps/mobile` installs.
         "expo",
-        // `@openbot/team-client` imports it, and the main bundle keeps it external through this
+        // `@aikingbot/team-client` imports it, and the main bundle keeps it external through this
         // entry. Bundled, a JSDoc `import` line in it takes the `__dirname` shim of electron-vite.
         "@noble/hashes",
       ],

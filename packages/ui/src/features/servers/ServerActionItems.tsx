@@ -1,5 +1,5 @@
-import type { ServerNotificationLevel, ServerSummary } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
+import type { ServerNotificationLevel, ServerSummary } from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppTextKey, AppTranslate } from "@aikingbot/i18n";
 import {
   Bell,
   BellOff,
@@ -11,7 +11,7 @@ import {
   LogOut,
   RotateCcw,
   Trash2,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 

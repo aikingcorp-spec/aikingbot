@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Semaphore } from "effect";
 import type { AgentClient } from "../agent-client";
 import type { CodexMcpServer } from "../mcp-provider-shapes";
@@ -7,7 +7,7 @@ import { ProviderClientOperationError } from "../provider-client-effects";
 
 // Agents share the Codex user file. Serialize registration so their first turns do not race.
 const registrationLock = Semaphore.makeUnsafe(1);
-const placeholderCommand = "openbot-mcp";
+const placeholderCommand = "aikingbot-mcp";
 const placeholderUrl = "http://127.0.0.1:1";
 
 /** Codex can save tool approvals only for servers present in a file-backed config layer. */
@@ -54,7 +54,7 @@ export const readCodexMcpConfig = Effect.fn("Agent.readCodexMcpConfig")(function
   if (edits.length === 0) return response;
 
   // Save only a disabled placeholder. URLs, arguments, and credentials stay in the thread.
-  // Other Codex clients must not start servers that OpenBot owns.
+  // Other Codex clients must not start servers that AIKINGBOT owns.
   yield* client.request(
     "config/batchWrite",
     {

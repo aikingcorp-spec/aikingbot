@@ -1,4 +1,4 @@
-import type { AgentImportPreview } from "@openbot/contracts/ipc";
+import type { AgentImportPreview } from "@aikingbot/contracts/ipc";
 
 const MB = 1024 ** 2;
 
@@ -77,9 +77,9 @@ export const AGENT_IMPORT_WARNINGS = [
 
 /** The start of the export skill, as `agentImport.readSkill` answers it. */
 export const AGENT_IMPORT_SKILL = `---
-name: openbot-export
-description: Export the user's Grok Bot agents into one .zip file that OpenBot imports.
+name: aikingbot-export
+description: Export the user's Grok Bot agents into one .zip file that AIKINGBOT imports.
 ---
 
-# Export agents for OpenBot
+# Export agents for AIKINGBOT
 `;

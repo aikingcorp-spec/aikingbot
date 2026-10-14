@@ -14,13 +14,13 @@ describe("marketplace request rate limits", () => {
 
     await runApiEffect(
       enforceMarketplaceIngress(
-        new Request("https://api.openbot.run/v1/skills/?query=test", {
+        new Request("https://api.aikingbot.aikingx.com/v1/skills/?query=test", {
           headers: { "CF-Connecting-IP": "203.0.113.8" },
         }),
         bindings,
       ),
     );
-    await runApiEffect(enforceMarketplaceIngress(new Request("https://api.openbot.run/v1/me"), bindings));
+    await runApiEffect(enforceMarketplaceIngress(new Request("https://api.aikingbot.aikingx.com/v1/me"), bindings));
 
     expect(limit).toHaveBeenCalledOnce();
     expect(limit).toHaveBeenCalledWith({ key: "ip:203.0.113.8" });
@@ -31,7 +31,7 @@ describe("marketplace request rate limits", () => {
 
     await expect(
       runApiEffect(
-        enforceMarketplaceIngress(new Request("https://api.openbot.run/v1/marketplace/agents/"), {
+        enforceMarketplaceIngress(new Request("https://api.aikingbot.aikingx.com/v1/marketplace/agents/"), {
           MARKETPLACE_INGRESS_RATE_LIMITER: denied,
         }),
       ),

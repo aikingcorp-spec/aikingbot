@@ -4,10 +4,10 @@ import type {
   AgentReasoningEffort,
   BrowserBounds,
   MarketplaceSkillDetail,
-} from "@openbot/contracts/ipc";
-import type { AgentActivityLabel } from "@openbot/ui/features/conversation/AgentActivity";
-import { currentText } from "@openbot/ui/text";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/contracts/ipc";
+import type { AgentActivityLabel } from "@aikingbot/ui/features/conversation/AgentActivity";
+import { currentText } from "@aikingbot/ui/text";
+import type { UserErrorDetails } from "@aikingbot/user-errors";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import type { ChatSearchMatch } from "./chat-search";
 import {
@@ -33,7 +33,7 @@ import type { VoiceCloudStream } from "./stores/voice-store";
 
 const SETTINGS_PANEL_DEFAULT = 296;
 const BROWSER_PANEL_DEFAULT = 380;
-const BROWSER_PIP_STORAGE_KEY = "openbot:browser-pip-native-bounds";
+const BROWSER_PIP_STORAGE_KEY = "aikingbot:browser-pip-native-bounds";
 
 function readBrowserPipBounds(): BrowserBounds | null {
   const values = (window.localStorage.getItem(BROWSER_PIP_STORAGE_KEY) ?? "")

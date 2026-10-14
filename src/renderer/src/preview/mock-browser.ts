@@ -1,13 +1,13 @@
 import type {
   AgentEvent,
+  AIKINGBOTDesktopApi,
   BrowserControlState,
   BrowserLiveViewEvent,
   BrowserOpenInput,
   BrowserPictureInPictureEvent,
   BrowserPreview,
   BrowserTab,
-  OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import browserTakeoverPreviewUrl from "../../stories/assets/browser-takeover-preview.svg";
 import { STORY_BROWSER_CONTROL, STORY_BROWSER_TABS } from "./fixtures";
 import { clone, type Listener, type MockRuntime } from "./mock-support";
@@ -36,7 +36,7 @@ export function createMockBrowser(
   const browserLiveViewListeners = new Set<Listener<BrowserLiveViewEvent>>();
   const browserPictureInPictureListeners = new Set<Listener<BrowserPictureInPictureEvent>>();
 
-  const browser: OpenBotDesktopApi["browser"] = {
+  const browser: AIKINGBOTDesktopApi["browser"] = {
     open: async (input: BrowserOpenInput) => {
       const tab: BrowserTab = {
         id: `browser-tab-${browserTabs.length + 1}`,

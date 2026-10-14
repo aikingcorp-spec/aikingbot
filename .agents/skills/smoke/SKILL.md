@@ -1,6 +1,6 @@
 ---
 name: smoke
-description: Start one or more local OpenBot dev instances and smoke test the features that the current changes or a pull request add. Use when asked to smoke test, QA, or check a change or PR in the real app, including two-client team flows, the browser client, and the iOS simulator.
+description: Start one or more local AIKINGBOT dev instances and smoke test the features that the current changes or a pull request add. Use when asked to smoke test, QA, or check a change or PR in the real app, including two-client team flows, the browser client, and the iOS simulator.
 ---
 
 # Smoke
@@ -70,7 +70,7 @@ Rules:
   supervisor prints, or poll `bun run dev:status` until the service is
   live. Use the ports that the stack reports, never a fixed port.
 - Do not pass `--shared`, so that the test does not change the shared
-  `OpenBot Dev` profile. A new profile gets the showcase data of
+  `AIKINGBOT Dev` profile. A new profile gets the showcase data of
   `bun run dev:seed`.
 - Do not run `dev:reset`, or `dev:seed` without `--dry-run`, on a profile
   that you did not create. Ask first.
@@ -122,7 +122,7 @@ when the feature needs them, and keep the prompts short.
 - Stop each stack you started with `bun run dev:stop`. Leave a stack that
   was live before you started.
 - Never kill by process pattern. Kill only a PID that you started.
-- Screenshots, if any, stay in `.openbot-build/dev-automation/`. Do not commit
+- Screenshots, if any, stay in `.aikingbot-build/dev-automation/`. Do not commit
   them.
 
 ## Step 5 — Report

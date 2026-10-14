@@ -12,7 +12,7 @@ import {
   type DiscordButton,
   type DiscordChannelSummary,
   type DiscordHistoryMessage,
-} from "@openbot/contracts/signal-protocol/discord-api";
+} from "@aikingbot/contracts/signal-protocol/discord-api";
 import { Effect, Schema } from "effect";
 import { z } from "zod";
 import { type DiscordState, discordAuthorName, stripBotMention } from "./discord-events";

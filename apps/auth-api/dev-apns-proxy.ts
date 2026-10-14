@@ -30,7 +30,7 @@ const TIMEOUT_MS = 5_000;
 
 export function developmentApnsProxy(): Plugin {
   return {
-    name: "openbot-development-apns-proxy",
+    name: "aikingbot-development-apns-proxy",
     apply: "serve",
     configureServer(server) {
       server.middlewares.use(DEVELOPMENT_APNS_PATH, (request, response) => {

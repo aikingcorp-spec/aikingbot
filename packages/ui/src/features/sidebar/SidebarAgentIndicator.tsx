@@ -1,4 +1,4 @@
-import { Clock3, MessageCircleQuestionMark, MousePointer2, ShieldCheck, X } from "@openbot/ui";
+import { Clock3, MessageCircleQuestionMark, MousePointer2, ShieldCheck, X } from "@aikingbot/ui";
 import { createEffect, createSignal, Show } from "solid-js";
 import type { AvatarMood } from "../../bloub-avatar";
 import { TypingDots } from "../../components/TypingDots";

@@ -1,10 +1,10 @@
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { AgentStore } from "../agent-store";
 import type { ProviderSession } from "../database/provider-sessions";
-import { openBotToolResult } from "./routine-tools";
+import { aikingBotToolResult } from "./routine-tools";
 import { type ToolOperationFailed, toolStep } from "./tool-operation";
 
 const id = z.string().min(1).max(512);
@@ -183,7 +183,7 @@ export class HistoryTools {
       }
       result.messages.push(entry);
       result.nextCursor = nextCursor(message.id);
-      if (JSON.stringify(openBotToolResult(result)).length > maximum) {
+      if (JSON.stringify(aikingBotToolResult(result)).length > maximum) {
         if (result.messages.length > 1) {
           result.messages.pop();
           result.nextCursor = nextCursor(result.messages.at(-1)?.messageId ?? message.id);
@@ -200,7 +200,7 @@ export class HistoryTools {
           const mid = Math.ceil((low + high) / 2);
           entry.text = original.slice(0, mid);
           entry.nextOffset = offset + mid;
-          if (JSON.stringify(openBotToolResult(result)).length <= maximum) low = mid;
+          if (JSON.stringify(aikingBotToolResult(result)).length <= maximum) low = mid;
           else high = mid - 1;
         }
         entry.text = original.slice(0, low);
@@ -221,8 +221,8 @@ export class HistoryTools {
       )
         throw new Error(sourceText("error.agent.historyUnavailable"));
     }
-    if (JSON.stringify(openBotToolResult(result)).length > maximum)
+    if (JSON.stringify(aikingBotToolResult(result)).length > maximum)
       throw new Error(sourceText("error.agent.historyUnavailable"));
-    return openBotToolResult(result);
+    return aikingBotToolResult(result);
   }).bind(this);
 }

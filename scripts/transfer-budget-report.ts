@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber } from "@aikingbot/contracts/runtime-values";
 
 // Prints a Markdown table that compares the transfer budget reports of a pull request with the
 // reports of `main`. Each argument is a directory. The script reads every `*.json` file below it and

@@ -14,8 +14,8 @@ import {
   parseAgentAnalyticsInput,
   parseHostAnalyticsInput,
   type UsageTokens,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import type { DynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { estimateUsageCost } from "../agent/usage-pricing";
 import type { DatabaseCore } from "./database-core";
 import { databaseRow, databaseRows, requiredStringColumn } from "./database-rows";

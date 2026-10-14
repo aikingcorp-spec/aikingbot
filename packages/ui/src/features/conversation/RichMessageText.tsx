@@ -1,9 +1,9 @@
-import { type ChatTagKind, chatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { AttachmentSummary, InstalledSkill } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Blocks, Button, Puzzle } from "@openbot/ui";
-import { ReferenceChip } from "@openbot/ui/reference-chip";
-import { usesTouchLayout } from "@openbot/ui/utils";
+import { type ChatTagKind, chatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { AttachmentSummary, InstalledSkill } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Blocks, Button, Puzzle } from "@aikingbot/ui";
+import { ReferenceChip } from "@aikingbot/ui/reference-chip";
+import { usesTouchLayout } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createUniqueId, For, Show, untrack } from "solid-js";
 import type { AgentProfile, MessageCitation } from "../../data";

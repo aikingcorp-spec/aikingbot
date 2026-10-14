@@ -1,18 +1,18 @@
-import type { AgentProviderId, ProviderRuntimeStatus } from "@openbot/contracts/ipc";
+import type { AgentProviderId, ProviderRuntimeStatus } from "@aikingbot/contracts/ipc";
 import {
   freeModelsReady,
   type ProviderConnection,
   ProviderPicker,
   type ProviderPickerOption,
-} from "@openbot/ui/components/ProviderPicker";
+} from "@aikingbot/ui/components/ProviderPicker";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
 
 /*
- * The two provider rows OpenBot treats differently.
+ * The two provider rows AIKINGBOT treats differently.
  *
- * Claude keeps an install guide and a signed-out sign-in button. OpenCode has neither: OpenBot
+ * Claude keeps an install guide and a signed-out sign-in button. OpenCode has neither: AIKINGBOT
  * downloads the CLI, and its free models work with no account, so the only thing an account adds is
  * the paid catalog. Both facts are only visible as buttons, so they are asserted as buttons.
  */

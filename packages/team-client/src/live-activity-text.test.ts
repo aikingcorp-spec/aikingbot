@@ -6,7 +6,7 @@ describe("Live Activity text", () => {
     const message = [
       "# Nagłówek 1",
       "## Nagłówek 2",
-      "Zwykły tekst z **pogrubieniem** i [linkiem](https://openbot.run).",
+      "Zwykły tekst z **pogrubieniem** i [linkiem](https://aikingbot.aikingx.com).",
       "- pierwszy",
       "- [x] zrobione",
       "| A | B |",

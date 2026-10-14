@@ -19,7 +19,7 @@ Small screens switch between the same conversation and workspace components. The
 panel receives the web live-view runtime and hides unsupported native controls. `BrowserLiveView`
 accepts an explicit runtime; desktop and the existing preview still default to the preload-compatible
 API. The web Storybook runtime uses
-`preview/mock-openbot.ts` through `preview/mock-web-runtime.ts`.
+`preview/mock-aikingbot.ts` through `preview/mock-web-runtime.ts`.
 
 The browser runtime uses `packages/team-client` for the directory, authenticated WebRTC peer,
 Signal recovery, file transfers, and browser-view streams. The stream codec lives in contracts;
@@ -29,21 +29,21 @@ Browser tickets and session termination require the same account-session hash th
 remote session. Existing bearer-token endpoints retain their behavior. The browser edits the
 account's name, avatar, and sessions through `v1/me/profile`, `v1/me/avatar`, and `v1/me/sessions`,
 which call the same `AuthService` methods and avatar storage (`avatar-storage.ts`) as the bearer
-routes. The avatar upload is the one write that is not JSON; the origin and `X-OpenBot-Browser`
+routes. The avatar upload is the one write that is not JSON; the origin and `X-AIKINGBOT-Browser`
 checks still apply. `web-account.ts` makes these calls, and the shared `AccountProfilePanel` shows
 them in the conversation's right panel.
 
 An owner or admin gets the host controls of a desktop remote admin. Shared components keep their
 desktop port as the default and take injected calls: `web-server-settings.ts` gives
 `ServerSettingsModal` the host identity, MCP, and storage routes through
-`@openbot/team-client/team-admin-requests`, and member and invitation calls through the closed
+`@aikingbot/team-client/team-admin-requests`, and member and invitation calls through the closed
 `/api/browser/*` list. The Worker applies the same `RemoteControlPlane` role checks as the bearer
 routes. A member or role change revokes every session on the host; the browser reconnects once when
 the directory still lists the host. `ConversationRuntime.admin` carries the skills and shared-table
 calls to the agent settings panel, which shows only Skills and Tables in the browser. Memories,
 routines, and files stay on the desktop. The auto-approve switch writes through the agent-admin
 route. `web-marketplace.ts` gives `MarketplaceModal` its calls: the public catalog routes of
-the account service that serves `/app` (`@openbot/team-client/marketplace-catalog`), and installs on
+the account service that serves `/app` (`@aikingbot/team-client/marketplace-catalog`), and installs on
 the host over `skills-admin-v1`, `agent-install-v1`, `agent-update-v1`, and `mcp-servers-v1`. Try skill and a plugin
 prompt add a line to the agent's draft, as on desktop. A shared agent page also links
 `/app?agent=<id>`: `WebApp` reads the id once, removes the query, and keeps it through sign-in;
@@ -86,7 +86,7 @@ the `media-attachments` capability; released protocol adapters keep their existi
 `browser-tools.ts` defines provider schemas and parses each call into a typed tool and its arguments.
 `browser-tool-actions.ts` maps input tools to CDP operations. It does not own tabs or import the host.
 `BrowserHost` owns tab access checks, operation queues, focus, deadlines, and persistent browser state.
-The browser session and service-worker fallback remove the `OpenBot/` and `Electron/` user-agent
+The browser session and service-worker fallback remove the `AIKINGBOT/` and `Electron/` user-agent
 tokens. They keep the installed Chromium version and host platform. Requests to `accounts.google.com`
 keep the `Electron/` token because Google rejects the account identifier step without it. This
 exception does not change the page identity or the identity sent to other sites.
@@ -94,7 +94,7 @@ Electron provides native `navigator.userAgentData` but no client-hint request he
 loopback HTTP, the host supplies the basic Chromium brand/version, desktop flag, and platform hints.
 It preserves hints supplied by Chromium and does not add high-entropy hints. The focused check is
 `bun run test:browser --scenario=identity`; add `--google-live` for the Google identifier check.
-The local identity report is `.openbot-build/browser-identity.json`.
+The local identity report is `.aikingbot-build/browser-identity.json`.
 Website popups are adopted into managed `WebContentsView` tabs through Electron's window creation
 hook. Native guests retain their opener, request body, and shared browser session. Local tab and
 agent tool results expose `openerTabId` while that relationship is live. Independent `noopener`
@@ -179,7 +179,7 @@ version (`apps/auth-api/src/server/mobile-features-config.ts`).
 
 ## Secure browser authentication
 
-`openbot_browser.submit_secret` uses the existing attention/takeover lifecycle with optional public
+`aikingbot_browser.submit_secret` uses the existing attention/takeover lifecycle with optional public
 secret-request metadata. The attention registry creates a fresh request ID and owns the pending
 response. The secret travels through a dedicated typed IPC endpoint or the optional
 `browser-secret-handoff` Team API capability, never a prompt answer or provider tool argument.

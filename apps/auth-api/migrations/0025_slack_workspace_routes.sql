@@ -1,5 +1,5 @@
 -- New table only. The Worker that runs before this deploy does not read it.
--- Which OpenBot host answers each Slack workspace that installed the OpenBot Slack app. Signal routes
+-- Which AIKINGBOT host answers each Slack workspace that installed the AIKINGBOT Slack app. Signal routes
 -- a workspace's events to that host. No Slack token is kept here: the host has the bot token.
 CREATE TABLE slack_workspace_routes (
   team_id TEXT PRIMARY KEY,

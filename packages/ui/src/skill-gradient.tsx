@@ -1,4 +1,4 @@
-import { articleGradient, articleGradientCss, articleGradientUniforms } from "@openbot/brand/article-gradient";
+import { articleGradient, articleGradientCss, articleGradientUniforms } from "@aikingbot/brand/article-gradient";
 import type { ShaderMount } from "@paper-design/shaders";
 import { createEffect } from "solid-js";
 

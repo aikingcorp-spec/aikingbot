@@ -22,7 +22,7 @@ beforeEach(async () => {
   reported = [];
   allowReported = false;
   busy = false;
-  root = await mkdtemp(join(tmpdir(), "openbot-channels-race-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-channels-race-"));
   data = stores(root);
   await runChannel(data.store.initialize());
   await runChannel(data.mailbox.initialize());

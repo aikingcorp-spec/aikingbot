@@ -36,7 +36,7 @@ surface asks for an update; a change is refused before any request.
 
 A hosted site belongs to the server that published it (`hosted_sites.server_id`, D1 `0024`). The user
 stays the accountable owner, for abuse reports, blocks and account deletion. The desktop sends
-`OpenBot-Host-Id` and `OpenBot-Host-Token` (the machine token of `/v2/remote/hosts/register`) on each
+`AIKINGBOT-Host-Id` and `AIKINGBOT-Host-Token` (the machine token of `/v2/remote/hosts/register`) on each
 `/v1/sites` request when it is a registered server. The Worker checks the hash and that the host owner
 is the request user; a wrong token is refused with 401, never counted as unlinked. The active-site
 limit comes from the server's plan (`siteLimitForPlan`: none 1, Starter 3, Standard 10, Pro 50). A
@@ -201,7 +201,7 @@ form directly.
 `host-update-v1` runs the same update as the host's own Settings. `src/main/requested-update.ts`
 keeps the schedule in memory: who asked, and whether the restart waits until
 `describeRestartReadiness` reports no running work or happens as soon as the update is ready. The
-host user can turn the routes off with "Allow updates from server members" (`openbot-update-preference-v1.json`,
+host user can turn the routes off with "Allow updates from server members" (`aikingbot-update-preference-v1.json`,
 default on) and can cancel a restart that waits. The host still advertises the capability when the
 setting is off, so the client can show why. A Host Manager tenant refuses the routes. The client
 reads the status again every second while a check, a download or a restart runs. An admin can also
@@ -244,19 +244,19 @@ Billing is per server. One account can pay for several servers; each server has 
 subscription. The Account Worker (`apps/auth-api/src/server/billing-service.ts`) talks to the Stripe
 REST API with `fetch`; there is no Stripe SDK. The plan catalog in `packages/contracts/src/billing.ts`
 holds only the plan IDs, storage and lookup keys. The amounts are six Stripe Prices with the lookup
-keys `openbot_{plan}_{interval}`. `bun run api:stripe:bootstrap` (`scripts/stripe-bootstrap.ts`)
+keys `aikingbot_{plan}_{interval}`. `bun run api:stripe:bootstrap` (`scripts/stripe-bootstrap.ts`)
 creates them and the Customer Portal settings.
 
 - The add server dialog starts a plan. The hosting service
   (`apps/auth-api/src/server/hosted-billing.ts`) makes the Stripe customer before the Checkout, so
   two open Checkouts use one customer. The Checkout sets the subscription metadata
-  `openbot_user_id` and `openbot_server_id` (`BILLING_METADATA`). The billing service calls the
+  `aikingbot_user_id` and `aikingbot_server_id` (`BILLING_METADATA`). The billing service calls the
   `onSubscriptionSynced` hook after each subscription sync; the hosting side uses it to provision,
   stop and resume servers, so billing does not know about boat. See
   [hosted servers](../hosted-servers.md#lifecycle). The webhook links a new Stripe customer to the
-  account from `openbot_user_id`. It never moves a known
+  account from `aikingbot_user_id`. It never moves a known
   customer to another account, and it skips a subscription that names no account.
-- Desktop Settings → Billing and the web Billing dialog render `@openbot/ui/features/billing`: one
+- Desktop Settings → Billing and the web Billing dialog render `@aikingbot/ui/features/billing`: one
   row for each open plan, with the server name, the plan, its price, and its renewal controls.
   Hosted plans support cancellation that keeps data, Keep server, and explicit deletion now or
   after the paid period. A stored deletion date and subscription ID drive the cron; a fresh
@@ -289,8 +289,8 @@ another place.
 `scripts/macos-tenant-setup.swift` is a separate administrator command for new Standard accounts.
 It uses OpenDirectory directly, creates only new empty homes, and stores generated credentials
 in a new root-only file before account creation. It is not installed or called by the daemon.
-The Host PKG installs this as `create-tenants`, alongside the standalone `openbot-host` CLI.
-`openbot-host-service.ts` owns setup/verification sequencing; `openbot-host-macos.ts` owns OS
+The Host PKG installs this as `create-tenants`, alongside the standalone `aikingbot-host` CLI.
+`aikingbot-host-service.ts` owns setup/verification sequencing; `aikingbot-host-macos.ts` owns OS
 operations. Passwords cross only the native helper's captured pipe and the administrator's tty,
 not the host protocol. The root-only recovery file is removed after successful presentation.
 `build-host-installer.ts` and `verify-host-installer.ts` own release packaging and the exact
@@ -312,7 +312,7 @@ See [multi-tenant hosting](../multi-tenant-hosting.md) for installation, permiss
 ## Hosted servers
 
 A hosted server is one [boat](https://boat.dev) sandbox for one account. It runs the Linux
-OpenBot build under Xvfb and is a normal Remote host after its first start. The account Worker
+AIKINGBOT build under Xvfb and is a normal Remote host after its first start. The account Worker
 owns the sandbox lifecycle: it creates, resumes and deletes sandboxes, and D1 keeps the desired
 and observed state. A server reports each minute while it is in use, and the Worker stops it after
 15 minutes with no report. boat also stops each sandbox at the end of a 2-hour lease that activity
@@ -324,8 +324,8 @@ turns while it is low and limits the turns that run at the same time. See
 [hosted servers](../hosted-servers.md) for the flow, the configuration, the memory guards and the template.
 
 A self-hosted server uses the same Linux build, scripts and units on the owner's own computer, with
-`/opt/OpenBot/hosted/mode` set to `self`. It has no claim: main starts in server mode
-(`src/main/server-mode.ts`, `OPENBOT_SERVER=1`), and the `openbot` terminal command signs it in over
+`/opt/AIKINGBOT/hosted/mode` set to `self`. It has no claim: main starts in server mode
+(`src/main/server-mode.ts`, `AIKINGBOT_SERVER=1`), and the `aikingbot` terminal command signs it in over
 a Unix socket in the 0700 runtime directory of the service user. Main publishes the host after each
 sign-in. See [self-hosted servers](../self-hosted-server.md).
 

@@ -1,6 +1,6 @@
 /*
  * The connect dialog. It opens over the marketplace modal and over the menus the marketplace opens,
- * so it takes the nested step of `--openbot-layer-dialog-host` rather than the shared dialog layer:
+ * so it takes the nested step of `--aikingbot-layer-dialog-host` rather than the shared dialog layer:
  * both portals are children of `body`, and insertion order alone would break the first time it is
  * opened from somewhere else.
  *
@@ -12,24 +12,24 @@
 .mcp-connect-backdrop {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--openbot-layer-dialog-host) + 2);
+  z-index: calc(var(--aikingbot-layer-dialog-host) + 2);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-6);
-  animation: mcp-connect-backdrop-in var(--openbot-duration-normal) var(--openbot-ease-out) both;
+  padding: var(--aikingbot-space-6);
+  animation: mcp-connect-backdrop-in var(--aikingbot-duration-normal) var(--aikingbot-ease-out) both;
 }
 
 .mcp-connect-dialog {
   position: relative;
   width: min(420px, 100%);
-  max-height: calc(100dvh - var(--openbot-space-6) * 2);
+  max-height: calc(100dvh - var(--aikingbot-space-6) * 2);
   overflow-y: auto;
   outline: 0;
-  border-radius: var(--openbot-radius-xl);
-  background: var(--openbot-bg-control);
-  padding: var(--openbot-space-6);
-  color: var(--openbot-text-primary);
-  animation: mcp-connect-dialog-in var(--openbot-duration-slow) var(--openbot-ease-out) both;
+  border-radius: var(--aikingbot-radius-xl);
+  background: var(--aikingbot-bg-control);
+  padding: var(--aikingbot-space-6);
+  color: var(--aikingbot-text-primary);
+  animation: mcp-connect-dialog-in var(--aikingbot-duration-slow) var(--aikingbot-ease-out) both;
 }
 
 /* The header reads down the middle: the two ends, the name, the one line about what happens next. */
@@ -37,14 +37,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /* Out of the column, so the centred name is centred on the dialog and not on what is left of it. */
 .mcp-connect-close {
   position: absolute;
-  top: var(--openbot-space-3);
-  right: var(--openbot-space-3);
+  top: var(--aikingbot-space-3);
+  right: var(--aikingbot-space-3);
 }
 
 /* This computer and the app, joined by the dots the connection is about to become. The dots run
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .mcp-connect-mark {
@@ -71,7 +71,7 @@
 .mcp-connect-dots {
   width: 28px;
   height: 2px;
-  background-image: radial-gradient(circle, var(--openbot-text-muted) 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--aikingbot-text-muted) 1px, transparent 1px);
   background-size: 7px 2px;
   animation: mcp-connect-dots-run 900ms linear infinite;
 }
@@ -81,7 +81,7 @@
 .mcp-connect-marks .mcp-connect-mark-icon {
   width: 48px;
   height: 48px;
-  animation: mcp-connect-mark-in var(--openbot-duration-slow) var(--openbot-ease-out) both;
+  animation: mcp-connect-mark-in var(--aikingbot-duration-slow) var(--aikingbot-ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -93,100 +93,100 @@
 
 .mcp-connect-title {
   display: block;
-  margin: var(--openbot-space-3) 0 0;
+  margin: var(--aikingbot-space-3) 0 0;
   text-align: center;
-  font-size: var(--openbot-text-xl);
-  line-height: var(--openbot-leading-xl);
-  font-weight: var(--openbot-weight-semibold);
-  letter-spacing: var(--openbot-tracking-tight);
+  font-size: var(--aikingbot-text-xl);
+  line-height: var(--aikingbot-leading-xl);
+  font-weight: var(--aikingbot-weight-semibold);
+  letter-spacing: var(--aikingbot-tracking-tight);
 }
 
 .mcp-connect-description {
   margin: 0;
   text-align: center;
   text-wrap: balance;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 /* One card of facts, its rows divided rather than spaced: a connection is one thing to read. */
 .mcp-connect-card {
   display: flex;
   flex-direction: column;
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-grouped);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-grouped);
 }
 
 .mcp-connect-row {
   position: relative;
   margin: 0;
-  padding: var(--openbot-space-3);
+  padding: var(--aikingbot-space-3);
 }
 
 .mcp-connect-row + .mcp-connect-row {
-  border-top: 1px solid var(--openbot-border-grouped);
+  border-top: 1px solid var(--aikingbot-border-grouped);
 }
 
 /* The steps that turn on a server another app runs. The heading leaves room for the setup link
    that sits in the row's corner. */
 .mcp-local-heading {
   margin: 0;
-  padding-right: var(--openbot-space-6);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-sm);
+  padding-right: var(--aikingbot-space-6);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .mcp-local-steps {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
-  margin: var(--openbot-space-2) 0 0;
-  padding-left: var(--openbot-space-4);
+  gap: var(--aikingbot-space-2);
+  margin: var(--aikingbot-space-2) 0 0;
+  padding-left: var(--aikingbot-space-4);
   list-style: decimal;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .mcp-local-steps > li::marker {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .mcp-local-address {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  gap: var(--aikingbot-space-3);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .mcp-local-address > code {
   overflow-wrap: anywhere;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
 }
 
 .mcp-connect-form {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-4);
-  margin: var(--openbot-space-4) 0 0;
+  gap: var(--aikingbot-space-4);
+  margin: var(--aikingbot-space-4) 0 0;
 }
 
 /* On the label's line, at the far end of it: the way out to the key page is a quiet aside, and it
    is the size of the other links in the marketplace rather than the size of the field. */
 .mcp-connect-docs {
   position: absolute;
-  top: var(--openbot-space-3);
-  right: var(--openbot-space-3);
-  gap: var(--openbot-space-1-5);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  top: var(--aikingbot-space-3);
+  right: var(--aikingbot-space-3);
+  gap: var(--aikingbot-space-1-5);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .mcp-connect-primary {
@@ -197,10 +197,10 @@
    so they are the size of every other external-link mark in the marketplace. */
 .mcp-connect-docs > svg,
 .mcp-connect-primary > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 /* Empty until a connection answers, and it holds no height then: a live region that reserves space
@@ -212,16 +212,16 @@
 .mcp-connect-privacy {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  gap: var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .mcp-connect-privacy svg {
   flex: none;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  color: var(--aikingbot-text-muted);
 }
 
 @keyframes mcp-connect-backdrop-in {
@@ -261,13 +261,13 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .mcp-sign-in-page-dialog .mcp-sign-in-page {
-  margin-top: var(--openbot-space-4);
+  margin-top: var(--aikingbot-space-4);
 }
 
 .mcp-sign-in-page-note {
@@ -277,16 +277,16 @@
 
 /* A relayed sign-in: the page is in the user's own browser, so the dialog holds only the address field. */
 .mcp-sign-in-relay-open {
-  margin-top: var(--openbot-space-4);
+  margin-top: var(--aikingbot-space-4);
 }
 
 .mcp-sign-in-relay-form {
-  margin-top: var(--openbot-space-4);
+  margin-top: var(--aikingbot-space-4);
 }
 
 .mcp-sign-in-relay-row {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .mcp-sign-in-relay-row > .ui-input {
@@ -298,6 +298,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
-  margin-top: var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  margin-top: var(--aikingbot-space-4);
 }

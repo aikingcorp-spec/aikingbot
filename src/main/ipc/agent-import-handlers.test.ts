@@ -7,8 +7,8 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { IPC_ENDPOINTS } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import { IPC_ENDPOINTS } from "@aikingbot/contracts/ipc";
+import { translateFor } from "@aikingbot/i18n";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type Invoke = (event: unknown, request?: unknown) => unknown;
@@ -25,13 +25,13 @@ const { registerIpcGroup } = await import("./define-ipc-group");
 const { agentImportIpcHandlers } = await import("./agent-import-handlers");
 const { AgentImportService } = await import("../agent-import-service");
 
-const TRUSTED_EVENT = { senderFrame: { url: "openbot-app://app/index.html" } };
-const SKILL = "---\nname: openbot-export\ndescription: Export agents.\n---\n";
+const TRUSTED_EVENT = { senderFrame: { url: "aikingbot-app://app/index.html" } };
+const SKILL = "---\nname: aikingbot-export\ndescription: Export agents.\n---\n";
 
 let root: string;
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-agent-import-handlers-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-agent-import-handlers-"));
   const exportSkillPath = join(root, "SKILL.md");
   await writeFile(exportSkillPath, SKILL);
   bound.clear();

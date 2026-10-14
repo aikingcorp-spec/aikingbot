@@ -51,11 +51,12 @@ export const messages = {
   "error.agent.hostLimit": "Bir ana makinede en fazla {limit} ajan bulunabilir.",
   "error.agent.changedWhileDuplicating": "Ajan kopyalanırken değişti. Tekrar deneyin.",
   "error.agent.duplicatedAgentGone": "Kopyalanan ajan artık mevcut değil.",
-  "error.agent.stateCorrupt": "Ajan durumu bozuk veya daha yeni bir OpenBot sürümünden; üzerine yazılması reddedildi.",
+  "error.agent.stateCorrupt":
+    "Ajan durumu bozuk veya daha yeni bir AIKINGBOT sürümünden; üzerine yazılması reddedildi.",
   "error.agent.oldRoleField":
-    "Kayıtlı ajan profilleri eski rol alanını kullanıyor; OpenBot'u başlatmadan önce verileri güncelleyin.",
+    "Kayıtlı ajan profilleri eski rol alanını kullanıyor; AIKINGBOT'u başlatmadan önce verileri güncelleyin.",
   "error.agent.duplicateIds": "Ajan durumu yinelenen ajan kimlikleri içeriyor; üzerine yazılması reddedildi.",
-  "error.agent.copyNameFailed": "OpenBot benzersiz bir ajan kopya adı oluşturamadı.",
+  "error.agent.copyNameFailed": "AIKINGBOT benzersiz bir ajan kopya adı oluşturamadı.",
   "error.agent.endpointRemoved": "Bu ajanın kullandığı uç nokta kaldırıldı. Ajan için başka bir model seçin.",
   "error.agent.selectedGone": "Seçilen ajan artık mevcut değil.",
   "error.agent.profileEndpointsChanged": "Bu işlem oluşturulurken özel uç noktalar değişti. Tekrar deneyin.",
@@ -76,10 +77,10 @@ export const messages = {
   "error.agent.saveOtherAgent": "Bu kayıt başka bir ajana ait.",
   "error.agent.savedGone": "Kaydedilen ajan artık mevcut değil.",
   "error.agent.storedProfileUnreadable":
-    'Kayıtlı bir ajan profili okunamayan bir "{field}" değerine sahip; OpenBot\'u başlatmadan önce verileri güncelleyin.',
+    'Kayıtlı bir ajan profili okunamayan bir "{field}" değerine sahip; AIKINGBOT\'u başlatmadan önce verileri güncelleyin.',
   "error.agent.storedProfileUnreadableId":
-    '{id} kayıtlı ajan profili okunamayan bir "{field}" değerine sahip; OpenBot\'u başlatmadan önce verileri güncelleyin.',
-  // Written by `QueueEditRejectedError` in @openbot/contracts, which cannot import this package.
+    '{id} kayıtlı ajan profili okunamayan bir "{field}" değerine sahip; AIKINGBOT\'u başlatmadan önce verileri güncelleyin.',
+  // Written by `QueueEditRejectedError` in @aikingbot/contracts, which cannot import this package.
   "error.agent.queueEditRejected": "Kuyruk düzenlemesi reddedildi: {reason}",
   "error.agent.computerUseLocalOnly": "Bilgisayar Kullanımı yalnızca ajanı çalıştıran bilgisayarda değiştirilebilir.",
   "error.agent.automationLocalOnly": "Yerel betiklere yalnızca ajanı çalıştıran bilgisayarda izin verilebilir.",
@@ -97,5 +98,5 @@ export const messages = {
   "error.agent.lowMemory":
     "Bu sunucunun belleği azaldı. Mesajınız kuyrukta bekler ve bellek boşaldığında başlar. Daha büyük bir plan sunucuya daha fazla bellek sağlar.",
   "error.agent.workspaceOnlyToolMissing":
-    "Yalnızca çalışma alanı OpenBot'un bulamadığı {tool} aracına ihtiyaç duyar. Aracı yükleyin veya ajan ayarlarından Tam erişim'i seçin.",
+    "Yalnızca çalışma alanı AIKINGBOT'un bulamadığı {tool} aracına ihtiyaç duyar. Aracı yükleyin veya ajan ayarlarından Tam erişim'i seçin.",
 } as const satisfies PartialTranslation<typeof source>;

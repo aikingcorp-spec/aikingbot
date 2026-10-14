@@ -16,7 +16,7 @@ export const messages = {
   "customProvider.error.providerIdPattern":
     "Utilisez des lettres minuscules, des chiffres, des tirets ou des traits de soulignement, en commençant par une lettre ou un chiffre.",
   "customProvider.error.providerIdLength": "L’ID du fournisseur doit faire moins de {max} caractères.",
-  "customProvider.error.providerIdBuiltIn": "OpenBot a déjà un fournisseur nommé {id}. Choisissez un autre ID.",
+  "customProvider.error.providerIdBuiltIn": "AIKINGBOT a déjà un fournisseur nommé {id}. Choisissez un autre ID.",
   "customProvider.error.providerIdSaved":
     "Un point de terminaison nommé {id} est déjà enregistré. Supprimez-le d’abord, ou choisissez un autre ID.",
   "customProvider.error.displayNameRequired": "Saisissez un nom d’affichage.",
@@ -39,16 +39,16 @@ export const messages = {
   "customProvider.error.baseUrlProtocol": "Utilisez une URL http:// ou https://.",
   "customProvider.error.baseUrlCredential": "Mettez l’identifiant dans un en-tête, pas dans l’URL.",
 
-  "customProvider.saved.restarted": "Enregistré. OpenBot charge les modèles.",
+  "customProvider.saved.restarted": "Enregistré. AIKINGBOT charge les modèles.",
   "customProvider.saved.skippedBusy":
     "Enregistré. OpenCode lit la liste quand la tâche en cours s’arrête. Appuyez alors sur Se connecter.",
   "customProvider.saved.notRunning": "Enregistré. OpenCode lit la liste à son prochain démarrage.",
-  "customProvider.removed.restarted": "Supprimé. OpenBot charge les modèles.",
+  "customProvider.removed.restarted": "Supprimé. AIKINGBOT charge les modèles.",
   "customProvider.removed.skippedBusy":
     "Supprimé. OpenCode lit la liste quand la tâche en cours s’arrête. Appuyez alors sur Se connecter.",
   "customProvider.removed.notRunning": "Supprimé. OpenCode lit la liste à son prochain démarrage.",
-  "customProvider.saveFailed": "OpenBot n’a pas pu enregistrer ce point de terminaison.",
-  "customProvider.removeFailed": "OpenBot n’a pas pu supprimer {name}.",
+  "customProvider.saveFailed": "AIKINGBOT n’a pas pu enregistrer ce point de terminaison.",
+  "customProvider.removeFailed": "AIKINGBOT n’a pas pu supprimer {name}.",
   "customProvider.saveUnavailable": "Cette version ne peut pas enregistrer de point de terminaison.",
   "customProvider.removeUnavailable": "Cette version ne peut pas supprimer de point de terminaison.",
 
@@ -110,7 +110,7 @@ export const messages = {
   "customProvider.detected.title": "Trouvé sur cet ordinateur",
   "customProvider.detected.scanning": "Recherche de modèles et d’agents locaux.",
   "customProvider.detected.scanAgain": "Rechercher à nouveau",
-  "customProvider.detected.empty": "OpenBot n’a trouvé aucun serveur de modèles local ni agent ACP.",
+  "customProvider.detected.empty": "AIKINGBOT n’a trouvé aucun serveur de modèles local ni agent ACP.",
   "customProvider.detected.add": "Ajouter",
   "customProvider.detected.addLabel": "Ajouter {name}",
   "customProvider.detected.added": "Ajouté",
@@ -127,10 +127,10 @@ export const messages = {
 
   "customProvider.detection.title": "Détection locale",
   "customProvider.detection.saveFailed": "Impossible d’enregistrer les réglages de détection.",
-  "customProvider.detection.description": "Où OpenBot cherche les serveurs de modèles locaux et les agents ACP.",
+  "customProvider.detection.description": "Où AIKINGBOT cherche les serveurs de modèles locaux et les agents ACP.",
   "customProvider.detection.enabled": "Rechercher les modèles et les agents locaux",
   "customProvider.detection.enabledDescription":
-    "OpenBot vérifie les adresses par défaut d’Ollama et de LM Studio, et cherche les agents ACP connus dans votre PATH.",
+    "AIKINGBOT vérifie les adresses par défaut d’Ollama et de LM Studio, et cherche les agents ACP connus dans votre PATH.",
   "customProvider.detection.addresses": "Autres adresses de serveurs de modèles",
   "customProvider.detection.address.label": "Adresse {number}",
   "customProvider.detection.address.remove": "Supprimer l’adresse {number}",
@@ -150,7 +150,7 @@ export const messages = {
   "customProvider.acp.agentId": "ID de l’agent",
   "customProvider.acp.agentIdHint": "Lettres minuscules, chiffres ou tirets. Vous ne pourrez pas le modifier ensuite.",
   "customProvider.acp.command": "Commande",
-  "customProvider.acp.commandHint": "Le programme à démarrer. OpenBot le cherche dans votre PATH.",
+  "customProvider.acp.commandHint": "Le programme à démarrer. AIKINGBOT le cherche dans votre PATH.",
   "customProvider.acp.args": "Arguments",
   "customProvider.acp.argsHint":
     "Séparez les arguments par des espaces. Mettez entre guillemets un argument qui contient des espaces.",
@@ -161,7 +161,7 @@ export const messages = {
   "customProvider.acp.env.add": "Ajouter une variable",
   "customProvider.acp.check": "Connexion",
   "customProvider.acp.checkRun": "Vérifier l’agent",
-  "customProvider.acp.checkIdle": "OpenBot démarre la commande une fois pour vérifier qu’elle répond.",
+  "customProvider.acp.checkIdle": "AIKINGBOT démarre la commande une fois pour vérifier qu’elle répond.",
   "customProvider.acp.checking": "Démarrage de {command}.",
   "customProvider.acp.checkOk": "{name} a répondu",
   "customProvider.acp.checkOkVersion": "{name} {version} a répondu",
@@ -169,7 +169,7 @@ export const messages = {
   "customProvider.acp.checkFailed": "L’agent n’a pas répondu",
   "customProvider.acp.trustTitle": "Cette commande s’exécute sur votre ordinateur",
   "customProvider.acp.trustDescription":
-    "OpenBot la démarre avec votre compte utilisateur. L’agent peut lire et modifier des fichiers, et exécuter des commandes. N’ajoutez qu’un agent de confiance.",
+    "AIKINGBOT la démarre avec votre compte utilisateur. L’agent peut lire et modifier des fichiers, et exécuter des commandes. N’ajoutez qu’un agent de confiance.",
   "customProvider.acp.submit": "Ajouter l’agent",
   "customProvider.acp.editTitle": "Modifier un agent ACP personnalisé",
   "customProvider.acp.submitEdit": "Enregistrer l’agent",
@@ -186,7 +186,7 @@ export const messages = {
     "Utilisez des lettres minuscules, des chiffres ou des tirets, en commençant par une lettre ou un chiffre. Utilisez au plus 40 caractères.",
 
   "customProvider.agents.title": "Agents personnalisés",
-  "customProvider.agents.description": "Les agents ACP qu’OpenBot démarre sur cet ordinateur.",
+  "customProvider.agents.description": "Les agents ACP qu’AIKINGBOT démarre sur cet ordinateur.",
   "customProvider.agents.empty": "Aucun agent personnalisé pour l’instant.",
   "customProvider.agents.add": "Ajouter un agent",
   "customProvider.agents.restart": "Redémarrer les agents",
@@ -198,12 +198,12 @@ export const messages = {
   "customProvider.agents.deleteLabel": "Supprimer {name}",
   "customProvider.agents.confirmDescription":
     "Ses variables enregistrées sont effacées, et tout agent qui l’utilise revient à un modèle par défaut.",
-  "customProvider.agents.saveFailed": "OpenBot n’a pas pu enregistrer cet agent.",
-  "customProvider.agents.saved.restarted": "Enregistré. OpenBot a redémarré les agents personnalisés.",
+  "customProvider.agents.saveFailed": "AIKINGBOT n’a pas pu enregistrer cet agent.",
+  "customProvider.agents.saved.restarted": "Enregistré. AIKINGBOT a redémarré les agents personnalisés.",
   "customProvider.agents.saved.skippedBusy":
     "Enregistré. Les agents personnalisés redémarrent quand la tâche en cours s’arrête.",
   "customProvider.agents.saved.notRunning": "Enregistré. Les agents personnalisés le liront à leur prochain démarrage.",
-  "customProvider.agents.removed.restarted": "Supprimé. OpenBot a redémarré les agents personnalisés.",
+  "customProvider.agents.removed.restarted": "Supprimé. AIKINGBOT a redémarré les agents personnalisés.",
   "customProvider.agents.removed.skippedBusy":
     "Supprimé. Les agents personnalisés redémarrent quand la tâche en cours s’arrête.",
   "customProvider.agents.removed.notRunning": "Supprimé. Les agents personnalisés le liront à leur prochain démarrage.",

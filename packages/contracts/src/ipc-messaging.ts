@@ -1,6 +1,6 @@
 /**
  * Messaging connections: a chat platform workspace, such as a Slack workspace or a Discord guild that
- * installed the OpenBot app, or a Telegram chat that added the OpenBot bot, where the agents of this
+ * installed the AIKINGBOT app, or a Telegram chat that added the AIKINGBOT bot, where the agents of this
  * computer answer. Each new conversation goes to the
  * workspace's orchestrator agent, which asks its teammates and answers. The connection belongs to the
  * computer that runs the agents. Tokens travel only towards that host; no result carries one.
@@ -28,7 +28,7 @@ export const MESSAGING_CONNECTION_STATES = [
   // Slack, Discord and Telegram send their events through Signal, and this host cannot reach it: it
   // is signed out, has no name yet, or Signal is down.
   "relay_unavailable",
-  // The OpenBot bot is no longer in the Telegram chat.
+  // The AIKINGBOT bot is no longer in the Telegram chat.
   "removed",
 ] as const;
 export type MessagingConnectionState = (typeof MESSAGING_CONNECTION_STATES)[number];
@@ -50,7 +50,7 @@ export interface MessagingConnection {
   enabled: boolean;
   state: MessagingConnectionState;
   workspaceName: string;
-  /** The platform user that OpenBot posts as. */
+  /** The platform user that AIKINGBOT posts as. */
   botUserId: string | null;
   missingScopes: string[];
   /** When the connection tries again after a rate limit, as an ISO time. */
@@ -101,7 +101,7 @@ export type TelegramOverview = MessagingOverview;
 export type TelegramChatInput = MessagingWorkspaceInput;
 export type SetTelegramEnabledInput = SetMessagingEnabledInput;
 
-/** Where the user adds the OpenBot bot: a group, or a direct chat with the bot. */
+/** Where the user adds the AIKINGBOT bot: a group, or a direct chat with the bot. */
 export interface ConnectTelegramChatInput {
   place: "group" | "direct";
 }

@@ -117,7 +117,7 @@ function createClient(provider: "antigravity" | "opencode" = "antigravity"): Acp
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-antigravity-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-antigravity-"));
   await writeFile(join(root, "agent.cjs"), AGENT);
   events = [];
   saved = [];

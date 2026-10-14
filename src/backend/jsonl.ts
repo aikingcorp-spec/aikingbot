@@ -1,6 +1,6 @@
 import { Transform } from "node:stream";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { isRpcMessage, type RpcMessage } from "./protocol";
 
 const MIB = 1024 * 1024;

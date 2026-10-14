@@ -1,10 +1,10 @@
-import { BILLING_PLANS, type BillingPlanId } from "@openbot/contracts/billing";
+import { BILLING_PLANS, type BillingPlanId } from "@aikingbot/contracts/billing";
 import {
   HOSTED_SERVER_SIZES,
   type HostedServerState,
   type HostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/hosted-servers";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Badge,
   Button,
@@ -22,7 +22,7 @@ import {
   Spinner,
   Text,
   Trash2,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import type { SettingsHostedServersStore } from "./stores/hosted-servers-store";

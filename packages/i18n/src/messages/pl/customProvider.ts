@@ -16,7 +16,7 @@ export const messages = {
   "customProvider.error.providerIdPattern":
     "Użyj małych liter, cyfr, łączników lub podkreśleń; zacznij od litery lub cyfry.",
   "customProvider.error.providerIdLength": "Liczba znaków w ID dostawcy musi być mniejsza niż {max}.",
-  "customProvider.error.providerIdBuiltIn": "OpenBot ma już dostawcę o nazwie {id}. Wybierz inne ID.",
+  "customProvider.error.providerIdBuiltIn": "AIKINGBOT ma już dostawcę o nazwie {id}. Wybierz inne ID.",
   "customProvider.error.providerIdSaved":
     "Endpoint o nazwie {id} jest już zapisany. Najpierw go usuń lub wybierz inne ID.",
   "customProvider.error.displayNameRequired": "Wpisz nazwę wyświetlaną.",
@@ -38,11 +38,11 @@ export const messages = {
   "customProvider.error.baseUrlInvalid": "Wpisz pełny URL, na przykład {example}.",
   "customProvider.error.baseUrlProtocol": "Użyj adresu URL http:// lub https://.",
   "customProvider.error.baseUrlCredential": "Umieść poświadczenie w nagłówku, nie w adresie URL.",
-  "customProvider.saved.restarted": "Zapisano. OpenBot wczytuje modele.",
+  "customProvider.saved.restarted": "Zapisano. AIKINGBOT wczytuje modele.",
   "customProvider.saved.skippedBusy":
     "Zapisano. OpenCode odczyta listę po zakończeniu bieżącego zadania. Wtedy naciśnij „Połącz”.",
   "customProvider.saved.notRunning": "Zapisano. OpenCode odczyta listę przy następnym uruchomieniu.",
-  "customProvider.removed.restarted": "Usunięto. OpenBot wczytuje modele.",
+  "customProvider.removed.restarted": "Usunięto. AIKINGBOT wczytuje modele.",
   "customProvider.removed.skippedBusy":
     "Usunięto. OpenCode odczyta listę po zakończeniu bieżącego zadania. Wtedy naciśnij „Połącz”.",
   "customProvider.removed.notRunning": "Usunięto. OpenCode odczyta listę przy następnym uruchomieniu.",
@@ -111,7 +111,7 @@ export const messages = {
   "customProvider.detected.title": "Znalezione na tym komputerze",
   "customProvider.detected.scanning": "Szukanie lokalnych modeli i agentów.",
   "customProvider.detected.scanAgain": "Skanuj ponownie",
-  "customProvider.detected.empty": "OpenBot nie znalazł lokalnego serwera modeli ani agenta ACP.",
+  "customProvider.detected.empty": "AIKINGBOT nie znalazł lokalnego serwera modeli ani agenta ACP.",
   "customProvider.detected.add": "Dodaj",
   "customProvider.detected.addLabel": "Dodaj: {name}",
   "customProvider.detected.added": "Dodano",
@@ -129,10 +129,10 @@ export const messages = {
   "customProvider.detected.showHidden": "Pokaż ukryte ({count})",
   "customProvider.detection.title": "Wykrywanie lokalne",
   "customProvider.detection.saveFailed": "Nie udało się zapisać ustawień wykrywania.",
-  "customProvider.detection.description": "Gdzie OpenBot szuka lokalnych serwerów modeli i agentów ACP.",
+  "customProvider.detection.description": "Gdzie AIKINGBOT szuka lokalnych serwerów modeli i agentów ACP.",
   "customProvider.detection.enabled": "Szukaj lokalnych modeli i agentów",
   "customProvider.detection.enabledDescription":
-    "OpenBot sprawdza domyślne adresy Ollama i LM Studio oraz szuka znanych agentów ACP w twojej zmiennej PATH.",
+    "AIKINGBOT sprawdza domyślne adresy Ollama i LM Studio oraz szuka znanych agentów ACP w twojej zmiennej PATH.",
   "customProvider.detection.addresses": "Inne adresy serwerów modeli",
   "customProvider.detection.address.label": "Adres {number}",
   "customProvider.detection.address.remove": "Usuń adres {number}",
@@ -151,7 +151,7 @@ export const messages = {
   "customProvider.acp.agentId": "ID agenta",
   "customProvider.acp.agentIdHint": "Małe litery, cyfry lub łączniki. Później nie można go zmienić.",
   "customProvider.acp.command": "Polecenie",
-  "customProvider.acp.commandHint": "Program do uruchomienia. OpenBot szuka go w twojej zmiennej PATH.",
+  "customProvider.acp.commandHint": "Program do uruchomienia. AIKINGBOT szuka go w twojej zmiennej PATH.",
   "customProvider.acp.args": "Argumenty",
   "customProvider.acp.argsHint": "Oddziel argumenty spacjami. Argument ze spacjami ujmij w cudzysłów.",
   "customProvider.acp.env": "Zmienne środowiskowe",
@@ -161,7 +161,7 @@ export const messages = {
   "customProvider.acp.env.add": "Dodaj zmienną",
   "customProvider.acp.check": "Połączenie",
   "customProvider.acp.checkRun": "Sprawdź agenta",
-  "customProvider.acp.checkIdle": "OpenBot uruchomi polecenie raz, aby sprawdzić, czy odpowiada.",
+  "customProvider.acp.checkIdle": "AIKINGBOT uruchomi polecenie raz, aby sprawdzić, czy odpowiada.",
   "customProvider.acp.checking": "Uruchamianie {command}.",
   "customProvider.acp.checkOk": "{name} odpowiedział",
   "customProvider.acp.checkOkVersion": "{name} {version} odpowiedział",
@@ -169,7 +169,7 @@ export const messages = {
   "customProvider.acp.checkFailed": "Agent nie odpowiedział",
   "customProvider.acp.trustTitle": "To polecenie działa na twoim komputerze",
   "customProvider.acp.trustDescription":
-    "OpenBot uruchamia je z twojego konta użytkownika. Agent może czytać i zmieniać pliki oraz uruchamiać polecenia. Dodawaj tylko agentów, którym ufasz.",
+    "AIKINGBOT uruchamia je z twojego konta użytkownika. Agent może czytać i zmieniać pliki oraz uruchamiać polecenia. Dodawaj tylko agentów, którym ufasz.",
   "customProvider.acp.submit": "Dodaj agenta",
   "customProvider.acp.editTitle": "Edytuj własnego agenta ACP",
   "customProvider.acp.submitEdit": "Zapisz agenta",
@@ -184,7 +184,7 @@ export const messages = {
   "customProvider.acp.error.agentIdPattern":
     "Użyj małych liter, cyfr lub łączników; zacznij od litery lub cyfry. Maksymalnie 40 znaków.",
   "customProvider.agents.title": "Własni agenci",
-  "customProvider.agents.description": "Agenci ACP, których OpenBot uruchamia na tym komputerze.",
+  "customProvider.agents.description": "Agenci ACP, których AIKINGBOT uruchamia na tym komputerze.",
   "customProvider.agents.empty": "Brak własnych agentów.",
   "customProvider.agents.add": "Dodaj agenta",
   "customProvider.agents.restart": "Uruchom agentów ponownie",
@@ -202,11 +202,11 @@ export const messages = {
   "customProvider.agents.confirmDescription":
     "Jego zapisane zmienne zostaną odrzucone, a każdy agent, który go używa, przejdzie na model domyślny.",
   "customProvider.agents.saveFailed": "Nie udało się zapisać tego agenta.",
-  "customProvider.agents.saved.restarted": "Zapisano. OpenBot uruchomił ponownie własnych agentów.",
+  "customProvider.agents.saved.restarted": "Zapisano. AIKINGBOT uruchomił ponownie własnych agentów.",
   "customProvider.agents.saved.skippedBusy":
     "Zapisano. Własni agenci uruchomią się ponownie po zakończeniu bieżącego zadania.",
   "customProvider.agents.saved.notRunning": "Zapisano. Własni agenci odczytają zmiany przy następnym uruchomieniu.",
-  "customProvider.agents.removed.restarted": "Usunięto. OpenBot uruchomił ponownie własnych agentów.",
+  "customProvider.agents.removed.restarted": "Usunięto. AIKINGBOT uruchomił ponownie własnych agentów.",
   "customProvider.agents.removed.skippedBusy":
     "Usunięto. Własni agenci uruchomią się ponownie po zakończeniu bieżącego zadania.",
   "customProvider.agents.removed.notRunning": "Usunięto. Własni agenci odczytają zmiany przy następnym uruchomieniu.",

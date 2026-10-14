@@ -37,7 +37,7 @@ export type QueuedSignalMessage = Extract<
   { type: "slack-delivery" | "discord-delivery" | "telegram-delivery" }
 >;
 
-const KIND: HostGrantKind = { version: 1, info: "openbot-ingress-queue-v1" };
+const KIND: HostGrantKind = { version: 1, info: "aikingbot-ingress-queue-v1" };
 
 /**
  * The `ready` capability of a Signal that starts a hosted server for a connector event and keeps the

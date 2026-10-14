@@ -1,5 +1,5 @@
-import { AppLogo } from "@openbot/brand";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { AppLogo } from "@aikingbot/brand";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { Link, useLocation } from "@tanstack/solid-router";
 import { createSignal, For, onSettled } from "solid-js";
 import { ButtonLink } from "../ui/button";
@@ -105,7 +105,7 @@ export function NotFoundPage() {
           </div>
           <ol class="not-found-terminal-lines">
             <li class="not-found-line not-found-line-command" style={{ "--line": 0 }}>
-              <span class="not-found-prompt">$</span> openbot open{" "}
+              <span class="not-found-prompt">$</span> aikingbot open{" "}
               <span class="not-found-path">{location().pathname}</span>
             </li>
             <For each={SEARCH_STEPS}>

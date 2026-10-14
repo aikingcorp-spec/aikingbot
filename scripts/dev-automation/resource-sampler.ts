@@ -6,7 +6,7 @@
 
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import type { Logger } from "@openbot/logging";
+import type { Logger } from "@aikingbot/logging";
 import type { Browser, CDPSession, Page } from "playwright-core";
 import { cpuMetrics, type MetricValues, parseFootprint, processMetrics } from "./bench-stats";
 import { collectDescendants, PROCESS_TABLE_PS_ARGS, type ProcessTableRow, parseProcessTable } from "./cpu-sampling";

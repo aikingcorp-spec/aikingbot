@@ -1,5 +1,5 @@
-import type { AgentModelOption, AgentProviderStatus, AgentStatus } from "@openbot/contracts/ipc";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
+import type { AgentModelOption, AgentProviderStatus, AgentStatus } from "@aikingbot/contracts/ipc";
+import { ProviderModelPicker } from "@aikingbot/ui/components/ProviderModelPicker";
 import { fireEvent, render, screen, within } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";

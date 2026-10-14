@@ -1,5 +1,5 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
-import { ROUTINE_SAVED_DRAFT_KIND_VALUES, type RoutineDraftKind } from "@openbot/team-client/routine-schedule-draft";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
+import { ROUTINE_SAVED_DRAFT_KIND_VALUES, type RoutineDraftKind } from "@aikingbot/team-client/routine-schedule-draft";
 import { Typography } from "heroui-native";
 import { AlarmClock, Check, ChevronsDownUp, ChevronsUpDown, Webhook } from "lucide-react-native";
 import { useState } from "react";
@@ -60,8 +60,8 @@ export function RoutineTriggerPicker({
   onSelect: (choice: RoutineTriggerChoice) => void;
 }) {
   const { t } = useText();
-  const muted = String(useCSSVariable("--openbot-text-grouped-secondary"));
-  const accent = String(useCSSVariable("--openbot-accent"));
+  const muted = String(useCSSVariable("--aikingbot-text-grouped-secondary"));
+  const accent = String(useCSSVariable("--aikingbot-accent"));
   const [open, setOpen] = useState(false);
   const shown = open && !disabled;
   const Toggle = shown ? ChevronsDownUp : ChevronsUpDown;

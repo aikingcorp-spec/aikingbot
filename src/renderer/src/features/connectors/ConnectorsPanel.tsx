@@ -1,19 +1,19 @@
-import type { GitHubConnectorStatus, MessagingPlatform, OnePasswordConnectorStatus } from "@openbot/contracts/ipc";
-import { Lock } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
+import type { GitHubConnectorStatus, MessagingPlatform, OnePasswordConnectorStatus } from "@aikingbot/contracts/ipc";
+import { Lock } from "@aikingbot/ui";
+import type { AgentProfile } from "@aikingbot/ui/data";
 import {
   BitwardenConnectorPanel,
   type BitwardenConnectorPanelProps,
-} from "@openbot/ui/features/settings/BitwardenConnectorPanel";
-import { GitHubConnectorPanel } from "@openbot/ui/features/settings/GitHubConnectorPanel";
+} from "@aikingbot/ui/features/settings/BitwardenConnectorPanel";
+import { GitHubConnectorPanel } from "@aikingbot/ui/features/settings/GitHubConnectorPanel";
 import {
   GitHubMark,
   type IntegrationStatus,
   OnePasswordMark,
   TelegramMark,
-} from "@openbot/ui/features/settings/IntegrationLayout";
-import { IntegrationsHub, type IntegrationsHubRow } from "@openbot/ui/features/settings/IntegrationsHub";
-import { OnePasswordConnectorPanel } from "@openbot/ui/features/settings/OnePasswordConnectorPanel";
+} from "@aikingbot/ui/features/settings/IntegrationLayout";
+import { IntegrationsHub, type IntegrationsHubRow } from "@aikingbot/ui/features/settings/IntegrationsHub";
+import { OnePasswordConnectorPanel } from "@aikingbot/ui/features/settings/OnePasswordConnectorPanel";
 import {
   MessagingMark,
   messagingPlatformText,
@@ -21,13 +21,13 @@ import {
   slackIntegrationState,
   slackOrchestrator,
   type WorkspacePlatform,
-} from "@openbot/ui/features/settings/SlackIntegrationPanel";
+} from "@aikingbot/ui/features/settings/SlackIntegrationPanel";
 import {
   TelegramIntegrationPanel,
   telegramIntegrationState,
   telegramOrchestrator,
-} from "@openbot/ui/features/settings/TelegramIntegrationPanel";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/settings/TelegramIntegrationPanel";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, Match, onSettled, Show, Switch } from "solid-js";
 import type { DiscordConnectorController } from "./discord-connector";
 import { type GitHubConnectorController, githubPanelProps } from "./github-connector";

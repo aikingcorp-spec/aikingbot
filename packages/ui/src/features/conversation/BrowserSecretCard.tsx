@@ -1,9 +1,9 @@
-import type { BrowserPreview, BrowserTakeoverRequest, RespondToBrowserSecretInput } from "@openbot/contracts/ipc";
-import { Button, ErrorReference, Input, Maximize2, Monitor } from "@openbot/ui";
-import { OtpInput } from "@openbot/ui/features/account/OtpInput";
-import { BrowserTakeoverPreview } from "@openbot/ui/features/conversation/BrowserTakeoverPreview";
-import { useText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+import type { BrowserPreview, BrowserTakeoverRequest, RespondToBrowserSecretInput } from "@aikingbot/contracts/ipc";
+import { Button, ErrorReference, Input, Maximize2, Monitor } from "@aikingbot/ui";
+import { OtpInput } from "@aikingbot/ui/features/account/OtpInput";
+import { BrowserTakeoverPreview } from "@aikingbot/ui/features/conversation/BrowserTakeoverPreview";
+import { useText } from "@aikingbot/ui/text";
+import { errorReference } from "@aikingbot/user-errors";
 import { createEffect, createSignal, onCleanup, Show } from "solid-js";
 
 export function BrowserSecretCard(props: {

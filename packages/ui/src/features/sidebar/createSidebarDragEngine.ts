@@ -10,7 +10,7 @@
  * to avoid. `commitSidebarDrop` is passed that source for the same reason.
  */
 
-import type { TeamPresenceMember } from "@openbot/contracts/ipc";
+import type { TeamPresenceMember } from "@aikingbot/contracts/ipc";
 import { createBoundedDragPreview } from "../../components/createBoundedDragPreview";
 import type { createScrollFades } from "../../components/createScrollFades";
 
@@ -189,7 +189,7 @@ export function createSidebarDragEngine(deps: SidebarDragEngineDeps) {
     startNativeItemDragging(event, {
       className: "sidebar-agent-drag-preview",
       createPreview: createSidebarChatDragCard,
-      data: `openbot-chat:${chatId}`,
+      data: `aikingbot-chat:${chatId}`,
       previewSize: { height: 94, width: 72 },
       source: { kind: "chat", id: chatId, origin: "section" },
     });
@@ -199,7 +199,7 @@ export function createSidebarDragEngine(deps: SidebarDragEngineDeps) {
     startNativeItemDragging(event, {
       className: "sidebar-person-drag-preview",
       createPreview: createSidebarChatDragCard,
-      data: `openbot-person:${member.id}`,
+      data: `aikingbot-person:${member.id}`,
       previewSize: { height: 94, width: 72 },
       source: { kind: "person", id: member.id, origin: "people" },
     });
@@ -209,7 +209,7 @@ export function createSidebarDragEngine(deps: SidebarDragEngineDeps) {
   function startSectionDragging(event: DragEvent & { currentTarget: HTMLElement }, sectionId: string): void {
     startNativeItemDragging(event, {
       className: "sidebar-section-drag-preview",
-      data: `openbot-section:${sectionId}`,
+      data: `aikingbot-section:${sectionId}`,
       horizontal: false,
       source: { kind: "section", id: sectionId },
     });

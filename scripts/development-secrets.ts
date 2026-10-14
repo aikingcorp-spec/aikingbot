@@ -22,13 +22,13 @@ import { fileURLToPath } from "node:url";
 // `bun run dev` without the maintainer's dotenvx keys.
 //
 // `prepare-dev-environment.ts` calls this before `bun install`, so it uses node builtins only —
-// `@openbot/logging` is not resolvable yet on a fresh clone, which is why this writes to stdout.
+// `@aikingbot/logging` is not resolvable yet on a fresh clone, which is why this writes to stdout.
 
 // `wrangler.jsonc` pins the active ticket key ID in its top-level `vars`, and `parseJwks` rejects a
 // JWKS that does not carry that `kid`, so the generated pair has to claim the same one.
-const TICKET_KEY_ID = "openbot-remote-1";
+const TICKET_KEY_ID = "aikingbot-remote-1";
 const DEVELOPMENT_STATE_VERSION = 1 as const;
-const DEVELOPMENT_STATE_DIRECTORY = ".openbot";
+const DEVELOPMENT_STATE_DIRECTORY = ".aikingbot";
 const DEVELOPMENT_STATE_FILE = "dev-state.json";
 const DEVELOPMENT_STATE_LOCK = "dev-state.json.lock";
 
@@ -176,11 +176,11 @@ function readStateIfPresent(path: string): DevelopmentState | undefined {
   try {
     parsed = JSON.parse(readFileSync(path, "utf8"));
   } catch {
-    throw new Error("The development state file is invalid or unreadable. Restore .openbot/dev-state.json.");
+    throw new Error("The development state file is invalid or unreadable. Restore .aikingbot/dev-state.json.");
   }
   if (!isDevelopmentState(parsed)) {
     throw new Error(
-      "The development state file has an invalid format. Restore .openbot/dev-state.json before continuing.",
+      "The development state file has an invalid format. Restore .aikingbot/dev-state.json before continuing.",
     );
   }
   chmodSync(path, 0o600);
@@ -265,7 +265,7 @@ function releaseStateLock(path: string, lock: string): void {
 
 function ensurePrivateDirectory(path: string): void {
   if (existsSync(path)) {
-    if (!lstatSync(path).isDirectory()) throw new Error("The .openbot development state path is not a directory.");
+    if (!lstatSync(path).isDirectory()) throw new Error("The .aikingbot development state path is not a directory.");
   } else {
     mkdirSync(path, { recursive: true, mode: 0o700 });
   }
@@ -299,7 +299,7 @@ if (import.meta.main) {
   const outcome = ensureDevelopmentState(projectRoot);
   process.stdout.write(
     outcome === "created"
-      ? "Generated .openbot/dev-state.json for local development.\n"
-      : "Kept the existing .openbot/dev-state.json.\n",
+      ? "Generated .aikingbot/dev-state.json for local development.\n"
+      : "Kept the existing .aikingbot/dev-state.json.\n",
   );
 }

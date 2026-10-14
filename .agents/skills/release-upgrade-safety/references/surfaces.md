@@ -11,31 +11,31 @@ any of them before an upgrade. A renamed constant means the old file is never re
 
 | File | Constant | Version handling |
 | --- | --- | --- |
-| `openbot.db` | `DatabaseCore` in `src/backend/database/database-core.ts` | `schema_migrations`, gate A |
-| `openbot-setup-v2.json` | `SETUP_FILE`, `src/main/application-services.ts` | `src/main/setup-store.ts` accepts only `version === 2`, silent default otherwise |
-| `openbot-analytics-preference-v1.json` | `ANALYTICS_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/analytics-preference-store.ts` |
-| `openbot-update-preference-v1.json` | `UPDATE_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/update-preference-store.ts` |
-| `openbot-dynamic-island-preference-v1.json` | `DYNAMIC_ISLAND_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/dynamic-island-preference-store.ts` reads `version` 1 and 2 forward into 3 |
-| `openbot-main-window-state-v1.json` | `MAIN_WINDOW_STATE_FILE`, `src/main/index.ts` | `src/main/main-window-state.ts` accepts only `version === 1` |
-| `openbot-browser-state-v1.json` | `BROWSER_STATE_FILE`, `src/main/application-services.ts` | `readBrowserState` in `src/backend/browser-state.ts` reads `version` 1 and 2 forward into 2 |
-| `openbot-sidebar-layout-v1.json` | `SIDEBAR_LAYOUT_FILE`, `src/main/application-services.ts` | `src/backend/sidebar-layout-store.ts` |
-| `openbot-team-server-v1.json` | `TEAM_FILE`, `src/main/application-services.ts` | frozen as the last pre-accounts build left it |
-| `openbot-team-server-v2.json` | `TEAM_FILE_V2`, `src/main/application-services.ts` | `src/main/team-store.ts`; both files coexist so a downgrade still finds its host |
-| `openbot-remote-servers-v1.json` | `REMOTE_SERVERS_FILE`, `src/main/application-services.ts` | `src/main/remote-server-stored-shape.ts` reads v1/v2 as v3, preserves unreadable entries, refuses unknown versions |
-| `openbot-central-auth-v1.bin` | `CENTRAL_AUTH_FILE`, `src/main/application-services.ts` | `safeStorage`-encrypted; `src/main/central-auth-manager.ts` **throws** on anything but `version === 2` and `#initialize` catches that into `#clearStoredSession()`, so a bad shape signs the user out; undecryptable if `appId` or the signing identity changes |
-| `openbot-remote-desktop-credential-v1.json` | `LEGACY_REMOTE_DESKTOP_CREDENTIAL_FILE`, `src/main/application-services.ts` | legacy, still read |
-| `openbot-remote-desktop-runtime-v1.json` | `REMOTE_DESKTOP_RUNTIME_SECRET_FILE`, `src/main/application-services.ts` | `safeStorage`-encrypted; `src/main/remote-desktop-secret-store.ts` accepts only `version: 1` |
+| `aikingbot.db` | `DatabaseCore` in `src/backend/database/database-core.ts` | `schema_migrations`, gate A |
+| `aikingbot-setup-v2.json` | `SETUP_FILE`, `src/main/application-services.ts` | `src/main/setup-store.ts` accepts only `version === 2`, silent default otherwise |
+| `aikingbot-analytics-preference-v1.json` | `ANALYTICS_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/analytics-preference-store.ts` |
+| `aikingbot-update-preference-v1.json` | `UPDATE_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/update-preference-store.ts` |
+| `aikingbot-dynamic-island-preference-v1.json` | `DYNAMIC_ISLAND_PREFERENCE_FILE`, `src/main/application-services.ts` | `src/main/dynamic-island-preference-store.ts` reads `version` 1 and 2 forward into 3 |
+| `aikingbot-main-window-state-v1.json` | `MAIN_WINDOW_STATE_FILE`, `src/main/index.ts` | `src/main/main-window-state.ts` accepts only `version === 1` |
+| `aikingbot-browser-state-v1.json` | `BROWSER_STATE_FILE`, `src/main/application-services.ts` | `readBrowserState` in `src/backend/browser-state.ts` reads `version` 1 and 2 forward into 2 |
+| `aikingbot-sidebar-layout-v1.json` | `SIDEBAR_LAYOUT_FILE`, `src/main/application-services.ts` | `src/backend/sidebar-layout-store.ts` |
+| `aikingbot-team-server-v1.json` | `TEAM_FILE`, `src/main/application-services.ts` | frozen as the last pre-accounts build left it |
+| `aikingbot-team-server-v2.json` | `TEAM_FILE_V2`, `src/main/application-services.ts` | `src/main/team-store.ts`; both files coexist so a downgrade still finds its host |
+| `aikingbot-remote-servers-v1.json` | `REMOTE_SERVERS_FILE`, `src/main/application-services.ts` | `src/main/remote-server-stored-shape.ts` reads v1/v2 as v3, preserves unreadable entries, refuses unknown versions |
+| `aikingbot-central-auth-v1.bin` | `CENTRAL_AUTH_FILE`, `src/main/application-services.ts` | `safeStorage`-encrypted; `src/main/central-auth-manager.ts` **throws** on anything but `version === 2` and `#initialize` catches that into `#clearStoredSession()`, so a bad shape signs the user out; undecryptable if `appId` or the signing identity changes |
+| `aikingbot-remote-desktop-credential-v1.json` | `LEGACY_REMOTE_DESKTOP_CREDENTIAL_FILE`, `src/main/application-services.ts` | legacy, still read |
+| `aikingbot-remote-desktop-runtime-v1.json` | `REMOTE_DESKTOP_RUNTIME_SECRET_FILE`, `src/main/application-services.ts` | `safeStorage`-encrypted; `src/main/remote-desktop-secret-store.ts` accepts only `version: 1` |
 | `remote/connection-<stack pid>.json` in the dev runtime directory | `developmentRemoteConnectionPath`, `src/main/development-runtime-directory.ts` | development only |
 | `bots.json` | `LEGACY_AGENTS_STATE_FILE`, `src/backend/agent-store.ts` | permanent name; imported once under command id `legacy-import:bots:v1` |
 | `mailbox.json` | `src/backend/mailbox-store.ts` | permanent name |
-| `sunshine-credentials.json`, `sunshine-state.json`, `sunshine-apps.json`, `moonlight-config.json`, `moonlight-data.json` | `src/main/sunshine-moonlight-runtime.ts` | written by the vendored runtimes, not by OpenBot |
+| `sunshine-credentials.json`, `sunshine-state.json`, `sunshine-apps.json`, `moonlight-config.json`, `moonlight-data.json` | `src/main/sunshine-moonlight-runtime.ts` | written by the vendored runtimes, not by AIKINGBOT |
 | `avatars/agents/`, `agent-duplications/` | `src/backend/agent-store.ts` | directories under `userData` |
 | `legacy-backup-v1/` | `DatabaseCore.backupLegacyFile` | one copy per named legacy file, `COPYFILE_EXCL`; **not** a general backup |
 
-`openbot-data.json` in `src/main/maintenance-service.ts` is the user-initiated export manifest, not
+`aikingbot-data.json` in `src/main/maintenance-service.ts` is the user-initiated export manifest, not
 persisted state.
 
-One versioned file lives outside `userData`: `.openbot/skills-lock.json` under each agent workspace,
+One versioned file lives outside `userData`: `.aikingbot/skills-lock.json` under each agent workspace,
 written by `src/main/skill-marketplace-service.ts`, which accepts only `version === 1`. It records
 the marketplace skills installed into that workspace and is unrelated to the repository's own
 `.agents/skills/`.
@@ -51,15 +51,15 @@ use the key-inventory diff there instead. Derive the set rather than reading it 
 
 | Key | Owner |
 | --- | --- |
-| `openbot:sidebar-pins:v1` | `src/renderer/src/features/sidebar/sidebar-pins.ts` |
-| `openbot:sidebar-collapsed:v1` | `src/renderer/src/features/sidebar/sidebar-sections.ts` |
-| `openbot:sidebar-people-order:v1` | `src/renderer/src/features/sidebar/sidebar-people-order.ts` |
-| `openbot:left-panel-collapsed`, `openbot:left-panel-width` | `src/renderer/src/layout.tsx`, `layout-constants.ts` |
-| `openbot:browser-panel-width`, `openbot:browser-pip-native-bounds` | `src/renderer/src/features/conversation/BrowserPanel.tsx` |
-| `openbot:settings-panel-width` | `src/renderer/src/features/settings/settings-context.tsx` |
-| `openbot:completion-sound-enabled` | `src/renderer/src/completion-sound.ts` |
-| `openbot:analytics-app-version` | `src/renderer/src/App.tsx` |
-| `openbot:landing-preview-ready`, `openbot:landing-preview-start` | `src/renderer/src/preview/landing-demo-messages.ts` |
+| `aikingbot:sidebar-pins:v1` | `src/renderer/src/features/sidebar/sidebar-pins.ts` |
+| `aikingbot:sidebar-collapsed:v1` | `src/renderer/src/features/sidebar/sidebar-sections.ts` |
+| `aikingbot:sidebar-people-order:v1` | `src/renderer/src/features/sidebar/sidebar-people-order.ts` |
+| `aikingbot:left-panel-collapsed`, `aikingbot:left-panel-width` | `src/renderer/src/layout.tsx`, `layout-constants.ts` |
+| `aikingbot:browser-panel-width`, `aikingbot:browser-pip-native-bounds` | `src/renderer/src/features/conversation/BrowserPanel.tsx` |
+| `aikingbot:settings-panel-width` | `src/renderer/src/features/settings/settings-context.tsx` |
+| `aikingbot:completion-sound-enabled` | `src/renderer/src/completion-sound.ts` |
+| `aikingbot:analytics-app-version` | `src/renderer/src/App.tsx` |
+| `aikingbot:landing-preview-ready`, `aikingbot:landing-preview-start` | `src/renderer/src/preview/landing-demo-messages.ts` |
 
 The three `:v1` suffixes are the renderer's own version handling: bumping one to `:v2` abandons the
 old entry rather than migrating it, so it resets that state for every installed user.
@@ -75,11 +75,11 @@ cycle. Keys here are dot-separated, not colon-separated like the renderer's.
 
 | Key | Owner | Note |
 | --- | --- | --- |
-| `openbot.mobile.session.v1` | `apps/mobile/src/features/auth/api/mobile-auth.ts` | `SecureStore`; an undecodable session is **deleted** (`deleteItemAsync`), signing the user out |
-| `openbot.mobile.device-id.v1` | `apps/mobile/src/features/auth/api/mobile-auth.ts` | `SecureStore`; losing it abandons the device identity |
-| `openbot.host-key.v1.<scope>.<fingerprint>` | `apps/mobile/src/features/workspace/model/trusted-host-keys.ts` | `SecureStore`; host trust, so resetting it re-prompts for every host |
-| `openbot.workspace.v1.<scope>.<fingerprint>` | `packages/team-client/src/workspace-preferences.ts` | guards `value.version !== 1` |
-| `openbot.remote-desktop.signal.v1` | `packages/team-client/src/remote-peer.ts`, `src/renderer/src/features/team/team-webrtc.ts` | shared by the desktop renderer, not mobile-only |
+| `aikingbot.mobile.session.v1` | `apps/mobile/src/features/auth/api/mobile-auth.ts` | `SecureStore`; an undecodable session is **deleted** (`deleteItemAsync`), signing the user out |
+| `aikingbot.mobile.device-id.v1` | `apps/mobile/src/features/auth/api/mobile-auth.ts` | `SecureStore`; losing it abandons the device identity |
+| `aikingbot.host-key.v1.<scope>.<fingerprint>` | `apps/mobile/src/features/workspace/model/trusted-host-keys.ts` | `SecureStore`; host trust, so resetting it re-prompts for every host |
+| `aikingbot.workspace.v1.<scope>.<fingerprint>` | `packages/team-client/src/workspace-preferences.ts` | guards `value.version !== 1` |
+| `aikingbot.remote-desktop.signal.v1` | `packages/team-client/src/remote-peer.ts`, `src/renderer/src/features/team/team-webrtc.ts` | shared by the desktop renderer, not mobile-only |
 
 The middle two are built with a template literal, so **no key-literal query returns them** — they are
 the standing reason gate B reads owner files as well as keys.
@@ -88,25 +88,25 @@ The paired-phones note under `## [0.5.0]` in `CHANGELOG.md` is what this surface
 it breaks: agent identifiers changed, the phone still held the old ones, and the only remedy was for
 the user to re-pair. Gate B is what should catch the next one before gate G has to apologise for it.
 
-## `~/OpenBot`
+## `~/AIKINGBOT`
 
 Built in the `AgentStore` constructor, `src/backend/agent-store.ts`:
 
 | Directory | Note |
 | --- | --- |
-| `~/OpenBot/Agents/<agent-id>` | the current workspace root |
-| `~/OpenBot/Bots/<bot-id>` | the pre-rename root; permanent, still live after a v13-less restore |
-| `~/OpenBot/Shared` | |
-| `~/OpenBot/Downloads` | |
+| `~/AIKINGBOT/Agents/<agent-id>` | the current workspace root |
+| `~/AIKINGBOT/Bots/<bot-id>` | the pre-rename root; permanent, still live after a v13-less restore |
+| `~/AIKINGBOT/Shared` | |
+| `~/AIKINGBOT/Downloads` | |
 
-`src/backend/workspace-paths.ts` resolves four permanent prefixes — `~/OpenBot/Agents/<id>/`,
-`OpenBot/Agents/<id>/`, `~/OpenBot/Bots/<legacy-id>/`, `OpenBot/Bots/<legacy-id>/` — and
+`src/backend/workspace-paths.ts` resolves four permanent prefixes — `~/AIKINGBOT/Agents/<id>/`,
+`AIKINGBOT/Agents/<id>/`, `~/AIKINGBOT/Bots/<legacy-id>/`, `AIKINGBOT/Bots/<legacy-id>/` — and
 `rebaseLegacyWorkspacePath` rebases in both directions, because migration v13's directory move gives
 up on `EXDEV` or a permission error while the message paths have already been rewritten.
 
 ## Migration constants
 
-All in `src/backend/openbot-database-schema.ts`:
+All in `src/backend/aikingbot-database-schema.ts`:
 
 | Constant | Value or meaning |
 | --- | --- |
@@ -118,8 +118,8 @@ All in `src/backend/openbot-database-schema.ts`:
 | `validateMigrationRegistry` | throws on a non-contiguous version |
 | `createLatestDatabase` | execs `LATEST_SCHEMA_SQL`, then stamps every `MIGRATIONS` entry as applied without running it |
 
-Tests: `src/backend/openbot-database-schema-parity.test.ts` (the two build paths must agree),
-`src/backend/openbot-database.test.ts` (including "rejects a database created by a newer
+Tests: `src/backend/aikingbot-database-schema-parity.test.ts` (the two build paths must agree),
+`src/backend/aikingbot-database.test.ts` (including "rejects a database created by a newer
 application").
 
 ## Team API protocol
@@ -152,10 +152,10 @@ untouched — they already spell the agent `agent` on both sides.
 | --- | --- |
 | `src/main/index.ts` and `src/main/ipc/` | the `handleTrusted` registrations, one file per domain |
 | `src/preload/index.ts` | the `invoke` calls the renderer reaches |
-| `src/renderer/src/preview/mock-openbot.ts` | the second implementation Storybook and the preview run against |
+| `src/renderer/src/preview/mock-aikingbot.ts` | the second implementation Storybook and the preview run against |
 
 `src/main/ipc-channel-coverage.test.ts` links main and preload statically. The mock is covered by
-`tsc` in both directions because it is annotated `: OpenBotDesktopApi`.
+`tsc` in both directions because it is annotated `: AIKINGBOTDesktopApi`.
 
 ## Account Worker
 
@@ -179,7 +179,7 @@ deploy-race reasoning in gate E only holds while *both* keep that order.
 
 | Path | Fields that matter |
 | --- | --- |
-| `electron-builder.yml` | `appId` (`app.openbot.desktop`), `artifactName`, `electronUpdaterCompatibility`, `publish` owner/repo, `mac.extendInfo.ElectronTeamID` (`ZTRDTUL87R`), `extraResources` |
+| `electron-builder.yml` | `appId` (`app.aikingbot.desktop`), `artifactName`, `electronUpdaterCompatibility`, `publish` owner/repo, `mac.extendInfo.ElectronTeamID` (`ZTRDTUL87R`), `extraResources` |
 | `src/main/update-service.ts` | the four `UpdateAdapter` behaviours, documented on the type |
 | `src/main/electron-updater-assumptions.test.ts` | `VERIFIED_VERSION` |
 | `scripts/verify-update-artifacts.ts` | 700 MiB update artifact, 750 MiB DMG, manifest, blockmap, no voice model |

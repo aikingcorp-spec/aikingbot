@@ -58,7 +58,7 @@ export function ChatApprovalCard({
 }) {
   const { t, errorMessage, sourceText } = useText();
   const [foreground, muted] = useThemeColor(["foreground", "muted"]);
-  const [warningText] = useCSSVariable(["--openbot-warning-text"]);
+  const [warningText] = useCSSVariable(["--aikingbot-warning-text"]);
   const [pending, setPending] = useState<ApprovalDecision | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const partial = approvalIsPartial(approval);

@@ -1,5 +1,5 @@
 import { readFile, rm } from "node:fs/promises";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Semaphore } from "effect";
 import { writeFileAtomically } from "../backend/atomic-json-file";
 

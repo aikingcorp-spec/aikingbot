@@ -9,44 +9,44 @@
 // not a var(), and this module is read by the build-time generator where no
 // document exists to resolve one. The same test pins them to tokens.css.
 
-/** `--openbot-logo-production` */
+/** `--aikingbot-logo-production` */
 const LOGO_PRODUCTION = "#d6adf2";
-/** `--openbot-warning` */
+/** `--aikingbot-warning` */
 const LOGO_DEV = "#ff9412";
-/** `--openbot-success` */
+/** `--aikingbot-success` */
 const LOGO_PREVIEW = "#31cf76";
-/** `--openbot-accent` */
+/** `--aikingbot-accent` */
 const ACCENT = "#007cf7";
-/** `--openbot-unread-surface` */
+/** `--aikingbot-unread-surface` */
 const UNREAD = "#74b9ff";
-/** `--openbot-onboarding-desktop-indigo` */
+/** `--aikingbot-onboarding-desktop-indigo` */
 const INDIGO = "#6f7de8";
-/** `--openbot-chart-series-grok` */
+/** `--aikingbot-chart-series-grok` */
 const CYAN = "#6bc7d9";
-/** `--openbot-provider-claude` */
+/** `--aikingbot-provider-claude` */
 const TERRACOTTA = "#d97757";
-/** `--openbot-danger-text` */
+/** `--aikingbot-danger-text` */
 const CORAL = "#ff6069";
-/** `--openbot-badge-new` */
+/** `--aikingbot-badge-new` */
 const MAGENTA = "#ff1e5e";
-/** `--openbot-text-dim` */
+/** `--aikingbot-text-dim` */
 const DIM = "#6a6a6a";
-/** `--openbot-bg-canvas`, the page behind the card */
+/** `--aikingbot-bg-canvas`, the page behind the card */
 const CANVAS = "#1a1a1a";
 
 export const ARTICLE_GRADIENT_BRAND_HEXES = {
-  "--openbot-logo-production": LOGO_PRODUCTION,
-  "--openbot-warning": LOGO_DEV,
-  "--openbot-success": LOGO_PREVIEW,
-  "--openbot-accent": ACCENT,
-  "--openbot-unread-surface": UNREAD,
-  "--openbot-onboarding-desktop-indigo": INDIGO,
-  "--openbot-chart-series-grok": CYAN,
-  "--openbot-provider-claude": TERRACOTTA,
-  "--openbot-danger-text": CORAL,
-  "--openbot-badge-new": MAGENTA,
-  "--openbot-text-dim": DIM,
-  "--openbot-bg-canvas": CANVAS,
+  "--aikingbot-logo-production": LOGO_PRODUCTION,
+  "--aikingbot-warning": LOGO_DEV,
+  "--aikingbot-success": LOGO_PREVIEW,
+  "--aikingbot-accent": ACCENT,
+  "--aikingbot-unread-surface": UNREAD,
+  "--aikingbot-onboarding-desktop-indigo": INDIGO,
+  "--aikingbot-chart-series-grok": CYAN,
+  "--aikingbot-provider-claude": TERRACOTTA,
+  "--aikingbot-danger-text": CORAL,
+  "--aikingbot-badge-new": MAGENTA,
+  "--aikingbot-text-dim": DIM,
+  "--aikingbot-bg-canvas": CANVAS,
 } as const;
 
 // Four deep anchors that are not brand tokens. Nothing in the product is this

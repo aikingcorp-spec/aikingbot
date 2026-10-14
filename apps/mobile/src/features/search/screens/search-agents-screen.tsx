@@ -1,5 +1,5 @@
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { type MenuAction, MenuView } from "@expo/ui/community/menu";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Typography } from "heroui-native";

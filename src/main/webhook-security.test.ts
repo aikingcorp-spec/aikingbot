@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@openbot/contracts/signal-protocol/messages";
+import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@aikingbot/contracts/signal-protocol/messages";
 import { describe, expect, it } from "vitest";
 import { createWebhookSignature, verifyWebhookSignature } from "./webhook-security";
 

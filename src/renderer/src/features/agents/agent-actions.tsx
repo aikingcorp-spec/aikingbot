@@ -1,9 +1,9 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { classifyFailure } from "@openbot/telemetry";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
-import { currentText } from "@openbot/ui/text";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
+import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { classifyFailure } from "@aikingbot/telemetry";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import type { FirstAgentDraft } from "@aikingbot/ui/features/agents/FirstAgentSetup";
+import { currentText } from "@aikingbot/ui/text";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";
 import { toAgentProfile, withoutAgent } from "../../app-message-projection";

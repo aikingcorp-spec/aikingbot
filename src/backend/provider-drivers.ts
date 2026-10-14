@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import type { ClientSideConnection, InitializeResponse } from "@agentclientprotocol/sdk";
-import type { AgentAuthState, AgentProviderId } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentAuthState, AgentProviderId } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { AcpAgentClient, type AcpHistoryPersistence } from "./acp-client";
 import type { AgentClient } from "./agent-client";
@@ -56,7 +56,7 @@ import {
 import type { AccountReadResult } from "./protocol";
 import { type ProviderClientOperationError, providerCall, providerFailure } from "./provider-client-effects";
 
-/** One command OpenBot runs against a provider's own CLI, waiting for the process to exit. */
+/** One command AIKINGBOT runs against a provider's own CLI, waiting for the process to exit. */
 interface ProviderCliCommand {
   readonly argv: readonly string[];
   readonly env: (cli: AgentCliInfo) => Record<string, string>;
@@ -71,7 +71,7 @@ const CLI_LOGIN_TIMEOUT_MS = 10 * 60_000;
  * `OPENCODE_API_KEY` is the whole of the optional account: with it the CLI lists the paid Go
  * catalog, without it the free one. `OPENCODE_DISABLE_AUTOUPDATE` is not optional on a managed
  * install -- a CLI that updates itself past the pin fails the exact-version compare in
- * `verifyInstalledRuntime`, and OpenBot would then keep re-downloading a runtime it already has.
+ * `verifyInstalledRuntime`, and AIKINGBOT would then keep re-downloading a runtime it already has.
  */
 function opencodeEnv(cli: AgentCliInfo, credentials: ProviderClientContext): Record<string, string> {
   const key = credentials.apiKey("opencode");
@@ -88,16 +88,16 @@ function opencodeEnv(cli: AgentCliInfo, credentials: ProviderClientContext): Rec
  * answer say what it is, and a new arm is a compile error at both sites rather than a wrong login.
  */
 type ProviderSignIn =
-  /** The provider's own protocol hands back a URL for OpenBot to open. */
+  /** The provider's own protocol hands back a URL for AIKINGBOT to open. */
   | { kind: "browser" }
-  /** OpenBot spawns the provider's CLI and waits for the process to exit. */
+  /** AIKINGBOT spawns the provider's CLI and waits for the process to exit. */
   | { kind: "cli-command"; command: ProviderCliCommand }
-  /** The user signs in with the CLI themselves; OpenBot only re-probes the provider afterwards. */
+  /** The user signs in with the CLI themselves; AIKINGBOT only re-probes the provider afterwards. */
   | { kind: "external" }
   /** The host opens an interactive terminal and refreshes the account when it closes. */
   | { kind: "terminal"; timeoutMs: number }
   /**
-   * OpenBot starts the ACP server and calls `authenticate` with this method, which opens a browser
+   * AIKINGBOT starts the ACP server and calls `authenticate` with this method, which opens a browser
    * from the server. Only the sign-in process calls it: in a status probe it would open a browser.
    */
   | {
@@ -162,7 +162,7 @@ const GEMINI_API_KEY_METHOD = "gemini-api-key";
 
 /**
  * Google's registry starts the Linux build with an empty `--uid=`, and the other builds with no
- * argument. OpenBot starts it the same way.
+ * argument. AIKINGBOT starts it the same way.
  */
 const ANTIGRAVITY_ARGV: readonly string[] = process.platform === "linux" ? ["--uid="] : [];
 
@@ -170,7 +170,7 @@ const CLINE_ARGV: readonly string[] = ["--acp"];
 
 /**
  * By default, the Cline CLI runs its sessions in a hub process that it detaches and that other Cline
- * processes share. That process would outlive OpenBot and would escape a Workspace only sandbox, so
+ * processes share. That process would outlive AIKINGBOT and would escape a Workspace only sandbox, so
  * every Cline process runs its sessions in itself. The managed CLI must not replace itself.
  */
 const CLINE_ENV: Readonly<Record<string, string>> = {
@@ -180,7 +180,7 @@ const CLINE_ENV: Readonly<Record<string, string>> = {
 
 /**
  * The sandbox lets a Cline process write in its data folder, not create `~/.cline` itself. A CLI
- * that only `CLINE_API_KEY` signs in has not made that folder yet, so OpenBot makes it.
+ * that only `CLINE_API_KEY` signs in has not made that folder yet, so AIKINGBOT makes it.
  */
 function confineClineTarget(target: SpawnTarget, confinement: ProcessConfinement): SpawnTarget {
   const state = clineStatePaths();
@@ -214,7 +214,7 @@ export interface ProviderClientContext {
    */
   readonly reportMcpDrops?: McpDropReporter;
   /**
-   * What OpenBot downloaded for the MCP servers, read at spawn like everything else here. Optional
+   * What AIKINGBOT downloaded for the MCP servers, read at spawn like everything else here. Optional
    * for the same reason as `reportMcpDrops`: a driver without one sees the machine as it is.
    */
   readonly mcpToolRuntimes?: McpToolRuntimeSource;
@@ -236,7 +236,7 @@ export interface ProviderClientContext {
    */
   servesModel?(modelId: string): boolean;
   /**
-   * A folder OpenBot owns for files it gives a provider process, outside every root an agent can
+   * A folder AIKINGBOT owns for files it gives a provider process, outside every root an agent can
    * write. Optional for the same reason as `reportMcpDrops`.
    */
   readonly providerStateDirectory?: string;
@@ -263,7 +263,7 @@ export const NO_PROVIDER_CREDENTIALS: ProviderClientContext = {
 
 /**
  * What a provider *does*. What it is called, how it is described and where its sign-in help points
- * live in the provider registry in `@openbot/contracts/agent-providers`; a driver holds only the
+ * live in the provider registry in `@aikingbot/contracts/agent-providers`; a driver holds only the
  * behaviour, so a new provider is one registry row plus one driver.
  */
 export interface BuiltInProviderDriver {
@@ -424,7 +424,7 @@ export const BUILT_IN_PROVIDER_DRIVERS: readonly BuiltInProviderDriver[] = [
       kind: "cli-command",
       command: {
         argv: ["--no-auto-update", "login"],
-        env: () => ({ GROK_OAUTH2_REFERRER: "openbot" }),
+        env: () => ({ GROK_OAUTH2_REFERRER: "aikingbot" }),
         timeoutMs: CLI_LOGIN_TIMEOUT_MS,
       },
     },
@@ -433,7 +433,7 @@ export const BUILT_IN_PROVIDER_DRIVERS: readonly BuiltInProviderDriver[] = [
       flow: "device",
       command: {
         argv: ["--no-auto-update", "login", "--device-auth"],
-        env: () => ({ GROK_OAUTH2_REFERRER: "openbot" }),
+        env: () => ({ GROK_OAUTH2_REFERRER: "aikingbot" }),
         timeoutMs: CLI_LOGIN_TIMEOUT_MS,
       },
     },
@@ -458,7 +458,7 @@ export const BUILT_IN_PROVIDER_DRIVERS: readonly BuiltInProviderDriver[] = [
   {
     id: "opencode",
     // `opencode auth login` is an interactive terminal UI and cannot be spawned headless, so the
-    // optional OpenCode Go key is pasted into OpenBot instead. Nothing is required to sign in:
+    // optional OpenCode Go key is pasted into AIKINGBOT instead. Nothing is required to sign in:
     // with no credential at all the CLI still lists the free models and answers a turn.
     signIn: { kind: "external" },
     resolveCli: resolveOpencodeCli,
@@ -636,7 +636,7 @@ export const BUILT_IN_PROVIDER_DRIVERS: readonly BuiltInProviderDriver[] = [
   },
   {
     id: "acp",
-    // Each custom agent signs in its own way, in its own CLI. OpenBot only checks it again.
+    // Each custom agent signs in its own way, in its own CLI. AIKINGBOT only checks it again.
     signIn: { kind: "external" },
     resolveCli: () => Effect.succeed(CUSTOM_AGENTS_CLI),
     createClient: (_cli, timeout, context, confinement) =>
@@ -728,7 +728,7 @@ let customAgentDiscoveryRoot: string | undefined;
  * the folder `antigravity`, an id that no custom agent can have.
  */
 function discoveryFolder(agentId: string): string {
-  customAgentDiscoveryRoot ??= mkdtempSync(join(tmpdir(), "openbot-custom-agents-"));
+  customAgentDiscoveryRoot ??= mkdtempSync(join(tmpdir(), "aikingbot-custom-agents-"));
   const folder = join(customAgentDiscoveryRoot, agentId);
   mkdirSync(folder, { recursive: true, mode: 0o700 });
   return folder;

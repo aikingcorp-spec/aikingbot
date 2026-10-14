@@ -1,9 +1,9 @@
 import { render, screen, waitFor, within } from "@solidjs/testing-library";
 import { beforeEach, expect, it } from "vitest";
 import { App } from "./App";
-import { emitAgentEvent, emitPresence, installOpenbotStub, presenceMember } from "./app-test-harness";
+import { emitAgentEvent, emitPresence, installAIKINGBOTStub, presenceMember } from "./app-test-harness";
 
-beforeEach(installOpenbotStub);
+beforeEach(installAIKINGBOTStub);
 
 function userMessage(id: string, text: string, createdAt: string, senderMember?: { id: string; name: string }) {
   return {

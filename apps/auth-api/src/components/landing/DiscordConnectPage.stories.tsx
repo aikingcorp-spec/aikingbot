@@ -13,8 +13,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** After the install: one action, in the middle of the card. */
-export const ReturnToOpenBot: Story = {
-  args: { openUrl: "openbot://discord-guild?nonce=example&grant=example", failure: null },
+export const ReturnToAIKINGBOT: Story = {
+  args: { openUrl: "aikingbot://discord-guild?nonce=example&grant=example", failure: null },
 };
 
 export const GuildTaken: Story = {

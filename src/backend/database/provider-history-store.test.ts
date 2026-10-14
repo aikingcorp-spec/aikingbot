@@ -4,8 +4,8 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { AIKINGBOTDatabase } from "../aikingbot-database";
 import { runCauseEffect } from "../effect-boundary";
-import { OpenBotDatabase } from "../openbot-database";
 
 const roots: string[] = [];
 
@@ -15,9 +15,9 @@ afterEach(async () => {
 
 describe("ProviderHistoryStore", () => {
   it("keeps paged items and import progress after retrying a completed fragment", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-provider-history-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-history-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     database.connection
       .prepare(
@@ -107,7 +107,7 @@ describe("ProviderHistoryStore", () => {
             toolKind: "read",
             status: "completed",
             arguments: { path: "README.md" },
-            result: { text: "OpenBot" },
+            result: { text: "AIKINGBOT" },
           },
         ],
         complete: true,
@@ -118,16 +118,16 @@ describe("ProviderHistoryStore", () => {
         name: "read_file",
         toolKind: "read",
         arguments: { path: "README.md" },
-        result: { text: "OpenBot" },
+        result: { text: "AIKINGBOT" },
       }),
     );
     database.close();
   });
 
   it("reads more than one bounded turn page in stable newest-first order", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-provider-history-pages-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-history-pages-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     database.connection
       .prepare(

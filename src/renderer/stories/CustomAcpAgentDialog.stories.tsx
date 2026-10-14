@@ -1,9 +1,9 @@
-import { ACP_AGENT_PRESETS } from "@openbot/contracts/ipc";
-import { CustomAcpAgentDialog } from "@openbot/ui/features/custom-providers/CustomAcpAgentDialog";
+import { ACP_AGENT_PRESETS } from "@aikingbot/contracts/ipc";
+import { CustomAcpAgentDialog } from "@aikingbot/ui/features/custom-providers/CustomAcpAgentDialog";
 import {
   type CustomAcpAgentDraft,
   savedAcpAgentDraft,
-} from "@openbot/ui/features/custom-providers/custom-acp-agent-form";
+} from "@aikingbot/ui/features/custom-providers/custom-acp-agent-form";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -74,7 +74,7 @@ export const AgentCheckPassed: Story = {
 export const AgentCheckFailed: Story = {
   args: {
     draft: { ...goose, command: "gooose" },
-    check: { status: "failed", message: "OpenBot could not find gooose on your PATH." },
+    check: { status: "failed", message: "AIKINGBOT could not find gooose on your PATH." },
   },
 };
 

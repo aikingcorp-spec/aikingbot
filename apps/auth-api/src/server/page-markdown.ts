@@ -302,7 +302,7 @@ function articleMarkdown(html: string, base: string): string | undefined {
   return `${blocks(article.children, base).join("\n\n")}\n`;
 }
 
-/** The article a path such as `/guides/openbot-101.md` names, or nothing when it names none. */
+/** The article a path such as `/guides/aikingbot-101.md` names, or nothing when it names none. */
 function markdownTarget(pathname: string): { collection: ContentCollection; slug: string } | undefined {
   const match = /^\/([a-z]+)\/([a-z0-9-]+)\.md$/u.exec(pathname);
   if (!match) return undefined;

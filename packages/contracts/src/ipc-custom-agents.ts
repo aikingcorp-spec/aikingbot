@@ -1,4 +1,4 @@
-// A custom agent is a command that the user names: OpenBot starts it on this computer and talks to
+// A custom agent is a command that the user names: AIKINGBOT starts it on this computer and talks to
 // it over the Agent Client Protocol on stdio. All custom agents are the one provider `acp`, and a
 // model id names the agent (`<customAgentId>/<agentModel>`).
 //

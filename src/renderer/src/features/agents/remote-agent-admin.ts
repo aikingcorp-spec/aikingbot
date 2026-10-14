@@ -4,10 +4,10 @@ import type {
   ServerSummary,
   UpdateAgentAdminSettingsInput,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/agent-admin-v1";
-import { AGENT_HOST_SETTINGS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { AGENT_ADMIN_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
+import { AGENT_HOST_SETTINGS_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createStore, untrack } from "solid-js";
 import { serverCanAdminister } from "../servers/server-capabilities";
 import { type AgentsPort, agentsPort } from "./agents-port";

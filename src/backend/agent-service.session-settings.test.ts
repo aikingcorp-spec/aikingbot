@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { join } from "node:path";
-import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@openbot/contracts/ipc";
+import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { sessionSettingsOverrides } from "./agent/session-settings";
@@ -122,7 +122,7 @@ describe("Agent session settings", () => {
         if (event.type === "agent-session-settings-changed") resolve(event.agentId);
       });
     });
-    client.emit("notification", notification("openbot/sessionSettings/updated", { threadId, options: [] }));
+    client.emit("notification", notification("aikingbot/sessionSettings/updated", { threadId, options: [] }));
     expect(await changedEvent).toBe("chief");
     const reset = await runCauseEffect(service.resetAgentSessionSetting({ agentId: "chief", settingId: "compact" }));
     expect(reset.pending).toBe(true);

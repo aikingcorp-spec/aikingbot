@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [solidPlugin({ ssr: true })],
   resolve: {
     alias: {
-      "@openbot/renderer-preview": rendererPreviewAlias,
-      "@openbot/renderer-web": rendererWebAlias,
+      "@aikingbot/renderer-preview": rendererPreviewAlias,
+      "@aikingbot/renderer-web": rendererWebAlias,
     },
   },
   test: {

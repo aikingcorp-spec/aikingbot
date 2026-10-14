@@ -102,7 +102,7 @@ export const messages = {
   "sidebar.delete.pending": "Eliminando…",
   "sidebar.delete.title": "¿Eliminar {name}?",
   "sidebar.delete.agentDescription":
-    "Esto elimina de la aplicación el agente y su conversación de OpenBot. Se eliminan su cola, recuerdos, rutinas y espacio de trabajo. El historial guardado por separado por el proveedor CLI conectado no se elimina.",
+    "Esto elimina de la aplicación el agente y su conversación de AIKINGBOT. Se eliminan su cola, recuerdos, rutinas y espacio de trabajo. El historial guardado por separado por el proveedor CLI conectado no se elimina.",
   "sidebar.delete.channelDescription":
     "Esto detiene el canal. Su historial permanece en Canales eliminados solo para consulta. No puedes restaurarlo. Los agentes miembros se conservan.",
   "sidebar.delete.sectionDescription":
@@ -116,7 +116,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Se movió el chat fijado a la posición {position} de {total}.",
   "sidebar.announce.personFallback": "persona",
   "sidebar.announce.chatFallback": "chat",
-  "sidebar.mobileApp.title": "OpenBot para móviles",
+  "sidebar.mobileApp.title": "AIKINGBOT para móviles",
   "sidebar.mobileApp.body": "La aplicación ya está disponible para iPhone y Android.",
   "sidebar.mobileApp.howToInstall": "Cómo instalar",
   "sidebar.mobileApp.dismiss": "Cerrar el anuncio de la aplicación móvil",

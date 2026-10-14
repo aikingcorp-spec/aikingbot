@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AvatarImageInput, ServerNotificationLevel } from "@openbot/contracts/ipc";
-import { SERVER_NOTIFICATION_LEVELS } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AvatarImageInput, ServerNotificationLevel } from "@aikingbot/contracts/ipc";
+import { SERVER_NOTIFICATION_LEVELS } from "@aikingbot/contracts/ipc";
 import {
   Badge,
   Button,
@@ -22,16 +22,16 @@ import {
   SettingsSection,
   SwitchField,
   Text,
-} from "@openbot/ui";
-import { avatarImageDataUrl, normalizeAvatarFile } from "@openbot/ui/avatar-image";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
+} from "@aikingbot/ui";
+import { avatarImageDataUrl, normalizeAvatarFile } from "@aikingbot/ui/avatar-image";
+import { LeaveServerDialog } from "@aikingbot/ui/features/servers/LeaveServerDialog";
 import {
   SERVER_NOTIFICATION_LEVEL_LABELS,
   serverMuteDescription,
-} from "@openbot/ui/features/servers/ServerActionItems";
-import { ServerLogo } from "@openbot/ui/features/servers/ServerLogo";
-import { useText } from "@openbot/ui/text";
-import { truncateMiddle } from "@openbot/ui/utils";
+} from "@aikingbot/ui/features/servers/ServerActionItems";
+import { ServerLogo } from "@aikingbot/ui/features/servers/ServerLogo";
+import { useText } from "@aikingbot/ui/text";
+import { truncateMiddle } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { type Accessor, createStore, Show, snapshot } from "solid-js";
 import { serverCanAdminister } from "./server-capabilities";

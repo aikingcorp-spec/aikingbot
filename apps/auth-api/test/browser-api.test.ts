@@ -111,14 +111,14 @@ function request(
   options: { method?: string; body?: object | undefined; cookie?: string; origin?: string; csrf?: string } = {},
 ) {
   const method = options.method ?? (options.body ? "POST" : "GET");
-  return new Request(`https://openbot.test/api/browser/${path}`, {
+  return new Request(`https://aikingbot.test/api/browser/${path}`, {
     method,
     headers: {
       ...(method !== "GET"
         ? {
             "Content-Type": "application/json",
-            Origin: options.origin ?? "https://openbot.test",
-            "X-OpenBot-Browser": options.csrf ?? "1",
+            Origin: options.origin ?? "https://aikingbot.test",
+            "X-AIKINGBOT-Browser": options.csrf ?? "1",
           }
         : {}),
       ...(options.cookie ? { Cookie: options.cookie } : {}),
@@ -134,11 +134,11 @@ describe("browser account boundary", () => {
     );
     expect(await response.json()).toEqual({ user });
     expect(response.headers.get("Set-Cookie")).toBe(
-      `__Host-openbot-web=${token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=34560000`,
+      `__Host-aikingbot-web=${token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=34560000`,
     );
     expect(response.headers.get("Cache-Control")).toBe("no-store");
   });
-  it.each(["https://attacker.test", "null", "https://other.openbot.test"])(
+  it.each(["https://attacker.test", "null", "https://other.aikingbot.test"])(
     "rejects mutation from %s before calling a service",
     async (origin) => {
       const services = setup();
@@ -154,7 +154,9 @@ describe("browser account boundary", () => {
     const response = await handleBrowserApi(request("email/start", { body: { email: user.email }, csrf: "" }), setup());
     expect(response.status).toBe(403);
     expect(
-      browserSessionToken(request("session", { cookie: `__Host-openbot-web=${token}; __Host-openbot-web=${token}` })),
+      browserSessionToken(
+        request("session", { cookie: `__Host-aikingbot-web=${token}; __Host-aikingbot-web=${token}` }),
+      ),
     ).toBeNull();
   });
   it("requires cookie authentication and refuses revoked sessions", async () => {
@@ -162,12 +164,12 @@ describe("browser account boundary", () => {
     expect((await handleBrowserApi(request("session"), services)).status).toBe(401);
     vi.mocked(services.auth.authenticate).mockReturnValue(Effect.succeed(null));
     expect(
-      (await handleBrowserApi(request("session", { cookie: `__Host-openbot-web=${token}` }), services)).status,
+      (await handleBrowserApi(request("session", { cookie: `__Host-aikingbot-web=${token}` }), services)).status,
     ).toBe(401);
   });
   it("binds remote sessions to the browser credential and revokes them on logout", async () => {
     const services = setup();
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     await handleBrowserApi(request("v2/remote/sessions/", { cookie, body: { hostId: "host" } }), services);
     expect(services.remote.startSession).toHaveBeenCalledWith(user.id, "host", await runApiEffect(sha256(token)));
     await handleBrowserApi(
@@ -189,7 +191,7 @@ describe("browser account boundary", () => {
   it("does not proxy arbitrary account or host operations", async () => {
     const services = setup();
     const response = await handleBrowserApi(
-      request("v1/agents", { cookie: `__Host-openbot-web=${token}`, body: { text: "private" } }),
+      request("v1/agents", { cookie: `__Host-aikingbot-web=${token}`, body: { text: "private" } }),
       services,
     );
     expect(response.status).toBe(404);
@@ -207,7 +209,7 @@ describe("browser account boundary", () => {
     expect(response.headers.has("Set-Cookie")).toBe(false);
   });
   describe("host members and invites", () => {
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     it.each([
       ["PATCH", "v2/remote/hosts/host/members/membership", { role: "admin" }],
       ["DELETE", "v2/remote/hosts/host/members/membership", undefined],
@@ -329,7 +331,7 @@ describe("browser account boundary", () => {
     });
   });
   describe("host logo", () => {
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     const path = `v2/remote/hosts/host%2Fone/logo?v=${logoVersion}`;
     it("requires the browser cookie before reading membership or storage", async () => {
       const services = setup();
@@ -340,7 +342,7 @@ describe("browser account boundary", () => {
     it("refuses a cross-site read", async () => {
       const services = setup();
       const response = await handleBrowserApi(
-        new Request(`https://openbot.test/api/browser/${path}`, {
+        new Request(`https://aikingbot.test/api/browser/${path}`, {
           headers: { Cookie: cookie, "Sec-Fetch-Site": "cross-site" },
         }),
         services,
@@ -373,15 +375,15 @@ describe("browser account boundary", () => {
     });
   });
   describe("account profile, avatar and sessions", () => {
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     const sessionId = "9b2f7c1e-8d4a-4b3c-9e2f-1a2b3c4d5e6f";
     function avatarUpload(options: { contentType?: string; origin?: string; csrf?: string; cookie?: string } = {}) {
-      return new Request("https://openbot.test/api/browser/v1/me/avatar", {
+      return new Request("https://aikingbot.test/api/browser/v1/me/avatar", {
         method: "PUT",
         headers: {
           "Content-Type": options.contentType ?? "image/png",
-          Origin: options.origin ?? "https://openbot.test",
-          "X-OpenBot-Browser": options.csrf ?? "1",
+          Origin: options.origin ?? "https://aikingbot.test",
+          "X-AIKINGBOT-Browser": options.csrf ?? "1",
           ...(options.cookie === undefined ? { Cookie: cookie } : options.cookie ? { Cookie: options.cookie } : {}),
         },
         body: PNG,
@@ -420,12 +422,12 @@ describe("browser account boundary", () => {
       const services = setup();
       expect((await handleBrowserApi(avatarUpload({ contentType: "text/plain" }), services)).status).toBe(403);
       expect((await handleBrowserApi(avatarUpload({ contentType: "application/json" }), services)).status).toBe(403);
-      const profileAsImage = new Request("https://openbot.test/api/browser/v1/me/profile", {
+      const profileAsImage = new Request("https://aikingbot.test/api/browser/v1/me/profile", {
         method: "PATCH",
         headers: {
           "Content-Type": "image/png",
-          Origin: "https://openbot.test",
-          "X-OpenBot-Browser": "1",
+          Origin: "https://aikingbot.test",
+          "X-AIKINGBOT-Browser": "1",
           Cookie: cookie,
         },
         body: PNG,
@@ -473,7 +475,7 @@ describe("browser account boundary", () => {
     const hosting = services.hosting();
     services.hosting = () => ({ ...hosting, lifecycle });
     const path = "v2/hosting/servers/server-one/lifecycle";
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     const body = { action: "delete", timing: "period-end", confirmName: "One" };
     expect((await handleBrowserApi(request(path, { body }), services)).status).toBe(401);
     expect(
@@ -488,7 +490,7 @@ describe("browser account boundary", () => {
   });
 
   describe("billing", () => {
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     const cancel = { flow: "cancel", subscriptionId: "sub_1" };
 
     it("refuses a cross-origin Portal request before it calls Stripe", async () => {
@@ -510,7 +512,12 @@ describe("browser account boundary", () => {
         services,
       );
       expect(await opened.json()).toEqual({ url: "https://billing.stripe.com/p/session/portal" });
-      expect(services.billingService.createPortal).toHaveBeenCalledWith(user.id, cancel, "web", "https://openbot.test");
+      expect(services.billingService.createPortal).toHaveBeenCalledWith(
+        user.id,
+        cancel,
+        "web",
+        "https://aikingbot.test",
+      );
       const invalid = await handleBrowserApi(
         request("v1/me/billing/portal", { body: { flow: "update", subscriptionId: "cus_1" }, cookie }),
         services,
@@ -528,15 +535,15 @@ describe("browser account boundary", () => {
     });
   });
   describe("hosted sites", () => {
-    const cookie = `__Host-openbot-web=${token}`;
+    const cookie = `__Host-aikingbot-web=${token}`;
     const idempotencyKey = "web:delete:4c7e2a91-3b5d-4f8e-a1c2-6d9e0f1a2b3c";
     function deleteSite(options: { cookie?: string; origin?: string; csrf?: string; key?: string } = {}) {
-      return new Request("https://openbot.test/api/browser/v1/sites/site-one", {
+      return new Request("https://aikingbot.test/api/browser/v1/sites/site-one", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Origin: options.origin ?? "https://openbot.test",
-          "X-OpenBot-Browser": options.csrf ?? "1",
+          Origin: options.origin ?? "https://aikingbot.test",
+          "X-AIKINGBOT-Browser": options.csrf ?? "1",
           "Idempotency-Key": options.key ?? idempotencyKey,
           ...(options.cookie === undefined ? { Cookie: cookie } : options.cookie ? { Cookie: options.cookie } : {}),
         },

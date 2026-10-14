@@ -1,4 +1,4 @@
-import { PendingSendStatus } from "@openbot/ui/features/conversation/PendingSendStatus";
+import { PendingSendStatus } from "@aikingbot/ui/features/conversation/PendingSendStatus";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

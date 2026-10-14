@@ -3,8 +3,8 @@ import {
   type SourceMessages,
   sourceTranslateFor,
   type TranslatedLocale,
-} from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { errnoCode, errorReference, NETWORK_MESSAGE, normalizeMessage } from "./reference";
 
 export { errorReference, referenceCarrierName, referenceFrom, safeReference } from "./reference";
@@ -30,7 +30,7 @@ export type UserErrorKind =
   | "service"
   | "unknown";
 
-/** The catalog key for each kind's sentence. The text lives in `@openbot/i18n` (`error.kind.*`). */
+/** The catalog key for each kind's sentence. The text lives in `@aikingbot/i18n` (`error.kind.*`). */
 const USER_ERROR_COPY = {
   network: "error.kind.network",
   timeout: "error.kind.timeout",

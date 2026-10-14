@@ -10,8 +10,8 @@ import {
   IMAGE_ATTACHMENT_EXTENSIONS,
   MEDIA_ATTACHMENT_EXTENSIONS,
   supportedAttachmentExtensions,
-} from "@openbot/contracts/attachment-files";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@aikingbot/contracts/attachment-files";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type DownloadAttachmentsInput,
   decodeWorkspaceDirectory,
@@ -19,18 +19,18 @@ import {
   type ImportAttachmentsInput,
   LOCAL_SERVER_ID,
   type OpenAttachmentInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import {
   TEAM_EML_ATTACHMENTS_CAPABILITY,
   TEAM_MEDIA_ATTACHMENTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/team-protocol/current";
 import {
   WORKSPACE_DIRECTORY_CAPABILITY,
   WORKSPACE_DIRECTORY_ROUTES,
-} from "@openbot/contracts/team-protocol/workspace-directory-v1";
-import type { AppTranslate } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/workspace-directory-v1";
+import type { AppTranslate } from "@aikingbot/i18n";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 import { app, type BrowserWindow, dialog, type OpenDialogOptions, shell } from "electron";
 import { type Zippable, zip } from "fflate";

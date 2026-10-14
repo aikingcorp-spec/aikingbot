@@ -6,27 +6,27 @@
   display: flex;
   max-width: 560px;
   flex-direction: column;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 .agent-import-intro {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .agent-import-heading {
   margin: 0;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-xl);
-  font-weight: var(--openbot-weight-semibold);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-xl);
+  font-weight: var(--aikingbot-weight-semibold);
   letter-spacing: -0.01em;
 }
 
 .agent-import-lede {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
   line-height: 1.5;
 }
 
@@ -43,8 +43,8 @@
   position: relative;
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
-  column-gap: var(--openbot-space-4);
-  padding-bottom: var(--openbot-space-6);
+  column-gap: var(--aikingbot-space-4);
+  padding-bottom: var(--aikingbot-space-6);
 }
 
 .agent-import-step:last-child {
@@ -57,7 +57,7 @@
   bottom: 4px;
   left: 11.5px;
   width: 1px;
-  background: var(--openbot-border-grouped);
+  background: var(--aikingbot-border-grouped);
   content: "";
 }
 
@@ -67,12 +67,12 @@
   height: 24px;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--openbot-weight-medium);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .agent-import-step-body {
@@ -80,21 +80,21 @@
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   padding-top: 2px;
 }
 
 .agent-import-step-title {
   margin: 0;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .agent-import-step-note {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1.45;
 }
 
@@ -104,7 +104,7 @@
   width: 100%;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .agent-import-setup .ui-sliding-tabs-content-slot {
@@ -115,7 +115,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* One card per way in, the same shape in both panels, so step 2 stays where it is: the ready agent
@@ -124,19 +124,19 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-2) var(--openbot-space-2) var(--openbot-space-2) var(--openbot-space-3);
-  border: 1px solid var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-grouped);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-2) var(--aikingbot-space-2) var(--aikingbot-space-3);
+  border: 1px solid var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-grouped);
 }
 
 .agent-import-card-icon {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
   flex: none;
-  color: var(--openbot-text-secondary);
-  stroke-width: var(--openbot-icon-stroke);
+  color: var(--aikingbot-text-secondary);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-import-card-copy {
@@ -147,15 +147,15 @@
 }
 
 .agent-import-card-name {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .agent-import-card-meta {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -165,33 +165,33 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-3);
-  border: 1px solid var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-grouped);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-3);
+  border: 1px solid var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-grouped);
 }
 
 .agent-import-prompt-text {
   min-width: 0;
   flex: 1;
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .agent-import-prompt svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-import-card .ui-button svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-import-picker.ui-button {
@@ -201,44 +201,44 @@
   min-height: 64px;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-3) var(--openbot-space-4);
-  border: 1px solid var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-grouped);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
+  border: 1px solid var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-grouped);
   text-align: left;
-  font-weight: var(--openbot-weight-regular);
+  font-weight: var(--aikingbot-weight-regular);
 }
 
 .agent-import-picker.ui-button:hover:not(:disabled) {
-  border-color: var(--openbot-border-strong);
-  background: var(--openbot-bg-control-hover);
+  border-color: var(--aikingbot-border-strong);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .agent-import-picker-icon {
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
+  width: var(--aikingbot-icon-lg);
+  height: var(--aikingbot-icon-lg);
   flex: 0 0 auto;
-  color: var(--openbot-text-secondary);
-  stroke-width: var(--openbot-icon-stroke);
+  color: var(--aikingbot-text-secondary);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-import-picker-copy {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
 }
 
 .agent-import-picker-title {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .agent-import-picker-meta {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 
 /* Review and result rows. */
@@ -247,8 +247,8 @@
   display: flex;
   min-height: 52px;
   align-items: center;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 label.agent-import-row {
@@ -256,7 +256,7 @@ label.agent-import-row {
 }
 
 label.agent-import-row:hover {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
 }
 
 label.agent-import-row:has(input:disabled) {
@@ -264,16 +264,16 @@ label.agent-import-row:has(input:disabled) {
 }
 
 .agent-import-row-note {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1.4;
 }
 
 .agent-import-notes {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1);
-  margin: var(--openbot-space-1) 0 0;
+  gap: var(--aikingbot-space-1);
+  margin: var(--aikingbot-space-1) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -281,26 +281,26 @@ label.agent-import-row:has(input:disabled) {
 .agent-import-done {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .agent-import-done-icon {
   width: 32px;
   height: 32px;
   flex: 0 0 auto;
-  color: var(--openbot-success-text);
-  stroke-width: var(--openbot-icon-stroke);
+  color: var(--aikingbot-success-text);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-import-skipped-icon {
-  color: var(--openbot-warning-text);
+  color: var(--aikingbot-warning-text);
 }
 
 .agent-import-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* The name and, for a name already on this server, the hint that the import adds another one. */
@@ -308,31 +308,31 @@ label.agent-import-row:has(input:disabled) {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .agent-import-name-hint {
   display: inline-flex;
   flex: none;
-  color: var(--openbot-text-muted);
-  border-radius: var(--openbot-radius-sm);
+  color: var(--aikingbot-text-muted);
+  border-radius: var(--aikingbot-radius-sm);
 }
 
 .agent-import-name-hint:hover,
 .agent-import-name-hint:focus-visible {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .agent-import-name-hint svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 /* The review is inside Server settings, on the dialog layer. The shared tooltip layer is below it,
    and Kobalte gives the positioner the content's z-index, so this one takes the step above. */
 .agent-import-name-tooltip.ui-tooltip {
-  z-index: calc(var(--openbot-layer-dialog) + 1);
+  z-index: calc(var(--aikingbot-layer-dialog) + 1);
 }
 
 /* A channel row shows up to three of its members, overlapped, where an agent row has one avatar. */
@@ -346,8 +346,8 @@ label.agent-import-row:has(input:disabled) {
   width: 22px;
   height: 22px;
   flex: none;
-  border-radius: var(--openbot-radius-pill);
-  box-shadow: 0 0 0 2px var(--openbot-bg-grouped);
+  border-radius: var(--aikingbot-radius-pill);
+  box-shadow: 0 0 0 2px var(--aikingbot-bg-grouped);
 }
 
 .agent-import-member-avatar + .agent-import-member-avatar {
@@ -356,8 +356,8 @@ label.agent-import-row:has(input:disabled) {
 
 .agent-import-channel-icon {
   width: 28px;
-  height: var(--openbot-icon-md);
+  height: var(--aikingbot-icon-md);
   flex: none;
-  color: var(--openbot-text-secondary);
-  stroke-width: var(--openbot-icon-stroke);
+  color: var(--aikingbot-text-secondary);
+  stroke-width: var(--aikingbot-icon-stroke);
 }

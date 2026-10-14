@@ -1,4 +1,4 @@
-import { createOpenBotPluginUrl } from "@openbot/contracts/plugin-links";
+import { createAIKINGBOTPluginUrl } from "@aikingbot/contracts/plugin-links";
 import { cleanup, fireEvent, render, screen, within } from "@solidjs/testing-library";
 import type { JSX } from "@solidjs/web";
 import { createRootRoute, createRoute, createRouter, isNotFound, RouterContextProvider } from "@tanstack/solid-router";
@@ -135,11 +135,11 @@ describe("plugin page", () => {
     const plugin = firstPlugin();
     renderPage(() => <PluginPage plugin={plugin} />);
 
-    expect(screen.getByRole("link", { name: "Open in OpenBot" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open in AIKINGBOT" })).toHaveAttribute(
       "href",
-      `openbot://plugins/${plugin.slug}`,
+      `aikingbot://plugins/${plugin.slug}`,
     );
-    expect(createOpenBotPluginUrl(plugin.slug)).toBe(`openbot://plugins/${plugin.slug}`);
+    expect(createAIKINGBOTPluginUrl(plugin.slug)).toBe(`aikingbot://plugins/${plugin.slug}`);
   });
 
   /* The catalog becomes a fetched document, and a link row is the only place a listing's own string
@@ -177,7 +177,7 @@ describe("plugin page", () => {
 
     expect(screen.queryByRole("link", { name: /^Download for / })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("link", { name: "Open in OpenBot" }));
+    fireEvent.click(screen.getByRole("link", { name: "Open in AIKINGBOT" }));
     vi.advanceTimersByTime(2000);
     flush();
 
@@ -193,7 +193,7 @@ describe("plugin page", () => {
     const plugin = firstPlugin();
     renderPage(() => <PluginPage plugin={plugin} />);
 
-    fireEvent.click(screen.getByRole("link", { name: "Open in OpenBot" }));
+    fireEvent.click(screen.getByRole("link", { name: "Open in AIKINGBOT" }));
     window.dispatchEvent(new Event("pagehide"));
     vi.advanceTimersByTime(2000);
     flush();

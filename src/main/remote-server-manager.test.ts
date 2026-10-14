@@ -8,8 +8,8 @@ import { generateKeyPairSync, sign } from "node:crypto";
 import { mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
+import { TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { decodeBrowserPreviewFromHost, decodeBrowserTab } from "./remote-device-decoding";
@@ -71,12 +71,12 @@ describe("remote browser responses", () => {
 describe("remote server links", () => {
   it("creates token-free preview URLs", () => {
     const preview = remoteAttachmentPreviewUrl("00000000-0000-4000-8000-000000000000", "draft 1");
-    expect(preview).toBe("openbot-remote-attachment://00000000-0000-4000-8000-000000000000/draft%201");
+    expect(preview).toBe("aikingbot-remote-attachment://00000000-0000-4000-8000-000000000000/draft%201");
     expect(preview).not.toContain("token");
   });
 
   it("rejects a WebRTC invitation whose pinned host key does not match the control plane", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-invite-key-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-invite-key-"));
     const statePath = join(directory, "servers.json");
     const hostId = "00000000-0000-4000-8000-000000000000";
     const acceptInvite = vi.fn();
@@ -90,7 +90,7 @@ describe("remote server links", () => {
         authCall(async () => ({
           ticket: "ticket",
           expiresAt: Date.now() + 60_000,
-          signalUrl: "wss://signal.openbot.run/v1/signal",
+          signalUrl: "wss://signal.aikingbot.aikingx.com/v1/signal",
         })),
       endSession: () => authCall(async () => undefined),
       createInvite: () =>
@@ -120,7 +120,7 @@ describe("remote server links", () => {
       removeMember: () => authCall(async () => undefined),
       removeOwnedHost: () => authCall(async () => undefined),
       getPrincipalId: () => "person-1",
-      controlPlaneUrl: "https://api.openbot.run",
+      controlPlaneUrl: "https://api.aikingbot.aikingx.com",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
       transferDirectory: join(directory, "transfers"),
     });
@@ -130,8 +130,8 @@ describe("remote server links", () => {
       { createTeamAuthTicket: () => authCall(async () => "ticket"), getEmail: () => "person@example.com" },
       { webrtcTransport: transport },
     );
-    const inviteUrl = new URL("https://openbot.run/join");
-    inviteUrl.searchParams.set("api", "https://api.openbot.run");
+    const inviteUrl = new URL("https://aikingbot.aikingx.com/join");
+    inviteUrl.searchParams.set("api", "https://api.aikingbot.aikingx.com");
     inviteUrl.searchParams.set("server", hostId);
     inviteUrl.searchParams.set("fingerprint", fingerprint("attacker-public-key"));
     inviteUrl.searchParams.set("invite", "b".repeat(43));
@@ -147,7 +147,7 @@ describe("remote server links", () => {
   });
 
   it("does not send the token of another service's invitation to a self-hosted service", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-self-hosted-invite-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-self-hosted-invite-"));
     const transport = fakeWebRtcTransport();
     const previewInvite = vi.spyOn(transport, "previewInvite");
     const acceptInvite = vi.spyOn(transport, "acceptInvite");
@@ -157,8 +157,8 @@ describe("remote server links", () => {
       { createTeamAuthTicket: () => authCall(async () => "ticket"), getEmail: () => "person@example.com" },
       { webrtcTransport: transport, selfHostedApiOrigin: "https://api.example.com" },
     );
-    const inviteUrl = new URL("https://openbot.run/join");
-    inviteUrl.searchParams.set("api", "https://api.openbot.run/");
+    const inviteUrl = new URL("https://aikingbot.aikingx.com/join");
+    inviteUrl.searchParams.set("api", "https://api.aikingbot.aikingx.com/");
     inviteUrl.searchParams.set("server", "00000000-0000-4000-8000-000000000000");
     inviteUrl.searchParams.set("fingerprint", "a".repeat(43));
     inviteUrl.searchParams.set("invite", "b".repeat(43));
@@ -166,8 +166,8 @@ describe("remote server links", () => {
       await runCauseEffect(manager.initialize());
       await runCauseEffect(manager.awaitHostDirectory());
       const input = { inviteUrl: inviteUrl.toString() };
-      await expect(runCauseEffect(manager.previewInvite(input))).rejects.toThrow("another OpenBot service");
-      await expect(runCauseEffect(manager.join(input))).rejects.toThrow("another OpenBot service");
+      await expect(runCauseEffect(manager.previewInvite(input))).rejects.toThrow("another AIKINGBOT service");
+      await expect(runCauseEffect(manager.join(input))).rejects.toThrow("another AIKINGBOT service");
       expect(previewInvite).not.toHaveBeenCalled();
       expect(acceptInvite).not.toHaveBeenCalled();
     } finally {
@@ -177,7 +177,7 @@ describe("remote server links", () => {
   });
 
   it("disconnects a stored WebRTC host removed from the authenticated directory", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-revoked-host-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-revoked-host-"));
     const statePath = join(directory, "servers.json");
     const hostId = "revoked-host";
     await writeFile(
@@ -212,7 +212,7 @@ describe("remote server links", () => {
         authCall(async () => ({
           ticket: "ticket",
           expiresAt: Date.now() + 60_000,
-          signalUrl: "wss://signal.openbot.run/v1/signal",
+          signalUrl: "wss://signal.aikingbot.aikingx.com/v1/signal",
         })),
       endSession: () => authCall(async () => undefined),
       createInvite: () =>
@@ -242,7 +242,7 @@ describe("remote server links", () => {
       removeMember: () => authCall(async () => undefined),
       removeOwnedHost: () => authCall(async () => undefined),
       getPrincipalId: () => "person-1",
-      controlPlaneUrl: "https://api.openbot.run",
+      controlPlaneUrl: "https://api.aikingbot.aikingx.com",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
       transferDirectory: join(directory, "transfers"),
     });
@@ -381,11 +381,11 @@ describe("remote server links", () => {
     const summary = await runCauseEffect(
       fixture.manager.connectDevelopmentServer({
         serverId: hostId,
-        serverName: "OpenBot Local Dev Host",
+        serverName: "AIKINGBOT Local Dev Host",
         apiUrl: "http://localhost:63762",
         fingerprint: "fingerprint",
         publicKey: "public-key",
-        username: "openbot-dev-client",
+        username: "aikingbot-dev-client",
         sessionToken: "development-token",
       }),
     );
@@ -396,7 +396,7 @@ describe("remote server links", () => {
   });
 
   it("keeps the saved WebRTC host order and loads Remote Desktop readiness after connection", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-host-order-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-host-order-"));
     const statePath = join(directory, "servers.json");
     const alphaId = "00000000-0000-4000-8000-000000000001";
     const betaId = "00000000-0000-4000-8000-000000000002";
@@ -481,7 +481,7 @@ describe("remote server links", () => {
       removeMember,
       removeOwnedHost,
       getPrincipalId: () => "person-1",
-      controlPlaneUrl: "https://api.openbot.run",
+      controlPlaneUrl: "https://api.aikingbot.aikingx.com",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
       transferDirectory: join(directory, "transfers"),
     });
@@ -592,7 +592,7 @@ describe("remote server links", () => {
   });
 
   it("sends viewer JSON through RPC and keeps viewer authorization errors scoped to Remote Desktop", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-viewer-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-viewer-"));
     const statePath = join(directory, "servers.json");
     const hostId = "viewer-host";
     const publicKey = "viewer-host-public-key";
@@ -639,7 +639,7 @@ describe("remote server links", () => {
         authCall(async () => ({
           ticket: "ticket",
           expiresAt: Date.now() + 60_000,
-          signalUrl: "wss://signal.openbot.run/v1/signal",
+          signalUrl: "wss://signal.aikingbot.aikingx.com/v1/signal",
         })),
       endSession: () => authCall(async () => undefined),
       createInvite: () =>
@@ -665,7 +665,7 @@ describe("remote server links", () => {
       removeMember: () => authCall(async () => undefined),
       removeOwnedHost: () => authCall(async () => undefined),
       getPrincipalId: () => "person-1",
-      controlPlaneUrl: "https://api.openbot.run",
+      controlPlaneUrl: "https://api.aikingbot.aikingx.com",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
       transferDirectory: join(directory, "transfers"),
     });
@@ -723,7 +723,7 @@ describe("remote server links", () => {
 
 describe("remote server order", () => {
   it("recovers the persistence queue after a write failure", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-server-persistence-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-server-persistence-"));
     const unavailableDirectory = `${directory}-unavailable`;
     const statePath = join(directory, "servers.json");
     await writeFile(
@@ -776,7 +776,7 @@ describe("remote server order", () => {
   });
 
   it("keeps the local server first and persists the remote server order", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-server-order-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-server-order-"));
     const statePath = join(directory, "servers.json");
     const storedServer = (id: string) => ({
       id,
@@ -824,7 +824,7 @@ describe("remote server order", () => {
   });
 
   it("downloads shared and workspace files with authenticated requests", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-shared-download-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-shared-download-"));
     const statePath = join(directory, "servers.json");
     const serverId = "remote-shared";
     await writeFile(
@@ -847,14 +847,14 @@ describe("remote server order", () => {
       }),
     );
 
-    const bytes = new TextEncoder().encode("name,value\nOpenBot,1\n");
+    const bytes = new TextEncoder().encode("name,value\nAIKINGBOT,1\n");
     const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = new URL(input instanceof Request ? input.url : input.toString());
       const headers = new Headers(init?.headers);
       expect(headers.get("Authorization")).toBe("Bearer session-token");
-      expect(headers.get("OpenBot-Protocol-Version")).toBe("1");
+      expect(headers.get("AIKINGBOT-Protocol-Version")).toBe("1");
       if (url.pathname === "/v1/shared-files") {
-        expect(url.searchParams.get("path")).toBe("~/OpenBot/Shared/report.csv");
+        expect(url.searchParams.get("path")).toBe("~/AIKINGBOT/Shared/report.csv");
       } else {
         expect(url.pathname).toBe("/v1/workspace-files");
         // Read off the URL this client puts on the wire, so it carries the frozen `botId` spelling.
@@ -886,7 +886,7 @@ describe("remote server order", () => {
       await runCauseEffect(manager.awaitHostDirectory());
 
       await expect(
-        runCauseEffect(manager.downloadSharedFile("~/OpenBot/Shared/report.csv", serverId)),
+        runCauseEffect(manager.downloadSharedFile("~/AIKINGBOT/Shared/report.csv", serverId)),
       ).resolves.toEqual({
         bytes,
         name: "report.csv",
@@ -1124,14 +1124,14 @@ describe("remote connection failures", () => {
 
 describe("remote control capability discovery", () => {
   it("joins a server when remote control is unavailable", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-remote-capability-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-capability-"));
     const statePath = join(directory, "servers.json");
     const serverId = "00000000-0000-4000-8000-000000000000";
     const apiUrl = "https://remote-capability.trycloudflare.com/";
     const { publicKey, privateKey } = generateKeyPairSync("ed25519");
     const publicKeyPem = publicKey.export({ type: "spki", format: "pem" }).toString();
     const expectedFingerprint = fingerprint(publicKeyPem);
-    const inviteUrl = new URL("openbot://join");
+    const inviteUrl = new URL("aikingbot://join");
     inviteUrl.searchParams.set("api", apiUrl);
     inviteUrl.searchParams.set("server", serverId);
     inviteUrl.searchParams.set("fingerprint", expectedFingerprint);

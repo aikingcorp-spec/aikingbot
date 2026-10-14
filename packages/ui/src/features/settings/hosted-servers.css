@@ -6,9 +6,9 @@
 .hosted-servers-loading {
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-8);
-  animation: hosted-servers-loading-in var(--openbot-duration-normal) var(--openbot-ease-out)
-    var(--openbot-loading-indicator-delay) both;
+  padding: var(--aikingbot-space-8);
+  animation: hosted-servers-loading-in var(--aikingbot-duration-normal) var(--aikingbot-ease-out)
+    var(--aikingbot-loading-indicator-delay) both;
 }
 
 @keyframes hosted-servers-loading-in {
@@ -27,7 +27,7 @@
 }
 
 .hosted-servers-list .ui-item-title {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .hosted-servers-actions {

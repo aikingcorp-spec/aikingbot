@@ -10,14 +10,14 @@ export const CLAUDE_CODE_PROVIDER: ProviderPage = {
   provider: "claude",
   name: "Claude Code",
   answer:
-    "OpenBot runs Claude Code as one agent of a team, on macOS, Windows or Linux, with the Claude plan you already pay for. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs Claude Code as one agent of a team, on macOS, Windows or Linux, with the Claude plan you already pay for. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose Claude, and OpenBot downloads and pins its own copy of Claude Code, or uses the one you installed. Then sign in with your Claude account. If `claude` works in your terminal, it works in OpenBot.",
+    "Choose Claude, and AIKINGBOT downloads and pins its own copy of Claude Code, or uses the one you installed. Then sign in with your Claude account. If `claude` works in your terminal, it works in AIKINGBOT.",
   adds: [
     {
       icon: "laptop",
       title: "A full desktop app on Linux",
-      text: "Anthropic's desktop app is in beta on Linux, for Ubuntu and Debian only. OpenBot runs Claude Code on x64 and arm64 Linux, as an AppImage.",
+      text: "Anthropic's desktop app is in beta on Linux, for Ubuntu and Debian only. AIKINGBOT runs Claude Code on x64 and arm64 Linux, as an AppImage.",
     },
   ],
   vendor: "Anthropic",
@@ -48,20 +48,20 @@ export const CLAUDE_CODE_PROVIDER: ProviderPage = {
     {
       question: "Is there a GUI for Claude Code?",
       answer:
-        "Yes. Anthropic's Claude desktop app has a Code tab for macOS and Windows, and Linux in beta. OpenBot is a different desktop app: it runs Claude Code as one agent of a team, with agents on other providers and an app on your phone.",
+        "Yes. Anthropic's Claude desktop app has a Code tab for macOS and Windows, and Linux in beta. AIKINGBOT is a different desktop app: it runs Claude Code as one agent of a team, with agents on other providers and an app on your phone.",
     },
     {
-      question: "Does OpenBot need an Anthropic API key for Claude Code?",
+      question: "Does AIKINGBOT need an Anthropic API key for Claude Code?",
       answer:
-        "No. OpenBot uses the sign-in of Claude Code, so your Claude Pro or Max plan works. OpenBot does not copy your credentials. The free Claude plan does not include Claude Code.",
+        "No. AIKINGBOT uses the sign-in of Claude Code, so your Claude Pro or Max plan works. AIKINGBOT does not copy your credentials. The free Claude plan does not include Claude Code.",
     },
     {
       question: "Can I run Claude Code on Linux with a graphical app?",
       answer:
-        "Yes. Anthropic's desktop app is in beta on Linux, for Ubuntu 22.04 or later and Debian 12 or later. OpenBot runs Claude Code on x64 and arm64 Linux as an AppImage, on any distribution that runs an AppImage.",
+        "Yes. Anthropic's desktop app is in beta on Linux, for Ubuntu 22.04 or later and Debian 12 or later. AIKINGBOT runs Claude Code on x64 and arm64 Linux as an AppImage, on any distribution that runs an AppImage.",
     },
     {
-      question: "Can Claude Code and Codex work together in OpenBot?",
+      question: "Can Claude Code and Codex work together in AIKINGBOT?",
       answer:
         "Yes. Each agent has its own provider. A Claude Code agent and a Codex agent can work in the same channel and give tasks to each other.",
     },

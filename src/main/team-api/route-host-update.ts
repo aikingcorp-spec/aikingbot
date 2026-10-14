@@ -1,17 +1,17 @@
-import type { HostUpdateSettingsChange, HostUpdateStatus, UpdateRestartMode } from "@openbot/contracts/ipc";
+import type { HostUpdateSettingsChange, HostUpdateStatus, UpdateRestartMode } from "@aikingbot/contracts/ipc";
 import {
   HOST_MEMBER_UPDATE_CAPABILITY,
   HOST_MEMBER_UPDATE_ROUTES,
-} from "@openbot/contracts/team-protocol/host-member-update-v1";
-import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@openbot/contracts/team-protocol/host-release-v1";
+} from "@aikingbot/contracts/team-protocol/host-member-update-v1";
+import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@aikingbot/contracts/team-protocol/host-release-v1";
 import {
   HOST_UPDATE_CAPABILITY,
   HOST_UPDATE_RESTART_MODES,
   HOST_UPDATE_ROUTES,
   HOST_UPDATE_WAIT_REASON_LIMIT,
   HOST_UPDATE_WAIT_REASONS,
-} from "@openbot/contracts/team-protocol/host-update-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { RequestedUpdateRefusal } from "../requested-update";
 import type { TeamApiAdmin } from "./dependencies";

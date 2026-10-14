@@ -1,5 +1,5 @@
-import type { AgentModelOption, AgentStatus, AttachmentSummary, ConversationPage } from "@openbot/contracts/ipc";
-import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
+import type { AgentModelOption, AgentStatus, AttachmentSummary, ConversationPage } from "@aikingbot/contracts/ipc";
+import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";

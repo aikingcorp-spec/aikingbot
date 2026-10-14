@@ -270,7 +270,7 @@ export const messages = {
   "chat.suggestion.dismissed": "{name} の提案を閉じました。",
   "chat.suggestion.undo": "元に戻す",
   "chat.suggestion.githubLocalOnly": "このサーバーを実行しているコンピューターで GitHub を接続してください。",
-  "chat.suggestion.githubUnavailable": "この OpenBot のビルドは GitHub に接続できません。",
+  "chat.suggestion.githubUnavailable": "この AIKINGBOT のビルドは GitHub に接続できません。",
   "chat.compaction.running": "コンテキストを圧縮しています",
   "chat.compaction.completed": "コンテキストを圧縮しました",
   "chat.compaction.failed": "コンテキストを圧縮できませんでした",

@@ -1,4 +1,4 @@
-import type { AttachmentSummary, ConversationMessage, QueueDelivery } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, ConversationMessage, QueueDelivery } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { groupExchangeMarkers, latestReadableMessage, projectChatMessages, withFailureReasons } from "./chat-messages";
 

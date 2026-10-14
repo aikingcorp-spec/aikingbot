@@ -1,5 +1,5 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { MessageBody } from "@openbot/ui/features/conversation/MessageRendering";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { MessageBody } from "@aikingbot/ui/features/conversation/MessageRendering";
 import { render, screen } from "@solidjs/testing-library";
 import { createSignal, flush } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";

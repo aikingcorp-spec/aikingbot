@@ -4,7 +4,7 @@
  * of that routine only.
  */
 
-import type { RoutineFlowLink } from "@openbot/contracts/ipc";
+import type { RoutineFlowLink } from "@aikingbot/contracts/ipc";
 
 export type RoutineFlowConnectProblem = "same-agent" | "into-owner" | "not-on-path" | "duplicate" | "cycle";
 

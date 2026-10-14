@@ -120,7 +120,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Eine Dateibearbeitung außerhalb fragt dich zuerst, auch wenn Automatisch genehmigen aktiviert ist. Ein Befehl kann nicht außerhalb schreiben.",
   "agentSettings.runtime.workspaceUnlimited":
-    "Computersteuerung und der OpenBot-Browser sind nicht beschränkt. Du kannst Computersteuerung unten deaktivieren.",
+    "Computersteuerung und der AIKINGBOT-Browser sind nicht beschränkt. Du kannst Computersteuerung unten deaktivieren.",
   "agentSettings.computerUse.title": "Computersteuerung",
   "agentSettings.computerUse.description": "Diesem Agenten erlauben, Apps auf diesem Computer zu steuern",
   "agentSettings.automation.title": "Lokale Skripte",

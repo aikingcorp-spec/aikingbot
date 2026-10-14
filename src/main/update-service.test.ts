@@ -4,8 +4,8 @@ import { EventEmitter } from "node:events";
 import { mkdtemp, readdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { UpdateBusyPhase } from "@openbot/contracts/ipc";
-import { isUpdateBusyPhase, UPDATE_BUSY_PHASES } from "@openbot/contracts/ipc";
+import type { UpdateBusyPhase } from "@aikingbot/contracts/ipc";
+import { isUpdateBusyPhase, UPDATE_BUSY_PHASES } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -17,7 +17,7 @@ import {
   supportsInstalledUpdates,
   UpdateService,
 } from "./update-service";
-import { type OpenBotSiblingInstance, SiblingScanFailed } from "./update-sibling-instances";
+import { type AIKINGBOTSiblingInstance, SiblingScanFailed } from "./update-sibling-instances";
 
 const CHECK_TIMEOUT = 1_000;
 const CHECK_INTERVAL = 10_000;
@@ -63,7 +63,7 @@ function createService(
     beforeInstall?: () => Promise<void>;
     autoDownload?: boolean;
     checkIntervalMs?: number;
-    checkSiblingInstances?: () => Effect.Effect<readonly OpenBotSiblingInstance[], SiblingScanFailed>;
+    checkSiblingInstances?: () => Effect.Effect<readonly AIKINGBOTSiblingInstance[], SiblingScanFailed>;
     currentUid?: number;
   } = {},
 ) {
@@ -270,7 +270,7 @@ describe("UpdateService", () => {
     const beforeInstall = vi.fn(async () => undefined);
     makeUpdateAvailable(updater);
     completeDownload(updater);
-    let siblings: readonly OpenBotSiblingInstance[] = [{ pid: 4242, uid: 502 }];
+    let siblings: readonly AIKINGBOTSiblingInstance[] = [{ pid: 4242, uid: 502 }];
     const checkSiblingInstances = vi.fn(() => Effect.sync(() => siblings));
     const service = createService(updater, { platform: "darwin", beforeInstall, checkSiblingInstances });
     service.start(false);
@@ -411,8 +411,8 @@ describe("UpdateService", () => {
     const updater = new FakeUpdater();
     makeUpdateAvailable(updater);
     completeDownload(updater);
-    let finishScan: (value: readonly OpenBotSiblingInstance[]) => void = () => undefined;
-    const scan = new Promise<readonly OpenBotSiblingInstance[]>((resolve) => {
+    let finishScan: (value: readonly AIKINGBOTSiblingInstance[]) => void = () => undefined;
+    const scan = new Promise<readonly AIKINGBOTSiblingInstance[]>((resolve) => {
       finishScan = resolve;
     });
     let finishPrepare: () => void = () => undefined;
@@ -853,7 +853,7 @@ describe("UpdateService", () => {
     expect(service.getStatus()).toMatchObject({
       phase: "error",
       errorCode: "install_failed",
-      message: "Could not install the update. Quit and reopen OpenBot, then try again.",
+      message: "Could not install the update. Quit and reopen AIKINGBOT, then try again.",
     });
     // Shutdown preparation is not transactional, so a second attempt would tear down services
     // concurrently with the first. The user is asked to relaunch instead.
@@ -1040,7 +1040,7 @@ describe("every busy update phase is bounded", () => {
 
 describe("pruneShipItLogs", () => {
   it("keeps state files and the ten newest rotated logs", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-shipit-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-shipit-"));
     await Promise.all([
       writeFile(join(root, "ShipItState.plist"), "state"),
       ...Array.from({ length: 12 }, (_, index) => writeFile(join(root, `ShipIt_stdout.log.${index + 1}`), "log")),
@@ -1065,7 +1065,7 @@ describe("supportsInstalledUpdates", () => {
 
   // Only the AppImage runtime can replace itself, and `APPIMAGE` is how it says it is the one running.
   it("supports a Linux build only when it runs from an AppImage", () => {
-    expect(supportsInstalledUpdates("linux", { APPIMAGE: "/tmp/OpenBot-0.8.0-x64.AppImage" })).toBe(true);
+    expect(supportsInstalledUpdates("linux", { APPIMAGE: "/tmp/AIKINGBOT-0.8.0-x64.AppImage" })).toBe(true);
     expect(supportsInstalledUpdates("linux", { APPIMAGE: "  " })).toBe(false);
   });
 });

@@ -5,8 +5,8 @@ import {
   BILLING_INTERVALS,
   BILLING_PLAN_IDS,
   type BillingPlanId,
-} from "@openbot/contracts/billing";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/billing";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { exportJWK, generateKeyPair } from "jose";
 import { afterEach, describe, expect, it } from "vitest";
 import { type AccountAnalyticsEvent, accountEventProperties } from "../src/server/account-analytics";
@@ -24,7 +24,7 @@ const DEVELOPER_KEY = "developer-key-0123456789abcdef0123456789";
 const stranger = { id: "stranger", email: "stranger@example.test", name: null, avatarUrl: null };
 const BOAT_WEBHOOK_SECRET = "whsec_boat";
 const STRIPE_WEBHOOK_SECRET = "whsec_stripe";
-const ORIGIN = "https://openbot.test";
+const ORIGIN = "https://aikingbot.test";
 const RETURN = { target: "desktop", origin: ORIGIN } as const;
 const STARTER = { name: "Cloud one", plan: "starter", interval: "month", currency: "eur" } as const;
 const MINUTE = 60_000;
@@ -72,8 +72,12 @@ async function setup() {
       body: init.body ? JSON.parse(String(init.body)) : null,
     };
     boatCalls.push(call);
-    if (isDynamicRecord(call.body) && isDynamicRecord(call.body.env) && isString(call.body.env.OPENBOT_HOSTED_CLAIM)) {
-      claims.push(call.body.env.OPENBOT_HOSTED_CLAIM);
+    if (
+      isDynamicRecord(call.body) &&
+      isDynamicRecord(call.body.env) &&
+      isString(call.body.env.AIKINGBOT_HOSTED_CLAIM)
+    ) {
+      claims.push(call.body.env.AIKINGBOT_HOSTED_CLAIM);
     }
     if (call.method === "POST" && call.path === "/sandboxes") {
       if (refusals.creates > 0) {
@@ -113,7 +117,7 @@ async function setup() {
     HOSTED_SERVERS_ENABLED: "true",
     // An entry is an account ID or an email in any case.
     HOSTED_SERVERS_ALLOWED_USER_IDS: "owner, Member@Example.test",
-    HOSTED_SERVER_TEMPLATE: "openbot-server-test",
+    HOSTED_SERVER_TEMPLATE: "aikingbot-server-test",
     BOAT_API_KEY: "boat-key",
     BOAT_WEBHOOK_SECRET: BOAT_WEBHOOK_SECRET,
     HOSTED_SERVERS_DEVELOPER_KEY: DEVELOPER_KEY,
@@ -259,8 +263,8 @@ describe("hosted servers", () => {
       currency: "eur",
       client_reference_id: server.serverId,
       success_url: `${ORIGIN}/billing/return`,
-      "subscription_data[metadata][openbot_server_id]": server.serverId,
-      "subscription_data[metadata][openbot_user_id]": "owner",
+      "subscription_data[metadata][aikingbot_server_id]": server.serverId,
+      "subscription_data[metadata][aikingbot_user_id]": "owner",
     });
 
     // A repeated submit closes the first page, so only one page can take a payment.
@@ -280,8 +284,8 @@ describe("hosted servers", () => {
     expect(creates[0]?.headers.get("Idempotency-Key")).toBe(server.serverId);
     expect(creates[0]?.body).toMatchObject({
       type: "small",
-      from: "openbot-server-test",
-      env: { OPENBOT_HOSTED_HOST_ID: server.serverId },
+      from: "aikingbot-server-test",
+      env: { AIKINGBOT_HOSTED_HOST_ID: server.serverId },
       ttlSeconds: LEASE,
     });
     expect(context.state(server.serverId)).toMatchObject({ observed_state: "starting", checkout_session_id: null });
@@ -923,7 +927,7 @@ describe("hosted servers", () => {
       ["PATCH", { name: sandboxName("starter", owner.email, server.serverId) }],
     ]);
     expect(sandboxName("starter", owner.email, server.serverId)).toBe(
-      `openbot-starter-owner-example-test-${server.serverId.slice(0, 8)}`,
+      `aikingbot-starter-owner-example-test-${server.serverId.slice(0, 8)}`,
     );
 
     // Only the session of the server can keep it running.
@@ -1358,7 +1362,7 @@ function prices() {
   return BILLING_PLAN_IDS.flatMap((plan) =>
     BILLING_INTERVALS.map((interval) => ({
       id: `price_${plan}_${interval}`,
-      lookup_key: `openbot_${plan}_${interval}`,
+      lookup_key: `aikingbot_${plan}_${interval}`,
       currency: "eur",
       unit_amount: 2_000,
       currency_options: Object.fromEntries(BILLING_CURRENCIES.map((currency) => [currency, { unit_amount: 2_000 }])),
@@ -1380,14 +1384,14 @@ function subscription(
     status,
     currency: "eur",
     cancel_at_period_end: false,
-    metadata: { openbot_user_id: owner.id, openbot_server_id: serverId },
+    metadata: { aikingbot_user_id: owner.id, aikingbot_server_id: serverId },
     items: {
       data: [
         {
           current_period_end: Math.floor(now / 1_000) + 30 * 86_400,
           price: {
             id: `price_${plan}_month`,
-            lookup_key: `openbot_${plan}_month`,
+            lookup_key: `aikingbot_${plan}_month`,
             currency: "eur",
             unit_amount: 2_000,
           },

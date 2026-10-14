@@ -1,4 +1,4 @@
-import { SLACK_ROUTE_TEAMS_LIMIT } from "@openbot/contracts/signal-protocol/slack-route";
+import { SLACK_ROUTE_TEAMS_LIMIT } from "@aikingbot/contracts/signal-protocol/slack-route";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { z } from "zod";

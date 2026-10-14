@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/brand",
+  "name": "@aikingbot/brand",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@norbert_bodziony/bloub": "catalog:",
-    "@openbot/contracts": "workspace:*"
+    "@aikingbot/contracts": "workspace:*"
   },
   "peerDependencies": {
     "@solidjs/web": "catalog:",

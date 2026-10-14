@@ -1,4 +1,4 @@
-import { OtpInput, type OtpInputStatus } from "@openbot/ui/features/account/OtpInput";
+import { OtpInput, type OtpInputStatus } from "@aikingbot/ui/features/account/OtpInput";
 import { fireEvent, render, screen, within } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 
@@ -27,7 +27,7 @@ describe("OtpInput", () => {
     expect(onChange).toHaveBeenLastCalledWith("ABCDEFGH");
     expect(onComplete).toHaveBeenCalledWith("ABCDEFGH");
   });
-  it("filters paste through the OpenBot alphabet", async () => {
+  it("filters paste through the AIKINGBOT alphabet", async () => {
     const { input, slots, onChange, onComplete } = renderOtp();
 
     await fireEvent.paste(input, {
@@ -100,6 +100,6 @@ describe("OtpInput", () => {
 
     renderOtp({ value: "ABCDEFGH", status: "success" });
     const message = screen.getByRole("status");
-    expect(message).toHaveTextContent("Verified. Opening OpenBot…");
+    expect(message).toHaveTextContent("Verified. Opening AIKINGBOT…");
   });
 });

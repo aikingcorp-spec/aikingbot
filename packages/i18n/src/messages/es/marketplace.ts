@@ -22,7 +22,7 @@ export const messages = {
   "marketplace.kinds": "Tipos de contenido del marketplace",
   "marketplace.tab.agents": "Agentes",
   "marketplace.tab.skills": "Habilidades",
-  "marketplace.plugins.missing": "Este plugin no está en el catálogo de OpenBot.",
+  "marketplace.plugins.missing": "Este plugin no está en el catálogo de AIKINGBOT.",
   "marketplace.agents.loadingDetail": "Cargando detalles del agente…",
   "marketplace.agents.skills": "Habilidades",
   "marketplace.agents.routines": "Rutinas",
@@ -30,7 +30,7 @@ export const messages = {
   "marketplace.agents.routineInactive": "Inactiva",
   "marketplace.skill.loading": "Cargando habilidad",
   "marketplace.skill.update": "Actualizar habilidad",
-  "marketplace.try.readFailed": "OpenBot no pudo leer las habilidades de este agente. Inténtalo de nuevo.",
+  "marketplace.try.readFailed": "AIKINGBOT no pudo leer las habilidades de este agente. Inténtalo de nuevo.",
   "marketplace.try.enable": "Activa esta habilidad en los ajustes del agente para probarla.",
   "marketplace.try.repair": "Repara esta habilidad en los ajustes del agente para probarla.",
   "marketplace.try.update": "Actualiza esta habilidad para probar esta versión.",
@@ -161,7 +161,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "Extrae los iconos de marketing a 2x para el paquete de la aplicación.",
   "marketplace.plugin.paper.tagline": "Lienzo de diseño basado en HTML y CSS",
   "marketplace.plugin.paper.description":
-    "Paper permite a los agentes leer y escribir el archivo de diseño abierto en Paper Desktop: inspeccionar mesas de trabajo, selecciones, estilos calculados, JSX y tokens, y crear o cambiar marcos, texto y estilos. Instala Paper Desktop, ábrelo una vez y abre un archivo antes de empezar. OpenBot inicia la CLI de Paper que instala Paper Desktop. Paper no necesita clave. Las herramientas de escritura cambian el archivo abierto, así que revisa cada escritura antes de aprobarla.",
+    "Paper permite a los agentes leer y escribir el archivo de diseño abierto en Paper Desktop: inspeccionar mesas de trabajo, selecciones, estilos calculados, JSX y tokens, y crear o cambiar marcos, texto y estilos. Instala Paper Desktop, ábrelo una vez y abre un archivo antes de empezar. AIKINGBOT inicia la CLI de Paper que instala Paper Desktop. Paper no necesita clave. Las herramientas de escritura cambian el archivo abierto, así que revisa cada escritura antes de aprobarla.",
   "marketplace.plugin.paper.app":
     "Lee y escribe el archivo abierto de Paper Desktop, mediante el servidor MCP local que retransmite la CLI de Paper. Necesita Paper Desktop con un archivo abierto.",
   "marketplace.plugin.paper.prompt.implement":

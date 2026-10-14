@@ -14,7 +14,7 @@ this is why routine fixes target paths or use the staged-file hook.
 
 The aggregate typecheck selects `typecheck:*`. Mobile was previously named only `mobile:typecheck`
 and was omitted. It now has `typecheck:mobile`; the old name remains an alias for CI. Mobile uses
-`@openbot/brand`, `@openbot/contracts`, and `@openbot/team-client`. Its Expo and Uniwind generation
+`@aikingbot/brand`, `@aikingbot/contracts`, and `@aikingbot/team-client`. Its Expo and Uniwind generation
 writes ignored files before TypeScript runs.
 
 Each `typecheck` script starts TypeScript through `node_modules/typescript/bin/tsc`, not a bare
@@ -57,7 +57,7 @@ statements of each turn and of one conversation read, and the JSON bytes of that
 events that one turn sends to the renderer. Each value has a hard cap about 30% above the value
 measured when the cap was set. `src/main/team-api-transfer-budget.test.ts` runs the same two turns
 and measures the response bytes of the Team API conversation routes at the current protocol. Each
-test writes its values and caps to a file in `.openbot-build/transfer-budget/`, and the desktop
+test writes its values and caps to a file in `.aikingbot-build/transfer-budget/`, and the desktop
 test jobs upload that directory. A red budget means a change made a turn or a read do more work:
 make the change cheaper, or raise the cap and give the reason in the pull request.
 
@@ -90,8 +90,8 @@ an output is missing. File times do not decide: a checkout changes them, and Uni
 file whose content is the same.
 
 In CI, `check:desktop:static` (the UI check, lint, desktop typecheck, build and preload check) takes
-about a minute, and each other typecheck takes a few seconds. When `openbot-database-schema.ts`, `channel-schema.ts`, `mcp-schema.ts`, the parity test or
-`openbot-database-schema-history.json` is staged, the hook also runs `src/backend/openbot-database-schema-parity.test.ts`.
+about a minute, and each other typecheck takes a few seconds. When `aikingbot-database-schema.ts`, `channel-schema.ts`, `mcp-schema.ts`, the parity test or
+`aikingbot-database-schema-history.json` is staged, the hook also runs `src/backend/aikingbot-database-schema-parity.test.ts`.
 
 `check:staged` lets Biome fix the working-tree copy of each staged file, and the hook then stages
 those files again. It stages again only the files that have no unstaged changes; otherwise the commit
@@ -184,7 +184,7 @@ of a file that a lane reads into `docs/` still runs the lane.
 
 `verify:preload` reads `out/preload` after the build. TypeScript checks the preload source, but
 the renderer gets the bundle. The script runs each bundle in a `node:vm` context with a fake
-Electron and checks that `window.openbot` has exactly one function for each endpoint that
+Electron and checks that `window.aikingbot` has exactly one function for each endpoint that
 `IPC_ENDPOINTS` names, and that each function uses the channel of its endpoint. It also rejects
 `import()` and a `require` of a module that a sandboxed preload cannot load. It takes less than one
 second.
@@ -257,7 +257,7 @@ files in worker threads, and a thread's `process.env` does not reach the native 
 start.
 
 A key in the developer's shell could otherwise let a fake-provider test reach a real provider, and
-every profile path (`~/OpenBot`, the app data directory) comes from `homedir()`, so a path bug could
+every profile path (`~/AIKINGBOT`, the app data directory) comes from `homedir()`, so a path bug could
 write into the developer's own conversations. A test that needs a token or a directory sets it
 itself. `tools/vitest/hermetic-environment.test.ts` and `tools/vitest/hermetic-home.dom.test.ts`
 cover the guard.
@@ -271,7 +271,7 @@ anything in the tests: building a jsdom for each file was 61.8s of a 176.7s CI r
 registry per file inside a VM context. That took the full suite from 118.7s to 92.6s locally.
 
 The mounts themselves are not the cost, which is worth recording because the file sizes suggest
-otherwise. Measured on one worker: `installOpenbotStub()` is 0.4ms, `AppProviders` with a probe
+otherwise. Measured on one worker: `installAIKINGBOTStub()` is 0.4ms, `AppProviders` with a probe
 under it is 4.3ms, and a full `<App />` is 21.8ms, of which the view tree is 17.4ms. Dividing a
 file's total time by its render count attributes the whole test to the mount and overstates it by
 more than twenty times. Two other theories also measured close to nothing: the 50ms `waitFor` poll
@@ -322,7 +322,7 @@ when a test asserts state; do not convert a test that asserts the badge into one
 probe, because the badge is the behaviour.
 
 The development setup script checks Bun, migrates local D1, and creates missing local state in
-`.openbot/dev-state.json`. The committed `apps/auth-api/.env.dev` is encrypted; a missing
+`.aikingbot/dev-state.json`. The committed `apps/auth-api/.env.dev` is encrypted; a missing
 development key does not block ordinary local setup. Existing state is reused. Values stored only
 in the old generated `.env.dev` are reset on update.
 
@@ -356,7 +356,7 @@ The UI fixtures have two trees. `renderer` breaks every check beside valid examp
 a valid example without changing the failure count in the first tree.
 
 The shared UI Biome override also runs `tools/ui-foundation/no-desktop-preload.grit`.
-It rejects direct `window.openbot` and `globalThis.openbot` access, including optional and
+It rejects direct `window.aikingbot` and `globalThis.aikingbot` access, including optional and
 literal indexed forms. Browser APIs, comments, and string documentation remain valid.
 Its positive and negative fixtures run in `scripts/ui-foundation-check.test.ts`.
 

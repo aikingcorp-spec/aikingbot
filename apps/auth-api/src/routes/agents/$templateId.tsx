@@ -1,9 +1,9 @@
-import { AGENT_TEMPLATE_CARD, type AgentTemplateDetail } from "@openbot/contracts/ipc";
+import { AGENT_TEMPLATE_CARD, type AgentTemplateDetail } from "@aikingbot/contracts/ipc";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { AgentTemplatePage } from "../../components/agents/AgentTemplatePage";
 import { agentTemplatePath } from "../../lib/agent-template-path";
 import { readAgentTemplate } from "../../lib/agent-templates";
-import { OPENBOT_SOCIAL_IMAGE_ALT, OPENBOT_SOCIAL_IMAGE_URL } from "../../lib/site-metadata";
+import { AIKINGBOT_SOCIAL_IMAGE_ALT, AIKINGBOT_SOCIAL_IMAGE_URL } from "../../lib/site-metadata";
 
 async function loadAgentTemplate(templateId: string): Promise<AgentTemplateDetail> {
   const template = await readAgentTemplate({ data: templateId });
@@ -17,22 +17,22 @@ async function loadAgentTemplate(templateId: string): Promise<AgentTemplateDetai
  */
 function agentTemplateHead(template: AgentTemplateDetail, siteUrl: string) {
   const url = new URL(agentTemplatePath(template.id), siteUrl).toString();
-  const title = `${template.name} — OpenBot agent`;
+  const title = `${template.name} — AIKINGBOT agent`;
   const description = template.title || template.description.slice(0, 200);
   // The agent's own share card when the publish sent one, so a post on X shows this agent.
   const card = template.cardUrl
     ? {
         url: new URL(template.cardUrl, siteUrl).toString(),
-        alt: `${template.name}, an OpenBot agent by ${template.creatorName}`,
+        alt: `${template.name}, an AIKINGBOT agent by ${template.creatorName}`,
       }
-    : { url: OPENBOT_SOCIAL_IMAGE_URL, alt: OPENBOT_SOCIAL_IMAGE_ALT };
+    : { url: AIKINGBOT_SOCIAL_IMAGE_URL, alt: AIKINGBOT_SOCIAL_IMAGE_ALT };
   return {
     meta: [
       { title },
       { name: "description", content: description },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "OpenBot" },
+      { property: "og:site_name", content: "AIKINGBOT" },
       { property: "og:url", content: url },
       { property: "og:title", content: title },
       { property: "og:description", content: description },

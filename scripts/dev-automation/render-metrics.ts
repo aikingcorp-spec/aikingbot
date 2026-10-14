@@ -6,7 +6,7 @@
 // keeps the renderer drawing, and `--call-counts` turns on V8 precise coverage, which slows
 // JavaScript down.
 
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 import type { Page } from "playwright-core";
 import type { MetricValues } from "./bench-stats";
 import type { InspectorClient } from "./inspector-client";
@@ -35,7 +35,7 @@ const PERFORMANCE_METRICS: readonly [string, string, number][] = [
   ["TaskDuration", "render.taskMs", 1000],
 ];
 const TOP_CALLS = 25;
-const PAGE_STATE = "__openbotBenchRender";
+const PAGE_STATE = "__aikingbotBenchRender";
 
 /** Installs the observers in the app window. A gap over a second is a hidden window, not a slow frame. */
 function installObservers(frames: boolean): string {
@@ -116,7 +116,7 @@ export async function startRenderRecording(
         let total = 0;
         for (const script of coverage.result) {
           // Only the app's own bundle: extensions and DevTools scripts are not the app's work.
-          if (!script.url.startsWith("openbot-app://")) continue;
+          if (!script.url.startsWith("aikingbot-app://")) continue;
           const file = script.url.slice(script.url.lastIndexOf("/") + 1);
           for (const fn of script.functions) {
             const count = fn.ranges[0]?.count ?? 0;
@@ -139,7 +139,7 @@ export async function startRenderRecording(
   };
 }
 
-const READ_MARKS = `performance.getEntriesByType("mark").filter((mark) => mark.name.startsWith("openbot:")).map((mark) => [mark.name, mark.startTime])`;
+const READ_MARKS = `performance.getEntriesByType("mark").filter((mark) => mark.name.startsWith("aikingbot:")).map((mark) => [mark.name, mark.startTime])`;
 
 function markValues(prefix: string, marks: unknown): MetricValues {
   const values: MetricValues = {};
@@ -148,7 +148,7 @@ function markValues(prefix: string, marks: unknown): MetricValues {
     if (!Array.isArray(mark)) continue;
     const [name, startTime]: unknown[] = mark;
     if (!isString(name) || !isNumber(startTime)) continue;
-    const key = `${prefix}.${name.slice("openbot:".length)}`;
+    const key = `${prefix}.${name.slice("aikingbot:".length)}`;
     // A mark can repeat, such as when the splash shows again. The first one is the startup.
     values[key] ??= Math.round(startTime);
   }

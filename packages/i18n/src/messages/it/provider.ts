@@ -30,7 +30,7 @@ export const messages = {
   "provider.status.checking": "Controllo",
   "provider.status.off": "Disattivato",
   "provider.gemini.hostSignIn":
-    "Per connettere Gemini, apri OpenBot sull'host e seleziona Connetti in Impostazioni > Provider. L'accesso a Google richiede un browser su quell'host. L'accesso remoto non è supportato.",
+    "Per connettere Gemini, apri AIKINGBOT sull'host e seleziona Connetti in Impostazioni > Provider. L'accesso a Google richiede un browser su quell'host. L'accesso remoto non è supportato.",
 
   "provider.key.free": "Gratuito",
 
@@ -57,20 +57,20 @@ export const messages = {
   "provider.aria.cancelSignIn": "Annulla l'accesso a {name}",
   "provider.aria.apiKey": "Chiave API di {name}",
   "provider.connecting.browserHint": "Completa l'accesso se si apre una pagina del browser.",
-  "provider.connecting.cancelFailed": "OpenBot non è riuscito ad annullare l'accesso a {name}. Riprova.",
+  "provider.connecting.cancelFailed": "AIKINGBOT non è riuscito ad annullare l'accesso a {name}. Riprova.",
   "provider.aria.install": "Installa {name}",
   "provider.aria.signIn": "Accedi a {name}",
   "provider.aria.codeFallback": "Accedi a {name} con un codice",
   "provider.aria.moreActions": "Altre azioni per {name}",
 
-  "provider.aria.use": "Usa {name} in OpenBot",
+  "provider.aria.use": "Usa {name} in AIKINGBOT",
   "provider.use.inUse": {
     one: "{agents} usa {name}. Cambia il modello di questo agente, poi disattiva {name}.",
     other: "{agents} usano {name}. Cambia il modello di questi agenti, poi disattiva {name}.",
   },
 
   "provider.codeLogin.title": "Accedi a {name} con un codice",
-  "provider.codeLogin.description": "Completa l'accesso sul telefono o in un altro browser. OpenBot aspetta qui.",
+  "provider.codeLogin.description": "Completa l'accesso sul telefono o in un altro browser. AIKINGBOT aspetta qui.",
   "provider.codeLogin.starting": "Richiesta del codice a {name}…",
   "provider.codeLogin.qrLabel": "Codice QR per la pagina di accesso di {name}",
   "provider.codeLogin.open": "Apri",
@@ -91,10 +91,10 @@ export const messages = {
   "provider.codeLogin.pageDescription": "Questa pagina è aperta nel browser su {host}. Accedi da qui.",
   "provider.codeLogin.relayStarting": "Avvio dell'accesso a {name} su {host}…",
   "provider.codeLogin.pageOpening": "Apertura della pagina di accesso di {name} su {host}…",
-  "provider.codeLogin.linkStep": "Accedi a {name}. OpenBot continua da solo.",
-  "provider.useApp.title": "Collega {name} nell’app OpenBot",
+  "provider.codeLogin.linkStep": "Accedi a {name}. AIKINGBOT continua da solo.",
+  "provider.useApp.title": "Collega {name} nell’app AIKINGBOT",
   "provider.useApp.description":
-    "L’accesso a {name} torna al computer che lo ha avviato, e una scheda del browser non può riceverlo. Collega {name} nell’app OpenBot. L’app completa l’accesso da sola.",
+    "L’accesso a {name} torna al computer che lo ha avviato, e una scheda del browser non può riceverlo. Collega {name} nell’app AIKINGBOT. L’app completa l’accesso da sola.",
   "provider.useApp.download": "Scarica l’app",
 
   "provider.picker.noEndpoints": "Ancora nessun endpoint",

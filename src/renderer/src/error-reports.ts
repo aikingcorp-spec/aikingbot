@@ -1,12 +1,12 @@
-import type { AppInfo, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AppInfo, CentralAuthUser } from "@aikingbot/contracts/ipc";
 import {
   classifyFailure,
   type FailureProperties,
   openPanelTransport,
   ReportQueue,
   safeProperties,
-} from "@openbot/telemetry";
-import { indexedReportStorage } from "@openbot/telemetry/browser";
+} from "@aikingbot/telemetry";
+import { indexedReportStorage } from "@aikingbot/telemetry/browser";
 import { Effect } from "effect";
 import { version } from "../../../package.json";
 
@@ -15,7 +15,7 @@ let enabled = false;
 let configured = false;
 const startup: { properties: FailureProperties; timestamp: number }[] = [];
 let profileId: string | null = null;
-const WEB_PREFERENCE = "openbot:web:error-reports-enabled";
+const WEB_PREFERENCE = "aikingbot:web:error-reports-enabled";
 
 export function configureDesktopReports(
   info: AppInfo,
@@ -24,7 +24,7 @@ export function configureDesktopReports(
 ): void {
   if (!import.meta.env.PROD || info.variant !== "production") return;
   queue ??= new ReportQueue(
-    indexedReportStorage("openbot-desktop-error-reports-v1"),
+    indexedReportStorage("aikingbot-desktop-error-reports-v1"),
     openPanelTransport({ clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2" }),
     { surface: "desktop", platform: info.platform, app_version: info.version, event_schema_version: 7 },
   );
@@ -62,9 +62,9 @@ export function webReportsEnabled(): boolean {
 }
 
 export function configureWebReports(user: Pick<CentralAuthUser, "id" | "email"> | null): void {
-  if (!import.meta.env.PROD || window.location.origin !== "https://openbot.run") return;
+  if (!import.meta.env.PROD || window.location.origin !== "https://aikingbot.aikingx.com") return;
   queue ??= new ReportQueue(
-    indexedReportStorage("openbot-web-error-reports-v1"),
+    indexedReportStorage("aikingbot-web-error-reports-v1"),
     openPanelTransport({ clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2" }),
     { surface: "web", platform: "web", app_version: version, event_schema_version: 1 },
   );

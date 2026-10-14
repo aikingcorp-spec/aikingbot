@@ -2,7 +2,7 @@ import {
   assertSupportedAttachmentName,
   attachmentFileExtension,
   supportedAttachmentExtensions,
-} from "@openbot/contracts/attachment-files";
+} from "@aikingbot/contracts/attachment-files";
 import type {
   AccountUsage,
   AgentEvent,
@@ -44,7 +44,7 @@ import type {
   UpdateQueuedMessageInput,
   UpdateRoutineInput,
   WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   decodeWorkspaceDirectory,
   isAccountUsage,
@@ -58,41 +58,41 @@ import {
   isQueueSnapshot,
   isSidebarLayoutSnapshot,
   isTeamPresenceSnapshot,
-} from "@openbot/contracts/ipc";
-import { guardedListDecoder, optionalHistoryExtent, requiredString } from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@aikingbot/contracts/ipc";
+import { guardedListDecoder, optionalHistoryExtent, requiredString } from "@aikingbot/contracts/ipc-decoding";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import {
   decodeBrowserViewInputValue,
   TEAM_BROWSER_VIEW_CLIPBOARD_CAPABILITY,
   TEAM_BROWSER_VIEW_FRAME_POINT_CAPABILITY,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
-import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { type TeamProtocolSupportV1, teamProtocolUpdateDirection } from "@openbot/contracts/team-protocol/v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protocol/v7-base";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
+import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { ROUTINE_FLOWS_CAPABILITY } from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { type TeamProtocolSupportV1, teamProtocolUpdateDirection } from "@aikingbot/contracts/team-protocol/v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { decodeTeamProtocolSupportV7Base } from "@aikingbot/contracts/team-protocol/v7-base";
 import {
   WORKSPACE_DIRECTORY_CAPABILITY,
   WORKSPACE_DIRECTORY_ROUTES,
-} from "@openbot/contracts/team-protocol/workspace-directory-v1";
-import { runTeamEffect } from "@openbot/team-client";
-import { createRemoteBrowserView, type RemoteBrowserView } from "@openbot/team-client/browser-view";
+} from "@aikingbot/contracts/team-protocol/workspace-directory-v1";
+import { runTeamEffect } from "@aikingbot/team-client";
+import { createRemoteBrowserView, type RemoteBrowserView } from "@aikingbot/team-client/browser-view";
 import {
   RemoteDirectoryError,
   RemoteTeamDirectoryClient,
   type RemoteTeamHost,
   type RemoteTeamInvite,
   type RemoteTeamMember,
-} from "@openbot/team-client/remote-directory";
+} from "@aikingbot/team-client/remote-directory";
 import {
   createRemoteTeamPeer,
   MOBILE_ATTACHMENT_BYTES,
   type RemoteFileUpload,
   type RemoteTeamConnectionUpdate,
-} from "@openbot/team-client/remote-peer";
-import { remoteWorkspaceReadTimeout } from "@openbot/team-client/remote-recovery";
+} from "@aikingbot/team-client/remote-peer";
+import { remoteWorkspaceReadTimeout } from "@aikingbot/team-client/remote-recovery";
 import {
   cancelQueuedMessage,
   deleteAgent,
@@ -111,10 +111,10 @@ import {
   updateAgentRoutine,
   updateQueuedMessage,
   uploadAttachmentDraft,
-} from "@openbot/team-client/team-api-requests";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import { currentText } from "@openbot/ui/text";
-import { referenceFrom } from "@openbot/user-errors";
+} from "@aikingbot/team-client/team-api-requests";
+import type { BrowserViewRuntime } from "@aikingbot/ui/features/browser/BrowserLiveView";
+import { currentText } from "@aikingbot/ui/text";
+import { referenceFrom } from "@aikingbot/user-errors";
 import { Effect } from "effect";
 import type { ServerAdminPort } from "../servers/servers-port";
 import {
@@ -287,7 +287,7 @@ interface WebConnectionDependencies {
 
 /** Pin after directory validation and before connecting. Never silently replace a saved identity. */
 function pinWebHostKey(accountId: string, host: RemoteTeamHost): void {
-  const key = `openbot.web.host-key:${accountId}:${host.hostId}`;
+  const key = `aikingbot.web.host-key:${accountId}:${host.hostId}`;
   const pinned = localStorage.getItem(key);
   if (pinned && pinned !== host.devicePublicKey) throw new WebHostConnectionError("identity_changed");
   localStorage.setItem(key, host.devicePublicKey);
@@ -310,8 +310,8 @@ export function createWebWorkspaceRuntime(
     // `bun run dev:api` serves this page and the account service from `http://localhost:<port>`.
     inviteLinks: { allowLocalDevelopmentApiUrl: import.meta.env.DEV },
     hostKeys: {
-      get: async (id) => localStorage.getItem(`openbot.web.host-key:${accountId}:${id}`),
-      set: async (id, key) => localStorage.setItem(`openbot.web.host-key:${accountId}:${id}`, key),
+      get: async (id) => localStorage.getItem(`aikingbot.web.host-key:${accountId}:${id}`),
+      set: async (id, key) => localStorage.setItem(`aikingbot.web.host-key:${accountId}:${id}`, key),
     },
   });
   let sessionsEnded = false;
@@ -765,7 +765,7 @@ export function createWebWorkspaceRuntime(
       const response = await accountFetch(`/api/browser/v2/remote/hosts/${encodeURIComponent(hostId)}`, {
         method: "DELETE",
         credentials: "same-origin",
-        headers: { "X-OpenBot-Browser": "1", "Content-Type": "application/json" },
+        headers: { "X-AIKINGBOT-Browser": "1", "Content-Type": "application/json" },
         signal: AbortSignal.timeout(15_000),
       });
       if (!response.ok) throw new Error(currentText().t("server.settings.actionFailed"));
@@ -932,7 +932,7 @@ export function createWebWorkspaceRuntime(
         throw new Error(currentText().t("webClient.error.uploadCancelled"));
       }
       trackCompletedDraft(value.id, uploadHostGeneration === generation ? lockedHostId : null);
-      // The host names the draft's preview with the desktop `openbot-attachment:` scheme.
+      // The host names the draft's preview with the desktop `aikingbot-attachment:` scheme.
       return { ...value, previewUrl: null };
     },
     setTyping(agentId, typing) {

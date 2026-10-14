@@ -56,7 +56,7 @@ import { messages as window } from "./window";
  * forms for the user where it can. Labels stay short, because Polish words run longer than English
  * ones. Typography follows Polish convention: quotes are „dolne i górne”, and the ellipsis is the
  * single character …. Plurals fill the one, few, many and other forms. Product names stay as they
- * are: OpenBot is the application name, and ZIP and JSON are the file formats a picker shows.
+ * are: AIKINGBOT is the application name, and ZIP and JSON are the file formats a picker shows.
  *
  * This is the desktop catalog: shared keys, source text, and every desktop area.
  */

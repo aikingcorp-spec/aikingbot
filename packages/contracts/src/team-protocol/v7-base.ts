@@ -28,7 +28,7 @@ export {
 } from "./provider-aware-codec";
 
 export const TEAM_PROTOCOL_V7Base = 7;
-export const TEAM_PROTOCOL_V7Base_WEBSOCKET = "openbot-team-v7";
+export const TEAM_PROTOCOL_V7Base_WEBSOCKET = "aikingbot-team-v7";
 
 export const decodeTeamProtocolSupportV7Base = (value: unknown) => decodeTeamProtocolSupportProviderAware(value, 128);
 

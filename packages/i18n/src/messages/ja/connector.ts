@@ -18,11 +18,11 @@ export const messages = {
   "connector.github.connectedAs": "@{login} として接続済み",
   "connector.github.repositoriesTitle": "リポジトリ",
   "connector.github.repositoriesDescription":
-    "エージェントが使えるのは、OpenBot GitHub App がインストールされたリポジトリだけです。",
+    "エージェントが使えるのは、AIKINGBOT GitHub App がインストールされたリポジトリだけです。",
   "connector.github.chooseRepositories": "リポジトリを選ぶ",
   "connector.github.repositoriesLoading": "GitHub からリポジトリを読み込んでいます",
-  "connector.github.repositoriesFailed": "OpenBot は GitHub からリポジトリを読み込めませんでした。",
-  "connector.github.noRepositories": "OpenBot GitHub App はまだどのリポジトリにもインストールされていません。",
+  "connector.github.repositoriesFailed": "AIKINGBOT は GitHub からリポジトリを読み込めませんでした。",
+  "connector.github.noRepositories": "AIKINGBOT GitHub App はまだどのリポジトリにもインストールされていません。",
   "connector.github.moreRepositories": { other: "ほか {count} 件のリポジトリ" },
   "connector.github.private": "非公開",
   "connector.github.disconnect": "切断",
@@ -33,7 +33,7 @@ export const messages = {
   "connector.github.expiredDescription":
     "エージェントが再び GitHub を使えるように、@{login} としてもう一度接続してください。",
   "connector.github.reconnect": "再接続",
-  "connector.github.actionFailed": "OpenBot は GitHub の接続を変更できませんでした。",
+  "connector.github.actionFailed": "AIKINGBOT は GitHub の接続を変更できませんでした。",
   "connector.github.statusConnected": "接続済み",
   "connector.github.statusConnecting": "接続中",
   "connector.github.statusExpired": "期限切れ",
@@ -44,7 +44,7 @@ export const messages = {
   "connector.github.noMatch": "「{query}」に一致するリポジトリはありません。",
   "connector.github.stepSignIn": "サインイン",
   "connector.github.stepConnected": "接続済み",
-  "connector.github.requestingCode": "OpenBot が GitHub にコードを要求しています。",
+  "connector.github.requestingCode": "AIKINGBOT が GitHub にコードを要求しています。",
   "connector.github.codeLabel": "コード {code}",
   "connector.github.failedTitle": "GitHub に接続できませんでした",
   "connector.github.cancelConnecting": "GitHub の接続をキャンセル",
@@ -57,7 +57,7 @@ export const messages = {
   "connector.github.disconnectConfirmDescription":
     "切断すると、@{login} のサインイン情報がこのコンピュータから削除されます。",
   "connector.github.disconnectEffectTools": "すべてのエージェントが GitHub のツール、gh、git を使えなくなります。",
-  "connector.github.disconnectEffectRevoke": "その後 GitHub が開き、OpenBot のアクセスを取り消せます。",
+  "connector.github.disconnectEffectRevoke": "その後 GitHub が開き、AIKINGBOT のアクセスを取り消せます。",
   "connector.github.disconnectEffectKept": "チャット、ファイル、エージェントのメモリーはこのコンピュータに残ります。",
   // The same text for the connection of a joined server. {host} is the server name, such as Studio.
   "connector.github.descriptionHost":
@@ -84,7 +84,7 @@ export const messages = {
   // Server settings > Connectors > Slack.
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Slack で @OpenBot をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
+    "Slack で @AIKINGBOT をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
   "connector.slack.statusNotSetUp": "未設定",
   "connector.slack.statusConnected": "接続済み",
   "connector.slack.statusAttention": "対応が必要",
@@ -98,10 +98,10 @@ export const messages = {
   "connector.slack.addAgent": "エージェントを追加",
   "connector.slack.actionFailed": "Slack は変更を受け付けませんでした",
   "connector.slack.workspaceTitle": "ワークスペース",
-  "connector.slack.workspaceDescription": "@OpenBot をメンションするか、ダイレクトメッセージを送ります。",
+  "connector.slack.workspaceDescription": "@AIKINGBOT をメンションするか、ダイレクトメッセージを送ります。",
   "connector.slack.disconnectWorkspace": "切断",
   "connector.slack.missingScopes":
-    "OpenBot には Slack で次の権限がありません：{scopes}。ワークスペースを切断してから、もう一度接続してください。",
+    "AIKINGBOT には Slack で次の権限がありません：{scopes}。ワークスペースを切断してから、もう一度接続してください。",
   "connector.slack.retryAt": "Slack から待機するよう求められました。{time} に再試行します。",
   "connector.slack.reconnect": "再接続",
   "connector.slack.resume": "再開",
@@ -113,12 +113,12 @@ export const messages = {
   "connector.slack.orchestratorNoneDescription":
     "Slack Orchestrator を追加してください。追加しないと、Slack に回答が届きません。",
   "connector.slack.inviteNote":
-    "OpenBot はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください：/invite @OpenBot",
+    "AIKINGBOT はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください：/invite @AIKINGBOT",
   "connector.slack.stepWorkspace": "ワークスペース",
   "connector.slack.stepAgent": "エージェント",
   "connector.slack.connectTitle": "Slack ワークスペースを接続",
   "connector.slack.connectDescription":
-    "OpenBot はワークスペースに OpenBot という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
+    "AIKINGBOT はワークスペースに AIKINGBOT という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
   "connector.slack.connectStepBrowser": "ブラウザで Slack が開きます",
   "connector.slack.connectStepAllow": "右上でワークスペースを選び、「許可する」を押します",
   "connector.slack.connectStepReturn": "Slack での操作が終わると、このダイアログが続行します",
@@ -126,33 +126,33 @@ export const messages = {
   "connector.slack.connectWaiting": "Slack を待っています。ブラウザでインストールを完了してください。",
   "connector.slack.agentStepTitle": "Slack Orchestrator を追加",
   "connector.slack.agentStepDescription":
-    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @AIKINGBOT に送られたすべてのメッセージに回答します。",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "Slack で回答し、チームに依頼します",
   "connector.slack.orchestratorDoesReceive": "Slack のすべてのリクエストを最初に受け取ります",
   "connector.slack.orchestratorDoesDelegate": "各タスクを最も適したエージェントに任せます",
   "connector.slack.orchestratorDoesAnswer": "回答を Slack のスレッドに投稿します",
   "connector.slack.orchestratorModel": "モデル",
-  "connector.slack.doneTitle": "OpenBot が {workspace} に参加しました",
+  "connector.slack.doneTitle": "AIKINGBOT が {workspace} に参加しました",
   "connector.slack.doneDescription":
-    "公開チャンネルで @OpenBot をメンションするか、ダイレクトメッセージを送ってください。",
+    "公開チャンネルで @AIKINGBOT をメンションするか、ダイレクトメッセージを送ってください。",
   "connector.slack.done": "完了",
   "connector.slack.disconnectTitle": "{workspace} を切断しますか？",
   "connector.slack.disconnectDescription":
-    "OpenBot は {workspace} での回答を停止し、Slack のトークンをこのコンピュータから削除します。",
+    "AIKINGBOT は {workspace} での回答を停止し、Slack のトークンをこのコンピュータから削除します。",
   "connector.slack.disconnectDescriptionHost":
-    "OpenBot は {workspace} での回答を停止し、Slack のトークンを {host} から削除します。",
+    "AIKINGBOT は {workspace} での回答を停止し、Slack のトークンを {host} から削除します。",
   "connector.slack.disconnectEffect":
-    "{workspace} のメンバーは、@OpenBot からあなたのエージェントに連絡できなくなります。",
-  "connector.slack.removeEffectKept": "会話と Slack Orchestrator は OpenBot に残ります。",
+    "{workspace} のメンバーは、@AIKINGBOT からあなたのエージェントに連絡できなくなります。",
+  "connector.slack.removeEffectKept": "会話と Slack Orchestrator は AIKINGBOT に残ります。",
   "connector.slack.keep": "接続したままにする",
   "connector.slack.close": "閉じる",
 
   // Server settings > Connectors > Discord. Always write "Discord server": "server" alone is an
-  // OpenBot server.
+  // AIKINGBOT server.
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Discord サーバーのチャンネルで @OpenBot をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
+    "Discord サーバーのチャンネルで @AIKINGBOT をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
   "connector.discord.statusNotSetUp": "未設定",
   "connector.discord.statusConnected": "接続済み",
   "connector.discord.statusAttention": "対応が必要",
@@ -167,10 +167,10 @@ export const messages = {
   "connector.discord.actionFailed": "Discord は変更を受け付けませんでした",
   "connector.discord.workspaceTitle": "Discord サーバー",
   "connector.discord.workspaceDescription":
-    "チャンネルで @OpenBot をメンションします。続けるには OpenBot に返信します。",
+    "チャンネルで @AIKINGBOT をメンションします。続けるには AIKINGBOT に返信します。",
   "connector.discord.disconnectWorkspace": "切断",
   "connector.discord.missingScopes":
-    "OpenBot には Discord で次の権限がありません：{scopes}。Discord サーバーを切断してから、もう一度接続してください。",
+    "AIKINGBOT には Discord で次の権限がありません：{scopes}。Discord サーバーを切断してから、もう一度接続してください。",
   "connector.discord.retryAt": "Discord から待機するよう求められました。{time} に再試行します。",
   "connector.discord.reconnect": "再接続",
   "connector.discord.resume": "再開",
@@ -181,11 +181,12 @@ export const messages = {
   "connector.discord.orchestratorNone": "回答するエージェントはまだいません",
   "connector.discord.orchestratorNoneDescription":
     "Discord Orchestrator を追加してください。追加しないと、Discord に回答が届きません。",
-  "connector.discord.channelsNote": "OpenBot には、そのロールが閲覧できるチャンネルが見えます。",
+  "connector.discord.channelsNote": "AIKINGBOT には、そのロールが閲覧できるチャンネルが見えます。",
   "connector.discord.stepWorkspace": "Discord サーバー",
   "connector.discord.stepAgent": "エージェント",
   "connector.discord.connectTitle": "Discord サーバーを接続",
-  "connector.discord.connectDescription": "OpenBot は Discord サーバーに OpenBot という名前のボットを 1 つ追加します。",
+  "connector.discord.connectDescription":
+    "AIKINGBOT は Discord サーバーに AIKINGBOT という名前のボットを 1 つ追加します。",
   "connector.discord.connectStepBrowser": "ブラウザで Discord が開きます",
   "connector.discord.connectStepAllow": "サーバーを選び、「認証」を押します",
   "connector.discord.connectStepReturn": "Discord での操作が終わると、このダイアログが続行します",
@@ -193,32 +194,32 @@ export const messages = {
   "connector.discord.connectWaiting": "Discord を待っています。ブラウザで認証を完了してください。",
   "connector.discord.agentStepTitle": "Discord Orchestrator を追加",
   "connector.discord.agentStepDescription":
-    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @AIKINGBOT に送られたすべてのメッセージに回答します。",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "Discord で回答し、チームに依頼します",
   "connector.discord.orchestratorDoesReceive": "Discord のすべてのリクエストを最初に受け取ります",
   "connector.discord.orchestratorDoesDelegate": "各タスクを最も適したエージェントに任せます",
   "connector.discord.orchestratorDoesAnswer": "Discord のチャンネルで回答を返信します",
   "connector.discord.orchestratorModel": "モデル",
-  "connector.discord.doneTitle": "OpenBot が {workspace} に参加しました",
+  "connector.discord.doneTitle": "AIKINGBOT が {workspace} に参加しました",
   "connector.discord.doneDescription":
-    "チャンネルで @OpenBot をメンションしてください。続けるには OpenBot に返信してください。",
+    "チャンネルで @AIKINGBOT をメンションしてください。続けるには AIKINGBOT に返信してください。",
   "connector.discord.done": "完了",
   "connector.discord.disconnectTitle": "{workspace} を切断しますか？",
   "connector.discord.disconnectDescription":
-    "OpenBot は {workspace} での回答を停止し、Discord の接続をこのコンピュータから削除します。",
+    "AIKINGBOT は {workspace} での回答を停止し、Discord の接続をこのコンピュータから削除します。",
   "connector.discord.disconnectDescriptionHost":
-    "OpenBot は {workspace} での回答を停止し、Discord の接続を {host} から削除します。",
+    "AIKINGBOT は {workspace} での回答を停止し、Discord の接続を {host} から削除します。",
   "connector.discord.disconnectEffect":
-    "{workspace} のメンバーは、@OpenBot からあなたのエージェントに連絡できなくなります。",
-  "connector.discord.removeEffectKept": "会話と Discord Orchestrator は OpenBot に残ります。",
+    "{workspace} のメンバーは、@AIKINGBOT からあなたのエージェントに連絡できなくなります。",
+  "connector.discord.removeEffectKept": "会話と Discord Orchestrator は AIKINGBOT に残ります。",
   "connector.discord.keep": "接続したままにする",
   "connector.discord.close": "閉じる",
 
   // Server settings > Connectors > Telegram.
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "OpenBot ボットを Telegram グループに追加するか、ボットとのダイレクトチャットを開きます。Telegram Orchestrator が適切なエージェントに依頼して回答します。",
+    "AIKINGBOT ボットを Telegram グループに追加するか、ボットとのダイレクトチャットを開きます。Telegram Orchestrator が適切なエージェントに依頼して回答します。",
   "connector.telegram.statusNotSetUp": "未設定",
   "connector.telegram.statusConnected": "接続済み",
   "connector.telegram.statusAttention": "対応が必要",
@@ -239,12 +240,13 @@ export const messages = {
   "connector.telegram.groupDescription": "ボットをメンションするか、ボットのメッセージに返信します。",
   "connector.telegram.directDescription": "このチャットのすべてのメッセージが Telegram Orchestrator に届きます。",
   "connector.telegram.helpRemoved":
-    "OpenBot ボットはこのチャットにいません。チャットを切断してから、ボットをもう一度追加してください。",
+    "AIKINGBOT ボットはこのチャットにいません。チャットを切断してから、ボットをもう一度追加してください。",
   "connector.telegram.helpRelayUnavailable":
-    "このコンピュータでは OpenBot が Telegram のメッセージを受信できません。サインインし、サーバー設定でこのコンピュータに名前を付けて、OpenBot を開いたままにしてください。",
+    "このコンピュータでは AIKINGBOT が Telegram のメッセージを受信できません。サインインし、サーバー設定でこのコンピュータに名前を付けて、AIKINGBOT を開いたままにしてください。",
   "connector.telegram.helpRelayUnavailableHost":
-    "{host} の OpenBot は Telegram のメッセージを受信できません。{host} でサインインし、サーバー設定でサーバーに名前を付けて、OpenBot を開いたままにしてください。",
-  "connector.telegram.helpError": "OpenBot はこのチャットに接続できません。再接続するか、チャットを切断してください。",
+    "{host} の AIKINGBOT は Telegram のメッセージを受信できません。{host} でサインインし、サーバー設定でサーバーに名前を付けて、AIKINGBOT を開いたままにしてください。",
+  "connector.telegram.helpError":
+    "AIKINGBOT はこのチャットに接続できません。再接続するか、チャットを切断してください。",
   "connector.telegram.retryAt": "Telegram から待機するよう求められました。{time} に再試行します。",
   "connector.telegram.pause": "一時停止",
   "connector.telegram.resume": "再開",
@@ -259,7 +261,7 @@ export const messages = {
   "connector.telegram.openDirectChat": "ダイレクトチャットを開く",
   "connector.telegram.orchestratorTitle": "Telegram Orchestrator",
   "connector.telegram.orchestratorDescription":
-    "このエージェントは、すべての Telegram チャットから OpenBot 宛てのメッセージを受け取ります。短いものには自分で回答し、その他の作業は適切なエージェントに任せて、回答をチャットに投稿します。",
+    "このエージェントは、すべての Telegram チャットから AIKINGBOT 宛てのメッセージを受け取ります。短いものには自分で回答し、その他の作業は適切なエージェントに任せて、回答をチャットに投稿します。",
   "connector.telegram.orchestratorNone": "回答するエージェントはまだいません",
   "connector.telegram.orchestratorNoneDescription":
     "Telegram Orchestrator を追加してください。追加しないと、Telegram に回答が届きません。",
@@ -269,36 +271,36 @@ export const messages = {
   "connector.telegram.stepAgent": "エージェント",
   "connector.telegram.connectTitle": "Telegram チャットをリンク",
   "connector.telegram.connectDescription":
-    "OpenBot ボットをグループに追加するか、ボットとのダイレクトチャットを開きます。1 つのボットがすべてのチャットに対応します。",
+    "AIKINGBOT ボットをグループに追加するか、ボットとのダイレクトチャットを開きます。1 つのボットがすべてのチャットに対応します。",
   "connector.telegram.connectStepBrowser": "ブラウザで Telegram が開きます",
   "connector.telegram.connectStepPick": "グループを選ぶか、ダイレクトチャットで「開始」を押します",
   "connector.telegram.connectStepReturn": "チャットがリンクされると、このダイアログが続行します",
   "connector.telegram.connectWaiting": "Telegram を待っています。Telegram でチャットを選んでください。",
   "connector.telegram.agentStepTitle": "Telegram Orchestrator を追加",
   "connector.telegram.agentStepDescription":
-    "この新しいエージェントは、{chat} と、あとでリンクする各チャットで、OpenBot 宛てのメッセージに回答します。",
+    "この新しいエージェントは、{chat} と、あとでリンクする各チャットで、AIKINGBOT 宛てのメッセージに回答します。",
   "connector.telegram.orchestratorName": "Telegram Orchestrator",
   "connector.telegram.orchestratorRole": "Telegram で回答し、チームに依頼します",
-  "connector.telegram.orchestratorDoesReceive": "OpenBot 宛ての Telegram のメッセージをすべて最初に受け取ります",
+  "connector.telegram.orchestratorDoesReceive": "AIKINGBOT 宛ての Telegram のメッセージをすべて最初に受け取ります",
   "connector.telegram.orchestratorDoesDelegate": "各タスクを最も適したエージェントに任せます",
   "connector.telegram.orchestratorDoesAnswer": "回答を Telegram のチャットに投稿します",
   "connector.telegram.orchestratorModel": "モデル",
-  "connector.telegram.doneTitle": "OpenBot が {chat} に参加しました",
+  "connector.telegram.doneTitle": "AIKINGBOT が {chat} に参加しました",
   "connector.telegram.done": "完了",
   "connector.telegram.disconnectTitle": "{chat} を切断しますか？",
   "connector.telegram.disconnectDescription":
-    "OpenBot ボットは {chat} から退出し、OpenBot はそこでの回答を停止します。会話は OpenBot に残ります。",
+    "AIKINGBOT ボットは {chat} から退出し、AIKINGBOT はそこでの回答を停止します。会話は AIKINGBOT に残ります。",
   "connector.telegram.disconnectEffect":
-    "{chat} のメンバーは、OpenBot ボットからあなたのエージェントに連絡できなくなります。",
-  "connector.telegram.removeEffectKept": "会話と Telegram Orchestrator は OpenBot に残ります。",
+    "{chat} のメンバーは、AIKINGBOT ボットからあなたのエージェントに連絡できなくなります。",
+  "connector.telegram.removeEffectKept": "会話と Telegram Orchestrator は AIKINGBOT に残ります。",
   "connector.telegram.keep": "接続したままにする",
   "connector.telegram.close": "閉じる",
-  // Marketplace > 1Password: a vault that the user shares with OpenBot through a service account.
+  // Marketplace > 1Password: a vault that the user shares with AIKINGBOT through a service account.
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "専用の 1Password 保管庫をサービスアカウント経由で OpenBot と共有すると、エージェントが OpenBot のブラウザでサイトにサインインできます。",
+    "専用の 1Password 保管庫をサービスアカウント経由で AIKINGBOT と共有すると、エージェントが AIKINGBOT のブラウザでサイトにサインインできます。",
   "connector.onePassword.howItWorks":
-    "接続すると、1Password アカウントに「Shared with OpenBot」保管庫と、その保管庫だけを読み取れるサービスアカウントが設定されます。OpenBot はこのコンピュータの自分のブラウザで保存済みのログイン情報を入力するので、共有されるのはその保管庫に移動した項目だけです。エージェントがパスワードを見ることはありません。",
+    "接続すると、1Password アカウントに「Shared with AIKINGBOT」保管庫と、その保管庫だけを読み取れるサービスアカウントが設定されます。AIKINGBOT はこのコンピュータの自分のブラウザで保存済みのログイン情報を入力するので、共有されるのはその保管庫に移動した項目だけです。エージェントがパスワードを見ることはありません。",
   "connector.onePassword.connect": "1Password を接続",
   "connector.onePassword.setupTitle": "設定",
   "connector.onePassword.stepCliTitle": "1Password CLI をインストール",
@@ -306,9 +308,9 @@ export const messages = {
   "connector.onePassword.stepCliInstalling": "1Password から 1Password CLI をダウンロードしています",
   "connector.onePassword.stepCliReady": "バージョン {version} がインストールされています。",
   "connector.onePassword.stepCliMissing":
-    "OpenBot は 1Password から専用のフォルダーにダウンロードします。管理者パスワードは不要です。",
+    "AIKINGBOT は 1Password から専用のフォルダーにダウンロードします。管理者パスワードは不要です。",
   "connector.onePassword.stepCliManual":
-    "OpenBot はこのコンピュータにインストールできません。1Password からインストールしてから、このページに戻ってください。",
+    "AIKINGBOT はこのコンピュータにインストールできません。1Password からインストールしてから、このページに戻ってください。",
   "connector.onePassword.installCli": "インストール",
   "connector.onePassword.stepAppTitle": "CLI 連携をオンにする",
   "connector.onePassword.stepAppDescription":
@@ -318,7 +320,7 @@ export const messages = {
   "connector.onePassword.checkAgain": "再確認",
   "connector.onePassword.stepVaultTitle": "共有保管庫を作成",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot は「Shared with OpenBot」保管庫と、それを読み取ることだけができるサービスアカウントを作成します。1Password から承認を求められます。",
+    "AIKINGBOT は「Shared with AIKINGBOT」保管庫と、それを読み取ることだけができるサービスアカウントを作成します。1Password から承認を求められます。",
   "connector.onePassword.useToken": "代わりにサービスアカウントのトークンを使う",
   "connector.onePassword.tokenLabel": "サービスアカウントのトークン",
   "connector.onePassword.tokenPlaceholder": "ops_…",
@@ -326,7 +328,7 @@ export const messages = {
   "connector.onePassword.approveInApp": "1Password アプリでリクエストを承認してください",
   "connector.onePassword.cancel": "キャンセル",
   "connector.onePassword.chooseAccountTitle": "アカウントを選ぶ",
-  "connector.onePassword.chooseAccountDescription": "OpenBot は選んだアカウントに共有保管庫を作成します。",
+  "connector.onePassword.chooseAccountDescription": "AIKINGBOT は選んだアカウントに共有保管庫を作成します。",
   "connector.onePassword.useAccount": "このアカウントを使う",
   "connector.onePassword.vaultTitle": "共有保管庫",
   "connector.onePassword.vaultDescription":
@@ -336,19 +338,19 @@ export const messages = {
   "connector.onePassword.disconnect": "切断",
   "connector.onePassword.disconnectTitle": "1Password を切断",
   "connector.onePassword.disconnectSummary":
-    "OpenBot はトークンを破棄します。保管庫とサービスアカウントは 1Password に残ります。不要になったら 1Password で削除してください。",
-  "connector.onePassword.actionFailed": "OpenBot は 1Password の接続を変更できませんでした。",
+    "AIKINGBOT はトークンを破棄します。保管庫とサービスアカウントは 1Password に残ります。不要になったら 1Password で削除してください。",
+  "connector.onePassword.actionFailed": "AIKINGBOT は 1Password の接続を変更できませんでした。",
   "connector.onePassword.statusConnected": "接続済み",
   "connector.onePassword.statusConnecting": "接続中",
   "connector.onePassword.statusNotSetUp": "未設定",
   "connector.bitwarden.title": "Bitwarden",
   "connector.bitwarden.description": "Bitwarden のログイン情報をブラウザに入力します。",
   "connector.bitwarden.setup":
-    "Bitwarden CLI をインストールし、bw login でサインインしてください。Shared with OpenBot という名前のフォルダーを作成し、エージェントに使わせてよいログイン情報だけを入れてください。bw unlock --raw を実行し、表示されたセッションキーを下に貼り付けてください。マスターパスワードは貼り付けないでください。",
+    "Bitwarden CLI をインストールし、bw login でサインインしてください。Shared with AIKINGBOT という名前のフォルダーを作成し、エージェントに使わせてよいログイン情報だけを入れてください。bw unlock --raw を実行し、表示されたセッションキーを下に貼り付けてください。マスターパスワードは貼り付けないでください。",
   "connector.bitwarden.scope":
-    "このコンピュータのすべてのエージェントが、Shared with OpenBot 内の一致するログイン情報を使えます。OpenBot は HTTPS のオリジンが完全に一致する場合にのみ使います。マスターパスワードの再入力が必要な項目や、カスタムの URI 一致ルールがある項目は使いません。",
+    "このコンピュータのすべてのエージェントが、Shared with AIKINGBOT 内の一致するログイン情報を使えます。AIKINGBOT は HTTPS のオリジンが完全に一致する場合にのみ使います。マスターパスワードの再入力が必要な項目や、カスタムの URI 一致ルールがある項目は使いません。",
   "connector.bitwarden.session":
-    "セッションキーはメモリーにのみ保持されます。保管庫を 8 時間使わなかった場合や OpenBot を終了した場合は、もう一度接続してください。切断すると OpenBot のアクセスは停止しますが、他の Bitwarden クライアントはロックされません。",
+    "セッションキーはメモリーにのみ保持されます。保管庫を 8 時間使わなかった場合や AIKINGBOT を終了した場合は、もう一度接続してください。切断すると AIKINGBOT のアクセスは停止しますが、他の Bitwarden クライアントはロックされません。",
   "connector.bitwarden.sessionKey": "Bitwarden のセッションキー",
   "connector.bitwarden.connect": "Bitwarden を接続",
   "connector.bitwarden.disconnect": "Bitwarden を切断",

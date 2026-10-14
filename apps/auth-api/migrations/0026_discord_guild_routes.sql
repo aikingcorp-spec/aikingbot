@@ -1,5 +1,5 @@
 -- New table only. The Worker that runs before this deploy does not read it.
--- Which OpenBot host answers each Discord server (guild) that added the OpenBot Discord app. Signal
+-- Which AIKINGBOT host answers each Discord server (guild) that added the AIKINGBOT Discord app. Signal
 -- routes a guild's events to that host. No Discord token is kept here: only Signal has the bot token.
 CREATE TABLE discord_guild_routes (
   guild_id TEXT PRIMARY KEY,

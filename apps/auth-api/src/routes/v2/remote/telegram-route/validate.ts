@@ -2,7 +2,7 @@ import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_CHAT_ID_PATTERN,
   TELEGRAM_ROUTE_CHATS_LIMIT,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { z } from "zod";

@@ -1,10 +1,10 @@
-import { createInviteUrl, PERMANENT_INVITE_EXPIRES_AT_MS } from "@openbot/contracts/invite-links";
-import { createMobileConnectUrl } from "@openbot/contracts/mobile-connect";
+import { createInviteUrl, PERMANENT_INVITE_EXPIRES_AT_MS } from "@aikingbot/contracts/invite-links";
+import { createMobileConnectUrl } from "@aikingbot/contracts/mobile-connect";
 import {
   RemoteDirectoryError,
   type RemoteInvitePreview,
   type RemoteTeamDirectoryClient,
-} from "@openbot/team-client/remote-directory";
+} from "@aikingbot/team-client/remote-directory";
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import { Effect } from "effect";
 import { act, type PropsWithChildren, type ReactNode } from "react";
@@ -152,13 +152,13 @@ vi.mock("@/features/workspace/context/mobile-workspace-context", () => {
 });
 
 const invite = createInviteUrl({
-  apiUrl: "https://api.openbot.run",
+  apiUrl: "https://api.aikingbot.aikingx.com",
   serverId: "11111111-1111-4111-8111-111111111111",
   fingerprint: "f".repeat(43),
   token: "t".repeat(32),
 });
 const session: MobileSession = {
-  apiUrl: "https://api.openbot.run",
+  apiUrl: "https://api.aikingbot.aikingx.com",
   sessionToken: "credential",
   user: { id: "user", email: "user@example.com", name: null, avatarUrl: null },
   host: { hostId: "host", fingerprint: "f".repeat(43) },
@@ -212,7 +212,7 @@ it("keeps an invitation through sign-in and routes to review without accepting i
 });
 
 it("keeps an agent link through sign-in and routes to its preview", async () => {
-  const id = receive("openbot://agents/AbCdEfGhIjKlMnOpQrSt_-");
+  const id = receive("aikingbot://agents/AbCdEfGhIjKlMnOpQrSt_-");
   await act(() => root.render(<IncomingLinkScreen />));
   expect(screen.getByRole("heading", { name: "Sign in to add this agent" })).toBeTruthy();
   state.session = session;
@@ -254,11 +254,11 @@ it("does not replace an existing session with a pairing link", async () => {
 });
 
 it("opens a plugin in the browser only after a press", async () => {
-  receive("openbot://plugins/test-plugin");
+  receive("aikingbot://plugins/test-plugin");
   await act(() => root.render(<IncomingLinkScreen />));
   expect(state.openBrowser).not.toHaveBeenCalled();
   await act(() => fireEvent.click(screen.getByRole("button", { name: "View plugin" })));
-  expect(state.openBrowser).toHaveBeenCalledWith("https://openbot.run/plugins/test-plugin");
+  expect(state.openBrowser).toHaveBeenCalledWith("https://aikingbot.aikingx.com/plugins/test-plugin");
 });
 
 it("verifies the host before showing Join and accepts only on a press", async () => {

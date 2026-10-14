@@ -1,5 +1,5 @@
-import type { AgentEvent, RespondToApprovalInput, RespondToPromptInput } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentEvent, RespondToApprovalInput, RespondToPromptInput } from "@aikingbot/contracts/ipc";
+import type { AgentMessage } from "@aikingbot/ui/data";
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { toAgentMessage, toAgentMessages } from "../../app-message-projection";
 import type { createRemoteAgentAdmin } from "../agents/remote-agent-admin";
@@ -7,7 +7,7 @@ import type { WebWorkspace } from "./web-client-context";
 
 type PromptEvent = Extract<AgentEvent, { type: "prompt" }>;
 
-/** The host names attachment previews with the desktop `openbot-attachment:` scheme, which a browser cannot load. */
+/** The host names attachment previews with the desktop `aikingbot-attachment:` scheme, which a browser cannot load. */
 function withoutPreviewUrls(message: AgentMessage): AgentMessage {
   if (!message.attachments) return message;
   return { ...message, attachments: message.attachments.map((attachment) => ({ ...attachment, previewUrl: null })) };

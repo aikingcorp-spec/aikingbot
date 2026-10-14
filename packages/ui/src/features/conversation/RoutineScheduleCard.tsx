@@ -1,4 +1,4 @@
-import { CalendarClock } from "@openbot/ui";
+import { CalendarClock } from "@aikingbot/ui";
 import { useText } from "../../text";
 import { ChatActionCard, type ChatActionCardStatus } from "./ChatActionCard";
 import { RoutineSchedulePicker } from "./RoutineSchedulePicker";

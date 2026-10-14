@@ -1,4 +1,4 @@
-import { conversationPlanText, parseConversationPlanText } from "@openbot/contracts/ipc";
+import { conversationPlanText, parseConversationPlanText } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   acpPlanSteps,

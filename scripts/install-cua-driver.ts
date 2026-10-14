@@ -1,7 +1,7 @@
 import { chmod, copyFile, lstat, mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { extractCuaDriverArchive } from "./cua-driver-archive";
 import {
   CUA_DRIVER_LICENSE_FILE,
@@ -17,7 +17,7 @@ import {
 import { sha256 } from "./remote-desktop-runtime-release";
 import { isCurrentInstallation } from "./runtime-install";
 
-const logger = createOpenBotLogger("install-cua-driver");
+const logger = createAIKINGBOTLogger("install-cua-driver");
 
 /**
  * Puts the pinned `cua-driver` build under `build/cua-driver/<platform>/<architecture>` so
@@ -54,7 +54,7 @@ export async function installCuaDriver(
   const licenseBytes = await download(fetchImpl, cuaDriverLicenseUrl(lock));
   if (sha256(licenseBytes) !== lock.licenseSha256) throw new Error("The cua-driver licence checksum is invalid.");
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-cua-driver-install-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-cua-driver-install-"));
   // The staging tree is a sibling of the installed one so the final step is a rename inside one
   // directory. A temporary directory could sit on another volume, where a rename fails.
   const staging = join(dirname(outputRoot), `.${basename(outputRoot)}.installing`);
@@ -127,7 +127,10 @@ async function stageValidatedFiles(
 }
 
 async function download(fetchImpl: typeof fetch, url: string): Promise<Buffer> {
-  const response = await fetchImpl(url, { headers: { "User-Agent": "OpenBot-runtime-installer" }, redirect: "follow" });
+  const response = await fetchImpl(url, {
+    headers: { "User-Agent": "AIKINGBOT-runtime-installer" },
+    redirect: "follow",
+  });
   if (!response.ok) throw new Error(`The cua-driver download answered HTTP ${response.status} for ${url}.`);
   return Buffer.from(await response.arrayBuffer());
 }

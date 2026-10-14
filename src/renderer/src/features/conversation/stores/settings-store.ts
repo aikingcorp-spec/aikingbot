@@ -1,9 +1,9 @@
-import type { AgentModelId, AgentProviderId, AgentReasoningEffort, UpdateAgentInput } from "@openbot/contracts/ipc";
+import type { AgentModelId, AgentProviderId, AgentReasoningEffort, UpdateAgentInput } from "@aikingbot/contracts/ipc";
 import type {
   AgentRuntimeSettings,
   AgentRuntimeSettingsPatch,
-} from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/AgentSettingsPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { agentConversationKey } from "../conversation-keys";
 import type { ConversationProps, ConversationTarget } from "../conversation-types";
 

@@ -1,14 +1,14 @@
-import { supportedAttachmentExtensions } from "@openbot/contracts/attachment-files";
+import { supportedAttachmentExtensions } from "@aikingbot/contracts/attachment-files";
 import {
   type AgentWait,
   accountUsageCoversModel,
   canPreviewAttachment,
   type QueueSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   TEAM_EML_ATTACHMENTS_CAPABILITY,
   TEAM_MEDIA_ATTACHMENTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/team-protocol/current";
 import {
   ArrowUp,
   Button,
@@ -21,24 +21,24 @@ import {
   Mic,
   Plus,
   Puzzle,
-} from "@openbot/ui";
-import { fileBadge } from "@openbot/ui/features/conversation/AttachmentCards";
-import { attachmentReferenceTone } from "@openbot/ui/features/conversation/AttachmentReference";
-import { AwaitingReplies } from "@openbot/ui/features/conversation/AwaitingReplies";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
-import { ComposerErrorBanner } from "@openbot/ui/features/conversation/ComposerErrorBanner";
+} from "@aikingbot/ui";
+import { fileBadge } from "@aikingbot/ui/features/conversation/AttachmentCards";
+import { attachmentReferenceTone } from "@aikingbot/ui/features/conversation/AttachmentReference";
+import { AwaitingReplies } from "@aikingbot/ui/features/conversation/AwaitingReplies";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
+import { ComposerErrorBanner } from "@aikingbot/ui/features/conversation/ComposerErrorBanner";
 import {
   ComposerNotice,
   ComposerSignInNotice,
   ComposerUpdateNotice,
   ComposerUsageLimitNotice,
-} from "@openbot/ui/features/conversation/ComposerNotice";
-import { ComposerCompactionNotice, ContextUsageMeter } from "@openbot/ui/features/conversation/ContextUsage";
-import { CloseIcon, StopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { type OpenWaitItem, OpenWaits } from "@openbot/ui/features/conversation/OpenWaits";
-import { RichMessageText } from "@openbot/ui/features/conversation/RichMessageText";
-import { VoiceRecordingMorph } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/ComposerNotice";
+import { ComposerCompactionNotice, ContextUsageMeter } from "@aikingbot/ui/features/conversation/ContextUsage";
+import { CloseIcon, StopIcon } from "@aikingbot/ui/features/conversation/ConversationIcons";
+import { type OpenWaitItem, OpenWaits } from "@aikingbot/ui/features/conversation/OpenWaits";
+import { RichMessageText } from "@aikingbot/ui/features/conversation/RichMessageText";
+import { VoiceRecordingMorph } from "@aikingbot/ui/features/conversation/VoiceRecordingMorph";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, createStore, For, Loading, lazy, Show } from "solid-js";
 import { reportErrorBanner, reportNotification } from "../../error-reports";
 import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
@@ -566,7 +566,7 @@ export function ConversationComposer() {
             multiple
             hidden
             tabindex={-1}
-            data-openbot-attachment-picker={props.runtime ? undefined : "true"}
+            data-aikingbot-attachment-picker={props.runtime ? undefined : "true"}
             onChange={(event) => {
               if (props.runtime?.importFiles)
                 void props.runtime.importFiles(Array.from(event.currentTarget.files ?? []));
@@ -730,5 +730,5 @@ function openWaitItems(waits: readonly AgentWait[], queue: QueueSnapshot | undef
 }
 
 const QueuePanel = lazy(() =>
-  import("@openbot/ui/features/conversation/QueuePanel").then((module) => ({ default: module.QueuePanel })),
+  import("@aikingbot/ui/features/conversation/QueuePanel").then((module) => ({ default: module.QueuePanel })),
 );

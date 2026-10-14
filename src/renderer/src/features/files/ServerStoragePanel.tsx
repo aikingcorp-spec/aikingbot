@@ -1,5 +1,5 @@
-import type { AgentProfile } from "@openbot/ui/data";
-import { StorageOverview } from "@openbot/ui/features/files/StorageOverview";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { StorageOverview } from "@aikingbot/ui/features/files/StorageOverview";
 import { createEffect, createSignal, untrack } from "solid-js";
 import { toAgentProfile } from "../../app-message-projection";
 import { type FilesPort, filesPort } from "./files-port";
@@ -12,7 +12,7 @@ export interface ServerStorageOptions {
   canManage: boolean;
   onOpenAgent: (agentId: string) => void;
   onShowMessage: (agentId: string, messageId: string) => void;
-  /** The storage calls of a client with no `window.openbot`, such as the web client. */
+  /** The storage calls of a client with no `window.aikingbot`, such as the web client. */
   calls?: FilesPort;
 }
 

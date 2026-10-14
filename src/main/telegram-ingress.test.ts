@@ -5,13 +5,13 @@
 // closes a socket on a frame it does not know, and that would stop Slack and Discord on the same socket.
 // Signal's own checks are in `remote/api/test`.
 
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import {
   createIngressQueueKeyPair,
   importIngressQueuePrivateKey,
   sealQueuedDelivery,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
-import type { SignalServerMessage } from "@openbot/contracts/signal-protocol/messages";
+} from "@aikingbot/contracts/signal-protocol/ingress-queue";
+import type { SignalServerMessage } from "@aikingbot/contracts/signal-protocol/messages";
 import { Effect, Result } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { type WebSocket, WebSocketServer } from "ws";

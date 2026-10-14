@@ -2,18 +2,18 @@ import { useCSSVariable } from "uniwind";
 
 /**
  * The colors of the sign-in controls. The brand lavender of the logo marks focus, so the controls
- * match the Scan QR code button. `--openbot-border-strong` is almost invisible on the dark canvas,
+ * match the Scan QR code button. `--aikingbot-border-strong` is almost invisible on the dark canvas,
  * so a control shows as a filled surface with a clear ring only when it has focus or a state.
  */
 export function useSignInColors() {
-  const surface = useCSSVariable("--openbot-bg-control-active");
-  const brand = useCSSVariable("--openbot-logo-production");
-  const onBrand = useCSSVariable("--openbot-logo-eye");
-  const text = useCSSVariable("--openbot-text-primary");
-  const muted = useCSSVariable("--openbot-text-muted");
-  const danger = useCSSVariable("--openbot-danger");
-  const success = useCSSVariable("--openbot-success");
-  const radius = useCSSVariable("--openbot-radius-lg");
+  const surface = useCSSVariable("--aikingbot-bg-control-active");
+  const brand = useCSSVariable("--aikingbot-logo-production");
+  const onBrand = useCSSVariable("--aikingbot-logo-eye");
+  const text = useCSSVariable("--aikingbot-text-primary");
+  const muted = useCSSVariable("--aikingbot-text-muted");
+  const danger = useCSSVariable("--aikingbot-danger");
+  const success = useCSSVariable("--aikingbot-success");
+  const radius = useCSSVariable("--aikingbot-radius-lg");
   return {
     surface: String(surface ?? "#2a2a2a"),
     brand: String(brand ?? "#d6adf2"),

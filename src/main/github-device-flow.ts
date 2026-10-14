@@ -4,7 +4,7 @@
 // the client secret, so the whole sign-in stays on this computer and no account server takes part.
 // https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app#using-the-device-flow-to-generate-a-user-access-token
 
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result, Schema } from "effect";
 import { z } from "zod";
 import { GitHubOperationError, githubCall, githubDecode } from "./github-effects";

@@ -6,7 +6,7 @@ import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { promisify } from "node:util";
 import { crc32, createInflateRaw } from "node:zlib";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { ProviderRuntimeFailure, runtimeIO } from "./provider-runtime-effects";
 

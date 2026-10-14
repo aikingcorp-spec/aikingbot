@@ -2,7 +2,7 @@ import { fireEvent, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HeroDownloadSelector } from "../src/components/landing/HeroDownloadSelector";
 import { DOWNLOAD_PLATFORMS } from "../src/lib/download-platforms";
-import { OPENBOT_DOWNLOAD_LINKS } from "../src/lib/landing-links";
+import { AIKINGBOT_DOWNLOAD_LINKS } from "../src/lib/landing-links";
 import { MOBILE_APP_ORDER, MOBILE_APPS } from "../src/lib/mobile-apps";
 
 function setPlatform(platform: string, userAgent = ""): void {
@@ -10,7 +10,7 @@ function setPlatform(platform: string, userAgent = ""): void {
 }
 
 const AVAILABLE_PLATFORM_CASES: ReadonlyArray<
-  readonly [source: string, platform: keyof typeof OPENBOT_DOWNLOAD_LINKS, label: string]
+  readonly [source: string, platform: keyof typeof AIKINGBOT_DOWNLOAD_LINKS, label: string]
 > = [
   ["MacIntel", "macos", "Download for macOS"],
   ["Win32", "windows", "Download for Windows"],
@@ -30,7 +30,7 @@ describe("HeroDownloadSelector", () => {
       const view = render(() => <HeroDownloadSelector />);
 
       const download = await view.findByRole("link", { name: label });
-      expect(download).toHaveAttribute("href", OPENBOT_DOWNLOAD_LINKS[expected]);
+      expect(download).toHaveAttribute("href", AIKINGBOT_DOWNLOAD_LINKS[expected]);
       expect(download).not.toHaveAttribute("target");
       expect(download).not.toHaveAttribute("rel");
     },
@@ -72,7 +72,7 @@ describe("HeroDownloadSelector", () => {
     await waitFor(() => view.getByRole("menu", { name: "Download platforms" }));
     for (const [, platform] of AVAILABLE_PLATFORM_CASES) {
       const item = view.getByRole("menuitem", { name: `${DOWNLOAD_PLATFORMS[platform].label}Available` });
-      expect(item).toHaveAttribute("href", OPENBOT_DOWNLOAD_LINKS[platform]);
+      expect(item).toHaveAttribute("href", AIKINGBOT_DOWNLOAD_LINKS[platform]);
     }
     for (const platform of MOBILE_APP_ORDER) {
       const app = MOBILE_APPS[platform];

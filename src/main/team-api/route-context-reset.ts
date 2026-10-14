@@ -2,8 +2,8 @@ import {
   CONTEXT_RESET_CAPABILITY,
   CONTEXT_RESET_ROUTES,
   ContextResetBusyError,
-} from "@openbot/contracts/team-protocol/context-reset-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/context-reset-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

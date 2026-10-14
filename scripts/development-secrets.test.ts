@@ -34,7 +34,7 @@ describe("generated development secrets", () => {
   it("claims the ticket key ID that wrangler.jsonc pins", () => {
     const { publicJwks } = createDevelopmentTicketKeyPair();
 
-    expect(JSON.parse(publicJwks).keys[0].kid).toBe("openbot-remote-1");
+    expect(JSON.parse(publicJwks).keys[0].kid).toBe("aikingbot-remote-1");
   });
 
   it("writes secrets the Signal service accepts, and a different set each time", () => {
@@ -68,9 +68,9 @@ describe("generated development secrets", () => {
     const state = readDevelopmentState(root);
     expect(state.defaults.REMOTE_TICKET_PRIVATE_JWK).not.toBe("encrypted:fixture");
     expect(state.overrides).toEqual({});
-    expect(statSync(join(root, ".openbot", "dev-state.json")).mode & 0o777).toBe(0o600);
+    expect(statSync(join(root, ".aikingbot", "dev-state.json")).mode & 0o777).toBe(0o600);
     expect(readFileSync(path, "utf8")).toBe(source);
-    expect(existsSync(join(root, ".openbot", "legacy-env.dev.backup"))).toBe(false);
+    expect(existsSync(join(root, ".aikingbot", "legacy-env.dev.backup"))).toBe(false);
   });
 
   it("generates local defaults into state when the checkout has no state", () => {
@@ -98,27 +98,27 @@ describe("generated development secrets", () => {
 
   it("rejects corrupted state without generating a replacement", () => {
     const root = createTemporaryRoot();
-    mkdirSync(join(root, ".openbot"), { recursive: true });
-    writeFileSync(join(root, ".openbot", "dev-state.json"), "not-json\n");
+    mkdirSync(join(root, ".aikingbot"), { recursive: true });
+    writeFileSync(join(root, ".aikingbot", "dev-state.json"), "not-json\n");
 
     expect(() => readDevelopmentState(root)).toThrow(/state file is invalid/i);
-    expect(readFileSync(join(root, ".openbot", "dev-state.json"), "utf8")).toBe("not-json\n");
+    expect(readFileSync(join(root, ".aikingbot", "dev-state.json"), "utf8")).toBe("not-json\n");
   });
 
   it("rejects a state file without the stable ticket identity", () => {
     const root = createTemporaryRoot();
-    mkdirSync(join(root, ".openbot"), { recursive: true });
-    writeFileSync(join(root, ".openbot", "dev-state.json"), '{"version":1,"defaults":{},"overrides":{}}\n');
+    mkdirSync(join(root, ".aikingbot"), { recursive: true });
+    writeFileSync(join(root, ".aikingbot", "dev-state.json"), '{"version":1,"defaults":{},"overrides":{}}\n');
 
     expect(() => readDevelopmentState(root)).toThrow(/state file has an invalid format/i);
   });
 
   it("reports an active state lock without deleting it", () => {
     const root = createTemporaryRoot();
-    mkdirSync(join(root, ".openbot", "dev-state.json.lock"), { recursive: true });
+    mkdirSync(join(root, ".aikingbot", "dev-state.json.lock"), { recursive: true });
 
     expect(() => readDevelopmentState(root)).toThrow(/dev-state\.json\.lock.*do not delete/i);
-    expect(exists(join(root, ".openbot", "dev-state.json.lock"))).toBe(true);
+    expect(exists(join(root, ".aikingbot", "dev-state.json.lock"))).toBe(true);
   });
 });
 
@@ -127,7 +127,7 @@ function exists(path: string): boolean {
 }
 
 function createTemporaryRoot(): string {
-  const root = mkdtempSync(join(tmpdir(), "openbot-dev-secrets-"));
+  const root = mkdtempSync(join(tmpdir(), "aikingbot-dev-secrets-"));
   temporaryRoots.push(root);
   mkdirSync(join(root, "apps", "auth-api"), { recursive: true });
   return root;

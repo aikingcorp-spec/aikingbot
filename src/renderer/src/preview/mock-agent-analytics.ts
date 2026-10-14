@@ -1,10 +1,15 @@
-import type { AnalyticsProviderDay, AnalyticsTotals, HostAnalytics, HostAnalyticsInput } from "@openbot/contracts/ipc";
+import type {
+  AnalyticsProviderDay,
+  AnalyticsTotals,
+  HostAnalytics,
+  HostAnalyticsInput,
+} from "@aikingbot/contracts/ipc";
 import {
   type AgentAnalytics,
   type AgentAnalyticsInput,
   type AgentSummary,
   emptyAnalyticsTotals,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 // The weight separates the agents from each other: without it every mock agent draws the
 // same curve, and the per-agent table previews as identical rows with equal shares.

@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Scope } from "effect";
 import type { HostMemory, HostMemoryLevel } from "../host-memory";
 import type { ProviderClientOperationError } from "../provider-client-effects";

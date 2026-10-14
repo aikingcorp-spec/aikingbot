@@ -81,7 +81,7 @@ export const messages = {
   "sidebar.delete.pending": "削除しています…",
   "sidebar.delete.title": "{name} を削除しますか?",
   "sidebar.delete.agentDescription":
-    "エージェントとその OpenBot の会話をアプリから削除します。キュー、メモリー、ルーティン、ワークスペースも削除されます。接続した CLI プロバイダーが別に保存している履歴は削除されません。",
+    "エージェントとその AIKINGBOT の会話をアプリから削除します。キュー、メモリー、ルーティン、ワークスペースも削除されます。接続した CLI プロバイダーが別に保存している履歴は削除されません。",
   "sidebar.delete.channelDescription":
     "チャンネルを停止します。履歴は「削除済みのチャンネル」にプレビュー専用で残ります。復元はできません。メンバーのエージェントは残ります。",
   "sidebar.delete.sectionDescription":
@@ -95,7 +95,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "ピン留めしたチャットを {total} 件中 {position} 番目に移動しました。",
   "sidebar.announce.personFallback": "ユーザー",
   "sidebar.announce.chatFallback": "チャット",
-  "sidebar.mobileApp.title": "モバイル版 OpenBot",
+  "sidebar.mobileApp.title": "モバイル版 AIKINGBOT",
   "sidebar.mobileApp.body": "iPhone と Android でアプリを利用できます。",
   "sidebar.mobileApp.howToInstall": "インストール方法",
   "sidebar.mobileApp.dismiss": "モバイルアプリのお知らせを閉じる",

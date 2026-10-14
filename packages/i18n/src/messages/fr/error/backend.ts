@@ -12,8 +12,8 @@ export const messages = {
   "error.backend.browserViewLimit": "Trop de vues de navigateur sont ouvertes sur cet hôte.",
   "error.backend.browserViewEnded": "La vue en direct de cette page est terminée.",
   "error.backend.browserViewFailed": "La vue en direct de cette page a échoué.",
-  "error.backend.windowTemporarilyUnavailable": "La fenêtre OpenBot est temporairement indisponible.",
-  "error.backend.windowUnavailable": "La fenêtre OpenBot est indisponible.",
+  "error.backend.windowTemporarilyUnavailable": "La fenêtre AIKINGBOT est temporairement indisponible.",
+  "error.backend.windowUnavailable": "La fenêtre AIKINGBOT est indisponible.",
   "error.backend.sunshineApiHttp": "L’API Sunshine a échoué avec HTTP {status}.",
   "error.backend.sunshinePortsUnavailable":
     "Impossible de réserver une famille de ports Sunshine libre pour le Bureau à distance.",
@@ -31,7 +31,7 @@ export const messages = {
   "error.backend.moonlightRejectedPairing": "Moonlight a refusé l’appairage avec Sunshine.",
   "error.backend.moonlightNoPin": "Moonlight n’a pas renvoyé de code PIN d’appairage.",
   "error.backend.moonlightPairingIncomplete": "L’appairage Moonlight ne s’est pas terminé.",
-  "error.backend.moonlightWebNotEmbedded": "Moonlight Web n’est pas une version intégrée d’OpenBot.",
+  "error.backend.moonlightWebNotEmbedded": "Moonlight Web n’est pas une version intégrée d’AIKINGBOT.",
   "error.backend.moonlightEmptyResponse": "Moonlight a renvoyé une réponse vide.",
   "error.backend.remoteDesktopTimeout": "La demande de bureau à distance a expiré.",
   "error.backend.moonlightApiHttp": "L’API Moonlight a échoué avec HTTP {status}.",
@@ -49,7 +49,7 @@ export const messages = {
   "error.backend.sunshineNotReadyReason": "Sunshine n’est pas devenu prêt. {reason}",
   "error.backend.channelLeadModelUnavailable": "Le modèle du responsable du canal est indisponible.",
   "error.backend.sharedDataUnavailable": "Les données partagées sont indisponibles.",
-  "error.backend.shuttingDown": "OpenBot est en cours d’arrêt.",
+  "error.backend.shuttingDown": "AIKINGBOT est en cours d’arrêt.",
   "error.backend.channelUnconfirmedStart":
     "Le canal a un démarrage de tâche non confirmé. Vérifiez son résultat avant de le supprimer.",
   "error.backend.channelNotFound": "Canal introuvable.",
@@ -118,14 +118,14 @@ export const messages = {
   "error.backend.fileGone": "Le fichier n’existe pas ou a déjà été supprimé.",
   "error.backend.managedAttachmentChanged": "La pièce jointe gérée est manquante ou a changé : {name}",
   "error.backend.mailboxStateCorrupt":
-    "L’état de la messagerie est corrompu ou provient d’une version plus récente d’OpenBot ; il ne sera pas écrasé.",
+    "L’état de la messagerie est corrompu ou provient d’une version plus récente d’AIKINGBOT ; il ne sera pas écrasé.",
   "error.backend.recipientDeleting":
     "Le destinataire est en cours de suppression. Réessayez une fois la suppression terminée.",
   "error.backend.attachBetween": "Joignez entre 1 et {limit} fichiers.",
   "error.backend.attachmentNotFile": "La pièce jointe n’est pas un fichier : {path}",
   "error.backend.generatedImageTooLarge": "L’image générée dépasse la limite de 100 Mo.",
   "error.backend.attachmentNotRegularFile": "Seuls les fichiers ordinaires peuvent être joints : {name}",
-  "error.backend.attachmentCopyFailed": "OpenBot n’a pas pu copier {name}.",
+  "error.backend.attachmentCopyFailed": "AIKINGBOT n’a pas pu copier {name}.",
   "error.backend.routineNameRequired": "Un nom de routine est requis.",
   "error.backend.routineNameTooLong": "Le nom de la routine est trop long.",
   "error.backend.routineInstructionRequired": "Une instruction de routine est requise.",
@@ -148,13 +148,13 @@ export const messages = {
   "error.backend.routineRunStarting":
     "Cette exécution de routine est encore en cours de démarrage. Réessayez après le début de son tour.",
   "error.backend.routineRunNoSession":
-    "OpenBot ne peut pas interrompre l’exécution de routine active, car sa session de fournisseur est indisponible.",
+    "AIKINGBOT ne peut pas interrompre l’exécution de routine active, car sa session de fournisseur est indisponible.",
   "error.backend.interruptSelf": "Un agent ne peut pas s’interrompre lui-même.",
   "error.backend.interruptOtherWork":
     "Cet agent travaille sur une tâche que votre message n’a pas lancée. Seul l’utilisateur ou l’expéditeur de cette tâche peut l’arrêter.",
   "error.backend.interruptStarting": "Cet agent démarre encore un tour. Réessayez après le début du tour.",
   "error.backend.interruptNoSession":
-    "OpenBot ne peut pas interrompre cet agent, car sa session de fournisseur est indisponible.",
+    "AIKINGBOT ne peut pas interrompre cet agent, car sa session de fournisseur est indisponible.",
   "error.backend.memoryTextRequired": "Le texte du souvenir est requis.",
   "error.backend.memoryTextTooLong": "Le texte du souvenir est trop long.",
   "error.backend.mcpServerGone": "Ce serveur MCP n’existe plus.",
@@ -168,7 +168,7 @@ export const messages = {
   "error.backend.routineFlowCycle": "Cette liaison créerait une boucle.",
   "error.backend.routineFlowLinkLimit": "Une routine peut avoir au plus {limit} liaisons.",
   "error.backend.agentWaitLimit":
-    "Cet agent a déjà {count} attentes ouvertes. Fermez une attente avec openbot.close_wait avant d’en ouvrir une autre.",
+    "Cet agent a déjà {count} attentes ouvertes. Fermez une attente avec aikingbot.close_wait avant d’en ouvrir une autre.",
   "error.backend.agentWaitGone": "Cette attente n’est pas ouverte. L’agent l’a fermée, ou quelqu’un l’a annulée.",
   "error.backend.agentWaitNoRequest": "Une attente a besoin d’un message pour continuer. Ce tour n’a pas de message.",
   "error.backend.agentWaitOwnChatOnly":
@@ -176,17 +176,17 @@ export const messages = {
   "error.backend.agentWaitNoteRequired": "Indiquez une courte note qui précise l’objet de l’attente.",
   "error.backend.agentWaitRoutineGone": "Cet agent n’a pas de routine avec cet identifiant.",
   "error.backend.agentWaitNoRoutine":
-    "Seule une exécution de l’une de vos routines réveille une attente, et vous n’avez aucune routine. Créez-en une avec openbot.create_routine, puis ouvrez l’attente.",
+    "Seule une exécution de l’une de vos routines réveille une attente, et vous n’avez aucune routine. Créez-en une avec aikingbot.create_routine, puis ouvrez l’attente.",
   "error.backend.agentWaitRemoteUnsupported":
     "Les attentes ouvertes ne sont disponibles que pour les agents de cet ordinateur.",
   "error.backend.routineFlowHandoffFailed": "La routine n’a pas pu transmettre le travail à cet agent.",
-  "error.backend.mcpServerLimit": "OpenBot garde jusqu’à {limit} serveurs MCP.",
+  "error.backend.mcpServerLimit": "AIKINGBOT garde jusqu’à {limit} serveurs MCP.",
   "error.backend.mcpServerNameTaken": "Un serveur MCP nommé {name} existe déjà.",
   "error.backend.mcpServerNoAnswer": "Le serveur n’a pas répondu en {seconds} secondes.",
   "error.backend.mcpSignInNotAccepted": "Le serveur n’a pas accepté cette connexion.",
   "error.backend.mcpCommandNotFound": "Commande introuvable : {command}",
   "error.backend.mcpRegistrationRefused":
-    "Le serveur de connexion n’accepte pas encore OpenBot comme application. Votre compte n’en est pas la cause. Utilisez un autre moyen de connexion, par exemple un serveur MCP local.",
+    "Le serveur de connexion n’accepte pas encore AIKINGBOT comme application. Votre compte n’en est pas la cause. Utilisez un autre moyen de connexion, par exemple un serveur MCP local.",
   "error.backend.mcpSignInAbandonedGeneric": "La connexion a été abandonnée.",
   "error.backend.mcpSignInForgotten": "La connexion MCP a été oubliée pendant son exécution.",
   "error.backend.mcpSignInAbandoned": "La connexion MCP a été abandonnée.",
@@ -195,15 +195,15 @@ export const messages = {
   "error.backend.mcpSignInRequired":
     "Ce serveur demande une connexion. Choisissez Se connecter pour continuer dans votre navigateur.",
   "error.backend.mcpSignInOnHost":
-    "Ce serveur demande une connexion. Connectez-vous-y dans OpenBot sur l’ordinateur hôte.",
+    "Ce serveur demande une connexion. Connectez-vous-y dans AIKINGBOT sur l’ordinateur hôte.",
   "error.backend.mcpSignInNeedsHttps":
-    "Ce serveur demande une connexion, et OpenBot ne se connecte qu’en https. Remplacez l’URL par {url}.",
+    "Ce serveur demande une connexion, et AIKINGBOT ne se connecte qu’en https. Remplacez l’URL par {url}.",
   "error.backend.mcpSignInCancelled": "La connexion a été annulée.",
   "error.backend.mcpSignInTimedOut": "La connexion n’a pas été terminée dans le navigateur.",
   "error.backend.mcpSignInResponseTimedOut": "La réponse à la connexion n’est pas arrivée à temps.",
   "error.backend.mcpServerExited":
     "Le serveur s’est arrêté avant de répondre. Exécutez la commande dans un terminal pour voir son erreur.",
-  "error.backend.mcpServerUnreachable": "OpenBot n’a pas pu joindre le serveur. Vérifiez l’URL et votre réseau.",
+  "error.backend.mcpServerUnreachable": "AIKINGBOT n’a pas pu joindre le serveur. Vérifiez l’URL et votre réseau.",
   "error.backend.mcpLocalServerOff":
     "Aucun serveur ne répond à {address} sur cet ordinateur. Démarrez le serveur ou activez-le dans l’app qui l’exécute, puis réessayez.",
   "error.backend.mcpServerBlocked":
@@ -211,7 +211,7 @@ export const messages = {
   "error.backend.mcpServerIncompatible":
     "Quelque chose a répondu à cette adresse, mais pas comme un serveur MCP en Streamable HTTP. Vérifiez l’URL et mettez à jour l’app qui exécute le serveur.",
   "error.backend.mcpRemoteBridge":
-    "{reason} Cette commande lance la passerelle mcp-remote. Choisissez plutôt Streamable HTTP avec l’URL {url}, et OpenBot vous connecte.",
+    "{reason} Cette commande lance la passerelle mcp-remote. Choisissez plutôt Streamable HTTP avec l’URL {url}, et AIKINGBOT vous connecte.",
   "error.backend.oauthNotHttps":
     "Le point de terminaison OAuth {origin} n’utilise pas https : les identifiants n’ont pas été envoyés.",
   "error.backend.oauthTooManyRedirects": "Le point de terminaison OAuth a effectué trop de redirections.",
@@ -282,7 +282,7 @@ export const messages = {
   "error.backend.mcpSignInAppUrl": "L’app de connexion nécessite une URL de serveur valide.",
   "error.backend.mcpSignInAppClientId": "Saisissez l’ID client de l’app de connexion.",
   "error.backend.mcpSignInAppIssuerChanged":
-    "Le serveur de connexion de ce serveur MCP a changé : OpenBot ne lui a pas envoyé l’app de connexion. Si ce changement est correct, supprimez l’app de connexion et ajoutez-la à nouveau.",
+    "Le serveur de connexion de ce serveur MCP a changé : AIKINGBOT ne lui a pas envoyé l’app de connexion. Si ce changement est correct, supprimez l’app de connexion et ajoutez-la à nouveau.",
   "error.backend.mcpSignInAppNoServer":
     "Enregistrez ce serveur MCP comme serveur URL avant d’ajouter une app de connexion.",
   "error.backend.mcpSignInAppUnavailable": "Cet ordinateur ne peut pas conserver d’app de connexion.",

@@ -2,14 +2,15 @@ import type { PartialTranslation } from "../../../message";
 import type { messages as source } from "../../en/error/team";
 
 export const messages = {
-  "error.team.ownerNotLinked": "Dieser Host ist nicht mit einem OpenBot-Eigentümerkonto verknüpft.",
-  "error.team.ownerEmailRequired": "Melde dich mit der OpenBot-E-Mail-Adresse an, mit der dieser Host erstellt wurde.",
+  "error.team.ownerNotLinked": "Dieser Host ist nicht mit einem AIKINGBOT-Eigentümerkonto verknüpft.",
+  "error.team.ownerEmailRequired":
+    "Melde dich mit der AIKINGBOT-E-Mail-Adresse an, mit der dieser Host erstellt wurde.",
   "error.team.hostNotConfigured": "Der Teamhost ist nicht eingerichtet.",
   "error.team.alreadyConfigured": "Der Teamserver ist bereits eingerichtet.",
   "error.team.identityCreateFailed": "Die Teamidentität konnte nicht erstellt werden.",
   "error.team.accountChangedDuringCreate":
     "Das angemeldete Konto wurde während der Erstellung dieses Servers geändert.",
-  "error.team.notConfigured": "Dieser OpenBot wurde nicht eingerichtet.",
+  "error.team.notConfigured": "Dieser AIKINGBOT wurde nicht eingerichtet.",
   "error.team.serverNotActive": "Dieser Server ist für das angemeldete Konto nicht mehr aktiv.",
   "error.team.logoInvalid": "Wähle ein gültiges PNG-, JPEG- oder WebP-Bild mit höchstens 512 KB.",
   "error.team.ownerMembershipConflict":
@@ -23,9 +24,9 @@ export const messages = {
   "error.team.inviteEmailMismatch": "Diese Einladung gehört zu einer anderen E-Mail-Adresse.",
   "error.team.memberDisabled": "Dieses Teammitglied ist deaktiviert.",
   "error.team.memberLimit": "Ein Host kann bis zu {limit} Mitglieder haben.",
-  "error.team.accountNotMember": "Dieses OpenBot-Konto ist kein Teammitglied.",
+  "error.team.accountNotMember": "Dieses AIKINGBOT-Konto ist kein Teammitglied.",
   "error.team.usernameTaken": "Dieser Benutzername wird bereits verwendet.",
-  "error.team.inviteRequiresAccount": "Diese Einladung erfordert ein bestätigtes OpenBot-Konto.",
+  "error.team.inviteRequiresAccount": "Diese Einladung erfordert ein bestätigtes AIKINGBOT-Konto.",
   "error.team.loginIncorrect": "Der Benutzername oder das Passwort ist falsch.",
   "error.team.currentPasswordIncorrect": "Das aktuelle Passwort ist falsch.",
   "error.team.memberNotFound": "Teammitglied nicht gefunden.",
@@ -45,17 +46,17 @@ export const messages = {
     "Der Benutzername muss 3 bis 32 Buchstaben, Zahlen, Punkte, Bindestriche oder Unterstriche enthalten.",
   "error.team.passwordLength": "Das Passwort muss 12 bis 256 Zeichen enthalten.",
   "error.team.bindFailed": "Die Team-API konnte nicht gebunden werden.",
-  "error.team.signInRequired": "Eine OpenBot-Anmeldung ist erforderlich.",
+  "error.team.signInRequired": "Eine AIKINGBOT-Anmeldung ist erforderlich.",
   "error.team.authenticationRequired": "Authentifizierung erforderlich.",
   "error.team.agentNotFound": "Agent nicht gefunden.",
   "error.team.routeNotFound": "Route nicht gefunden.",
   "error.team.requestFailed": "Anfrage fehlgeschlagen.",
   "error.team.tooManySignInAttempts": "Zu viele Anmeldeversuche. Versuche es später erneut.",
-  "error.team.clientUpdateRequired": "Aktualisiere diesen OpenBot-Client, bevor du dich mit diesem Host verbindest.",
-  "error.team.hostUpdateRequired": "Aktualisiere OpenBot auf dem Host, bevor du dich verbindest.",
+  "error.team.clientUpdateRequired": "Aktualisiere diesen AIKINGBOT-Client, bevor du dich mit diesem Host verbindest.",
+  "error.team.hostUpdateRequired": "Aktualisiere AIKINGBOT auf dem Host, bevor du dich verbindest.",
   "error.team.sidebarLayoutUnavailable": "Die Anordnung der Seitenleiste ist nicht verfügbar.",
   "error.team.providersUnsupported": "Diese Verbindung unterstützt keine Anbietereinstellungen.",
-  "error.team.providerNotManaged": "OpenBot verwaltet die CLI dieses Anbieters nicht.",
+  "error.team.providerNotManaged": "AIKINGBOT verwaltet die CLI dieses Anbieters nicht.",
   "error.team.channelsUnsupported": "Diese Verbindung unterstützt keine Kanalchats.",
   "error.team.channelDeleteUnsupported": "Diese Verbindung unterstützt das Löschen von Kanälen nicht.",
   "error.team.membersCannotDeleteChannels": "Mitglieder können keine Kanäle löschen.",
@@ -68,7 +69,7 @@ export const messages = {
   "error.team.workspaceDirectoryUnsupported": "Diese Verbindung unterstützt das Anzeigen von Ordnern nicht.",
   "error.team.conversationFileSearchUnsupported": "Diese Verbindung unterstützt das Suchen von Dateien nicht.",
   "error.team.routineFlowsUnsupported":
-    "Dieser Server unterstützt keine Routinenabläufe. Aktualisiere OpenBot auf dem Computer, auf dem er läuft.",
+    "Dieser Server unterstützt keine Routinenabläufe. Aktualisiere AIKINGBOT auf dem Computer, auf dem er läuft.",
   "error.team.routineCanvasTooLarge":
     "Diese Routinenansicht ist zu groß, um sie an dieses Gerät zu senden. Kürze die Routinenanweisungen auf dem Computer, auf dem der Server läuft.",
   "error.team.agentImportUnsupported": "Diese Verbindung unterstützt das Importieren von Agenten nicht.",
@@ -88,7 +89,8 @@ export const messages = {
   "error.team.mcpUnsupported": "Diese Verbindung unterstützt keine MCP-Server.",
   "error.team.storageUnsupported": "Diese Verbindung unterstützt keinen Speicher.",
   "error.team.hostedSitesUnsupported": "Diese Verbindung unterstützt keine Websites.",
-  "error.team.hostedSitesUnregistered": "Dieser Server ist nicht bei OpenBot registriert und hat daher keine Websites.",
+  "error.team.hostedSitesUnregistered":
+    "Dieser Server ist nicht bei AIKINGBOT registriert und hat daher keine Websites.",
   "error.team.hostedSiteNotFound": "Website nicht gefunden.",
   "error.team.markUnreadUnsupported": "Dieser Client unterstützt das Markieren von Unterhaltungen als ungelesen nicht.",
   "error.team.inviteServiceUnavailable": "Der Einladungsdienst ist nicht verfügbar.",
@@ -109,10 +111,10 @@ export const messages = {
   "error.team.adminRequired": "Administratorzugriff ist erforderlich.",
   "error.team.requestTooLarge": "Der Anfragetext ist zu groß.",
   "error.team.signInRelayUnsupported":
-    "Dieser Server kann keine Anmeldungen weiterleiten. Aktualisiere OpenBot auf dem Host.",
+    "Dieser Server kann keine Anmeldungen weiterleiten. Aktualisiere AIKINGBOT auf dem Host.",
   "error.team.connectorsUnsupported":
-    "Die Verbindungen dieses Servers lassen sich hier nicht verwalten. Aktualisiere OpenBot auf dem Host.",
-  "error.team.connectorPageRefused": "Der Server hat eine Seite gesendet, die OpenBot nicht öffnet.",
+    "Die Verbindungen dieses Servers lassen sich hier nicht verwalten. Aktualisiere AIKINGBOT auf dem Host.",
+  "error.team.connectorPageRefused": "Der Server hat eine Seite gesendet, die AIKINGBOT nicht öffnet.",
   "error.team.signInRelayUnknown": "Diese Anmeldung ist beendet oder existiert nicht.",
   "error.team.signInRelayUsed": "Diese Anmeldung wurde bereits gesendet.",
   "error.team.signInRelayMismatch": "Diese Adresse gehört nicht zu dieser Anmeldung.",

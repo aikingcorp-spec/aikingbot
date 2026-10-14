@@ -1,7 +1,7 @@
 import {
   chatHistoryBoundaryReached,
   createChatVirtualizer,
-} from "@openbot/ui/features/conversation/createChatVirtualizer";
+} from "@aikingbot/ui/features/conversation/createChatVirtualizer";
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import { createMemo, createSignal, For } from "solid-js";
 import { describe, expect, it } from "vitest";

@@ -4,8 +4,8 @@ import { Effect } from "effect";
 // What the server refuses: an internal error it will not describe, a rate limit it will not let
 // grow without bound, and input sizes it rejects before a service ever sees them.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { createOpenBotLogger } from "@openbot/logging";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { afterEach, describe, expect, it } from "vitest";
 import { createAgents, createTeamApiFixture, stopTeamApiFixtures } from "./team-api-server-test-harness";
 
@@ -14,7 +14,7 @@ afterEach(stopTeamApiFixtures);
 describe("TeamApiServer hardening", () => {
   it("does not expose unexpected internal errors", async () => {
     const { start, signIn } = await createTeamApiFixture("errors", { configure: true });
-    const internalError = Object.assign(new Error("EACCES: /Users/private/openbot.db"), { code: "EACCES" });
+    const internalError = Object.assign(new Error("EACCES: /Users/private/aikingbot.db"), { code: "EACCES" });
     const lines: string[] = [];
     const { base } = await start({
       agents: createAgents({
@@ -22,7 +22,7 @@ describe("TeamApiServer hardening", () => {
           throw internalError;
         },
       }),
-      logger: createOpenBotLogger("test", (line) => lines.push(line)),
+      logger: createAIKINGBOTLogger("test", (line) => lines.push(line)),
     });
 
     const token = await signIn();
@@ -69,8 +69,8 @@ describe("TeamApiServer hardening", () => {
     const login = await Effect.runPromise(store.login("owner", "correct horse battery"));
     const { port } = await start();
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-events",
-      `openbot-token.${login.sessionToken}`,
+      "aikingbot-events",
+      `aikingbot-token.${login.sessionToken}`,
     ]);
 
     try {

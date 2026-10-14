@@ -1,4 +1,4 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
+import type { ServerSummary } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { installedSkillsRequestKey } from "./installed-skills-source";
 
@@ -6,7 +6,7 @@ describe("installed skills request source", () => {
   it("stays stable across unrelated server summary refreshes", () => {
     const server: ServerSummary = {
       id: "local",
-      name: "OpenBot",
+      name: "AIKINGBOT",
       notificationsMuted: false,
       notificationsMutedUntil: null,
       notificationLevel: "all",

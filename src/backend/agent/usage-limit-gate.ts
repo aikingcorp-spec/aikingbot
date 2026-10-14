@@ -1,4 +1,4 @@
-import type { AccountUsage, AgentEvent, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
+import type { AccountUsage, AgentEvent, AgentRuntimeSnapshot } from "@aikingbot/contracts/ipc";
 import { Effect, Exit, Schema, Scope } from "effect";
 import type { AgentProvider } from "../agent-client";
 import type { AgentStore } from "../agent-store";
@@ -6,7 +6,7 @@ import { causeHelpers } from "../effect-boundary";
 import { providerForAgent } from "./thread-items";
 
 /** A provider client's report that the plan refused this turn, with the reset in epoch seconds when it gave one. */
-export const USAGE_LIMIT_METHOD = "openbot/usageLimit";
+export const USAGE_LIMIT_METHOD = "aikingbot/usageLimit";
 
 /** How often a limit with no reported reset is read again. A usage read is one request, not a turn. */
 export const USAGE_LIMIT_RECHECK_MS = 15 * 60_000;

@@ -18,16 +18,16 @@
   --dynamic-island-shared-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   display: flex;
-  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--aikingbot-space-6)));
   height: fit-content;
   align-items: flex-start;
   justify-content: center;
   border: 0;
   background: transparent;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   filter: drop-shadow(0 0 0 transparent);
   pointer-events: none;
-  transition: filter var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: filter var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-shell {
@@ -49,7 +49,7 @@
 
 .dynamic-island[data-layout-state="expanded"],
 .dynamic-island[data-hovered="true"] {
-  filter: drop-shadow(0 0 10px var(--openbot-shadow-dynamic-island));
+  filter: drop-shadow(0 0 10px var(--aikingbot-shadow-dynamic-island));
 }
 
 .dynamic-island-shell[data-resizing] {
@@ -59,7 +59,7 @@
 .dynamic-island-size-target {
   position: relative;
   left: 50%;
-  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--aikingbot-space-6)));
   min-height: var(--dynamic-island-notch-height);
   transform: translateX(-50%);
 }
@@ -67,13 +67,13 @@
 .dynamic-island[data-layout-state="compact"][data-hovered="true"] .dynamic-island-size-target {
   width: min(
     calc(var(--dynamic-island-compact-width) + var(--dynamic-island-hover-width-growth)),
-    calc(100vw - var(--openbot-space-6))
+    calc(100vw - var(--aikingbot-space-6))
   );
   min-height: calc(var(--dynamic-island-notch-height) + var(--dynamic-island-hover-height-growth));
 }
 
 .dynamic-island[data-layout-state="expanded"] .dynamic-island-size-target {
-  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--aikingbot-space-6)));
   padding-top: var(--dynamic-island-notch-height);
 }
 
@@ -89,9 +89,9 @@
   position: absolute;
   inset: 0 var(--dynamic-island-shoulder-size);
   border-radius: 0 0 var(--dynamic-island-bottom-radius) var(--dynamic-island-bottom-radius);
-  background: var(--openbot-bg-notch);
-  box-shadow: inset 0 -1px 0 var(--openbot-shadow-ring);
-  transition: box-shadow var(--openbot-duration-normal) var(--openbot-ease-out);
+  background: var(--aikingbot-bg-notch);
+  box-shadow: inset 0 -1px 0 var(--aikingbot-shadow-ring);
+  transition: box-shadow var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-shoulder {
@@ -103,7 +103,7 @@
 }
 
 .dynamic-island-shoulder path {
-  fill: var(--openbot-bg-notch);
+  fill: var(--aikingbot-bg-notch);
 }
 
 .dynamic-island-shoulder-leading {
@@ -119,7 +119,7 @@
   z-index: 2;
   top: 0;
   left: 50%;
-  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--aikingbot-space-6)));
   height: var(--dynamic-island-notch-height);
   display: grid;
   /* The ears share the width that is left: a fixed floor here pushed the trailing ear out of a
@@ -157,18 +157,18 @@
   height: 100%;
   display: flex;
   align-items: center;
-  color: var(--openbot-text-secondary);
-  transition: color var(--openbot-duration-normal) var(--openbot-ease-out);
+  color: var(--aikingbot-text-secondary);
+  transition: color var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .dynamic-island-ear-leading {
   justify-content: flex-end;
-  padding-right: var(--openbot-space-2);
+  padding-right: var(--aikingbot-space-2);
 }
 
 .dynamic-island-ear-trailing {
   justify-content: flex-start;
-  padding-left: var(--openbot-space-2);
+  padding-left: var(--aikingbot-space-2);
 }
 
 .dynamic-island:not(.dynamic-island-external):not(.dynamic-island-status) .dynamic-island-ear-leading {
@@ -184,10 +184,10 @@
   transform: translate3d(0, 0, 0) scale(1);
   transform-origin: center;
   transition:
-    color var(--openbot-duration-normal) var(--openbot-ease-out),
-    filter var(--openbot-duration-slow) var(--openbot-ease-out),
-    opacity var(--openbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1),
-    transform var(--openbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1);
+    color var(--aikingbot-duration-normal) var(--aikingbot-ease-out),
+    filter var(--aikingbot-duration-slow) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1),
+    transform var(--aikingbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1);
 }
 
 /* The compact content blurs a little while it moves with the surface, as much as the move is large.
@@ -210,12 +210,12 @@
 
 .dynamic-island-toggle:hover .dynamic-island-ear,
 .dynamic-island-toggle:focus-visible .dynamic-island-ear {
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
 }
 
 .dynamic-island-trailing-content {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   justify-content: center;
 }
 
@@ -225,8 +225,8 @@
   align-items: center;
   justify-content: center;
   transition:
-    opacity var(--openbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1),
-    transform var(--openbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1);
+    opacity var(--aikingbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1),
+    transform var(--aikingbot-duration-island-content) cubic-bezier(0.22, 1.08, 0.36, 1);
 }
 
 .dynamic-island-trailing-compact {
@@ -255,7 +255,7 @@
   opacity: 0;
   filter: none;
   transform: scale(0.92);
-  transition-duration: var(--openbot-duration-island-content-exit);
+  transition-duration: var(--aikingbot-duration-island-content-exit);
   transition-timing-function: var(--dynamic-island-shared-ease);
 }
 
@@ -263,7 +263,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: var(--openbot-space-2) var(--openbot-space-4) var(--openbot-space-4);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-4) var(--aikingbot-space-4);
 }
 
 .dynamic-island-panel[data-phase="leaving"] {
@@ -279,7 +279,7 @@
 }
 
 .dynamic-island-panel[data-phase="leaving"] {
-  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-expanded-width), calc(100vw - var(--aikingbot-space-6)));
 }
 
 .dynamic-island-content {
@@ -294,8 +294,8 @@
   opacity: 1;
   filter: none;
   transition:
-    color var(--openbot-duration-normal) var(--openbot-ease-out),
-    opacity var(--openbot-duration-island-content-exit) var(--dynamic-island-shared-ease);
+    color var(--aikingbot-duration-normal) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-island-content-exit) var(--dynamic-island-shared-ease);
 }
 
 .dynamic-island:not([data-shared-leading="true"])[data-layout-state="expanded"]
@@ -305,10 +305,10 @@
   filter: none;
   transform: scale(0.92);
   transition-duration:
-    var(--openbot-duration-normal), var(--openbot-duration-island-content-exit),
-    var(--openbot-duration-island-content-exit);
+    var(--aikingbot-duration-normal), var(--aikingbot-duration-island-content-exit),
+    var(--aikingbot-duration-island-content-exit);
   transition-timing-function:
-    var(--openbot-ease-out), var(--dynamic-island-shared-ease), var(--dynamic-island-shared-ease);
+    var(--aikingbot-ease-out), var(--dynamic-island-shared-ease), var(--dynamic-island-shared-ease);
 }
 
 .dynamic-island[data-layout-state="expanded"] .dynamic-island-ear-trailing .dynamic-island-ear-content {
@@ -319,7 +319,7 @@
 
 .dynamic-island-status .dynamic-island-trailing-compact {
   transform: scale(1);
-  transition: opacity var(--openbot-duration-island-content) var(--dynamic-island-shared-ease);
+  transition: opacity var(--aikingbot-duration-island-content) var(--dynamic-island-shared-ease);
 }
 
 .dynamic-island-status[data-layout-state="expanded"] .dynamic-island-trailing-compact {
@@ -346,7 +346,7 @@
 }
 
 .dynamic-island-idle .dynamic-island-ear-trailing {
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   transition: none;
 }
 
@@ -355,12 +355,12 @@
 .dynamic-island.dynamic-island-idle:not(.dynamic-island-external) .dynamic-island-ear-leading {
   justify-content: flex-start;
   padding-right: 0;
-  padding-left: var(--openbot-space-4);
+  padding-left: var(--aikingbot-space-4);
 }
 
 .dynamic-island.dynamic-island-idle:not(.dynamic-island-external) .dynamic-island-ear-trailing {
   justify-content: flex-end;
-  padding-right: var(--openbot-space-4);
+  padding-right: var(--aikingbot-space-4);
   padding-left: 0;
 }
 
@@ -375,7 +375,7 @@
      notch on every notched MacBook - rather than reaching into the window under it. The retention
      zone below is the generous one, and it only applies once the pointer is already on the
      island. */
-  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--openbot-space-6)));
+  width: min(var(--dynamic-island-compact-width), calc(100vw - var(--aikingbot-space-6)));
   height: calc(
     var(--dynamic-island-notch-height) +
     var(--dynamic-island-hover-hit-top) +
@@ -396,7 +396,7 @@
       var(--dynamic-island-hover-width-growth) +
       var(--dynamic-island-hover-retention-inline-growth)
     ),
-    calc(100vw - var(--openbot-space-6))
+    calc(100vw - var(--aikingbot-space-6))
   );
   height: calc(
     var(--dynamic-island-notch-height) +
@@ -429,21 +429,21 @@
   transform-origin: right center;
 }
 
-.openbot-dynamic-island[data-layout-state="expanded"] .dynamic-island-panel,
-.openbot-dynamic-island .dynamic-island-panel[data-phase="exiting"],
-.openbot-dynamic-island .dynamic-island-panel[data-phase="leaving"] {
+.aikingbot-dynamic-island[data-layout-state="expanded"] .dynamic-island-panel,
+.aikingbot-dynamic-island .dynamic-island-panel[data-phase="exiting"],
+.aikingbot-dynamic-island .dynamic-island-panel[data-phase="leaving"] {
   padding: 14px calc(var(--dynamic-island-expanded-shoulder-size) + 20px) 20px;
 }
 
-.dynamic-island-external.openbot-dynamic-island[data-layout-state="expanded"] .dynamic-island-panel,
-.dynamic-island-external.openbot-dynamic-island .dynamic-island-panel[data-phase="exiting"],
-.dynamic-island-external.openbot-dynamic-island .dynamic-island-panel[data-phase="leaving"] {
+.dynamic-island-external.aikingbot-dynamic-island[data-layout-state="expanded"] .dynamic-island-panel,
+.dynamic-island-external.aikingbot-dynamic-island .dynamic-island-panel[data-phase="exiting"],
+.dynamic-island-external.aikingbot-dynamic-island .dynamic-island-panel[data-phase="leaving"] {
   padding: 14px 20px 20px;
 }
 
-.openbot-dynamic-island.dynamic-island-working[data-layout-state="expanded"] .dynamic-island-panel,
-.openbot-dynamic-island.dynamic-island-working .dynamic-island-panel[data-phase="exiting"],
-.openbot-dynamic-island.dynamic-island-working .dynamic-island-panel[data-phase="leaving"] {
+.aikingbot-dynamic-island.dynamic-island-working[data-layout-state="expanded"] .dynamic-island-panel,
+.aikingbot-dynamic-island.dynamic-island-working .dynamic-island-panel[data-phase="exiting"],
+.aikingbot-dynamic-island.dynamic-island-working .dynamic-island-panel[data-phase="leaving"] {
   padding-bottom: 14px;
 }
 
@@ -461,8 +461,8 @@
 
 .dynamic-island-external .dynamic-island-silhouette {
   border-radius: var(--dynamic-island-external-compact-radius);
-  background: var(--openbot-bg-notch);
-  box-shadow: inset 0 -1px 0 var(--openbot-shadow-ring);
+  background: var(--aikingbot-bg-notch);
+  box-shadow: inset 0 -1px 0 var(--aikingbot-shadow-ring);
 }
 
 .dynamic-island-external .dynamic-island-silhouette-body {

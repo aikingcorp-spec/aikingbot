@@ -12,7 +12,7 @@
  * test of any other server gives.
  */
 
-import { Button, ExternalLink } from "@openbot/ui";
+import { Button, ExternalLink } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { createConnectRun, type McpConnectBaseProps, McpConnectShell } from "./McpConnectShell";

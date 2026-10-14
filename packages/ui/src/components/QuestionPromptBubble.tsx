@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentPromptQuestion, AgentPromptResolution } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentPromptQuestion, AgentPromptResolution } from "@aikingbot/contracts/ipc";
 import {
   Badge,
   Bubble,
@@ -20,9 +20,9 @@ import {
   Questionnaire,
   Spinner,
   X,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+} from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createEffect, createSignal, For, onCleanup, Show, untrack } from "solid-js";
 import { isSendShortcutKey, type SendShortcut, sendShortcutAriaKey } from "../features/conversation/send-shortcut";
 

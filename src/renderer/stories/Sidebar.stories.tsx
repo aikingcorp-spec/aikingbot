@@ -1,9 +1,9 @@
-import type { ChannelSummary, SidebarLayoutAction, SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
-import type { AvatarMood } from "@openbot/ui/bloub-avatar";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarMobileAppCard } from "@openbot/ui/features/sidebar/SidebarMobileAppCard";
-import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@openbot/ui/features/sidebar/sidebar-pins";
-import type { SidebarAgentState } from "@openbot/ui/features/sidebar/sidebar-types";
+import type { ChannelSummary, SidebarLayoutAction, SidebarLayoutSnapshot } from "@aikingbot/contracts/ipc";
+import type { AvatarMood } from "@aikingbot/ui/bloub-avatar";
+import { Sidebar } from "@aikingbot/ui/features/sidebar/Sidebar";
+import { SidebarMobileAppCard } from "@aikingbot/ui/features/sidebar/SidebarMobileAppCard";
+import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@aikingbot/ui/features/sidebar/sidebar-pins";
+import type { SidebarAgentState } from "@aikingbot/ui/features/sidebar/sidebar-types";
 import { createSignal, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

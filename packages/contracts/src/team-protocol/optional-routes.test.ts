@@ -429,7 +429,7 @@ describe("context-reset-v1", () => {
 describe("agent-publish-v1", () => {
   const publication = {
     templateId: "tpl_chief",
-    shareUrl: "https://openbot.run/agents/tpl_chief",
+    shareUrl: "https://aikingbot.aikingx.com/agents/tpl_chief",
     publishedAt: "2026-09-29T00:00:00Z",
   };
   const preview = {
@@ -526,7 +526,7 @@ describe("agent-import-v1", () => {
     const withAvatar = { ...preview, agents: [{ ...agent, avatarUrl: "data:image/png;base64,AAAA" }] };
     expect(codec(AGENT_IMPORT_ROUTES.stage).response(200, withAvatar)).toEqual(preview);
     const result = {
-      agents: [{ agentId: "a1", name: "Research", workspacePath: "/Users/host/OpenBot/a1" }],
+      agents: [{ agentId: "a1", name: "Research", workspacePath: "/Users/host/AIKINGBOT/a1" }],
       skipped: [],
       channels: [{ id: "c1", name: "Desk" }],
       skippedChannels: [],
@@ -587,7 +587,7 @@ describe("push-notifications-v1", () => {
     level: "needs-me",
     mutedUntil: 1_800_000_000,
     preview: false,
-    sound: "openbot",
+    sound: "aikingbot",
     liveActivityStartedAt: 1_790_000_000,
   };
 
@@ -625,8 +625,8 @@ describe("push-notifications-v1", () => {
 describe("hosted-sites-v1", () => {
   const site = {
     id: "site-1",
-    hostname: "budget-planner.openbot.site",
-    url: "https://budget-planner.openbot.site/",
+    hostname: "budget-planner.aikingbot-sites.aikingx.com",
+    url: "https://budget-planner.aikingbot-sites.aikingx.com/",
     title: "Budget planner",
     description: "A planner.",
     framework: "vanilla",
@@ -671,12 +671,12 @@ describe("host-release-v1", () => {
 });
 
 describe("mcp-sign-in-app-v1", () => {
-  const app = { clientId: "openbot-client", secretSaved: true, scope: "read offline_access" };
+  const app = { clientId: "aikingbot-client", secretSaved: true, scope: "read offline_access" };
   const state = { redirectUrl: "http://127.0.0.1:28417/mcp-auth", app };
 
   // The secret goes to the host once, in a save. No answer may carry it back to a client.
   it("sends the secret only towards the host and drops it from every answer", () => {
-    const save = { mcpServerId: "mcp-1", clientId: "openbot-client", clientSecret: "s3cret", scope: "read" };
+    const save = { mcpServerId: "mcp-1", clientId: "aikingbot-client", clientSecret: "s3cret", scope: "read" };
     expect(codec(MCP_SIGN_IN_APP_ROUTES.save).request(save)).toEqual(save);
     expect(codec(MCP_SIGN_IN_APP_ROUTES.save).request({ ...save, clientSecret: null })).toEqual({
       ...save,
@@ -712,7 +712,7 @@ describe("mcp-sign-in-app-v1", () => {
 
 describe("sign-in-relay-v1", () => {
   const flow = {
-    authorizeUrl: "https://auth.example.com/authorize?client_id=openbot",
+    authorizeUrl: "https://auth.example.com/authorize?client_id=aikingbot",
     callback: { port: 28417, path: "/mcp-auth", state: "state-1" },
     result: null,
   };
@@ -754,7 +754,7 @@ describe("connectors-v1", () => {
     userCode: "ABCD-1234",
     verificationUri: "https://github.com/login/device",
     error: null,
-    installUrl: "https://github.com/apps/openbotgit/installations/new",
+    installUrl: "https://github.com/apps/aikingbotgit/installations/new",
     revokeUrl: null,
   };
 
@@ -805,7 +805,7 @@ describe("conversation-file-search-v1", () => {
     kind: "file",
     mimeType: "application/pdf",
     previewKind: "pdf",
-    previewUrl: "openbot-attachment://file/attachment-1",
+    previewUrl: "aikingbot-attachment://file/attachment-1",
   };
   const result = { agentId: "chief", messageId: "message-1", createdAt: "2026-10-12T08:00:00.000Z", attachment };
   const page = { results: [result], nextCursor: "eyJ2ZXJzaW9uIjoxLCJvZmZzZXQiOjUwfQ" };

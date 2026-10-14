@@ -1,4 +1,4 @@
-import { clamp } from "@openbot/ui/utils";
+import { clamp } from "@aikingbot/ui/utils";
 import { Portal } from "@solidjs/web";
 import { createSignal, onSettled } from "solid-js";
 

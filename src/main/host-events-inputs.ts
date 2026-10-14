@@ -6,9 +6,9 @@ import {
   type ListEventActivityInput,
   type ListEventRoutinesInput,
   type SaveEventRoutineInput,
-} from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc-events";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 
 // Each parser decodes an untrusted renderer or Team API body. A failure has only catalog text.
 

@@ -5,26 +5,26 @@ import { RemoteProtocolError, RemoteRequestError } from "./remote-server-errors"
 
 describe("classifyRemoteConnectionError", () => {
   it("tells an out-of-date end from a wire this app cannot read", () => {
-    expect(classifyRemoteConnectionError(new RemoteProtocolError("client_update_required", "Update OpenBot."))).toEqual(
-      {
-        issue: {
-          code: "client_update_required",
-          message: "Update OpenBot.",
-          retryable: true,
-          reference: "protocol/client_update_required",
-        },
-        state: "incompatible",
-        suspendReconnect: true,
-        hostSupport: null,
+    expect(
+      classifyRemoteConnectionError(new RemoteProtocolError("client_update_required", "Update AIKINGBOT.")),
+    ).toEqual({
+      issue: {
+        code: "client_update_required",
+        message: "Update AIKINGBOT.",
+        retryable: true,
+        reference: "protocol/client_update_required",
       },
-    );
+      state: "incompatible",
+      suspendReconnect: true,
+      hostSupport: null,
+    });
     expect(classifyRemoteConnectionError(new RemoteProtocolError("protocol_error", "Bad frame.")).state).toBe("error");
   });
 
   it("keeps what the host said it supports, so the app can say which end to update", () => {
     const support = { appVersion: "9.9.9", protocol: { minimum: 4, maximum: 5 }, capabilities: ["remote-desktop"] };
     const outcome = classifyRemoteConnectionError(
-      new RemoteProtocolError("client_update_required", "Update OpenBot.", support),
+      new RemoteProtocolError("client_update_required", "Update AIKINGBOT.", support),
     );
     expect(outcome.hostSupport).toEqual(support);
   });
@@ -68,7 +68,7 @@ describe("classifyRemoteConnectionError", () => {
     [
       new RemoteRequestError(426, "Upgrade.", "client_update_required"),
       "http/426/client_update_required",
-      "Update this OpenBot app before connecting to the host.",
+      "Update this AIKINGBOT app before connecting to the host.",
     ],
     [
       new RemoteRequestError(400, "Bad headers.", "protocol_error"),
@@ -140,7 +140,7 @@ describe("classifyTransportError", () => {
       "network_unavailable",
       "Your account does not have access to this host. Ask the owner for access.",
     ],
-    ["rate_limited", "network_unavailable", "Too many connection attempts. OpenBot tries again in 60 seconds."],
+    ["rate_limited", "network_unavailable", "Too many connection attempts. AIKINGBOT tries again in 60 seconds."],
     ["invalid_message", "network_unavailable", "Signal returned an invalid message."],
     ["authentication_required", "network_unavailable", "Remote ticket is invalid or expired."],
     ["session_revoked", "authentication_required", "Remote access was revoked."],

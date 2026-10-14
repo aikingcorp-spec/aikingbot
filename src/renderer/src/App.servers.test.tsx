@@ -1,4 +1,4 @@
-import type { AgentEvent, AgentSummary, NotificationOpenedEvent, ServerSummary } from "@openbot/contracts/ipc";
+import type { AgentEvent, AgentSummary, NotificationOpenedEvent, ServerSummary } from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { flush } from "solid-js";
 import { expect, it, vi } from "vitest";
@@ -13,7 +13,7 @@ import {
   emitDynamicIslandAction,
   emitScopedAgentEvent,
   emitServers,
-  installOpenbotStub,
+  installAIKINGBOTStub,
   queuedDelivery,
   subscriberCounts,
   testServer,
@@ -38,16 +38,16 @@ async function expectChiefInCoreTeam(): Promise<void> {
   expect(within(section).getByRole("button", { name: /Chief, Chief of staff/ })).toBeInTheDocument();
 }
 
-describe("OpenBot connected desktop shell", () => {
+describe("AIKINGBOT connected desktop shell", () => {
   beforeEach(() => {
-    installOpenbotStub();
+    installAIKINGBOTStub();
   });
 
   it.each(["darwin", "win32", "linux"] as const)(
     "switches servers with numbered shortcuts on %s and releases the listener",
     async (platform) => {
-      vi.mocked(window.openbot.getAppInfo).mockResolvedValue({
-        name: "OpenBot",
+      vi.mocked(window.aikingbot.getAppInfo).mockResolvedValue({
+        name: "AIKINGBOT",
         version: "test",
         platform,
         variant: "production",
@@ -55,25 +55,25 @@ describe("OpenBot connected desktop shell", () => {
       const modifier = platform === "darwin" ? { metaKey: true } : { ctrlKey: true };
       // Local must come first even when the source list puts it last.
       const servers = [testServer("remote-1", false), testServer("local", true)];
-      vi.mocked(window.openbot.servers.list).mockResolvedValue(servers);
-      vi.mocked(window.openbot.servers.select).mockImplementation(async (id) =>
+      vi.mocked(window.aikingbot.servers.list).mockResolvedValue(servers);
+      vi.mocked(window.aikingbot.servers.select).mockImplementation(async (id) =>
         servers.map((server) => ({ ...server, active: server.id === id })),
       );
       const view = render(() => <App />);
       const composer = await screen.findByRole("textbox", { name: "Message Chief" });
       composer.focus();
       await fireEvent.keyDown(composer, { key: "2", ...modifier });
-      await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledExactlyOnceWith("remote-1"));
-      await waitFor(() => expect(window.openbot.servers.onPresence).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledExactlyOnceWith("remote-1"));
+      await waitFor(() => expect(window.aikingbot.servers.onPresence).toHaveBeenCalledTimes(2));
       await fireEvent.keyDown(window, { key: "1", ...modifier });
-      await waitFor(() => expect(window.openbot.servers.select).toHaveBeenLastCalledWith("local"));
-      await waitFor(() => expect(window.openbot.servers.onPresence).toHaveBeenCalledTimes(3));
-      expect(window.openbot.servers.select).toHaveBeenCalledTimes(2);
+      await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenLastCalledWith("local"));
+      await waitFor(() => expect(window.aikingbot.servers.onPresence).toHaveBeenCalledTimes(3));
+      expect(window.aikingbot.servers.select).toHaveBeenCalledTimes(2);
       view.unmount();
       const afterUnmount = new KeyboardEvent("keydown", { key: "2", ...modifier, cancelable: true });
       window.dispatchEvent(afterUnmount);
       expect(afterUnmount.defaultPrevented).toBe(false);
-      expect(window.openbot.servers.select).toHaveBeenCalledTimes(2);
+      expect(window.aikingbot.servers.select).toHaveBeenCalledTimes(2);
     },
   );
 
@@ -81,20 +81,20 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const studio = testServer("remote-1", false);
     const office = { ...testServer("remote-2", false), name: "Office PC" };
-    vi.mocked(window.openbot.servers.list).mockResolvedValue([local, studio, office]);
-    vi.mocked(window.openbot.servers.select).mockRejectedValue(new Error("Server unavailable"));
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValue([local, studio, office]);
+    vi.mocked(window.aikingbot.servers.select).mockRejectedValue(new Error("Server unavailable"));
     render(() => <App />);
     await screen.findByRole("button", { name: "Office PC server" });
     emitServers?.([local, office, studio]);
     await fireEvent.keyDown(window, { key: "2", metaKey: true });
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledExactlyOnceWith("remote-2"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledExactlyOnceWith("remote-2"));
     expect(await screen.findByText("Could not select the server")).toBeVisible();
     expect(await screen.findByText("Server unavailable")).toBeVisible();
     expect(screen.getByRole("button", { name: "Local server" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("ignores invalid numbered shortcuts and does not reload the active server", async () => {
-    vi.mocked(window.openbot.servers.list).mockResolvedValue([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValue([
       testServer("local", true),
       testServer("remote-1", false),
     ]);
@@ -123,15 +123,15 @@ describe("OpenBot connected desktop shell", () => {
     const active = new KeyboardEvent("keydown", { key: "1", metaKey: true, cancelable: true });
     window.dispatchEvent(active);
     expect(active.defaultPrevented).toBe(true);
-    expect(window.openbot.servers.select).not.toHaveBeenCalled();
+    expect(window.aikingbot.servers.select).not.toHaveBeenCalled();
   });
 
   it("restores a separate selected agent for each server", async () => {
-    vi.mocked(window.openbot.servers.list).mockResolvedValue([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValue([
       testServer("local", true),
       testServer("remote-1", false),
     ]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (id) => [
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (id) => [
       testServer("local", id === "local"),
       testServer("remote-1", id === "remote-1"),
     ]);
@@ -144,7 +144,7 @@ describe("OpenBot connected desktop shell", () => {
     expect(await screen.findByRole("heading", { name: "Sales Outbound" })).toBeVisible();
     view.unmount();
 
-    vi.mocked(window.openbot.servers.list).mockResolvedValue([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValue([
       testServer("local", false),
       testServer("remote-1", true),
     ]);
@@ -155,20 +155,20 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("keeps the newer saved selection when deletion finishes in a disposed server scope", async () => {
-    vi.mocked(window.openbot.servers.list).mockResolvedValue([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValue([
       testServer("local", true),
       testServer("remote-1", false),
     ]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (id) => [
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (id) => [
       testServer("local", id === "local"),
       testServer("remote-1", id === "remote-1"),
     ]);
-    vi.mocked(window.openbot.agent.listAgents).mockResolvedValue([
+    vi.mocked(window.aikingbot.agent.listAgents).mockResolvedValue([
       ...AGENTS,
       { ...AGENTS[1], id: "research", name: "Research" },
     ]);
     let finishDelete: (() => void) | undefined;
-    vi.mocked(window.openbot.agent.deleteAgent).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.agent.deleteAgent).mockReturnValueOnce(
       new Promise((resolve) => {
         finishDelete = resolve;
       }),
@@ -178,7 +178,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.contextMenu(screen.getByRole("button", { name: /Research, Outbound specialist/ }));
     await fireEvent.pointerUp(screen.getByRole("menuitem", { name: "Delete agent" }), { button: 0 });
     await fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() => expect(window.openbot.agent.deleteAgent).toHaveBeenCalledWith("research"));
+    await waitFor(() => expect(window.aikingbot.agent.deleteAgent).toHaveBeenCalledWith("research"));
 
     // A main-process server switch can arrive while the delete dialog is waiting.
     emitServers?.([testServer("local", false), testServer("remote-1", true)]);
@@ -206,16 +206,16 @@ describe("OpenBot connected desktop shell", () => {
 
   it("restores the active server before loading its workspace data", async () => {
     let resolveServers: ((servers: ServerSummary[]) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.servers.list).mockReturnValueOnce(
       new Promise<ServerSummary[]>((resolve) => {
         resolveServers = resolve;
       }),
     );
-    vi.mocked(window.openbot.agent.listAgents).mockResolvedValueOnce([{ ...AGENTS[0], name: "Remote Chief" }]);
+    vi.mocked(window.aikingbot.agent.listAgents).mockResolvedValueOnce([{ ...AGENTS[0], name: "Remote Chief" }]);
 
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.servers.list).toHaveBeenCalledOnce());
-    expect(window.openbot.agent.listAgents).not.toHaveBeenCalled();
+    await waitFor(() => expect(window.aikingbot.servers.list).toHaveBeenCalledOnce());
+    expect(window.aikingbot.agent.listAgents).not.toHaveBeenCalled();
 
     resolveServers?.([testServer("local", false), testServer("remote-1", true)]);
 
@@ -226,24 +226,24 @@ describe("OpenBot connected desktop shell", () => {
   it("finishes the pending workspace load when the active server is selected again", async () => {
     const local = testServer("local", false);
     const remote = testServer("remote-1", true);
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockResolvedValueOnce([local, remote]);
     let resolveAgents: ((agents: AgentSummary[]) => void) | undefined;
-    vi.mocked(window.openbot.agent.listAgents).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.agent.listAgents).mockReturnValueOnce(
       new Promise((resolve) => {
         resolveAgents = resolve;
       }),
     );
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.agent.listAgents).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.listAgents).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith(remote.id));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith(remote.id));
     resolveAgents?.(AGENTS);
     expect(await screen.findByRole("heading", { name: "Chief" })).toBeInTheDocument();
   });
 
   it("blocks an incompatible remote workspace and offers a manual retry", async () => {
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([
       { ...testServer("local", false) },
       {
         ...testServer("remote-1", true),
@@ -258,7 +258,7 @@ describe("OpenBot connected desktop shell", () => {
         },
         issue: {
           code: "host_update_required",
-          message: "Update OpenBot on the host.",
+          message: "Update AIKINGBOT on the host.",
           retryable: true,
         },
       },
@@ -266,10 +266,10 @@ describe("OpenBot connected desktop shell", () => {
 
     render(() => <App />);
 
-    expect(await screen.findByRole("heading", { name: "Update OpenBot on Studio Mac" })).toBeInTheDocument();
-    expect(window.openbot.agent.listAgents).not.toHaveBeenCalled();
+    expect(await screen.findByRole("heading", { name: "Update AIKINGBOT on Studio Mac" })).toBeInTheDocument();
+    expect(window.aikingbot.agent.listAgents).not.toHaveBeenCalled();
     await fireEvent.click(screen.getByRole("button", { name: "Retry" }));
-    await waitFor(() => expect(window.openbot.servers.retryConnection).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.servers.retryConnection).toHaveBeenCalledWith("remote-1"));
   });
 
   it("keeps a busy-host error visible during retry and loads agents after recovery", async () => {
@@ -283,12 +283,12 @@ describe("OpenBot connected desktop shell", () => {
         retryable: true,
       },
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, busy]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, busy]);
     render(() => <App />);
     expect(await screen.findByText("The host already has an active remote session.")).toBeVisible();
-    expect(window.openbot.agent.listAgents).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.listAgents).not.toHaveBeenCalled();
     await fireEvent.click(screen.getByRole("button", { name: "Retry" }));
-    await waitFor(() => expect(window.openbot.servers.retryConnection).toHaveBeenCalledWith(busy.id));
+    await waitFor(() => expect(window.aikingbot.servers.retryConnection).toHaveBeenCalledWith(busy.id));
     emitServers?.([local, { ...busy, state: "connecting" }]);
     expect(screen.getByText("The host already has an active remote session.")).toBeVisible();
     emitServers?.([local, { ...busy, state: "online", issue: null, connectionSequence: 1 }]);
@@ -299,18 +299,18 @@ describe("OpenBot connected desktop shell", () => {
   it.each(["sequence", "online"])("refreshes after %s changes without clearing cached agents", async (change) => {
     const local = testServer("local", false);
     const remote: ServerSummary = { ...testServer("remote-1", true), connectionSequence: 1 };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     let resolveAgents: ((agents: AgentSummary[]) => void) | undefined;
-    vi.mocked(window.openbot.agent.listAgents).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.agent.listAgents).mockReturnValueOnce(
       new Promise((resolve) => {
         resolveAgents = resolve;
       }),
     );
     if (change === "online") emitServers?.([local, { ...remote, state: "offline" }]);
     emitServers?.([local, { ...remote, connectionSequence: change === "sequence" ? 2 : 1 }]);
-    await waitFor(() => expect(window.openbot.agent.listAgents).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.agent.listAgents).toHaveBeenCalledTimes(2));
     expect(screen.getByRole("heading", { name: "Chief" })).toBeInTheDocument();
     resolveAgents?.([{ ...AGENTS[0], name: "Recovered Chief" }]);
     expect(await screen.findByRole("heading", { name: "Recovered Chief" })).toBeInTheDocument();
@@ -319,31 +319,31 @@ describe("OpenBot connected desktop shell", () => {
   it("keeps cached agents after a failed refresh and ignores an older reconnect response", async () => {
     const local = testServer("local", false);
     const remote: ServerSummary = { ...testServer("remote-1", true), connectionSequence: 1 };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     let rejectAgents: ((error: Error) => void) | undefined;
-    vi.mocked(window.openbot.agent.listAgents).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.agent.listAgents).mockReturnValueOnce(
       new Promise((_resolve, reject) => {
         rejectAgents = reject;
       }),
     );
     emitServers?.([local, { ...remote, connectionSequence: 2 }]);
-    await waitFor(() => expect(window.openbot.agent.listAgents).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.agent.listAgents).toHaveBeenCalledTimes(2));
     rejectAgents?.(new Error("The host is not reachable."));
     // A later successful load is the barrier after the failed refresh.
     let resolveOld: ((agents: AgentSummary[]) => void) | undefined;
     const oldAgents = new Promise<AgentSummary[]>((resolve) => {
       resolveOld = resolve;
     });
-    vi.mocked(window.openbot.agent.listAgents).mockReturnValueOnce(oldAgents);
+    vi.mocked(window.aikingbot.agent.listAgents).mockReturnValueOnce(oldAgents);
     emitServers?.([local, { ...remote, connectionSequence: 3 }]);
-    await waitFor(() => expect(window.openbot.agent.listAgents).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(window.aikingbot.agent.listAgents).toHaveBeenCalledTimes(3));
     expect(screen.getByRole("heading", { name: "Chief" })).toBeInTheDocument();
-    vi.mocked(window.openbot.agent.listAgents).mockResolvedValueOnce([{ ...AGENTS[0], name: "Current Chief" }]);
+    vi.mocked(window.aikingbot.agent.listAgents).mockResolvedValueOnce([{ ...AGENTS[0], name: "Current Chief" }]);
     emitServers?.([local, { ...remote, connectionSequence: 4 }]);
     // The replacement waits for the previous attempt to finish, but its stale empty result must not apply.
-    expect(window.openbot.agent.listAgents).toHaveBeenCalledTimes(3);
+    expect(window.aikingbot.agent.listAgents).toHaveBeenCalledTimes(3);
     resolveOld?.([]);
     await oldAgents;
     flush();
@@ -364,7 +364,7 @@ describe("OpenBot connected desktop shell", () => {
         negotiatedProtocol: null,
         capabilities: [],
       },
-      issue: { code: "host_update_required", message: "Update OpenBot on the host.", retryable: true },
+      issue: { code: "host_update_required", message: "Update AIKINGBOT on the host.", retryable: true },
     };
     const online: ServerSummary = {
       ...incompatible,
@@ -381,16 +381,16 @@ describe("OpenBot connected desktop shell", () => {
       connectionSequence: 1,
     };
     let resolveRetry: ((server: ServerSummary) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, incompatible]);
-    vi.mocked(window.openbot.servers.retryConnection).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, incompatible]);
+    vi.mocked(window.aikingbot.servers.retryConnection).mockReturnValueOnce(
       new Promise((resolve) => {
         resolveRetry = resolve;
       }),
     );
-    vi.mocked(window.openbot.servers.select).mockRejectedValueOnce(new Error("Workspace refresh failed"));
+    vi.mocked(window.aikingbot.servers.select).mockRejectedValueOnce(new Error("Workspace refresh failed"));
 
     render(() => <App />);
-    await screen.findByRole("heading", { name: "Update OpenBot on Studio Mac" });
+    await screen.findByRole("heading", { name: "Update AIKINGBOT on Studio Mac" });
     await fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     emitServers?.([local, online]);
     resolveRetry?.({ ...online, state: "connecting" });
@@ -412,21 +412,21 @@ describe("OpenBot connected desktop shell", () => {
       },
       connectionSequence: 0,
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
 
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
 
     emitServers?.([local, { ...remote, connectionSequence: 1 }]);
-    expect(await screen.findByText("Different OpenBot versions on Studio Mac")).toBeInTheDocument();
+    expect(await screen.findByText("Different AIKINGBOT versions on Studio Mac")).toBeInTheDocument();
     // The host runs the older release, so the notice asks for the host update, not this app's.
     expect(
       screen.getByText(
-        "Update OpenBot on Studio Mac to use all features. The connection uses protocol 5. Client 0.25.1; host 0.24.0.",
+        "Update AIKINGBOT on Studio Mac to use all features. The connection uses protocol 5. Client 0.25.1; host 0.24.0.",
       ),
     ).toBeInTheDocument();
     emitServers?.([local, { ...remote, connectionSequence: 2 }]);
-    await waitFor(() => expect(screen.getAllByText("Different OpenBot versions on Studio Mac")).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText("Different AIKINGBOT versions on Studio Mac")).toHaveLength(2));
   });
 
   it("loads capability-gated state when a provisional handshake becomes ready", async () => {
@@ -457,21 +457,21 @@ describe("OpenBot connected desktop shell", () => {
       },
       connectionSequence: 1,
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, provisional]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, provisional]);
 
     render(() => <App />);
     await screen.findByText("Connecting to Studio Mac", { selector: ".app-loading-status" });
-    expect(window.openbot.agent.listAgents).not.toHaveBeenCalled();
-    expect(window.openbot.agent.getSidebarLayout).not.toHaveBeenCalled();
-    expect(window.openbot.browser.getDisplayState).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.listAgents).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.getSidebarLayout).not.toHaveBeenCalled();
+    expect(window.aikingbot.browser.getDisplayState).not.toHaveBeenCalled();
 
     emitServers?.([local, negotiated]);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.getSidebarLayout).toHaveBeenCalled());
-    expect(window.openbot.browser.getDisplayState).toHaveBeenCalled();
+    await waitFor(() => expect(window.aikingbot.agent.getSidebarLayout).toHaveBeenCalled());
+    expect(window.aikingbot.browser.getDisplayState).toHaveBeenCalled();
     // The server was already active, so the workspace reloads on
     // the completed handshake. Nothing asks main to select it a second time.
-    expect(window.openbot.servers.select).not.toHaveBeenCalled();
+    expect(window.aikingbot.servers.select).not.toHaveBeenCalled();
   });
 
   it("groups agents into sections when a host answers its handshake after it connects", async () => {
@@ -499,15 +499,15 @@ describe("OpenBot connected desktop shell", () => {
         capabilities: ["sidebar-layout"],
       },
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, checking]);
-    vi.mocked(window.openbot.agent.getSidebarLayout).mockResolvedValue(CORE_TEAM_LAYOUT);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, checking]);
+    vi.mocked(window.aikingbot.agent.getSidebarLayout).mockResolvedValue(CORE_TEAM_LAYOUT);
 
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    expect(window.openbot.agent.getSidebarLayout).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.getSidebarLayout).not.toHaveBeenCalled();
 
     // A starting host holds the agent list, so the reload that the handshake requests fails.
-    vi.mocked(window.openbot.agent.listAgents).mockRejectedValue(new Error("Agents are still loading"));
+    vi.mocked(window.aikingbot.agent.listAgents).mockRejectedValue(new Error("Agents are still loading"));
     emitServers?.([local, negotiated]);
     await expectChiefInCoreTeam();
   });
@@ -515,11 +515,11 @@ describe("OpenBot connected desktop shell", () => {
   it.each(["agents", "sections"] as const)("groups agents into sections when the %s answer first", async (first) => {
     const agents = Promise.withResolvers<AgentSummary[]>();
     const layout = Promise.withResolvers<typeof CORE_TEAM_LAYOUT>();
-    vi.mocked(window.openbot.agent.listAgents).mockReturnValue(agents.promise);
-    vi.mocked(window.openbot.agent.getSidebarLayout).mockReturnValue(layout.promise);
+    vi.mocked(window.aikingbot.agent.listAgents).mockReturnValue(agents.promise);
+    vi.mocked(window.aikingbot.agent.getSidebarLayout).mockReturnValue(layout.promise);
 
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.agent.getSidebarLayout).toHaveBeenCalled());
+    await waitFor(() => expect(window.aikingbot.agent.getSidebarLayout).toHaveBeenCalled());
     if (first === "agents") {
       agents.resolve(AGENTS);
       await screen.findByRole("heading", { name: "Chief" });
@@ -533,10 +533,10 @@ describe("OpenBot connected desktop shell", () => {
     await expectChiefInCoreTeam();
   });
 
-  it("keeps a remote approval when Review in OpenBot switches to its host", async () => {
+  it("keeps a remote approval when Review in AIKINGBOT switches to its host", async () => {
     const servers = [testServer("local", true), testServer("remote-1", false)];
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce(servers);
-    vi.mocked(window.openbot.servers.select).mockResolvedValueOnce(
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce(servers);
+    vi.mocked(window.aikingbot.servers.select).mockResolvedValueOnce(
       servers.map((server) => ({ ...server, active: server.id === "remote-1" })),
     );
 
@@ -562,28 +562,29 @@ describe("OpenBot connected desktop shell", () => {
       },
     });
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: "remote-1",
         mode: "approval",
         item: { requestId: "approval-remote" },
       }),
     );
 
-    const presentationCountBeforeReview = vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.length;
+    const presentationCountBeforeReview = vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls
+      .length;
     emitDynamicIslandAction?.({
       type: "review-attention",
       serverId: "remote-1",
       agentId: "chief",
       requestId: "approval-remote",
     });
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Studio Mac server" })).toHaveAttribute("aria-pressed", "true"),
     );
     await waitFor(() =>
       expect(
         vi
-          .mocked(window.openbot.dynamicIsland.publishPresentation)
+          .mocked(window.aikingbot.dynamicIsland.publishPresentation)
           .mock.calls.slice(presentationCountBeforeReview)
           .some(
             ([presentation]) =>
@@ -602,7 +603,7 @@ describe("OpenBot connected desktop shell", () => {
       decision: "accept",
     });
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: "remote-1",
         mode: "idle",
       }),
@@ -612,7 +613,7 @@ describe("OpenBot connected desktop shell", () => {
   it("removes stale Dynamic Island attention when a remote host goes offline", async () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
 
     render(() => <App />);
     await waitFor(() => expect(emitScopedAgentEvent).toBeTypeOf("function"));
@@ -636,7 +637,7 @@ describe("OpenBot connected desktop shell", () => {
       },
     });
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: remote.id,
         mode: "approval",
       }),
@@ -644,7 +645,7 @@ describe("OpenBot connected desktop shell", () => {
 
     emitServers?.([local, { ...remote, state: "offline" }]);
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: "local",
         mode: "idle",
       }),
@@ -654,7 +655,7 @@ describe("OpenBot connected desktop shell", () => {
   it("reports a remote reply that arrives while its host is offline", async () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
     const snapshot = (messageId: string, text: string) => ({
       type: "runtime-snapshot" as const,
       snapshot: {
@@ -686,7 +687,7 @@ describe("OpenBot connected desktop shell", () => {
     emitScopedAgentEvent?.({ serverId: remote.id, event: snapshot("reply-old", "Earlier reply") });
     emitServers?.([local, { ...remote, state: "offline" }]);
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: "local",
         mode: "idle",
       }),
@@ -696,7 +697,7 @@ describe("OpenBot connected desktop shell", () => {
     emitScopedAgentEvent?.({ serverId: remote.id, event: snapshot("reply-new", "Reply from offline work") });
 
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         serverId: remote.id,
         mode: "message",
         unreadCount: 1,
@@ -709,7 +710,7 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const office: ServerSummary = { ...testServer("remote-1", false), name: "Office Mac", notificationsMuted: true };
     const studio: ServerSummary = { ...testServer("remote-2", false), name: "Studio Mac", notificationsMuted: true };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, office, studio]);
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, office, studio]);
     const approval = (serverId: string, requestId: string) => {
       emitScopedAgentEvent?.({ serverId, event: { type: "agents-changed", agents: AGENTS } });
       emitScopedAgentEvent?.({
@@ -731,7 +732,7 @@ describe("OpenBot connected desktop shell", () => {
         },
       });
     };
-    const published = vi.mocked(window.openbot.dynamicIsland.publishPresentation);
+    const published = vi.mocked(window.aikingbot.dynamicIsland.publishPresentation);
 
     render(() => <App />);
     await waitFor(() => expect(emitScopedAgentEvent).toBeTypeOf("function"));
@@ -760,7 +761,7 @@ describe("OpenBot connected desktop shell", () => {
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await confirmOnboardingModel();
-    await waitFor(() => expect(window.openbot.agent.listQueue).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.listQueue).toHaveBeenCalledWith("chief"));
 
     emitAgentEvent?.({
       type: "queue-changed",
@@ -858,7 +859,7 @@ describe("OpenBot connected desktop shell", () => {
     });
 
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "approval",
         item: { requestId: "approval-runtime" },
       }),
@@ -871,7 +872,7 @@ describe("OpenBot connected desktop shell", () => {
       agentId: "chief",
     });
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "idle",
       }),
     );
@@ -880,7 +881,7 @@ describe("OpenBot connected desktop shell", () => {
   it.each([true, false])(
     "opens, hides, resumes, and disconnects Remote Control with cached availability %s",
     async (remoteDesktopAvailable) => {
-      vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([
+      vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([
         {
           id: "remote-1",
           name: "Studio Mac",
@@ -890,26 +891,27 @@ describe("OpenBot connected desktop shell", () => {
           notificationLevel: "all",
           kind: "remote",
           state: "online",
-          apiUrl: "https://studio-mac-k7m4q2pz-host.openbot.run",
+          apiUrl: "https://studio-mac-k7m4q2pz-host.aikingbot.aikingx.com",
           remoteDesktopAvailable,
           role: "owner",
           active: true,
         },
       ]);
-      const setupError = "The host has not allowed OpenBot to record its screen.";
+      const setupError = "The host has not allowed AIKINGBOT to record its screen.";
       if (!remoteDesktopAvailable) {
-        vi.mocked(window.openbot.remoteDesktop.connect).mockResolvedValueOnce({
+        vi.mocked(window.aikingbot.remoteDesktop.connect).mockResolvedValueOnce({
           status: "refused",
           errorCode: "host_permissions_required",
           message: setupError,
         });
       }
-      vi.mocked(window.openbot.remoteDesktop.connect).mockResolvedValueOnce({
+      vi.mocked(window.aikingbot.remoteDesktop.connect).mockResolvedValueOnce({
         status: "connected",
         session: {
           id: "desktop-1",
           serverId: "remote-1",
-          viewerUrl: "https://studio-mac-k7m4q2pz-host.openbot.run/v1/remote-screen/sessions/desktop-1/viewer",
+          viewerUrl:
+            "https://studio-mac-k7m4q2pz-host.aikingbot.aikingx.com/v1/remote-screen/sessions/desktop-1/viewer",
           viewerGrant: "viewer-grant",
           displays: [],
           selectedDisplayId: null,
@@ -924,7 +926,7 @@ describe("OpenBot connected desktop shell", () => {
 
       render(() => <App />);
       await screen.findByRole("heading", { name: "Chief" });
-      expect(window.openbot.remoteDesktop.connect).not.toHaveBeenCalled();
+      expect(window.aikingbot.remoteDesktop.connect).not.toHaveBeenCalled();
       expect(screen.queryByTitle("Sunshine remote desktop")).not.toBeInTheDocument();
       const openButton = screen.getByRole("button", { name: "Open remote control" });
       await fireEvent.click(openButton);
@@ -934,7 +936,9 @@ describe("OpenBot connected desktop shell", () => {
       if (!appFrame) throw new Error("App frame is missing.");
       expect(appFrame.inert).toBe(true);
       expect(appFrame).toHaveAttribute("aria-hidden", "true");
-      await waitFor(() => expect(window.openbot.remoteDesktop.connect).toHaveBeenCalledWith({ serverId: "remote-1" }));
+      await waitFor(() =>
+        expect(window.aikingbot.remoteDesktop.connect).toHaveBeenCalledWith({ serverId: "remote-1" }),
+      );
 
       if (!remoteDesktopAvailable) {
         // The host named its refusal, so the member reads the repair step instead of the raw sentence.
@@ -947,16 +951,16 @@ describe("OpenBot connected desktop shell", () => {
       }
       await screen.findByTitle("Sunshine remote desktop");
       expect(screen.queryByText("Update required")).not.toBeInTheDocument();
-      await fireEvent.click(within(remoteDesktop).getByRole("button", { name: "Back to OpenBot" }));
+      await fireEvent.click(within(remoteDesktop).getByRole("button", { name: "Back to AIKINGBOT" }));
       await waitFor(() => expect(appFrame.inert).toBe(false));
       // Hiding keeps the session alive, so resuming must not open a second one.
-      expect(window.openbot.remoteDesktop.disconnect).not.toHaveBeenCalled();
+      expect(window.aikingbot.remoteDesktop.disconnect).not.toHaveBeenCalled();
 
       await fireEvent.click(screen.getByRole("button", { name: "Resume remote control" }));
       expect(await screen.findByTitle("Sunshine remote desktop")).toBeInTheDocument();
-      expect(window.openbot.remoteDesktop.connect).toHaveBeenCalledTimes(remoteDesktopAvailable ? 1 : 2);
+      expect(window.aikingbot.remoteDesktop.connect).toHaveBeenCalledTimes(remoteDesktopAvailable ? 1 : 2);
       await fireEvent.click(screen.getByRole("button", { name: "Disconnect" }));
-      await waitFor(() => expect(window.openbot.remoteDesktop.disconnect).toHaveBeenCalledWith("desktop-1"));
+      await waitFor(() => expect(window.aikingbot.remoteDesktop.disconnect).toHaveBeenCalledWith("desktop-1"));
       await waitFor(() => expect(screen.queryByTitle("Sunshine remote desktop")).not.toBeInTheDocument());
       expect(screen.getByRole("button", { name: "Open remote control" })).toBeInTheDocument();
     },
@@ -971,13 +975,13 @@ describe("OpenBot connected desktop shell", () => {
       role: "owner" as const,
     };
     const other = { ...testServer("remote-2", false), kind: "remote" as const, state: "online" as const };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([remote, other]);
-    vi.mocked(window.openbot.remoteDesktop.connect).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([remote, other]);
+    vi.mocked(window.aikingbot.remoteDesktop.connect).mockResolvedValueOnce({
       status: "connected",
       session: {
         id: "desktop-1",
         serverId: "remote-1",
-        viewerUrl: "https://studio-mac-k7m4q2pz-host.openbot.run/v1/remote-screen/sessions/desktop-1/viewer",
+        viewerUrl: "https://studio-mac-k7m4q2pz-host.aikingbot.aikingx.com/v1/remote-screen/sessions/desktop-1/viewer",
         viewerGrant: "viewer-grant",
         displays: [],
         selectedDisplayId: null,
@@ -998,7 +1002,7 @@ describe("OpenBot connected desktop shell", () => {
     emitServers?.([{ ...remote }, { ...other, state: "offline" }]);
 
     await waitFor(() => expect(screen.getByTitle("Sunshine remote desktop")).toBe(viewer));
-    expect(window.openbot.remoteDesktop.connect).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.remoteDesktop.connect).toHaveBeenCalledTimes(1);
   });
 
   it("disconnects a hidden Remote Control session when the server changes", async () => {
@@ -1020,11 +1024,11 @@ describe("OpenBot connected desktop shell", () => {
         role: "member" as const,
       },
     ];
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce(servers);
-    vi.mocked(window.openbot.servers.select).mockResolvedValueOnce(
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce(servers);
+    vi.mocked(window.aikingbot.servers.select).mockResolvedValueOnce(
       servers.map((server) => ({ ...server, active: server.id === "remote-2" })),
     );
-    vi.mocked(window.openbot.remoteDesktop.connect).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.remoteDesktop.connect).mockResolvedValueOnce({
       status: "connected",
       session: {
         id: "desktop-1",
@@ -1046,25 +1050,25 @@ describe("OpenBot connected desktop shell", () => {
     await screen.findByRole("heading", { name: "Chief" });
     await fireEvent.click(screen.getByRole("button", { name: "Open remote control" }));
     const workspace = await screen.findByRole("main", { name: "Remote control" });
-    await fireEvent.click(within(workspace).getByRole("button", { name: "Back to OpenBot" }));
+    await fireEvent.click(within(workspace).getByRole("button", { name: "Back to AIKINGBOT" }));
     await fireEvent.click(screen.getByRole("button", { name: "Office PC server" }));
 
-    await waitFor(() => expect(window.openbot.remoteDesktop.disconnect).toHaveBeenCalledWith("desktop-1"));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-2"));
+    await waitFor(() => expect(window.aikingbot.remoteDesktop.disconnect).toHaveBeenCalledWith("desktop-1"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-2"));
     expect(screen.queryByTitle("Sunshine remote desktop")).not.toBeInTheDocument();
     expect(await screen.findByRole("button", { name: "Open remote control" })).toBeInTheDocument();
-    expect(window.openbot.remoteDesktop.connect).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.remoteDesktop.connect).toHaveBeenCalledTimes(1);
   });
 
   it("tells the server the user is leaving that composing has stopped", async () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     const calls: string[] = [];
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.setTyping).mockImplementation(async (input) => {
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.setTyping).mockImplementation(async (input) => {
       calls.push(input.typing ? "typing on" : "typing off");
     });
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => {
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => {
       calls.push("select");
       return [
         { ...local, active: serverId === "local" },
@@ -1080,26 +1084,26 @@ describe("OpenBot connected desktop shell", () => {
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
 
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
     expect(calls).toEqual(["typing on", "typing off", "select"]);
   });
 
   it("does not leave the next server's composer disabled by a send in flight", async () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.agent.sendMessage).mockImplementationOnce(() => new Promise(() => undefined));
+    vi.mocked(window.aikingbot.agent.sendMessage).mockImplementationOnce(() => new Promise(() => undefined));
 
     render(() => <App />);
     const composer = await screen.findByRole("textbox", { name: "Message Chief" });
     composer.textContent = "Still on its way";
     await fireEvent.input(composer);
     await fireEvent.click(screen.getByRole("button", { name: "Send message" }));
-    await waitFor(() => expect(window.openbot.agent.sendMessage).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.sendMessage).toHaveBeenCalledOnce());
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
     await waitFor(() =>
@@ -1112,8 +1116,8 @@ describe("OpenBot connected desktop shell", () => {
   it("does not offer an answered prompt again after leaving its server and coming back", async () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
@@ -1133,7 +1137,7 @@ describe("OpenBot connected desktop shell", () => {
     const answer = await screen.findByRole("textbox", { name: "Custom answer for: Which account?" });
     await fireEvent.input(answer, { target: { value: "Acme" } });
     await fireEvent.keyDown(answer, { key: "Enter" });
-    await waitFor(() => expect(window.openbot.agent.respondToPrompt).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.respondToPrompt).toHaveBeenCalledOnce());
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
     await waitFor(() =>
@@ -1204,7 +1208,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.input(name, { target: { value: "Coordinator" } });
     await fireEvent.blur(name);
     await waitFor(() =>
-      expect(window.openbot.agent.updateAgent).toHaveBeenCalledWith({
+      expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledWith({
         agentId: "chief",
         name: "Coordinator",
       }),
@@ -1233,7 +1237,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Preview brief.pdf" }));
     expect(await screen.findByRole("complementary", { name: "File preview" })).toBeInTheDocument();
     await fireEvent.click(screen.getByRole("button", { name: "Show file in Finder" }));
-    expect(window.openbot.agent.openAttachment).toHaveBeenCalledWith({
+    expect(window.aikingbot.agent.openAttachment).toHaveBeenCalledWith({
       attachmentId: "file-1",
       action: "reveal",
     });
@@ -1266,7 +1270,7 @@ describe("OpenBot connected desktop shell", () => {
                 kind: "file",
                 mimeType: "text/markdown",
                 previewKind: "text",
-                previewUrl: "openbot-attachment://file/markdown-file",
+                previewUrl: "aikingbot-attachment://file/markdown-file",
               },
             ],
           },
@@ -1292,9 +1296,9 @@ describe("OpenBot connected desktop shell", () => {
 
     await fireEvent.pointerUp(screen.getByRole("menuitem", { name: "Duplicate agent" }), { button: 0 });
 
-    await waitFor(() => expect(window.openbot.agent.duplicateAgent).toHaveBeenCalledWith("sales-outbound"));
+    await waitFor(() => expect(window.aikingbot.agent.duplicateAgent).toHaveBeenCalledWith("sales-outbound"));
     expect(await screen.findByRole("heading", { name: "Sales Outbound copy" })).toBeInTheDocument();
-    await waitFor(() => expect(window.openbot.agent.readConversation).toHaveBeenCalledWith("sales-outbound-copy"));
+    await waitFor(() => expect(window.aikingbot.agent.readConversation).toHaveBeenCalledWith("sales-outbound-copy"));
     expect(
       screen.getByRole("button", {
         name: "Sales Outbound copy, Outbound specialist. No messages yet",
@@ -1309,7 +1313,7 @@ describe("OpenBot connected desktop shell", () => {
           id: "sales-outbound-copy",
           name: "Sales Outbound copy",
           threadId: "thread-sales-outbound-copy",
-          workspacePath: "/tmp/OpenBot/Agents/sales-outbound-copy",
+          workspacePath: "/tmp/AIKINGBOT/Agents/sales-outbound-copy",
           preview: "I finished the copied task.",
           updatedAt: "2026-09-18T10:33:00.000Z",
         },
@@ -1331,10 +1335,10 @@ describe("OpenBot connected desktop shell", () => {
     ["The agent is busy.", "The agent is busy."],
     [
       "Error invoking remote method 'agent:duplicate': Error: EACCES: open '/private/workspace'",
-      "OpenBot does not have permission to complete this action. Check the file or folder permissions, then try again.",
+      "AIKINGBOT does not have permission to complete this action. Check the file or folder permissions, then try again.",
     ],
   ])("keeps the current selection and explains duplication failures: %s", async (error, message) => {
-    vi.mocked(window.openbot.agent.duplicateAgent).mockRejectedValueOnce(new Error(error));
+    vi.mocked(window.aikingbot.agent.duplicateAgent).mockRejectedValueOnce(new Error(error));
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await fireEvent.contextMenu(screen.getByRole("button", { name: /Sales Outbound/ }), {
@@ -1356,10 +1360,10 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.pointerUp(screen.getByRole("menuitem", { name: "Delete agent" }), { button: 0 });
     const dialog = screen.getByRole("alertdialog", { name: "Delete Sales Outbound?" });
     expect(dialog).toHaveTextContent(
-      "This removes the agent and its OpenBot conversation from the app. Its queue, memories, routines, and workspace are deleted. History stored separately by the connected CLI provider is not deleted.",
+      "This removes the agent and its AIKINGBOT conversation from the app. Its queue, memories, routines, and workspace are deleted. History stored separately by the connected CLI provider is not deleted.",
     );
     await fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() => expect(window.openbot.agent.deleteAgent).toHaveBeenCalledWith("sales-outbound"));
+    await waitFor(() => expect(window.aikingbot.agent.deleteAgent).toHaveBeenCalledWith("sales-outbound"));
     await waitFor(() => expect(screen.queryByRole("button", { name: /Sales Outbound/ })).not.toBeInTheDocument());
   });
 
@@ -1381,9 +1385,9 @@ describe("OpenBot connected desktop shell", () => {
       remoteDesktopAvailable: true,
       role: "admin" as const,
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([testServer("local", true), remote]);
-    vi.mocked(window.openbot.servers.refreshIdentity).mockResolvedValueOnce(remote);
-    vi.mocked(window.openbot.servers.getPresenceFor).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([testServer("local", true), remote]);
+    vi.mocked(window.aikingbot.servers.refreshIdentity).mockResolvedValueOnce(remote);
+    vi.mocked(window.aikingbot.servers.getPresenceFor).mockResolvedValueOnce({
       serverId: remote.id,
       members: [],
       updatedAt: "2026-08-20T10:00:00.000Z",
@@ -1397,7 +1401,7 @@ describe("OpenBot connected desktop shell", () => {
 
     expect(await screen.findByRole("dialog", { name: "General" })).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Server name" })).not.toBeInTheDocument();
-    expect(window.openbot.servers.select).not.toHaveBeenCalled();
+    expect(window.aikingbot.servers.select).not.toHaveBeenCalled();
     await fireEvent.click(screen.getByRole("button", { name: "Close server settings" }));
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "General" })).not.toBeInTheDocument());
   });
@@ -1439,8 +1443,8 @@ describe("OpenBot connected desktop shell", () => {
       },
       connectionSequence: 1,
     };
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.agent.listInstalledSkills)
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.agent.listInstalledSkills)
       .mockRejectedValueOnce(new Error("Remote request failed"))
       .mockResolvedValueOnce([
         {
@@ -1455,14 +1459,14 @@ describe("OpenBot connected desktop shell", () => {
 
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalledOnce());
 
     emitServers?.([local, { ...remote, connectionSequence: 2 }]);
-    await waitFor(() => expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalledTimes(2));
 
     emitServers?.([local, { ...remote, connectionSequence: 3 }]);
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalledTimes(2);
+    expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalledTimes(2);
   });
 
   // Switching servers tears the workspace down and builds it again. Every
@@ -1473,8 +1477,8 @@ describe("OpenBot connected desktop shell", () => {
   it("does not accumulate event subscriptions across server switches", async () => {
     const servers = [testServer("local", true), testServer("remote-1", false)];
     const activate = (activeId: string) => servers.map((server) => ({ ...server, active: server.id === activeId }));
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce(activate("local"));
-    vi.mocked(window.openbot.servers.select)
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce(activate("local"));
+    vi.mocked(window.aikingbot.servers.select)
       .mockResolvedValueOnce(activate("remote-1"))
       .mockResolvedValueOnce(activate("local"));
 
@@ -1486,9 +1490,9 @@ describe("OpenBot connected desktop shell", () => {
     expect(afterMount.agentEvent).toBeGreaterThan(0);
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
     await fireEvent.click(screen.getByRole("button", { name: "Local server" }));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("local"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("local"));
     await screen.findByRole("heading", { name: "Chief" });
 
     expect(subscriberCounts()).toEqual(afterMount);
@@ -1497,8 +1501,8 @@ describe("OpenBot connected desktop shell", () => {
   it("follows the host switch with an open Usage report", async () => {
     const servers = [testServer("local", true), testServer("remote-1", false)];
     const activate = (activeId: string) => servers.map((server) => ({ ...server, active: server.id === activeId }));
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce(activate("local"));
-    vi.mocked(window.openbot.servers.select).mockResolvedValueOnce(activate("remote-1"));
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce(activate("local"));
+    vi.mocked(window.aikingbot.servers.select).mockResolvedValueOnce(activate("remote-1"));
 
     // The report outlives a server switch, so it has to notice one. `ServerScopeBoundary` is
     // keyed on the active server and rebuilds everything under it, which is why the effect that
@@ -1524,17 +1528,17 @@ describe("OpenBot connected desktop shell", () => {
     expect(await screen.findByRole("heading", { name: /Usage.*Local/ })).toBeInTheDocument();
 
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
+    await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
 
     expect(await screen.findByRole("heading", { name: /Usage.*Studio Mac/ })).toBeInTheDocument();
   });
 });
 
 it("mutes a server for a chosen time, unmutes it, and sets its notification level", async () => {
-  installOpenbotStub();
+  installAIKINGBOTStub();
   let servers = [testServer("local", true), testServer("remote-1", false)];
-  vi.mocked(window.openbot.servers.list).mockResolvedValue(servers);
-  vi.mocked(window.openbot.servers.setMuted).mockImplementation(async ({ serverId, muted, durationMs }) => {
+  vi.mocked(window.aikingbot.servers.list).mockResolvedValue(servers);
+  vi.mocked(window.aikingbot.servers.setMuted).mockImplementation(async ({ serverId, muted, durationMs }) => {
     servers = servers.map((server) =>
       server.id === serverId
         ? { ...server, notificationsMuted: muted, notificationsMutedUntil: durationMs ? Date.now() + durationMs : null }
@@ -1542,7 +1546,7 @@ it("mutes a server for a chosen time, unmutes it, and sets its notification leve
     );
     return servers;
   });
-  vi.mocked(window.openbot.servers.setNotificationLevel).mockImplementation(async ({ serverId, level }) => {
+  vi.mocked(window.aikingbot.servers.setNotificationLevel).mockImplementation(async ({ serverId, level }) => {
     servers = servers.map((server) => (server.id === serverId ? { ...server, notificationLevel: level } : server));
     return servers;
   });
@@ -1551,7 +1555,7 @@ it("mutes a server for a chosen time, unmutes it, and sets its notification leve
   await fireEvent.keyDown(await screen.findByRole("menuitem", { name: "Mute server" }), { key: "ArrowRight" });
   const muteMenu = await screen.findByRole("menu", { name: "Mute server" });
   await fireEvent.pointerUp(within(muteMenu).getByRole("menuitem", { name: "For 1 hour" }), { button: 0 });
-  expect(window.openbot.servers.setMuted).toHaveBeenCalledWith({
+  expect(window.aikingbot.servers.setMuted).toHaveBeenCalledWith({
     serverId: "remote-1",
     muted: true,
     durationMs: 3_600_000,
@@ -1568,24 +1572,30 @@ it("mutes a server for a chosen time, unmutes it, and sets its notification leve
   await fireEvent.pointerUp(within(levelMenu).getByRole("menuitemradio", { name: "Only when it needs me" }), {
     button: 0,
   });
-  expect(window.openbot.servers.setNotificationLevel).toHaveBeenCalledWith({ serverId: "remote-1", level: "needs-me" });
+  expect(window.aikingbot.servers.setNotificationLevel).toHaveBeenCalledWith({
+    serverId: "remote-1",
+    level: "needs-me",
+  });
 });
 
 it("opens the agent from a clicked notification, switching to its server first", async () => {
-  installOpenbotStub();
-  vi.mocked(window.openbot.servers.list).mockResolvedValue([testServer("local", true), testServer("remote-1", false)]);
-  vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+  installAIKINGBOTStub();
+  vi.mocked(window.aikingbot.servers.list).mockResolvedValue([
+    testServer("local", true),
+    testServer("remote-1", false),
+  ]);
+  vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
     testServer("local", serverId === "local"),
     testServer("remote-1", serverId === "remote-1"),
   ]);
   let openNotification: ((event: NotificationOpenedEvent) => void) | undefined;
-  vi.mocked(window.openbot.notifications.onOpened).mockImplementation((listener) => {
+  vi.mocked(window.aikingbot.notifications.onOpened).mockImplementation((listener) => {
     openNotification = listener;
     return () => undefined;
   });
   render(() => <App />);
   await screen.findByRole("heading", { name: "Chief" });
   openNotification?.({ serverId: "remote-1", agentId: "sales-outbound", threadId: null });
-  await waitFor(() => expect(window.openbot.servers.select).toHaveBeenCalledWith("remote-1"));
+  await waitFor(() => expect(window.aikingbot.servers.select).toHaveBeenCalledWith("remote-1"));
   expect(await screen.findByRole("heading", { name: "Sales Outbound" })).toBeVisible();
 });

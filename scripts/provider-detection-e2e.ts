@@ -3,7 +3,7 @@
 // OpenAI-compatible servers on this computer. A fake cipher replaces the operating system's secret
 // storage, which exists only in Electron. It also scans a folder that holds a file named like a known
 // agent, and proves that the scan never starts it.
-// `bun scripts/provider-detection-e2e.ts`. Writes .openbot-build/provider-detection-e2e/report.json.
+// `bun scripts/provider-detection-e2e.ts`. Writes .aikingbot-build/provider-detection-e2e/report.json.
 import assert from "node:assert/strict";
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server } from "node:http";
@@ -16,7 +16,7 @@ import { probeModels } from "../src/main/model-server-probe";
 import { createProviderDetection } from "../src/main/provider-detection";
 import { ProviderDetectionSettingsStore } from "../src/main/provider-detection-settings-store";
 
-const OUT = resolve(import.meta.dirname, "../.openbot-build/provider-detection-e2e");
+const OUT = resolve(import.meta.dirname, "../.aikingbot-build/provider-detection-e2e");
 const KEY = "sk-e2e-endpoint-key";
 const HEADER = { name: "X-Team", value: "e2e-header-value" };
 
@@ -83,7 +83,7 @@ const cipher: CustomProviderCipher = {
   decrypt: (value) => Buffer.from(value.map((byte) => byte ^ 0x5a)).toString("utf8"),
 };
 
-const root = await mkdtemp(join(tmpdir(), "openbot-provider-detection-e2e-"));
+const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-detection-e2e-"));
 const report: Report = { passed: false };
 const servers: FakeServer[] = [];
 
@@ -94,7 +94,7 @@ try {
   const redirecting = await fakeServer([], primary.baseUrl);
   servers.push(primary, other, redirecting);
 
-  const settings = new ProviderDetectionSettingsStore(join(root, "openbot-provider-detection-v1.json"));
+  const settings = new ProviderDetectionSettingsStore(join(root, "aikingbot-provider-detection-v1.json"));
   await runCauseEffect(settings.load());
   const endpoints = new CustomProviderStore({ path: join(root, "custom-providers.json"), cipher });
   await runCauseEffect(endpoints.load());
@@ -209,7 +209,7 @@ try {
   assert.deepEqual(await Effect.runPromise(detection.scanModelServers()), []);
   assert.deepEqual(await Effect.runPromise(detection.scanAgents()), []);
   assert.equal(primary.seen.length, before, "A disabled scan sends nothing.");
-  const reloaded = new ProviderDetectionSettingsStore(join(root, "openbot-provider-detection-v1.json"));
+  const reloaded = new ProviderDetectionSettingsStore(join(root, "aikingbot-provider-detection-v1.json"));
   await runCauseEffect(reloaded.load());
   assert.equal(reloaded.get().enabled, false, "The switch survives a restart.");
   report.disabled = { requestsSent: 0, savedAcrossRestart: true };

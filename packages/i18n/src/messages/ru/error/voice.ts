@@ -9,8 +9,8 @@ export const messages = {
   "error.voice.modelUnavailable": "Голосовая модель недоступна.",
   "error.voice.transcriptionTimedOut": "Время расшифровки голоса истекло.",
   "error.voice.prepareRequired":
-    "Локальная расшифровка голоса недоступна. Выполните `bun run voice:prepare` и перезапустите OpenBot.",
-  "error.voice.transcriptionFailed": "OpenBot не смог расшифровать эту запись.",
+    "Локальная расшифровка голоса недоступна. Выполните `bun run voice:prepare` и перезапустите AIKINGBOT.",
+  "error.voice.transcriptionFailed": "AIKINGBOT не смог расшифровать эту запись.",
   "error.voice.cloud.keyRequired": "Добавьте API-ключ ElevenLabs в Настройки → Голос.",
   "error.voice.cloud.keyRejected": "ElevenLabs не принял API-ключ. Проверьте ключ в Настройки → Голос.",
   "error.voice.cloud.quotaExceeded": "Квота ElevenLabs исчерпана.",

@@ -1,5 +1,5 @@
+import type { SidebarLayoutAction } from "@aikingbot/contracts/ipc";
 import { type MenuAction, MenuView } from "@expo/ui/community/menu";
-import type { SidebarLayoutAction } from "@openbot/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

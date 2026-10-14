@@ -1,7 +1,7 @@
-import type { WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import type { WhatsNewRelease } from "@aikingbot/ui/features/updates/whats-new";
 
-export const WHATS_NEW_VERSION_KEY = "openbot:whats-new-version";
-const LEGACY_VERSION_KEY = "openbot:analytics-app-version";
+export const WHATS_NEW_VERSION_KEY = "aikingbot:whats-new-version";
+const LEGACY_VERSION_KEY = "aikingbot:analytics-app-version";
 
 /** Desktop releases use stable x.y.z versions. Unknown builds must not consume release notes. */
 export function releaseVersion(value: string | null): string | null {

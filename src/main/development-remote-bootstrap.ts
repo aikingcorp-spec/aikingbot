@@ -1,6 +1,6 @@
 import { Effect, Result } from "effect";
 /**
- * Everything `OPENBOT_DEV_REMOTE_ROLE` adds to startup: signing a throwaway account in against the
+ * Everything `AIKINGBOT_DEV_REMOTE_ROLE` adds to startup: signing a throwaway account in against the
  * local account API, configuring the dev host, and handing the client the connection the host wrote
  * to a file in the dev runtime directory. None of it runs in a packaged build - `developmentRemoteRole`
  * is null unless the app is unpackaged and the variable is set to `host` or `client`.
@@ -54,11 +54,13 @@ export const applyDevelopmentRemoteAccount = Effect.fn("DevelopmentRemote.applyA
   setupCompleted,
 }: DevelopmentRemoteAccountOptions) {
   const email =
-    role === "host" ? (teamStore.getOwnerEmail() ?? "openbot-dev-host@example.com") : "openbot-dev-client@example.com";
+    role === "host"
+      ? (teamStore.getOwnerEmail() ?? "aikingbot-dev-host@example.com")
+      : "aikingbot-dev-client@example.com";
   const user = yield* ensureDevelopmentAccount(centralAuth, email);
   yield* teamStore.activateAccount(user);
   if (role === "host" && !teamStore.configured) {
-    yield* teamStore.configureWithAccount("OpenBot Local Dev Host", user);
+    yield* teamStore.configureWithAccount("AIKINGBOT Local Dev Host", user);
   }
   if (role === "client" && !setupCompleted) {
     yield* writeSetupState(setupFile, { preferredProvider: "codex", preferredModel: null }).pipe(toRemoteWorkflowError);

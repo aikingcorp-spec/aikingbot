@@ -22,11 +22,11 @@ import {
   latestTurnAnswer,
   type VoiceModelStatus,
   type VoiceStreamTranscript,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
-import { redactText } from "@openbot/logging";
-import { notificationForAgentEvent, notificationForUsageLimit } from "@openbot/team-client/agent-notifications";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import type { AppFormat, AppTranslate } from "@aikingbot/i18n";
+import { redactText } from "@aikingbot/logging";
+import { notificationForAgentEvent, notificationForUsageLimit } from "@aikingbot/team-client/agent-notifications";
 import { BrowserWindow, Notification } from "electron";
 import { isNoUpdateAnswer } from "../backend/agent/routine-quiet-runs";
 import type { AgentService } from "../backend/agent-service";
@@ -177,13 +177,13 @@ export function createRendererForwarders({
     }
   }
 
-  function forwardUpdateStatus(status: import("@openbot/contracts/ipc").UpdateStatus): void {
+  function forwardUpdateStatus(status: import("@aikingbot/contracts/ipc").UpdateStatus): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.update.event, status);
   }
 
-  function forwardUpdatePreference(preference: import("@openbot/contracts/ipc").UpdatePreference): void {
+  function forwardUpdatePreference(preference: import("@aikingbot/contracts/ipc").UpdatePreference): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.update.preference, preference);
@@ -201,33 +201,33 @@ export function createRendererForwarders({
     sendToRenderer(window, IPC_ENDPOINTS.voice.streamTranscript, transcript);
   }
 
-  function forwardProviderRuntimeStatus(snapshot: import("@openbot/contracts/ipc").ProviderRuntimeSnapshot): void {
+  function forwardProviderRuntimeStatus(snapshot: import("@aikingbot/contracts/ipc").ProviderRuntimeSnapshot): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.providerRuntimes.event, snapshot);
   }
 
-  function forwardGitHubConnectorStatus(status: import("@openbot/contracts/ipc").GitHubConnectorStatus): void {
+  function forwardGitHubConnectorStatus(status: import("@aikingbot/contracts/ipc").GitHubConnectorStatus): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.githubConnector.changed, status);
   }
 
   function forwardOnePasswordConnectorStatus(
-    status: import("@openbot/contracts/ipc").OnePasswordConnectorStatus,
+    status: import("@aikingbot/contracts/ipc").OnePasswordConnectorStatus,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.onePasswordConnector.changed, status);
   }
 
-  function forwardBitwardenConnectorStatus(status: import("@openbot/contracts/ipc").BitwardenConnectorStatus): void {
+  function forwardBitwardenConnectorStatus(status: import("@aikingbot/contracts/ipc").BitwardenConnectorStatus): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.bitwardenConnector.changed, status);
   }
 
-  function forwardHostStatus(status: import("@openbot/contracts/ipc").HostStatus): void {
+  function forwardHostStatus(status: import("@aikingbot/contracts/ipc").HostStatus): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.host.event, status);
@@ -237,13 +237,13 @@ export function createRendererForwarders({
     }
   }
 
-  function forwardRemoteDesktopSessions(sessions: import("@openbot/contracts/ipc").RemoteDesktopSession[]): void {
+  function forwardRemoteDesktopSessions(sessions: import("@aikingbot/contracts/ipc").RemoteDesktopSession[]): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.remoteDesktop.event, sessions);
   }
 
-  function forwardServers(servers: import("@openbot/contracts/ipc").ServerSummary[]): void {
+  function forwardServers(servers: import("@aikingbot/contracts/ipc").ServerSummary[]): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     const host = getHostService();
@@ -256,7 +256,7 @@ export function createRendererForwarders({
 
   function forwardTeamPresence(
     serverId: string,
-    snapshot: import("@openbot/contracts/ipc").TeamPresenceSnapshot,
+    snapshot: import("@aikingbot/contracts/ipc").TeamPresenceSnapshot,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
@@ -265,7 +265,7 @@ export function createRendererForwarders({
 
   function forwardDirectMessage(
     serverId: string,
-    event: import("@openbot/contracts/ipc").DirectMessageRealtimeEvent,
+    event: import("@aikingbot/contracts/ipc").DirectMessageRealtimeEvent,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
@@ -274,7 +274,7 @@ export function createRendererForwarders({
 
   function forwardDirectTyping(
     serverId: string,
-    event: import("@openbot/contracts/ipc").DirectTypingRealtimeEvent,
+    event: import("@aikingbot/contracts/ipc").DirectTypingRealtimeEvent,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;

@@ -4,7 +4,7 @@ import { isDynamicRecord } from "./runtime-values";
 
 /**
  * Work an agent stopped before it was done, because it waits for something outside the turn. The
- * agent opens the wait with `openbot.await_event` and closes it with `openbot.close_wait`; the user
+ * agent opens the wait with `aikingbot.await_event` and closes it with `aikingbot.close_wait`; the user
  * can cancel it. A routine run of the agent, or a script event that names the wait, wakes it, and
  * the agent continues the request in that run.
  */

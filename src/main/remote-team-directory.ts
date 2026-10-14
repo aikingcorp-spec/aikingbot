@@ -11,15 +11,15 @@ import type { CentralAuthOperationError } from "./central-auth-effects";
 // So the two arms stay visible. Hiding them behind one method would read as tidier and would cost
 // the next reader an hour the first time an invitation goes missing from the wrong server.
 
-import { createInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import { createInviteUrl, selfHostedApiOrigin } from "@aikingbot/contracts/invite-links";
 import type {
   InviteSummary,
   TeamInviteSummary,
   TeamMemberSummary,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import type { RemoteInviteRecord, RemoteMemberRecord } from "./central-auth-records";
 import { decodeVoid } from "./remote-host-decoding";

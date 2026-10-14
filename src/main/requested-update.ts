@@ -19,9 +19,9 @@ import type {
   UpdatePreferenceChange,
   UpdateRestartMode,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import type { HostRestartState } from "@openbot/contracts/team-protocol/host-update-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import type { HostRestartState } from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Schema, Scope } from "effect";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { RemoteWorkflowError, remoteDecode } from "./remote-service-effects";
@@ -332,7 +332,7 @@ export class RequestedUpdate extends EventEmitter<{ preference: [UpdatePreferenc
         Effect.catch((failure) =>
           Effect.sync(() => {
             const error = failure.cause;
-            // A refusal before teardown (another macOS session runs OpenBot) leaves the update ready.
+            // A refusal before teardown (another macOS session runs AIKINGBOT) leaves the update ready.
             this.#log(`The requested update restart failed: ${error instanceof Error ? error.message : String(error)}`);
             if (this.#schedule === schedule) {
               this.#installError = "install_failed";

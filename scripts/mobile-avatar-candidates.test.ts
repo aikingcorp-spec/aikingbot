@@ -1,4 +1,4 @@
-import { isAvatarSeed } from "@openbot/contracts/ipc";
+import { isAvatarSeed } from "@aikingbot/contracts/ipc";
 import { expect, it } from "vitest";
 import { createAvatarCandidates } from "../apps/mobile/src/features/agents/model/avatar-candidates";
 

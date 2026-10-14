@@ -17,7 +17,7 @@ import {
   type UninstallSkillInput,
   type UpdateAgentAdminSettingsInput,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import { act, isValidElement, type PropsWithChildren, useState } from "react";
@@ -150,12 +150,12 @@ const workspace = {
   setAgentAvatar: vi.fn(
     async (
       _id: string,
-      image: import("@openbot/team-client/remote-peer").RemoteFileUpload | null,
+      image: import("@aikingbot/team-client/remote-peer").RemoteFileUpload | null,
       _serverId: string,
     ) => {
       workspace.agents = workspace.agents.map((agent) => ({
         ...agent,
-        avatarUrl: image ? "openbot-avatar://agent-one?v=new" : null,
+        avatarUrl: image ? "aikingbot-avatar://agent-one?v=new" : null,
       }));
     },
   ),
@@ -859,7 +859,7 @@ it("lists the host skills read-only and hides built-in skills", async () => {
   client.clear();
   workspace.loadAgentSkills.mockResolvedValue(null);
   await renderSheet("skills");
-  await screen.findByText("This host does not support skills. Update OpenBot on the host.");
+  await screen.findByText("This host does not support skills. Update AIKINGBOT on the host.");
 });
 
 it("lets an admin turn a skill off and on, and puts the old state back when the host refuses", async () => {
@@ -886,7 +886,7 @@ it("lets an admin turn a skill off and on, and puts the old state back when the 
   await renderSheet("skills");
   const toggle = await screen.findByRole("switch", { name: "Writer" });
   expect(workspace.loadAgentSkills).toHaveBeenCalledWith(original.id, original.serverId, true);
-  // A skill in a folder that OpenBot does not manage stays read-only.
+  // A skill in a folder that AIKINGBOT does not manage stays read-only.
   expect(screen.queryByRole("switch", { name: "Folder" })).toBeNull();
   expect(screen.queryByRole("button", { name: "Uninstall Folder" })).toBeNull();
 
@@ -962,7 +962,7 @@ it("uninstalls a skill after confirmation and keeps it when the host refuses", a
   await click("Uninstall Writer");
   expect(mocks.alert).toHaveBeenLastCalledWith(
     "Uninstall Writer?",
-    "OpenBot will remove this skill from the agent. Chat history stays.",
+    "AIKINGBOT will remove this skill from the agent. Chat history stays.",
     expect.any(Array),
   );
   expect(workspace.uninstallAgentSkill).not.toHaveBeenCalled();
@@ -1819,7 +1819,7 @@ it("keeps a selected avatar draft after a failed upload and retries on its origi
 });
 
 it("removes the desktop photo only after Save", async () => {
-  workspace.agents = [{ ...original, avatarUrl: "openbot-avatar://agent-one?v=desktop" }];
+  workspace.agents = [{ ...original, avatarUrl: "aikingbot-avatar://agent-one?v=desktop" }];
   await renderSheet("appearance");
   await click("Remove photo");
   expect(workspace.setAgentAvatar).not.toHaveBeenCalled();
@@ -1836,13 +1836,13 @@ it("keeps the form unchanged when photo selection is canceled or the file is too
   expect(screen.queryByRole("button", { name: "Save changes" })).toBeNull();
   mocks.fileSize = 600_000;
   await click("Add photo");
-  expect(screen.getByText("OpenBot could not make this photo small enough. Choose a simpler photo.")).toBeTruthy();
+  expect(screen.getByText("AIKINGBOT could not make this photo small enough. Choose a simpler photo.")).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Save changes" })).toBeNull();
   expect(workspace.setAgentAvatar).not.toHaveBeenCalled();
 });
 
 it("loads desktop avatar revisions from the correct host and returns to the generated face after removal", async () => {
-  workspace.agents = [{ ...original, avatarUrl: "openbot-avatar://agent-one?v=desktop" }];
+  workspace.agents = [{ ...original, avatarUrl: "aikingbot-avatar://agent-one?v=desktop" }];
   const renderPhoto = (disconnected = false) =>
     act(() =>
       root.render(
@@ -1857,7 +1857,7 @@ it("loads desktop avatar revisions from the correct host and returns to the gene
   await waitFor(() => expect(screen.getByRole("img", { name: "Agent avatar" })).toBeTruthy());
   expect(workspace.loadAgentAvatar).toHaveBeenLastCalledWith(
     original.id,
-    "openbot-avatar://agent-one?v=desktop",
+    "aikingbot-avatar://agent-one?v=desktop",
     host.id,
   );
   workspace.servers = [{ ...host, state: "offline" }];
@@ -1872,12 +1872,12 @@ it("loads desktop avatar revisions from the correct host and returns to the gene
     "data:image/png;base64,iVBORw0KGgo=",
   );
   expect(workspace.loadAgentAvatar).toHaveBeenCalledTimes(1);
-  workspace.agents = [{ ...original, avatarUrl: "openbot-avatar://agent-one?v=replaced" }];
+  workspace.agents = [{ ...original, avatarUrl: "aikingbot-avatar://agent-one?v=replaced" }];
   await renderPhoto();
   await waitFor(() =>
     expect(workspace.loadAgentAvatar).toHaveBeenLastCalledWith(
       original.id,
-      "openbot-avatar://agent-one?v=replaced",
+      "aikingbot-avatar://agent-one?v=replaced",
       host.id,
     ),
   );

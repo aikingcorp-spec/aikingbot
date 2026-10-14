@@ -4,13 +4,13 @@ import { render, screen, waitFor } from "@solidjs/testing-library";
 import { Lexer } from "marked";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../../App";
-import { emitAgentEvent, installOpenbotStub } from "../../app-test-harness";
+import { emitAgentEvent, installAIKINGBOTStub } from "../../app-test-harness";
 import { SettingsModal } from "../../lazy-views";
 
 // Hard caps for one streamed reply, about 30% above the values measured when each cap was set. They
 // count work, not time, so the result is the same on every machine. A red test means a change made
 // each streamed chunk do more work. Make the change cheaper, or raise the cap in the same pull
-// request and say why. `.openbot-build/transfer-budget/render-streaming.json` has the measured
+// request and say why. `.aikingbot-build/transfer-budget/render-streaming.json` has the measured
 // values; the CI budget comment compares them with main.
 const BUDGETS = {
   /** Characters that marked lexes as blocks while the reply streams. */
@@ -23,7 +23,10 @@ const BUDGETS = {
   streamingAddedElements: 4_400,
 };
 
-const REPORT_PATH = resolve(import.meta.dirname, "../../../../../.openbot-build/transfer-budget/render-streaming.json");
+const REPORT_PATH = resolve(
+  import.meta.dirname,
+  "../../../../../.aikingbot-build/transfer-budget/render-streaming.json",
+);
 const CHUNK_SIZE = 96;
 
 const work = vi.hoisted(() => ({
@@ -46,8 +49,8 @@ vi.mock("@speed-highlight/core", async (importOriginal) => {
   };
 });
 
-vi.mock("@openbot/ui/features/conversation/DataTable", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@openbot/ui/features/conversation/DataTable")>();
+vi.mock("@aikingbot/ui/features/conversation/DataTable", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@aikingbot/ui/features/conversation/DataTable")>();
   return {
     ...actual,
     messageContentBlocks: (...args: Parameters<typeof actual.messageContentBlocks>) => {
@@ -64,7 +67,7 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-  installOpenbotStub();
+  installAIKINGBOTStub();
   // Reduced motion shows each chunk at once, so one chunk is one render and no timer decides how
   // many reveal steps run.
   Object.defineProperty(window, "matchMedia", {
@@ -80,7 +83,7 @@ describe("streaming render budget", () => {
   it("keeps one streamed reply within its render work caps", async () => {
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.readConversation).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.readConversation).toHaveBeenCalledWith("chief"));
 
     const lex = vi.spyOn(Lexer.prototype, "lex");
     let addedElements = 0;

@@ -1,4 +1,4 @@
-import { cx } from "@openbot/ui/utils";
+import { cx } from "@aikingbot/ui/utils";
 import { type CollectionArticle, formatArticleDate } from "../../lib/content-collection";
 
 export interface ArticleBylineProps {

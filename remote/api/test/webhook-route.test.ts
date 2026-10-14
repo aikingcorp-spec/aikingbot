@@ -1,9 +1,9 @@
-import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@openbot/contracts/signal-protocol/messages";
+import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@aikingbot/contracts/signal-protocol/messages";
 import {
   WEBHOOK_DELIVERY_ID_HEADER,
   WEBHOOK_SIGNATURE_HEADER,
   WEBHOOK_TIMESTAMP_HEADER,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@aikingbot/contracts/signal-protocol/webhook-route";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { createRemoteApiApp } from "../src/app";
@@ -105,7 +105,7 @@ function webhookContext(options: { timeoutMilliseconds?: number } = {}) {
   });
   const now = Math.floor(Date.now() / 1_000);
   const claims: RemoteTicketClaims = {
-    aud: "openbot-remote",
+    aud: "aikingbot-remote",
     jti: "host-ticket",
     sessionId: "host-session",
     hostId: "host-1",

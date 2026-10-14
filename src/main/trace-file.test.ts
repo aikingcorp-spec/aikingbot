@@ -14,7 +14,7 @@ describe("TraceFile", () => {
   });
 
   it("writes only redacted span fields and summarizes them past a cut-off line", async () => {
-    directory = await mkdtemp(join(tmpdir(), "openbot-trace-"));
+    directory = await mkdtemp(join(tmpdir(), "aikingbot-trace-"));
     const trace = new TraceFile({ directory });
     trace.record({ kind: "ipc", name: "agent:send", durationMs: 12.4, outcome: "ok" });
     trace.record({ kind: "ipc", name: "agent:send", durationMs: 30, outcome: "error" });

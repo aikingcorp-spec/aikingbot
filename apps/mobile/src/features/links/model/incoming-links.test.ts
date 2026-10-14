@@ -1,5 +1,5 @@
-import { createInviteUrl, createOpenBotInviteUrl } from "@openbot/contracts/invite-links";
-import { createMobileConnectUrl } from "@openbot/contracts/mobile-connect";
+import { createAIKINGBOTInviteUrl, createInviteUrl } from "@aikingbot/contracts/invite-links";
+import { createMobileConnectUrl } from "@aikingbot/contracts/mobile-connect";
 import { describe, expect, it } from "vitest";
 import {
   forgetIncomingLink,
@@ -10,7 +10,7 @@ import {
 } from "./incoming-links";
 
 const payload = {
-  apiUrl: "https://api.openbot.run",
+  apiUrl: "https://api.aikingbot.aikingx.com",
   serverId: "11111111-1111-4111-8111-111111111111",
   fingerprint: "f".repeat(43),
   token: "t".repeat(32),
@@ -19,11 +19,11 @@ const payload = {
 const templateId = "AbCdEfGhIjKlMnOpQrSt_-";
 
 function requestId(path: string): string {
-  return new URL(path, "https://openbot.run").searchParams.get("request") ?? "";
+  return new URL(path, "https://aikingbot.aikingx.com").searchParams.get("request") ?? "";
 }
 
 describe("incoming mobile links", () => {
-  it.each([createInviteUrl(payload), createOpenBotInviteUrl(payload)])(
+  it.each([createInviteUrl(payload), createAIKINGBOTInviteUrl(payload)])(
     "keeps invitation secrets out of the route",
     (url) => {
       const path = redirectIncomingLink(url);
@@ -52,37 +52,38 @@ describe("incoming mobile links", () => {
   });
 
   it("opens only a validated plugin page", () => {
-    expect(parseIncomingLink("openbot://plugins/my-plugin")).toEqual({
+    expect(parseIncomingLink("aikingbot://plugins/my-plugin")).toEqual({
       kind: "plugin",
-      url: "https://openbot.run/plugins/my-plugin",
+      url: "https://aikingbot.aikingx.com/plugins/my-plugin",
     });
-    expect(parseIncomingLink("https://openbot.run/plugins/my-plugin")).toEqual({
+    expect(parseIncomingLink("https://aikingbot.aikingx.com/plugins/my-plugin")).toEqual({
       kind: "plugin",
-      url: "https://openbot.run/plugins/my-plugin",
+      url: "https://aikingbot.aikingx.com/plugins/my-plugin",
     });
   });
 
-  it.each([`openbot://agents/${templateId}`, `https://openbot.run/agents/${templateId}`, `/agents/${templateId}`])(
-    "routes an agent link in each form to one preview request",
-    (url) => {
-      const id = requestId(redirectIncomingLink(url));
-      expect(readIncomingLink(id)).toEqual({
-        kind: "template",
-        url: `https://openbot.run/agents/${templateId}`,
-        templateId,
-      });
-      expect(pendingSignInLinkId()).toBe(id);
-      forgetIncomingLink(id);
-    },
-  );
+  it.each([
+    `aikingbot://agents/${templateId}`,
+    `https://aikingbot.aikingx.com/agents/${templateId}`,
+    `/agents/${templateId}`,
+  ])("routes an agent link in each form to one preview request", (url) => {
+    const id = requestId(redirectIncomingLink(url));
+    expect(readIncomingLink(id)).toEqual({
+      kind: "template",
+      url: `https://aikingbot.aikingx.com/agents/${templateId}`,
+      templateId,
+    });
+    expect(pendingSignInLinkId()).toBe(id);
+    forgetIncomingLink(id);
+  });
 
   it.each([
-    `openbot://agents/${templateId}?install=1`,
-    `https://openbot.run/agents/${templateId}#install`,
-    `https://openbot.run.evil.test/agents/${templateId}`,
-    `https://openbot.run/agents/${templateId}/extra`,
-    "openbot://agents/short",
-    `openbot://user:pass@agents/${templateId}`,
+    `aikingbot://agents/${templateId}?install=1`,
+    `https://aikingbot.aikingx.com/agents/${templateId}#install`,
+    `https://aikingbot.aikingx.com.evil.test/agents/${templateId}`,
+    `https://aikingbot.aikingx.com/agents/${templateId}/extra`,
+    "aikingbot://agents/short",
+    `aikingbot://user:pass@agents/${templateId}`,
     `/agents/${templateId}?install=1`,
   ])("rejects a malformed agent link: %s", (url) => {
     expect(readIncomingLink(requestId(redirectIncomingLink(url)))).toEqual({ kind: "invalid" });
@@ -91,25 +92,27 @@ describe("incoming mobile links", () => {
   it("routes a self-hosted invitation only through the app scheme", () => {
     const selfHosted = { ...payload, apiUrl: "https://api.example.com/" };
     const options = { selfHostedApiOrigin: "https://api.example.com" };
-    const url = createOpenBotInviteUrl(selfHosted, options);
+    const url = createAIKINGBOTInviteUrl(selfHosted, options);
     expect(parseIncomingLink(url)).toEqual({ kind: "invite", url });
-    expect(parseIncomingLink(url.replace("openbot://join", "https://openbot.run/join"))).toEqual({ kind: "invalid" });
+    expect(parseIncomingLink(url.replace("aikingbot://join", "https://aikingbot.aikingx.com/join"))).toEqual({
+      kind: "invalid",
+    });
   });
 
   it.each([
-    "openbot://join?invite=bad",
-    "https://openbot.run.evil.test/join",
-    "openbot://plugins/my-plugin?install=1",
-    "openbot://mcp-auth?code=secret&state=secret",
+    "aikingbot://join?invite=bad",
+    "https://aikingbot.aikingx.com.evil.test/join",
+    "aikingbot://plugins/my-plugin?install=1",
+    "aikingbot://mcp-auth?code=secret&state=secret",
     "not a URL",
-    `openbot://user:pass@mobile-connect?api=https://api.openbot.run&ticket=${"c".repeat(32)}`,
+    `aikingbot://user:pass@mobile-connect?api=https://api.aikingbot.aikingx.com&ticket=${"c".repeat(32)}`,
   ])("rejects unsupported and invalid links without retaining their secrets", (url) => {
     expect(parseIncomingLink(url)).toEqual({ kind: "invalid" });
   });
 
   it("handles a relative invitation but keeps ordinary internal routes", () => {
     const url = createInviteUrl(payload);
-    const path = redirectIncomingLink(url.replace("https://openbot.run", ""));
+    const path = redirectIncomingLink(url.replace("https://aikingbot.aikingx.com", ""));
     expect(readIncomingLink(requestId(path))).toEqual({ kind: "invite", url });
     forgetIncomingLink(requestId(path));
     expect(redirectIncomingLink("/connected")).toBe("/connected");
@@ -120,7 +123,7 @@ describe("incoming mobile links", () => {
     const first = redirectIncomingLink(createInviteUrl(payload));
     expect(redirectIncomingLink(createInviteUrl(payload))).toBe(first);
     forgetIncomingLink(requestId(first));
-    expect(redirectIncomingLink("openbot://")).toBe("/");
+    expect(redirectIncomingLink("aikingbot://")).toBe("/");
   });
 
   it("bounds retained links and rejects evicted requests", () => {

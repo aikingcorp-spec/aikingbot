@@ -5,9 +5,9 @@ import { Effect } from "effect";
 // `storage-v1` reads as null, so the surface asks for an update, and refuses a change before any
 // request. The handlers register through the trusted binder, so Electron is mocked.
 
-import { IPC_ENDPOINTS, LOCAL_SERVER_ID, type StorageUsage } from "@openbot/contracts/ipc";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { translateFor } from "@openbot/i18n";
+import { IPC_ENDPOINTS, LOCAL_SERVER_ID, type StorageUsage } from "@aikingbot/contracts/ipc";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
+import { translateFor } from "@aikingbot/i18n";
 import { describe, expect, it, vi } from "vitest";
 import type { ResponseDecoder } from "../remote-host-decoding";
 import type { RemoteRequestInit } from "../remote-server-client";
@@ -26,7 +26,7 @@ vi.mock("electron", () => ({
 const { registerIpcGroup } = await import("./define-ipc-group");
 const { storageIpcHandlers } = await import("./storage-handlers");
 
-const TRUSTED_EVENT = { senderFrame: { url: "openbot-app://app/index.html" } };
+const TRUSTED_EVENT = { senderFrame: { url: "aikingbot-app://app/index.html" } };
 
 function usageFor(agentId: string): StorageUsage {
   return {

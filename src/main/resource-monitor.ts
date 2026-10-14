@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { cpus, totalmem } from "node:os";
 import { join } from "node:path";
 import { monitorEventLoopDelay } from "node:perf_hooks";
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { Effect, Exit, Option, Scope, Semaphore } from "effect";
 import {
   app,
@@ -45,7 +45,7 @@ import { appendRotatingLines, type TraceFile } from "./trace-file";
 
 const SAMPLE_INTERVAL_MS = 60_000;
 const PERSIST_INTERVAL_MS = 15 * 60_000;
-const RESOURCE_SUMMARY_FILE = "openbot-resource-summary-v1.json";
+const RESOURCE_SUMMARY_FILE = "aikingbot-resource-summary-v1.json";
 const SAMPLES_FILE = "resources.ndjson";
 const MAX_SAMPLES_BYTES = 1024 * 1024;
 const PS_TIMEOUT_MS = 5_000;
@@ -57,8 +57,8 @@ const LOOP_RESOLUTION_MS = 20;
 // The `serviceName` that `agent-database-host-process.ts` and `voice-transcription-host-process.ts`
 // give `utilityProcess.fork`. Electron reports it as the metric's `name`.
 const UTILITY_GROUPS = new Map<string, ProcessGroup>([
-  ["OpenBot databases", "database_host"],
-  ["OpenBot voice transcription", "voice_host"],
+  ["AIKINGBOT databases", "database_host"],
+  ["AIKINGBOT voice transcription", "voice_host"],
 ]);
 
 export interface ResourceMonitorOptions {
@@ -83,7 +83,7 @@ interface ResourceSample {
 }
 
 /**
- * Samples the CPU and memory of OpenBot's own processes and of the provider CLIs it starts, once a
+ * Samples the CPU and memory of AIKINGBOT's own processes and of the provider CLIs it starts, once a
  * minute, and keeps a summary for each local day. The summary goes into the diagnostics export, and
  * analytics sends the summary of the last closed day once. A failed sample is skipped: this must not
  * become the failure it would have recorded.
@@ -237,7 +237,7 @@ export class ResourceMonitor implements AnalyticsResourceSource {
 
   readonly #rendererGone = (_event: Event, _contents: WebContents, details: RenderProcessGoneDetails) =>
     this.#recordGone("renderer", details.reason);
-  // OpenBot starts and stops its utility processes itself, such as the voice host after idle time.
+  // AIKINGBOT starts and stops its utility processes itself, such as the voice host after idle time.
   readonly #childGone = (_event: Event, details: Details) => {
     if (details.type === "Utility" && details.reason === "killed") return;
     this.#recordGone("child", details.reason);

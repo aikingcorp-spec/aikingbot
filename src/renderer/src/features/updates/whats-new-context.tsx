@@ -1,4 +1,4 @@
-import { summarizeWhatsNew, type WhatsNewNotes, type WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import { summarizeWhatsNew, type WhatsNewNotes, type WhatsNewRelease } from "@aikingbot/ui/features/updates/whats-new";
 import { createEffect, createStore, onSettled } from "solid-js";
 import { usePlatform } from "../../platform";
 import { createSimpleContext } from "../../simple-context";

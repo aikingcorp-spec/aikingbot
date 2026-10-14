@@ -1,11 +1,11 @@
-import { Bot, CalendarClock, Hash, Server, Store, UsersRound } from "@openbot/ui";
+import { Bot, CalendarClock, Hash, Server, Store, UsersRound } from "@aikingbot/ui";
 import type {
   GlobalSearchAction,
   GlobalSearchFile,
   GlobalSearchPage,
   GlobalSearchRoutine,
-} from "@openbot/ui/components/GlobalSearch";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/components/GlobalSearch";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { formatMessageTime } from "./app-message-projection";
 import { appPort } from "./app-port";
@@ -31,7 +31,7 @@ export function useGlobalSearchSources(open: () => boolean) {
   const { t } = useText();
   const platform = usePlatform();
   const channels = useChannels();
-  const { agentList, agentSetupOpen, creatingAgent, openBotSetup, setSettingsRequest } = useAgents();
+  const { agentList, agentSetupOpen, creatingAgent, aikingBotSetup, setSettingsRequest } = useAgents();
   const { selectAgent, globalSearchOpener } = useNavigation();
   const { activeServer } = useServers();
   const { openServerSettings } = useServerSettings();
@@ -118,7 +118,7 @@ export function useGlobalSearchSources(open: () => boolean) {
           icon: Bot,
           run: () => {
             channels.close();
-            openBotSetup();
+            aikingBotSetup();
           },
         },
       ];

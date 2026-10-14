@@ -2,10 +2,10 @@ import {
   DISCONNECTED_GITHUB_CONNECTOR,
   type GitHubConnectorRepositories,
   type GitHubConnectorStatus,
-} from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import type { GitHubConnectorPanelProps } from "@openbot/ui/features/settings/GitHubConnectorPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import type { GitHubConnectorPanelProps } from "@aikingbot/ui/features/settings/GitHubConnectorPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, onCleanup, onSettled } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type GitHubConnectorPort, githubConnectorPort } from "./github-connector-port";

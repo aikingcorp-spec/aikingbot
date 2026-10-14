@@ -1,4 +1,4 @@
-import { Button, ChevronLeft, ChevronRight, IconButton, Popover } from "@openbot/ui";
+import { Button, ChevronLeft, ChevronRight, IconButton, Popover } from "@aikingbot/ui";
 import { createMemo, createSignal, For, flush, Show } from "solid-js";
 import { useText } from "../../text";
 import { createStableChipAnchor } from "./routine-popover-anchor";

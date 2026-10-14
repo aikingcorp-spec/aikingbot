@@ -1,4 +1,4 @@
-// OpenBot's own read-only connection to the Computer Use daemon.
+// AIKINGBOT's own read-only connection to the Computer Use daemon.
 //
 // The rim asks the daemon the same two questions many times a second: which agent holds the
 // desktop, and where its windows are. The driver's command line answers both, but a command line
@@ -13,7 +13,7 @@
 // other method is sent from here.
 
 import { connect, type Socket } from "node:net";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { CuaDriverFailure } from "./cua-driver-effects";
 
@@ -28,7 +28,7 @@ const REQUEST_TIMEOUT_MS = 2_000;
  */
 const MAX_RESPONSE_BYTES = 4_194_304;
 /** The lease this connection takes, which the daemon keeps alive while the connection is open. */
-const SESSION_ID = "openbot-highlight";
+const SESSION_ID = "aikingbot-highlight";
 /**
  * How this lease is told apart from an agent's in `sessions_list`, which is what keeps the rim from
  * reading its own connection as an agent holding the desktop.

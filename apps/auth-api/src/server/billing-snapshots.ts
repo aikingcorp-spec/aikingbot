@@ -124,7 +124,7 @@ interface StripeSubscriptionSample {
  *
  * The source key is retained by SalesAnalyticsDelivery, so a five-minute cron can call this safely:
  * one `billing_snapshot:YYYY-MM-DD` event is accepted for each UTC day. Stripe remains the source of
- * the current subscription state; the D1 rows only provide the bounded list of known OpenBot IDs and
+ * the current subscription state; the D1 rows only provide the bounded list of known AIKINGBOT IDs and
  * their account/server owners.
  */
 export const captureBillingSnapshot = Effect.fn("captureBillingSnapshot")(function* (

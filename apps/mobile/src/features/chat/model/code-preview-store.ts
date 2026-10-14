@@ -1,4 +1,4 @@
-import type { ChatPreviewKind } from "@openbot/contracts/chat-preview";
+import type { ChatPreviewKind } from "@aikingbot/contracts/chat-preview";
 
 export interface CodePreviewEntry {
   kind: ChatPreviewKind;

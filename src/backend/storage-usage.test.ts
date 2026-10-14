@@ -5,15 +5,15 @@ import { Effect } from "effect";
 import { mkdir, mkdtemp, readdir, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { StorageUsage } from "@openbot/contracts/ipc";
+import type { StorageUsage } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { runCauseEffect } from "./effect-boundary";
 import type { MailboxStoredFile } from "./mailbox-store";
-import { OpenBotDatabase } from "./openbot-database";
 import { type StorageRoots, StorageUsageScanner, StorageUsageService, type StorageUsageSources } from "./storage-usage";
 
 const roots: string[] = [];
-const databases: OpenBotDatabase[] = [];
+const databases: AIKINGBOTDatabase[] = [];
 
 const services: StorageUsageService[] = [];
 afterEach(async () => {
@@ -49,9 +49,9 @@ function stored(id: string, path: string, patch: Partial<MailboxStoredFile> = {}
 }
 
 async function host() {
-  const root = await mkdtemp(join(tmpdir(), "openbot-storage-usage-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-storage-usage-"));
   roots.push(root);
-  const database = new OpenBotDatabase(join(root, "userData"));
+  const database = new AIKINGBOTDatabase(join(root, "userData"));
   await runCauseEffect(database.initialize());
   databases.push(database);
   const db = database.connection;

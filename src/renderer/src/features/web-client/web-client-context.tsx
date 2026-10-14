@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentApproval,
   AgentEvent,
@@ -20,18 +20,18 @@ import type {
   SidebarLayoutSnapshot,
   TeamPresenceSnapshot,
   TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import { WAKE_RECONNECT_DELAY_MS } from "@openbot/team-client/hosted-server-wake";
-import type { RemoteTeamHost } from "@openbot/team-client/remote-directory";
+} from "@aikingbot/contracts/ipc";
+import { cleanAgentMessageText } from "@aikingbot/team-client/agent-message-text";
+import { WAKE_RECONNECT_DELAY_MS } from "@aikingbot/team-client/hosted-server-wake";
+import type { RemoteTeamHost } from "@aikingbot/team-client/remote-directory";
 import {
   createRemoteConnectionRecovery,
   isSafeConnectionError,
   type RemoteRecoveryStatus,
-} from "@openbot/team-client/remote-recovery";
-import { reconcilePendingRequests } from "@openbot/team-client/runtime-attention";
-import { currentText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/team-client/remote-recovery";
+import { reconcilePendingRequests } from "@aikingbot/team-client/runtime-attention";
+import { currentText } from "@aikingbot/ui/text";
+import { errorReference, type UserErrorDetails } from "@aikingbot/user-errors";
 import { createEffect, createMemo, createSignal, createStore, onSettled } from "solid-js";
 import { toAgentProfile } from "../../app-message-projection";
 import { mergeConversationPage } from "../conversation/conversation-merge";

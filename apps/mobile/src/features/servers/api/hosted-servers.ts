@@ -5,7 +5,7 @@ import {
   parseHostedServerCatalog,
   parseHostedServerList,
   parseHostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
+} from "@aikingbot/contracts/hosted-servers";
 import { type MobileSession, requestMobileAccount } from "@/features/auth/api/mobile-auth";
 import { currentText } from "@/shared/lib/text";
 

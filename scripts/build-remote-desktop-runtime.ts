@@ -39,7 +39,7 @@ const LINUX_SUNSHINE_OPTIONS = [
 
 const lock = await loadNativeRuntimeLock();
 const outputRoot = resolve("build/remote-desktop-runtime", platform, architecture);
-const workRoot = await mkdtemp(join(tmpdir(), "openbot-remote-desktop-build-"));
+const workRoot = await mkdtemp(join(tmpdir(), "aikingbot-remote-desktop-build-"));
 
 try {
   const sunshineSource = await downloadAndExtract(
@@ -54,8 +54,8 @@ try {
   );
   await preparePinnedCheckout(sunshineSource, lock.remoteDesktop.sunshine, requiredSunshineSubmodules(platform));
   await preparePinnedCheckout(moonlightSource, lock.remoteDesktop.moonlightWeb);
-  await prepareOpenBotSource(sunshineSource, lock.remoteDesktop.sunshine);
-  await prepareOpenBotSource(moonlightSource, lock.remoteDesktop.moonlightWeb);
+  await prepareAIKINGBOTSource(sunshineSource, lock.remoteDesktop.sunshine);
+  await prepareAIKINGBOTSource(moonlightSource, lock.remoteDesktop.moonlightWeb);
   auditNpmDependencies(sunshineSource);
   auditNpmDependencies(moonlightSource);
 
@@ -68,7 +68,7 @@ try {
   const sunshineBinary = findSunshineBinary(sunshineSource);
   const executableSuffix = platform === "win32" ? ".exe" : "";
   if (platform === "darwin") {
-    await cp(join(sunshineSource, "build-openbot", "Sunshine.app"), join(outputRoot, "Sunshine.app"), {
+    await cp(join(sunshineSource, "build-aikingbot", "Sunshine.app"), join(outputRoot, "Sunshine.app"), {
       recursive: true,
     });
   } else {
@@ -96,7 +96,7 @@ try {
   await Promise.all([
     cp(join(sunshineSource, "LICENSE"), join(licenses, "Sunshine-GPL-3.0.txt")),
     cp(join(moonlightSource, "LICENSE"), join(licenses, "moonlight-web-stream-GPL-3.0.txt")),
-    // The copies the runtime now carries are OpenBot's to redistribute, so their notices ship with
+    // The copies the runtime now carries are AIKINGBOT's to redistribute, so their notices ship with
     // them. Taken from the tree that was linked against, so the notice is the one for the binary in
     // the archive rather than whatever the formula says today.
     ...bundledLibraryLicenses(bundledLibraries).map(({ file, source }) => cp(source, join(licenses, file))),
@@ -125,7 +125,7 @@ async function packageCorrespondingSource(
     "--exclude=node_modules",
     "--exclude=target",
     "--exclude=dist",
-    "--exclude=build-openbot",
+    "--exclude=build-aikingbot",
   ];
   execFileSync(
     tarExecutable,
@@ -143,7 +143,7 @@ async function packageCorrespondingSource(
     tarExecutable,
     [
       "-czf",
-      join(sourceOutput, `moonlight-web-stream-${lock.remoteDesktop.moonlightWeb.version}-openbot-source.tar.gz`),
+      join(sourceOutput, `moonlight-web-stream-${lock.remoteDesktop.moonlightWeb.version}-aikingbot-source.tar.gz`),
       ...exclusions,
       "-C",
       moonlightSource,
@@ -153,15 +153,15 @@ async function packageCorrespondingSource(
   );
   await cp(
     resolve(lock.remoteDesktop.sunshine.patch.path),
-    join(sourceOutput, lock.remoteDesktop.sunshine.patch.path.split("/").at(-1) ?? "sunshine-openbot.patch"),
+    join(sourceOutput, lock.remoteDesktop.sunshine.patch.path.split("/").at(-1) ?? "sunshine-aikingbot.patch"),
   );
   await cp(
     resolve(lock.remoteDesktop.moonlightWeb.patch.path),
-    join(sourceOutput, lock.remoteDesktop.moonlightWeb.patch.path.split("/").at(-1) ?? "moonlight-openbot.patch"),
+    join(sourceOutput, lock.remoteDesktop.moonlightWeb.patch.path.split("/").at(-1) ?? "moonlight-aikingbot.patch"),
   );
   await writeFile(
     join(sourceOutput, "README.txt"),
-    "These archives are the corresponding source used to build the bundled GPL-3.0 Sunshine and Moonlight Web programs. Both archives already contain the OpenBot changes. The separate patches show those changes against the pinned upstream versions.\n",
+    "These archives are the corresponding source used to build the bundled GPL-3.0 Sunshine and Moonlight Web programs. Both archives already contain the AIKINGBOT changes. The separate patches show those changes against the pinned upstream versions.\n",
   );
 }
 
@@ -231,7 +231,7 @@ function requiredSunshineSubmodules(targetPlatform: "darwin" | "win32" | "linux"
 }
 
 function buildSunshine(source: string, version: string, commit: string): void {
-  const build = join(source, "build-openbot");
+  const build = join(source, "build-aikingbot");
   const generator = process.env.CMAKE_GENERATOR ?? (hasExecutable("ninja") ? "Ninja" : "Unix Makefiles");
   const buildEnvironment = {
     ...process.env,
@@ -252,7 +252,7 @@ function buildSunshine(source: string, version: string, commit: string): void {
       "-DCMAKE_BUILD_TYPE=Release",
       "-DBUILD_DOCS=OFF",
       "-DBUILD_TESTS=ON",
-      "-DOPENBOT_SECURITY_TESTS=ON",
+      "-DAIKINGBOT_SECURITY_TESTS=ON",
       "-DBUILD_WERROR=OFF",
       ...(platform === "linux" ? LINUX_SUNSHINE_OPTIONS : []),
     ],
@@ -279,10 +279,10 @@ function buildSunshine(source: string, version: string, commit: string): void {
     },
   );
   if (platform === "darwin") {
-    execFileSync("cmake", ["--build", build, "--config", "Release", "--target", "openbot-setup-test"], {
+    execFileSync("cmake", ["--build", build, "--config", "Release", "--target", "aikingbot-setup-test"], {
       stdio: "inherit",
     });
-    execFileSync(join(build, "openbot-setup-test"), [], { stdio: "inherit" });
+    execFileSync(join(build, "aikingbot-setup-test"), [], { stdio: "inherit" });
   }
 }
 
@@ -312,7 +312,7 @@ function moonlightCargoEnvironment(): NodeJS.ProcessEnv {
   return { ...process.env, [variable]: flags };
 }
 
-async function applyOpenBotPatch(source: string, entry: { path: string; sha256: string }): Promise<void> {
+async function applyAIKINGBOTPatch(source: string, entry: { path: string; sha256: string }): Promise<void> {
   const patch = resolve(entry.path);
   if (sha256(await readFile(patch)) !== entry.sha256) {
     throw new Error(`Runtime patch checksum failed for ${entry.path}.`);
@@ -321,18 +321,18 @@ async function applyOpenBotPatch(source: string, entry: { path: string; sha256: 
   execFileSync("git", ["apply", patch], { cwd: source, stdio: "inherit" });
 }
 
-async function prepareOpenBotSource(
+async function prepareAIKINGBOTSource(
   source: string,
   runtime: Awaited<ReturnType<typeof loadNativeRuntimeLock>>["remoteDesktop"]["sunshine"],
 ): Promise<void> {
   if (runtime.sourceMode === "upstream-with-patch") {
-    await applyOpenBotPatch(source, runtime.patch);
+    await applyAIKINGBOTPatch(source, runtime.patch);
     await applyRuntimeOverrides(source, runtime.overrides);
     return;
   }
 
   if (runtime.overrides.length > 0) {
-    throw new Error(`The OpenBot fork must include its overrides: ${runtime.repository}.`);
+    throw new Error(`The AIKINGBOT fork must include its overrides: ${runtime.repository}.`);
   }
 }
 
@@ -386,10 +386,10 @@ function signMacRuntime(root: string, bundledLibraries: string[] = []): void {
 function findSunshineBinary(source: string): string {
   const suffix = platform === "win32" ? ".exe" : "";
   const candidates = [
-    join(source, "build-openbot", `sunshine${suffix}`),
-    join(source, "build-openbot", "sunshine", `sunshine${suffix}`),
-    join(source, "build-openbot", "Release", `sunshine${suffix}`),
-    join(source, "build-openbot", "Sunshine.app", "Contents", "MacOS", "Sunshine"),
+    join(source, "build-aikingbot", `sunshine${suffix}`),
+    join(source, "build-aikingbot", "sunshine", `sunshine${suffix}`),
+    join(source, "build-aikingbot", "Release", `sunshine${suffix}`),
+    join(source, "build-aikingbot", "Sunshine.app", "Contents", "MacOS", "Sunshine"),
   ];
   for (const candidate of candidates) {
     try {

@@ -4,13 +4,13 @@ import type {
   MarketplaceAgentSummary,
   MarketplaceSkillQuery,
   MarketplaceSkillSummary,
-} from "@openbot/contracts/ipc";
-import { Marketplace } from "@openbot/ui/features/marketplace/Marketplace";
-import type { MarketplaceApp, MarketplaceModel } from "@openbot/ui/features/marketplace/marketplace-model";
+} from "@aikingbot/contracts/ipc";
+import { Marketplace } from "@aikingbot/ui/features/marketplace/Marketplace";
+import type { MarketplaceApp, MarketplaceModel } from "@aikingbot/ui/features/marketplace/marketplace-model";
 import {
   createMarketplaceNavigation,
   type MarketplaceNavigation,
-} from "@openbot/ui/features/marketplace/marketplace-view";
+} from "@aikingbot/ui/features/marketplace/marketplace-view";
 import { createSignal, createStore, onSettled, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

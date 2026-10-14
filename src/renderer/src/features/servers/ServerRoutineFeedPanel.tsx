@@ -1,4 +1,4 @@
-import type { RoutineFeed, RoutineFeedDesktopApi } from "@openbot/contracts/ipc";
+import type { RoutineFeed, RoutineFeedDesktopApi } from "@aikingbot/contracts/ipc";
 import {
   Button,
   CalendarClock,
@@ -19,8 +19,8 @@ import {
   SelectValue,
   SettingsSection,
   Text,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, Show, untrack } from "solid-js";
 import type { ServerSettingsSectionHost } from "./server-settings-section";
 

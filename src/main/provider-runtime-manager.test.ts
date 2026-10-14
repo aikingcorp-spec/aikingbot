@@ -21,7 +21,11 @@ import {
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import { crc32, deflateRawSync } from "node:zlib";
-import { MANAGED_RUNTIME_PROVIDERS, MANAGED_TOOL_RUNTIMES, type ProviderRuntimeSnapshot } from "@openbot/contracts/ipc";
+import {
+  MANAGED_RUNTIME_PROVIDERS,
+  MANAGED_TOOL_RUNTIMES,
+  type ProviderRuntimeSnapshot,
+} from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import lockValue from "../../native-runtime.lock.json";
 import { parseAgentRuntimeLock } from "../../scripts/agent-runtime-lock";
@@ -131,7 +135,7 @@ describe("ProviderRuntimeManager", () => {
 
   /*
    * The lock is only where a first install starts. A check asks upstream, and a newer release is
-   * offered and installed without a new OpenBot build. x.ai publishes no hash for Grok, so this is
+   * offered and installed without a new AIKINGBOT build. x.ai publishes no hash for Grok, so this is
    * the path with TLS alone behind it; the record written at install is what a restart checks.
    */
   it("installs the latest upstream release and verifies it again after a restart", async () => {
@@ -252,7 +256,7 @@ describe("ProviderRuntimeManager", () => {
 
   it("does not offer or download over an explicit CLI override", async () => {
     const root = await temporaryRoot();
-    vi.stubEnv("OPENBOT_GROK_PATH", "/custom/grok");
+    vi.stubEnv("AIKINGBOT_GROK_PATH", "/custom/grok");
     const fetchImpl = vi.fn(async () => new Response());
     const manager = new ProviderRuntimeManager({ root, platform: "darwin", architecture: "arm64", fetchImpl });
     await runCauseEffect(manager.initialize());
@@ -585,16 +589,18 @@ describe("ProviderRuntimeManager", () => {
   it("keeps one store for every profile on this computer", () => {
     // An exact path, because it is what every profile has to agree on to share one download. In
     // development each renderer port and each worktree gets a `userData` of its own; the packaged
-    // app's is `appData/OpenBot`, so this is the path released builds already use.
+    // app's is `appData/AIKINGBOT`, so this is the path released builds already use.
     const appData = join("/home", "someone", ".config");
-    expect(providerRuntimeRoot({ appData, userDataOverride: "" })).toBe(join(appData, "OpenBot", "provider-runtimes"));
+    expect(providerRuntimeRoot({ appData, userDataOverride: "" })).toBe(
+      join(appData, "AIKINGBOT", "provider-runtimes"),
+    );
     expect(providerRuntimeRoot({ appData, userDataOverride: "   " })).toBe(
-      join(appData, "OpenBot", "provider-runtimes"),
+      join(appData, "AIKINGBOT", "provider-runtimes"),
     );
   });
 
   it("keeps the store inside a user data directory the caller named", () => {
-    const override = join("/tmp", "openbot-automation");
+    const override = join("/tmp", "aikingbot-automation");
     expect(providerRuntimeRoot({ appData: "/home/someone/.config", userDataOverride: `${override} ` })).toBe(
       join(override, "provider-runtimes"),
     );
@@ -1055,7 +1061,7 @@ describe("ProviderRuntimeManager", () => {
     await runCauseEffect(manager.initialize());
 
     await expect(runCauseEffect(manager.downloadAndWait("opencode"))).rejects.toThrow(
-      `OpenBot could not download ${umbrellaUrl}. getaddrinfo ENOTFOUND registry.npmjs.org`,
+      `AIKINGBOT could not download ${umbrellaUrl}. getaddrinfo ENOTFOUND registry.npmjs.org`,
     );
     reachable = true;
     await runCauseEffect(manager.downloadAndWait("opencode"));
@@ -1091,7 +1097,7 @@ describe("ProviderRuntimeManager", () => {
   it("installs nothing when the staged OpenCode reports another version", async () => {
     const root = await temporaryRoot();
     // `OPENCODE_DISABLE_AUTOUPDATE` keeps a managed install on the pin, and this is the check behind
-    // it: a binary that answers with any other version must not become the runtime OpenBot starts.
+    // it: a binary that answers with any other version must not become the runtime AIKINGBOT starts.
     const fixture = await opencodeFixture({ reportedVersion: "1.18.29" });
     const manager = opencodeManager(root, fixture);
     await runCauseEffect(manager.initialize());
@@ -1142,7 +1148,7 @@ describe("ProviderRuntimeManager", () => {
   );
 
   /*
-   * Cursor ships its Windows CLI as a zip of one folder with subfolders, and OpenBot unpacks it
+   * Cursor ships its Windows CLI as a zip of one folder with subfolders, and AIKINGBOT unpacks it
    * itself. Every entry must stay in that folder, so a name with `..` is refused before any write.
    */
   it("stages Cursor's Windows folder, and refuses an entry outside it", async () => {
@@ -1506,7 +1512,7 @@ function opencodeManager(
 }
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-provider-runtime-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-runtime-test-"));
   roots.push(root);
   return root;
 }

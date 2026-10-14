@@ -41,7 +41,7 @@ describe("logo color preference", () => {
 });
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-logo-color-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-logo-color-"));
   roots.push(root);
   return root;
 }

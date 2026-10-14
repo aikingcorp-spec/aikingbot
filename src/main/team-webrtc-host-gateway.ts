@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { Context, Deferred, Effect, Exit, Fiber, Layer, ManagedRuntime, Scope } from "effect";
 import { RemoteWorkflowError } from "./remote-service-effects";
 import type { TeamWebRtcBridge } from "./team-webrtc-bridge";
@@ -11,7 +11,7 @@ interface TeamWebRtcHostGatewayOptions extends TeamWebRtcHostPeerOptions {
   onSignalRecoveryFailure?: (error: Error, reason: string) => void;
 }
 
-const logger = createOpenBotLogger("team-webrtc-host");
+const logger = createAIKINGBOTLogger("team-webrtc-host");
 
 class HostSignal extends Context.Service<
   HostSignal,
@@ -19,7 +19,7 @@ class HostSignal extends Context.Service<
     connect(peerId: string, signalUrl: string, token: string): Effect.Effect<void, RemoteWorkflowError>;
     disconnect(peerId: string): Effect.Effect<void, RemoteWorkflowError>;
   }
->()("openbot/main/HostSignal") {
+>()("aikingbot/main/HostSignal") {
   static layer(
     bridge: TeamWebRtcBridge,
     scope: Scope.Scope,

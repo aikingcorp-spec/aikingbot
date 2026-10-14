@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "Загрузка OpenBot…",
+  "webClient.loading": "Загрузка AIKINGBOT…",
   "webClient.loadingLine.wake": "Будим агентов…",
   "webClient.loadingLine.coffee": "Наливаем агентам кофе…",
   "webClient.loadingLine.tokens": "Считаем токены на пальцах…",
@@ -22,11 +22,11 @@ export const messages = {
   "webClient.notice.hostsFailed": "Не удалось загрузить ваши компьютеры",
   "webClient.notice.connectComputer": "Подключите свой компьютер",
   "webClient.connect.description":
-    "Запустите OpenBot на своём компьютере, чтобы общаться с агентами из этого браузера. Также можно присоединиться к компьютеру по приглашению.",
-  "webClient.connect.stepInstall": "Установите и откройте OpenBot на своём компьютере.",
+    "Запустите AIKINGBOT на своём компьютере, чтобы общаться с агентами из этого браузера. Также можно присоединиться к компьютеру по приглашению.",
+  "webClient.connect.stepInstall": "Установите и откройте AIKINGBOT на своём компьютере.",
   "webClient.connect.stepSignIn": "Войдите с помощью адреса электронной почты.",
   "webClient.connect.stepRemote": "Включите удалённый доступ.",
-  "webClient.notice.download": "Скачать OpenBot",
+  "webClient.notice.download": "Скачать AIKINGBOT",
   "webClient.notice.join": "Войти по приглашению",
   "webClient.notice.refreshHosts": "Обновить хосты",
   "webClient.agent.modelsFailed": "Не удалось загрузить модели хоста.",
@@ -36,7 +36,7 @@ export const messages = {
   "webClient.error.usageOffline": "Подключитесь к хосту, чтобы посмотреть использование.",
   "webClient.error.desktopOnly": "Это действие доступно в приложении для компьютера.",
   "webClient.settings.preferences.title": "Настройки",
-  "webClient.settings.preferences.description": "Выберите язык и звуки OpenBot в этом браузере.",
+  "webClient.settings.preferences.description": "Выберите язык и звуки AIKINGBOT в этом браузере.",
   "webClient.error.checkConversation": "Проверьте диалог, прежде чем отправлять снова.",
   "webClient.error.hostReported": "Хост сообщил об ошибке. Проверьте диалог и состояние хоста.",
   "webClient.error.requestFailed": "Запрос не удался.",
@@ -65,7 +65,7 @@ export const messages = {
   "webClient.error.identityChanged": "Идентификатор хоста изменился. Подключение отклонено.",
   "webClient.error.connectionUnavailable": "Подключение к хосту недоступно.",
   "webClient.error.incompatible":
-    "Этот хост несовместим с веб-версией OpenBot. Обновите хост и перезагрузите страницу.",
+    "Этот хост несовместим с веб-версией AIKINGBOT. Обновите хост и перезагрузите страницу.",
   "webClient.error.sendUnconfirmed":
     "Доставка сообщения не подтверждена. Обновите страницу, прежде чем отправлять снова.",
   "webClient.error.fileType": "Обновите хост, чтобы прикреплять файлы этого типа.",
@@ -73,7 +73,7 @@ export const messages = {
   "webClient.error.duplication": "Этот хост не поддерживает дублирование агентов.",
   "webClient.error.connectServerFirst": "Сначала подключитесь к этому серверу.",
   "webClient.error.agentInstallNotAllowed":
-    "Добавлять агента здесь может только владелец или администратор, а на хосте должна работать актуальная версия OpenBot.",
+    "Добавлять агента здесь может только владелец или администратор, а на хосте должна работать актуальная версия AIKINGBOT.",
   "webClient.error.linkDesktopOnly": "Эта ссылка открывается только в приложении для компьютера.",
   "webClient.error.saveEndpointOffline": "Подключитесь к хосту, чтобы сохранить эндпоинт.",
   "webClient.error.removeEndpointOffline": "Подключитесь к хосту, чтобы удалить эндпоинт.",

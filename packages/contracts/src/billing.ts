@@ -58,20 +58,20 @@ export function siteLimitForPlan(plan: BillingPlanId | null): number {
 }
 
 /**
- * The Stripe subscription metadata that links a subscription to an OpenBot account and server. The
+ * The Stripe subscription metadata that links a subscription to an AIKINGBOT account and server. The
  * Checkout that creates a server's subscription must set both keys.
  */
-export const BILLING_METADATA = { userId: "openbot_user_id", serverId: "openbot_server_id" } as const;
+export const BILLING_METADATA = { userId: "aikingbot_user_id", serverId: "aikingbot_server_id" } as const;
 
 /** The Stripe Price lookup key for one plan and interval. `stripe-bootstrap.ts` creates these keys. */
 export function billingLookupKey(plan: BillingPlanId, interval: BillingInterval): string {
-  return `openbot_${plan}_${interval}`;
+  return `aikingbot_${plan}_${interval}`;
 }
 
 /** Returns null for a lookup key that does not name a plan and interval. */
 export function parseBillingLookupKey(value: unknown): { plan: BillingPlanId; interval: BillingInterval } | null {
   if (!isString(value)) return null;
-  const match = /^openbot_([a-z]+)_([a-z]+)$/u.exec(value);
+  const match = /^aikingbot_([a-z]+)_([a-z]+)$/u.exec(value);
   if (!match) return null;
   const [, plan, interval] = match;
   if (!isOneOf(BILLING_PLAN_IDS, plan) || !isOneOf(BILLING_INTERVALS, interval)) return null;

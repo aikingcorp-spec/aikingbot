@@ -28,7 +28,7 @@ export interface AgentDatabaseStatement {
   databasePath: string;
   mode: AgentDatabaseMode;
   /**
-   * OpenBot's own setup statement rather than an agent's. Only `AgentTables` sets it, and it means
+   * AIKINGBOT's own setup statement rather than an agent's. Only `AgentTables` sets it, and it means
    * two things: create the file if it is missing, and allow this one statement to write the
    * reserved metadata table. No agent-authored SQL ever reaches a request with this set.
    */
@@ -103,7 +103,7 @@ export const AGENT_DATABASE_LIMITS = {
 } as const;
 
 /** The reserved table that records which agent created each shared table. */
-export const AGENT_DATABASE_METADATA_TABLE = "openbot_metadata";
+export const AGENT_DATABASE_METADATA_TABLE = "aikingbot_metadata";
 
 /**
  * One running database host, seen from the supervisor.

@@ -1,4 +1,4 @@
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import * as Notifications from "expo-notifications";
 import { useEffect, useRef } from "react";
 import { SOUND_PREVIEW_KEY } from "./push-notifications-native.types";

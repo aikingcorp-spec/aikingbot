@@ -4,13 +4,13 @@
 .billing-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
 }
 
 .billing-loading {
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-8);
+  padding: var(--aikingbot-space-8);
 }
 
 .billing-toolbar {
@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   min-height: 32px;
 }
 
@@ -29,27 +29,27 @@
 }
 
 .billing-empty {
-  padding: var(--openbot-space-6) var(--openbot-space-4);
-  border: 1px dashed var(--openbot-border);
-  border-radius: var(--openbot-radius-card);
+  padding: var(--aikingbot-space-6) var(--aikingbot-space-4);
+  border: 1px dashed var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-card);
   text-align: center;
 }
 
 .billing-server-logo {
   width: 32px;
   height: 32px;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .billing-server-title {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .billing-server .ui-item-actions {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .billing-server-price {
@@ -61,39 +61,39 @@
 .billing-dialog-backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-6);
-  background: var(--openbot-bg-overlay);
+  padding: var(--aikingbot-space-6);
+  background: var(--aikingbot-bg-overlay);
 }
 
 .billing-dialog {
   position: relative;
   display: flex;
   width: min(640px, 100%);
-  max-height: calc(100dvh - 2 * var(--openbot-space-6));
+  max-height: calc(100dvh - 2 * var(--aikingbot-space-6));
   flex-direction: column;
   overflow: hidden;
   outline: 0;
-  border-radius: var(--openbot-radius-modal);
-  background: var(--openbot-bg-sidebar);
-  color: var(--openbot-text-primary);
+  border-radius: var(--aikingbot-radius-modal);
+  background: var(--aikingbot-bg-sidebar);
+  color: var(--aikingbot-text-primary);
 }
 
 .billing-dialog-close {
   position: absolute;
   z-index: 1;
-  inset-block-start: var(--openbot-space-3);
-  inset-inline-end: var(--openbot-space-3);
-  color: var(--openbot-text-muted);
+  inset-block-start: var(--aikingbot-space-3);
+  inset-inline-end: var(--aikingbot-space-3);
+  color: var(--aikingbot-text-muted);
 }
 
 .billing-dialog-header {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1);
-  padding: var(--openbot-space-6) var(--openbot-space-6) var(--openbot-space-4);
+  gap: var(--aikingbot-space-1);
+  padding: var(--aikingbot-space-6) var(--aikingbot-space-6) var(--aikingbot-space-4);
 }
 
 .billing-dialog-header p {
@@ -102,13 +102,13 @@
 
 .billing-dialog-title {
   margin: 0;
-  font-size: var(--openbot-text-2xl);
-  font-weight: var(--openbot-weight-bold);
-  line-height: var(--openbot-leading-2xl);
+  font-size: var(--aikingbot-text-2xl);
+  font-weight: var(--aikingbot-weight-bold);
+  line-height: var(--aikingbot-leading-2xl);
 }
 
 .billing-dialog-body {
   min-height: 0;
   overflow-y: auto;
-  padding: 0 var(--openbot-space-6) var(--openbot-space-6);
+  padding: 0 var(--aikingbot-space-6) var(--aikingbot-space-6);
 }

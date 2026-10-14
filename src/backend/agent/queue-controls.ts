@@ -1,13 +1,13 @@
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
+import { agentProviderDescriptor } from "@aikingbot/contracts/agent-providers";
 import type {
   ConversationMessageSender,
   QueueSnapshot,
   ReorderQueueInput,
   SteerQueuedMessageInput,
   UpdateQueuedMessageInput,
-} from "@openbot/contracts/ipc";
-import { QueueEditRejectedError, type QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { QueueEditRejectedError, type QueueEditRequest } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 import type { AgentStore } from "../agent-store";
 import type { ChannelAssignment } from "../channel-store";

@@ -62,7 +62,7 @@ describe.runIf(process.platform !== "win32")("bundled Codex installer", () => {
 });
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-codex-runtime-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-codex-runtime-test-"));
   temporaryPaths.push(root);
   return root;
 }

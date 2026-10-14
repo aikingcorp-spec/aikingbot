@@ -1,6 +1,6 @@
-import type { DynamicIslandAction } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { useText } from "@openbot/ui/text";
+import type { DynamicIslandAction } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, onSettled, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { withoutAgent } from "../../app-message-projection";

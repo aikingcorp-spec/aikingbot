@@ -11,14 +11,14 @@ import type {
   ServerSummary,
   TeamInviteSummary,
   TeamPresenceMember,
-} from "@openbot/contracts/ipc";
-import { Toaster } from "@openbot/ui";
-import type { ProviderCodeLoginState } from "@openbot/ui/components/ProviderCodeLoginDialog";
+} from "@aikingbot/contracts/ipc";
+import { Toaster } from "@aikingbot/ui";
+import type { ProviderCodeLoginState } from "@aikingbot/ui/components/ProviderCodeLoginDialog";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import type { ProviderConnectionApi } from "../../components/provider-connection-api";
-import { createMockOpenBot } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT } from "../../preview/mock-aikingbot";
 import type { HostProviderSettings } from "../settings/ProviderSettingsSection";
 import { mcpToolRuntimeNote as note } from "./mcp-servers";
 import { ServerSettingsModal, type ServerSettingsModalProps } from "./ServerSettingsModal";
@@ -232,7 +232,8 @@ describe("ServerSettingsModal", () => {
   it.each(["client_update_required", "host_update_required"] as const)(
     "identifies the end that needs an update: %s",
     async (code) => {
-      const message = code === "client_update_required" ? "Update this OpenBot app." : "Update OpenBot on the host.";
+      const message =
+        code === "client_update_required" ? "Update this AIKINGBOT app." : "Update AIKINGBOT on the host.";
       render(() => (
         <ServerSettingsModal
           {...props({
@@ -254,8 +255,8 @@ describe("ServerSettingsModal", () => {
   );
 
   it.each([true, false])("offers both permissions before or after a refusal: %s", async (denied) => {
-    const mock = createMockOpenBot();
-    vi.stubGlobal("openbot", mock.api);
+    const mock = createMockAIKINGBOT();
+    vi.stubGlobal("aikingbot", mock.api);
     const open = vi.spyOn(mock.api.remoteDesktop, "openSetup");
     render(() => (
       <ServerSettingsModal
@@ -271,14 +272,14 @@ describe("ServerSettingsModal", () => {
   });
 
   it("reads Sunshine permissions again after the owner returns from macOS settings", async () => {
-    const mock = createMockOpenBot();
-    vi.stubGlobal("openbot", mock.api);
+    const mock = createMockAIKINGBOT();
+    vi.stubGlobal("aikingbot", mock.api);
     const check = vi.spyOn(mock.api.remoteDesktop, "checkSetup");
     render(() => <ServerSettingsModal {...props({ hostStatus: configuredHost })} />);
     await fireEvent.click(screen.getByRole("tab", { name: "Remote desktop" }));
     await fireEvent.click(await screen.findByRole("button", { name: "Check again" }));
     expect(await screen.findByText("Blocked")).toBeInTheDocument();
-    expect(screen.getByText(/Mac mini · openbot/)).toBeInTheDocument();
+    expect(screen.getByText(/Mac mini · aikingbot/)).toBeInTheDocument();
     await fireEvent.click(screen.getByRole("button", { name: "Grant Accessibility access" }));
     await fireEvent(window, new Event("focus"));
     await waitFor(() => expect(check).toHaveBeenCalledTimes(2));
@@ -289,7 +290,7 @@ describe("ServerSettingsModal", () => {
     render(() => <ServerSettingsModal {...props({ server: remoteServer })} />);
     await fireEvent.click(screen.getByRole("tab", { name: "Remote desktop" }));
     expect(
-      await screen.findByText("Update OpenBot on the host to check permissions and test remote desktop."),
+      await screen.findByText("Update AIKINGBOT on the host to check permissions and test remote desktop."),
     ).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Grant Accessibility access" })).not.toBeInTheDocument();
   });
@@ -297,8 +298,8 @@ describe("ServerSettingsModal", () => {
   it.each([false, true])(
     "separates video confirmation from mouse and keyboard results and closes its test session",
     async (localTest) => {
-      const mock = createMockOpenBot({ remoteDesktopSessions: [] });
-      vi.stubGlobal("openbot", mock.api);
+      const mock = createMockAIKINGBOT({ remoteDesktopSessions: [] });
+      vi.stubGlobal("aikingbot", mock.api);
       const originalCheck = mock.api.remoteDesktop.checkSetup;
       mock.api.remoteDesktop.checkSetup = async (serverId) => ({
         ...(await originalCheck(serverId)),
@@ -339,7 +340,7 @@ describe("ServerSettingsModal", () => {
         new MessageEvent("message", {
           source: frame.contentWindow,
           origin: new URL(session.viewerUrl).origin,
-          data: { source: "openbot-moonlight", type: "viewer-state", sessionId: session.id, state: "connected" },
+          data: { source: "aikingbot-moonlight", type: "viewer-state", sessionId: session.id, state: "connected" },
         }),
       );
       await waitFor(() => expect(confirm).toBeEnabled());
@@ -357,9 +358,9 @@ describe("ServerSettingsModal", () => {
   );
 
   it("runs a local video test without native permission diagnostics", async () => {
-    const mock = createMockOpenBot({ remoteDesktopSessions: [] });
-    vi.stubGlobal("openbot", mock.api);
-    window.openbot = mock.api;
+    const mock = createMockAIKINGBOT({ remoteDesktopSessions: [] });
+    vi.stubGlobal("aikingbot", mock.api);
+    window.aikingbot = mock.api;
     const test = vi.spyOn(mock.api.remoteDesktop, "test");
     const disconnect = vi.spyOn(mock.api.remoteDesktop, "disconnect");
     render(() => <ServerSettingsModal {...props()} />);
@@ -377,7 +378,7 @@ describe("ServerSettingsModal", () => {
       new MessageEvent("message", {
         source: frame.contentWindow,
         origin: new URL(session.viewerUrl).origin,
-        data: { source: "openbot-moonlight", type: "viewer-state", sessionId: session.id, state: "connected" },
+        data: { source: "aikingbot-moonlight", type: "viewer-state", sessionId: session.id, state: "connected" },
       }),
     );
     await waitFor(() => expect(confirm).toBeEnabled());
@@ -389,8 +390,8 @@ describe("ServerSettingsModal", () => {
   });
 
   it("removes a previous allowed result when the next check fails", async () => {
-    const mock = createMockOpenBot();
-    vi.stubGlobal("openbot", mock.api);
+    const mock = createMockAIKINGBOT();
+    vi.stubGlobal("aikingbot", mock.api);
     const check = vi.spyOn(mock.api.remoteDesktop, "checkSetup");
     render(() => <ServerSettingsModal {...props({ hostStatus: configuredHost })} />);
     await fireEvent.click(screen.getByRole("tab", { name: "Remote desktop" }));
@@ -439,8 +440,8 @@ describe("ServerSettingsModal", () => {
   // Storage is read for the server the dialog names, which need not be the selected one. Every
   // member reads it; only an owner or admin is offered a clear, which reaches that same server.
   it("reads a server's storage when the section opens and clears only for a manager", async () => {
-    const mock = createMockOpenBot();
-    vi.stubGlobal("openbot", mock.api);
+    const mock = createMockAIKINGBOT();
+    vi.stubGlobal("aikingbot", mock.api);
     const getUsage = vi.spyOn(mock.api.storage, "getUsage");
     const clear = vi.spyOn(mock.api.storage, "clear");
     const storage = { hostName: "Studio Team", onOpenAgent: vi.fn(), onShowMessage: vi.fn() };
@@ -451,7 +452,7 @@ describe("ServerSettingsModal", () => {
     expect(getUsage).not.toHaveBeenCalled();
     await fireEvent.click(screen.getByRole("tab", { name: "Storage" }));
     await waitFor(() => expect(getUsage).toHaveBeenCalledWith({ scope: "host" }, "remote-1"));
-    expect(await screen.findByText("OpenBot on Studio Team")).toBeInTheDocument();
+    expect(await screen.findByText("AIKINGBOT on Studio Team")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Clean up" })).not.toBeInTheDocument();
     unmount();
 
@@ -467,8 +468,8 @@ describe("ServerSettingsModal", () => {
   it("lists a server's sites with its plan limit, and deletes only for an owner or admin", async () => {
     const site: HostedSiteSummary = {
       id: "site-to-delete",
-      hostname: "temporary-project-site-23456789ab.openbot.site",
-      url: "https://temporary-project-site-23456789ab.openbot.site",
+      hostname: "temporary-project-site-23456789ab.aikingbot-sites.aikingx.com",
+      url: "https://temporary-project-site-23456789ab.aikingbot-sites.aikingx.com",
       title: "Temporary project site",
       description: "Verify deletion and list refresh.",
       framework: "vanilla",
@@ -479,7 +480,12 @@ describe("ServerSettingsModal", () => {
       updatedAt: "2026-08-31T12:00:00.000Z",
       serverId: "remote-1",
     };
-    const unlinked: HostedSiteSummary = { ...site, id: "site-unlinked", hostname: "old.openbot.site", serverId: null };
+    const unlinked: HostedSiteSummary = {
+      ...site,
+      id: "site-unlinked",
+      hostname: "old.aikingbot-sites.aikingx.com",
+      serverId: null,
+    };
     const api = {
       list: vi
         .fn<HostedSitesDesktopApi["list"]>()
@@ -967,7 +973,7 @@ describe("ServerSettingsModal", () => {
       email: null,
       permanent: false,
       useCount: 0,
-      inviteUrl: "https://openbot.run/join?invite=live",
+      inviteUrl: "https://aikingbot.aikingx.com/join?invite=live",
     };
     const [invites, setInvites] = createSignal<TeamInviteSummary[]>([invite]);
     render(() => (
@@ -1202,7 +1208,7 @@ describe("ServerSettingsModal providers", () => {
 
     await fireEvent.click(screen.getByRole("button", { name: "Submit" }));
     await waitFor(() => expect(screen.queryByLabelText(/^Provider ID/u)).not.toBeInTheDocument());
-    expect(screen.getByRole("status")).toHaveTextContent("Saved. OpenBot is loading the models.");
+    expect(screen.getByRole("status")).toHaveTextContent("Saved. AIKINGBOT is loading the models.");
     await waitFor(() => expect(saveDefault).toHaveBeenCalledWith("opencode", "studio-local/glm-5-air"));
   });
 
@@ -1247,7 +1253,7 @@ describe("ServerSettingsModal providers", () => {
     await waitFor(() => expect(onDeleteCustomProvider).toHaveBeenCalledWith("studio-local"));
     await waitFor(() => expect(saveDefault).toHaveBeenCalledWith("opencode", null));
     // The outcome is read inside the dialog, which stays open: the section behind it is hidden.
-    expect(await screen.findByRole("status")).toHaveTextContent("Removed. OpenBot is loading the models.");
+    expect(await screen.findByRole("status")).toHaveTextContent("Removed. AIKINGBOT is loading the models.");
   });
 
   // The custom row is one of the AI providers, so it takes the check mark like its neighbours and

@@ -3,17 +3,17 @@
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
-import { listSiblingOpenBotInstances, parseSiblingInstances, SiblingScanFailed } from "./update-sibling-instances";
+import { listSiblingAIKINGBOTInstances, parseSiblingInstances, SiblingScanFailed } from "./update-sibling-instances";
 
 const processMock = vi.hoisted(() => ({ execFile: vi.fn() }));
 vi.mock("node:child_process", () => processMock);
 
-const EXECUTABLE = "/Applications/OpenBot.app/Contents/MacOS/OpenBot";
+const EXECUTABLE = "/Applications/AIKINGBOT.app/Contents/MacOS/AIKINGBOT";
 
 const PS_OUTPUT = [
-  "  101   501 /Applications/OpenBot.app/Contents/MacOS/OpenBot",
-  "  202   502 /Applications/OpenBot.app/Contents/MacOS/OpenBot",
-  "  303   501 /Applications/OpenBot.app/Contents/Frameworks/OpenBot Helper.app/Contents/MacOS/OpenBot Helper",
+  "  101   501 /Applications/AIKINGBOT.app/Contents/MacOS/AIKINGBOT",
+  "  202   502 /Applications/AIKINGBOT.app/Contents/MacOS/AIKINGBOT",
+  "  303   501 /Applications/AIKINGBOT.app/Contents/Frameworks/AIKINGBOT Helper.app/Contents/MacOS/AIKINGBOT Helper",
   "  404   501 /usr/sbin/systemstats",
   "garbage line without numbers",
   "",
@@ -34,7 +34,7 @@ describe("parseSiblingInstances", () => {
   });
 
   it("never mistakes an Electron helper for the main process", () => {
-    const output = `303 501 ${EXECUTABLE.replace("MacOS/OpenBot", "Frameworks/OpenBot Helper")}`;
+    const output = `303 501 ${EXECUTABLE.replace("MacOS/AIKINGBOT", "Frameworks/AIKINGBOT Helper")}`;
     expect(parseSiblingInstances(output, { executablePath: EXECUTABLE, currentPid: 999 })).toEqual([]);
   });
 
@@ -44,7 +44,7 @@ describe("parseSiblingInstances", () => {
   });
 });
 
-describe("listSiblingOpenBotInstances", () => {
+describe("listSiblingAIKINGBOTInstances", () => {
   it("blocks installation when the OS process command fails", async () => {
     processMock.execFile.mockImplementation(
       (_file: string, _args: string[], callback: (error: Error, stdout: string) => void) => {
@@ -52,8 +52,10 @@ describe("listSiblingOpenBotInstances", () => {
       },
     );
     await expect(
-      runCauseEffect(listSiblingOpenBotInstances({ executablePath: EXECUTABLE, currentPid: 101, platform: "darwin" })),
-    ).rejects.toThrow("Could not verify other OpenBot sessions");
+      runCauseEffect(
+        listSiblingAIKINGBOTInstances({ executablePath: EXECUTABLE, currentPid: 101, platform: "darwin" }),
+      ),
+    ).rejects.toThrow("Could not verify other AIKINGBOT sessions");
     expect(processMock.execFile).toHaveBeenCalledWith(
       "/bin/ps",
       ["-ax", "-o", "pid=,uid=,comm="],
@@ -63,7 +65,7 @@ describe("listSiblingOpenBotInstances", () => {
   it("scans with ps on macOS", async () => {
     const listProcesses = vi.fn(() => Effect.succeed(PS_OUTPUT));
     const siblings = await runCauseEffect(
-      listSiblingOpenBotInstances({
+      listSiblingAIKINGBOTInstances({
         executablePath: EXECUTABLE,
         currentPid: 101,
         platform: "darwin",
@@ -77,7 +79,7 @@ describe("listSiblingOpenBotInstances", () => {
   it("rejects a failed scan instead of reporting no siblings", async () => {
     await expect(
       runCauseEffect(
-        listSiblingOpenBotInstances({
+        listSiblingAIKINGBOTInstances({
           executablePath: EXECUTABLE,
           currentPid: 101,
           platform: "darwin",
@@ -90,12 +92,12 @@ describe("listSiblingOpenBotInstances", () => {
   it.each([
     ["win32", PS_OUTPUT],
     // Chromium children on Linux run the main executable, so a scan would find this session itself.
-    ["linux", "  101  1000 /tmp/.mount_OpenBo/openbot\n  102  1000 /tmp/.mount_OpenBo/openbot --type=zygote"],
+    ["linux", "  101  1000 /tmp/.mount_OpenBo/aikingbot\n  102  1000 /tmp/.mount_OpenBo/aikingbot --type=zygote"],
   ] as const)("does not scan on %s", async (platform, output) => {
     const listProcesses = vi.fn(() => Effect.succeed(output));
     const siblings = await runCauseEffect(
-      listSiblingOpenBotInstances({
-        executablePath: platform === "linux" ? "/tmp/.mount_OpenBo/openbot" : EXECUTABLE,
+      listSiblingAIKINGBOTInstances({
+        executablePath: platform === "linux" ? "/tmp/.mount_OpenBo/aikingbot" : EXECUTABLE,
         currentPid: 101,
         platform,
         listProcesses,

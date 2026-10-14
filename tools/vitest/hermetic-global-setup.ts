@@ -7,7 +7,7 @@ import { isolateTestEnvironment } from "./hermetic-environment";
 // `homedir()`. This runs in the main process before any thread starts, so a thread-pool project
 // shares one temporary home instead of the real one.
 export default function setup(): () => void {
-  const home = mkdtempSync(join(tmpdir(), "openbot-test-home-"));
+  const home = mkdtempSync(join(tmpdir(), "aikingbot-test-home-"));
   isolateTestEnvironment(process.env, home);
   return () => rmSync(home, { recursive: true, force: true });
 }

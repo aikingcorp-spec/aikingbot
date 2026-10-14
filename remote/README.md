@@ -1,8 +1,8 @@
-# OpenBot Remote
+# AIKINGBOT Remote
 
 This directory holds our own control plane for WebRTC connections. The Remote API relays SDP and ICE.
 Team files, chats, commands and video never pass through the Remote API or Cloudflare. The exceptions
-are the OpenBot Slack app, the OpenBot Discord bot and the OpenBot Telegram bot: see
+are the AIKINGBOT Slack app, the AIKINGBOT Discord bot and the AIKINGBOT Telegram bot: see
 [Slack requests](#slack-requests), [Discord](#discord) and [Telegram updates](#telegram-updates).
 
 ## Flow
@@ -34,11 +34,11 @@ validation window.
 
 ## Slack requests
 
-The OpenBot Slack app sends the events and button presses of every workspace to one request URL,
-`https://signal.openbot.run/v1/slack/events`. Signal checks Slack's signature with the app's signing
+The AIKINGBOT Slack app sends the events and button presses of every workspace to one request URL,
+`https://signal.aikingbot.aikingx.com/v1/slack/events`. Signal checks Slack's signature with the app's signing
 secret, answers Slack's `url_verification` challenge, and reads only the app ID (`api_app_id`), the
 workspace ID, and the event's type, channel type, thread and bot ID (to know whether it addresses
-OpenBot, not its text). `SLACK_SIGNING_SECRET` is a comma-separated list of `<app ID>:<signing secret>`,
+AIKINGBOT, not its text). `SLACK_SIGNING_SECRET` is a comma-separated list of `<app ID>:<signing secret>`,
 because the production and development apps share Signal. A request must name the app whose secret
 signed it, so one app's secret cannot reach the other app's hosts; a malformed value turns off only
 the Slack route. Then Signal passes the exact request body to the `ingress` socket of the host that
@@ -47,7 +47,7 @@ host does not answer in 2.5 seconds. Slack then sends the request again. For a h
 sleeps, Signal answers 200 instead (see [Sleeping hosted servers](#sleeping-hosted-servers)).
 
 An `ingress` socket names its workspaces with a Slack route ticket: an ES256 JWT with the audience
-`openbot-slack-route`, signed by the Worker with `SLACK_ROUTE_PRIVATE_JWK` (key id
+`aikingbot-slack-route`, signed by the Worker with `SLACK_ROUTE_PRIVATE_JWK` (key id
 `SLACK_ROUTE_KEY_ID`) for the workspaces, each with its app, that the account service links to that
 host. Its public key
 must be in the ticket JWKS that Signal loads (`REMOTE_TICKET_PUBLIC_JWKS` on the Worker, or
@@ -56,7 +56,7 @@ must be in the ticket JWKS that Signal loads (`REMOTE_TICKET_PUBLIC_JWKS` on the
 
 ## Discord
 
-The OpenBot Discord bot is one bot for every guild that installs it. Signal holds its bot token
+The AIKINGBOT Discord bot is one bot for every guild that installs it. Signal holds its bot token
 (`DISCORD_BOT_TOKEN`) and its application ID (`DISCORD_APPLICATION_ID`). Without both, or with a
 malformed value, Discord is off: Signal logs one line without the value, keeps no Gateway
 connection, and `POST /v1/discord/api` answers 503. The remote sessions and the Slack route keep
@@ -70,14 +70,14 @@ when the message mentions the bot. From the Gateway, Signal reads:
 - each guild message that mentions the bot and that a person wrote. Signal passes the message ID,
   channel, author, text without the bot's mention, the replied message, the Discord CDN addresses of
   the attachments and the time to the `ingress` socket of the host that the guild is linked to;
-- each press of an OpenBot button. Signal acknowledges it to Discord at once and passes it on;
+- each press of an AIKINGBOT button. Signal acknowledges it to Discord at once and passes it on;
 - the removal of the bot from a guild, which ends that guild's connection on the host.
 
 A direct message to the bot gets one fixed answer, at most once an hour for each user. Signal does not
 pass it on.
 
 An `ingress` socket names its guilds with a Discord route ticket: an ES256 JWT with the audience
-`openbot-discord-route`, signed by the Worker for the guilds that the account service links to that
+`aikingbot-discord-route`, signed by the Worker for the guilds that the account service links to that
 host. Its public key must be in the ticket JWKS that Signal loads, as for the Slack route ticket. The
 account service revokes a guild link through `/internal/auth-events`. After a start, Signal asks the
 account service which links are current until every older ticket has expired.
@@ -101,7 +101,7 @@ guild. So a link goes also when its host is off and the first unlink failed, or 
 
 ## Telegram updates
 
-One OpenBot bot serves every user, and only Signal has its token. `TELEGRAM_BOT_TOKENS` is a
+One AIKINGBOT bot serves every user, and only Signal has its token. `TELEGRAM_BOT_TOKENS` is a
 comma-separated list of bot tokens (`<bot ID>:<secret>`), because the production and development
 bots share Signal. `TELEGRAM_WEBHOOK_SECRET` (at least 32 bytes) is required with them: the webhook
 secret of each bot is the base64url HMAC-SHA256 of `telegram-webhook:<bot ID>` with it. A malformed
@@ -116,7 +116,7 @@ answers 200 to each signed update, also when no host holds the chat: Telegram ho
 other updates while one fails.
 
 An `ingress` socket names its chats with a Telegram route ticket: an ES256 JWT with the audience
-`openbot-telegram-route`, signed with the key of the Slack route ticket. When `ready` names the
+`aikingbot-telegram-route`, signed with the key of the Slack route ticket. When `ready` names the
 `telegram` capability, the host calls the Bot API through the socket (`telegram-call`). Signal
 accepts only the methods and parameters of `TelegramCallParams`, only for the chats routed to that
 socket, and returns only the reduced result. A host downloads a file from `/v1/telegram/files/<token>`
@@ -128,7 +128,7 @@ for the sealed queue of a hosted server that sleeps.
 
 All messaging platforms share one path (`src/ingress-queue.ts`). For an event whose route has no
 `ingress` socket, Signal asks the account service (`/v2/remote/route-wake`, signed), at most once a
-minute for each route. An event that addresses OpenBot starts a hosted server that sleeps. Signal
+minute for each route. An event that addresses AIKINGBOT starts a hosted server that sleeps. Signal
 then keeps the event's delivery frame, sealed with the host's queue key (`queueKey` in the `ingress`
 hello) and the host ID, for at most 10 minutes, 64 events and 192 KB for each host. When the host's
 socket holds the route again, Signal sends each kept event in order as `queued-delivery`, and keeps it
@@ -145,26 +145,26 @@ service before Signal.
 
 - Linux with Docker Engine and Docker Compose.
 - A static public IPv4 address.
-- `signal.openbot.run` and `turn.openbot.run` records in DNS only mode.
+- `signal.aikingbot.aikingx.com` and `turn.aikingbot.aikingx.com` records in DNS only mode.
 - Open ports TCP 443, TCP/UDP 3478, TCP 5349 and UDP 49152-65535.
-- A Cloudflare token scoped to DNS edit for the `openbot.run` zone.
+- A Cloudflare token scoped to DNS edit for the `aikingbot.aikingx.com` zone.
 
-The `signal.openbot.run` and `turn.openbot.run` records must be in **DNS only** mode. Do not enable the
-Cloudflare proxy for them. `api.openbot.run` stays a Cloudflare Worker.
+The `signal.aikingbot.aikingx.com` and `turn.aikingbot.aikingx.com` records must be in **DNS only** mode. Do not enable the
+Cloudflare proxy for them. `api.aikingbot.aikingx.com` stays a Cloudflare Worker.
 
 If you already run a reverse proxy on port `443`, set `REMOTE_SIGNAL_BIND_ADDRESS=127.0.0.1`,
 `REMOTE_SIGNAL_PUBLIC_PORT=8081`, `REMOTE_SIGNAL_PORT=8081` and `REMOTE_TLS_DISABLED=true`. The reverse proxy
 must terminate TLS and forward the WebSocket to `http://127.0.0.1:8081`. Also set
 `REMOTE_TRUST_PROXY=true` so the IP limits use the client address from `X-Forwarded-For`.
 
-The configuration in `nginx/signal.openbot.run.conf` uses the certificate from the ACME volume. Install
-`openbot-remote-nginx-reload.path` and `openbot-remote-nginx-reload.service` into `/etc/systemd/system/` as
+The configuration in `nginx/signal.aikingbot.aikingx.com.conf` uses the certificate from the ACME volume. Install
+`aikingbot-remote-nginx-reload.path` and `aikingbot-remote-nginx-reload.service` into `/etc/systemd/system/` as
 well. The unit reloads Nginx after the certificate is renewed:
 
 ```sh
-sudo cp remote/nginx/openbot-remote-nginx-reload.* /etc/systemd/system/
+sudo cp remote/nginx/aikingbot-remote-nginx-reload.* /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now openbot-remote-nginx-reload.path
+sudo systemctl enable --now aikingbot-remote-nginx-reload.path
 ```
 
 Production secrets are stored in the tracked `.env.production` file as encrypted Dotenvx values.
@@ -203,7 +203,7 @@ on the Signal server: a desktop environment does not change it.
 This also applies when the old client socket waits for its host to reconnect. Token signing finishes
 before Signal admits the new socket, so concurrent reconnects do not hold extra account slots.
 
-Production deployments keep `/opt/openbot/remote/.env.production`. A value in that file overrides
+Production deployments keep `/opt/aikingbot/remote/.env.production`. A value in that file overrides
 the default, even when a release changes the repository's environment file. Check the running
 container's effective limit after a configuration change and Signal restart.
 

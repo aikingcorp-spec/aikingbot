@@ -1,4 +1,4 @@
-import { Dialog, IconButton, Text, X } from "@openbot/ui";
+import { Dialog, IconButton, Text, X } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { useText } from "../../text";
 import type { SettingsHostedServersStore } from "../settings/stores/hosted-servers-store";

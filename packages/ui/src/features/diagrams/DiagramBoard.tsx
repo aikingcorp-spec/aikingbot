@@ -9,8 +9,8 @@
  * every edit goes out through a callback, so the caller decides what an edit does.
  */
 
-import { Button, ContextMenu, Minus, Plus, Scan } from "@openbot/ui";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { Button, ContextMenu, Minus, Plus, Scan } from "@aikingbot/ui";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createStore, For, onSettled, Show } from "solid-js";
 import type { AgentProfile } from "../../data";

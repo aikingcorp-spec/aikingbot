@@ -6,21 +6,21 @@ import {
   type ConversationMessage,
   routineConversationEvent,
   routineRunConversationEvent,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentProvider } from "./agent-client";
 import type { AgentService } from "./agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   createTestService,
-  expectOpenBotToolError,
-  expectOpenBotToolFailure,
+  expectAIKINGBOTToolError,
+  expectAIKINGBOTToolFailure,
   FakeAgentClient,
   firstInputText,
   inputRecords,
   notification,
-  openBotToolPayload,
   protocolMessages,
   startAgentTestFixture,
   stopAgentTestFixture,
@@ -495,10 +495,10 @@ describe.sequential("AgentService: routines", () => {
     if (!client || !threadId || !turnId || !messageId) throw new Error("The reaction test turn did not start.");
 
     await runCauseEffect(service.setMessageReaction({ agentId: "chief", messageId, emoji: "❤️" }));
-    const first = await callOpenBotTool(client, threadId, "react_to_user_message", { emoji: "🎉" }, turnId);
-    expect(openBotToolPayload(first.result)).toMatchObject({ status: "reacted", messageId, emoji: "🎉" });
-    const second = await callOpenBotTool(client, threadId, "react_to_user_message", { emoji: "👨‍👩‍👧‍👦" }, turnId);
-    expect(openBotToolPayload(second.result)).toMatchObject({ emoji: "👨‍👩‍👧‍👦" });
+    const first = await callAIKINGBOTTool(client, threadId, "react_to_user_message", { emoji: "🎉" }, turnId);
+    expect(aikingBotToolPayload(first.result)).toMatchObject({ status: "reacted", messageId, emoji: "🎉" });
+    const second = await callAIKINGBOTTool(client, threadId, "react_to_user_message", { emoji: "👨‍👩‍👧‍👦" }, turnId);
+    expect(aikingBotToolPayload(second.result)).toMatchObject({ emoji: "👨‍👩‍👧‍👦" });
 
     const message = (await runCauseEffect(service.readConversation("chief"))).messages.find(
       (candidate) => candidate.id === messageId,
@@ -510,7 +510,7 @@ describe.sequential("AgentService: routines", () => {
         { emoji: "👨‍👩‍👧‍👦", actor: { kind: "agent", agentId: "chief" } },
       ],
     });
-    await expectOpenBotToolError(
+    await expectAIKINGBOTToolError(
       client,
       threadId,
       "react_to_user_message",
@@ -551,7 +551,7 @@ describe.sequential("AgentService: routines", () => {
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     const turnId = service.listQueue("chief").deliveries[0]?.turnId;
     if (!client || !threadId || !turnId) throw new Error("The teammate reaction test turn did not start.");
-    await expectOpenBotToolError(
+    await expectAIKINGBOTToolError(
       client,
       threadId,
       "react_to_user_message",
@@ -586,14 +586,14 @@ describe.sequential("AgentService: routines", () => {
     const turnId = service.listQueue("chief").deliveries[0]?.turnId;
     if (!client || !threadId || !turnId) throw new Error("The screenshot attachment turn did not start.");
 
-    const result = await callOpenBotTool(
+    const result = await callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
       { paths: [screenshotPath] },
       turnId,
     );
-    expect(openBotToolPayload(result.result)).toMatchObject({
+    expect(aikingBotToolPayload(result.result)).toMatchObject({
       status: "attached",
       attachments: [{ name: "desktop-screenshot.png" }],
     });
@@ -623,25 +623,25 @@ describe.sequential("AgentService: routines", () => {
 
     const outsidePath = join(root, "outside.png");
     await writeFile(outsidePath, screenshot);
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "attach_files_to_response",
       { paths: [outsidePath] },
-      "inside this agent's workspace or the OpenBot shared directory",
+      "inside this agent's workspace or the AIKINGBOT shared directory",
       turnId,
     );
     const linkedPath = join(store.sharedRoot, "linked-outside.png");
     await symlink(outsidePath, linkedPath);
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "attach_files_to_response",
       { paths: [linkedPath] },
-      "inside this agent's workspace or the OpenBot shared directory",
+      "inside this agent's workspace or the AIKINGBOT shared directory",
       turnId,
     );
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "attach_files_to_response",
@@ -667,7 +667,7 @@ describe.sequential("AgentService: routines", () => {
     service.on("event", publicationFailure);
     service.on("event", recordPublicationEvent);
     const publicationCallId = "publication-failure-call";
-    const publicationResult = await callOpenBotTool(
+    const publicationResult = await callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -677,7 +677,7 @@ describe.sequential("AgentService: routines", () => {
     );
     service.off("event", publicationFailure);
     service.off("event", recordPublicationEvent);
-    expect(openBotToolPayload(publicationResult.result)).toMatchObject({
+    expect(aikingBotToolPayload(publicationResult.result)).toMatchObject({
       status: "attached",
       attachments: [{ name: "published-screenshot.png" }],
     });
@@ -737,7 +737,7 @@ describe.sequential("AgentService: routines", () => {
       }),
     );
     const callId = "concurrent-attachment-call";
-    const first = callOpenBotTool(
+    const first = callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -746,7 +746,7 @@ describe.sequential("AgentService: routines", () => {
       callId,
     );
     await storeStarted;
-    const second = callOpenBotTool(
+    const second = callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -764,7 +764,7 @@ describe.sequential("AgentService: routines", () => {
 
     const [firstResult, secondResult] = await Promise.all([first, second, stopping]);
     expect(stopCompleted).toBe(true);
-    expect(openBotToolPayload(firstResult.result)).toEqual(openBotToolPayload(secondResult.result));
+    expect(aikingBotToolPayload(firstResult.result)).toEqual(aikingBotToolPayload(secondResult.result));
     expect(storage).toHaveBeenCalledTimes(1);
     expect(
       (await runCauseEffect(service.readConversation("chief"))).messages.filter(
@@ -814,7 +814,7 @@ describe.sequential("AgentService: routines", () => {
         return yield* originalStore(input);
       }),
     );
-    const attaching = callOpenBotTool(
+    const attaching = callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -823,7 +823,7 @@ describe.sequential("AgentService: routines", () => {
       "parallel-attachment-call",
     );
     await storeStarted;
-    const rendered = await callOpenBotTool(
+    const rendered = await callAIKINGBOTTool(
       client,
       threadId,
       "html_render",
@@ -831,9 +831,9 @@ describe.sequential("AgentService: routines", () => {
       turnId,
       "parallel-visual-call",
     );
-    expect(openBotToolPayload(rendered.result)).toMatchObject({ status: "shown" });
+    expect(aikingBotToolPayload(rendered.result)).toMatchObject({ status: "shown" });
     releaseStore?.();
-    expect(openBotToolPayload((await attaching).result)).toMatchObject({ status: "attached" });
+    expect(aikingBotToolPayload((await attaching).result)).toMatchObject({ status: "attached" });
 
     // The saved rows, not the memory copy: the memory copy can keep a message that the database lost.
     const saved = store.database.readConversation(
@@ -876,7 +876,7 @@ describe.sequential("AgentService: routines", () => {
     const persistence = vi.spyOn(mailbox, "persistGeneratedAttachmentsWithConversation").mockImplementationOnce(() => {
       throw new Error("conversation write failed");
     });
-    const failed = await callOpenBotTool(
+    const failed = await callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -884,14 +884,14 @@ describe.sequential("AgentService: routines", () => {
       turnId,
       callId,
     );
-    expect(openBotToolPayload(failed.result).error).toContain("conversation write failed");
+    expect(aikingBotToolPayload(failed.result).error).toContain("conversation write failed");
     expect((await runCauseEffect(service.readConversation("chief"))).messages).not.toEqual(
       expect.arrayContaining([expect.objectContaining({ itemType: "agent_attachment", turnId })]),
     );
     await expect(runCauseEffect(mailbox.listExportAttachments())).resolves.toEqual([]);
 
     persistence.mockRestore();
-    const retried = await callOpenBotTool(
+    const retried = await callAIKINGBOTTool(
       client,
       threadId,
       "attach_files_to_response",
@@ -899,7 +899,7 @@ describe.sequential("AgentService: routines", () => {
       turnId,
       callId,
     );
-    expect(openBotToolPayload(retried.result)).toMatchObject({
+    expect(aikingBotToolPayload(retried.result)).toMatchObject({
       status: "attached",
       attachments: [{ name: "retry-screenshot.png" }],
     });
@@ -912,7 +912,7 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("sends a teammate request only to the selected profile match", async () => {
-    process.env.OPENBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
+    process.env.AIKINGBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
       { tool: "list_agents", arguments: {} },
       {
         tool: "send_message",
@@ -941,7 +941,7 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("carries the sender's answer choice from the tool call onto the delivery", async () => {
-    process.env.OPENBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
+    process.env.AIKINGBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
       {
         tool: "send_message",
         arguments: {
@@ -962,7 +962,7 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("reliably relays a completed teammate result back through a reply chain without loops", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "AUTO_WEATHER_RESULT";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "AUTO_WEATHER_RESULT";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(store.initialize());
@@ -1024,7 +1024,7 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("sends nothing back for a teammate message that asks for no answer", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "AUTO_RESULT";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "AUTO_RESULT";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(store.initialize());
@@ -1070,7 +1070,7 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("drops a placeholder answer to a teammate request instead of showing and relaying it", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "∅";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "∅";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(store.initialize());
@@ -1127,11 +1127,11 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("does not fail or replay a turn whose start response times out after lifecycle events", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "Finished despite the late response";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "Finished despite the late response";
     // Auto-complete is 20ms. The RPC timeout has to land after that, and before
     // the delayed start response. 75ms vs 250ms loses that order when CI load
     // delays the fake CLI, and the wait then never sees completed.
-    process.env.OPENBOT_FAKE_TURN_START_RESPONSE_DELAY = "1500";
+    process.env.AIKINGBOT_FAKE_TURN_START_RESPONSE_DELAY = "1500";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox, requestTimeoutMs: 400 });
     const events: AgentEvent[] = [];
@@ -1151,8 +1151,8 @@ describe.sequential("AgentService: routines", () => {
   });
 
   it("keeps a completed turn idle when its start response arrives after lifecycle events", async () => {
-    process.env.OPENBOT_FAKE_AUTO_COMPLETE = "Finished before the start response";
-    process.env.OPENBOT_FAKE_TURN_START_RESPONSE_DELAY = "100";
+    process.env.AIKINGBOT_FAKE_AUTO_COMPLETE = "Finished before the start response";
+    process.env.AIKINGBOT_FAKE_TURN_START_RESPONSE_DELAY = "100";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     await runCauseEffect(service.initialize());

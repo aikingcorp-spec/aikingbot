@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
-import { HOSTED_SITE_HOST_ID_HEADER, HOSTED_SITE_HOST_TOKEN_HEADER } from "@openbot/contracts/hosted-sites";
-import { isNumber, isString } from "@openbot/contracts/runtime-values";
+import { HOSTED_SITE_HOST_ID_HEADER, HOSTED_SITE_HOST_TOKEN_HEADER } from "@aikingbot/contracts/hosted-sites";
+import { isNumber, isString } from "@aikingbot/contracts/runtime-values";
 import { afterEach, describe, expect, it } from "vitest";
 import { runApiEffect } from "../src/server/effect-runtime";
 import { HOSTED_SITE_LIMITS, type HostedSiteUploadRequest } from "../src/server/hosted-site-contract";
@@ -269,7 +269,7 @@ describe("hosted site control plane", () => {
       ),
     );
     const request = (headers: HeadersInit) =>
-      new Request("https://openbot.run/v1/sites/upload", {
+      new Request("https://aikingbot.aikingx.com/v1/sites/upload", {
         method: "PUT",
         headers,
         body: "oversized",
@@ -373,7 +373,7 @@ describe("hosted site control plane", () => {
           "alice",
           upload.uploadId,
           "index.html",
-          new Request("https://openbot.run/v1/sites/upload", {
+          new Request("https://aikingbot.aikingx.com/v1/sites/upload", {
             method: "PUT",
             headers: { "Content-Type": "text/html", "Content-Length": String(content.length) },
             body: content,
@@ -402,7 +402,7 @@ describe("hosted site control plane", () => {
         )
         .bind(
           `deleted-backlog-${index}`,
-          `deleted-backlog-project-number-${index}-abcdefghij.openbot.site`,
+          `deleted-backlog-project-number-${index}-abcdefghij.aikingbot-sites.aikingx.com`,
           fixture.now() - 2 * 24 * 60 * 60_000,
           fixture.now() - 60_000,
           fixture.now(),
@@ -747,7 +747,14 @@ describe("hosted site control plane", () => {
   it("accepts reports only for allocated hostnames, deduplicates them, and removes old rows", async () => {
     const fixture = serviceFixture();
     await expect(
-      runApiEffect(fixture.service.report("unknown-project-name-k7m2q9tz.openbot.site", "abuse", null, "203.0.113.10")),
+      runApiEffect(
+        fixture.service.report(
+          "unknown-project-name-k7m2q9tz.aikingbot-sites.aikingx.com",
+          "abuse",
+          null,
+          "203.0.113.10",
+        ),
+      ),
     ).rejects.toMatchObject({ code: "site_not_found" });
     const site = await publish(fixture.service, "alice", "publish-report", "activate-report");
 
@@ -927,7 +934,7 @@ describe("hosted site control plane", () => {
         )
         .bind(
           `expired-cleanup-${index}`,
-          `expired-cleanup-project-number-${index}-abcdefghij.openbot.site`,
+          `expired-cleanup-project-number-${index}-abcdefghij.aikingbot-sites.aikingx.com`,
           fixture.now() - 31 * 24 * 60 * 60_000,
           fixture.now() - 31 * 24 * 60 * 60_000,
           fixture.now() - 1,
@@ -1075,7 +1082,7 @@ describe("hosted sites per server", () => {
   it("accepts a server only with its machine token and its owner's account", async () => {
     const fixture = serviceFixture();
     const request = (headers: Record<string, string>, query = "") =>
-      new Request(`https://openbot.run/v1/sites/${query}`, { headers });
+      new Request(`https://aikingbot.aikingx.com/v1/sites/${query}`, { headers });
     const credential = (hostId: string, token: string) => ({
       [HOSTED_SITE_HOST_ID_HEADER]: hostId,
       [HOSTED_SITE_HOST_TOKEN_HEADER]: token,
@@ -1195,7 +1202,7 @@ async function uploadIndex(service: HostedSiteService, userId: string, uploadId:
       userId,
       uploadId,
       "index.html",
-      new Request("https://openbot.run/v1/sites/upload", {
+      new Request("https://aikingbot.aikingx.com/v1/sites/upload", {
         method: "PUT",
         headers: { "Content-Type": "text/html", "Content-Length": String(new TextEncoder().encode(HTML).byteLength) },
         body: HTML,

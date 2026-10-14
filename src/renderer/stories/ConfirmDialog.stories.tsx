@@ -1,4 +1,4 @@
-import { Button, ConfirmDialog, type ConfirmDialogProps, Heading, UserAvatar } from "@openbot/ui";
+import { Button, ConfirmDialog, type ConfirmDialogProps, Heading, UserAvatar } from "@aikingbot/ui";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -61,7 +61,7 @@ export const WithAvatar: Story = {
     triggerLabel: "Delete agent",
     title: "Delete Nova?",
     description:
-      "This removes the agent and its OpenBot conversation from the app. Its queue, memories, routines, and workspace are deleted.",
+      "This removes the agent and its AIKINGBOT conversation from the app. Its queue, memories, routines, and workspace are deleted.",
     media: <UserAvatar user={{ name: "Nova", email: "nova@example.com", avatarUrl: null }} decorative />,
   },
 };
@@ -91,7 +91,7 @@ export const WithDetails: Story = {
   args: {
     triggerLabel: "Uninstall plugin",
     title: "Uninstall Linear?",
-    description: "OpenBot removes these items from this computer:",
+    description: "AIKINGBOT removes these items from this computer:",
     confirmLabel: "Uninstall",
     pendingLabel: "Uninstalling…",
     children: (

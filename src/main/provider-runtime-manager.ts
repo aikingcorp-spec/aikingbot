@@ -14,10 +14,10 @@ import {
   type ManagedRuntimeId,
   type ProviderRuntimeSnapshot,
   type ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, redactText, toLogValue } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Fiber, Result, Scope, Stream } from "effect";
 import lockValue from "../../native-runtime.lock.json";
 import { type AgentRuntimeLock, parseAgentRuntimeLock } from "../../scripts/agent-runtime-lock";
@@ -42,7 +42,7 @@ import {
 } from "./provider-runtime-releases";
 
 const execFileAsync = promisify(execFile);
-const logger = createOpenBotLogger("provider-runtimes");
+const logger = createAIKINGBOTLogger("provider-runtimes");
 const PROVIDERS = MANAGED_RUNTIME_PROVIDERS;
 /**
  * Everything the store holds. Downloading, staging, verifying, sweeping and freeing disk are the
@@ -143,7 +143,7 @@ export interface ProviderRuntimeManagerOptions {
 /**
  * Where the downloaded provider CLIs live: one store for the whole computer, not one per profile.
  *
- * `appData/OpenBot` is exactly what Electron gives the packaged app as `userData` on macOS, Windows
+ * `appData/AIKINGBOT` is exactly what Electron gives the packaged app as `userData` on macOS, Windows
  * and Linux, so this is the path released builds already use and nothing has to be migrated. What
  * it changes is development, where every renderer port and every `--isolated` worktree gets a
  * profile of its own: each one used to start with an empty store, resolve the user's own CLI
@@ -156,7 +156,7 @@ export interface ProviderRuntimeManagerOptions {
 export function providerRuntimeRoot(input: { appData: string; userDataOverride: string }): string {
   const override = input.userDataOverride.trim();
   if (override) return join(resolve(override), "provider-runtimes");
-  return join(input.appData, "OpenBot", "provider-runtimes");
+  return join(input.appData, "AIKINGBOT", "provider-runtimes");
 }
 
 export class ProviderRuntimeManager extends EventEmitter<ProviderRuntimeManagerEvents> {
@@ -411,7 +411,7 @@ export class ProviderRuntimeManager extends EventEmitter<ProviderRuntimeManagerE
         });
       if (this.#stopping)
         return yield* new ProviderRuntimeFailure({ cause: new Error(sourceText("error.provider.closing")) });
-      // Only a provider CLI has a path override; nothing points `OPENBOT_BUN_PATH` at a tool runtime.
+      // Only a provider CLI has a path override; nothing points `AIKINGBOT_BUN_PATH` at a tool runtime.
       if (!isManagedToolRuntime(runtime) && configuredCliPath(runtime))
         return yield* new ProviderRuntimeFailure({ cause: new Error(sourceText("error.provider.cliOverride")) });
       if (this.#tasks.has(runtime)) return this.getStatus();
@@ -940,7 +940,7 @@ export class ProviderRuntimeManager extends EventEmitter<ProviderRuntimeManagerE
       );
       const response = yield* runtimeIO((signal) =>
         this.#fetch(url, {
-          headers: { "User-Agent": "OpenBot-runtime-installer" },
+          headers: { "User-Agent": "AIKINGBOT-runtime-installer" },
           signal: AbortSignal.any([signal, controller.signal, AbortSignal.timeout(30_000)]),
         }),
       ).pipe(Effect.mapError(({ cause }) => requestFailure(url, cause)));
@@ -970,7 +970,7 @@ export class ProviderRuntimeManager extends EventEmitter<ProviderRuntimeManagerE
           signal: AbortSignal.any([signal, effectSignal]),
           redirect: "follow",
           headers: {
-            "User-Agent": "OpenBot-runtime-installer",
+            "User-Agent": "AIKINGBOT-runtime-installer",
             ...(offset > 0 ? { Range: `bytes=${offset}-`, ...(etag ? { "If-Range": etag } : {}) } : {}),
           },
         }),
@@ -994,7 +994,7 @@ export class ProviderRuntimeManager extends EventEmitter<ProviderRuntimeManagerE
       if (this.#cancelled.has(runtime)) return;
       if (this.#stopping && isAbortError(error)) return;
       // The screen shows the reason only in the row. A support report then has the log alone.
-      if (!isAbortError(error)) logger.warn(`OpenBot could not install the ${runtime} runtime.`, toLogValue(error));
+      if (!isAbortError(error)) logger.warn(`AIKINGBOT could not install the ${runtime} runtime.`, toLogValue(error));
       const message = isAbortError(error)
         ? sourceText("status.provider.downloadStopped")
         : error instanceof Error

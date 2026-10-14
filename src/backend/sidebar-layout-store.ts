@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { mkdir, readFile, rename } from "node:fs/promises";
 import { dirname } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   isCompleteSectionOrder,
   SIDEBAR_PEOPLE_SECTION_ID,
@@ -10,10 +10,10 @@ import {
   type SidebarLayoutAction,
   type SidebarLayoutSnapshot,
   type SidebarSection,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { isUuidV4, legacyAgentId } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { isUuidV4, legacyAgentId } from "@aikingbot/contracts/validation";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Result, Semaphore } from "effect";
 import { writeFileAtomically } from "./atomic-json-file";
 import { isMissingFileError } from "./file-errors";

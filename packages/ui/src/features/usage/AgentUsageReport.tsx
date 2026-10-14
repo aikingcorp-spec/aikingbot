@@ -1,6 +1,6 @@
-import type { AnalyticsTotals, HostAnalytics } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, SlidingTabs } from "@openbot/ui";
+import type { AnalyticsTotals, HostAnalytics } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, SlidingTabs } from "@aikingbot/ui";
 import { createMemo, createStore, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
 import { UsageChart } from "./UsageChart";

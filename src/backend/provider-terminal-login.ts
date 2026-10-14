@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, type Scope } from "effect";
 import type { CliLoginProcess } from "./agent/cli-login-flow";
 import { waitForSuccessfulProcess } from "./agent/provider-status";
@@ -88,9 +88,9 @@ export const startProviderTerminalLogin = Effect.fn("ProviderTerminalLogin.start
               "-NoProfile",
               "-NonInteractive",
               "-Command",
-              "$p = Start-Process -FilePath $env:OPENBOT_LOGIN_EXECUTABLE -Wait -PassThru; exit $p.ExitCode",
+              "$p = Start-Process -FilePath $env:AIKINGBOT_LOGIN_EXECUTABLE -Wait -PassThru; exit $p.ExitCode",
             ],
-            { stdio: "ignore", windowsHide: true, env: { ...process.env, OPENBOT_LOGIN_EXECUTABLE: cli.executable } },
+            { stdio: "ignore", windowsHide: true, env: { ...process.env, AIKINGBOT_LOGIN_EXECUTABLE: cli.executable } },
           )
         : spawn("xterm", ["-e", cli.executable], { stdio: "ignore" }),
     ),

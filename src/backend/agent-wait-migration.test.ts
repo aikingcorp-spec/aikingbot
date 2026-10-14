@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
-import { migrateOpenBotDatabase } from "./openbot-database-schema";
+import { migrateAIKINGBOTDatabase } from "./aikingbot-database-schema";
 
 // Failure modes: the upgrade changes or loses a row of any table; a failed upgrade leaves the table
 // or its marker; a newer or incomplete history is accepted; a deleted routine deletes its waits
@@ -22,7 +22,7 @@ function databaseAt(version: number): DatabaseSync {
 function migrateUpTo(db: DatabaseSync, version: number): void {
   db.exec(`CREATE TEMP TRIGGER stop_at_version BEFORE INSERT ON schema_migrations WHEN new.version > ${version}
     BEGIN SELECT RAISE(ABORT, 'fixture stop'); END;`);
-  expect(() => migrateOpenBotDatabase(db)).toThrow(`migration to version ${version + 1} failed`);
+  expect(() => migrateAIKINGBOTDatabase(db)).toThrow(`migration to version ${version + 1} failed`);
   db.exec("DROP TRIGGER stop_at_version");
 }
 
@@ -61,7 +61,7 @@ describe("agent wait migration", () => {
       // The earlier migrations run first; the rows after them are what v34 must keep.
       if (version < 33) migrateUpTo(db, 33);
       const before = contents(db);
-      migrateOpenBotDatabase(db);
+      migrateAIKINGBOTDatabase(db);
       expect(contents(db)).toEqual({ ...before, agent_waits: [], projection_messaging_memories: [] });
       expect(db.prepare("SELECT MAX(version) AS version FROM schema_migrations").get()).toEqual({ version: 36 });
       expect(db.prepare("PRAGMA foreign_keys").get()).toEqual({ foreign_keys: 1 });
@@ -75,13 +75,13 @@ describe("agent wait migration", () => {
     const before = contents(db);
     db.exec(`CREATE TEMP TRIGGER fail_marker BEFORE INSERT ON schema_migrations WHEN new.version=34
       BEGIN SELECT RAISE(ABORT, 'late failure'); END;`);
-    expect(() => migrateOpenBotDatabase(db)).toThrow("migration to version 34 failed");
+    expect(() => migrateAIKINGBOTDatabase(db)).toThrow("migration to version 34 failed");
     expect(contents(db)).toEqual(before);
     expect(waitTables(db)).toEqual([]);
     expect(db.prepare("SELECT version FROM schema_migrations WHERE version=34").all()).toEqual([]);
     expect(db.prepare("PRAGMA foreign_keys").get()).toEqual({ foreign_keys: 1 });
     db.exec("DROP TRIGGER fail_marker");
-    migrateOpenBotDatabase(db);
+    migrateAIKINGBOTDatabase(db);
     expect(contents(db)).toEqual({ ...before, agent_waits: [], projection_messaging_memories: [] });
   });
 
@@ -89,16 +89,16 @@ describe("agent wait migration", () => {
     const db = databaseAtWithSeed(33);
     const before = contents(db);
     db.exec("INSERT INTO schema_migrations VALUES(37,'now')");
-    expect(() => migrateOpenBotDatabase(db)).toThrow("newer than this application supports");
+    expect(() => migrateAIKINGBOTDatabase(db)).toThrow("newer than this application supports");
     db.exec("DELETE FROM schema_migrations WHERE version=37; DELETE FROM schema_migrations WHERE version=20");
-    expect(() => migrateOpenBotDatabase(db)).toThrow("missing version 20");
+    expect(() => migrateAIKINGBOTDatabase(db)).toThrow("missing version 20");
     expect(contents(db)).toEqual(before);
     expect(waitTables(db)).toEqual([]);
   });
 
   it("keeps a wait when its routine is deleted, and leaves it to any routine run", () => {
     const db = databaseAtWithSeed(33);
-    migrateOpenBotDatabase(db);
+    migrateAIKINGBOTDatabase(db);
     db.prepare(`INSERT INTO agent_waits
       (wait_id, agent_id, request_delivery_id, request_text, note, routine_id, created_at)
       VALUES ('wait-1', 'chief', 'delivery-1', 'Ship it.', 'Build', 'routine-1', '2026-01-02')`).run();

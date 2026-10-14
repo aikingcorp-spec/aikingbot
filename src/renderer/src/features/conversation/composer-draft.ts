@@ -1,8 +1,8 @@
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import { isAttachmentSummary, type MarketplaceSkillDetail, SKILL_CREATION_REQUEST } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { decodeQueueEditRequest, type QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { skillExamplePrompt } from "@openbot/ui/components/SkillPreview";
+import { serializeChatTagReference } from "@aikingbot/contracts/chat-tag-references";
+import { isAttachmentSummary, type MarketplaceSkillDetail, SKILL_CREATION_REQUEST } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { decodeQueueEditRequest, type QueueEditRequest } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { skillExamplePrompt } from "@aikingbot/ui/components/SkillPreview";
 import type { ComposerDraft } from "./conversation-types";
 
 export const EMPTY_DRAFT: ComposerDraft = {
@@ -50,7 +50,7 @@ function appendDraftLine(draft: ComposerDraft, line: string): ComposerDraft {
   return { ...draft, text: draft.text ? `${draft.text}\n${line}` : line };
 }
 
-export const QUEUE_EDIT_STORAGE_KEY = "openbot:queue-edit";
+export const QUEUE_EDIT_STORAGE_KEY = "aikingbot:queue-edit";
 type StoredQueueSave = Extract<QueueEditRequest, { action: "save" }>;
 export interface StoredQueueEdit {
   agentId: string;

@@ -1,7 +1,7 @@
 // The Slack route: how a Slack request finds the host that answers it.
 //
-// The OpenBot Slack app has one request URL for every workspace that installs it,
-// `https://signal.openbot.run/v1/slack/events`. Signal checks Slack's signature, reads the workspace
+// The AIKINGBOT Slack app has one request URL for every workspace that installs it,
+// `https://signal.aikingbot.aikingx.com/v1/slack/events`. Signal checks Slack's signature, reads the workspace
 // ID (`team_id`) from the body, and passes the request to the `ingress` socket that holds a route
 // ticket for that workspace.
 //
@@ -10,7 +10,7 @@
 // claim another host's workspace. It is signed with its own key, not the ticket key, and it expires:
 // the host asks for a new one each time its `ingress` socket connects.
 
-export const SLACK_ROUTE_AUDIENCE = "openbot-slack-route";
+export const SLACK_ROUTE_AUDIENCE = "aikingbot-slack-route";
 
 export const SLACK_EVENTS_PATH = "/v1/slack/events";
 
@@ -34,7 +34,7 @@ export interface SlackRouteClaims {
 export interface SlackRouteTeam {
   // The Slack workspace ID.
   id: string;
-  // The OpenBot Slack app installed there. Signal routes each app's requests on their own.
+  // The AIKINGBOT Slack app installed there. Signal routes each app's requests on their own.
   appId: string;
   // When the account service linked the workspace to the host, in milliseconds. Signal keeps a
   // workspace with its newest link, so a host that lost the workspace cannot take it back with an

@@ -32,7 +32,7 @@ describe("isolateTestEnvironment", () => {
 
   it("moves the profile under HOME into a temporary directory for this file", () => {
     // The setup file ran before this test file, so a profile path built the way
-    // the app builds it cannot reach the developer's real `~/OpenBot`.
-    expect(join(homedir(), "OpenBot").startsWith(join(tmpdir(), "openbot-test-home-"))).toBe(true);
+    // the app builds it cannot reach the developer's real `~/AIKINGBOT`.
+    expect(join(homedir(), "AIKINGBOT").startsWith(join(tmpdir(), "aikingbot-test-home-"))).toBe(true);
   });
 });

@@ -1,5 +1,5 @@
+import type { AgentAccess, AgentAdminSettings, UpdateAgentAdminSettingsInput } from "@aikingbot/contracts/ipc";
 import { Host, Switch } from "@expo/ui";
-import type { AgentAccess, AgentAdminSettings, UpdateAgentAdminSettingsInput } from "@openbot/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Typography } from "heroui-native";
 import { useState } from "react";

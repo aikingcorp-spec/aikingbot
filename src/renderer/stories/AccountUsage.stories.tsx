@@ -1,8 +1,8 @@
-import { AccountUsageDetails } from "@openbot/ui/features/account/AccountUsageDetails";
+import { AccountUsageDetails } from "@aikingbot/ui/features/account/AccountUsageDetails";
 import {
   type AccountUsageProviderRow,
   accountUsageProviderRows,
-} from "@openbot/ui/features/account/account-usage-view";
+} from "@aikingbot/ui/features/account/account-usage-view";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

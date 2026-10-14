@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_ACCESS_MODES,
   AGENT_PROVIDERS,
@@ -6,7 +6,7 @@ import {
   AVATAR_HUES,
   AVATAR_SEED_PATTERN,
   isAvatarHue,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { z } from "zod";
 
 const profileFields = {

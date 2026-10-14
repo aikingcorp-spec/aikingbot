@@ -16,7 +16,7 @@ export const siteDecode = <A>(operation: () => A) => Effect.try({ try: operation
 
 /** Each site operation receives the current Worker's bindings. */
 export class HostedSiteStorage extends Context.Service<HostedSiteStorage, { database: D1Database; bucket: R2Bucket }>()(
-  "@openbot/auth-api/HostedSiteStorage",
+  "@aikingbot/auth-api/HostedSiteStorage",
 ) {
   static layer(database: D1Database, bucket: R2Bucket) {
     return Layer.succeed(HostedSiteStorage, HostedSiteStorage.of({ database, bucket }));

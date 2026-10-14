@@ -1,11 +1,11 @@
-import type { AgentSummary, ConversationMessage } from "@openbot/contracts/ipc";
+import type { AgentSummary, ConversationMessage } from "@aikingbot/contracts/ipc";
 import {
   hostedSiteConversationEventItemType,
   hostedSiteConversationEventText,
   routineConversationEventItemType,
   routineRunConversationEventItemType,
   skillConversationEventItemType,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { agentProfilesEqual, toAgentMessage, toAgentMessages, toAgentProfile } from "./app-message-projection";
 
@@ -140,7 +140,7 @@ describe("toAgentMessage", () => {
         action: "publish",
         status: "succeeded",
         siteId: "site-1",
-        hostname: "launch-page-23456789ab.openbot.site",
+        hostname: "launch-page-23456789ab.aikingbot-sites.aikingx.com",
       },
     });
     expect(toAgentMessage({ ...published, text: "{" }, "chief").actionMarker).toEqual({
@@ -183,8 +183,8 @@ function hostedSiteMessage(status: "succeeded"): ConversationMessage {
     text: hostedSiteConversationEventText({
       siteId: "site-1",
       title: "Launch page",
-      hostname: "launch-page-23456789ab.openbot.site",
-      url: "https://launch-page-23456789ab.openbot.site",
+      hostname: "launch-page-23456789ab.aikingbot-sites.aikingx.com",
+      url: "https://launch-page-23456789ab.aikingbot-sites.aikingx.com",
     }),
     createdAt: "2026-09-01T08:00:00.000Z",
     status: "completed",

@@ -1,8 +1,8 @@
-import { AppLogo } from "@openbot/brand";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isNeverExpiringInvite } from "@openbot/contracts/invite-links";
-import type { InvitePreview, JoinServerInput } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+import { AppLogo } from "@aikingbot/brand";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isNeverExpiringInvite } from "@aikingbot/contracts/invite-links";
+import type { InvitePreview, JoinServerInput } from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -19,9 +19,9 @@ import {
   OctagonX,
   Text,
   X,
-} from "@openbot/ui";
-import { motionDuration, prefersReducedMotion } from "@openbot/ui/utils";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/ui";
+import { motionDuration, prefersReducedMotion } from "@aikingbot/ui/utils";
+import type { UserErrorDetails } from "@aikingbot/user-errors";
 import { createSignal, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 
@@ -35,7 +35,7 @@ interface JoinServerDialogProps {
 
 type DialogPhase = "idle" | "previewing" | "joining";
 
-const INVITE_URL_PLACEHOLDER = "https://openbot.run/join?…";
+const INVITE_URL_PLACEHOLDER = "https://aikingbot.aikingx.com/join?…";
 
 export function JoinServerDialog(props: JoinServerDialogProps) {
   const { t, errorDetails } = useText();

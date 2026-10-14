@@ -45,7 +45,7 @@ async function runtime(overrides: Partial<CuaDriverRuntimeOptions> = {}) {
     executable: "/opt/cua/bin/cua-driver",
     endpoint: { kind: "unix-socket", directory: socketDirectory },
     supported: true,
-    hostBundleId: "app.openbot.desktop",
+    hostBundleId: "app.aikingbot.desktop",
     platform: "darwin",
     spawnProcess,
     waitForSocket: async () => undefined,
@@ -95,16 +95,16 @@ describe("CuaDriverRuntime", () => {
     expect(spawned).toHaveLength(0);
   });
 
-  it("marks itself embedded, so macOS holds OpenBot responsible for the grant", async () => {
+  it("marks itself embedded, so macOS holds AIKINGBOT responsible for the grant", async () => {
     const { driver, spawned } = await runtime();
     await runCauseEffect(driver.start());
 
     expect(spawned[0]?.options.env.CUA_DRIVER_EMBEDDED).toBe("1");
-    expect(spawned[0]?.options.env.CUA_DRIVER_HOST_BUNDLE_ID).toBe("app.openbot.desktop");
+    expect(spawned[0]?.options.env.CUA_DRIVER_HOST_BUNDLE_ID).toBe("app.aikingbot.desktop");
   });
 
-  it("makes neither call the driver makes to its own vendor, because OpenBot ships the driver and pins it", async () => {
-    // Set in the inherited environment, which the daemon spawn copies first. OpenBot ships the
+  it("makes neither call the driver makes to its own vendor, because AIKINGBOT ships the driver and pins it", async () => {
+    // Set in the inherited environment, which the daemon spawn copies first. AIKINGBOT ships the
     // driver, so the analytics and the release check stay off whatever a process it inherits from
     // asks for.
     vi.stubEnv("CUA_DRIVER_RS_TELEMETRY_ENABLED", "1");
@@ -171,14 +171,14 @@ describe("CuaDriverRuntime", () => {
     // ACP drops a stdio entry that carries a working directory, and Codex accepts none, so an entry
     // with one would vanish for two of the three providers with no error.
     expect(config?.workingDirectory).toBe("");
-    // The agents are handed OpenBot's own address, which forwards to the daemon. It is the only
-    // place OpenBot can see which window an agent works in.
+    // The agents are handed AIKINGBOT's own address, which forwards to the daemon. It is the only
+    // place AIKINGBOT can see which window an agent works in.
     expect(config?.args).toEqual(["mcp", "--socket", driver.tapAddress()]);
     expect(driver.tapAddress()).not.toBe(driver.socketPath());
     expect(config?.env.map((entry) => entry.key)).toContain("CUA_DRIVER_EMBEDDED");
   });
 
-  it("hands the agents the daemon itself when OpenBot cannot listen, rather than no tools", async () => {
+  it("hands the agents the daemon itself when AIKINGBOT cannot listen, rather than no tools", async () => {
     // A tap that cannot listen, the way a profile that refuses the address would leave it.
     class DeafTap extends CuaDriverActionTap {
       override listen = () => Effect.fail(new CuaDriverFailure({ cause: new Error("no such directory") }));
@@ -300,7 +300,7 @@ describe("CuaDriverRuntime", () => {
 
   // The panel tells a user with no driver to install it and check again. Reading the answer from
   // startup would make a restart the only way to finish that installation.
-  it("looks for the driver again, so an installation made while OpenBot runs is found", async () => {
+  it("looks for the driver again, so an installation made while AIKINGBOT runs is found", async () => {
     let installed: string | null = null;
     const { driver, spawned } = await runtime({
       executable: null,
@@ -436,7 +436,7 @@ describe("CuaDriverRuntime", () => {
   // nothing is unlinked, and the path-length rule that macOS and Linux need does not apply.
   it("serves on a named pipe on Windows, and measures no path", async () => {
     const { driver, spawned } = await runtime({
-      endpoint: { kind: "windows-pipe", name: `\\\\.\\pipe\\openbot-cua-${"x".repeat(200)}` },
+      endpoint: { kind: "windows-pipe", name: `\\\\.\\pipe\\aikingbot-cua-${"x".repeat(200)}` },
       platform: "win32",
     });
     await runCauseEffect(driver.start());
@@ -472,7 +472,7 @@ describe("CuaDriverRuntime", () => {
 
   // The driver keeps its native Wayland backend behind a variable, and without it a Wayland session
   // falls back to XWayland, where the driver sees only XWayland clients and misses every native
-  // window. OpenBot starts the daemon, so OpenBot is what knows which session it woke up on.
+  // window. AIKINGBOT starts the daemon, so AIKINGBOT is what knows which session it woke up on.
   it("turns on the Wayland backend on a Wayland session, and leaves an X11 one alone", async () => {
     vi.stubEnv("XDG_SESSION_TYPE", "wayland");
     const wayland = await runtime({ platform: "linux" });
@@ -501,7 +501,7 @@ describe("CuaDriverRuntime", () => {
   // empty permission list must read as ready, never as "nothing granted yet".
   it("treats a driver that answers as ready where the system grants no permission", async () => {
     const { driver } = await runtime({
-      endpoint: { kind: "windows-pipe", name: "\\\\.\\pipe\\openbot-cua-test" },
+      endpoint: { kind: "windows-pipe", name: "\\\\.\\pipe\\aikingbot-cua-test" },
       platform: "win32",
       readPermissions: async () => [],
     });
@@ -545,7 +545,7 @@ describe("CuaDriverRuntime", () => {
 
       expect(first).toEqual(second);
       expect(first.kind).toBe("windows-pipe");
-      expect(first.kind === "windows-pipe" && first.name).toMatch(/^\\\\\.\\pipe\\openbot-cua-[0-9a-f-]{36}$/);
+      expect(first.kind === "windows-pipe" && first.name).toMatch(/^\\\\\.\\pipe\\aikingbot-cua-[0-9a-f-]{36}$/);
 
       const other = await mkdtemp(join(tmpdir(), "cua-profile-"));
       directories.push(other);
@@ -570,7 +570,7 @@ describe("CuaDriverRuntime", () => {
           temporaryDirectory: tmpdir(),
         }),
       );
-      expect(endpoint.kind === "windows-pipe" && endpoint.name).toMatch(/openbot-cua-[0-9a-f-]{36}$/);
+      expect(endpoint.kind === "windows-pipe" && endpoint.name).toMatch(/aikingbot-cua-[0-9a-f-]{36}$/);
     });
 
     it("names the same socket directory for one profile, and a different one for another", async () => {
@@ -578,21 +578,21 @@ describe("CuaDriverRuntime", () => {
       const mine = await runCauseEffect(
         resolveCuaDriverEndpoint({
           platform: "darwin",
-          userDataPath: "/Users/a/Library/OpenBot",
+          userDataPath: "/Users/a/Library/AIKINGBOT",
           temporaryDirectory,
         }),
       );
       const again = await runCauseEffect(
         resolveCuaDriverEndpoint({
           platform: "darwin",
-          userDataPath: "/Users/a/Library/OpenBot",
+          userDataPath: "/Users/a/Library/AIKINGBOT",
           temporaryDirectory,
         }),
       );
       const other = await runCauseEffect(
         resolveCuaDriverEndpoint({
           platform: "darwin",
-          userDataPath: "/Users/a/Library/OpenBot-dev",
+          userDataPath: "/Users/a/Library/AIKINGBOT-dev",
           temporaryDirectory,
         }),
       );
@@ -607,7 +607,7 @@ describe("CuaDriverRuntime", () => {
       const onLinux = await runCauseEffect(
         resolveCuaDriverEndpoint({
           platform: "linux",
-          userDataPath: "/home/a/.config/OpenBot",
+          userDataPath: "/home/a/.config/AIKINGBOT",
           temporaryDirectory: "/tmp",
           runtimeDirectory: "/run/user/1000",
         }),
@@ -615,7 +615,7 @@ describe("CuaDriverRuntime", () => {
       const noSession = await runCauseEffect(
         resolveCuaDriverEndpoint({
           platform: "linux",
-          userDataPath: "/home/a/.config/OpenBot",
+          userDataPath: "/home/a/.config/AIKINGBOT",
           temporaryDirectory: "/tmp",
           runtimeDirectory: "  ",
         }),
@@ -634,11 +634,11 @@ describe("CuaDriverRuntime", () => {
       const onAppImage: CuaDriverCommandAliasInput = {
         platform: "linux",
         isPackaged: true,
-        appImagePath: "/home/jane/Applications/OpenBot.AppImage",
-        userDataPath: "/home/jane/.config/OpenBot",
+        appImagePath: "/home/jane/Applications/AIKINGBOT.AppImage",
+        userDataPath: "/home/jane/.config/AIKINGBOT",
       };
 
-      expect(cuaDriverCommandAlias(onAppImage)).toBe("/home/jane/.config/OpenBot/cua-driver/cua-driver");
+      expect(cuaDriverCommandAlias(onAppImage)).toBe("/home/jane/.config/AIKINGBOT/cua-driver/cua-driver");
       expect(cuaDriverCommandAlias({ ...onAppImage, appImagePath: "  " })).toBeNull();
       expect(cuaDriverCommandAlias({ ...onAppImage, isPackaged: false })).toBeNull();
       expect(cuaDriverCommandAlias({ ...onAppImage, platform: "darwin" })).toBeNull();

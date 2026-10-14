@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { BrowserBounds, BrowserEnvironment } from "@openbot/contracts/ipc";
-import { isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { legacyAgentId } from "@openbot/contracts/validation";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { BrowserBounds, BrowserEnvironment } from "@aikingbot/contracts/ipc";
+import { isBoolean, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { legacyAgentId } from "@aikingbot/contracts/validation";
 import { Effect } from "effect";
 import { browserCall, browserSync } from "./browser-effects";
 import type { BrowserToolArguments } from "./browser-tools";
@@ -180,7 +180,7 @@ export function reownStoredBrowserTab(tab: StoredBrowserTab, agents: readonly Br
   const owner = tabOwner(tab, agents);
   if (!owner) return tab;
   // Both fields are brought to the owner, not just the one that failed to match. A generated agent's
-  // thread id is `openbot-thread-<uuid>` with no agent id inside it, so v13 never touched it and it
+  // thread id is `aikingbot-thread-<uuid>` with no agent id inside it, so v13 never touched it and it
   // matches on its own -- while the owner id beside it is still the pre-rename spelling. Stopping at the
   // first match would call that tab correct and leave `#canUseToolTab`, which checks both, refusing it.
   const ownerThreadId = tab.ownerThreadId === null || owner.threadId === null ? tab.ownerThreadId : owner.threadId;

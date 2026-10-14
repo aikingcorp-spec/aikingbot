@@ -1,4 +1,4 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
+import type { UpdateStatus } from "@aikingbot/contracts/ipc";
 import { createSignal, flush, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { FALLBACK_UPDATE_STATUS } from "../../app-defaults";
@@ -92,7 +92,7 @@ const Updates = createSimpleContext({
 
     createScheduledUpdateToast({ status, cancel: cancelScheduledRestart });
 
-    /** Restarts OpenBot when no work runs. A downloaded update is installed by the same restart. */
+    /** Restarts AIKINGBOT when no work runs. A downloaded update is installed by the same restart. */
     async function restartWhenIdle(): Promise<void> {
       const current = status();
       const target = current.phase === "ready" && current.managedByHost !== true ? "update" : "relaunch";

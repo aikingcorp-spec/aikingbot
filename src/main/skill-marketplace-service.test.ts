@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import { zipSync } from "fflate";
 import { afterEach, assert, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -16,7 +16,7 @@ const encoder = new TextEncoder();
 let root = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-skills-test-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-skills-test-"));
 });
 afterEach(async () => {
   await rm(root, { recursive: true, force: true });
@@ -407,7 +407,7 @@ describe("SkillMarketplaceService", () => {
         await expect(readFile(join(folder(provider, name), "SKILL.md"))).rejects.toThrow();
 
     // A lock entry from before packs has no `folders`: its `skills/` stays inside its own folder.
-    const lockFile = join(agent.workspacePath, ".openbot", "skills-lock.json");
+    const lockFile = join(agent.workspacePath, ".aikingbot", "skills-lock.json");
     await install();
     const lock = JSON.parse(await readFile(lockFile, "utf8"));
     expect(lock.skills["pack-1"].folders).toEqual(["pack-a", "pack-b"]);

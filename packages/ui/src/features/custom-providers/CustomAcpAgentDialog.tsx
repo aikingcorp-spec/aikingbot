@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type AcpAgentPreset, CUSTOM_AGENT_LIMITS } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { type AcpAgentPreset, CUSTOM_AGENT_LIMITS } from "@aikingbot/contracts/ipc";
 import {
   Alert,
   AlertContent,
@@ -21,7 +21,7 @@ import {
   Text,
   TriangleAlert,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createEffect, createSignal, createStore, For, Match, onSettled, Show, Switch, untrack } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { useText } from "../../text";

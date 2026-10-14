@@ -5,8 +5,8 @@ import type {
   CustomAgentsDesktopApi,
   CustomProviderRestart,
   SaveCustomAgentInput,
-} from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
 import { createStore } from "solid-js";
 
 interface CustomAgentsState {

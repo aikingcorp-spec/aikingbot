@@ -1,10 +1,10 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { createFileRoute } from "@tanstack/solid-router";
 
 // Reached from any hosted site with that site's name in the query, so it is kept out of search.
 export const Route = createFileRoute("/report-site")({
   head: () => ({
-    meta: [{ title: "Report a hosted site — OpenBot" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "Report a hosted site — AIKINGBOT" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   validateSearch: (value) => ({
     hostname: isDynamicRecord(value) && isString(value.hostname) ? value.hostname : "",
@@ -17,7 +17,7 @@ function ReportSite() {
   return (
     <main class="report-site-page">
       <h1>Report a hosted site</h1>
-      <p>Send a report about harmful or unlawful content hosted on openbot.site.</p>
+      <p>Send a report about harmful or unlawful content hosted on aikingbot-sites.aikingx.com.</p>
       <form method="post" action="/v1/sites/reports">
         <label>
           Site address

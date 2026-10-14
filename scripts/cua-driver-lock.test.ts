@@ -24,7 +24,7 @@ afterEach(async () => {
 });
 
 describe("the cua-driver pin", () => {
-  it("names one asset and one digest per file for every target OpenBot packages", () => {
+  it("names one asset and one digest per file for every target AIKINGBOT packages", () => {
     for (const target of cuaDriverTargets) {
       const artifact = lock.artifacts[target];
       expect(artifact.asset).toContain(lock.version);
@@ -52,7 +52,7 @@ describe("the cua-driver pin", () => {
     ).toThrow(/linux-x64 cua-driver asset/u);
   });
 
-  it("rejects a pin that forgets a file OpenBot ships", () => {
+  it("rejects a pin that forgets a file AIKINGBOT ships", () => {
     expect(() =>
       parseCuaDriverLock(
         withLock((value) => {
@@ -63,7 +63,7 @@ describe("the cua-driver pin", () => {
           };
         }),
       ),
-    ).toThrow(/does not list the files OpenBot ships/u);
+    ).toThrow(/does not list the files AIKINGBOT ships/u);
   });
 });
 
@@ -134,7 +134,7 @@ function withLock(change: (value: CuaDriverLock) => CuaDriverLock): { cuaDriver:
 }
 
 async function makeTemporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-cua-driver-layout-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-cua-driver-layout-"));
   temporaryRoots.push(root);
   return root;
 }

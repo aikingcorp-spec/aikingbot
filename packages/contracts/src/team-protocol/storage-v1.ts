@@ -131,11 +131,11 @@ const empty: Decoder = (value) => record(value, {});
 const STORAGE_ROUTE_PATHS: ReadonlySet<string> = new Set(Object.values(STORAGE_ROUTES));
 
 export function isStorageRoute(path: string): boolean {
-  return STORAGE_ROUTE_PATHS.has(new URL(path, "http://openbot.invalid").pathname);
+  return STORAGE_ROUTE_PATHS.has(new URL(path, "http://aikingbot.invalid").pathname);
 }
 
 export function storageRequest(path: string, value: unknown): TeamProtocolV2Json {
-  const pathname = new URL(path, "http://openbot.invalid").pathname;
+  const pathname = new URL(path, "http://aikingbot.invalid").pathname;
   if (pathname === STORAGE_ROUTES.usage) return usageRequest(value);
   if (pathname === STORAGE_ROUTES.deleteFile) return record(value, { fileId: identifier });
   if (pathname === STORAGE_ROUTES.clear) return record(value, { category: oneOf("caches", "logs") });
@@ -144,7 +144,7 @@ export function storageRequest(path: string, value: unknown): TeamProtocolV2Json
 
 export function storageResponse(path: string, status: number, value: unknown): TeamProtocolV2Json {
   if (status >= 400) return record(value, { error: string(100_000) });
-  const pathname = new URL(path, "http://openbot.invalid").pathname;
+  const pathname = new URL(path, "http://aikingbot.invalid").pathname;
   if (pathname === STORAGE_ROUTES.usage) return usage(value);
   if (pathname === STORAGE_ROUTES.deleteFile || pathname === STORAGE_ROUTES.clear) return empty(value);
   throw new Error("Unknown storage route.");

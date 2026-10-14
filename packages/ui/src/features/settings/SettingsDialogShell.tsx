@@ -1,5 +1,5 @@
-import { Dialog, IconButton, X } from "@openbot/ui";
-import { cx, prefersReducedMotion } from "@openbot/ui/utils";
+import { Dialog, IconButton, X } from "@aikingbot/ui";
+import { cx, prefersReducedMotion } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { useText } from "../../text";
@@ -35,7 +35,7 @@ function durationToMilliseconds(value: string, fallback: number): number {
 function closeDuration(): number {
   if (prefersReducedMotion()) return 0;
   return durationToMilliseconds(
-    getComputedStyle(document.documentElement).getPropertyValue("--openbot-duration-fast"),
+    getComputedStyle(document.documentElement).getPropertyValue("--aikingbot-duration-fast"),
     120,
   );
 }

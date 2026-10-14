@@ -9,6 +9,7 @@ import {
   type AgentImportPreview,
   type AgentMemory,
   type AgentMemorySelectionState,
+  type AIKINGBOTDesktopApi,
   type ApplyAgentImportInput,
   type AttachmentSummary,
   BROWSER_SECRET_RESPONSE_PATH,
@@ -33,7 +34,6 @@ import {
   isRoutineFlowCanvas,
   isRoutineFlowLink,
   isRoutineRun,
-  type OpenBotDesktopApi,
   type RemoteAgentImportResult,
   type ReorderQueueInput,
   type RespondToApprovalInput,
@@ -46,21 +46,21 @@ import {
   type TestRoutineInput,
   type UpdateQueuedMessageInput,
   type UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
-import { guardedDecoder } from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_IMPORT_ROUTES, AGENT_IMPORT_UPLOAD_BYTES } from "@openbot/contracts/team-protocol/agent-import-v1";
+} from "@aikingbot/contracts/ipc";
+import { guardedDecoder } from "@aikingbot/contracts/ipc-decoding";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { AGENT_IMPORT_ROUTES, AGENT_IMPORT_UPLOAD_BYTES } from "@aikingbot/contracts/team-protocol/agent-import-v1";
 import {
   AGENT_MEMORIES_PAGE_ROUTE,
   AGENT_MEMORIES_PAGE_SIZE,
   AGENT_MEMORY_INCLUSION_ROUTE,
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
-} from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { CONTEXT_RESET_ROUTES } from "@openbot/contracts/team-protocol/context-reset-v1";
-import { ROUTINE_FLOWS_ROUTES } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
+} from "@aikingbot/contracts/team-protocol/agent-memories-v1";
+import { CHANNEL_ROUTES } from "@aikingbot/contracts/team-protocol/channels-v1";
+import { CONTEXT_RESET_ROUTES } from "@aikingbot/contracts/team-protocol/context-reset-v1";
+import { ROUTINE_FLOWS_ROUTES } from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
 import type { RemoteFileUpload } from "./file-upload";
 
 export class TeamRequestError extends Schema.TaggedError<TeamRequestError>()("TeamRequestError", {
@@ -225,7 +225,7 @@ export const respondToBrowserSecret = Effect.fn("TeamClient.respondToBrowserSecr
 
 /** The channel calls of the desktop IPC surface, which a remote desktop sends to the host the same way. */
 export type TeamChannelsApi = Pick<
-  OpenBotDesktopApi["agent"],
+  AIKINGBOTDesktopApi["agent"],
   | "listChannels"
   | "readChannel"
   | "channelCommand"
@@ -293,7 +293,7 @@ export const testAgentRoutine = Effect.fn("TeamClient.testAgentRoutine")(functio
 });
 
 /** The routine canvas calls of the desktop IPC surface. Send them only to a host that serves `routine-flows-v1`. */
-export type TeamRoutineFlowsApi = OpenBotDesktopApi["routineFlows"];
+export type TeamRoutineFlowsApi = AIKINGBOTDesktopApi["routineFlows"];
 
 const decodeRoutineFlowCanvas = guardedDecoder(isRoutineFlowCanvas, "routine flow canvas");
 const decodeRoutineFlowLink = guardedDecoder(isRoutineFlowLink, "routine flow link");

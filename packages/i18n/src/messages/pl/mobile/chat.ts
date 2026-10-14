@@ -4,7 +4,7 @@ import type { messages as source } from "../../en/mobile/chat";
 export const messages = {
   "mobile.chat.dictation.microphoneOffTitle": "Dostęp do mikrofonu jest wyłączony",
   "mobile.chat.dictation.microphoneOffMessage":
-    "Aby dyktować wiadomość, zezwól OpenBot na używanie mikrofonu i rozpoznawania mowy w Ustawieniach.",
+    "Aby dyktować wiadomość, zezwól AIKINGBOT na używanie mikrofonu i rozpoznawania mowy w Ustawieniach.",
   "mobile.chat.dictation.stopped": "Dyktowanie zatrzymane",
   "mobile.chat.dictation.tryAgain": "Spróbuj ponownie.",
   "mobile.chat.dictation.unavailable": "Dyktowanie jest niedostępne",
@@ -92,7 +92,8 @@ export const messages = {
   "mobile.chat.attachment.unavailable": "Załącznik jest niedostępny. Spróbuj ponownie.",
   "mobile.chat.attachment.openFailed": "Nie udało się otworzyć załącznika",
   "mobile.chat.attachment.photosNeedUpdate": "Zapisywanie zdjęć wymaga najnowszej wersji aplikacji.",
-  "mobile.chat.attachment.photosPermission": "Zezwól OpenBot na dodawanie zdjęć w Ustawieniach, aby zapisać ten obraz.",
+  "mobile.chat.attachment.photosPermission":
+    "Zezwól AIKINGBOT na dodawanie zdjęć w Ustawieniach, aby zapisać ten obraz.",
   "mobile.chat.attachment.imageUnavailable": "Obraz jest niedostępny. Spróbuj ponownie.",
   "mobile.chat.attachment.saveImageFailed": "Nie udało się zapisać obrazu",
   "mobile.chat.attachment.preview": "Podgląd: {name}",
@@ -116,9 +117,9 @@ export const messages = {
   "mobile.chat.attachment.unsupported":
     "{name}: wybierz obrazy, dźwięk MP3, wideo MOV, PDF, dokumenty Office, EML, tekst, Markdown, dane lub pliki źródłowe.",
   "mobile.chat.attachment.hostRejectsType":
-    "{name}: komputer-host nie przyjmuje plików {type}. Zaktualizuj tam OpenBot, aby je załączać.",
+    "{name}: komputer-host nie przyjmuje plików {type}. Zaktualizuj tam AIKINGBOT, aby je załączać.",
   "mobile.chat.attachment.hostRejects":
-    "{name}: komputer-host nie przyjmuje tych plików. Zaktualizuj tam OpenBot, aby je załączać.",
+    "{name}: komputer-host nie przyjmuje tych plików. Zaktualizuj tam AIKINGBOT, aby je załączać.",
   "mobile.chat.attachment.nameTooLong": "Wybierz plik o krótszej nazwie.",
   "mobile.chat.attachment.damaged": "Załącznik jest uszkodzony. Wybierz go ponownie.",
   "mobile.chat.attachment.tooLarge": "{name} ma ponad 10 MB.",
@@ -166,7 +167,7 @@ export const messages = {
   "mobile.chat.browserSecret.authenticatorCode": "Kod z aplikacji uwierzytelniającej",
   "mobile.chat.browserSecret.oneTimeCode": "Kod jednorazowy",
   "mobile.chat.browserSecret.takeoverTitle": "Przejęcie przeglądarki",
-  "mobile.chat.browserSecret.takeoverBody": "Wykonaj ten krok w przeglądarce na komputerze z OpenBot.",
+  "mobile.chat.browserSecret.takeoverBody": "Wykonaj ten krok w przeglądarce na komputerze z AIKINGBOT.",
   "mobile.chat.browserSecret.takeoverReload": "Potem odśwież stronę, zanim wybierzesz „Gotowe”.",
   "mobile.chat.browserSecret.takeoverFailed": "Nie udało się zrealizować żądania.",
   "mobile.chat.browserSecret.done": "Gotowe",
@@ -256,7 +257,7 @@ export const messages = {
   "mobile.chat.approval.effect.permissions":
     "„Zezwól” daje agentowi {name} te uprawnienia na {server}. „Odmów” zachowuje obecne uprawnienia.",
   "mobile.chat.approval.partial":
-    "To żądanie jest zbyt długie, aby pokazać je na telefonie. Aby na nie zezwolić, otwórz OpenBot na {server}. Odmówić możesz tutaj.",
+    "To żądanie jest zbyt długie, aby pokazać je na telefonie. Aby na nie zezwolić, otwórz AIKINGBOT na {server}. Odmówić możesz tutaj.",
   "mobile.chat.approval.allow": "Zezwól",
   "mobile.chat.approval.deny": "Odmów",
   "mobile.chat.approval.reconnect": "Połącz się z {server}, aby odpowiedzieć na to żądanie.",

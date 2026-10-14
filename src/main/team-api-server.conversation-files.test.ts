@@ -1,11 +1,11 @@
-import { type ConversationFileSearchPage, isAgentSummary } from "@openbot/contracts/ipc";
+import { type ConversationFileSearchPage, isAgentSummary } from "@aikingbot/contracts/ipc";
 import {
   CONVERSATION_FILE_SEARCH_CAPABILITY,
   CONVERSATION_FILE_SEARCH_ROUTES,
   decodeConversationFileSearchResponse,
-} from "@openbot/contracts/team-protocol/conversation-file-search-v1";
-import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol/v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/conversation-file-search-v1";
+import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@aikingbot/contracts/team-protocol/v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import agentFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
 import {
@@ -35,7 +35,7 @@ function file(agentId: string, id: string): ConversationFileSearchPage["results"
       kind: "file",
       mimeType: "application/pdf",
       previewKind: "pdf",
-      previewUrl: `openbot-attachment://file/${id}`,
+      previewUrl: `aikingbot-attachment://file/${id}`,
     },
   };
 }

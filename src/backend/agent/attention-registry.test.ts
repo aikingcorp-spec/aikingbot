@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_RUNTIME_QUESTION_DESCRIPTION_LIMIT,
   AGENT_RUNTIME_TEXT_LIMIT,
@@ -7,18 +7,18 @@ import {
   type BrowserTab,
   COMPUTER_USE_MCP_SERVER_NAME,
   isAgentEvent,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentProvider } from "../agent-client";
 import type { AgentService } from "../agent-service";
 import {
+  aikingBotToolPayload,
   createTestService,
   FakeAgentClient,
   fakeBrowser,
   notification,
-  openBotToolPayload,
   startAgentTestFixture,
   stopAgentTestFixture,
   stores,
@@ -75,7 +75,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId: externalId,
         turnId,
         command: ["npm", "test"],
-        cwd: "/tmp/openbot",
+        cwd: "/tmp/aikingbot",
         reason: "r".repeat(1_000),
       },
     });
@@ -89,7 +89,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           agentId: "chief",
           kind: "command",
           command: "npm test",
-          cwd: "/tmp/openbot",
+          cwd: "/tmp/aikingbot",
         }),
       }),
     );
@@ -132,7 +132,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId: externalId,
         turnId,
         permissions: {
-          fileSystem: { read: ["/tmp/openbot"], write: ["/tmp/openbot/out"] },
+          fileSystem: { read: ["/tmp/aikingbot"], write: ["/tmp/aikingbot/out"] },
           network: { enabled: true },
         },
       },
@@ -440,7 +440,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         },
       });
       await waitFor(
-        () => service?.getLocalAttention("chief").prompts.some((prompt) => prompt.requiresOpenBot) === true,
+        () => service?.getLocalAttention("chief").prompts.some((prompt) => prompt.requiresAIKINGBOT) === true,
       );
       const prompt = service.getLocalAttention("chief").prompts[0];
       if (!prompt) throw new Error("The account question is missing.");
@@ -455,7 +455,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         ),
       ).rejects.toThrow("This prompt is no longer active.");
       expect(client.responses).toHaveLength(responseCount);
-      // The person can still answer the original choice in OpenBot.
+      // The person can still answer the original choice in AIKINGBOT.
       await runCauseEffect(service.respondToPrompt({ requestId: "redacted-choice", answers: { [id]: [label] } }));
       expect(client.responses.at(-1)).toEqual({
         id: "redacted-choice",
@@ -499,7 +499,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [
@@ -539,7 +539,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
 
     const localPrompt = service.getLocalAttention("chief").prompts[0];
     if (!localPrompt) throw new Error("The local prompt is missing.");
-    expect(localPrompt.requiresOpenBot).toBe(true);
+    expect(localPrompt.requiresAIKINGBOT).toBe(true);
     await expect(
       runCauseEffect(
         service.respondToLocalAttention("chief", {
@@ -610,7 +610,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "skipped-question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [{ id: "favorite", header: "Favorite", question: "Choose again." }],
@@ -632,7 +632,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "cancelled-question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [{ id: "favorite", header: "Favorite", question: "Choose one more time." }],
@@ -654,7 +654,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "duplicate-question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [
@@ -703,7 +703,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId,
           turnId,
           callId: invalidPrompt.id,
-          namespace: "openbot",
+          namespace: "aikingbot",
           tool: "ask_user",
           arguments: { questions: invalidPrompt.questions },
         },
@@ -733,7 +733,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "retry-question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [{ id: "retry", header: "Retry", question: "Can this answer be retried?" }],
@@ -774,7 +774,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "persistence-question-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [{ id: "delivery", header: "Delivery", question: "Was the answer delivered?" }],
@@ -860,7 +860,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId: externalThreadId,
           turnId: started.turnId,
           callId: "open-call",
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "open",
           arguments: { url: "https://example.com/login" },
         },
@@ -878,7 +878,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId: externalThreadId,
           turnId: started.turnId,
           callId: "takeover-call",
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "request_takeover",
           arguments: { tabId: "protected-tab" },
         },
@@ -898,7 +898,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId: externalThreadId,
           turnId: started.turnId,
           callId: "snapshot-during-takeover",
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "snapshot",
           arguments: { tabId: "protected-tab" },
         },
@@ -918,7 +918,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId: externalThreadId,
           turnId: started.turnId,
           callId: "takeover-duplicate",
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "request_takeover",
           arguments: { tabId: "protected-tab" },
         },
@@ -926,14 +926,14 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
       await waitFor(() => client.responses.length === 3);
       expect(client.responses[2]?.result).toEqual({
         success: false,
-        contentItems: [{ type: "inputText", text: "OpenBot could not create a browser takeover request." }],
+        contentItems: [{ type: "inputText", text: "AIKINGBOT could not create a browser takeover request." }],
       });
       expect(events.filter((event) => event.type === "browser-takeover-requested")).toHaveLength(1);
       expect(control).toEqual(["begin:protected-tab"]);
 
       await runCauseEffect(service.respondToBrowserTakeover({ requestId: "takeover-call", decision: "complete" }));
       await waitFor(() => client.responses.length === 4);
-      expect(openBotToolPayload(client.responses[3]?.result)).toEqual({
+      expect(aikingBotToolPayload(client.responses[3]?.result)).toEqual({
         status: "completed",
         next: "Take a fresh snapshot and continue the task.",
       });
@@ -954,7 +954,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
           threadId: externalThreadId,
           turnId: started.turnId,
           callId: "takeover-cancel",
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "request_takeover",
           arguments: { tabId: "protected-tab" },
         },
@@ -966,7 +966,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
       );
       await runCauseEffect(service.respondToBrowserTakeover({ requestId: "takeover-cancel", decision: "cancel" }));
       await waitFor(() => client.responses.length === 5);
-      expect(openBotToolPayload(client.responses[4]?.result)).toEqual({ status: "cancelled" });
+      expect(aikingBotToolPayload(client.responses[4]?.result)).toEqual({ status: "cancelled" });
       // Cancelling returns the tab as surely as completing does.
       expect(control).toEqual(["begin:protected-tab", "end:protected-tab", "begin:protected-tab", "end:protected-tab"]);
     },
@@ -1050,7 +1050,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
         threadId,
         turnId,
         callId: "turn-end-prompt",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: { questions: [{ id: "scope", header: "Scope", question: "Which scope?" }] },
       },
@@ -1058,7 +1058,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
     client.emit("request", {
       method: "item/commandExecution/requestApproval",
       id: "turn-end-approval",
-      params: { threadId, turnId, command: ["git", "status"], cwd: "/tmp/openbot", reason: "Inspect the worktree." },
+      params: { threadId, turnId, command: ["git", "status"], cwd: "/tmp/aikingbot", reason: "Inspect the worktree." },
     });
     await waitFor(() => events.some((event) => event.type === "approval"));
 
@@ -1136,7 +1136,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
       params: {
         threadId: externalId,
         turnId,
-        permissions: { fileSystem: { read: ["/tmp/openbot"], write: [] }, network: { enabled: true } },
+        permissions: { fileSystem: { read: ["/tmp/aikingbot"], write: [] }, network: { enabled: true } },
       },
     });
     await waitFor(() => client.responses.some((response) => response.id === "granted-permissions"));
@@ -1144,7 +1144,7 @@ describe.sequential("AttentionRegistry: prompts, approvals and browser takeovers
     expect(client.responses.at(-1)).toEqual({
       id: "granted-permissions",
       result: {
-        permissions: { fileSystem: { read: ["/tmp/openbot"], write: [] }, network: { enabled: true } },
+        permissions: { fileSystem: { read: ["/tmp/aikingbot"], write: [] }, network: { enabled: true } },
         scope: "turn",
       },
     });
@@ -1281,7 +1281,7 @@ it.each([
       method: "item/tool/call",
       id: "auth-request",
       params: {
-        namespace: "openbot_browser",
+        namespace: "aikingbot_browser",
         tool: "submit_secret",
         threadId,
         turnId: started.turnId,
@@ -1362,7 +1362,7 @@ it("returns the secure input refusal so the agent can request takeover", async (
     method: "item/tool/call",
     id: "auth-request",
     params: {
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool: "submit_secret",
       threadId,
       turnId: started.turnId,
@@ -1445,7 +1445,7 @@ describe("filling from the shared password vault", () => {
       client.emit("request", {
         method: "item/tool/call",
         id,
-        params: { namespace: "openbot_browser", tool, threadId, turnId: started.turnId, callId: id, arguments: args },
+        params: { namespace: "aikingbot_browser", tool, threadId, turnId: started.turnId, callId: id, arguments: args },
       });
     return { client, events, submit, call };
   }
@@ -1502,7 +1502,7 @@ function emitToolRequest(
           ...request,
           params: {
             ...params,
-            namespace: "openbot",
+            namespace: "aikingbot",
             tool: "tool_call",
             arguments: { name: `${params.namespace}.${params.tool}`, arguments: params.arguments },
           },

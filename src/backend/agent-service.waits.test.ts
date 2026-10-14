@@ -1,14 +1,14 @@
 // @vitest-environment node
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentService } from "./agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   createTestService,
   FakeAgentClient,
   inputRecords,
   notification,
-  openBotToolPayload,
   startAgentTestFixture,
   stopAgentTestFixture,
   stores,
@@ -38,7 +38,7 @@ describe("open waits", () => {
   it("opens a wait in a user turn, continues it in the next routine run, and closes it", async () => {
     const { store, mailbox } = stores(root);
     const clients: FakeAgentClient[] = [];
-    const toolResults: ReturnType<typeof openBotToolPayload>[] = [];
+    const toolResults: ReturnType<typeof aikingBotToolPayload>[] = [];
     let turns = 0;
     let waitId = "";
     const answer = async (client: FakeAgentClient, threadId: string, turnId: string) => {
@@ -46,9 +46,9 @@ describe("open waits", () => {
       await waitFor(() => mailbox.findDeliveriesByTurn(agent.id, turnId).length > 0);
       const { result } =
         turns === 1
-          ? await callOpenBotTool(client, threadId, "await_event", { note: NOTE }, turnId)
-          : await callOpenBotTool(client, threadId, "close_wait", { waitId }, turnId);
-      const payload = openBotToolPayload(result);
+          ? await callAIKINGBOTTool(client, threadId, "await_event", { note: NOTE }, turnId)
+          : await callAIKINGBOTTool(client, threadId, "close_wait", { waitId }, turnId);
+      const payload = aikingBotToolPayload(result);
       toolResults.push(payload);
       if (turns === 1) waitId = String(payload.waitId);
       client.emit(

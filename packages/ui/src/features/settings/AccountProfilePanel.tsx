@@ -1,4 +1,4 @@
-import type { AccountSession, AvatarImageInput, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AccountSession, AvatarImageInput, CentralAuthUser } from "@aikingbot/contracts/ipc";
 import { SettingsPanel, SettingsPanelContent, SettingsPanelHeader } from "../../components/SettingsPanel";
 import { useText } from "../../text";
 import { ProfileNameSaveBar } from "./ProfileNameSaveBar";

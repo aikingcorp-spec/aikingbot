@@ -36,7 +36,7 @@ export function describeTarget(url: string): string {
 // browser views beside the main window, in no guaranteed order. Only the bare
 // renderer route on a loopback origin is the app itself - an embedded view
 // showing an external site must never be a candidate, because `click` and
-// `type` would land on that site instead of OpenBot.
+// `type` would land on that site instead of AIKINGBOT.
 export function isMainAppUrl(url: string, expectedRendererPort: number | null = null): boolean {
   let parsed: URL;
   try {

@@ -1,4 +1,4 @@
-import type { HostedServerSummary } from "@openbot/contracts/hosted-servers";
+import type { HostedServerSummary } from "@aikingbot/contracts/hosted-servers";
 
 /**
  * What the setup screen shows for a new server. `payment`: the server waits for the first payment.

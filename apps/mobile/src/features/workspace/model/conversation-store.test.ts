@@ -1,4 +1,4 @@
-import type { AgentEvent, ConversationMessage, ConversationPage } from "@openbot/contracts/ipc";
+import type { AgentEvent, ConversationMessage, ConversationPage } from "@aikingbot/contracts/ipc";
 import { assert, describe, expect, it, vi } from "vitest";
 import { indexChatMessages, projectChatMessages } from "../../chat/model/chat-messages";
 import { reduceAgentActivity } from "./agent-activity";

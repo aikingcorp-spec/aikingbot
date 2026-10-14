@@ -1,6 +1,6 @@
-import { type AppFormat, createFormat } from "@openbot/i18n";
-import { Button } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { type AppFormat, createFormat } from "@aikingbot/i18n";
+import { Button } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { strFromU8, unzipSync } from "fflate";
 import { createMemo, createSignal, For, Show } from "solid-js";
 

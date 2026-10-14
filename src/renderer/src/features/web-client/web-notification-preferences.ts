@@ -1,4 +1,4 @@
-import { SERVER_NOTIFICATION_LEVELS, type ServerNotificationLevel } from "@openbot/contracts/ipc";
+import { SERVER_NOTIFICATION_LEVELS, type ServerNotificationLevel } from "@aikingbot/contracts/ipc";
 import { createSignal, onCleanup } from "solid-js";
 import { z } from "zod";
 
@@ -32,7 +32,7 @@ export interface WebServerNotificationState {
 }
 
 function storageKey(accountId: string): string {
-  return `openbot.web.server-notifications:${accountId}`;
+  return `aikingbot.web.server-notifications:${accountId}`;
 }
 
 function read(accountId: string, storage: NotificationStorage): Stored {

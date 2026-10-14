@@ -1,6 +1,6 @@
-import { AppLogo, type MobilePlatformLogoVariant, PlatformLogo } from "@openbot/brand";
-import type { MobileConnectedDevice } from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+import { AppLogo, type MobilePlatformLogoVariant, PlatformLogo } from "@aikingbot/brand";
+import type { MobileConnectedDevice } from "@aikingbot/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -27,7 +27,7 @@ import {
   SlidingTabs,
   Smartphone,
   Text,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { ANDROID_PLAY_STORE_URL } from "../mobile-app/android-play-store";

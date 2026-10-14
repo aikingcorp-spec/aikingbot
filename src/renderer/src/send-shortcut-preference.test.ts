@@ -21,7 +21,7 @@ describe("send shortcut preference", () => {
       },
     };
     writeSendShortcutMode("mod-enter", storage);
-    expect(store.get("openbot:send-shortcut-mode")).toBe("mod-enter");
+    expect(store.get("aikingbot:send-shortcut-mode")).toBe("mod-enter");
     expect(readSendShortcutMode(storage)).toBe("mod-enter");
   });
 

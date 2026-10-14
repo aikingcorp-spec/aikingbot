@@ -1,6 +1,6 @@
-# Contributing to OpenBot
+# Contributing to AIKINGBOT
 
-Thanks for helping improve OpenBot. Pull requests with clear verification are the easiest to
+Thanks for helping improve AIKINGBOT. Pull requests with clear verification are the easiest to
 review.
 
 ## Before opening an issue
@@ -8,14 +8,14 @@ review.
 - Search existing issues first.
 - Use the security process in `SECURITY.md` for vulnerabilities.
 - Remove credentials, private file paths, conversation contents, and personal data from diagnostics.
-- Include the OpenBot version, macOS version, Mac architecture, provider, CLI version, and
+- Include the AIKINGBOT version, macOS version, Mac architecture, provider, CLI version, and
   reproduction steps for bugs.
 
 ## Development setup
 
 ```bash
-git clone https://github.com/nightly-labs/openbot.git
-cd openbot
+git clone https://github.com/aikingcorp-spec/aikingx_bot.git
+cd aikingbot
 bun install --frozen-lockfile
 bun run check
 bun run dev
@@ -57,11 +57,11 @@ Public guides live in `apps/auth-api/src/content/guides/`. To add one:
 3. Run `bun run api:images` and commit the generated files in `apps/auth-api/content-art`.
 4. Open the guide in a local preview and check the guide index, article page, feed and social card.
 
-Write for someone who has OpenBot open and is trying to complete a task. Use short paragraphs, plain English and the
+Write for someone who has AIKINGBOT open and is trying to complete a task. Use short paragraphs, plain English and the
 exact names of buttons, settings and files. Keep product claims tied to the current app. Use `ArticleImage`,
 `ArticleGif`, `ArticleClip` or `ArticleVideo` only when the media adds information that the text does not.
 
-Use `OPENBOT_LINKS` for external links and include useful `alt` text for every image. Do not paste bare URLs into a
+Use `AIKINGBOT_LINKS` for external links and include useful `alt` text for every image. Do not paste bare URLs into a
 guide.
 
 ### Answering the NorbiAI review
@@ -114,7 +114,7 @@ Preserve the following boundaries and their tests:
 - Electron sandboxing, context isolation, navigation policy, and IPC sender validation.
 - Attachment realpath, MIME, size, quota, and managed-protocol checks.
 - Queue serialization, idempotency, crash reconciliation, and atomic persistence.
-- The remote browser session's lack of preload and `window.openbot` access.
+- The remote browser session's lack of preload and `window.aikingbot` access.
 - Secret redaction and agent child-process cleanup.
 
 Full agent access is intentional today, but new privileges or network surfaces still require an

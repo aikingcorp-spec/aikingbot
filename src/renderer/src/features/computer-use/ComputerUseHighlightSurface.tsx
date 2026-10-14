@@ -1,11 +1,11 @@
-import type { ComputerUseHighlightPlacement } from "@openbot/contracts/ipc";
+import type { ComputerUseHighlightPlacement } from "@aikingbot/contracts/ipc";
 import { createSignal, onSettled, Show } from "solid-js";
 import { ComputerUseAgentCursor } from "./ComputerUseAgentCursor";
 import { ComputerUseWindowHighlight } from "./ComputerUseWindowHighlight";
 import { computerUsePort } from "./computer-use-port";
 
 /**
- * The whole content of the overlay window OpenBot lays over the desktop while an agent works.
+ * The whole content of the overlay window AIKINGBOT lays over the desktop while an agent works.
  *
  * The window covers the whole desktop and stays where it is; this surface draws the rim at the
  * place main sends, so following a window the user drags costs a repaint rather than a window move

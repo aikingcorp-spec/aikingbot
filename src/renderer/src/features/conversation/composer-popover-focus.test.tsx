@@ -1,4 +1,4 @@
-import { Popover } from "@openbot/ui";
+import { Popover } from "@aikingbot/ui";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { expect, it, vi } from "vitest";
 

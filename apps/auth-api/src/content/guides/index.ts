@@ -2,16 +2,16 @@
 // is in the server's HTML rather than arriving after hydration.
 
 import type { ArticleBody } from "../body";
-import { OpenBot101 } from "./openbot-101";
-import { OpenBotHostedServers } from "./openbot-hosted-servers";
-import { OpenBotMarketplace } from "./openbot-marketplace";
+import { AIKINGBOT101 } from "./aikingbot-101";
+import { AIKINGBOTHostedServers } from "./aikingbot-hosted-servers";
+import { AIKINGBOTMarketplace } from "./aikingbot-marketplace";
 import { WhatAreAIAgents } from "./what-are-ai-agents";
-import { WtfIsOpenBot } from "./wtf-is-openbot";
+import { WtfIsAIKINGBOT } from "./wtf-is-aikingbot";
 
 export const GUIDE_BODIES: Readonly<Record<string, ArticleBody>> = {
   "what-are-ai-agents": WhatAreAIAgents,
-  "openbot-101": OpenBot101,
-  "openbot-hosted-servers": OpenBotHostedServers,
-  "openbot-marketplace": OpenBotMarketplace,
-  "wtf-is-openbot": WtfIsOpenBot,
+  "aikingbot-101": AIKINGBOT101,
+  "aikingbot-hosted-servers": AIKINGBOTHostedServers,
+  "aikingbot-marketplace": AIKINGBOTMarketplace,
+  "wtf-is-aikingbot": WtfIsAIKINGBOT,
 };

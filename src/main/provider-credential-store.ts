@@ -1,9 +1,9 @@
 // The optional API keys a provider CLI needs, encrypted at rest by the operating system.
 
 import { readFile, rm } from "node:fs/promises";
-import type { AgentProviderId, ProviderApiKeyStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { AgentProviderId, ProviderApiKeyStatus } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { registerSecretValue } from "@aikingbot/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";
@@ -18,8 +18,8 @@ const { io: credentialIO, sync: credentialSync } = causeHelpers(CredentialStoreF
 /**
  * One envelope holding every provider's key, each encrypted on its own.
  *
- * `version` is checked rather than tolerated: an envelope OpenBot does not understand is reported
- * as unreadable instead of silently read as empty, because "no key" and "a key OpenBot cannot
+ * `version` is checked rather than tolerated: an envelope AIKINGBOT does not understand is reported
+ * as unreadable instead of silently read as empty, because "no key" and "a key AIKINGBOT cannot
  * decode" have to behave differently -- one starts the free tier, the other must not quietly drop a
  * saved account.
  */

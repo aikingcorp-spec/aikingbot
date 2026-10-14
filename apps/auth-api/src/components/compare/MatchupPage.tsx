@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 import {
+  AIKINGBOT_PLANS,
+  type AIKINGBOTPlan,
   comparisonScore,
   type MatchupComparison,
-  OPENBOT_PLANS,
-  type OpenBotPlan,
 } from "../../content/compare/comparison";
 import { PROVIDER_PAGES, providerPageSlug } from "../../content/providers";
 import { type CollectionArticle, type ContentCollection, formatArticleDate } from "../../lib/content-collection";
@@ -33,22 +33,22 @@ export interface MatchupPageProps {
   matchup: MatchupComparison;
 }
 
-// Two products that OpenBot runs, against each other. The page is neutral: neither
+// Two products that AIKINGBOT runs, against each other. The page is neutral: neither
 // side is recommended and neither column is lit. After the table come the benchmark
 // numbers, when there are any, and then one section says what the page is for: you
-// do not have to choose, because OpenBot runs both.
+// do not have to choose, because AIKINGBOT runs both.
 export function MatchupPage(props: MatchupPageProps) {
   const sideA = (): SideProps => ({ side: "a", ...props.matchup.products[0] });
   const sideB = (): SideProps => ({ side: "b", ...props.matchup.products[1] });
   const names = () => props.matchup.products.map((product) => product.name);
   const score = () => comparisonScore(props.matchup.rows, ["a", "b"]);
   const topics = () => props.matchup.rows.length;
-  const isCompared = (plan: OpenBotPlan) =>
+  const isCompared = (plan: AIKINGBOTPlan) =>
     props.matchup.products.some((product) => product.provider === plan.provider);
   // The plans of the two products first, then the rest in their usual order.
-  const plans = () => [...OPENBOT_PLANS.filter(isCompared), ...OPENBOT_PLANS.filter((plan) => !isCompared(plan))];
-  // The provider page of each product, which says how to set it up in OpenBot. The link uses the
-  // page's name, which is the provider's name in OpenBot: Antigravity runs as Gemini.
+  const plans = () => [...AIKINGBOT_PLANS.filter(isCompared), ...AIKINGBOT_PLANS.filter((plan) => !isCompared(plan))];
+  // The provider page of each product, which says how to set it up in AIKINGBOT. The link uses the
+  // page's name, which is the provider's name in AIKINGBOT: Antigravity runs as Gemini.
   const setups = () =>
     props.matchup.products.flatMap((product) => {
       const slug = providerPageSlug(product.provider);
@@ -140,7 +140,7 @@ export function MatchupPage(props: MatchupPageProps) {
       <Show when={props.matchup.benchmark}>{(benchmark) => <CompareBenchmark benchmark={benchmark()} />}</Show>
 
       <RevealSection class="compare-plans" titleId="compare-plans-title" title="You don't have to pick one">
-        <p class="compare-plans-lead">{props.matchup.bothInOpenBot}</p>
+        <p class="compare-plans-lead">{props.matchup.bothInAIKINGBOT}</p>
         <ul class="compare-plans-grid">
           <For each={plans()}>
             {(plan, index) => <PlanCard plan={plan} index={index()} highlighted={isCompared(plan)} />}
@@ -152,7 +152,7 @@ export function MatchupPage(props: MatchupPageProps) {
               {(setup) => (
                 <li>
                   <Link to="/providers/$slug" params={{ slug: setup.slug }}>
-                    Set up {setup.name} in OpenBot
+                    Set up {setup.name} in AIKINGBOT
                     <LandingIcon name="arrow-right" class="provider-step-arrow provider-related-arrow" />
                   </Link>
                 </li>

@@ -1,5 +1,5 @@
-import type { GitHubConnectorRepositories, GitHubConnectorStatus } from "@openbot/contracts/ipc";
-import { GitHubConnectorPanel } from "@openbot/ui/features/settings/GitHubConnectorPanel";
+import type { GitHubConnectorRepositories, GitHubConnectorStatus } from "@aikingbot/contracts/ipc";
+import { GitHubConnectorPanel } from "@aikingbot/ui/features/settings/GitHubConnectorPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -72,7 +72,7 @@ export const ConnectedWithMoreRepositories: Story = {
 };
 
 export const ConnectedRepositoriesFailed: Story = {
-  args: args({ state: "connected", login: "octocat" }, false, null, "OpenBot cannot reach GitHub: fetch failed"),
+  args: args({ state: "connected", login: "octocat" }, false, null, "AIKINGBOT cannot reach GitHub: fetch failed"),
 };
 
 export const Expired: Story = { args: args({ state: "expired", login: "octocat" }) };

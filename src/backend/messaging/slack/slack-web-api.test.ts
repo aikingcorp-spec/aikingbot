@@ -38,7 +38,7 @@ describe("SlackWebApi.download", () => {
       response.setHeader("location", `${foreign}/file`);
       response.end();
     });
-    const root = await mkdtemp(join(tmpdir(), "openbot-slack-download-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-slack-download-"));
     roots.push(root);
     const api = new SlackWebApi({ token: TOKEN, origin: slack });
 
@@ -53,7 +53,7 @@ describe("SlackWebApi.download", () => {
 
   it("stops a file at its size limit and leaves nothing behind", async () => {
     const slack = await listen((_request, response) => response.end(Buffer.alloc(4096)));
-    const root = await mkdtemp(join(tmpdir(), "openbot-slack-download-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-slack-download-"));
     roots.push(root);
     const api = new SlackWebApi({ token: TOKEN, origin: slack });
     const destination = join(root, "big");

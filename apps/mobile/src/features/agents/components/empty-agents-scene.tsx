@@ -1,5 +1,5 @@
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import type { AvatarMood } from "@aikingbot/brand/bloub-avatar-motion";
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
 import { useIsFocused } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { Plus } from "lucide-react-native";
@@ -111,7 +111,7 @@ function FloatingBot({
  */
 export function EmptyAgentsScene({ onAddAgent, style }: { onAddAgent: () => void; style?: StyleProp<ViewStyle> }) {
   const { t } = useText();
-  const actionForeground = String(useCSSVariable("--openbot-action-foreground") ?? "#141414");
+  const actionForeground = String(useCSSVariable("--aikingbot-action-foreground") ?? "#141414");
   const reducedMotion = useReducedMotion();
   const focused = useIsFocused();
   return (

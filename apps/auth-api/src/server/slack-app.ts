@@ -1,13 +1,13 @@
 import type { RemoteFailure } from "./remote-control-plane";
-// The OpenBot Slack app's OAuth install. One app serves every workspace: a workspace member installs
-// it once, and the workspace is linked to one OpenBot host, which answers all of its messages. The
+// The AIKINGBOT Slack app's OAuth install. One app serves every workspace: a workspace member installs
+// it once, and the workspace is linked to one AIKINGBOT host, which answers all of its messages. The
 // Worker exchanges the code because the client secret lives here, records only which host answers
 // the workspace, and seals the bot token to the host's key. It keeps no token. The sealed grant goes
 // back to the desktop in the URL fragment of `/slack/connect`.
 
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { SLACK_BOT_SCOPES } from "@openbot/contracts/slack-app";
-import { isRawP256PublicKey, sealSlackWorkspaceGrant } from "@openbot/contracts/slack-workspace-grant";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { SLACK_BOT_SCOPES } from "@aikingbot/contracts/slack-app";
+import { isRawP256PublicKey, sealSlackWorkspaceGrant } from "@aikingbot/contracts/slack-workspace-grant";
 import { Effect, Schema } from "effect";
 import { decodeBase64Url, encodeBase64Url, hmacSha256, importHmacSha256Key } from "./crypto";
 import { authEventStatement } from "./remote-control-plane";
@@ -79,7 +79,7 @@ export class SlackAppService {
     const clientSecret = bindings.SLACK_CLIENT_SECRET?.trim();
     const stateSecret = bindings.SLACK_STATE_SECRET?.trim();
     if (!clientId || !clientSecret || !stateSecret || new TextEncoder().encode(stateSecret).byteLength < 32) {
-      throw new SlackAppError(503, "slack_not_configured", "The OpenBot Slack app is not configured.");
+      throw new SlackAppError(503, "slack_not_configured", "The AIKINGBOT Slack app is not configured.");
     }
     this.#database = bindings.DB;
     this.#clientId = clientId;
@@ -220,7 +220,7 @@ export class SlackAppService {
       return yield* new SlackAppError(
         409,
         "slack_workspace_taken",
-        "Another OpenBot server answers this Slack workspace. Disconnect it there first.",
+        "Another AIKINGBOT server answers this Slack workspace. Disconnect it there first.",
       );
     }
     return {

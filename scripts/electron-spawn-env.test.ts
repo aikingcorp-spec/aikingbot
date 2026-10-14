@@ -6,11 +6,11 @@ describe("electron spawn environment", () => {
     const child = withoutElectronRuntimeFlags({
       ELECTRON_RUN_AS_NODE: "1",
       ELECTRON_EXTRA_LAUNCH_ARGS: "--no-sandbox",
-      OPENBOT_API_PORT: "3100",
+      AIKINGBOT_API_PORT: "3100",
     });
 
     for (const key of ELECTRON_RUNTIME_ENV_KEYS) expect(child[key]).toBeUndefined();
-    expect(child.OPENBOT_API_PORT).toBe("3100");
+    expect(child.AIKINGBOT_API_PORT).toBe("3100");
   });
 
   it("leaves the parent environment untouched", () => {

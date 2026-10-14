@@ -7,8 +7,8 @@ import {
   type VoiceModelStatus,
   WHISPER_LANGUAGES,
   type WhisperLanguage,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Badge,
   Button,
@@ -28,8 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
   SettingsSection,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo, createStore, For, Show } from "solid-js";
 import type { SettingsVoiceStore } from "./settings-voice-store";
 

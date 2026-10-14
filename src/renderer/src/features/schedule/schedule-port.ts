@@ -1,12 +1,12 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /** What the schedule reaches in main: the routine calendar of a server, and the events that make it stale. */
 export interface SchedulePort {
-  agent: Pick<OpenBotDesktopApi["agent"], "routineCalendar" | "onScopedEvent">;
-  servers: Pick<OpenBotDesktopApi["servers"], "onEvent">;
+  agent: Pick<AIKINGBOTDesktopApi["agent"], "routineCalendar" | "onScopedEvent">;
+  servers: Pick<AIKINGBOTDesktopApi["servers"], "onEvent">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function schedulePort(): SchedulePort {
-  return window.openbot;
+  return window.aikingbot;
 }

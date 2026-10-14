@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
-import { OPENBOT_LINKS } from "../src/lib/landing-links";
+import { AIKINGBOT_LINKS } from "../src/lib/landing-links";
 import { runApiEffect } from "../src/server/effect-runtime";
 import { latestDownloadResponse } from "../src/server/latest-download";
 
 describe("latest download", () => {
   it.each([
-    ["macos", "arm64", "latest-mac.yml", "OpenBot-0.1.11-arm64.dmg"],
-    ["macos", "x64", "latest-mac.yml", "OpenBot-0.1.11-x64.dmg"],
-    ["windows", "x64", "latest.yml", "OpenBot-0.1.11-x64.exe"],
+    ["macos", "arm64", "latest-mac.yml", "AIKINGBOT-0.1.11-arm64.dmg"],
+    ["macos", "x64", "latest-mac.yml", "AIKINGBOT-0.1.11-x64.dmg"],
+    ["windows", "x64", "latest.yml", "AIKINGBOT-0.1.11-x64.exe"],
     // The AppImage extension is mixed case in the published manifest, and the match is lowercase.
-    ["linux", "x64", "latest-linux.yml", "OpenBot-0.1.11-x64.AppImage"],
-    ["linux", "arm64", "latest-linux-arm64.yml", "OpenBot-0.1.11-arm64.AppImage"],
+    ["linux", "x64", "latest-linux.yml", "AIKINGBOT-0.1.11-x64.AppImage"],
+    ["linux", "arm64", "latest-linux-arm64.yml", "AIKINGBOT-0.1.11-arm64.AppImage"],
   ] as const)(
     "redirects %s %s to its installer from the latest manifest",
     async (platform, architecture, manifest, installer) => {
@@ -28,12 +28,12 @@ describe("latest download", () => {
       const response = await runApiEffect(latestDownloadResponse(platform, fetcher, architecture));
 
       expect(fetcher).toHaveBeenCalledWith(
-        `https://github.com/nightly-labs/openbot/releases/latest/download/${manifest}`,
+        `https://github.com/aikingcorp-spec/aikingx_bot/releases/latest/download/${manifest}`,
         { headers: { accept: "text/yaml, text/plain" }, signal: expect.any(AbortSignal) },
       );
       expect(response.status).toBe(302);
       expect(response.headers.get("location")).toBe(
-        `https://github.com/nightly-labs/openbot/releases/latest/download/${installer}`,
+        `https://github.com/aikingcorp-spec/aikingx_bot/releases/latest/download/${installer}`,
       );
       expect(response.headers.get("cache-control")).toBe("no-store");
     },
@@ -48,6 +48,6 @@ describe("latest download", () => {
     );
 
     expect(response.status).toBe(302);
-    expect(response.headers.get("location")).toBe(OPENBOT_LINKS.releases);
+    expect(response.headers.get("location")).toBe(AIKINGBOT_LINKS.releases);
   });
 });

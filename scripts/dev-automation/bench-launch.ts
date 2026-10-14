@@ -11,8 +11,8 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { closeSync, existsSync, mkdirSync, openSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { isString } from "@openbot/contracts/runtime-values";
-import type { Logger } from "@openbot/logging";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import type { Logger } from "@aikingbot/logging";
 import { findAvailablePort } from "../dev-services";
 import { withoutElectronRuntimeFlags } from "../electron-spawn-env";
 import { withDevPortAllocation } from "./port-allocation";
@@ -32,7 +32,7 @@ export interface LaunchBenchAppOptions {
   projectRoot: string;
   instanceId: string;
   logger: Logger;
-  // Extra environment for the app, such as `OPENBOT_CLAUDE_PATH`.
+  // Extra environment for the app, such as `AIKINGBOT_CLAUDE_PATH`.
   environment?: Record<string, string>;
   // The app's stdout and stderr, which carry its log. They hold conversation
   // metadata, so the file is owner-only and stays under the build directory.
@@ -98,10 +98,10 @@ export async function launchBenchApp(options: LaunchBenchAppOptions): Promise<Be
       env: {
         ...withoutElectronRuntimeFlags(process.env),
         // The packaged look and name, on the bench's own profile.
-        OPENBOT_APP_VARIANT: "preview",
-        OPENBOT_DEV_PROFILE: "app",
-        OPENBOT_DEV_INSTANCE_ID: instanceId,
-        OPENBOT_DEV_REMOTE_DEBUGGING_PORT: String(remoteDebuggingPort),
+        AIKINGBOT_APP_VARIANT: "preview",
+        AIKINGBOT_DEV_PROFILE: "app",
+        AIKINGBOT_DEV_INSTANCE_ID: instanceId,
+        AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT: String(remoteDebuggingPort),
         ...options.environment,
       },
     });

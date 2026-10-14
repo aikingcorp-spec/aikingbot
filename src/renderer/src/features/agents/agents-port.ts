@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What the agents domain reaches in main: agent records, their models and read state, and the agent
@@ -6,7 +6,7 @@ import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
  */
 export interface AgentsPort {
   agent: Pick<
-    OpenBotDesktopApi["agent"],
+    AIKINGBOTDesktopApi["agent"],
     | "createAgent"
     | "deleteAgent"
     | "duplicateAgent"
@@ -22,7 +22,7 @@ export interface AgentsPort {
   >;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function agentsPort(): AgentsPort {
-  return window.openbot;
+  return window.aikingbot;
 }

@@ -4,8 +4,8 @@
 .web-app {
   min-width: 0;
   height: 100dvh;
-  color: var(--openbot-text-primary);
-  background: var(--openbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
+  background: var(--aikingbot-bg-canvas);
 }
 .web-app-frame {
   min-width: 0;
@@ -14,7 +14,7 @@
 
 /* The browser has no window controls, so the rail starts at the top. */
 .web-app-frame > .server-rail {
-  padding-top: var(--openbot-space-3);
+  padding-top: var(--aikingbot-space-3);
 }
 
 .web-app-frame > .server-rail::before {
@@ -102,7 +102,7 @@
 
   .web-mobile-navigation {
     position: fixed;
-    z-index: var(--openbot-layer-popover);
+    z-index: var(--aikingbot-layer-popover);
     right: 0;
     bottom: 0;
     left: 0;
@@ -110,11 +110,11 @@
     min-height: var(--web-mobile-navigation-height);
     align-items: center;
     justify-content: center;
-    border-top: 1px solid var(--openbot-border);
-    background: color-mix(in srgb, var(--openbot-bg-sidebar) 94%, transparent);
-    padding: var(--openbot-space-2) max(var(--openbot-space-3), env(safe-area-inset-left, 0px))
-      calc(var(--openbot-space-2) + env(safe-area-inset-bottom, 0px))
-      max(var(--openbot-space-3), env(safe-area-inset-right, 0px));
+    border-top: 1px solid var(--aikingbot-border);
+    background: color-mix(in srgb, var(--aikingbot-bg-sidebar) 94%, transparent);
+    padding: var(--aikingbot-space-2) max(var(--aikingbot-space-3), env(safe-area-inset-left, 0px))
+      calc(var(--aikingbot-space-2) + env(safe-area-inset-bottom, 0px))
+      max(var(--aikingbot-space-3), env(safe-area-inset-right, 0px));
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
   }
@@ -123,7 +123,7 @@
     display: grid;
     width: min(100%, 360px);
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--openbot-space-1);
+    gap: var(--aikingbot-space-1);
   }
 
   .web-mobile-navigation-button {
@@ -131,32 +131,32 @@
     min-height: 44px;
     align-items: center;
     justify-content: center;
-    gap: var(--openbot-space-2);
+    gap: var(--aikingbot-space-2);
     border: 1px solid transparent;
-    border-radius: var(--openbot-radius-lg);
-    color: var(--openbot-text-muted);
-    font-size: var(--openbot-text-sm);
-    font-weight: var(--openbot-weight-semibold);
+    border-radius: var(--aikingbot-radius-lg);
+    color: var(--aikingbot-text-muted);
+    font-size: var(--aikingbot-text-sm);
+    font-weight: var(--aikingbot-weight-semibold);
   }
 
   .web-mobile-navigation-button > svg {
-    width: var(--openbot-icon-md);
-    height: var(--openbot-icon-md);
-    stroke-width: var(--openbot-icon-stroke);
+    width: var(--aikingbot-icon-md);
+    height: var(--aikingbot-icon-md);
+    stroke-width: var(--aikingbot-icon-stroke);
   }
 
   .web-mobile-navigation-button[data-active="true"] {
-    border-color: var(--openbot-border);
-    background: var(--openbot-bg-control);
-    color: var(--openbot-text-primary);
+    border-color: var(--aikingbot-border);
+    background: var(--aikingbot-bg-control);
+    color: var(--aikingbot-text-primary);
   }
 
   .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header {
-    padding-inline: var(--openbot-space-2);
+    padding-inline: var(--aikingbot-space-2);
   }
 
   .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header-actions {
-    gap: var(--openbot-space-1);
+    gap: var(--aikingbot-space-1);
   }
 
   .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .provider-model-trigger {
@@ -182,11 +182,11 @@
   }
 
   .web-app .join-server-backdrop {
-    padding: var(--openbot-space-3);
+    padding: var(--aikingbot-space-3);
   }
 
   .web-app .join-server-content {
-    padding: var(--openbot-space-6) var(--openbot-space-4);
+    padding: var(--aikingbot-space-6) var(--aikingbot-space-4);
   }
 
   .web-app .ui-dialog-content {
@@ -205,67 +205,67 @@
   display: grid;
   place-items: center;
   overflow-y: auto;
-  padding: var(--openbot-space-8) var(--openbot-space-4);
+  padding: var(--aikingbot-space-8) var(--aikingbot-space-4);
 }
 
 .web-connect-card {
   display: flex;
   width: min(420px, 100%);
   flex-direction: column;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 .web-connect-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   text-align: center;
 }
 
 .web-connect-header .ui-heading {
-  font-size: var(--openbot-text-3xl);
-  font-weight: var(--openbot-weight-bold);
-  line-height: var(--openbot-leading-3xl);
+  font-size: var(--aikingbot-text-3xl);
+  font-weight: var(--aikingbot-weight-bold);
+  line-height: var(--aikingbot-leading-3xl);
 }
 
 .web-connect-header .ui-text {
   max-width: 340px;
-  line-height: var(--openbot-leading-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .web-connect-logo {
-  --app-logo-background: var(--openbot-surface-light);
+  --app-logo-background: var(--aikingbot-surface-light);
   width: 64px;
   height: 64px;
   flex: 0 0 auto;
-  margin-bottom: var(--openbot-space-4);
-  border-radius: var(--openbot-radius-xl);
+  margin-bottom: var(--aikingbot-space-4);
+  border-radius: var(--aikingbot-radius-xl);
   box-shadow:
-    0 12px 28px var(--openbot-shadow-dialog),
-    inset 0 1px 0 var(--openbot-border-strong);
+    0 12px 28px var(--aikingbot-shadow-dialog),
+    inset 0 1px 0 var(--aikingbot-border-strong);
 }
 
 .web-connect-steps {
   display: grid;
   margin: 0;
-  padding: var(--openbot-space-1);
+  padding: var(--aikingbot-space-1);
   list-style: none;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .web-connect-steps li {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
 }
 
 .web-connect-steps li + li {
-  border-top: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
 }
 
 .web-connect-steps .ui-text {
@@ -275,23 +275,23 @@
 
 .web-connect-step-number {
   display: grid;
-  width: var(--openbot-control-xs);
-  height: var(--openbot-control-xs);
+  width: var(--aikingbot-control-xs);
+  height: var(--aikingbot-control-xs);
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control-active);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control-active);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .web-connect-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 /* Side by side; the buttons stack when the card is too narrow for both labels. */
@@ -299,7 +299,7 @@
   display: flex;
   width: 100%;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .web-connect-primary-actions .ui-button {
@@ -310,21 +310,21 @@
 /* The public site sets `a { color: inherit }`, which beats the zero-specificity button colour. */
 .web-connect-download.ui-button,
 .web-connect-download.ui-button:hover {
-  color: var(--openbot-text-on-light);
+  color: var(--aikingbot-text-on-light);
 }
 
 .web-connect-refresh.ui-button {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .web-connect-actions .ui-button svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .web-connect-refresh.ui-button svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }

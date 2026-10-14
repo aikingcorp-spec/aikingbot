@@ -159,7 +159,7 @@ export function developmentChildEnvironment(
   service: "api" | "remote" | "app" | "test-client",
 ): NodeJS.ProcessEnv {
   const child = withoutDecryptionKeys(environment);
-  delete child.OPENBOT_DEV_SLACK_SIGNING_SECRET;
+  delete child.AIKINGBOT_DEV_SLACK_SIGNING_SECRET;
   for (const key of Object.keys(child)) {
     if (!ACCOUNT_SETTINGS.test(key)) continue;
     if (service === "api") continue;

@@ -1,6 +1,6 @@
-import type { AgentProviderId } from "@openbot/contracts/ipc";
-import type { ProviderPickerOption } from "@openbot/ui/components/ProviderPicker";
-import { ProviderPicker } from "@openbot/ui/components/ProviderPicker";
+import type { AgentProviderId } from "@aikingbot/contracts/ipc";
+import type { ProviderPickerOption } from "@aikingbot/ui/components/ProviderPicker";
+import { ProviderPicker } from "@aikingbot/ui/components/ProviderPicker";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -137,7 +137,7 @@ export const UpdateFailed: Story = {
 };
 
 /**
- * A CLI the user installed themselves, with a newer version pinned by this OpenBot release. The row
+ * A CLI the user installed themselves, with a newer version pinned by this AIKINGBOT release. The row
  * reads exactly like a managed update - same badge, same button - because only the work behind the
  * button differs, and the row does not choose it.
  */
@@ -238,8 +238,8 @@ export const CustomProviderReady: Story = {
 };
 
 /**
- * Every provider row has a switch that turns the provider on or off in OpenBot. An off row shows
- * only "Off" and the switch: OpenBot does not start, check or list that provider.
+ * Every provider row has a switch that turns the provider on or off in AIKINGBOT. An off row shows
+ * only "Off" and the switch: AIKINGBOT does not start, check or list that provider.
  */
 const switchOptions: ProviderPickerOption[] = [
   ...options,
@@ -292,7 +292,7 @@ export const ProviderSwitchError: Story = {
   render: () => (
     <ProviderSwitchStory
       off={[]}
-      save={() => Promise.reject(new Error("OpenBot could not change the provider setting."))}
+      save={() => Promise.reject(new Error("AIKINGBOT could not change the provider setting."))}
     />
   ),
 };

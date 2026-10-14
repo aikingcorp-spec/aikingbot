@@ -2,15 +2,15 @@ import {
   type HostedServerState,
   parseHostedServerStatus,
   parseHostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/hosted-servers";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Deferred, Effect, Schema } from "effect";
 
 class HostedServerWakeError extends Schema.TaggedError<HostedServerWakeError>()("HostedServerWakeError", {}) {}
 
 /**
  * A hosted server in one of these states comes online without a user action, so the client reconnects.
- * A `running` server whose host is offline is still starting OpenBot, or it restarts. A wake reply is
+ * A `running` server whose host is offline is still starting AIKINGBOT, or it restarts. A wake reply is
  * `stopping` only for a server that must run (a restart, a resize, or a provider stop): the account
  * server starts it again after the stop.
  */

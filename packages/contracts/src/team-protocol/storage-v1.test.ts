@@ -8,7 +8,7 @@ const file = {
   kind: "file",
   mimeType: "application/pdf",
   previewKind: "pdf",
-  previewUrl: "openbot-attachment://attachment-1",
+  previewUrl: "aikingbot-attachment://attachment-1",
   source: "attachment",
   agentId: "agent-1",
   conversation: { id: "thread-1", title: "Quarterly report" },
@@ -61,7 +61,7 @@ describe("storage-v1", () => {
 
   it("round-trips a usage answer and drops a field the contract does not name", () => {
     expect(storageResponse(STORAGE_ROUTES.usage, 200, usage)).toEqual(usage);
-    const withPath = { ...usage, files: [{ ...file, path: "/Users/one/OpenBot/Shared/Transfers/report.pdf" }] };
+    const withPath = { ...usage, files: [{ ...file, path: "/Users/one/AIKINGBOT/Shared/Transfers/report.pdf" }] };
     expect(storageResponse(STORAGE_ROUTES.usage, 200, withPath)).toEqual(usage);
     expect(storageResponse(STORAGE_ROUTES.deleteFile, 200, {})).toEqual({});
     expect(storageResponse(STORAGE_ROUTES.clear, 403, { error: "Only an admin can do this." })).toEqual({

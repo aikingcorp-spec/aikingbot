@@ -1,21 +1,21 @@
-import { memberLimitForPlan } from "@openbot/contracts/billing";
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import type { RemoteAuthEvent } from "@openbot/contracts/signal-protocol/auth-events";
+import { memberLimitForPlan } from "@aikingbot/contracts/billing";
+import type { MobileConnectHostBinding } from "@aikingbot/contracts/mobile-connect";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import type { RemoteAuthEvent } from "@aikingbot/contracts/signal-protocol/auth-events";
 import {
   DISCORD_ROUTE_AUDIENCE,
   DISCORD_ROUTE_GUILDS_LIMIT,
   DISCORD_ROUTE_TTL_SECONDS,
   type DiscordRouteGuild,
-} from "@openbot/contracts/signal-protocol/discord-route";
-import type { IngressRoute } from "@openbot/contracts/signal-protocol/ingress-queue";
+} from "@aikingbot/contracts/signal-protocol/discord-route";
+import type { IngressRoute } from "@aikingbot/contracts/signal-protocol/ingress-queue";
 import {
   SLACK_ROUTE_AUDIENCE,
   SLACK_ROUTE_TEAMS_LIMIT,
   SLACK_ROUTE_TTL_SECONDS,
   type SlackRouteClaims,
   type SlackRouteTeam,
-} from "@openbot/contracts/signal-protocol/slack-route";
+} from "@aikingbot/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_CHAT_ID_PATTERN,
@@ -26,21 +26,21 @@ import {
   TELEGRAM_ROUTE_TTL_SECONDS,
   type TelegramRouteChat,
   type TelegramRouteClaims,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import {
   REMOTE_TICKET_AUDIENCE,
   REMOTE_TICKET_PROTOCOL_VERSION,
   type RemoteMemberRole,
   type RemoteTicketClaims,
-} from "@openbot/contracts/signal-protocol/ticket";
+} from "@aikingbot/contracts/signal-protocol/ticket";
 import {
   WEBHOOK_ROUTE_AUDIENCE,
   WEBHOOK_ROUTE_ID_PATTERN,
   WEBHOOK_ROUTE_TTL_SECONDS,
   WEBHOOK_ROUTES_LIMIT,
   type WebhookRoute,
-} from "@openbot/contracts/signal-protocol/webhook-route";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/signal-protocol/webhook-route";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Effect, Layer, Result, Schema } from "effect";
 import { importJWK, type JWK, type JWTPayload, SignJWT } from "jose";
 import { getServerEntitlement } from "./billing-entitlement";
@@ -146,7 +146,7 @@ interface TicketSignerConfig {
 
 type RemoteFetch = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
-/** The OpenBot Telegram bot that this Worker links chats for. */
+/** The AIKINGBOT Telegram bot that this Worker links chats for. */
 interface TelegramBot {
   botId: string;
   botUsername: string;
@@ -2421,7 +2421,7 @@ export class RemoteControlPlane {
       return yield* new RemoteControlPlaneError(
         409,
         "telegram_chat_taken",
-        "Another OpenBot server answers this Telegram chat. Disconnect it there first.",
+        "Another AIKINGBOT server answers this Telegram chat. Disconnect it there first.",
       );
     }
     if (route?.host_id === code.host_id) {
@@ -2640,8 +2640,8 @@ const deliverRemoteAuthEvents = Effect.fn("RemoteControlPlane.deliverAuthEvents"
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "OpenBot-Timestamp": timestamp,
-                "OpenBot-Signature": signature,
+                "AIKINGBOT-Timestamp": timestamp,
+                "AIKINGBOT-Signature": signature,
               },
               body: event.payload,
               signal: AbortSignal.any([signal, AbortSignal.timeout(5_000)]),

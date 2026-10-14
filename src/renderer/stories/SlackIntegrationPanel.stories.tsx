@@ -1,9 +1,9 @@
-import type { MessagingConnection } from "@openbot/contracts/ipc";
+import type { MessagingConnection } from "@aikingbot/contracts/ipc";
 import {
   SlackConnectDialog,
   type SlackIntegrationAgent,
   SlackIntegrationPanel,
-} from "@openbot/ui/features/settings/SlackIntegrationPanel";
+} from "@aikingbot/ui/features/settings/SlackIntegrationPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT_SUMMARIES } from "./fixtures";

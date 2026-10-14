@@ -1,10 +1,10 @@
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineSchedule } from "@aikingbot/contracts/ipc";
 import {
   RoutineCalendar,
   type RoutineCalendarAgent,
   type RoutineCalendarRoutine,
   type RoutineCalendarRun,
-} from "@openbot/ui/features/conversation/RoutineCalendar";
+} from "@aikingbot/ui/features/conversation/RoutineCalendar";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENTS } from "./fixtures";
@@ -159,7 +159,7 @@ const meta = {
   title: "Routines/Calendar",
   component: RoutineCalendar,
   render: (args) => (
-    <main style={{ width: "min(1400px, 100vw)", padding: "var(--openbot-space-6)" }}>
+    <main style={{ width: "min(1400px, 100vw)", padding: "var(--aikingbot-space-6)" }}>
       <RoutineCalendar {...args} />
     </main>
   ),
@@ -224,7 +224,7 @@ export const LoadError: Story = { args: { state: "error" } };
 /** A phone or a side panel: the week becomes a list of days, and the next runs move below it. */
 export const Narrow: Story = {
   render: (args) => (
-    <main style={{ width: "390px", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "390px", padding: "var(--aikingbot-space-4)" }}>
       <RoutineCalendar {...args} />
     </main>
   ),

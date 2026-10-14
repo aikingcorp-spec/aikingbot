@@ -6,7 +6,7 @@ import {
   type BillingInterval,
   type BillingPlanId,
   isOpenBillingStatus,
-} from "@openbot/contracts/billing";
+} from "@aikingbot/contracts/billing";
 import {
   HOSTED_PLAN_SIZE,
   type HostedServerActivityReport,
@@ -21,10 +21,10 @@ import {
   type HostedServerStatus,
   type HostedServerSummary,
   parseHostedServerName,
-} from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import type { RouteHostState } from "@openbot/contracts/signal-protocol/ingress-queue";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/hosted-servers";
+import { isDynamicRecord, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import type { RouteHostState } from "@aikingbot/contracts/signal-protocol/ingress-queue";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Effect, Layer, Result, Schema } from "effect";
 import { type AccountAnalytics, type AccountAnalyticsEvent, NO_ACCOUNT_ANALYTICS } from "./account-analytics";
 import { getServerEntitlement } from "./billing-entitlement";
@@ -2238,7 +2238,7 @@ export class HostedServerService {
     const ticketKey = this.#ticketKey;
     if (!ticketKey) return null;
     const privateValue = yield* hostedValidate(() => ticketPrivateValue(ticketKey));
-    this.#claimSecret ??= yield* deriveSecret(privateValue, "openbot-hosted-claim-key:v1").pipe(
+    this.#claimSecret ??= yield* deriveSecret(privateValue, "aikingbot-hosted-claim-key:v1").pipe(
       Effect.mapError(hostedFailure),
     );
     return this.#claimSecret;
@@ -2313,7 +2313,7 @@ function summary(row: HostedServerRow): HostedServerSummary {
   };
 }
 
-/** `openbot-{plan}-{email}-{first 8 characters of the server ID}`, in the characters of a boat name. */
+/** `aikingbot-{plan}-{email}-{first 8 characters of the server ID}`, in the characters of a boat name. */
 /**
  * The claim of a server is the same on each call, so a create retry sends the same request body and
  * boat returns the sandbox that it made. The Worker stores only its hash, and accepts it only while
@@ -2325,7 +2325,7 @@ function createRequest(row: HostedServerRow, from: string, claim: string) {
     type: row.size,
     from,
     // The claim is the only secret that the VM gets. It works for a short time after its first use, and expires.
-    env: { OPENBOT_HOSTED_CLAIM: claim, OPENBOT_HOSTED_HOST_ID: row.server_id },
+    env: { AIKINGBOT_HOSTED_CLAIM: claim, AIKINGBOT_HOSTED_HOST_ID: row.server_id },
     ttlSeconds: LEASE_TTL_SECONDS,
     idempotencyKey: row.server_id,
   };
@@ -2348,7 +2348,7 @@ function isDeveloperKey(expected: string | undefined, provided: string | null | 
 }
 
 function hostedClaim(secret: string, serverId: string) {
-  return hmacSha256(secret, `openbot-hosted-claim:v1:${serverId}`);
+  return hmacSha256(secret, `aikingbot-hosted-claim:v1:${serverId}`);
 }
 
 export function sandboxName(plan: BillingPlanId, email: string, serverId: string): string {
@@ -2357,7 +2357,7 @@ export function sandboxName(plan: BillingPlanId, email: string, serverId: string
       .toLowerCase()
       .replace(/[^a-z0-9]+/gu, "-")
       .replace(/^-+|-+$/gu, "");
-  const prefix = `openbot-${plan}-`;
+  const prefix = `aikingbot-${plan}-`;
   const suffix = `-${slug(serverId).slice(0, 8)}`;
   const owner = slug(email)
     .slice(0, SANDBOX_NAME_MAX_LENGTH - prefix.length - suffix.length)

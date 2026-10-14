@@ -3,7 +3,7 @@
 // What it grants, recorded here because freezing it makes it permanent: a signed-in member's iPhone
 // gives the host its Apple push token when it takes notifications, a secret that only the phone and
 // the host know, and the events the member wants to hear about. While the phone says it is away, the
-// host sends a notification for each such event of an agent this member can see, through the OpenBot
+// host sends a notification for each such event of an agent this member can see, through the AIKINGBOT
 // relay and Apple. While the phone shows the Live Activity of this host, the host sends no
 // notification, and the activity lights up the screen and plays the sound, unless the sound is
 // "none"; a phone without a token gets only that. The host seals the agent name and the text with keys
@@ -36,10 +36,10 @@ export const PUSH_NOTIFICATIONS_ROUTES = {
 export type PushNotificationLevel = "all" | "needs-me";
 
 /**
- * "openbot" is the sound that the desktop app plays when a task finishes; "warm", "mech", "bubble" and
+ * "aikingbot" is the sound that the desktop app plays when a task finishes; "warm", "mech", "bubble" and
  * "press" are the sounds of the desktop sound themes; "default" is the iOS sound.
  */
-export const PUSH_NOTIFICATION_SOUNDS = ["openbot", "warm", "mech", "bubble", "press", "default", "none"] as const;
+export const PUSH_NOTIFICATION_SOUNDS = ["aikingbot", "warm", "mech", "bubble", "press", "default", "none"] as const;
 export type PushNotificationSound = (typeof PUSH_NOTIFICATION_SOUNDS)[number];
 
 export interface PushNotificationRegistration {

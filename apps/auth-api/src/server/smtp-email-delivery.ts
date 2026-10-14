@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isCanonicalInviteUrl } from "@openbot/contracts/invite-links";
-import { isValidHostname as isSharedValidHostname } from "@openbot/contracts/validation";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isCanonicalInviteUrl } from "@aikingbot/contracts/invite-links";
+import { isValidHostname as isSharedValidHostname } from "@aikingbot/contracts/validation";
 import { Effect, Fiber, Option, Result, Schema } from "effect";
 import { type RenderedEmail, renderSignInCodeEmail, renderTeamInviteEmail } from "./email-templates";
 
@@ -286,7 +286,7 @@ const runSmtpSession = Effect.fn("SmtpEmail.session")(function* (
     );
 
   yield* expect([220], "greeting");
-  yield* writeCommand(writer, "EHLO openbot.run");
+  yield* writeCommand(writer, "EHLO aikingbot.aikingx.com");
   const extensions = yield* expect([250], "ehlo");
   if (extensions.some((line) => /^AUTH\b.*\bPLAIN\b/iu.test(line))) {
     yield* writeCommand(writer, `AUTH PLAIN ${encodeBase64(`\0${config.username}\0${config.password}`)}`);
@@ -372,14 +372,14 @@ class SmtpResponseReader {
 // the relay supports. `Auto-Submitted` (RFC 3834) and `X-Auto-Response-Suppress` (Exchange and
 // Outlook) stop vacation and out-of-office replies to the sending mailbox.
 function createMimeMessage(from: string, message: PreparedEmailMessage): string {
-  const boundary = `openbot-${crypto.randomUUID()}`;
+  const boundary = `aikingbot-${crypto.randomUUID()}`;
   return dotStuff(
     [
-      `From: OpenBot <${from}>`,
+      `From: AIKINGBOT <${from}>`,
       `To: <${message.email}>`,
       `Subject: ${encodeHeaderValue(message.content.subject)}`,
       `Date: ${new Date().toUTCString()}`,
-      `Message-ID: <${crypto.randomUUID()}@openbot.run>`,
+      `Message-ID: <${crypto.randomUUID()}@aikingbot.aikingx.com>`,
       "Auto-Submitted: auto-generated",
       "X-Auto-Response-Suppress: All",
       "MIME-Version: 1.0",

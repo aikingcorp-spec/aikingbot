@@ -10,7 +10,7 @@ export interface ProviderHistoryFragment {
   /** Stable offset within the turn. This is not a provider cursor. */
   itemOffset?: number;
   items: ThreadItem[];
-  /** The provider has no stable OpenBot turn identity; retain this record for reads and recovery only. */
+  /** The provider has no stable AIKINGBOT turn identity; retain this record for reads and recovery only. */
   recordsOnly?: boolean;
   /** The last fragment of this turn in this scan. */
   complete: boolean;

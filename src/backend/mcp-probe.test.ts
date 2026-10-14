@@ -8,7 +8,7 @@ import {
 import { createServer as createNetServer, type Server as NetServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { decodeMcpTestResult, type McpServerConfig } from "@openbot/contracts/ipc";
+import { decodeMcpTestResult, type McpServerConfig } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { describeMcpError, describeSignInChallenge, testMcpServer } from "./mcp-probe";
 import { runMcp } from "./mcp-test-runtime";
@@ -76,7 +76,7 @@ function config(overrides: Partial<McpServerConfig>): McpServerConfig {
 }
 
 async function scriptConfig(source: string, overrides: Partial<McpServerConfig> = {}): Promise<McpServerConfig> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-mcp-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-"));
   roots.push(root);
   const script = join(root, "server.mjs");
   await writeFile(script, source, "utf8");
@@ -104,9 +104,9 @@ describe("testMcpServer", () => {
   it("finds a command on the PATH the configuration carries", async () => {
     const config = await scriptConfig(FAKE_SERVER);
     const [script] = config.args;
-    const root = await mkdtemp(join(tmpdir(), "openbot-mcp-bin-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-bin-"));
     roots.push(root);
-    const launcher = join(root, "openbot-fake-mcp");
+    const launcher = join(root, "aikingbot-fake-mcp");
     await writeFile(
       launcher,
       `#!/bin/sh\nexec ${JSON.stringify(process.execPath)} ${JSON.stringify(script)}\n`,
@@ -116,7 +116,7 @@ describe("testMcpServer", () => {
 
     expect(
       await runMcp(
-        testMcpServer({ ...config, command: "openbot-fake-mcp", args: [], env: [{ key: "PATH", value: root }] }),
+        testMcpServer({ ...config, command: "aikingbot-fake-mcp", args: [], env: [{ key: "PATH", value: root }] }),
       ),
     ).toEqual({ toolCount: 2, error: null });
   });
@@ -139,16 +139,16 @@ describe("testMcpServer", () => {
   });
 
   it("names the command that this machine does not have", async () => {
-    expect(await runMcp(testMcpServer(config({ command: "openbot-no-such-command" })))).toEqual({
+    expect(await runMcp(testMcpServer(config({ command: "aikingbot-no-such-command" })))).toEqual({
       toolCount: 0,
-      error: "Command not found: openbot-no-such-command",
+      error: "Command not found: aikingbot-no-such-command",
     });
   });
 
   // The IPC decoder and the remote codec both reject a longer text, so an unbounded failure would
   // reach the panel as "Invalid MCP server response." instead of the failure the user asked about.
   it("holds a long failure to the length the panel can be given", async () => {
-    const result = await runMcp(testMcpServer(config({ command: `openbot-${"long".repeat(1_000)}` })));
+    const result = await runMcp(testMcpServer(config({ command: `aikingbot-${"long".repeat(1_000)}` })));
     expect(result.toolCount).toBe(0);
     expect(result.error).toMatch(/^Command not found: /u);
     expect(decodeMcpTestResult(result)).toBe(result);
@@ -157,7 +157,7 @@ describe("testMcpServer", () => {
   // The lookup of a bare command name needs a login shell, and the name is written by the user -
   // and by a remote administrator of this machine's host.
   it("looks up a command name that holds a shell substitution as a name", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-mcp-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-"));
     roots.push(root);
     const mark = join(root, "ran");
     expect(await runMcp(testMcpServer(config({ command: `node$(touch ${mark})` })))).toEqual({
@@ -185,7 +185,7 @@ describe("testMcpServer", () => {
     expect(await runMcp(testMcpServer(bridge))).toEqual({
       toolCount: 0,
       error:
-        "The server stopped before it answered. Run the command in a terminal to see its error. This command runs the mcp-remote bridge. Choose Streamable HTTP with the URL https://mcp.example.com/mcp instead, and OpenBot signs you in.",
+        "The server stopped before it answered. Run the command in a terminal to see its error. This command runs the mcp-remote bridge. Choose Streamable HTTP with the URL https://mcp.example.com/mcp instead, and AIKINGBOT signs you in.",
     });
   });
 });
@@ -296,7 +296,7 @@ describe("describeSignInChallenge", () => {
         "here",
       ),
     ).toBe(
-      "This server asks for a sign-in, and OpenBot signs in only over https. Change the URL to https://mcp.granola.ai/mcp.",
+      "This server asks for a sign-in, and AIKINGBOT signs in only over https. Change the URL to https://mcp.granola.ai/mcp.",
     );
     expect(describeSignInChallenge("https://mcp.granola.ai/mcp", "https://mcp.granola.ai/mcp", null)).toBeNull();
   });
@@ -318,14 +318,14 @@ describe("describeMcpError", () => {
   // `envPassthrough` names a variable this machine already holds, so an inherited credential is
   // never in `config.env` and the stored pairs alone would let it out.
   it("removes an inherited credential the configuration never stored", () => {
-    process.env.OPENBOT_TEST_MCP_TOKEN = "inherited-secret-value";
+    process.env.AIKINGBOT_TEST_MCP_TOKEN = "inherited-secret-value";
     try {
-      const withPassthrough = config({ command: "node", envPassthrough: ["OPENBOT_TEST_MCP_TOKEN"] });
+      const withPassthrough = config({ command: "node", envPassthrough: ["AIKINGBOT_TEST_MCP_TOKEN"] });
       const message = describeMcpError(new Error("Rejected inherited-secret-value"), withPassthrough, 10_000);
       expect(message).not.toContain("inherited-secret-value");
       expect(message).toContain("•••");
     } finally {
-      delete process.env.OPENBOT_TEST_MCP_TOKEN;
+      delete process.env.AIKINGBOT_TEST_MCP_TOKEN;
     }
   });
 
@@ -343,7 +343,7 @@ describe("describeMcpError", () => {
         config({ transport: "http", url: "https://mcp.example.com/mcp" }),
         10_000,
       ),
-    ).toBe("OpenBot could not reach the server. Check the URL and your network.");
+    ).toBe("AIKINGBOT could not reach the server. Check the URL and your network.");
   });
 
   it("reports an http status rather than the transport's own words", () => {

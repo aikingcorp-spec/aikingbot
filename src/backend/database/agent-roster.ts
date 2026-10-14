@@ -1,5 +1,5 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import { revokeRoutineWebhooks } from "../webhook-route-store";
 import type { DatabaseCore } from "./database-core";
 import { databaseRow, databaseRows, requiredStringColumn } from "./database-rows";

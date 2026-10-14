@@ -1,4 +1,4 @@
-import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protocol/v7-base";
+import { decodeTeamProtocolSupportV7Base } from "@aikingbot/contracts/team-protocol/v7-base";
 // One Team API call, from picking a wire format to recording that it failed.
 //
 // **Two encodings, on purpose. Never merge them.** The HTTPS path frames V1 or V3 according to the
@@ -19,8 +19,8 @@ import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protoco
 // reaching in and closing a WebSocket.
 
 import { randomBytes, verify } from "node:crypto";
-import type { RemoteDesktopCapabilities, ServerCompatibility } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import type { RemoteDesktopCapabilities, ServerCompatibility } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import {
   isAgentCreateRoute,
   supportsTeamSemanticTags,
@@ -28,15 +28,15 @@ import {
   TEAM_BOOTSTRAP_CAPABILITIES,
   type TeamCurrentCapability,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/team-protocol/current";
 import {
   highestCommonTeamProtocol,
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamProtocolUpdateDirection,
-} from "@openbot/contracts/team-protocol/v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Result } from "effect";
 import { decodeRemoteDesktopCapabilities } from "./remote-device-decoding";
 import type { ResponseDecoder } from "./remote-host-decoding";

@@ -24,7 +24,7 @@ export const messages = {
   "marketplace.tab.agents": "エージェント",
   "marketplace.tab.skills": "スキル",
 
-  "marketplace.plugins.missing": "このプラグインは OpenBot のカタログにありません。",
+  "marketplace.plugins.missing": "このプラグインは AIKINGBOT のカタログにありません。",
 
   "marketplace.agents.loadingDetail": "エージェントの詳細を読み込んでいます…",
   "marketplace.agents.skills": "スキル",
@@ -34,7 +34,7 @@ export const messages = {
 
   "marketplace.skill.loading": "スキルを読み込んでいます",
   "marketplace.skill.update": "スキルをアップデート",
-  "marketplace.try.readFailed": "OpenBot はこのエージェントのスキルを読み取れませんでした。もう一度お試しください。",
+  "marketplace.try.readFailed": "AIKINGBOT はこのエージェントのスキルを読み取れませんでした。もう一度お試しください。",
   "marketplace.try.enable": "試すには、エージェントの設定でこのスキルを有効にしてください。",
   "marketplace.try.repair": "試すには、エージェントの設定でこのスキルを修復してください。",
   "marketplace.try.update": "このバージョンを試すには、スキルをアップデートしてください。",
@@ -155,7 +155,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "アプリバンドル用に、マーケティングアイコンを 2x で書き出してください。",
   "marketplace.plugin.paper.tagline": "HTML と CSS で作られたデザインキャンバス",
   "marketplace.plugin.paper.description":
-    "Paper を使うと、エージェントは Paper Desktop で開いているデザインファイルを読み書きできます。アートボード、選択範囲、計算済みのスタイル、JSX、トークンを調べ、フレーム、テキスト、スタイルを作成・変更できます。Paper Desktop をインストールして一度開き、始める前にファイルを開いてください。OpenBot は Paper Desktop がインストールする Paper CLI を起動します。Paper にキーは不要です。書き込みツールは開いているファイルを変更するので、承認する前に各書き込みを確認してください。",
+    "Paper を使うと、エージェントは Paper Desktop で開いているデザインファイルを読み書きできます。アートボード、選択範囲、計算済みのスタイル、JSX、トークンを調べ、フレーム、テキスト、スタイルを作成・変更できます。Paper Desktop をインストールして一度開き、始める前にファイルを開いてください。AIKINGBOT は Paper Desktop がインストールする Paper CLI を起動します。Paper にキーは不要です。書き込みツールは開いているファイルを変更するので、承認する前に各書き込みを確認してください。",
   "marketplace.plugin.paper.app":
     "開いている Paper Desktop のファイルを、Paper CLI が中継するローカルの MCP サーバーで読み書きします。ファイルを開いた Paper Desktop が必要です。",
   "marketplace.plugin.paper.prompt.implement":

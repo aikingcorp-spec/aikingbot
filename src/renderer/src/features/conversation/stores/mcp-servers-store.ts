@@ -1,4 +1,4 @@
-import { MCP_SERVERS_CAPABILITY, type McpServerConfig } from "@openbot/contracts/ipc";
+import { MCP_SERVERS_CAPABILITY, type McpServerConfig } from "@aikingbot/contracts/ipc";
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { serverCanAdminister } from "../../servers/server-capabilities";
 import { conversationRuntime } from "../conversation-runtime";

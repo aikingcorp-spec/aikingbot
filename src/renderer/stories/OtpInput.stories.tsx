@@ -1,4 +1,4 @@
-import { OtpInput } from "@openbot/ui/features/account/OtpInput";
+import { OtpInput } from "@aikingbot/ui/features/account/OtpInput";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -10,7 +10,7 @@ const meta = {
     status: "idle",
     hint: "Enter all 8 characters to continue.",
     errorMessage: null,
-    successMessage: "Verified. Opening OpenBot…",
+    successMessage: "Verified. Opening AIKINGBOT…",
     onChange: fn(),
     onComplete: fn(),
   },

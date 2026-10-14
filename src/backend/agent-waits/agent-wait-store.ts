@@ -4,18 +4,18 @@
  * wait is deleted. It owns no events: the runtime says when something changed.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentWait } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentWait } from "@aikingbot/contracts/ipc";
+import type { DynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { AIKINGBOTDatabase } from "../aikingbot-database";
 import { databaseRow, databaseRows, optionalStringColumn, requiredStringColumn } from "../database/database-rows";
-import type { OpenBotDatabase } from "../openbot-database";
 
 /** A refusal the agent reads: the text is already a sentence for it. */
 export class AgentWaitError extends Error {}
 
 export interface AgentWaitStoreOptions {
-  database: OpenBotDatabase;
+  database: AIKINGBOTDatabase;
   createId?: () => string;
   now?: () => Date;
 }
@@ -29,7 +29,7 @@ export interface OpenAgentWaitInput {
 }
 
 export class AgentWaitStore {
-  readonly #database: OpenBotDatabase;
+  readonly #database: AIKINGBOTDatabase;
   readonly #createId: () => string;
   readonly #now: () => Date;
 

@@ -1,4 +1,4 @@
-import { Heading, Switch, SwitchField } from "@openbot/ui";
+import { Heading, Switch, SwitchField } from "@aikingbot/ui";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

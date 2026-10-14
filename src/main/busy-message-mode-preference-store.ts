@@ -1,5 +1,5 @@
-import { type BusyMessageModePreference, DEFAULT_BUSY_MESSAGE_MODE, isBusyMessageMode } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type BusyMessageModePreference, DEFAULT_BUSY_MESSAGE_MODE, isBusyMessageMode } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

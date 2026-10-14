@@ -4,7 +4,7 @@ import { Effect } from "effect";
 import { chmod, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import type { SaveCustomProviderInput } from "@openbot/contracts/ipc";
+import type { SaveCustomProviderInput } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { type CustomProviderCipher, CustomProviderStore } from "./custom-provider-store";
@@ -13,8 +13,8 @@ let root = "";
 let path = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-custom-providers-"));
-  path = join(root, "nested", "openbot-custom-providers-v1.json");
+  root = await mkdtemp(join(tmpdir(), "aikingbot-custom-providers-"));
+  path = join(root, "nested", "aikingbot-custom-providers-v1.json");
 });
 
 afterEach(async () => {

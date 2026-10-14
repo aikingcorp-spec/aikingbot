@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { rewriteAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { rewriteAttachmentReferences } from "@aikingbot/contracts/attachment-references";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentRuntimeWorkItem,
   AttachmentDataInput,
@@ -19,7 +19,7 @@ import type {
   QueuedMessageReceipt,
   QueueSnapshot,
   QueueSteerFallback,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   AGENT_EXCHANGE_ITEM_TYPE,
   AGENT_RUNTIME_ATTENTION_LIMIT,
@@ -28,11 +28,11 @@ import {
   isConversationMessageSender,
   isMessageReaction,
   QUEUE_STEER_FALLBACKS,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { QueueEditRejectedError } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { QueueEditRejectedError } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Effect, Result } from "effect";
 import {
   AttachmentFiles,
@@ -47,8 +47,8 @@ import { StoredStateFailure, storedIO, storedSync, toStoredStateFailure } from "
 
 export type { ExportedAttachmentFile, GeneratedAttachmentSource } from "./attachment-files";
 
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { MailboxDeliveryGate } from "./mailbox-delivery-gate";
-import { OpenBotDatabase } from "./openbot-database";
 import { isRecord } from "./protocol";
 import { recordRestartActivity } from "./restart-activity";
 
@@ -199,13 +199,13 @@ export interface CommittedChannelAttachments {
 export class MailboxStore {
   readonly #statePath: string;
   readonly #files: AttachmentFiles;
-  readonly #database: OpenBotDatabase;
+  readonly #database: AIKINGBOTDatabase;
   readonly #queueUpdates = new Set<string>();
   readonly #deliveryGate = new MailboxDeliveryGate();
   readonly #stagedGeneratedAttachments = new Map<string, StoredGeneratedAttachment>();
   #state: StoredState = structuredClone(EMPTY_STATE);
 
-  constructor(userDataPath: string, sharedRoot: string, database = new OpenBotDatabase(userDataPath)) {
+  constructor(userDataPath: string, sharedRoot: string, database = new AIKINGBOTDatabase(userDataPath)) {
     this.#statePath = join(userDataPath, "mailbox.json");
     this.#files = new AttachmentFiles({ userDataPath, sharedRoot });
     this.#database = database;
@@ -2247,7 +2247,7 @@ function compareQueueOrder(left: StoredDelivery, right: StoredDelivery): number 
  * Mailbox state written before the bot-to-agent rename spells the product agent `bot`. The validators
  * below run *before* normalization and throw "Stored mailbox projection is invalid.", so an old
  * spelling does not degrade -- it blocks startup outright. Migration v13 rewrites the database, but a
- * user who restores `openbot.db` from their own copy of the file never runs it, and `mailbox.json`
+ * user who restores `aikingbot.db` from their own copy of the file never runs it, and `mailbox.json`
  * predates the database entirely. So every read tolerates both spellings and every write emits only
  * the new one. This renames keys and the `sender.kind` / `actor.kind` discriminant, never message text.
  */

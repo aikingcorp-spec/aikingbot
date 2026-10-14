@@ -15,11 +15,11 @@ import {
   parseOpenStorageLocationInput,
   parseOpenStoredFileInput,
   STORAGE_CAPABILITY,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { StorageAgent, StorageUsageService } from "../../backend/storage-usage";
 import type { ResponseDecoder } from "../remote-host-decoding";

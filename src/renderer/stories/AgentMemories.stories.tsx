@@ -1,10 +1,10 @@
-import type { AgentMemory } from "@openbot/contracts/ipc";
+import type { AgentMemory } from "@aikingbot/contracts/ipc";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import AgentSettingsPanel from "../src/features/conversation/AgentSettingsPanel";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_MODELS } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 const storyAgent = STORY_AGENT;
 
@@ -21,7 +21,7 @@ const chiefMemories: AgentMemory[] = [
   {
     id: "memory-manual",
     agentId: "chief",
-    text: "Use Bun for package scripts in OpenBot.",
+    text: "Use Bun for package scripts in AIKINGBOT.",
     origin: "manual",
     sourceTurnId: null,
     createdAt: "2026-08-23T11:00:00.000Z",
@@ -49,13 +49,13 @@ const fullMemoryList: AgentMemory[] = Array.from({ length: 64 }, (_, index) => (
 }));
 
 function AgentMemoriesStory(props: { memories: AgentMemory[] }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot({ memories: { chief: props.memories } });
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT({ memories: { chief: props.memories } });
+  window.aikingbot = mock.api;
 
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
 
   return (

@@ -1,16 +1,16 @@
-import type { RemoteAuthEvent } from "@openbot/contracts/signal-protocol/auth-events";
+import type { RemoteAuthEvent } from "@aikingbot/contracts/signal-protocol/auth-events";
 import {
   DISCORD_UPLOAD_BYTES_LIMIT,
   type DiscordApiErrorBody,
   type DiscordApiErrorCode,
   type DiscordApiRequest,
-} from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_API_PATH } from "@openbot/contracts/signal-protocol/discord-route";
+} from "@aikingbot/contracts/signal-protocol/discord-api";
+import { DISCORD_API_PATH } from "@aikingbot/contracts/signal-protocol/discord-route";
 import {
   WEBHOOK_DELIVERY_BODY_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
-import { SLACK_EVENTS_PATH } from "@openbot/contracts/signal-protocol/slack-route";
+} from "@aikingbot/contracts/signal-protocol/messages";
+import { SLACK_EVENTS_PATH } from "@aikingbot/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_CHAT_ID_PATTERN,
@@ -21,7 +21,7 @@ import {
   TELEGRAM_UPDATES_PATH,
   TELEGRAM_UPLOADS_PATH,
   type TelegramUploadAnswer,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import {
   WEBHOOK_DELIVERY_ID_HEADER,
   WEBHOOK_DELIVERY_ID_PATTERN,
@@ -31,7 +31,7 @@ import {
   WEBHOOK_SIGNATURE_PATTERN,
   WEBHOOK_TIMESTAMP_HEADER,
   WEBHOOK_TIMESTAMP_PATTERN,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@aikingbot/contracts/signal-protocol/webhook-route";
 import { Effect, type ManagedRuntime, Result } from "effect";
 import { Elysia } from "elysia";
 import { z } from "zod";
@@ -57,7 +57,7 @@ const slackRequestSchema = z.object({
   team_id: z.string().optional(),
   team: z.object({ id: z.string() }).nullish(),
   authorizations: z.array(z.object({ team_id: z.string() })).optional(),
-  // Only to know whether the event addresses OpenBot, when a hosted server sleeps. Not the text.
+  // Only to know whether the event addresses AIKINGBOT, when a hosted server sleeps. Not the text.
   event: z
     .object({
       type: z.string().optional(),
@@ -129,11 +129,11 @@ export function createRemoteApiApp(
   discord: DiscordApi | null = null,
 ) {
   const app = new Elysia()
-    .get("/health/live", () => ({ service: "openbot-remote-api", status: "live", commit: config.sourceCommit }))
-    .get("/health/ready", () => ({ service: "openbot-remote-api", status: "ready" }))
+    .get("/health/live", () => ({ service: "aikingbot-remote-api", status: "live", commit: config.sourceCommit }))
+    .get("/health/ready", () => ({ service: "aikingbot-remote-api", status: "ready" }))
     .post("/internal/auth-events", async ({ request, set }) => {
-      const timestamp = request.headers.get("OpenBot-Timestamp") ?? "";
-      const signature = request.headers.get("OpenBot-Signature") ?? "";
+      const timestamp = request.headers.get("AIKINGBOT-Timestamp") ?? "";
+      const signature = request.headers.get("AIKINGBOT-Signature") ?? "";
       const body = await request.text();
       if (!verifyWebhookSignature(body, timestamp, signature, config.authWebhookSecret)) {
         set.status = 401;
@@ -155,7 +155,7 @@ export function createRemoteApiApp(
       else signal.revokeSession(event.sessionId);
       return new Response(null, { status: 204 });
     })
-    // The OpenBot Slack app's one request URL, for the events and button presses of every
+    // The AIKINGBOT Slack app's one request URL, for the events and button presses of every
     // workspace. Signal checks Slack's signature, reads only the app and workspace IDs, and passes the
     // exact body to the ingress socket of the host that the app's workspace is linked to. Nothing here stores or
     // logs the body.
@@ -277,7 +277,7 @@ export function createRemoteApiApp(
       },
       { parse: "none" },
     )
-    // The webhook of each OpenBot Telegram bot. Signal checks the bot's secret header, reads only the
+    // The webhook of each AIKINGBOT Telegram bot. Signal checks the bot's secret header, reads only the
     // chat, the callback query and a link code, and passes the exact body to the ingress socket of
     // the chat's host. Nothing here stores or logs the body. A signed update is always answered 200:
     // Telegram holds back the bot's other updates while one fails.
@@ -598,40 +598,40 @@ function decodeAuthEvent(body: string): RemoteAuthEvent | null {
 export function prometheusMetrics(signal: SignalService): string {
   const metrics = signal.metrics();
   return [
-    "# TYPE openbot_remote_signal_sockets gauge",
-    `openbot_remote_signal_sockets ${metrics.activeSockets}`,
-    "# TYPE openbot_remote_peer_connections gauge",
-    `openbot_remote_peer_connections ${metrics.activePeerConnections}`,
-    "# TYPE openbot_remote_signal_messages_total counter",
-    `openbot_remote_signal_messages_total ${metrics.relayedMessages}`,
-    "# TYPE openbot_remote_auth_failures_total counter",
-    `openbot_remote_auth_failures_total ${metrics.authenticationFailures}`,
-    "# TYPE openbot_remote_protocol_failures_total counter",
-    `openbot_remote_protocol_failures_total ${metrics.protocolFailures}`,
-    "# TYPE openbot_remote_slack_deliveries_total counter",
-    `openbot_remote_slack_deliveries_total ${metrics.slackDeliveries}`,
-    "# TYPE openbot_remote_slack_deliveries_unavailable_total counter",
-    `openbot_remote_slack_deliveries_unavailable_total ${metrics.slackDeliveriesUnavailable}`,
-    "# TYPE openbot_remote_telegram_deliveries_total counter",
-    `openbot_remote_telegram_deliveries_total ${metrics.telegramDeliveries}`,
-    "# TYPE openbot_remote_telegram_deliveries_unrouted_total counter",
-    `openbot_remote_telegram_deliveries_unrouted_total ${metrics.telegramDeliveriesUnrouted}`,
-    "# TYPE openbot_remote_telegram_calls_total counter",
-    `openbot_remote_telegram_calls_total ${metrics.telegramCalls}`,
-    "# TYPE openbot_remote_telegram_calls_refused_total counter",
-    `openbot_remote_telegram_calls_refused_total ${metrics.telegramCallsRefused}`,
-    "# TYPE openbot_remote_queued_deliveries_total counter",
-    `openbot_remote_queued_deliveries_total ${metrics.queuedDeliveries}`,
-    "# TYPE openbot_remote_queued_deliveries_flushed_total counter",
-    `openbot_remote_queued_deliveries_flushed_total ${metrics.queuedDeliveriesFlushed}`,
-    "# TYPE openbot_remote_discord_deliveries_total counter",
-    `openbot_remote_discord_deliveries_total ${metrics.discordDeliveries}`,
-    "# TYPE openbot_remote_discord_deliveries_unavailable_total counter",
-    `openbot_remote_discord_deliveries_unavailable_total ${metrics.discordDeliveriesUnavailable}`,
-    "# TYPE openbot_remote_discord_api_calls_total counter",
-    `openbot_remote_discord_api_calls_total ${metrics.discordApiCalls}`,
-    "# TYPE openbot_remote_discord_api_failures_total counter",
-    `openbot_remote_discord_api_failures_total ${metrics.discordApiFailures}`,
+    "# TYPE aikingbot_remote_signal_sockets gauge",
+    `aikingbot_remote_signal_sockets ${metrics.activeSockets}`,
+    "# TYPE aikingbot_remote_peer_connections gauge",
+    `aikingbot_remote_peer_connections ${metrics.activePeerConnections}`,
+    "# TYPE aikingbot_remote_signal_messages_total counter",
+    `aikingbot_remote_signal_messages_total ${metrics.relayedMessages}`,
+    "# TYPE aikingbot_remote_auth_failures_total counter",
+    `aikingbot_remote_auth_failures_total ${metrics.authenticationFailures}`,
+    "# TYPE aikingbot_remote_protocol_failures_total counter",
+    `aikingbot_remote_protocol_failures_total ${metrics.protocolFailures}`,
+    "# TYPE aikingbot_remote_slack_deliveries_total counter",
+    `aikingbot_remote_slack_deliveries_total ${metrics.slackDeliveries}`,
+    "# TYPE aikingbot_remote_slack_deliveries_unavailable_total counter",
+    `aikingbot_remote_slack_deliveries_unavailable_total ${metrics.slackDeliveriesUnavailable}`,
+    "# TYPE aikingbot_remote_telegram_deliveries_total counter",
+    `aikingbot_remote_telegram_deliveries_total ${metrics.telegramDeliveries}`,
+    "# TYPE aikingbot_remote_telegram_deliveries_unrouted_total counter",
+    `aikingbot_remote_telegram_deliveries_unrouted_total ${metrics.telegramDeliveriesUnrouted}`,
+    "# TYPE aikingbot_remote_telegram_calls_total counter",
+    `aikingbot_remote_telegram_calls_total ${metrics.telegramCalls}`,
+    "# TYPE aikingbot_remote_telegram_calls_refused_total counter",
+    `aikingbot_remote_telegram_calls_refused_total ${metrics.telegramCallsRefused}`,
+    "# TYPE aikingbot_remote_queued_deliveries_total counter",
+    `aikingbot_remote_queued_deliveries_total ${metrics.queuedDeliveries}`,
+    "# TYPE aikingbot_remote_queued_deliveries_flushed_total counter",
+    `aikingbot_remote_queued_deliveries_flushed_total ${metrics.queuedDeliveriesFlushed}`,
+    "# TYPE aikingbot_remote_discord_deliveries_total counter",
+    `aikingbot_remote_discord_deliveries_total ${metrics.discordDeliveries}`,
+    "# TYPE aikingbot_remote_discord_deliveries_unavailable_total counter",
+    `aikingbot_remote_discord_deliveries_unavailable_total ${metrics.discordDeliveriesUnavailable}`,
+    "# TYPE aikingbot_remote_discord_api_calls_total counter",
+    `aikingbot_remote_discord_api_calls_total ${metrics.discordApiCalls}`,
+    "# TYPE aikingbot_remote_discord_api_failures_total counter",
+    `aikingbot_remote_discord_api_failures_total ${metrics.discordApiFailures}`,
     "",
   ].join("\n");
 }

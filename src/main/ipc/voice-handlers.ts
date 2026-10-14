@@ -1,7 +1,7 @@
 // The speech recognition models (Parakeet and Whisper turbo on this computer, ElevenLabs Scribe in
 // the cloud), their settings, and dictation.
 
-import type { VoiceModelStatus, VoiceSettings, VoiceStream, VoiceTranscriptionResult } from "@openbot/contracts/ipc";
+import type { VoiceModelStatus, VoiceSettings, VoiceStream, VoiceTranscriptionResult } from "@aikingbot/contracts/ipc";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { VoiceTranscriptionService } from "../voice-transcription-service";
 import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";

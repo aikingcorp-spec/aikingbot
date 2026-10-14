@@ -2,8 +2,8 @@ import {
   SIGN_IN_RELAY_CAPABILITY,
   SIGN_IN_RELAY_PROVIDERS,
   SIGN_IN_RELAY_ROUTES,
-} from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseTestMcpServer } from "../ipc/mcp-inputs";
 import type { TeamApiSignInRelay } from "./dependencies";

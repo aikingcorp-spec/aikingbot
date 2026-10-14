@@ -1,10 +1,10 @@
-import type { CentralAuthState } from "@openbot/contracts/ipc";
+import type { CentralAuthState } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { ensureDevelopmentAccount } from "./development-remote-bootstrap";
 
-const email = "openbot-dev-host@example.com";
+const email = "aikingbot-dev-host@example.com";
 const user = { id: "seeded-owner", email, name: null, avatarUrl: null };
 const cooldown: CentralAuthState = {
   status: "error",

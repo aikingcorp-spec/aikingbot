@@ -9,7 +9,7 @@ export const messages = {
   "error.voice.modelUnavailable": "Model głosowy jest niedostępny.",
   "error.voice.transcriptionTimedOut": "Przekroczono limit czasu transkrypcji głosu.",
   "error.voice.prepareRequired":
-    "Lokalna transkrypcja głosu jest niedostępna. Uruchom `bun run voice:prepare` i uruchom ponownie OpenBot.",
+    "Lokalna transkrypcja głosu jest niedostępna. Uruchom `bun run voice:prepare` i uruchom ponownie AIKINGBOT.",
   "error.voice.transcriptionFailed": "Nie udało się przetranskrybować tego nagrania.",
   "error.voice.cloud.keyRequired": "Dodaj klucz API ElevenLabs w Ustawienia → Głos.",
   "error.voice.cloud.keyRejected": "ElevenLabs nie zaakceptował klucza API. Sprawdź klucz w Ustawienia → Głos.",

@@ -56,11 +56,11 @@ export const messages = {
   "error.agent.changedWhileDuplicating": "L'agente è cambiato durante la duplicazione. Riprova.",
   "error.agent.duplicatedAgentGone": "L'agente duplicato non esiste più.",
   "error.agent.stateCorrupt":
-    "Lo stato dell'agente è danneggiato o proviene da una versione di OpenBot più recente; non viene sovrascritto.",
+    "Lo stato dell'agente è danneggiato o proviene da una versione di AIKINGBOT più recente; non viene sovrascritto.",
   "error.agent.oldRoleField":
-    "I profili degli agenti salvati usano il vecchio campo role; aggiorna i dati prima di avviare OpenBot.",
+    "I profili degli agenti salvati usano il vecchio campo role; aggiorna i dati prima di avviare AIKINGBOT.",
   "error.agent.duplicateIds": "Lo stato degli agenti contiene ID di agente duplicati; non viene sovrascritto.",
-  "error.agent.copyNameFailed": "OpenBot non è riuscito a creare un nome univoco per la copia dell'agente.",
+  "error.agent.copyNameFailed": "AIKINGBOT non è riuscito a creare un nome univoco per la copia dell'agente.",
   "error.agent.endpointRemoved": "L'endpoint usato da questo agente è stato rimosso. Scegli un altro modello.",
   "error.agent.selectedGone": "L'agente selezionato non esiste più.",
   "error.agent.profileEndpointsChanged": "Gli endpoint personalizzati sono cambiati durante la generazione. Riprova.",
@@ -81,9 +81,9 @@ export const messages = {
   "error.agent.saveOtherAgent": "Questo salvataggio appartiene a un altro agente.",
   "error.agent.savedGone": "L'agente salvato non esiste più.",
   "error.agent.storedProfileUnreadable":
-    "Un profilo di agente salvato ha un valore illeggibile in «{field}»; aggiorna i dati prima di avviare OpenBot.",
+    "Un profilo di agente salvato ha un valore illeggibile in «{field}»; aggiorna i dati prima di avviare AIKINGBOT.",
   "error.agent.storedProfileUnreadableId":
-    "Il profilo di agente salvato {id} ha un valore illeggibile in «{field}»; aggiorna i dati prima di avviare OpenBot.",
+    "Il profilo di agente salvato {id} ha un valore illeggibile in «{field}»; aggiorna i dati prima di avviare AIKINGBOT.",
   "error.agent.queueEditRejected": "Modifica della coda rifiutata: {reason}",
   "error.agent.computerUseLocalOnly":
     "Il Controllo del computer si può cambiare solo sul computer che esegue l'agente.",
@@ -102,5 +102,5 @@ export const messages = {
   "error.agent.lowMemory":
     "Questo server ha poca memoria. Il tuo messaggio resta in coda e parte quando si libera memoria. Un piano più grande dà più memoria al server.",
   "error.agent.workspaceOnlyToolMissing":
-    "Solo workspace richiede {tool}, che OpenBot non ha trovato. Installalo, oppure scegli Accesso completo nelle impostazioni dell'agente.",
+    "Solo workspace richiede {tool}, che AIKINGBOT non ha trovato. Installalo, oppure scegli Accesso completo nelle impostazioni dell'agente.",
 } as const satisfies PartialTranslation<typeof source>;

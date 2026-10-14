@@ -3,9 +3,9 @@ import {
   parseDeleteStoredFileInput,
   parseGetStorageUsageInput,
   STORAGE_CAPABILITY,
-} from "@openbot/contracts/ipc";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { StorageNotFoundError } from "../../backend/storage-usage";
 import type { TeamApiStorage } from "./dependencies";

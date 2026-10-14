@@ -1,4 +1,4 @@
-import { errorReference, referenceCarrierName } from "@openbot/user-errors";
+import { errorReference, referenceCarrierName } from "@aikingbot/user-errors";
 import { type IpcMainInvokeEvent, ipcMain } from "electron";
 import { isTrustedRendererUrl } from "./trusted-renderer";
 

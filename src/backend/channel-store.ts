@@ -13,10 +13,11 @@ import {
   isChannelMessage,
   isChannelTask,
   SIGNED_OUT_CHANNEL_MEMBER_ID,
-} from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import { deleteAggregateHistory } from "./database/database-core";
 import {
   databaseRow,
@@ -25,7 +26,6 @@ import {
   requiredNumberColumn,
   requiredStringColumn,
 } from "./database/database-rows";
-import type { OpenBotDatabase } from "./openbot-database";
 import { revokeRoutineWebhooks } from "./webhook-route-store";
 
 export interface ChannelAssignment {
@@ -82,7 +82,7 @@ interface ChannelChange {
  * Deprecated: channels are archived at start. The next release removes this store and its tables.
  */
 export class ChannelStore {
-  constructor(readonly database: OpenBotDatabase) {}
+  constructor(readonly database: AIKINGBOTDatabase) {}
 
   get(channelId: string): Channel {
     const row = databaseRow(
@@ -415,7 +415,7 @@ export class ChannelStore {
         throughSequence: requiredNumberColumn(row, "through_sequence"),
         summaryVersion: requiredNumberColumn(row, "summary_version"),
       };
-    const threadId = `openbot-thread-${randomUUID()}`;
+    const threadId = `aikingbot-thread-${randomUUID()}`;
     return this.database.dispatch(
       `channel-context:${channelId}:${agentId}`,
       [

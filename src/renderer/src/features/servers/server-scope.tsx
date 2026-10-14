@@ -1,6 +1,6 @@
-import { createRemoteConnectionRecovery, type RemoteRecoveryStatus } from "@openbot/team-client/remote-recovery";
-import { currentText } from "@openbot/ui/text";
-import type { UserErrorDetails } from "@openbot/user-errors";
+import { createRemoteConnectionRecovery, type RemoteRecoveryStatus } from "@aikingbot/team-client/remote-recovery";
+import { currentText } from "@aikingbot/ui/text";
+import type { UserErrorDetails } from "@aikingbot/user-errors";
 import { createEffect, createSignal, createStore, flush, getOwner, isDisposed, onSettled, untrack } from "solid-js";
 import { isGlobalSearchShortcut } from "../../global-search-shortcut";
 import { useNavigation } from "../../navigation";

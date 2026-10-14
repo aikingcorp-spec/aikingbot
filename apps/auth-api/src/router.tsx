@@ -1,7 +1,7 @@
 import { createRouter } from "@tanstack/solid-router";
 import { routeTree } from "./routeTree.gen";
 
-const CHUNK_RELOAD_KEY = "openbot:chunk-reload-at";
+const CHUNK_RELOAD_KEY = "aikingbot:chunk-reload-at";
 const CHUNK_RELOAD_WINDOW_MS = 10_000;
 
 // A deploy removes the previous build's chunks. Reload once to get the new build; if the chunk is

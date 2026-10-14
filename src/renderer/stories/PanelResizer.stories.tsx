@@ -1,4 +1,4 @@
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
+import { PanelResizer } from "@aikingbot/ui/components/PanelResizer";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

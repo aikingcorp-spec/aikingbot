@@ -17,7 +17,7 @@ import type {
   TeamMemberSummary,
   TeamPresenceSnapshot,
   TeamSessionSummary,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   decodeDirectConversation,
@@ -89,7 +89,7 @@ const teamInvite = {
   useCount: 0,
 } satisfies TeamInviteSummary;
 
-const invite = { ...teamInvite, inviteUrl: "openbot://join/invite-1" } satisfies InviteSummary;
+const invite = { ...teamInvite, inviteUrl: "aikingbot://join/invite-1" } satisfies InviteSummary;
 
 const session = {
   id: "session-1",
@@ -234,8 +234,8 @@ describe("team decoders", () => {
     ["server with an ended plan", decodeServer, { ...remoteServer, hostedIssue: "plan_ended" }],
     ["server with an expired start", decodeServer, { ...remoteServer, hostedIssue: "start_timeout" }],
     ["invite preview", decodeInvitePreview, invitePreview],
-    ["invite link", decodeInviteUrl, "openbot://join/invite-1"],
-    ["pending invite", decodePendingInvite, "openbot://join/invite-1"],
+    ["invite link", decodeInviteUrl, "aikingbot://join/invite-1"],
+    ["pending invite", decodePendingInvite, "aikingbot://join/invite-1"],
     ["missing pending invite", decodePendingInvite, null],
     [
       "server presence",

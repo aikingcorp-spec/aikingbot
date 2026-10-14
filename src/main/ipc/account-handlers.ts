@@ -1,6 +1,6 @@
 // The cloud account: email sign-in, profile, and the mobile devices connected to it.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { CentralAuthManager } from "../central-auth-manager";
 import type { HostService } from "../host-service";

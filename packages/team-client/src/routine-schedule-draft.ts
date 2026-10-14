@@ -2,8 +2,8 @@
 // phone edit the same draft and save it with the same conversion, so a routine saved on one reads
 // back the same on the other. Labels stay with each client.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { RoutineSchedule } from "@aikingbot/contracts/ipc";
 
 /*
  * The schedule the trigger row edits. It is a UI shape, not `RoutineSchedule`: it covers

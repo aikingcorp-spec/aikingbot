@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/auth-api",
+  "name": "@aikingbot/auth-api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,8 +16,8 @@
     "env:validate:prod": "dotenvx validate -f .env.production -fk ../../.env.keys",
     "cf:typegen": "wrangler types",
     "stripe:bootstrap": "bun ../../scripts/run-development.ts stripe",
-    "db:migrate:local": "wrangler d1 migrations apply openbot-auth --local",
-    "db:migrate:remote": "wrangler d1 migrations apply openbot-auth --remote",
+    "db:migrate:local": "wrangler d1 migrations apply aikingbot-auth --local",
+    "db:migrate:remote": "wrangler d1 migrations apply aikingbot-auth --remote",
     "typecheck": "bun ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json",
     "test": "bun run --parallel test:server test:client",
     "test:server": "vitest run --config vitest.config.ts",
@@ -26,8 +26,8 @@
   "dependencies": {
     "@fontsource-variable/inter": "catalog:",
     "@kobalte/core": "catalog:",
-    "@openbot/brand": "workspace:*",
-    "@openbot/contracts": "workspace:*",
+    "@aikingbot/brand": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
     "@openpanel/web": "catalog:",
     "@paper-design/shaders": "catalog:",
     "@solidjs/signals": "catalog:",
@@ -40,7 +40,7 @@
     "solid-js": "2.0.0-rc.0",
     "yaml": "catalog:",
     "zod": "catalog:",
-    "@openbot/ui": "workspace:*",
+    "@aikingbot/ui": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

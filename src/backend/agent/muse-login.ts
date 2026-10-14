@@ -1,5 +1,5 @@
+import { sourceText } from "@aikingbot/i18n/source";
 import { type SpawnedMspConnection, spawnMspConnection } from "@muse-code/sdk";
-import { sourceText } from "@openbot/i18n/source";
 import { Effect, Option, Schema } from "effect";
 import { type AgentCliInfo, cliSpawnTarget } from "../cli";
 import { CliCodeLoginFailed, type CliCodePrompt } from "./cli-code-login";
@@ -50,7 +50,7 @@ export const startMuseDeviceLogin = Effect.fn("MuseLogin.start")(function* (opti
     Effect.tryPromise({
       try: () =>
         handshake.initialize({
-          clientInfo: { name: "openbot", version: "1" },
+          clientInfo: { name: "aikingbot", version: "1" },
           capabilities: { experimentalApi: true },
         }),
       catch: (cause) => new CliCodeLoginFailed({ cause }),

@@ -2,7 +2,7 @@ import type {
   RemoteTeamCommand,
   RemoteTeamCommandResult,
   RemoteTeamPeerActions,
-} from "@openbot/team-client/remote-peer";
+} from "@aikingbot/team-client/remote-peer";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { acquireWebHostLock } from "./web-host-lock";
 import { createWebWorkspaceRuntime } from "./web-runtime";
@@ -83,7 +83,7 @@ function createTab(
         return peer;
       },
       acquireHostLock,
-      openHostChannel: (id) => new BroadcastChannel(`openbot.test.hosts:${id}`),
+      openHostChannel: (id) => new BroadcastChannel(`aikingbot.test.hosts:${id}`),
     },
   );
   return { runtime, peers, hostState };
@@ -112,7 +112,7 @@ describe("browser host ownership", () => {
     const otherAccount = await acquireWebHostLock("two", "host");
     const otherHost = await acquireWebHostLock("one", "other-host");
     release();
-    await vi.waitFor(() => expect(held.has("openbot.web.host:one:host")).toBe(false));
+    await vi.waitFor(() => expect(held.has("aikingbot.web.host:one:host")).toBe(false));
     const next = await acquireWebHostLock("one", "host");
     next();
     otherAccount();

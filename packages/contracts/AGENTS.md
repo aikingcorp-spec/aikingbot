@@ -35,7 +35,7 @@ Two files still mirror the list, and they are not enforced the same way.
 | --- | --- | --- |
 | `src/preload/index.ts`, bridged groups | one `bridgeGroup(IPC_ENDPOINTS.group, decoders)` per group; the decoder map is keyed by every endpoint | `tsc` (`TS2741` / `TS2353`), and the coverage test for the group reference |
 | `src/preload/index.ts`, hand-written groups | the `invokeAgentForServer`, `ipcRenderer.invoke` and `listen` calls | `src/main/ipc-channel-coverage.test.ts` |
-| `src/renderer/src/preview/mock-openbot.ts` | the second implementation Storybook and the preview run against | `tsc`, against `OpenBotDesktopApi` |
+| `src/renderer/src/preview/mock-aikingbot.ts` | the second implementation Storybook and the preview run against | `tsc`, against `AIKINGBOTDesktopApi` |
 
 The main process is no longer one of them. `registerIpcGroups` in `src/main/ipc/define-ipc-group.ts`
 takes one object per group, keyed by every request endpoint in it, so a channel with no handler is
@@ -43,7 +43,7 @@ takes one object per group, keyed by every request endpoint in it, so a channel 
 is `TS2741` at `src/main/index.ts`. `src/main/AGENTS.md` has the shape to copy.
 
 A typed endpoint (`request<Payload, Result>()`, `event<Payload>()`) also sets the renderer
-signature. Declare its `OpenBotDesktopApi` method as `Invoke<typeof IPC_ENDPOINTS.group.name>` or
+signature. Declare its `AIKINGBOTDesktopApi` method as `Invoke<typeof IPC_ENDPOINTS.group.name>` or
 `Subscribe<...>`. Then a payload or result change in `ipc-endpoints.ts` reaches the interface, the
 preload and the mock without a second edit. Declare a server-scoped endpoint with
 `scopedRequest<Input, Result>()` or, when it carries only the server, `scopedQuery<Result>()`;
@@ -59,9 +59,9 @@ A group whose methods all pass straight through is generated whole: `GroupApi<Ip
 gives its interface, a request keeps its key, and an event is `on` and the key (`voice.modelStatus`
 is `onModelStatus`). The preload builds it with `bridgeGroup` and the test harness with `stubGroup`,
 so a new endpoint in it needs no line in `ipc-desktop-apis.ts`. `IPC_GROUP_PATHS`, beside
-`IPC_ENDPOINTS`, gives the place of each group on `window.openbot`: its own key, `""` for the top
+`IPC_ENDPOINTS`, gives the place of each group on `window.aikingbot`: its own key, `""` for the top
 level (`app` and `providers`), a shared path (the agent groups are all `agent`), or null for a group
-the page must not reach (`attachmentImports`). `OpenBotDesktopApi` is built from this table, so a new
+the page must not reach (`attachmentImports`). `AIKINGBOTDesktopApi` is built from this table, so a new
 group needs no line in `ipc-desktop-apis.ts` either. The built-preload verifier and the test harness
 read the same table. There are no per-method overrides in `bridgeGroup`. When a method must read or set
 preload state, bridge the group into a const outside the API object, spread it, and write only that
@@ -77,11 +77,11 @@ is nested and renamed, so a channel it never invokes is dead trust-boundary surf
 `ipc-channel-coverage.test.ts` reads the preload sources and asserts they invoke exactly the request
 endpoints and subscribe to exactly the event ones, counting a bridged group as all of its endpoints.
 
-The mock needs no test. Both it and the preload bridge are annotated `: OpenBotDesktopApi`, so a
+The mock needs no test. Both it and the preload bridge are annotated `: AIKINGBOTDesktopApi`, so a
 missing method is `TS2741` and a method the interface never declared is `TS2353` — the type checker
 already covers both directions, and the root Tests rule against assertions that TypeScript already
 enforces ends it there. What it cannot cover is
-the *behaviour*: `mock-openbot.ts` is a product surface, not a test double, and it is what the preview
+the *behaviour*: `mock-aikingbot.ts` is a product surface, not a test double, and it is what the preview
 and every Storybook story exercise. A method that satisfies the type by returning an empty array is a
 story that silently shows nothing.
 

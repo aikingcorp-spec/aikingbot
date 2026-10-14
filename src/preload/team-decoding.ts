@@ -31,7 +31,7 @@ import {
   type TeamPresenceSnapshot,
   type TeamRole,
   type TeamSessionSummary,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   decodeList,
   decodeRecord,
@@ -41,8 +41,8 @@ import {
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc-decoding";
+import { type DynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
 
 const HOST_PHASES = ["unconfigured", "idle", "starting", "online", "stopping", "error"] as const;
 const TEAM_ROLES = ["owner", "admin", "member"] as const;

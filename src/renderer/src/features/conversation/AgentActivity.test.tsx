@@ -1,5 +1,5 @@
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentActivityIndicator } from "@openbot/ui/features/conversation/AgentActivity";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { AgentActivityIndicator } from "@aikingbot/ui/features/conversation/AgentActivity";
 import { render, screen } from "@solidjs/testing-library";
 import { createSignal, flush } from "solid-js";
 import { describe, expect, it } from "vitest";
@@ -21,7 +21,7 @@ function withAvatar(index: number, avatarUrl: string | null): AgentProfile {
 
 describe("AgentActivityIndicator", () => {
   it("follows the agent it is given, including an avatar that is removed", async () => {
-    const [agent, setAgent] = createSignal(withAvatar(0, "openbot-avatar://agent/chief?v=image-1"));
+    const [agent, setAgent] = createSignal(withAvatar(0, "aikingbot-avatar://agent/chief?v=image-1"));
     const { container } = render(() => <AgentActivityIndicator agent={agent()} label="Working on it…" />);
 
     await screen.findByRole("status");
@@ -29,7 +29,7 @@ describe("AgentActivityIndicator", () => {
     flush();
     expect(drawnAvatar(container)).toHaveAttribute("data-avatar", "generated");
 
-    setAgent(withAvatar(1, "openbot-avatar://agent/sales?v=image-2"));
+    setAgent(withAvatar(1, "aikingbot-avatar://agent/sales?v=image-2"));
     flush();
     expect(drawnAvatar(container)).toHaveAttribute("data-avatar", "image");
   });

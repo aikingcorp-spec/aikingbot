@@ -1,5 +1,5 @@
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { AppTextKey } from "@openbot/i18n";
+import { expandChatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   ArrowDown,
   ArrowRightToLine,
@@ -18,10 +18,10 @@ import {
   type Settings,
   Spinner,
   Tabs,
-} from "@openbot/ui";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import type { AgentMessage, AgentProfile } from "@aikingbot/ui/data";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { useText } from "@aikingbot/ui/text";
 import { Dynamic, type JSX } from "@solidjs/web";
 import {
   type Accessor,

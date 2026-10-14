@@ -9,8 +9,8 @@ import { remoteDecode } from "./remote-service-effects";
 // Assertions read `stubTeamFetch(...).requests(path)` after the call. An `expect` inside a route body
 // reports the mock's source location and, worse, cannot fail at all when the route is never reached.
 
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_CAPABILITIES_HEADER } from "@openbot/contracts/team-protocol/v1";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { TEAM_CAPABILITIES_HEADER } from "@aikingbot/contracts/team-protocol/v1";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { decodeAgentModelOptions } from "./remote-agent-decoding";
@@ -58,7 +58,7 @@ describe("Team API compatibility negotiation", () => {
     const fixture = await createRemoteManager({ servers: [storedHttpsServer("binary-protocol")], appVersion: "0.4.0" });
 
     await expect(
-      runCauseEffect(fixture.manager.downloadSharedFile("~/OpenBot/Shared/report.csv", "binary-protocol")),
+      runCauseEffect(fixture.manager.downloadSharedFile("~/AIKINGBOT/Shared/report.csv", "binary-protocol")),
     ).rejects.toThrow("could not safely use");
     expect(fixture.server()).toMatchObject({ state: "error", issue: { code: "protocol_error" } });
   });
@@ -71,7 +71,7 @@ describe("Team API compatibility negotiation", () => {
     const fixture = await createRemoteManager({ servers: [storedHttpsServer("binary-request")], appVersion: "0.4.0" });
 
     await expect(
-      runCauseEffect(fixture.manager.downloadSharedFile("~/OpenBot/Shared/report.csv", "binary-request")),
+      runCauseEffect(fixture.manager.downloadSharedFile("~/AIKINGBOT/Shared/report.csv", "binary-request")),
     ).rejects.toThrow("Remote server request failed (502).");
     // A gateway that is merely down is not a host the client has to stop talking to.
     expect(fixture.server()).toMatchObject({ state: "offline", issue: null });
@@ -177,8 +177,8 @@ describe("Team API compatibility negotiation", () => {
 
     const status = stub.requests("/v1/agents/status");
     expect(status).toHaveLength(1);
-    expect(status[0]?.headers.get("OpenBot-Protocol-Version")).toBe("2");
-    expect(status[0]?.headers.get("OpenBot-App-Version")).toBe("0.4.0");
+    expect(status[0]?.headers.get("AIKINGBOT-Protocol-Version")).toBe("2");
+    expect(status[0]?.headers.get("AIKINGBOT-App-Version")).toBe("0.4.0");
     expect(status[0]?.headers.get(TEAM_CAPABILITIES_HEADER)).toContain("routine-event-markers");
     expect(status[0]?.headers.get(TEAM_CAPABILITIES_HEADER)).toContain("routine-run-event-markers");
     // Semantic tags are for the renderer; a v2 host is sent the plain text they stand for.
@@ -214,7 +214,7 @@ describe("Team API compatibility negotiation", () => {
               model: "gpt-5.6-luna",
               reasoningEffort: "medium",
               threadId: null,
-              workspacePath: "/OpenBot/Agents/bot-copy",
+              workspacePath: "/AIKINGBOT/Agents/bot-copy",
               preview: "No messages yet",
               updatedAt: null,
               avatarSeed: "research",

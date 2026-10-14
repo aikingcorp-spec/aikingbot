@@ -4,8 +4,8 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
 import { directThreadId, TeamChatStore } from "./team-chat-store";
 
 const roots: string[] = [];
@@ -16,9 +16,9 @@ afterEach(async () => {
 
 describe("TeamChatStore", () => {
   it("stores one durable and idempotent direct thread per member pair", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-direct-chat-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-direct-chat-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     const chat = new TeamChatStore(database);
 
@@ -60,7 +60,7 @@ describe("TeamChatStore", () => {
     });
     database.close();
 
-    const restoredDatabase = new OpenBotDatabase(root);
+    const restoredDatabase = new AIKINGBOTDatabase(root);
     await runCauseEffect(restoredDatabase.initialize());
     const restored = new TeamChatStore(restoredDatabase);
     expect(restored.readConversation("member-alice", "member-bob").messages).toHaveLength(2);
@@ -73,9 +73,9 @@ describe("TeamChatStore", () => {
   });
 
   it("pages a 10,000-message direct conversation without gaps or duplicates", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-direct-chat-large-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-direct-chat-large-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     const chat = new TeamChatStore(database);
     const first = chat.sendMessage({

@@ -2,8 +2,8 @@ import { createLazyFileRoute } from "@tanstack/solid-router";
 import { createSignal, lazy, onSettled, Show } from "solid-js";
 import "../../../../src/renderer/src/preview/preview.css";
 
-const OpenBotPlayground = lazy(() =>
-  import("@openbot/renderer-preview").then((module) => ({ default: module.OpenBotPlayground })),
+const AIKINGBOTPlayground = lazy(() =>
+  import("@aikingbot/renderer-preview").then((module) => ({ default: module.AIKINGBOTPlayground })),
 );
 
 export const Route = createLazyFileRoute("/app-preview")({ component: AppPreviewPage });
@@ -15,12 +15,12 @@ export function AppPreviewPage() {
   });
 
   return (
-    <div id="root" class="openbot-playground-root" data-preview-variant="landing">
+    <div id="root" class="aikingbot-playground-root" data-preview-variant="landing">
       <Show
         when={mounted()}
-        fallback={<div class="openbot-playground-loading" role="status" aria-label="Loading OpenBot preview" />}
+        fallback={<div class="aikingbot-playground-loading" role="status" aria-label="Loading AIKINGBOT preview" />}
       >
-        <OpenBotPlayground variant="landing" />
+        <AIKINGBOTPlayground variant="landing" />
       </Show>
     </div>
   );

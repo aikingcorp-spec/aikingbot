@@ -6,7 +6,7 @@ import { writeJsonFileAtomically } from "./atomic-json-file";
 import { runCauseEffect } from "./effect-boundary";
 
 async function temporaryRoot(): Promise<string> {
-  return mkdtemp(join(tmpdir(), "openbot-atomic-json-"));
+  return mkdtemp(join(tmpdir(), "aikingbot-atomic-json-"));
 }
 
 describe("writeJsonFileAtomically", () => {

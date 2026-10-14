@@ -10,7 +10,7 @@ import { remoteCall } from "./remote-service-effects";
 import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { DEVELOPMENT_REMOTE_CLIENT_USERNAME, HostService } from "./host-service";
@@ -56,7 +56,7 @@ async function createHostService(
   /** Announces an account the way the renderer is told, before the queued switch is applied. */
   announce: (user: CentralAuthUser) => void;
 }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-host-service-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-host-service-"));
   roots.push(root);
   const store = new TeamStore(join(root, "team.json"));
   await runCauseEffect(store.initialize());
@@ -243,7 +243,7 @@ describe("HostService account binding", () => {
       deliver = resolve;
     });
     const { service, signIn } = await createHostService({
-      remoteControlPlaneUrl: "https://api.openbot.run",
+      remoteControlPlaneUrl: "https://api.aikingbot.aikingx.com",
       listRemoteInvites: () => remoteCall(async () => loading),
     });
     await signIn(second);
@@ -460,7 +460,7 @@ describe("HostService account binding", () => {
     const emails: string[] = [];
     const { service, signIn } = await createHostService({
       registerRemoteHost: () => remoteCall(async () => Promise.resolve()),
-      remoteControlPlaneUrl: "https://api.openbot.run",
+      remoteControlPlaneUrl: "https://api.aikingbot.aikingx.com",
       createRemoteInvite: () =>
         remoteCall(async () => {
           creationStarted();

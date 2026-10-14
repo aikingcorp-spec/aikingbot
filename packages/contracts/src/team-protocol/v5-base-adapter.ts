@@ -148,7 +148,7 @@ export function decodeTeamProtocolV5BaseCurrentHttpResponse(
 }
 
 function isInstalledSkillsRoute(method: string, path: string): boolean {
-  return method === "GET" && /^\/v1\/agents\/[^/]+\/skills$/u.test(new URL(path, "http://openbot.invalid").pathname);
+  return method === "GET" && /^\/v1\/agents\/[^/]+\/skills$/u.test(new URL(path, "http://aikingbot.invalid").pathname);
 }
 
 function toWireAgentKeysForRequestPath(path: string, value: TeamProtocolV5BaseJsonValue): TeamProtocolV5BaseJsonValue {

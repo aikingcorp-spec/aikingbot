@@ -1,9 +1,9 @@
 // AI-facing bridge to the live dev app. Read-only by default; anything that
 // changes app state needs --allow-mutations. This tool never seeds, resets or
-// copies openbot.db: it drives the instance you already have open.
+// copies aikingbot.db: it drives the instance you already have open.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
+import { createAIKINGBOTLogger, redactText } from "@aikingbot/logging";
 import { readScriptArguments } from "../script-arguments";
 import {
   assertMutationAllowed,
@@ -43,10 +43,10 @@ import {
 // which stays parseable for the calling agent.
 // `debug` so the renderer console and page errors this tool subscribes to are
 // visible; the default `info` threshold would drop them.
-const logger = createOpenBotLogger("dev-automation", (line) => process.stderr.write(`${line}\n`), "debug");
+const logger = createAIKINGBOTLogger("dev-automation", (line) => process.stderr.write(`${line}\n`), "debug");
 
 const DEFAULT_TIMEOUT_MS = 10_000;
-const SCREENSHOT_ROOT = join(process.cwd(), ".openbot-build", "dev-automation");
+const SCREENSHOT_ROOT = join(process.cwd(), ".aikingbot-build", "dev-automation");
 const CPU_ROOT = join(SCREENSHOT_ROOT, "cpu");
 const MEMORY_ROOT = join(SCREENSHOT_ROOT, "memory");
 const DEFAULT_CPU_DURATION_MS = 60_000;
@@ -176,7 +176,7 @@ interface AutomationTarget {
 function resolveTarget(flags: Flags, records: DevInstanceRecord[], service: DevInstanceService): AutomationTarget {
   const explicitPort = resolveAutomationPort(
     flagValue(flags, "port") ?? undefined,
-    process.env.OPENBOT_DEV_REMOTE_DEBUGGING_PORT,
+    process.env.AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT,
   );
   const requestedInstance = flagValue(flags, "instance");
   if (requestedInstance !== null && flagValue(flags, "port") !== null) {

@@ -7,16 +7,16 @@ import type {
   ListEventActivityInput,
   ListEventRoutinesInput,
   SaveEventRoutineInput,
-} from "@openbot/contracts/ipc-events";
-import { isEventJsonValue } from "@openbot/contracts/ipc-events";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc-events";
+import { isEventJsonValue } from "@aikingbot/contracts/ipc-events";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import {
   WEBHOOK_DELIVERY_BODY_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
-import { WEBHOOK_ROUTES_LIMIT } from "@openbot/contracts/signal-protocol/webhook-route";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+} from "@aikingbot/contracts/signal-protocol/messages";
+import { WEBHOOK_ROUTES_LIMIT } from "@aikingbot/contracts/signal-protocol/webhook-route";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, registerSecretValue } from "@aikingbot/logging";
 import { Effect, Semaphore } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 import type { RoutineRecords } from "../backend/routine-records";
@@ -27,7 +27,7 @@ import type { SecretCipher } from "./provider-credential-store";
 import type { WebhookIngressDelivery } from "./signal-ingress";
 import { verifyWebhookSignature } from "./webhook-security";
 
-const logger = createOpenBotLogger("host-events");
+const logger = createAIKINGBOTLogger("host-events");
 const DEFAULT_ACTIVITY_LIMIT = 50;
 
 export interface HostWebhookRelay {

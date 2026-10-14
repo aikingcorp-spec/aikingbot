@@ -26,7 +26,7 @@ export const messages = defineMessages("marketplace", {
   "marketplace.tab.skills": "Skills",
 
   // A plugin link.
-  "marketplace.plugins.missing": "This plugin is not in the OpenBot catalog.",
+  "marketplace.plugins.missing": "This plugin is not in the AIKINGBOT catalog.",
 
   // The agent page.
   "marketplace.agents.loadingDetail": "Loading agent details…",
@@ -38,7 +38,7 @@ export const messages = defineMessages("marketplace", {
   // The skill page, and why Try is off.
   "marketplace.skill.loading": "Loading skill",
   "marketplace.skill.update": "Update skill",
-  "marketplace.try.readFailed": "OpenBot could not read this agent's skills. Try again.",
+  "marketplace.try.readFailed": "AIKINGBOT could not read this agent's skills. Try again.",
   "marketplace.try.enable": "Enable this skill in agent settings to try it.",
   "marketplace.try.repair": "Repair this skill in agent settings to try it.",
   "marketplace.try.update": "Update this skill to try this version.",
@@ -161,7 +161,7 @@ export const messages = defineMessages("marketplace", {
   "marketplace.plugin.figma.prompt.assets": "Extract the marketing icons at 2x for the app bundle.",
   "marketplace.plugin.paper.tagline": "Design canvas built on HTML and CSS",
   "marketplace.plugin.paper.description":
-    "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. OpenBot starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
+    "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. AIKINGBOT starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
   "marketplace.plugin.paper.app":
     "Reads and writes the open Paper Desktop file, over the local MCP server that the Paper CLI relays. Needs Paper Desktop with a file open.",
   "marketplace.plugin.paper.prompt.implement":

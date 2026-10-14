@@ -1,5 +1,5 @@
-import type { MessagingDesktopApi } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { MessagingDesktopApi } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 
 type HostMessagingMethod =
   | "hostOverview"
@@ -22,7 +22,7 @@ export type HostMessagingApi = Pick<MessagingDesktopApi, HostMessagingMethod>;
  */
 export function hostMessagingApi(
   serverId: () => string | undefined,
-  host: () => HostMessagingApi = () => window.openbot.messaging,
+  host: () => HostMessagingApi = () => window.aikingbot.messaging,
 ): MessagingConnectorApi {
   const call = <T>(method: (api: HostMessagingApi, serverId: string) => Promise<T>) => {
     const id = serverId();

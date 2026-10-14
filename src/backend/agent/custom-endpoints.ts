@@ -1,11 +1,11 @@
-import type { AgentModelOption, AgentSummary, UpdateAgentInput } from "@openbot/contracts/ipc";
+import type { AgentModelOption, AgentSummary, UpdateAgentInput } from "@aikingbot/contracts/ipc";
 import {
   CUSTOM_AGENT_DEFAULT_MODEL,
   customAgentIdOfModel,
   defaultProviderModel,
   PICKER_PROVIDERS,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Schema, Semaphore } from "effect";
 import type { AgentProvider } from "../agent-client";
 import { type AgentStore, DEFAULT_AGENT_PROVIDER } from "../agent-store";

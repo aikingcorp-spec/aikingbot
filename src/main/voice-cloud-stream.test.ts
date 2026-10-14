@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   type OpenVoiceStreamSocket,
@@ -53,7 +53,7 @@ describe("ScribeRealtimeSession", () => {
     for (const message of socket.sent) expect(message).not.toContain(API_KEY);
   });
 
-  it("reports a refused key with OpenBot's text, not the provider's", async () => {
+  it("reports a refused key with AIKINGBOT's text, not the provider's", async () => {
     const socket = fakeSocket();
     const stream = session(socket);
     socket.events()?.onRejected(401);

@@ -136,7 +136,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Изменение файла за пределами сначала запрашивает ваше подтверждение, в том числе при включённом автоодобрении. Команда не может записывать за пределами.",
   "agentSettings.runtime.workspaceUnlimited":
-    "Управление компьютером и браузер OpenBot не ограничены; управление компьютером можно отключить ниже.",
+    "Управление компьютером и браузер AIKINGBOT не ограничены; управление компьютером можно отключить ниже.",
   "agentSettings.computerUse.title": "Управление компьютером",
   "agentSettings.computerUse.description": "Разрешить этому агенту управлять приложениями на этом компьютере",
   "agentSettings.automation.title": "Локальные скрипты",

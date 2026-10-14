@@ -1,4 +1,4 @@
-import type { AttachmentSupport } from "@openbot/contracts/attachment-files";
+import type { AttachmentSupport } from "@aikingbot/contracts/attachment-files";
 import type {
   AddedAgent,
   AgentAdminSettings,
@@ -47,7 +47,7 @@ import type {
   UpdateAgentHostSettingsInput,
   UpdateAgentInput,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import type {
   EventActivity,
   EventRoutine,
@@ -57,10 +57,10 @@ import type {
   SaveEventRoutineInput,
   SaveEventRoutineResult,
   WebhookSecret,
-} from "@openbot/contracts/ipc-events";
-import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@openbot/team-client";
-import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
+} from "@aikingbot/contracts/ipc-events";
+import type { QueueEditRequest } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@aikingbot/team-client";
+import type { RemoteFileUpload } from "@aikingbot/team-client/remote-peer";
 import type { MobileBrowserTab } from "@/features/browser/model/browser-tabs";
 import type { BrowserViewBridgeEvent, RemoteBrowserViewSession } from "@/features/browser/model/browser-view-bridge";
 import type { MobileConversationStore } from "./conversation-store";

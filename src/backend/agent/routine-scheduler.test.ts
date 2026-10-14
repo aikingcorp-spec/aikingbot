@@ -1,17 +1,17 @@
 // @vitest-environment node
-import { type AgentEvent, routineConversationEvent, routineRunConversationEvent } from "@openbot/contracts/ipc";
+import { type AgentEvent, routineConversationEvent, routineRunConversationEvent } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentProvider } from "../agent-client";
 import type { AgentService } from "../agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   createTestService,
-  expectOpenBotToolError,
-  expectOpenBotToolFailure,
+  expectAIKINGBOTToolError,
+  expectAIKINGBOTToolFailure,
   FakeAgentClient,
   fakeOpencodeCli,
   notification,
-  openBotToolPayload,
   startAgentTestFixture,
   stopAgentTestFixture,
   stores,
@@ -34,7 +34,7 @@ afterEach(async () => {
 
 describe.sequential("RoutineScheduler: routine mutations, runs and tools", () => {
   it("keeps a daily Reddit routine after an OpenCode upload failure and refuses a duplicate", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     const client = new FakeAgentClient("opencode", "", false);
     service = createTestService({
@@ -50,19 +50,19 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     await runCauseEffect(
       service.updateAgent({ agentId: "chief", provider: "opencode", model: "opencode/example-model" }),
     );
-    await runCauseEffect(service.sendMessage({ agentId: "chief", text: "Monitor Reddit for OpenBot each day." }));
+    await runCauseEffect(service.sendMessage({ agentId: "chief", text: "Monitor Reddit for AIKINGBOT each day." }));
     await waitFor(() => events.some((event) => event.type === "turn-started"));
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     const turnId = service.listQueue("chief").deliveries[0]?.turnId;
     if (!threadId || !turnId) throw new Error("The Reddit monitor turn did not start.");
     const input = {
-      name: "Reddit OpenBot daily monitor",
-      instruction: "Report new mentions of OpenBot on Reddit in the last 24 hours.",
+      name: "Reddit AIKINGBOT daily monitor",
+      instruction: "Report new mentions of AIKINGBOT on Reddit in the last 24 hours.",
       timezone: "UTC",
       schedule: { kind: "daily", time: "08:00" },
     };
-    const result = await callOpenBotTool(client, threadId, "create_routine", input, turnId);
-    const routine = openBotToolPayload(result.result);
+    const result = await callAIKINGBOTTool(client, threadId, "create_routine", input, turnId);
+    const routine = aikingBotToolPayload(result.result);
     expect(routine).toMatchObject({
       name: input.name,
       instruction: input.instruction,
@@ -87,7 +87,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     await waitFor(() => events.filter((event) => event.type === "turn-started").length === 2);
     const retryThreadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!retryThreadId) throw new Error("The retry thread did not start.");
-    await expectOpenBotToolFailure(client, retryThreadId, "create_routine", input, "already exists with routineId");
+    await expectAIKINGBOTToolFailure(client, retryThreadId, "create_routine", input, "already exists with routineId");
     expect(service.listRoutines("chief")).toEqual([expect.objectContaining(routine)]);
   });
 
@@ -116,7 +116,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!client || !threadId) throw new Error("The routine tool test thread did not start.");
 
-    const ownCreate = await callOpenBotTool(
+    const ownCreate = await callAIKINGBOTTool(
       client,
       threadId,
       "create_routine",
@@ -124,7 +124,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       turnId(),
     );
     expect(ownCreate.error).toBeUndefined();
-    const ownRoutine = openBotToolPayload(ownCreate.result);
+    const ownRoutine = aikingBotToolPayload(ownCreate.result);
     expect(ownRoutine).toMatchObject({
       agentId: "chief",
       name: "Morning brief",
@@ -133,7 +133,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       timezone: "Pacific/Auckland",
     });
 
-    const otherCreate = await callOpenBotTool(client, threadId, "create_routine", {
+    const otherCreate = await callAIKINGBOTTool(client, threadId, "create_routine", {
       agentId: "design",
       name: "Weekly review",
       instruction: "Review the current design work.",
@@ -142,39 +142,39 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       schedule: { kind: "weekly", weekday: 1, time: "10:30" },
     });
     expect(otherCreate.error).toBeUndefined();
-    const otherRoutine = openBotToolPayload(otherCreate.result);
+    const otherRoutine = aikingBotToolPayload(otherCreate.result);
     expect(otherRoutine).toMatchObject({ agentId: "design", active: false, timezone: "UTC" });
 
-    const listResult = await callOpenBotTool(client, threadId, "list_routines", { agentId: "design" });
-    expect(openBotToolPayload(listResult.result).routines).toEqual([
+    const listResult = await callAIKINGBOTTool(client, threadId, "list_routines", { agentId: "design" });
+    expect(aikingBotToolPayload(listResult.result).routines).toEqual([
       expect.objectContaining({ id: otherRoutine.id, name: "Weekly review" }),
     ]);
 
-    const updated = await callOpenBotTool(client, threadId, "update_routine", {
+    const updated = await callAIKINGBOTTool(client, threadId, "update_routine", {
       agentId: "design",
       routineId: otherRoutine.id,
       active: true,
       schedule: { kind: "weekdays", time: "08:15" },
     });
-    expect(openBotToolPayload(updated.result)).toMatchObject({
+    expect(aikingBotToolPayload(updated.result)).toMatchObject({
       id: otherRoutine.id,
       active: true,
       trigger: { schedule: { kind: "weekdays", time: "08:15" } },
     });
 
-    const testRun = await callOpenBotTool(client, threadId, "test_routine", {
+    const testRun = await callAIKINGBOTTool(client, threadId, "test_routine", {
       agentId: "design",
       routineId: otherRoutine.id,
     });
-    expect(openBotToolPayload(testRun.result)).toMatchObject({
+    expect(aikingBotToolPayload(testRun.result)).toMatchObject({
       routineId: otherRoutine.id,
       agentId: "design",
       kind: "manual",
       status: "queued",
     });
 
-    const deleted = await callOpenBotTool(client, threadId, "delete_routine", { routineId: ownRoutine.id });
-    expect(openBotToolPayload(deleted.result)).toEqual({
+    const deleted = await callAIKINGBOTTool(client, threadId, "delete_routine", { routineId: ownRoutine.id });
+    expect(aikingBotToolPayload(deleted.result)).toEqual({
       deleted: true,
       agentId: "chief",
       routineId: ownRoutine.id,
@@ -346,8 +346,8 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!client || !threadId) throw new Error("The routine validation test thread did not start.");
 
-    await expectOpenBotToolFailure(client, threadId, "list_routines", { agentId: "missing" }, "Unknown agent");
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(client, threadId, "list_routines", { agentId: "missing" }, "Unknown agent");
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "create_routine",
@@ -358,7 +358,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       },
       "schedule is invalid",
     );
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "create_routine",
@@ -373,17 +373,17 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     expect(service.listRoutines("chief")).toEqual([]);
 
     // The model corrects a refused request and retries; only the retry is saved.
-    const retried = await callOpenBotTool(client, threadId, "create_routine", {
+    const retried = await callAIKINGBOTTool(client, threadId, "create_routine", {
       name: "Morning summary",
       instruction: "Summarize the inbox.",
       schedule: { kind: "daily", time: "09:00" },
     });
-    expect(openBotToolPayload(retried.result)).toMatchObject({ name: "Morning summary" });
+    expect(aikingBotToolPayload(retried.result)).toMatchObject({ name: "Morning summary" });
     expect(service.listRoutines("chief").map((routine) => routine.name)).toEqual(["Morning summary"]);
 
     // A second create with the same name does not add a routine (#998).
     const existingId = service.listRoutines("chief")[0]?.id;
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "create_routine",
@@ -404,14 +404,14 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       timezone: "UTC",
       schedule: { kind: "daily", time: "09:00" },
     });
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "update_routine",
       { routineId: routine.id },
       "At least one routine update is required",
     );
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "update_routine",
@@ -425,7 +425,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     vi.spyOn(store.database, "persistConversationChanges").mockImplementationOnce(() => {
       throw new Error("conversation persistence failed");
     });
-    await expectOpenBotToolError(
+    await expectAIKINGBOTToolError(
       client,
       threadId,
       "create_routine",
@@ -456,21 +456,21 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     if (!client || !threadId) throw new Error("The folder listening test thread did not start.");
 
     const folderInstruction =
-      "Watch /Users/kamicyrek/Desktop/OpenBot/INBOX for new invoice files and create a notification for each new file.";
-    const created = await callOpenBotTool(client, threadId, "create_routine", {
+      "Watch /Users/kamicyrek/Desktop/AIKINGBOT/INBOX for new invoice files and create a notification for each new file.";
+    const created = await callAIKINGBOTTool(client, threadId, "create_routine", {
       name: "Inbox watcher",
       instruction: folderInstruction,
       schedule: { kind: "interval", amount: 5, unit: "minutes", anchorAt: new Date().toISOString() },
     });
     expect(created.error).toBeUndefined();
-    const folderRoutine = openBotToolPayload(created.result);
+    const folderRoutine = aikingBotToolPayload(created.result);
     expect(folderRoutine).toMatchObject({
       name: "Inbox watcher",
       trigger: { schedule: { kind: "interval", amount: 5, unit: "minutes" } },
     });
-    expect(folderRoutine.instruction).toContain("/Users/kamicyrek/Desktop/OpenBot/INBOX");
+    expect(folderRoutine.instruction).toContain("/Users/kamicyrek/Desktop/AIKINGBOT/INBOX");
 
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "create_routine",
@@ -481,7 +481,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
       },
       "at least 3 minutes",
     );
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "update_routine",
@@ -493,7 +493,7 @@ describe.sequential("RoutineScheduler: routine mutations, runs and tools", () =>
     );
     // The failed updates must not drop the folder path or the monitoring instructions.
     expect(service?.listRoutines("chief").find((routine) => routine.id === folderRoutine.id)).toMatchObject({
-      instruction: expect.stringContaining("/Users/kamicyrek/Desktop/OpenBot/INBOX"),
+      instruction: expect.stringContaining("/Users/kamicyrek/Desktop/AIKINGBOT/INBOX"),
       trigger: { schedule: { kind: "interval", amount: 5, unit: "minutes" } },
     });
   });

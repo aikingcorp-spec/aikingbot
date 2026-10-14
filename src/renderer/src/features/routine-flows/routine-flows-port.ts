@@ -1,11 +1,11 @@
 import type {
   AgentEvent,
+  AIKINGBOTDesktopApi,
   ConversationPage,
-  OpenBotDesktopApi,
   TeamRealtimeEvent,
   TestRoutineInput,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { desktopEventRoutinesApi, type EventRoutinesApi } from "../conversation/routine-webhooks-api";
 
 /**
@@ -16,7 +16,7 @@ import { desktopEventRoutinesApi, type EventRoutinesApi } from "../conversation/
  */
 export interface RoutineFlowsHost {
   /** Called without a server: the host already names one. */
-  flows: OpenBotDesktopApi["routineFlows"];
+  flows: AIKINGBOTDesktopApi["routineFlows"];
   routines: {
     update(input: UpdateRoutineInput): Promise<unknown>;
     test(input: TestRoutineInput): Promise<unknown>;
@@ -38,12 +38,12 @@ export interface RoutineFlowsHost {
 }
 
 /**
- * The desktop adapter for one server. `window.openbot` is read on each call: tests and stories
+ * The desktop adapter for one server. `window.aikingbot` is read on each call: tests and stories
  * replace it per case. `webhooks` is read when the canvas asks, so a role change reaches it.
  */
 export function desktopRoutineFlowsHost(serverId: string, webhooks: () => boolean): RoutineFlowsHost {
-  const flows = () => window.openbot.routineFlows;
-  const agent = () => window.openbot.agent;
+  const flows = () => window.aikingbot.routineFlows;
+  const agent = () => window.aikingbot.agent;
   return {
     flows: {
       canvas: (agentId) => flows().canvas(agentId, serverId),
@@ -75,6 +75,6 @@ export function desktopRoutineFlowsHost(serverId: string, webhooks: () => boolea
       agent().onScopedEvent((scoped) => {
         if (scoped.serverId === serverId) listener(scoped.event);
       }),
-    openUrl: (url) => window.openbot.openUrl(url),
+    openUrl: (url) => window.aikingbot.openUrl(url),
   };
 }

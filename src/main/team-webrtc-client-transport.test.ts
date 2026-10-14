@@ -7,16 +7,16 @@ import { generateKeyPairSync, sign } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { PROVIDER_HOST_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/provider-host-sign-in-v1";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { PROVIDER_HOST_SIGN_IN_CAPABILITY } from "@aikingbot/contracts/team-protocol/provider-host-sign-in-v1";
 import {
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2RpcFrame,
   encodeTeamProtocolV2Frame,
   type TeamProtocolV2AuthFrame,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { RemoteConnectTrace } from "./remote-connect-trace";
@@ -171,7 +171,7 @@ function createTransport(
     getPrincipalId: () => "user-1",
     controlPlaneUrl: "https://api.example.test",
     downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-    transferDirectory: join(tmpdir(), "openbot-webrtc-client-test"),
+    transferDirectory: join(tmpdir(), "aikingbot-webrtc-client-test"),
     ...overrides,
   });
 }
@@ -389,7 +389,7 @@ describe("TeamWebRtcClientTransport", () => {
       getPrincipalId: () => "user-1",
       controlPlaneUrl: "https://api.example.test",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-      transferDirectory: join(tmpdir(), "openbot-webrtc-client-test"),
+      transferDirectory: join(tmpdir(), "aikingbot-webrtc-client-test"),
     });
     await runCauseEffect(transport.listHosts());
     await expect(runCauseEffect(transport.connect("host-1"))).rejects.toThrow("pinned device key");
@@ -554,7 +554,7 @@ describe("TeamWebRtcClientTransport", () => {
       getPrincipalId: () => "user-1",
       controlPlaneUrl: "https://api.example.test",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-      transferDirectory: join(tmpdir(), "openbot-webrtc-client-cancel-test"),
+      transferDirectory: join(tmpdir(), "aikingbot-webrtc-client-cancel-test"),
     });
     transport.pinHostKey("host-1", hostKeys.publicKey);
 
@@ -628,7 +628,7 @@ describe("TeamWebRtcClientTransport", () => {
       getPrincipalId: () => principalId,
       controlPlaneUrl: "https://api.example.test",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-      transferDirectory: join(tmpdir(), "openbot-webrtc-client-principal-test"),
+      transferDirectory: join(tmpdir(), "aikingbot-webrtc-client-principal-test"),
     });
     transport.pinHostKey("host-1", hostKeys.publicKey);
 
@@ -699,7 +699,7 @@ describe("TeamWebRtcClientTransport", () => {
       getPrincipalId: () => "user-1",
       controlPlaneUrl: "https://api.example.test",
       downloadHostLogo: () => authCall(async () => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-      transferDirectory: join(tmpdir(), "openbot-webrtc-client-expiration-test"),
+      transferDirectory: join(tmpdir(), "aikingbot-webrtc-client-expiration-test"),
     });
     transport.pinHostKey("host-1", hostKeys.publicKey);
 
@@ -1035,7 +1035,7 @@ describe("TeamWebRtcClientTransport", () => {
     const storedSession = { sessionId: "session-stored", expiresAt: Date.now() + 86_400_000 };
 
     async function sessionCache(canPersist = true) {
-      const directory = await mkdtemp(join(tmpdir(), "openbot-remote-sessions-"));
+      const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-sessions-"));
       const create = () =>
         new RemoteSessionCache({
           path: join(directory, "sessions.bin"),
@@ -1181,7 +1181,7 @@ describe("TeamWebRtcClientTransport", () => {
       const disabled = createTransport(bridge, {
         ...calls,
         sessionCache: new RemoteSessionCache({
-          path: join(tmpdir(), "openbot-unused-sessions.bin"),
+          path: join(tmpdir(), "aikingbot-unused-sessions.bin"),
           canPersist: () => true,
           encrypt: (value) => Buffer.from(value),
           decrypt: (value) => value.toString(),
@@ -1214,7 +1214,7 @@ describe("TeamWebRtcClientTransport", () => {
 
     it("keeps at quit a session of this run when the setting is turned on during the run", async () => {
       const cache = new RemoteSessionCache({
-        path: join(tmpdir(), `openbot-sessions-${crypto.randomUUID()}.bin`),
+        path: join(tmpdir(), `aikingbot-sessions-${crypto.randomUUID()}.bin`),
         canPersist: () => true,
         encrypt: (value) => Buffer.from(value),
         decrypt: (value) => value.toString(),

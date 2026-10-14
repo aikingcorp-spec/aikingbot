@@ -2,8 +2,8 @@ import { chmod, mkdtemp, rm, stat, writeFile } from "node:fs/promises";
 import { request } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { CentralAuthState, HostStatus } from "@openbot/contracts/ipc";
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
+import type { CentralAuthState, HostStatus } from "@aikingbot/contracts/ipc";
+import type { MobileConnectHostBinding } from "@aikingbot/contracts/mobile-connect";
 import { Effect } from "effect";
 import QRCode from "qrcode";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -12,7 +12,7 @@ import { RemoteWorkflowError, remoteCall } from "./remote-service-effects";
 import { ServerMode, takeServerModeEnvironment } from "./server-mode";
 
 const SESSION_TOKEN = "session-token-that-must-stay-in-main";
-const MOBILE_CONNECT_URL = "openbot://mobile-connect?api=https%3A%2F%2Fapi.example&ticket=t";
+const MOBILE_CONNECT_URL = "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.example&ticket=t";
 
 let directory: string;
 let server: ServerMode | null = null;
@@ -138,13 +138,13 @@ function send(method: string, path: string, body = ""): Promise<{ status: number
 
 describe("takeServerModeEnvironment", () => {
   it("is off outside a packaged Linux server and on a hosted server", () => {
-    const environment = { OPENBOT_SERVER: "1", XDG_RUNTIME_DIR: "/run/openbot" };
+    const environment = { AIKINGBOT_SERVER: "1", XDG_RUNTIME_DIR: "/run/aikingbot" };
     expect(takeServerModeEnvironment(environment, true, "linux")).toEqual({
-      controlSocketPath: "/run/openbot/control.sock",
+      controlSocketPath: "/run/aikingbot/control.sock",
     });
     expect(takeServerModeEnvironment(environment, false, "linux")).toBeNull();
     expect(takeServerModeEnvironment(environment, true, "darwin")).toBeNull();
-    expect(takeServerModeEnvironment({ ...environment, OPENBOT_HOSTED_SERVER: "1" }, true, "linux")).toBeNull();
+    expect(takeServerModeEnvironment({ ...environment, AIKINGBOT_HOSTED_SERVER: "1" }, true, "linux")).toBeNull();
     expect(takeServerModeEnvironment({ ...environment, XDG_RUNTIME_DIR: "run" }, true, "linux")).toBeNull();
   });
 });

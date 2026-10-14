@@ -1,4 +1,4 @@
-import { Button, Popover, RadioGroup } from "@openbot/ui";
+import { Button, Popover, RadioGroup } from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { createStableChipAnchor } from "./routine-popover-anchor";

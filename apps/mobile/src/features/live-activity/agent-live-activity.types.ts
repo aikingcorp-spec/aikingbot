@@ -1,6 +1,6 @@
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import type { AvatarHue } from "@openbot/contracts/ipc";
-import type { AgentLiveActivityProps } from "@openbot/team-client/live-activity-props";
+import type { AvatarMood } from "@aikingbot/brand/bloub-avatar-motion";
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
+import type { AgentLiveActivityProps } from "@aikingbot/team-client/live-activity-props";
 import type { LiveActivityStarter } from "./model/live-activity-sync";
 
 export interface AgentLiveActivityNative {

@@ -1,4 +1,4 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
@@ -23,7 +23,7 @@ export function QueuedMessageActionsScreen() {
   const { chat, deliveryId } = useLocalSearchParams<{ chat: string; deliveryId: string }>();
   const { queue } = useQueuedChat(chat);
   const foreground = useThemeColor("foreground");
-  const danger = String(useCSSVariable("--openbot-danger-text"));
+  const danger = String(useCSSVariable("--aikingbot-danger-text"));
   const held = queue?.edit?.delivery ?? null;
   const delivery = held?.id === deliveryId ? held : queue?.queued.find((item) => item.id === deliveryId);
 

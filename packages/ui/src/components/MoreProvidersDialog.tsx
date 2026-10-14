@@ -1,6 +1,6 @@
-import { ProviderLogo } from "@openbot/brand";
-import type { AgentProviderId } from "@openbot/contracts/ipc";
-import { Button, Dialog, IconButton, Input, SlidersHorizontal, X } from "@openbot/ui";
+import { ProviderLogo } from "@aikingbot/brand";
+import type { AgentProviderId } from "@aikingbot/contracts/ipc";
+import { Button, Dialog, IconButton, Input, SlidersHorizontal, X } from "@aikingbot/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../text";
 

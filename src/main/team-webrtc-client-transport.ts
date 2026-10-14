@@ -1,14 +1,14 @@
 import { generateKeyPairSync, randomBytes, sign, verify } from "node:crypto";
 import { EventEmitter } from "node:events";
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
-import { optionalTeamEvent, optionalTeamEventToCurrent } from "@openbot/contracts/team-protocol/optional-events";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
+import type { AgentEvent, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { teamCapabilitiesForProtocol } from "@aikingbot/contracts/team-protocol/current";
+import { optionalTeamEvent, optionalTeamEventToCurrent } from "@aikingbot/contracts/team-protocol/optional-events";
+import { teamSideRouteCodec } from "@aikingbot/contracts/team-protocol/side-routes";
 import {
   type TeamProtocolV1CurrentEventControl,
   toWireTeamProtocolV1ClientEvent,
-} from "@openbot/contracts/team-protocol/v1-adapter";
+} from "@aikingbot/contracts/team-protocol/v1-adapter";
 import {
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2EventFrame,
@@ -18,15 +18,15 @@ import {
   type TeamProtocolV2Json,
   type TeamProtocolV2RpcFrame,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol/v2";
-import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protocol/v7-base";
+} from "@aikingbot/contracts/team-protocol/v2";
+import { decodeTeamProtocolSupportV7Base } from "@aikingbot/contracts/team-protocol/v7-base";
 import {
   decodeTeamProtocolV7CurrentEvent,
   decodeTeamProtocolV7WebRtcHttpResponse,
   encodeTeamProtocolV7WebRtcHttpRequest,
-} from "@openbot/contracts/team-protocol/v7-webrtc-adapter";
-import { sourceText } from "@openbot/i18n/source";
-import { remoteWorkspaceReadTimeout } from "@openbot/team-client/remote-recovery";
+} from "@aikingbot/contracts/team-protocol/v7-webrtc-adapter";
+import { sourceText } from "@aikingbot/i18n/source";
+import { remoteWorkspaceReadTimeout } from "@aikingbot/team-client/remote-recovery";
 import { Context, Deferred, Effect, Fiber, Layer, Result, Schema } from "effect";
 import type { CentralAuthOperationError } from "./central-auth-effects";
 import type { RemoteConnectionBootstrap } from "./central-auth-manager";
@@ -157,7 +157,7 @@ class TeamClientBridge extends Context.Service<
     connect(...args: Parameters<TeamWebRtcBridge["connect"]>): Effect.Effect<void, RemoteWorkflowError>;
     disconnect(hostId: string): Effect.Effect<void, RemoteWorkflowError>;
   }
->()("openbot/main/TeamClientBridge") {}
+>()("aikingbot/main/TeamClientBridge") {}
 
 export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTransportEvents> {
   readonly #options: TeamWebRtcClientTransportOptions;

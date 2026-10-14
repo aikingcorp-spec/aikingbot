@@ -1,11 +1,11 @@
 # Hosted servers
 
-A hosted server is an OpenBot server that runs in a [boat](https://boat.dev) sandbox, so it works
+A hosted server is an AIKINGBOT server that runs in a [boat](https://boat.dev) sandbox, so it works
 when the user's computer is off. Each server is one boat sandbox for one account. The sandbox runs
-the Linux build of OpenBot on the boat desktop. The server runs while it is in use. After 15 minutes with no
+the Linux build of AIKINGBOT on the boat desktop. The server runs while it is in use. After 15 minutes with no
 use, the Worker stops it and keeps its data. The next client starts it again, the Worker cron
 starts it before its next routine run, and Signal starts it for a Slack, Discord or Telegram message
-that addresses OpenBot (see [Connector events](#connector-events)). A connected client counts as use for 5 minutes after its
+that addresses AIKINGBOT (see [Connector events](#connector-events)). A connected client counts as use for 5 minutes after its
 last user action (`CLIENT_USE_WINDOW_MS`): a request that changes data, or a typing event. Reads and
 the requests that a client sends with no user action (polls, previews, mark-read) do not count
 (`src/main/team-api/client-use.ts`). So an app that is open but not used does not keep the server on:
@@ -63,24 +63,24 @@ when a server is idle or boat stops a sandbox; and `error` and `deleted`. The Wo
    `onSubscriptionSynced`. When the plan is open and the row waits for payment, the Worker makes
    the host ID claim (1 hour; it stores only the hash) and creates the sandbox from
    `HOSTED_SERVER_TEMPLATE` with `noEnv: true`, so no operator secret or repository goes into the
-   sandbox. The sandbox env holds only `OPENBOT_HOSTED_HOST_ID` and `OPENBOT_HOSTED_CLAIM`. The cron
+   sandbox. The sandbox env holds only `AIKINGBOT_HOSTED_HOST_ID` and `AIKINGBOT_HOSTED_CLAIM`. The cron
    provisions a paid row when the webhook call failed, and deletes an unpaid row after 24 hours
    (it has no sandbox, so no data is lost). Before that delete it closes the Checkout; a Checkout
    that is paid keeps the row for the webhook. A row that stays in `creating` with no sandbox for 10
    minutes (the Worker stopped during the create call) goes to `error`, and the setup retry below
    applies. When that create call returns later, the Worker deletes the sandbox that no row owns.
 
-   The Worker then names the sandbox `openbot-<plan>-<owner email>-<first 8 characters of the host
+   The Worker then names the sandbox `aikingbot-<plan>-<owner email>-<first 8 characters of the host
    ID>` (`PATCH /sandboxes/:id`), so an operator can find it in the boat dashboard. Each character of
    the email that is not a letter or a digit becomes `-`. The name is only a label; a plan change
    renames the sandbox.
 3. **Env handoff.** boat puts the sandbox env in the setup script, not in systemd. The Worker sends
-   `setupScript: exec /opt/OpenBot/hosted/openbot-hosted-env`. That helper writes the two values to
-   `~/.config/openbot-hosted/env` (mode 0600). `openbot.service` waits for this file.
-4. **First boot.** OpenBot starts with `OPENBOT_HOSTED_SERVER=1`. It redeems the claim at
+   `setupScript: exec /opt/AIKINGBOT/hosted/aikingbot-hosted-env`. That helper writes the two values to
+   `~/.config/aikingbot-hosted/env` (mode 0600). `aikingbot.service` waits for this file.
+4. **First boot.** AIKINGBOT starts with `AIKINGBOT_HOSTED_SERVER=1`. It redeems the claim at
    `POST /v2/hosting/claims/redeem`, signs in as the owner, keeps the host ID, and publishes the
    host. `registerHost` refuses the host ID for any other account.
-5. **In use.** OpenBot checks each minute whether the server is in use: an agent works, a remote
+5. **In use.** AIKINGBOT checks each minute whether the server is in use: an agent works, a remote
    desktop view is open, a file moves, or a remote client is connected (an open Team API event
    stream) and sent a user action or a typing event in the last 5 minutes. A key press or pointer
    input in a browser view is a user action. An open browser view with no input does not count,
@@ -108,7 +108,7 @@ when a server is idle or boat stops a sandbox; and `error` and `deleted`. The Wo
    **Scheduled start.** The cron starts an idle server when its `next_run_at` is less than 10 minutes
    away (one cron interval and the start time), with the wake reason `schedule`. It clears
    `next_run_at` in the same update, so a server that does not report again starts only once for
-   that run. After the start, OpenBot runs each routine that is due, and each run that it missed
+   that run. After the start, AIKINGBOT runs each routine that is due, and each run that it missed
    becomes one run.
 
    **Lease.** boat has no idle timer, and a boat trial refuses a sandbox with no auto-stop. Each
@@ -180,7 +180,7 @@ when a server is idle or boat stops a sandbox; and `error` and `deleted`. The Wo
 
 ## Providers
 
-OpenBot ships no AI subscription, so a new server has no provider connected. When its owner or an
+AIKINGBOT ships no AI subscription, so a new server has no provider connected. When its owner or an
 admin opens a server with no agent, the app shows a provider step before the first-agent form. The
 sandbox browser is on Xvfb, where nobody can see it, so each sign-in finishes on the user's own device
 over `providers-v3` and `providers-v4`: Codex, Grok and Cline show a device code, Claude shows a page
@@ -217,7 +217,7 @@ value that you set by hand for these four is replaced. Set `DOTENV_PRIVATE_KEY_D
 
 | Name | Value |
 | --- | --- |
-| `HOSTED_SERVER_TEMPLATE` | The named snapshot from the template build, such as `openbot-server-0-9-0`. |
+| `HOSTED_SERVER_TEMPLATE` | The named snapshot from the template build, such as `aikingbot-server-0-9-0`. |
 | `HOSTED_SERVERS_ALLOWED_USER_IDS` | Comma-separated account IDs or emails that can create servers. `api:deploy:test` sets it from `HOSTED_SERVERS_TEST_ALLOW_LIST` and refuses `*`: the test Worker is public, and it shares its boat account with production. |
 
 The `BOAT_API_KEY` in `.env.dev` is the development key of the boat test account. It also has
@@ -241,7 +241,7 @@ Worker, and all worktrees share it, so you sign in one time.
 Each developer who has `DOTENV_PRIVATE_KEY_DEV` can create a server with any account.
 The command decrypts
 `HOSTED_SERVERS_DEVELOPER_KEY` from `.env.dev`, and main sends it in the
-`OpenBot-Hosting-Developer-Key` header of each hosted server request. The test Worker has the same
+`AIKINGBOT-Hosting-Developer-Key` header of each hosted server request. The test Worker has the same
 key and lets the account create servers. A clone of the repository cannot decrypt the key. Main
 removes the key from its environment at the start, so agents do not get it, and a packaged build
 never sends it. To change the key, update `HOSTED_SERVERS_DEVELOPER_KEY` in `.env.dev` with a
@@ -338,7 +338,7 @@ snapshots automatically. For a separate test template, build one from a release:
 
 ```sh
 BOAT_TEMPLATE_API_KEY=... bun run hosting:template --version=0.9.0 \
-  --appimage-url=https://.../OpenBot-0.9.0-x86_64.AppImage --appimage-sha256=<hex> \
+  --appimage-url=https://.../AIKINGBOT-0.9.0-x86_64.AppImage --appimage-sha256=<hex> \
   --auth-api-url=https://<test Worker origin>
 ```
 
@@ -348,16 +348,16 @@ named snapshot access. The script:
 1. creates a builder sandbox with `noEnv`;
 2. uploads `scripts/hosting/` and runs `provision.sh` with `sudo`. It installs the packages in
    `packages.txt` (Xvfb, D-Bus, gnome-keyring, the Electron libraries and the remote desktop runtime
-   libraries), checks the AppImage SHA-256, unpacks the AppImage to `/opt/OpenBot/app`, adds an
-   AppArmor profile that lets Chromium make user namespaces, and enables `openbot.service` and the
+   libraries), checks the AppImage SHA-256, unpacks the AppImage to `/opt/AIKINGBOT/app`, adds an
+   AppArmor profile that lets Chromium make user namespaces, and enables `aikingbot.service` and the
    [update](#updates) units;
-3. checks the installed version, that OpenBot did not start, and that no profile or claim exists;
-4. saves the builder as `openbot-server-<version>` (or `--name=<snapshot>`) and deletes the builder.
+3. checks the installed version, that AIKINGBOT did not start, and that no profile or claim exists;
+4. saves the builder as `aikingbot-server-<version>` (or `--name=<snapshot>`) and deletes the builder.
 
-The builder never starts OpenBot, so the template has no host identity and no session. A retry
+The builder never starts AIKINGBOT, so the template has no host identity and no session. A retry
 reuses a ready snapshot with the same name or waits for a save in progress. It refuses a failed
 snapshot and never replaces an existing name. Automatic production releases reserve the prefix
-`openbot-server-production-` to avoid test snapshots in the same account. Keep each name tied to
+`aikingbot-server-production-` to avoid test snapshots in the same account. Keep each name tied to
 one release and account-service origin; do not use that production prefix for manual test builds.
 
 The builder stops before creating an eleventh snapshot. This is our automation limit:
@@ -369,43 +369,43 @@ creation records (`provider_template`); a pending retry still needs its original
 
 Server Settings > Updates has the same controls as on a computer that updates itself: download,
 **Update when idle**, **Restart now**, automatic updates, and the switch that lets members update.
-OpenBot runs as the service user from a release that root owns, so it asks root to do the work
+AIKINGBOT runs as the service user from a release that root owns, so it asks root to do the work
 (`src/main/hosted-update-adapter.ts`). It makes an empty file in its runtime directory:
-`/run/openbot/update-stage` to download, and `/run/openbot/update-install` to install.
-`openbot-update-request.path` then starts `openbot-update-request.service`, which runs
-`openbot-hosted-update request` as root. That removes the file without reading it and runs `stage`.
-For an install, it then stops OpenBot, runs `apply` and starts OpenBot again, also after a failure.
-A request that comes during a timer download waits for it while OpenBot runs. While a request runs,
-root writes the step to `/run/openbot-update.state` and changes its time every 5 seconds. OpenBot
+`/run/aikingbot/update-stage` to download, and `/run/aikingbot/update-install` to install.
+`aikingbot-update-request.path` then starts `aikingbot-update-request.service`, which runs
+`aikingbot-hosted-update request` as root. That removes the file without reading it and runs `stage`.
+For an install, it then stops AIKINGBOT, runs `apply` and starts AIKINGBOT again, also after a failure.
+A request that comes during a timer download waits for it while AIKINGBOT runs. While a request runs,
+root writes the step to `/run/aikingbot-update.state` and changes its time every 5 seconds. AIKINGBOT
 reads each change as download progress, so the download deadline finds a request that root never
 takes or that stops.
 
 The release that an older script moves into place has these units, but that script installs only
-the units it knows. So `openbot.service` runs `openbot-hosted-update trigger` as root before OpenBot
-starts; it installs and starts the request units when they are missing. OpenBot offers the controls
-only when `/etc/systemd/system/openbot-update-request.path` is there at its start. Otherwise, and on
+the units it knows. So `aikingbot.service` runs `aikingbot-hosted-update trigger` as root before AIKINGBOT
+starts; it installs and starts the request units when they are missing. AIKINGBOT offers the controls
+only when `/etc/systemd/system/aikingbot-update-request.path` is there at its start. Otherwise, and on
 hosts older than this release, the panel checks the release (`host-release-v1`) and shows the
 host-managed update path. A container has no request units.
 
 The Linux build contains `scripts/hosting/` (without the TypeScript files) in `resources/hosting`.
-On a server, root runs `openbot-hosted-update`:
+On a server, root runs `aikingbot-hosted-update`:
 
-1. `openbot-update.timer` runs `stage` 5 to 10 minutes after each start of the timer and then
+1. `aikingbot-update.timer` runs `stage` 5 to 10 minutes after each start of the timer and then
    about each 6 hours. It reads the `latest-linux.yml` (`latest-linux-arm64.yml` on arm64) of the
    latest GitHub release, the manifest that the Linux desktop updater reads. When that version is newer than the installed one, it downloads the
    AppImage, checks its SHA-512 against the manifest, unpacks it in `/var/tmp`, checks that it has
    all hosting files, installs the packages in the `packages.txt` of that release, and copies it
-   to `/opt/OpenBot/staged`.
-   `staged.ready` comes after the last file. OpenBot keeps running. The download and unpack use
+   to `/opt/AIKINGBOT/staged`.
+   `staged.ready` comes after the last file. AIKINGBOT keeps running. The download and unpack use
    idle CPU and disk priority.
 2. `apply` copies `staged` to `app`, and then installs the scripts, AppArmor profile and units of
    the new release. `.applying` and `staged` stay until all of this is complete, so after a stop or
    a failure the next start does it again, and `stage` does nothing until then.
-   `openbot-update-apply.service` runs `boot` before `openbot.service`. `boot` runs `apply` only on
-   a complete disk, or when `.applying` shows an interrupted copy. `openbot.service` does not
+   `aikingbot-update-apply.service` runs `boot` before `aikingbot.service`. `boot` runs `apply` only on
+   a complete disk, or when `.applying` shows an interrupted copy. `aikingbot.service` does not
    require it, so it starts after a failure too: with the old release, or with a partial copy after
    a failed copy, until the next start. On a self-installed server, the new release starts at the
-   next boot. A hosted server installs it itself: when the release is staged, OpenBot asks root to
+   next boot. A hosted server installs it itself: when the release is staged, AIKINGBOT asks root to
    install it when idle, and when no connected client changed data or typed for 5 minutes and the
    start was 5 minutes ago. Reading is not use. Server Settings shows this wait as "other work",
    because `host-update-v1` has no reason for it. The automatic update switch of a hosted server
@@ -418,21 +418,21 @@ with a probe; not in boat documentation.]
 
 boat resumes a server on a machine that booted before, restores the disk lazily, and starts the
 units before the restore ends. The restore takes about 3.5 minutes. `stage` waits until it ends (at
-most 4 minutes), and OpenBot asks for `stage` before each install, so an install never stops
-OpenBot for the restore. `boot` waits only for an interrupted copy, because OpenBot starts after
+most 4 minutes), and AIKINGBOT asks for `stage` before each install, so an install never stops
+AIKINGBOT for the restore. `boot` waits only for an interrupted copy, because AIKINGBOT starts after
 it. During a restore it skips a staged release and recovers an incomplete one.
 
 boat starts the desktop (`lightdm`) about 8 s after the resume, and then the enabled units of
-`multi-user.target` again, about 16 s after it. `openbot.service` is also wanted by
-`lightdm.service`, so it starts with the desktop. The second start of `openbot-update-apply.service`
-does nothing: the unit stays active (`RemainAfterExit`), and `boot` does nothing while OpenBot runs
+`multi-user.target` again, about 16 s after it. `aikingbot.service` is also wanted by
+`lightdm.service`, so it starts with the desktop. The second start of `aikingbot-update-apply.service`
+does nothing: the unit stays active (`RemainAfterExit`), and `boot` does nothing while AIKINGBOT runs
 (after a failed `boot`). [Observed on a boat VM on 2026-10-11; not in boat
 documentation.]
 [Not confirmed in boat documentation: the `active` and `hydration-done` files in
 `/var/lib/ascii-lazy` that mark the restore. Observed on a boat VM.] `apply` never removes a staged
 release that is not complete.
 
-A server only moves to a newer version: an older OpenBot cannot open a database that a newer one
+A server only moves to a newer version: an older AIKINGBOT cannot open a database that a newer one
 migrated. `stage` stops when it cannot read the installed version, and `provision.sh` stops when the
 installed version is newer. A staged release that is no longer the latest one, for example a
 withdrawn release, is removed at the next `stage` run. A server that starts before that run applies
@@ -440,17 +440,17 @@ it. A release without all of its `resources/hosting` files cannot update a serve
 
 A server that has no updater, such as one made from a template before 0.26.0, needs one upgrade by
 hand. With a boat key that has command and file access: upload `scripts/hosting/` to
-`/tmp/openbot-upgrade`, run `sudo systemctl stop openbot.service`, run `sudo bash /tmp/openbot-upgrade/provision.sh user <AppImage URL> <SHA-256>
-https://api.openbot.run` as a detached command, and start the service again. The data in the home
+`/tmp/aikingbot-upgrade`, run `sudo systemctl stop aikingbot.service`, run `sudo bash /tmp/aikingbot-upgrade/provision.sh user <AppImage URL> <SHA-256>
+https://api.aikingbot.aikingx.com` as a detached command, and start the service again. The data in the home
 folder and in `/srv` stays.
 
-On a server, `openbot-hosted-server` starts a D-Bus session, unlocks a gnome-keyring with a
-random password for each server (so `safeStorage` can keep the account session), and runs OpenBot
-with `--password-store=gnome-libsecret`. OpenBot uses the boat desktop: the lightdm session of the
-sandbox user on `:0`, with openbox. So boat's desktop viewer and OpenBot remote desktop show the same
+On a server, `aikingbot-hosted-server` starts a D-Bus session, unlocks a gnome-keyring with a
+random password for each server (so `safeStorage` can keep the account session), and runs AIKINGBOT
+with `--password-store=gnome-libsecret`. AIKINGBOT uses the boat desktop: the lightdm session of the
+sandbox user on `:0`, with openbox. So boat's desktop viewer and AIKINGBOT remote desktop show the same
 screen, and a click moves the keyboard focus to another window. After a resume, the script waits up
-to 2 minutes for that session. With no session, OpenBot runs under `xvfb-run`. The keyring files are
-in `/srv/openbot-hosted/keyrings`:
+to 2 minutes for that session. With no session, AIKINGBOT runs under `xvfb-run`. The keyring files are
+in `/srv/aikingbot-hosted/keyrings`:
 
 - not in `~/.local/share/keyrings`: the boat image has a locked `default` keyring there, and a
   snapshot restore resets that folder after the service starts;
@@ -460,7 +460,7 @@ in `/srv/openbot-hosted/keyrings`:
   them through the slow mount for 25 s. boat keeps changes in `/srv` (not in `/var/lib`), and `/srv`
   is on the disk before the service starts.
 
-OpenBot redeems the claim only when `safeStorage` works. After the first redeem the claim works
+AIKINGBOT redeems the claim only when `safeStorage` works. After the first redeem the claim works
 for 10 more minutes, so a server whose response was lost can redeem it again; each redeem revokes the
 session of the one before. After that, a session that is only in memory would leave the server
 signed out after its next start.
@@ -479,11 +479,11 @@ again with backoff (30 s to 10 min) and then publishes the host.
 
 ## Memory
 
-One systemd unit holds OpenBot, its browser tabs and every agent process: one `claude` process for
+One systemd unit holds AIKINGBOT, its browser tabs and every agent process: one `claude` process for
 each thread, and one set of MCP servers for each ACP session. A Starter server has 4 GB. The guards
 are only on a hosted server; the desktop app does not change.
 
-The unit (`openbot.service`):
+The unit (`aikingbot.service`):
 
 - `MemoryMax=90%`: the unit can use at most 90% of the memory, so 10% stays for the desktop, sshd
   and the boat agent. The limit counts memory only, not swap. The boat image has a 2 GB swap file,
@@ -543,11 +543,11 @@ holds it:
    waits at most 3 seconds. With `wake`, the server then starts in the background (`waitUntil`) as for
    a client (`last_wake_reason = 'message'`). A plan that ended starts nothing. Signal asks at most
    once a minute for each hosted route, and once in 10 minutes for another route.
-2. `wake` is true only for an event that addresses OpenBot: a Slack button press, mention, direct
+2. `wake` is true only for an event that addresses AIKINGBOT: a Slack button press, mention, direct
    message or thread reply from a person; a Discord mention or button press; a Telegram message or
    button press.
 3. For such an event and a server that starts, Signal keeps the delivery frame, sealed to the host's
-   queue key (`@openbot/contracts/signal-protocol/ingress-queue`), in memory for at most 10 minutes
+   queue key (`@aikingbot/contracts/signal-protocol/ingress-queue`), in memory for at most 10 minutes
    (64 events and 192 KB for each host). Slack gets 200, so it does not send the event again. Because
    the start runs after the answer and can fail, Signal asks for the start again once a minute while
    the host has kept events. Signal
@@ -557,14 +557,14 @@ holds it:
    Telegram or Discord event is lost. This is accepted: it happens only to the events that arrive
    before the host connects again. Signal keeps the keys of at most 100,000 hosts.
 4. Another Slack event of a hosted server gets 200 and is dropped: the host keeps only messages that
-   address OpenBot, and joins the public channels again when its connection starts.
+   address AIKINGBOT, and joins the public channels again when its connection starts.
 5. When the host's socket connects again, Signal sends each kept event of the routes that the socket
    holds, in order, as `queued-delivery` with an `id`. The host opens it with its private key, handles
    it as a normal delivery, and sends `queued-delivery-ack`. Signal keeps the event until that ack, and
    sends it again on the host's next hello: the first socket can close before the host handled it. The
    transports drop an event that they already handled.
 
-The host makes its queue key once (`src/main/ingress-queue-key.ts`, `openbot-ingress-queue-key-v1.json`
+The host makes its queue key once (`src/main/ingress-queue-key.ts`, `aikingbot-ingress-queue-key-v1.json`
 in the user data folder), encrypted by the operating system, and sends the public half in each
 `ingress` hello. An older host sends no key, so Signal keeps nothing for it; a hello with no key
 removes the key that Signal had. A kept delivery that arrives before its connection has started waits
@@ -581,21 +581,21 @@ The `boat` scenario of `scripts/stripe-flows-e2e.ts` (see `apps/auth-api/README.
 
 - the builder user has passwordless `sudo`, and AppArmor is enabled in the boat VM;
 - boat runs `setupScript` for a sandbox created from a named snapshot, and systemd starts
-  `openbot.service` after a create;
-- OpenBot redeems its claim, publishes the host with the server name, and signs in again from the
+  `aikingbot.service` after a create;
+- AIKINGBOT redeems its claim, publishes the host with the server name, and signs in again from the
   stored session after a restart (`safeStorage` with gnome-keyring under Xvfb);
 - a delete through the Worker removes the sandbox.
 
 A resume test on 2026-09-28 (one sandbox with the 0.24.0 AppImage, 6 resumes, each on another
-machine) confirmed that systemd starts `openbot.service` again after a resume, and that a keyring
-secret in `/srv` stays. From the resume call to the OpenBot start took 7 to 34 s; the keyring start
+machine) confirmed that systemd starts `aikingbot.service` again after a resume, and that a keyring
+secret in `/srv` stays. From the resume call to the AIKINGBOT start took 7 to 34 s; the keyring start
 took 40 ms. Most of the time is boat: it restores the disk and then starts the enabled units, 5 to
 20 s after the sandbox is `idle`.
 
 A wake test on 2026-10-11 (one hosted server with 0.37.0) measured, from the resume call: boat
-ready at 4 s, `openbot.service` at 17 s and the host register at 22 s. A wake with a staged release
+ready at 4 s, `aikingbot.service` at 17 s and the host register at 22 s. A wake with a staged release
 took 3 min 35 s, because `apply` waited for the restore. With the start at `lightdm`,
-`openbot.service` started at 8 s and the host registered at about 20 s: Electron starts slowly from
+`aikingbot.service` started at 8 s and the host registered at about 20 s: Electron starts slowly from
 the lazily restored disk, and the desktop session holds the display until about 12 s.
 
 A resize test on 2026-09-28 (one plain sandbox with `noEnv`, `small → default → small`, each a stop
@@ -605,7 +605,7 @@ and an enabled systemd unit started again after each resume. The stop took 25 to
 sandbox was `idle` 3 to 6 s after the resume call.
 
 A memory test on 2026-09-30 (one `small` sandbox with `noEnv`, the scripts and the Linux AppImage of
-main, and a `HostedServerMemory` driver in a unit with the same limits as `openbot.service`)
+main, and a `HostedServerMemory` driver in a unit with the same limits as `aikingbot.service`)
 confirmed:
 
 - boat VMs use cgroup v2 with the memory controller, and the unit gets `memory.max` = 90% (3.4 GiB);

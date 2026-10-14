@@ -1,4 +1,4 @@
-import { type AgentEvent, type BrowserTab, isAgentEvent, routineRunConversationEvent } from "@openbot/contracts/ipc";
+import { type AgentEvent, type BrowserTab, isAgentEvent, routineRunConversationEvent } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRemovalFailed } from "./agent/agent-removal";
@@ -53,7 +53,7 @@ afterEach(async () => {
 
 describe.sequential("AgentService: restart", () => {
   it("keeps the conversation and permits provider changes after a size-limit exit", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { store, mailbox } = stores(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
     service = createTestService({
@@ -446,7 +446,7 @@ describe.sequential("AgentService: restart", () => {
   });
 
   it("recovers an interrupted Claude answer under its saved ID after a provider switch", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { store, mailbox } = stores(root);
     await runCauseEffect(store.initialize());
     await runCauseEffect(store.getOrCreate("chief"));
@@ -575,7 +575,7 @@ describe.sequential("AgentService: restart", () => {
   });
 
   it("unarchives a stored Codex thread and resumes the queued delivery", async () => {
-    process.env.OPENBOT_FAKE_ARCHIVED_THREAD = "1";
+    process.env.AIKINGBOT_FAKE_ARCHIVED_THREAD = "1";
     const { store, mailbox } = stores(root);
     service = createTestService({ store, mailbox });
     const events: AgentEvent[] = [];
@@ -861,7 +861,7 @@ describe.sequential("AgentService: restart", () => {
     const threadId = store.activeProviderSession(agent.id)?.externalSessionId;
     if (!running?.turnId || !client || !threadId) throw new Error("The routine turn did not start.");
     const routineInput = firstInputText(client.requests.find((request) => request.method === "turn/start")?.params);
-    expect(routineInput).toContain("Execute one run of an existing OpenBot routine now.");
+    expect(routineInput).toContain("Execute one run of an existing AIKINGBOT routine now.");
     expect(routineInput).toContain("Run type: manual Test run");
     expect(routineInput).toContain("Do not create, update, delete, list, or test routines during this run.");
     expect(routineInput).toContain("Report the action and result");

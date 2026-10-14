@@ -1,16 +1,16 @@
 import type { Effect } from "effect";
 import type { RemoteWorkflowError } from "../remote-service-effects";
-// The tables agents create for themselves, in `~/OpenBot/Shared/Data/agent-data.db`.
+// The tables agents create for themselves, in `~/AIKINGBOT/Shared/Data/agent-data.db`.
 //
 // Neither call takes an agent: every agent shares every table, and the user's delete is not
 // owner-gated -- the owner rule binds agents, not the person whose computer holds the data. On a
 // joined server the tables are on the host, which answers only an owner or admin.
 
-import { isDeleteSharedTableInput, isSharedTable, type SharedTable } from "@openbot/contracts/ipc";
-import { guardedDecoder, guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { SHARED_TABLES_CAPABILITY, SHARED_TABLES_ROUTES } from "@openbot/contracts/team-protocol/shared-tables-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { isDeleteSharedTableInput, isSharedTable, type SharedTable } from "@aikingbot/contracts/ipc";
+import { guardedDecoder, guardedListDecoder } from "@aikingbot/contracts/ipc-decoding";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import { SHARED_TABLES_CAPABILITY, SHARED_TABLES_ROUTES } from "@aikingbot/contracts/team-protocol/shared-tables-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { acceptEmpty, type ResponseDecoder } from "../remote-host-decoding";

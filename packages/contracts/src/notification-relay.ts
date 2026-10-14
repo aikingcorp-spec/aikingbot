@@ -1,9 +1,9 @@
 /** The sounds of the app bundle (`NOTIFICATION_SOUND_FILES`), and `default` for the iOS sound. */
-export const NOTIFICATION_SOUNDS = ["openbot", "warm", "mech", "bubble", "press", "default"] as const;
+export const NOTIFICATION_SOUNDS = ["aikingbot", "warm", "mech", "bubble", "press", "default"] as const;
 export type NotificationSound = (typeof NOTIFICATION_SOUNDS)[number];
 
 /**
- * One iOS notification that a host asks the OpenBot account service to send through Apple Push
+ * One iOS notification that a host asks the AIKINGBOT account service to send through Apple Push
  * Notification service. The host sealed the agent name and the text with keys that only the phone
  * knows, and the app opens them before iOS shows the notification. The service builds the Apple
  * payload itself, with the app name as the only text, so a host credential alone, without the keys of
@@ -31,15 +31,15 @@ export interface NotificationRelayPush {
 export const NOTIFICATION_SEALED_LIMIT = 3_600;
 export const NOTIFICATION_TOKEN_PATTERN = /^(?:[0-9a-f]{2}){8,256}$/u;
 /**
- * The sound files in the app bundle, at the level of an alert. `openbot` is the sound of the desktop
+ * The sound files in the app bundle, at the level of an alert. `aikingbot` is the sound of the desktop
  * app when a task finishes (`completion-sound.ts`), with the same sweep and envelope. The others are
  * the `success` cue of each desktop sound theme (`cuelume`; `warm` is its `default` theme), rendered
  * offline.
  */
 export const NOTIFICATION_SOUND_FILES: Readonly<Record<Exclude<NotificationSound, "default">, string>> = {
-  openbot: "openbot-task.wav",
-  warm: "openbot-warm.wav",
-  mech: "openbot-mech.wav",
-  bubble: "openbot-bubble.wav",
-  press: "openbot-press.wav",
+  aikingbot: "aikingbot-task.wav",
+  warm: "aikingbot-warm.wav",
+  mech: "aikingbot-mech.wav",
+  bubble: "aikingbot-bubble.wav",
+  press: "aikingbot-press.wav",
 };

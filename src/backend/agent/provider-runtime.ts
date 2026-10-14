@@ -11,16 +11,16 @@ import type {
   CapabilityState,
   CustomProviderRestart,
   ProviderCodeLoginStart,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   accountUsageCoversModel,
   agentProviderDescriptor,
   isAgentProvider,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { classifyUserError } from "@openbot/user-errors";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, redactText } from "@aikingbot/logging";
+import { classifyUserError } from "@aikingbot/user-errors";
 import { Deferred, Effect, Exit, Result, Schema, Scope, Semaphore } from "effect";
 import { startAcpAuthentication } from "./../acp-sign-in";
 import { type AgentClient, AgentProcessExitError, type AgentProvider } from "./../agent-client";
@@ -81,12 +81,12 @@ import {
 import { providerForAgent, providerLabel } from "./thread-items";
 import { workspaceWritableRoots } from "./workspace-sandbox";
 
-const logger = createOpenBotLogger("provider-runtime");
+const logger = createAIKINGBOTLogger("provider-runtime");
 /**
  * Stderr records that the classifiers sort out as noise. They can quote a tool call's output or a
  * command line, so they go to the console only and not to the provider log file.
  */
-const stderrLogger = createOpenBotLogger("provider-stderr");
+const stderrLogger = createAIKINGBOTLogger("provider-stderr");
 
 const ACCOUNT_USAGE_READ_TIMEOUT_MS = 30_000;
 /**
@@ -880,8 +880,8 @@ export class ProviderRuntime implements ProviderPort {
   /**
    * Signs the user in to one provider, in the way that provider's driver declares. `openExternal`
    * is only reached by a `browser` sign-in, whose login hands back a URL; a `cli-command` sign-in
-   * opens its own browser window from the CLI OpenBot spawns, and an `external` sign-in happens
-   * outside OpenBot, so Connect only asks the provider again.
+   * opens its own browser window from the CLI AIKINGBOT spawns, and an `external` sign-in happens
+   * outside AIKINGBOT, so Connect only asks the provider again.
    */
   readonly connectProvider = Effect.fn("ProviderRuntime.connectProvider")(function* (
     this: ProviderRuntime,
@@ -1841,7 +1841,7 @@ export class ProviderRuntime implements ProviderPort {
       .request(
         "initialize",
         {
-          clientInfo: { name: "openbot", title: "OpenBot", version: "0.1.0" },
+          clientInfo: { name: "aikingbot", title: "AIKINGBOT", version: "0.1.0" },
           capabilities: { experimentalApi: true, mcpServerOpenaiFormElicitation: true },
         },
         decodeRecordResponse,
@@ -2036,10 +2036,10 @@ export class ProviderRuntime implements ProviderPort {
     cliFailed = error instanceof AgentProcessExitError,
   ): void {
     const hasActiveClient = this.#clients.has(provider);
-    const fallbackMessage = `OpenBot could not connect ${providerLabel(provider)}. Try again.`;
+    const fallbackMessage = `AIKINGBOT could not connect ${providerLabel(provider)}. Try again.`;
     const rawMessage = error instanceof Error ? error.message : String(error);
     const message =
-      error instanceof ProviderSignInError || /^(ChatGPT connection|OpenBot)/u.test(rawMessage)
+      error instanceof ProviderSignInError || /^(ChatGPT connection|AIKINGBOT)/u.test(rawMessage)
         ? rawMessage
         : fallbackMessage;
     const status = hasActiveClient
@@ -2100,7 +2100,7 @@ export class ProviderRuntime implements ProviderPort {
   }, Effect.uninterruptible);
 
   /**
-   * Connects a provider that OpenBot never spawns a login for. The user signed in with the
+   * Connects a provider that AIKINGBOT never spawns a login for. The user signed in with the
    * provider's own CLI in a terminal, so this only starts a fresh client and asks the provider
    * which account it now has. A provider with a free tier answers with an account either way.
    */
@@ -2448,10 +2448,10 @@ export class ProviderRuntime implements ProviderPort {
       // logged or turned into a renderer error event. Shortened after that, because a value cut in
       // half is a value the redactor does not match.
       const message = shortenDiagnostic(this.#redactMcp(raw));
-      // An agent that tears down its sessions while OpenBot stops it (idle release, restart, quit)
+      // An agent that tears down its sessions while AIKINGBOT stops it (idle release, restart, quit)
       // can write an error for each one. It is not a failure the user can act on, so it goes to the log.
       if (origin?.duringStop) {
-        stderrLogger.warn("A provider wrote an error while OpenBot stopped it.", {
+        stderrLogger.warn("A provider wrote an error while AIKINGBOT stopped it.", {
           provider: client.provider,
           message,
         });
@@ -2569,7 +2569,7 @@ export class ProviderRuntime implements ProviderPort {
               phase: "blocked",
               providers,
               capabilities: { ...this.#status.capabilities, chat: "unavailable" },
-              message: `${providerLabel(client.provider)} stopped repeatedly. Restart OpenBot after checking the CLI.`,
+              message: `${providerLabel(client.provider)} stopped repeatedly. Restart AIKINGBOT after checking the CLI.`,
             },
       );
       return;
@@ -2643,7 +2643,7 @@ export class ProviderRuntime implements ProviderPort {
 
   /**
    * Starts a provider whose CLI did not answer in time again later, with the backoff and the attempt
-   * count of `#handleExit`. Answers the status message: whether OpenBot tries again, or the user has to.
+   * count of `#handleExit`. Answers the status message: whether AIKINGBOT tries again, or the user has to.
    */
   #retryAfterTimeout(provider: AgentProvider, schedule: boolean): string {
     const attempts = this.#restartAttempts.get(provider) ?? 0;

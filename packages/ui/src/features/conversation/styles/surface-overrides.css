@@ -1,49 +1,49 @@
 .settings-panel,
 .browser-panel,
 .remote-desktop-workspace {
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 .composer-reply-preview {
-  border-color: var(--openbot-border);
-  background: var(--openbot-bg-surface);
-  color: var(--openbot-text-primary);
+  border-color: var(--aikingbot-border);
+  background: var(--aikingbot-bg-surface);
+  color: var(--aikingbot-text-primary);
 }
 
 .message-reaction-pill {
-  border-color: var(--openbot-border);
+  border-color: var(--aikingbot-border);
   background: transparent;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .message-reaction-pill:not(.message-reaction-pill-readonly):hover {
-    background: var(--openbot-hover);
+    background: var(--aikingbot-hover);
   }
 }
 
 .composer,
 .direct-composer {
-  background: var(--openbot-bg-surface);
+  background: var(--aikingbot-bg-surface);
 }
 
 .direct-composer > button:hover:not(:disabled) {
-  background: var(--openbot-accent-hover);
+  background: var(--aikingbot-accent-hover);
 }
 
 .remote-desktop-stage,
 .remote-desktop-viewer {
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-secondary);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-secondary);
 }
 
 .remote-desktop-header {
-  background: var(--openbot-bg-sidebar);
+  background: var(--aikingbot-bg-sidebar);
 }
 
 .remote-desktop-button[aria-expanded="true"] {
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-hover);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-hover);
 }
 
 .voice-button:active,
@@ -53,14 +53,14 @@
 
 /* A filled field with no border, in the menu item shape. */
 .provider-model-search {
-  height: var(--openbot-control-md);
+  height: var(--aikingbot-control-md);
   flex-shrink: 0;
   margin-bottom: var(--ui-menu-padding);
   border-color: transparent;
   border-radius: var(--ui-menu-item-radius);
   background: var(--ui-menu-item-hover);
   padding-inline: var(--ui-menu-inset);
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
 }
 
 .provider-model-search:focus-visible {
@@ -74,8 +74,8 @@
 }
 
 .provider-model-group {
-  padding: var(--openbot-space-2) var(--ui-menu-inset) var(--openbot-space-1);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  padding: var(--aikingbot-space-2) var(--ui-menu-inset) var(--aikingbot-space-1);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 500;
 }

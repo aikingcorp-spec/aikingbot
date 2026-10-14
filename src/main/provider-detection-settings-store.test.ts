@@ -4,7 +4,7 @@ import { Effect } from "effect";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { DEFAULT_PROVIDER_DETECTION_SETTINGS } from "@openbot/contracts/ipc";
+import { DEFAULT_PROVIDER_DETECTION_SETTINGS } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { PROVIDER_DETECTION_SETTINGS_FILE, ProviderDetectionSettingsStore } from "./provider-detection-settings-store";
@@ -13,7 +13,7 @@ let root = "";
 let path = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-provider-detection-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-provider-detection-"));
   path = join(root, "nested", PROVIDER_DETECTION_SETTINGS_FILE);
 });
 

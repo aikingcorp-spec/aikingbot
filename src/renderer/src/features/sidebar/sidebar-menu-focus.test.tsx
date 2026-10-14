@@ -1,6 +1,6 @@
-import { Dialog, DropdownMenu } from "@openbot/ui";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import type { SidebarProps } from "@openbot/ui/features/sidebar/sidebar-types";
+import { Dialog, DropdownMenu } from "@aikingbot/ui";
+import { Sidebar } from "@aikingbot/ui/features/sidebar/Sidebar";
+import type { SidebarProps } from "@aikingbot/ui/features/sidebar/sidebar-types";
 import { fireEvent, render, screen, within } from "@solidjs/testing-library";
 import type { JSX } from "@solidjs/web";
 import { createSignal } from "solid-js";

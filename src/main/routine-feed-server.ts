@@ -1,15 +1,15 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { rm } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import type { RoutineFeed } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+import type { RoutineFeed } from "@aikingbot/contracts/ipc";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, registerSecretValue } from "@aikingbot/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { readPreferenceFile, writePreferenceFile } from "./preference-file";
 
-const logger = createOpenBotLogger("routine-feed");
+const logger = createAIKINGBOTLogger("routine-feed");
 
 const FEED_PATH = /^\/routines\/([A-Za-z0-9_-]+)\.ics$/;
 const storedFeedSchema = z.object({

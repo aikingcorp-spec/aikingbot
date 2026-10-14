@@ -16,16 +16,16 @@ import {
   MCP_SERVERS_CAPABILITY,
   type McpServerConfig,
   type TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/ipc";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
 import {
   MCP_SIGN_IN_APP_CAPABILITY,
   MCP_SIGN_IN_APP_ROUTES,
-} from "@openbot/contracts/team-protocol/mcp-sign-in-app-v1";
-import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MCP_ROUTES } from "@openbot/contracts/team-protocol/mcp-v1";
-import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/mcp-sign-in-app-v1";
+import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-sign-in-v1";
+import { MCP_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-v1";
+import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { MCP_PROBE_TIMEOUT_MS } from "../../backend/mcp-probe";
@@ -109,7 +109,7 @@ interface McpServerIpcDependencies {
   /**
    * Fetches the tool runtimes an MCP server is started with, if this machine does not hold them
    * yet. Onboarding asks for them first; this covers the user who was already past onboarding when
-   * OpenBot learned to download one. It answers at once and reports nothing, so a slow or failed
+   * AIKINGBOT learned to download one. It answers at once and reports nothing, so a slow or failed
    * download cannot turn saving a row into an error.
    */
   startToolRuntimes: () => void;
@@ -271,7 +271,7 @@ export function mcpServerIpcHandlers({
           );
         },
       }),
-      // A sign-in opens the browser of the computer that runs OpenBot. On a joined server that is the
+      // A sign-in opens the browser of the computer that runs AIKINGBOT. On a joined server that is the
       // host's browser, which the panel shows through the live view of the tab `mcpSignInPage` names.
       signInMcpServer: scopedHandler(parseTestMcpServer, {
         local: (parsed) => runCauseEffect(service.signInMcpServer(parsed)),

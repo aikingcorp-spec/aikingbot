@@ -12,9 +12,9 @@
 .routine-schedule-picker,
 .routine-popover,
 .routine-chip-select-content {
-  --routine-focus-ring: 0 0 0 1px var(--openbot-text-muted);
+  --routine-focus-ring: 0 0 0 1px var(--aikingbot-text-muted);
   /* A light item hides a ring that touches it, so the ring has a gap of the popover colour. */
-  --routine-focus-ring-on-selected: 0 0 0 2px var(--openbot-bg-control), 0 0 0 3px var(--openbot-text-muted);
+  --routine-focus-ring-on-selected: 0 0 0 2px var(--aikingbot-bg-control), 0 0 0 3px var(--aikingbot-text-muted);
 }
 
 /* The same weight as the accent outline rule in auth.css, which loads earlier. */
@@ -30,7 +30,7 @@
 .routine-schedule-picker {
   display: grid;
   min-width: 0;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 /* One line at every width. A narrow row shrinks its flexible chip, not the line count. */
@@ -39,16 +39,16 @@
   display: flex;
   min-width: 0;
   align-items: flex-start;
-  gap: var(--openbot-space-2);
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-shadow-popover-ambient);
-  padding: var(--openbot-space-1);
-  transition: border-color var(--openbot-duration-hover) ease;
+  gap: var(--aikingbot-space-2);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-shadow-popover-ambient);
+  padding: var(--aikingbot-space-1);
+  transition: border-color var(--aikingbot-duration-hover) ease;
 }
 
 .routine-trigger-row:focus-within {
-  border-color: var(--openbot-text-muted);
+  border-color: var(--aikingbot-text-muted);
 }
 
 .routine-schedule-picker[data-density="card"] .routine-trigger-row {
@@ -59,25 +59,25 @@
 
 .routine-trigger-icon {
   display: inline-flex;
-  width: var(--openbot-control-md);
-  height: var(--openbot-control-md);
+  width: var(--aikingbot-control-md);
+  height: var(--aikingbot-control-md);
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-accent);
-  color: var(--openbot-text-on-accent);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-accent);
+  color: var(--aikingbot-text-on-accent);
 }
 
 .routine-trigger-icon svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
   stroke-width: 2;
 }
 
 .routine-schedule-picker[data-density="panel"] .routine-trigger-icon {
-  width: var(--openbot-control-sm);
-  height: var(--openbot-control-sm);
+  width: var(--aikingbot-control-sm);
+  height: var(--aikingbot-control-sm);
 }
 
 .routine-schedule-picker[data-density="card"] .routine-trigger-icon {
@@ -89,17 +89,17 @@
   min-width: 0;
   flex: 1;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   /* Clips a row that is narrower than its fixed chips, and keeps the focus ring visible. */
   overflow: clip;
-  overflow-clip-margin: var(--openbot-space-1);
+  overflow-clip-margin: var(--aikingbot-space-1);
 }
 
 .routine-trigger-phrase {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .routine-trigger-phrase-flexible {
@@ -108,9 +108,9 @@
 }
 
 .routine-connector {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .routine-chip-select {
@@ -125,24 +125,24 @@
 
 .routine-chip {
   display: inline-flex;
-  height: var(--openbot-control-md);
+  height: var(--aikingbot-control-md);
   min-width: 0;
   max-width: 100%;
   align-items: center;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   cursor: pointer;
   border: 0;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   outline: 0;
-  background: var(--openbot-bg-control-active);
-  padding: 0 var(--openbot-space-3);
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-sans);
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  background: var(--aikingbot-bg-control-active);
+  padding: 0 var(--aikingbot-space-3);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-sans);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
   white-space: nowrap;
   flex: 0 0 auto;
-  transition: background-color var(--openbot-duration-hover) ease;
+  transition: background-color var(--aikingbot-duration-hover) ease;
 }
 
 .routine-chip-flexible {
@@ -157,14 +157,14 @@
 
 /* The chips sit one padding inside the box, so the row is as tall as an input at every width. */
 .routine-schedule-picker[data-density="panel"] .routine-chip {
-  height: var(--openbot-control-sm);
-  border-radius: var(--openbot-radius-xs);
+  height: var(--aikingbot-control-sm);
+  border-radius: var(--aikingbot-radius-xs);
 }
 
 .routine-schedule-picker[data-density="card"] .routine-chip {
-  height: var(--openbot-control-sm);
-  padding: 0 var(--openbot-space-2);
-  font-size: var(--openbot-text-md);
+  height: var(--aikingbot-control-sm);
+  padding: 0 var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-md);
 }
 
 .routine-chip:focus-visible {
@@ -172,8 +172,8 @@
 }
 
 .routine-chip:is([aria-expanded="true"], [data-expanded]) {
-  background: var(--openbot-bg-control-hover);
-  box-shadow: 0 0 0 1px var(--openbot-border-strong);
+  background: var(--aikingbot-bg-control-hover);
+  box-shadow: 0 0 0 1px var(--aikingbot-border-strong);
 }
 
 .routine-chip:disabled,
@@ -181,13 +181,13 @@
   cursor: default;
   background: transparent;
   padding: 0;
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .routine-chip:hover:not(:disabled, [data-disabled]) {
-    background: var(--openbot-bg-control-hover);
-    box-shadow: 0 0 0 1px var(--openbot-border-strong);
+    background: var(--aikingbot-bg-control-hover);
+    box-shadow: 0 0 0 1px var(--aikingbot-border-strong);
   }
 }
 
@@ -196,23 +196,23 @@
 }
 
 .routine-chip-select-content .ui-select-item {
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .routine-cron-input {
   min-width: 0;
   max-width: 220px;
   flex: 1 1 180px;
-  font-family: var(--openbot-font-mono);
+  font-family: var(--aikingbot-font-mono);
 }
 
 .routine-schedule-hint {
   margin: 0;
-  padding-left: var(--openbot-space-2);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  padding-left: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .routine-schedule-picker[data-density="card"] .routine-schedule-hint {
@@ -221,14 +221,14 @@
 
 /* Popovers */
 .routine-popover {
-  z-index: var(--openbot-layer-popover);
-  border-radius: var(--openbot-radius-lg);
-  padding: var(--openbot-space-2);
+  z-index: var(--aikingbot-layer-popover);
+  border-radius: var(--aikingbot-radius-lg);
+  padding: var(--aikingbot-space-2);
 }
 
 .routine-weekday-strip {
   display: flex;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-day-item {
@@ -237,17 +237,17 @@
 
 .routine-day {
   display: inline-flex;
-  width: var(--openbot-control-md);
-  height: var(--openbot-control-md);
+  width: var(--aikingbot-control-md);
+  height: var(--aikingbot-control-md);
   min-width: 0;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius: var(--openbot-radius-pill);
+  border-radius: var(--aikingbot-radius-pill);
   padding: 0;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .routine-day-item:has(:focus-visible) .routine-day {
@@ -256,20 +256,20 @@
 
 /* The strip is short, so an unselected day can look like a button. A month grid stays plain. */
 .routine-weekday-strip .routine-day {
-  background: var(--openbot-bg-control-active);
+  background: var(--aikingbot-bg-control-active);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .routine-day:hover:not(:disabled, .routine-day-selected) {
-    background: var(--openbot-hover);
-    color: var(--openbot-text-primary);
+    background: var(--aikingbot-hover);
+    color: var(--aikingbot-text-primary);
   }
 }
 
 .routine-day.routine-day-selected,
 .routine-day.routine-day-selected:hover {
-  background: var(--openbot-text-primary);
-  color: var(--openbot-bg-canvas);
+  background: var(--aikingbot-text-primary);
+  color: var(--aikingbot-bg-canvas);
 }
 
 .routine-day.routine-day-selected:focus-visible,
@@ -281,16 +281,16 @@
 .routine-clock-input {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .routine-clock-segment.ui-input {
   width: 48px;
-  height: var(--openbot-control-lg);
+  height: var(--aikingbot-control-lg);
   border: 0;
-  background: var(--openbot-bg-control-active);
+  background: var(--aikingbot-bg-control-active);
   padding: 0;
-  font-size: var(--openbot-text-lg);
+  font-size: var(--aikingbot-text-lg);
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
@@ -300,33 +300,33 @@
 }
 
 .routine-cron-input.ui-input:focus-visible {
-  border-color: var(--openbot-text-muted);
+  border-color: var(--aikingbot-text-muted);
   box-shadow: none;
 }
 
 .routine-clock-separator {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .routine-segmented {
   display: flex;
-  margin-left: var(--openbot-space-1);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control-active);
-  padding: var(--openbot-space-0-5);
+  margin-left: var(--aikingbot-space-1);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control-active);
+  padding: var(--aikingbot-space-0-5);
 }
 
 .routine-segmented-control {
   display: inline-flex;
-  height: calc(var(--openbot-control-lg) - 2 * var(--openbot-space-0-5));
+  height: calc(var(--aikingbot-control-lg) - 2 * var(--aikingbot-space-0-5));
   min-width: 44px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius: var(--openbot-radius-sm);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  border-radius: var(--aikingbot-radius-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .routine-segmented-control label {
@@ -334,8 +334,8 @@
 }
 
 .routine-segmented-control[data-checked] {
-  background: var(--openbot-text-primary);
-  color: var(--openbot-bg-canvas);
+  background: var(--aikingbot-text-primary);
+  color: var(--aikingbot-bg-canvas);
 }
 
 .routine-segmented-item:has(:focus-visible) .routine-segmented-control {
@@ -344,50 +344,50 @@
 
 .routine-segmented-item:has(:focus-visible) .routine-segmented-control[data-checked] {
   box-shadow:
-    0 0 0 2px var(--openbot-bg-control-active),
-    0 0 0 3px var(--openbot-text-muted);
+    0 0 0 2px var(--aikingbot-bg-control-active),
+    0 0 0 3px var(--aikingbot-text-muted);
 }
 
 /* Hours window: a two-option list and, for "Between hours", the times beside it. */
 .routine-window-menu {
   display: grid;
   width: 240px;
-  gap: var(--openbot-space-1);
-  padding: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
+  padding: var(--aikingbot-space-1);
 }
 
 .routine-window-options {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
 }
 
 .routine-window-repeat {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
-  border-top: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-2) var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  border-top: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-3);
 }
 
 .routine-window-repeat-label {
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .routine-window-option-control {
   display: flex;
-  min-height: var(--openbot-control-lg);
+  min-height: var(--aikingbot-control-lg);
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   cursor: pointer;
-  border-radius: var(--openbot-radius-md);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
+  border-radius: var(--aikingbot-radius-md);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
 }
 
 .routine-window-option-control[data-checked] {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
 }
 
 .routine-window-option:has(:focus-visible) .routine-window-option-control {
@@ -396,21 +396,21 @@
 
 @media (hover: hover) and (pointer: fine) {
   .routine-window-option-control:hover {
-    background: var(--openbot-hover);
+    background: var(--aikingbot-hover);
   }
 }
 
 .routine-window-option-label {
   flex: 1;
   cursor: pointer;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .routine-window-option-check {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
   flex: 0 0 auto;
 }
 
@@ -421,54 +421,54 @@
 
 .routine-window-range {
   display: grid;
-  gap: var(--openbot-space-1-5);
-  padding: var(--openbot-space-1) var(--openbot-space-3) var(--openbot-space-2);
+  gap: var(--aikingbot-space-1-5);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-3) var(--aikingbot-space-2);
 }
 
 .routine-window-range-times {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .routine-window-range-count {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 /* Calendar */
 .routine-calendar {
   display: grid;
-  width: calc(7 * var(--openbot-control-md) + 6 * var(--openbot-space-0-5));
-  gap: var(--openbot-space-1);
+  width: calc(7 * var(--aikingbot-control-md) + 6 * var(--aikingbot-space-0-5));
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: var(--openbot-space-1);
+  padding-bottom: var(--aikingbot-space-1);
 }
 
 .routine-calendar-title {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .routine-calendar-weekdays,
 .routine-calendar-days {
   display: grid;
-  grid-template-columns: repeat(7, var(--openbot-control-md));
-  gap: var(--openbot-space-0-5);
+  grid-template-columns: repeat(7, var(--aikingbot-control-md));
+  gap: var(--aikingbot-space-0-5);
 }
 
 .routine-calendar-weekdays span {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-align: center;
 }
 
@@ -477,7 +477,7 @@
 }
 
 .routine-calendar-day[aria-current="date"]:not(.routine-day-selected) {
-  color: var(--openbot-accent-text);
+  color: var(--aikingbot-accent-text);
 }
 
 .routine-calendar-day:disabled {
@@ -497,30 +497,30 @@
  * Each step keeps the rules of the steps before it.
  */
 .routine-schedule-picker:not([data-fit="roomy"]) .routine-trigger-chips {
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .routine-schedule-picker:not([data-fit="roomy"]) .routine-trigger-phrase {
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-schedule-picker:not([data-fit="roomy"]) .routine-connector {
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
 }
 
 .routine-schedule-picker[data-density="panel"]:not([data-fit="roomy"]) .routine-trigger-row {
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .routine-schedule-picker[data-density="panel"]:not([data-fit="roomy"]) .routine-trigger-icon svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .routine-schedule-picker[data-density="panel"]:not([data-fit="roomy"]) .routine-chip {
-  gap: var(--openbot-space-1);
-  padding: 0 var(--openbot-space-2);
-  font-size: var(--openbot-text-md);
+  gap: var(--aikingbot-space-1);
+  padding: 0 var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-md);
 }
 
 .routine-schedule-picker[data-density="panel"]:is([data-fit="tight"], [data-fit="minimal"])
@@ -530,17 +530,17 @@
 
 .routine-schedule-picker[data-density="panel"]:is([data-fit="tight"], [data-fit="minimal"])
   :is(.routine-trigger-row, .routine-trigger-chips) {
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-schedule-picker[data-density="panel"]:is([data-fit="tight"], [data-fit="minimal"]) .routine-trigger-icon {
-  width: var(--openbot-control-xs);
-  height: var(--openbot-control-xs);
+  width: var(--aikingbot-control-xs);
+  height: var(--aikingbot-control-xs);
   align-self: center;
 }
 
 .routine-schedule-picker[data-density="panel"]:is([data-fit="tight"], [data-fit="minimal"]) .routine-chip {
-  padding: 0 var(--openbot-space-1-5);
+  padding: 0 var(--aikingbot-space-1-5);
 }
 
 /* The value chips then cut their labels short, and the frequency and time chips stay whole. */
@@ -549,7 +549,7 @@
 }
 
 .routine-schedule-picker[data-fit="minimal"] .routine-trigger-chips {
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /*
@@ -561,7 +561,7 @@
   display: inline-flex;
   flex: 0 0 auto;
   align-self: center;
-  margin-inline-start: calc(var(--openbot-space-1) * -1);
+  margin-inline-start: calc(var(--aikingbot-space-1) * -1);
 }
 
 .routine-trigger-action:empty {
@@ -569,9 +569,9 @@
 }
 
 :is(.routine-trigger-row, .routine-trigger-card-header) .routine-trigger-action .ui-button {
-  width: var(--openbot-control-sm);
-  height: var(--openbot-control-sm);
-  border-radius: var(--openbot-radius-xs);
+  width: var(--aikingbot-control-sm);
+  height: var(--aikingbot-control-sm);
+  border-radius: var(--aikingbot-radius-xs);
 }
 
 /*
@@ -581,30 +581,30 @@
 .routine-trigger-card {
   display: grid;
   min-width: 0;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-shadow-popover-ambient);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-shadow-popover-ambient);
 }
 
 .routine-trigger-card-header {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-3);
 }
 
 :is(.routine-trigger-card-header, .routine-trigger-menu) .routine-trigger-icon {
-  width: var(--openbot-control-sm);
-  height: var(--openbot-control-sm);
+  width: var(--aikingbot-control-sm);
+  height: var(--aikingbot-control-sm);
 }
 
 .routine-trigger-card-title {
   min-width: 0;
   flex: 1;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
   /* Mostly lowercase text looks low when its line box is centered. Center the x-height on the icon. */
   text-box: trim-both ex alphabetic;
 }
@@ -612,33 +612,33 @@
 .routine-webhook-field {
   display: grid;
   /* An action, the row padding and the top border, so a row without an action has the same height. */
-  min-height: calc(var(--openbot-control-sm) + var(--openbot-space-2) + 1px);
-  grid-template-columns: minmax(84px, auto) minmax(0, 1fr) var(--openbot-control-sm);
+  min-height: calc(var(--aikingbot-control-sm) + var(--aikingbot-space-2) + 1px);
+  grid-template-columns: minmax(84px, auto) minmax(0, 1fr) var(--aikingbot-control-sm);
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   border: 0;
-  border-top: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
   margin: 0;
   background: none;
-  padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-3);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-3);
   color: inherit;
   font: inherit;
   text-align: left;
 }
 
 .routine-webhook-label {
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   white-space: nowrap;
 }
 
 .routine-webhook-value {
   min-width: 0;
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -649,8 +649,8 @@ code.routine-webhook-value {
 
 /* A new secret wraps in a fixed-width font, so the user can read each character before copying it. */
 code.routine-webhook-secret {
-  padding-block: var(--openbot-space-1-5);
-  font-family: var(--openbot-font-mono);
+  padding-block: var(--aikingbot-space-1-5);
+  font-family: var(--aikingbot-font-mono);
   overflow-wrap: anywhere;
   white-space: normal;
 }
@@ -660,8 +660,8 @@ code.routine-webhook-secret {
 }
 
 .routine-webhook-field > .ui-icon-button {
-  width: var(--openbot-control-sm);
-  height: var(--openbot-control-sm);
+  width: var(--aikingbot-control-sm);
+  height: var(--aikingbot-control-sm);
 }
 
 /* The Events row is a ghost Button; two classes keep the row layout over the button styles. */
@@ -670,7 +670,7 @@ code.routine-webhook-secret {
   min-width: 0;
   height: auto;
   justify-content: stretch;
-  border-radius: 0 0 calc(var(--openbot-radius-md) - 1px) calc(var(--openbot-radius-md) - 1px);
+  border-radius: 0 0 calc(var(--aikingbot-radius-md) - 1px) calc(var(--aikingbot-radius-md) - 1px);
   color: inherit;
   font: inherit;
   text-align: start;
@@ -682,19 +682,19 @@ code.routine-webhook-secret {
 }
 
 .routine-webhook-field.routine-webhook-events-toggle:hover {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .routine-webhook-events-toggle:focus-visible {
   outline: 0;
-  box-shadow: var(--routine-focus-ring, 0 0 0 1px var(--openbot-text-muted));
+  box-shadow: var(--routine-focus-ring, 0 0 0 1px var(--aikingbot-text-muted));
 }
 
 .routine-webhook-events-toggle > svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
-  stroke-width: var(--openbot-icon-stroke);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
+  stroke-width: var(--aikingbot-icon-stroke);
+  color: var(--aikingbot-text-muted);
 }
 
 /* A status sentence wraps; a URL or a secret stays on one line. */
@@ -703,32 +703,32 @@ code.routine-webhook-secret {
 }
 
 .routine-webhook-note {
-  padding: 0 var(--openbot-space-3) var(--openbot-space-2);
+  padding: 0 var(--aikingbot-space-3) var(--aikingbot-space-2);
 }
 
 .routine-trigger-card-header + .routine-webhook-note {
-  border-top: 1px solid var(--openbot-border);
-  padding-top: var(--openbot-space-2);
+  border-top: 1px solid var(--aikingbot-border);
+  padding-top: var(--aikingbot-space-2);
 }
 
 .routine-webhook-secret-note {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .routine-webhook-events {
   display: grid;
-  gap: var(--openbot-space-3);
-  border-top: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
+  border-top: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-3);
 }
 
 .routine-webhook-events .settings-field {
   display: grid;
   margin: 0;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .routine-webhook-events .settings-field > span {
@@ -737,35 +737,35 @@ code.routine-webhook-secret {
 
 /* Hints are captions, not field labels. */
 .routine-webhook-events .settings-field > .ui-text {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .routine-webhook-add-filter {
   justify-self: start;
-  margin-left: calc(var(--openbot-space-2) * -1);
-  padding-inline: var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
+  margin-left: calc(var(--aikingbot-space-2) * -1);
+  padding-inline: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
   font-weight: inherit;
 }
 
 /* A quiet link under the rows. Its text starts under the row labels. */
 .routine-webhook-filter-link {
   justify-self: start;
-  margin: 0 0 var(--openbot-space-1) var(--openbot-space-1);
-  padding-inline: var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  margin: 0 0 var(--aikingbot-space-1) var(--aikingbot-space-1);
+  padding-inline: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
   font-weight: inherit;
 }
 
 .routine-webhook-add-filter svg,
 .routine-webhook-filter-link svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 /* The trigger menu: a name and one line that tells when the routine runs. */
@@ -777,8 +777,8 @@ code.routine-webhook-secret {
 
 .routine-trigger-menu.ui-action-menu .routine-trigger-menu-item[role="menuitemradio"] {
   height: auto;
-  padding-block: var(--openbot-space-1-5);
-  gap: var(--openbot-space-3);
+  padding-block: var(--aikingbot-space-1-5);
+  gap: var(--aikingbot-space-3);
   white-space: normal;
 }
 
@@ -789,11 +789,11 @@ code.routine-webhook-secret {
 }
 
 .routine-trigger-menu-description {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .routine-trigger-menu.ui-action-menu .routine-trigger-menu-item > .routine-trigger-menu-check {
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
 }

@@ -1,5 +1,5 @@
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@aikingbot/contracts/team-protocol/events-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { type HostEventsApi, HostEventsFailure } from "./host-events-api";
@@ -31,7 +31,7 @@ describe("Team API events-v1", () => {
     const member = await Effect.runPromise(fixture.store.acceptInvite(invite.token, "member", "member password"));
     const headers = {
       "Content-Type": "application/json",
-      "OpenBot-Capabilities": EVENTS_CAPABILITY,
+      "AIKINGBOT-Capabilities": EVENTS_CAPABILITY,
     };
 
     const response = await fetch(`${base}${EVENTS_ROUTES.status}`, {
@@ -77,7 +77,7 @@ describe("Team API events-v1", () => {
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${ownerToken}`,
-      "OpenBot-Capabilities": EVENTS_CAPABILITY,
+      "AIKINGBOT-Capabilities": EVENTS_CAPABILITY,
     };
     const localized = await fetch(`${base}${EVENTS_ROUTES.rotateSecret}`, {
       method: "POST",

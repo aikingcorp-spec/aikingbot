@@ -1,10 +1,10 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { Message, PluralMessage } from "@openbot/i18n";
-import { TRANSLATED_LOCALES } from "@openbot/i18n";
-import { matchingSourceKeys } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import type { Message, PluralMessage } from "@aikingbot/i18n";
+import { TRANSLATED_LOCALES } from "@aikingbot/i18n";
+import { matchingSourceKeys } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 
 // Checks the catalogs in packages/i18n/src/messages. See docs/i18n.md.
 //
@@ -18,7 +18,7 @@ import { createOpenBotLogger } from "@openbot/logging";
 // Reports, and does not fail on, keys that are not translated yet and translated modules whose keys
 // are not in the English order. `--fix` puts those keys in the English order; it moves each
 // key with the comments and blank lines above it and does not change the text. `--json` writes the
-// report to .openbot-build/i18n-report.json.
+// report to .aikingbot-build/i18n-report.json.
 
 const ROOT = resolve(import.meta.dirname, "..");
 const MESSAGES = resolve(ROOT, "packages/i18n/src/messages");
@@ -29,7 +29,7 @@ const CODE_ROOTS = ["src", "packages", "apps/mobile/src", "apps/auth-api/src", "
 const CODE_EXTENSIONS = /\.(?:ts|tsx)$/;
 const SKIPPED_DIRECTORIES = new Set(["node_modules", "dist", "build", "out", ".expo"]);
 
-const logger = createOpenBotLogger("i18n-check");
+const logger = createAIKINGBOTLogger("i18n-check");
 const failures: string[] = [];
 const OBJECT_START = "export const messages = {";
 /** The quoted key of a catalog entry, after the comments and blank lines above it. */
@@ -278,7 +278,7 @@ const report = {
 };
 
 if (process.argv.includes("--json")) {
-  const path = resolve(ROOT, ".openbot-build/i18n-report.json");
+  const path = resolve(ROOT, ".aikingbot-build/i18n-report.json");
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
   logger.info(`Wrote ${relative(ROOT, path)}.`);

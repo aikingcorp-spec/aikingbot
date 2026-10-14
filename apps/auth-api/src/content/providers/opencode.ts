@@ -10,9 +10,9 @@ export const OPENCODE_PROVIDER: ProviderPage = {
   provider: "opencode",
   name: "OpenCode",
   answer:
-    "OpenBot runs OpenCode as one agent of a team, on macOS, Windows or Linux, with its free models and no account. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs OpenCode as one agent of a team, on macOS, Windows or Linux, with its free models and no account. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose OpenCode, and OpenBot downloads and pins its own copy of OpenCode, or uses the one you installed. The free models need no sign-in. For more models, add an OpenCode Go key.",
+    "Choose OpenCode, and AIKINGBOT downloads and pins its own copy of OpenCode, or uses the one you installed. The free models need no sign-in. For more models, add an OpenCode Go key.",
   adds: [
     {
       icon: "heart",
@@ -22,7 +22,7 @@ export const OPENCODE_PROVIDER: ProviderPage = {
     {
       icon: "cpu",
       title: "Your own models",
-      text: "OpenBot runs OpenCode on any OpenAI-compatible server too, such as Ollama or LM Studio on your computer.",
+      text: "AIKINGBOT runs OpenCode on any OpenAI-compatible server too, such as Ollama or LM Studio on your computer.",
     },
   ],
   vendor: "OpenCode",
@@ -53,22 +53,22 @@ export const OPENCODE_PROVIDER: ProviderPage = {
     {
       question: "Is there a GUI for OpenCode?",
       answer:
-        "Yes. OpenCode has a desktop app in beta and a web interface that runs on your computer. OpenBot is a different desktop app: it runs OpenCode as one agent of a team, with agents on other providers and an app on your phone.",
+        "Yes. OpenCode has a desktop app in beta and a web interface that runs on your computer. AIKINGBOT is a different desktop app: it runs OpenCode as one agent of a team, with agents on other providers and an app on your phone.",
     },
     {
-      question: "Is OpenCode in OpenBot free?",
+      question: "Is OpenCode in AIKINGBOT free?",
       answer:
         "Yes, with OpenCode's free models: they need no account. OpenCode Go, at $10 a month, and Go Plus, at $40, give reliable use of open coding models. Both are optional.",
     },
     {
       question: "Does OpenCode need WSL on Windows?",
       answer:
-        "OpenCode recommends WSL for its own terminal app on Windows. OpenBot downloads the native Windows x64 build of OpenCode and runs it for you, with no WSL.",
+        "OpenCode recommends WSL for its own terminal app on Windows. AIKINGBOT downloads the native Windows x64 build of OpenCode and runs it for you, with no WSL.",
     },
     {
       question: "Can OpenCode run a model on my computer?",
       answer:
-        "Yes. In OpenBot, OpenCode runs any OpenAI-compatible server as a custom provider, such as Ollama or LM Studio on your computer.",
+        "Yes. In AIKINGBOT, OpenCode runs any OpenAI-compatible server as a custom provider, such as Ollama or LM Studio on your computer.",
     },
   ],
   sources: [

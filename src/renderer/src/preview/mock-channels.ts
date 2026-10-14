@@ -19,9 +19,9 @@ import type {
   TestChannelRoutineInput,
   UpdateChannelMemoryInput,
   UpdateChannelRoutineInput,
-} from "@openbot/contracts/ipc";
-import { channelRoutingConversationEventItemType } from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
+} from "@aikingbot/contracts/ipc";
+import { channelRoutingConversationEventItemType } from "@aikingbot/contracts/ipc";
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
 
 export function createMockChannels(emit: (event: AgentEvent) => void, agentName: (agentId: string) => string) {
   const channels = new Map<string, Channel>();

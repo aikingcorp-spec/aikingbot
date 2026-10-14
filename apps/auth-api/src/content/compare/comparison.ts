@@ -1,13 +1,13 @@
-import type { ProviderLogoVariant } from "@openbot/brand";
+import type { ProviderLogoVariant } from "@aikingbot/brand";
 import type { RivalMarkName } from "../../components/compare/rival-mark-shapes";
 import type { LandingIconName } from "../../components/landing/LandingIcon";
 
 // One comparison page, as data. The page draws every part from it, and the FAQ
 // structured data is built from the same questions, so the two can not disagree.
-// There are three kinds: OpenBot against one rival, two other products against
+// There are three kinds: AIKINGBOT against one rival, two other products against
 // each other (a matchup), and a roundup of many apps.
 
-type ComparisonSide = "openbot" | "rival";
+type ComparisonSide = "aikingbot" | "rival";
 type MatchupSide = "a" | "b";
 
 /** One row of the table: the text of each side, keyed by the side. */
@@ -33,8 +33,8 @@ export interface ComparisonSource {
   url: string;
 }
 
-/** A plan or a model that an OpenBot agent can run on. The same on every comparison. */
-export interface OpenBotPlan {
+/** A plan or a model that an AIKINGBOT agent can run on. The same on every comparison. */
+export interface AIKINGBOTPlan {
   /** The provider whose logo the page shows, or `custom` for a model server of your own. */
   provider: ProviderLogoVariant | "custom";
   name: string;
@@ -44,7 +44,7 @@ export interface OpenBotPlan {
 // The released providers (`packages/contracts/src/agent-providers.ts`), with the
 // sign-in each one uses (`src/backend/provider-drivers.ts`), and the custom
 // OpenAI-compatible provider that OpenCode runs.
-export const OPENBOT_PLANS: readonly OpenBotPlan[] = [
+export const AIKINGBOT_PLANS: readonly AIKINGBOTPlan[] = [
   { provider: "codex", name: "ChatGPT", plan: "Your ChatGPT plan, through Codex." },
   { provider: "claude", name: "Claude", plan: "Your Claude plan, through Claude Code." },
   { provider: "antigravity", name: "Gemini", plan: "Your Google AI Pro or Ultra plan." },
@@ -55,9 +55,9 @@ export const OPENBOT_PLANS: readonly OpenBotPlan[] = [
   { provider: "custom", name: "Your own model", plan: "Any OpenAI-compatible server, also one on your computer." },
 ];
 
-/** OpenBot against one rival. The kind is optional, so the first pages need no edit. */
+/** AIKINGBOT against one rival. The kind is optional, so the first pages need no edit. */
 export interface Comparison {
-  kind?: "openbot";
+  kind?: "aikingbot";
   rival: {
     /** The product's own spelling. */
     name: string;
@@ -65,9 +65,9 @@ export interface Comparison {
   };
   /** The one-sentence answer under the title. */
   answer: string;
-  chooseOpenBot: readonly string[];
+  chooseAIKINGBOT: readonly string[];
   chooseRival: readonly string[];
-  /** How the rival gets its models and how you pay for them, next to `OPENBOT_PLANS`. */
+  /** How the rival gets its models and how you pay for them, next to `AIKINGBOT_PLANS`. */
   rivalPlans: string;
   rows: readonly ComparisonRow[];
   /** What the two have in common, before the differences. */
@@ -124,13 +124,13 @@ interface MatchupProduct {
   /** The product's own spelling. */
   name: string;
   mark: RivalMarkName;
-  /** The OpenBot plan that runs this product, which the page shows first. */
+  /** The AIKINGBOT plan that runs this product, which the page shows first. */
   provider: ProviderLogoVariant;
 }
 
 /**
- * Two products that OpenBot runs, against each other. Neither side is OpenBot, and
- * neither is recommended: the page compares them, then says that OpenBot runs both.
+ * Two products that AIKINGBOT runs, against each other. Neither side is AIKINGBOT, and
+ * neither is recommended: the page compares them, then says that AIKINGBOT runs both.
  */
 export interface MatchupComparison {
   kind: "matchup";
@@ -141,8 +141,8 @@ export interface MatchupComparison {
   chooseB: readonly string[];
   rows: readonly ComparisonRow<MatchupSide>[];
   intro: string;
-  /** How OpenBot runs both products, with the plans you have, as one team. */
-  bothInOpenBot: string;
+  /** How AIKINGBOT runs both products, with the plans you have, as one team. */
+  bothInAIKINGBOT: string;
   /** Not given when the benchmark does not test one of the two products. */
   benchmark?: Benchmark;
   sections: readonly ComparisonSection<MatchupSide>[];
@@ -154,7 +154,7 @@ export interface MatchupComparison {
 
 export interface RoundupApp {
   name: string;
-  mark: RivalMarkName | "openbot";
+  mark: RivalMarkName | "aikingbot";
   /** The slugs of the comparisons that include this app. */
   comparisons: readonly string[];
   bestFor: string;
@@ -164,7 +164,7 @@ export interface RoundupApp {
   summary: string;
 }
 
-/** Many apps in one list, each with the comparisons that include it. OpenBot is first, and the page says who wrote it. */
+/** Many apps in one list, each with the comparisons that include it. AIKINGBOT is first, and the page says who wrote it. */
 export interface RoundupComparison {
   kind: "roundup";
   answer: string;
@@ -207,7 +207,7 @@ export function roundupAppAnchor(app: RoundupApp): string {
 
 /**
  * schema.org `ItemList` of a roundup, in the order the page shows. No rating or
- * review: OpenBot is on the list, and a maker does not review its own app.
+ * review: AIKINGBOT is on the list, and a maker does not review its own app.
  */
 export function roundupItemListStructuredData(
   roundup: RoundupComparison,

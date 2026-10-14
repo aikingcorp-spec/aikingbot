@@ -1,5 +1,5 @@
-import { ConfirmDialog } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { ConfirmDialog } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 
 /** Explains the same standing grant from the approval card and the model picker. */
 export function StandingApprovalConfirmation(props: {

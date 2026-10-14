@@ -58,7 +58,7 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
       slug: "paper",
       version: "1.0.0",
       featured: false,
-      detailSha256: "cfc59276d82b8b54ae133336032b611613b5f8c0e93672f8f07009d126c39464",
+      detailSha256: "b86acf0166fdcff699787ce394575e1f50324bb11994d1922b78ba0e0230f401",
     },
     {
       slug: "sentry",
@@ -378,7 +378,7 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     name: "Paper",
     tagline: "Design canvas built on HTML and CSS",
     description:
-      "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. OpenBot starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
+      "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. AIKINGBOT starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
     category: "design",
     creatorName: "paper.design",
     iconUrl: "https://paper.design/favicon.ico",

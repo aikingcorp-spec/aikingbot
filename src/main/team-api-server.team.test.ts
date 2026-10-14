@@ -4,9 +4,9 @@ import { Effect } from "effect";
 // Joining, membership, invitations, sessions and passwords: `src/main/team-api/route-team.ts`.
 
 import { EventEmitter } from "node:events";
-import type { TeamPresenceSnapshot } from "@openbot/contracts/ipc";
+import type { TeamPresenceSnapshot } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
-import { OpenBotDatabase } from "../backend/openbot-database";
+import { AIKINGBOTDatabase } from "../backend/aikingbot-database";
 import { TeamChatStore } from "../backend/team-chat-store";
 import {
   createAgents,
@@ -21,7 +21,7 @@ import {
 afterEach(stopTeamApiFixtures);
 
 describe("TeamApiServer team", () => {
-  it("joins an email-bound invitation with a verified OpenBot account", async () => {
+  it("joins an email-bound invitation with a verified AIKINGBOT account", async () => {
     const { root, store, start } = await createTeamApiFixture("account");
     await Effect.runPromise(
       store.configureWithAccount("Studio Mac", {
@@ -32,7 +32,7 @@ describe("TeamApiServer team", () => {
       }),
     );
     const invite = await Effect.runPromise(store.createInvite("member", "alice@example.com"));
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await Effect.runPromise(database.initialize());
     const chat = new TeamChatStore(database);
     const agentEvents = new EventEmitter();
@@ -48,7 +48,7 @@ describe("TeamApiServer team", () => {
               id: "alice-account",
               email: "alice@example.com",
               name: "Alice",
-              avatarUrl: "https://api.openbot.run/v1/avatars/alice-account?v=image-1",
+              avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/alice-account?v=image-1",
             };
           }
           return ticket === "owner-team-ticket"
@@ -95,7 +95,7 @@ describe("TeamApiServer team", () => {
       expect(joined.member).toMatchObject({
         email: "alice@example.com",
         role: "member",
-        avatarUrl: "https://api.openbot.run/v1/avatars/alice-account?v=image-1",
+        avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/alice-account?v=image-1",
       });
       expect(store.authenticate(joined.sessionToken)?.email).toBe("alice@example.com");
 
@@ -126,8 +126,8 @@ describe("TeamApiServer team", () => {
       expect(store.authenticate(ownerConnection.sessionToken)?.email).toBe("owner@example.com");
 
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-events-v2",
-        `openbot-token.${joined.sessionToken}`,
+        "aikingbot-events-v2",
+        `aikingbot-token.${joined.sessionToken}`,
       ]);
       const initialEvents = nextJsonEvents(socket, 2);
       await new Promise<void>((resolve, reject) => {
@@ -145,7 +145,7 @@ describe("TeamApiServer team", () => {
             expect.objectContaining({
               email: "alice@example.com",
               online: true,
-              avatarUrl: "https://api.openbot.run/v1/avatars/alice-account?v=image-1",
+              avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/alice-account?v=image-1",
             }),
           ]),
         },
@@ -278,7 +278,7 @@ describe("TeamApiServer team", () => {
             role: created.role,
             expiresAt: created.expiresAt,
             usedAt: null,
-            inviteUrl: `https://openbot.run/join?token=${created.token}`,
+            inviteUrl: `https://aikingbot.aikingx.com/join?token=${created.token}`,
             email: created.email,
             permanent: created.permanent,
             useCount: created.useCount,

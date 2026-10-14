@@ -67,7 +67,7 @@ export const messages = {
     "« {name} » est supprimé du disque. Les messages qui l’affichent restent dans la discussion, sans le fichier.",
   "mobile.agent.files.keep": "Conserver",
   "mobile.agent.files.deleteFailed": "Impossible de supprimer le fichier",
-  "mobile.agent.files.deleteFailedBody": "OpenBot n’a pas pu supprimer ce fichier.",
+  "mobile.agent.files.deleteFailedBody": "AIKINGBOT n’a pas pu supprimer ce fichier.",
   "mobile.agent.files.downloading": "Téléchargement…",
   "mobile.agent.files.removeNamed": "Retirer {name}",
   "mobile.agent.files.deleteNamed": "Supprimer {name}",
@@ -120,13 +120,13 @@ export const messages = {
   "mobile.agent.info.noRoutines": "Aucune routine pour l’instant.",
   "mobile.agent.info.addRoutine": "Ajouter une routine",
   "mobile.agent.info.skillsUnsupported":
-    "Cet hôte ne prend pas en charge les compétences. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne prend pas en charge les compétences. Mettez à jour AIKINGBOT sur l’hôte.",
   "mobile.agent.info.noSkills": "Aucune compétence pour l’instant.",
   "mobile.agent.info.skillsManaged": "Les compétences de cet agent sont gérées sur l’hôte.",
   "mobile.agent.info.skillsAddOnComputer":
-    "Utilisez + pour créer une compétence avec cet agent. Ajoutez des compétences du marketplace dans OpenBot sur un ordinateur ou dans l’application web.",
+    "Utilisez + pour créer une compétence avec cet agent. Ajoutez des compétences du marketplace dans AIKINGBOT sur un ordinateur ou dans l’application web.",
   "mobile.agent.info.filesUnsupported":
-    "Cet hôte ne prend pas en charge la gestion des fichiers. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne prend pas en charge la gestion des fichiers. Mettez à jour AIKINGBOT sur l’hôte.",
   "mobile.agent.info.memoryGone": "Ce souvenir n’est plus disponible.",
   "mobile.agent.info.routineGone": "Cette routine n’est plus disponible.",
   "mobile.agent.skill.workspaceFolder": "Dossier de l’espace de travail",
@@ -139,7 +139,7 @@ export const messages = {
   "mobile.agent.skill.uninstallNamed": "Désinstaller {name}",
   "mobile.agent.skill.uninstallTitle": "Désinstaller {name} ?",
   "mobile.agent.skill.uninstallBody":
-    "OpenBot va retirer cette compétence de l’agent. L’historique de discussion reste.",
+    "AIKINGBOT va retirer cette compétence de l’agent. L’historique de discussion reste.",
   "mobile.agent.skill.uninstallModifiedBody":
     "Cette compétence a des modifications locales dans l’espace de travail de l’agent. La désinstallation supprime ces fichiers. L’historique de discussion reste.",
   "mobile.agent.skill.uninstalling": "Désinstallation…",
@@ -147,7 +147,7 @@ export const messages = {
   "mobile.agent.skill.enableFailed": "Impossible d’activer {name}.",
   "mobile.agent.skill.disableFailed": "Impossible de désactiver {name}.",
   "mobile.agent.skill.manageUnsupported":
-    "Cet hôte ne peut pas modifier les compétences. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne peut pas modifier les compétences. Mettez à jour AIKINGBOT sur l’hôte.",
   "mobile.agent.discard.title": "Abandonner les modifications ?",
   "mobile.agent.discard.body": "Vos modifications n’ont pas été enregistrées.",
   "mobile.agent.discard.keepEditing": "Continuer à modifier",
@@ -187,7 +187,7 @@ export const messages = {
   "mobile.agent.record.addEventFilter": "Ajouter un filtre",
   "mobile.agent.record.removeEventFilter": "Supprimer le filtre",
   "mobile.agent.record.eventsUnsupported":
-    "Cet hôte ne prend pas en charge les routines déclenchées par événement. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne prend pas en charge les routines déclenchées par événement. Mettez à jour AIKINGBOT sur l’hôte.",
   "mobile.agent.webhook.url": "Point de terminaison",
   "mobile.agent.webhook.urlNew":
     "Enregistrez la routine pour obtenir son point de terminaison et son secret de signature.",
@@ -338,7 +338,7 @@ export const messages = {
     "Aucune table pour le moment. Un agent en crée une lui-même quand une tâche a besoin d’enregistrements entre les tours, et chaque agent peut l’utiliser.",
   "mobile.agent.tables.note":
     "Tous les agents de cet hôte partagent ces tables. Une table supprimée disparaît pour tous les agents.",
-  "mobile.agent.tables.madeOutside": "Créée hors d’OpenBot · n’importe quel agent peut la supprimer",
+  "mobile.agent.tables.madeOutside": "Créée hors d’AIKINGBOT · n’importe quel agent peut la supprimer",
   "mobile.agent.tables.keptBy": "Conservée par {name}",
   "mobile.agent.tables.keptByDeleted": "Conservée par un agent qui n’existe plus",
   "mobile.agent.tables.notCounted": "Non compté",
@@ -349,7 +349,7 @@ export const messages = {
     "La table est supprimée pour tous les agents. Les enregistrements ne pourront pas être récupérés.",
   "mobile.agent.tables.keep": "Conserver",
   "mobile.agent.tables.deleteFailed": "Impossible de supprimer la table",
-  "mobile.agent.tables.deleteFailedBody": "OpenBot n’a pas pu supprimer cette table.",
+  "mobile.agent.tables.deleteFailedBody": "AIKINGBOT n’a pas pu supprimer cette table.",
   "mobile.agent.tables.unsupported": "Cet hôte ne peut pas afficher ses tables sur un appareil distant.",
   "mobile.agent.publish.title": "Publier",
   "mobile.agent.publish.loading": "Chargement…",
@@ -444,7 +444,7 @@ export const messages = {
   "mobile.agent.list.waiting.state.question": "Attend votre réponse",
   "mobile.agent.list.waiting.state.approval": "Attend votre approbation",
   "mobile.agent.list.waiting.state.takeover": "Vous attend dans le navigateur",
-  "mobile.agent.add.failed": "OpenBot n’a pas pu créer cet agent.",
+  "mobile.agent.add.failed": "AIKINGBOT n’a pas pu créer cet agent.",
   "mobile.agent.add.create": "Créer l’agent",
   "mobile.agent.add.creating": "Création…",
   "mobile.agent.form.name": "Nom",
@@ -455,7 +455,7 @@ export const messages = {
   "mobile.agent.add.nameRequired": "Saisissez un nom pour cet agent.",
   "mobile.agent.edit.loading": "Chargement de l’agent…",
   "mobile.agent.edit.gone": "Cet agent n’est plus disponible sur cet hôte.",
-  "mobile.agent.edit.failed": "OpenBot n’a pas pu mettre à jour cet agent.",
+  "mobile.agent.edit.failed": "AIKINGBOT n’a pas pu mettre à jour cet agent.",
   "mobile.agent.edit.appearance": "Modifier l’apparence",
   "mobile.agent.edit.title": "Titre",
   "mobile.agent.edit.titlePlaceholder": "Décrivez ce que fait votre agent",

@@ -5,7 +5,7 @@ import { Effect } from "effect";
 // `agent-import-v1`: every member imports, not only an owner or an admin. The token is the member's
 // own, and a member never revises a skill of the host.
 
-import type { AgentImportPreview, AgentImportResult, AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentImportPreview, AgentImportResult, AgentSummary } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import type { AgentImportCaller } from "./agent-import-service";
 import { createTeamApiFixture, stopTeamApiFixtures, type TeamApiOptions } from "./team-api-server-test-harness";
@@ -62,7 +62,7 @@ function createAgentImport(): NonNullable<TeamApiOptions["agentImport"]> & {
           model: "gpt-5.6-luna",
           reasoningEffort: "medium",
           threadId: null,
-          workspacePath: "/Users/host/OpenBot/agent-1",
+          workspacePath: "/Users/host/AIKINGBOT/agent-1",
           preview: "",
           updatedAt: null,
           avatarSeed: "research",
@@ -84,14 +84,14 @@ describe("Team API agent import", () => {
     const member = await Effect.runPromise(fixture.store.acceptInvite(invite.token, "member", "member password"));
     const headers = {
       Authorization: `Bearer ${member.sessionToken}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "agent-import-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "agent-import-v1",
     };
 
     // Without the capability the routes answer 400: the connection did not ask for the feature.
     const refused = await fetch(`${base}/v1/agent-import/stage`, {
       method: "POST",
-      headers: { ...headers, "OpenBot-Capabilities": "" },
+      headers: { ...headers, "AIKINGBOT-Capabilities": "" },
       body: new Uint8Array([1]),
     });
     expect(refused.status).toBe(400);

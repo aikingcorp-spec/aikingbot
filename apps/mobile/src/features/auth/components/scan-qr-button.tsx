@@ -7,10 +7,10 @@ import { useText } from "@/shared/lib/text";
 
 export function ScanQrButton({ onPress, width, height }: ScanQrButtonProps) {
   const { t } = useText();
-  const brandColor = String(useCSSVariable("--openbot-logo-production") ?? "#cdadec");
-  const labelColor = String(useCSSVariable("--openbot-logo-eye") ?? "#040007");
+  const brandColor = String(useCSSVariable("--aikingbot-logo-production") ?? "#cdadec");
+  const labelColor = String(useCSSVariable("--aikingbot-logo-eye") ?? "#040007");
 
-  const cornerRadius = Number.parseFloat(String(useCSSVariable("--openbot-radius-lg") ?? "12"));
+  const cornerRadius = Number.parseFloat(String(useCSSVariable("--aikingbot-radius-lg") ?? "12"));
 
   return (
     <Button

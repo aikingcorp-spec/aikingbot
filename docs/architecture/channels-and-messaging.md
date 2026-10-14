@@ -2,7 +2,7 @@
 
 ## iPhone Live Activity updates
 
-The phone and a host build the same Live Activity view with `@openbot/team-client`:
+The phone and a host build the same Live Activity view with `@aikingbot/team-client`:
 `dynamic-island-coordinator.ts` gives the state, and `live-activity-props.ts` turns it into the props
 that the widget shows. While the app runs, `use-live-activity.ts` publishes them itself.
 
@@ -31,7 +31,7 @@ to, so one host cannot sign an action for another.
 A host sends an iOS notification when an agent finishes a turn, stops with an error, or waits for
 input, an approval, or a step in the browser (`browser-takeover-requested`, also for a password or a
 code). For all but the browser step, it decides as the desktop does: `notificationForAgentEvent` in
-`@openbot/team-client` applies the level of the server (`all` or `needs-me`), the switch of the agent,
+`@aikingbot/team-client` applies the level of the server (`all` or `needs-me`), the switch of the agent,
 and the quiet routine runs. The title is the agent name. When the phone shows previews, the text is the
 preview of a desktop notification: the start of the answer of that turn, the question, or the action
 to approve, with secrets redacted. Otherwise it is the fixed desktop text, such as "Finished working.".
@@ -45,7 +45,7 @@ sends no notification, and uses the registration only to make the Live Activity 
 tells each host again after each connection and when a choice changes, and removes the registration
 when nothing is left for that host or the user signs out. A level of
 "Nothing" and a mute with no end remove it too. `PushNotificationService` in `src/main` keeps the
-registrations in `openbot-push-notifications-v1.json` in the user data folder, readable only by the
+registrations in `aikingbot-push-notifications-v1.json` in the user data folder, readable only by the
 user, so a phone that does not connect after the host restarts still gets notifications. It sends
 only while the phone is away or its connection is closed. An event that waits for the member (input,
 an approval, a browser step) always goes. An answer or a failure does not go while the member uses a
@@ -65,7 +65,7 @@ the user removes the activity, so until the app runs again such an event shows n
 The host sends it to `POST /v2/remote/hosts/:hostId/notification` with its machine credential and the
 account session of the phone. The Worker checks the credential and a per-host rate limit, and sends
 nothing for a session that has ended, a revoked membership, or a signed-out device, because the host
-does not learn about these. It makes the APNs alert itself, with "OpenBot" as the only text,
+does not learn about these. It makes the APNs alert itself, with "AIKINGBOT" as the only text,
 `mutable-content`, the sound, and the sealed bytes. It stores and logs nothing. A `410` answer, from
 the Worker or Apple, removes the registration.
 
@@ -79,7 +79,7 @@ name only. A tap opens the chat of the agent.
 
 > **Deprecated.** The application archives every channel at start (`ChannelService.retire`), the host
 > does not advertise `channel-chats-v1`, and agents get no channel tools. The data stays in
-> `openbot.db`. The next release removes the channel code and data. Agents in one sidebar section work
+> `aikingbot.db`. The next release removes the channel code and data. Agents in one sidebar section work
 > together through `section_teammates` in their instructions.
 
 Channels are separate from sidebar sections. A channel has one host, a purpose, participating agents,
@@ -151,19 +151,19 @@ aside as `messages.unreadable-<time>.json` and does not send that message.
 The agents of a computer can answer in an external chat platform: Slack, Discord (see **Discord**
 below) and Telegram. [messaging.md](../messaging.md) has the setup, the limits and how to add a
 platform. Every workspace
-installs the one OpenBot Slack app (`apps/slack-app`), and the workspace is linked to the host that
-connected it. People mention @OpenBot or send it a direct message. The workspace's Slack Orchestrator,
+installs the one AIKINGBOT Slack app (`apps/slack-app`), and the workspace is linked to the host that
+connected it. People mention @AIKINGBOT or send it a direct message. The workspace's Slack Orchestrator,
 an agent that the connect dialog adds, receives each new conversation, asks its teammates and posts
-the answer. Every answer comes from OpenBot.
+the answer. Every answer comes from AIKINGBOT.
 
 - **Install.** The desktop asks `POST /v2/slack/authorize` for Slack's install URL, with a one-use host
   key. The Worker exchanges the code at `/v2/slack/callback`, because the app's client secret lives
   there. It links the workspace to the host in D1 (`slack_workspace_routes`: team, host, account; no
-  token) and seals the bot token to the host key (`@openbot/contracts/slack-workspace-grant`). The
-  page `/slack/connect` opens `openbot://slack-workspace`. Only the account that linked a workspace
+  token) and seals the bot token to the host key (`@aikingbot/contracts/slack-workspace-grant`). The
+  page `/slack/connect` opens `aikingbot://slack-workspace`. Only the account that linked a workspace
   can move it to another of its hosts; another account gets `slack_workspace_taken`.
 - **Events.** Slack posts every workspace's events and button presses to one URL,
-  `https://signal.openbot.run/v1/slack/events`. Signal checks Slack's signature with the app's
+  `https://signal.aikingbot.aikingx.com/v1/slack/events`. Signal checks Slack's signature with the app's
   signing secret, answers `url_verification`, and reads only the app ID and the workspace ID. Each
   signing secret is bound to its app, and a route is one app in one workspace, so the production and
   development apps can share a workspace. It passes the exact body to the `ingress` socket (`SignalIngress` in main, a plain `ws` client: no WebRTC, so no hidden
@@ -179,9 +179,9 @@ the answer. Every answer comes from OpenBot.
   like `/v2/remote/resume/validate`) which links of each ticket D1 still has. The host trusts a delivery because Signal checked the signature; no host has the
   signing secret.
 
-Telegram uses the same socket with one difference: one OpenBot bot serves every user, so its token
+Telegram uses the same socket with one difference: one AIKINGBOT bot serves every user, so its token
 must not reach any host. Only Signal has it (`TELEGRAM_BOT_TOKENS`), and the contract is
-`@openbot/contracts/signal-protocol/telegram-route`.
+`@aikingbot/contracts/signal-protocol/telegram-route`.
 
 - **Link.** A connection is one chat. The desktop asks `POST /v2/remote/hosts/<id>/telegram-link`
   (machine token) for a one-use code, and opens `t.me/<bot>?startgroup=<code>` or `?start=<code>`.
@@ -192,11 +192,11 @@ must not reach any host. Only Signal has it (`TELEGRAM_BOT_TOKENS`), and the con
   connection only on that flag, because anyone in a routed chat can send a `/start` with any code.
   The open code holds the host's socket until the link or its expiry, as no connection may hold it. Another
   account's host gets `telegram_chat_taken`.
-- **Updates.** Telegram posts to `https://signal.openbot.run/v1/telegram/updates/<bot ID>` with a
+- **Updates.** Telegram posts to `https://signal.aikingbot.aikingx.com/v1/telegram/updates/<bot ID>` with a
   secret header that Signal derives for each bot. Signal reads only the chat ID, a link code and a
   callback query ID, and sends `telegram-delivery` to the socket that holds the chat. It always
   answers 200: Telegram would hold back the bot's other chats behind one offline host. The Telegram
-  route ticket (`telegramRoute` in the hello, audience `openbot-telegram-route`, the Slack route key)
+  route ticket (`telegramRoute` in the hello, audience `aikingbot-telegram-route`, the Slack route key)
   and `telegram-route-revoked` work as the Slack ones do.
 - **Calls.** The host sends `telegram-call` only to a Signal whose `ready` names the `telegram`
   capability, because Signal closes a socket on a frame it does not know. Signal accepts only the
@@ -249,7 +249,7 @@ transport for its events. `messaging-types.ts` is the seam; the core never reads
   `MessagingService.#receive` names each user mention (`InboundMessage.mentionedUserIds`) with the
   adapter's name cache; the adapters do the same for context messages.
 - **Tools.** `messaging_remember`, `messaging_forget_memory` and `messaging_history` are deferred
-  `openbot` tools. `OpenBotToolRouter` finds the link from the calling turn's execution thread and
+  `aikingbot` tools. `AIKINGBOTToolRouter` finds the link from the calling turn's execution thread and
   refuses a call from any other thread; no argument names a connection or a channel. The history
   tool calls the adapter's `recent` through `MessagingThreads.setHistorySource`. A fact is not saved
   from a direct message. The two outbound tools, `messaging_list_places` and `messaging_post`, are
@@ -265,7 +265,7 @@ transport for its events. `messaging-types.ts` is the seam; the core never reads
 - **Approvals and stop.** An approval of a messaging thread is also posted with buttons. Only the
   Slack user whose message started the turn can answer or stop it; the host can always answer. The
   button value is a random token that exists only in memory.
-- **Channels.** When a connection starts, OpenBot joins every public channel it is not in
+- **Channels.** When a connection starts, AIKINGBOT joins every public channel it is not in
   (`conversations.list`, `conversations.join`, scope `channels:join`), so people can mention it with
   no invitation. It joins each new public channel on `channel_created`. A private channel needs
   `/invite`.
@@ -276,29 +276,29 @@ transport for its events. `messaging-types.ts` is the seam; the core never reads
   each workspace and its orchestrator, and a two-step dialog connects the workspace and adds the
   orchestrator on the model the user picks (`messaging:*`). A remote server shows no Slack page,
   because the install returns to the host's own browser. A live connection does not count as use:
-  a hosted server sleeps, and Signal starts it for the next message that addresses OpenBot and keeps
+  a hosted server sleeps, and Signal starts it for the next message that addresses AIKINGBOT and keeps
   that message, sealed to the host, until the host connects
   ([Connector events](../hosted-servers.md#connector-events)). **Connectors → Discord** is the same page for Discord
   (`SlackIntegrationPanel` with `platform="discord"`). **Connectors → Telegram** has its own page
   (`TelegramIntegrationPanel`), with one row per chat and one orchestrator for all chats.
 
-**Discord.** Every guild installs the one OpenBot Discord app (`apps/discord-app`), and a guild is a
+**Discord.** Every guild installs the one AIKINGBOT Discord app (`apps/discord-app`), and a guild is a
 connection with its own Discord Orchestrator (`discord-orchestrator.ts`). Discord pushes a bot's
 messages only over its Gateway WebSocket, and the bot token cannot go to each host, so Signal holds
 the token and does the platform work for the hosts:
 
 - **Install.** As for Slack: `POST /v2/discord/authorize`, `/v2/discord/callback` (scope `bot`, the
   Worker exchanges the code, revokes the user token it gets, and links the guild in D1
-  `discord_guild_routes`), the page `/discord/connect` and `openbot://discord-guild`. The sealed grant
-  (`@openbot/contracts/discord-guild-grant`, on `host-grant.ts`) names the guild and holds no token.
+  `discord_guild_routes`), the page `/discord/connect` and `aikingbot://discord-guild`. The sealed grant
+  (`@aikingbot/contracts/discord-guild-grant`, on `host-grant.ts`) names the guild and holds no token.
   Another account gets `discord_guild_taken`.
 - **Events.** Signal keeps one Gateway connection (`@discordjs/ws`) with the guilds, guild messages
   and direct messages intents, and no privileged intent. It passes on only a guild message that
-  mentions the bot, and a press of an OpenBot button, which it acknowledges to Discord at once. It
-  normalizes each into `DiscordDelivery` (`@openbot/contracts/signal-protocol/discord-api`), takes the
+  mentions the bot, and a press of an AIKINGBOT button, which it acknowledges to Discord at once. It
+  normalizes each into `DiscordDelivery` (`@aikingbot/contracts/signal-protocol/discord-api`), takes the
   bot's own mention out, and sends a `discord-delivery` frame to the `ingress` socket that holds a
   Discord route ticket for the guild. The ticket mirrors the Slack one (audience
-  `openbot-discord-route`, `/v2/remote/hosts/:id/discord-route`, `discord-route-revoked`,
+  `aikingbot-discord-route`, `/v2/remote/hosts/:id/discord-route`, `discord-route-revoked`,
   `/v2/remote/discord-route/validate`). The socket asks for a route only for the platforms whose
   connections hold it.
 - **Removal.** When the bot leaves a guild, Signal drops its route and asks the account service to
@@ -316,8 +316,8 @@ the token and does the platform work for the hosts:
   bearer. Signal accepts an operation only for a guild routed to that socket, and only for a channel
   of that guild, and makes the call with `@discordjs/rest`. Every post has no allowed mention, so it
   pings nobody. Attachments are signed CDN addresses, which the host downloads directly.
-- **Conversations.** A conversation is a reply chain, keyed by its first message. Every OpenBot post
-  replies to that message, so a reply to an OpenBot post names the conversation through the replied
+- **Conversations.** A conversation is a reply chain, keyed by its first message. Every AIKINGBOT post
+  replies to that message, so a reply to an AIKINGBOT post names the conversation through the replied
   post's own reference. A direct message has no guild, so Signal answers it once with a fixed line.
 
 ## Mobile chat queue

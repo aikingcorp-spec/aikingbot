@@ -6,7 +6,7 @@ import { useText } from "@/shared/lib/text";
 
 export default function ServerUsageLayout() {
   const { t } = useText();
-  const background = String(useCSSVariable("--openbot-bg-sheet"));
+  const background = String(useCSSVariable("--aikingbot-bg-sheet"));
   return (
     <Stack
       screenOptions={{

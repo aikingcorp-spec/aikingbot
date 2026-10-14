@@ -1,9 +1,9 @@
-import { OpenCodeKeyDialog, type ProviderKeyApi } from "@openbot/ui/features/settings/OpenCodeKeyDialog";
+import { OpenCodeKeyDialog, type ProviderKeyApi } from "@aikingbot/ui/features/settings/OpenCodeKeyDialog";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 
 /*
- * The one place a user's OpenCode Go key enters OpenBot.
+ * The one place a user's OpenCode Go key enters AIKINGBOT.
  *
  * Two things are asserted about the secret itself: exactly what reaches `setProviderApiKey`, and
  * that a key already saved never comes back into the input. Main keeps no getter for a stored key,

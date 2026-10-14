@@ -1,9 +1,9 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type DraftAttachment, LOCAL_SERVER_ID, type QueueDelivery } from "@openbot/contracts/ipc";
-import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { isQueueEditRejected, TEAM_QUEUE_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { expandComposerMentions } from "@openbot/ui/features/conversation/ComposerEditor";
-import { currentText } from "@openbot/ui/text";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { type DraftAttachment, LOCAL_SERVER_ID, type QueueDelivery } from "@aikingbot/contracts/ipc";
+import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { isQueueEditRejected, TEAM_QUEUE_EDIT_CAPABILITY } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { expandComposerMentions } from "@aikingbot/ui/features/conversation/ComposerEditor";
+import { currentText } from "@aikingbot/ui/text";
 import { playActionSound } from "../../../action-sounds";
 import { copyComposerDraft, EMPTY_DRAFT, QUEUE_EDIT_STORAGE_KEY, type StoredQueueEdit } from "../composer-draft";
 import { composerDraftKey } from "../conversation-keys";

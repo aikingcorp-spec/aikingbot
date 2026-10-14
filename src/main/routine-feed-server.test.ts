@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { request } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { RoutineFeedAgentNotFound, RoutineFeedServer } from "./routine-feed-server";
@@ -24,7 +24,7 @@ const cipher = {
 };
 
 async function feedPath(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-routine-feed-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-routine-feed-"));
   roots.push(root);
   return join(root, "feed.json");
 }

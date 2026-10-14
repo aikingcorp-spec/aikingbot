@@ -1,4 +1,4 @@
-import type { BrowserTakeoverRequest } from "@openbot/contracts/ipc";
+import type { BrowserTakeoverRequest } from "@aikingbot/contracts/ipc";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { agentBrowserTab, agentBrowserTabs, type MobileBrowserTabs } from "@/features/browser/model/browser-tabs";
 import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";

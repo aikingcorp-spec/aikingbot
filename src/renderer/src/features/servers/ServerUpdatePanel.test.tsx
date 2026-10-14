@@ -1,4 +1,4 @@
-import type { HostReleaseStatus, HostUpdateStatus } from "@openbot/contracts/ipc";
+import type { HostReleaseStatus, HostUpdateStatus } from "@aikingbot/contracts/ipc";
 import { cleanup, fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { Deferred, Effect } from "effect";
 import { createSignal } from "solid-js";
@@ -111,10 +111,10 @@ describe("remote release checks", () => {
     render(() => <ServerUpdatePanel serverId={serverId()} hostName="Host" actionsAvailable calls={calls} />);
     await waitFor(() => expect(read).toHaveBeenCalledWith("previous"));
     setServerId("current");
-    expect(await screen.findByText("OpenBot 0.27.0")).toBeInTheDocument();
+    expect(await screen.findByText("AIKINGBOT 0.27.0")).toBeInTheDocument();
     Effect.runSync(Deferred.succeed(previous, unsupported));
     await previousResponse;
-    await waitFor(() => expect(screen.queryByText("OpenBot 0.25.2")).not.toBeInTheDocument());
-    expect(screen.getByText("OpenBot 0.27.0")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("AIKINGBOT 0.25.2")).not.toBeInTheDocument());
+    expect(screen.getByText("AIKINGBOT 0.27.0")).toBeInTheDocument();
   });
 });

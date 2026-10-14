@@ -1,12 +1,12 @@
-import { AppLogo, type AppLogoVariant } from "@openbot/brand";
-import { useText } from "@openbot/ui/text";
+import { AppLogo, type AppLogoVariant } from "@aikingbot/brand";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { SPLASH_EYE_LENGTH_STYLE } from "../src/features/startup/StartupSplash";
 import { SplashPlayground } from "./splash-concept";
 import "./SplashScreenConcept.css";
 
-const PRODUCT_NAME = "OpenBot";
+const PRODUCT_NAME = "AIKINGBOT";
 // A short scribble in the same hand as the logo eyes. It draws and erases while the app loads.
 const LOADER_POINTS = "3 10 10 4 13 10 21 4 24 10 32 4 35 10 43 4";
 

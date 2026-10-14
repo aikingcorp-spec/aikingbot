@@ -1,12 +1,12 @@
-import type { BrowserPreview } from "@openbot/contracts/ipc";
+import type { BrowserPreview } from "@aikingbot/contracts/ipc";
 import SharedBrowserPreviewSidebar, {
   BrowserPreviewCard as SharedBrowserPreviewCard,
-} from "@openbot/ui/features/conversation/BrowserPreviewSidebar";
+} from "@aikingbot/ui/features/conversation/BrowserPreviewSidebar";
 import type { ComponentProps } from "@solidjs/web";
 import { readPanelWidth, savePanelWidth } from "../../components/panel-width-storage";
 import { conversationPort } from "./conversation-port";
 
-const STORAGE_KEY = "openbot:browser-preview-panel-width";
+const STORAGE_KEY = "aikingbot:browser-preview-panel-width";
 
 export default function BrowserPreviewSidebar(
   props: Omit<

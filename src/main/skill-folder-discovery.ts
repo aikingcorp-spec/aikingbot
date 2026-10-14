@@ -5,10 +5,10 @@ import {
   AGENT_PROVIDER_DESCRIPTORS,
   agentProviderCliName,
   agentProviderDescriptor,
-} from "@openbot/contracts/agent-providers";
-import { type AgentSummary, type InstalledSkill, SKILL_DESCRIPTION_MAX_LENGTH } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/agent-providers";
+import { type AgentSummary, type InstalledSkill, SKILL_DESCRIPTION_MAX_LENGTH } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { parse as parseYaml } from "yaml";
 import { type ArchiveOperationError, archiveCall, archiveResult } from "./archive-effects";
@@ -26,7 +26,7 @@ const MAX_SKILLS_PER_FOLDER = 200;
 const MAX_SKILL_FILE_BYTES = 256 * 1024;
 
 /**
- * Lists the skills a user or an agent put in a workspace skill folder without OpenBot. OpenBot reads
+ * Lists the skills a user or an agent put in a workspace skill folder without AIKINGBOT. AIKINGBOT reads
  * these folders and never writes to them. `exclude` holds the folder names in the lock file, which
  * the installed list already shows.
  */
@@ -73,8 +73,8 @@ const skillFoldersEffect = Effect.fn("SkillFolder.skillFolders")(function* (
     }
     const names = entries
       .map((entry) => entry.name)
-      // `.openbot-stage-` and `.openbot-backup-` folders are an install in progress.
-      .filter((name) => !name.startsWith(".") && !name.includes(".openbot-") && !exclude.has(name))
+      // `.aikingbot-stage-` and `.aikingbot-backup-` folders are an install in progress.
+      .filter((name) => !name.startsWith(".") && !name.includes(".aikingbot-") && !exclude.has(name))
       .sort()
       .slice(0, MAX_SKILLS_PER_FOLDER);
     for (const name of names) {

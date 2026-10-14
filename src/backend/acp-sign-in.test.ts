@@ -15,7 +15,7 @@ const browserError =
   "Gemini could not open the sign-in page. Install a browser and xdg-utils, then connect from a desktop session on this host. A server with no desktop cannot complete this sign-in.";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-acp-sign-in-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-acp-sign-in-"));
   scope = Scope.makeUnsafe();
 });
 afterEach(async () => {

@@ -1,4 +1,4 @@
-import { ProviderLogo } from "@openbot/brand";
+import { ProviderLogo } from "@aikingbot/brand";
 import type {
   AgentModelId,
   AgentModelOption,
@@ -9,7 +9,7 @@ import type {
   CustomAgentSummary,
   CustomProviderSummary,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   agentProviderCliName,
   agentProviderName,
@@ -17,8 +17,8 @@ import {
   defaultProviderModel,
   isCustomProviderModelId,
   PICKER_PROVIDERS,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@aikingbot/i18n";
 import {
   Button,
   Input,
@@ -36,9 +36,9 @@ import {
   Switch,
   Tabs,
   Tooltip,
-} from "@openbot/ui";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
-import { cx } from "@openbot/ui/utils";
+} from "@aikingbot/ui";
+import { ContentExitMotion } from "@aikingbot/ui/menu-motion";
+import { cx } from "@aikingbot/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { currentText, type TextValue, useText } from "../text";
@@ -491,7 +491,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
                     if (effort) props.onReasoningEffortChange?.(effort);
                   }
                 }
-                // The provider the tab's status is for: a custom agent has no runtime OpenBot downloads.
+                // The provider the tab's status is for: a custom agent has no runtime AIKINGBOT downloads.
                 const runtime = () => {
                   const value = props.runtimeStatuses?.[status().id];
                   if (

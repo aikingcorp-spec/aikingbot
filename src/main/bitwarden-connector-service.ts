@@ -2,9 +2,9 @@ import { execFile } from "node:child_process";
 import { constants } from "node:fs";
 import { access, realpath } from "node:fs/promises";
 import { delimiter, isAbsolute, join } from "node:path";
-import type { BitwardenConnectorStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { BitwardenConnectorStatus } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { registerSecretValue } from "@aikingbot/logging";
 import { Effect, Exit, Schema, Semaphore } from "effect";
 import { type PasswordVault, PasswordVaultError, type VaultLogin } from "../backend/password-vault";
 
@@ -166,7 +166,7 @@ export class BitwardenConnectorService implements PasswordVault {
         try: () => Schema.decodeUnknownSync(foldersSchema)(JSON.parse(output)),
         catch: failure,
       });
-      const shared = folders.filter((folder) => folder.name === "Shared with OpenBot");
+      const shared = folders.filter((folder) => folder.name === "Shared with AIKINGBOT");
       if (shared.length !== 1 || !shared[0]?.id) return yield* failure();
       session.folderId = shared[0].id;
       this.#touch();

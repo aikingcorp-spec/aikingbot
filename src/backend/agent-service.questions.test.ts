@@ -1,4 +1,4 @@
-import type { AgentEvent, BrowserTab } from "@openbot/contracts/ipc";
+import type { AgentEvent, BrowserTab } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentProvider } from "./agent-client";
 import type { AgentService } from "./agent-service";
@@ -28,7 +28,7 @@ function takeoverRequest(id: string, threadId: string, turnId: string, tabId: st
       threadId,
       turnId,
       callId: id,
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool: "request_takeover",
       arguments: { tabId, reason: "Sign in." },
     },
@@ -79,7 +79,7 @@ describe.sequential("AgentService: questions", () => {
         threadId,
         turnId,
         callId: "question-only-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: {
           questions: [{ id: "scope", header: "Scope", question: "Which scope should we use?" }],
@@ -102,7 +102,7 @@ describe.sequential("AgentService: questions", () => {
   });
 
   it("keeps prompts, approvals and takeovers from a healthy provider active when another provider exits", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const clients = new Map<AgentProvider, FakeAgentClient>();
     const tabs: BrowserTab[] = [];
     const { store, mailbox } = stores(root);
@@ -156,7 +156,7 @@ describe.sequential("AgentService: questions", () => {
         threadId: codexThreadId,
         turnId: codexTurn.turnId,
         callId: "codex-provider-prompt",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: { questions: [{ id: "codex", header: "Codex", question: "Codex question?" }] },
       },
@@ -168,7 +168,7 @@ describe.sequential("AgentService: questions", () => {
         threadId: claudeThreadId,
         turnId: claudeTurn.turnId,
         callId: "claude-provider-prompt",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: { questions: [{ id: "claude", header: "Claude", question: "Claude question?" }] },
       },
@@ -263,7 +263,7 @@ describe.sequential("AgentService: questions", () => {
         threadId,
         turnId,
         callId: "signed-out-prompt",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "ask_user",
         arguments: { questions: [{ id: "scope", header: "Scope", question: "Which scope?" }] },
       },

@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 // @vitest-environment node
 
-import { IPC_ENDPOINTS } from "@openbot/contracts/ipc";
-import { ROUTINE_FLOWS_CAPABILITY, ROUTINE_FLOWS_ROUTES } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { IPC_ENDPOINTS } from "@aikingbot/contracts/ipc";
+import { ROUTINE_FLOWS_CAPABILITY, ROUTINE_FLOWS_ROUTES } from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { describe, expect, it, vi } from "vitest";
 import type { RoutineFlowsHandle } from "../../backend/routine-flows/routine-flows";
 import type { ResponseDecoder } from "../remote-host-decoding";
@@ -18,7 +18,7 @@ vi.mock("electron", () => ({
   ipcMain: { handle: (channel: string, invoke: Invoke) => bound.set(channel, invoke) },
 }));
 
-const TRUSTED_EVENT = { senderFrame: { url: "openbot-app://app/index.html" } };
+const TRUSTED_EVENT = { senderFrame: { url: "aikingbot-app://app/index.html" } };
 const LINK = {
   id: "link-1",
   routineId: "routine-1",

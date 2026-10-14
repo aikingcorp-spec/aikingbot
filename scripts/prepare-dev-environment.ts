@@ -21,11 +21,11 @@ export const supportedBunVersion = "1.4.2";
 // skips the command while the fingerprint is the same, which saves several seconds on each start.
 // The install stamp is in `node_modules`, so deleting `node_modules` installs again. The root
 // `postinstall` writes it too, so a plain `bun install` on another branch does not leave it stale.
-const INSTALL_STAMP = join("node_modules", ".openbot-install-stamp");
+const INSTALL_STAMP = join("node_modules", ".aikingbot-install-stamp");
 // Wrangler's local D1 state. Without it the local database is empty, whatever the stamp says.
 const LOCAL_D1_STATE = join("apps", "auth-api", ".wrangler", "state", "v3", "d1");
 // Inside the D1 state, so a state directory made again also loses the stamp.
-const MIGRATION_STAMP = join(LOCAL_D1_STATE, ".openbot-migrate-local-stamp");
+const MIGRATION_STAMP = join(LOCAL_D1_STATE, ".aikingbot-migrate-local-stamp");
 const MIGRATIONS_DIRECTORY = join("apps", "auth-api", "migrations");
 
 export interface DevelopmentPreparationInput {
@@ -95,7 +95,7 @@ function readStamp(path: string): string | null {
 
 /**
  * The inputs of `bun install --frozen-lockfile`: the lockfile, every workspace manifest, the Bun
- * configuration and patches, the Bun version, and `OPENBOT_SKIP_SKIA`, which changes `postinstall`.
+ * configuration and patches, the Bun version, and `AIKINGBOT_SKIP_SKIA`, which changes `postinstall`.
  */
 export function installFingerprint(projectRoot: string, environment: NodeJS.ProcessEnv = process.env): string {
   const files = ["bun.lock", "bunfig.toml", "package.json", ...workspaceManifests(projectRoot)];
@@ -107,7 +107,7 @@ export function installFingerprint(projectRoot: string, environment: NodeJS.Proc
   }
   return fingerprintFiles(projectRoot, files, [
     `bun ${process.versions.bun ?? "unknown"}`,
-    `OPENBOT_SKIP_SKIA=${environment.OPENBOT_SKIP_SKIA ?? ""}`,
+    `AIKINGBOT_SKIP_SKIA=${environment.AIKINGBOT_SKIP_SKIA ?? ""}`,
   ]);
 }
 
@@ -169,7 +169,7 @@ export function prepareDevelopmentWorktree(input: DevelopmentPreparationInput = 
 
   run(executable, ["run", "dev:seed", "--if-missing"], {
     ...options,
-    env: { ...process.env, OPENBOT_DEV_INSTANCE_ID: instanceId },
+    env: { ...process.env, AIKINGBOT_DEV_INSTANCE_ID: instanceId },
   });
   run(executable, ["run", "marketplace:seed:local"], options);
   return stateOutcome;
@@ -221,7 +221,7 @@ export function assertSupportedBunVersion(version: string): void {
   if (version === supportedBunVersion) return;
 
   throw new Error(
-    `Unsupported Bun ${version}. OpenBot development requires stable Bun ${supportedBunVersion}. Install the exact version with the command in https://github.com/nightly-labs/openbot#development, then retry.`,
+    `Unsupported Bun ${version}. AIKINGBOT development requires stable Bun ${supportedBunVersion}. Install the exact version with the command in https://github.com/aikingcorp-spec/aikingx_bot#development, then retry.`,
   );
 }
 

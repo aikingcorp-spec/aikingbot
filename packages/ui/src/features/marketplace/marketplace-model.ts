@@ -7,7 +7,7 @@ import type {
   MarketplaceSkillSummary,
   McpServerConfig,
   SkillCategory,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import type { BitwardenConnectorPanelProps } from "../settings/BitwardenConnectorPanel";
 import type { GitHubConnectorPanelProps } from "../settings/GitHubConnectorPanel";
 import type { MarketplacePluginDetail, MarketplacePluginPrompt } from "../settings/marketplace-plugins";
@@ -92,7 +92,7 @@ export interface MarketplaceModel {
   openUrl: (url: string) => void;
   /** The GitHub connector page, when this computer has one. */
   github?: (() => GitHubConnectorPanelProps) | undefined;
-  /** The 1Password connector page, on the computer that runs OpenBot. */
+  /** The 1Password connector page, on the computer that runs AIKINGBOT. */
   onePassword?: (() => OnePasswordConnectorPanelProps) | undefined;
   bitwarden?: (() => BitwardenConnectorPanelProps) | undefined;
 

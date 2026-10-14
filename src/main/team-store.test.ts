@@ -3,7 +3,7 @@
 import { mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { TeamStore } from "./team-store";
@@ -253,7 +253,7 @@ describe("TeamStore", () => {
     expect(() => store.previewInvite(expired.token)).toThrow("invalid or expired");
   });
 
-  it("uses the verified OpenBot email as the team identity", async () => {
+  it("uses the verified AIKINGBOT email as the team identity", async () => {
     const { store } = await createStore();
     await runCauseEffect(
       store.configureWithAccount("Studio Mac", {
@@ -468,18 +468,20 @@ describe("TeamStore", () => {
           id: "owner-account",
           email: "owner@example.com",
           name: "Owner Name",
-          avatarUrl: "https://api.openbot.run/v1/avatars/owner-account?v=image-1",
+          avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/owner-account?v=image-1",
         }),
       ),
     ).resolves.toBe(true);
     expect(store.listMembers()[0]).toMatchObject({
       name: "Owner Name",
-      avatarUrl: "https://api.openbot.run/v1/avatars/owner-account?v=image-1",
+      avatarUrl: "https://api.aikingbot.aikingx.com/v1/avatars/owner-account?v=image-1",
     });
 
     const restored = new TeamStore(path);
     await runCauseEffect(restored.initialize());
-    expect(restored.listMembers()[0]?.avatarUrl).toBe("https://api.openbot.run/v1/avatars/owner-account?v=image-1");
+    expect(restored.listMembers()[0]?.avatarUrl).toBe(
+      "https://api.aikingbot.aikingx.com/v1/avatars/owner-account?v=image-1",
+    );
   });
 
   it("reads an old team file and backfills the private owner account ID on the next account sync", async () => {
@@ -508,7 +510,7 @@ describe("TeamStore", () => {
   });
 
   it("adopts the host of a build without accounts without writing over its file", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const legacyPath = join(root, "team.json");
     const owner = { id: "owner-account", email: "owner@example.com", name: "Owner", avatarUrl: null };
@@ -544,7 +546,7 @@ describe("TeamStore", () => {
   });
 
   it("copies the logo of an imported host on a later start when the first copy could not", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const legacyPath = join(root, "team.json");
     const path = join(root, "team-v2.json");
@@ -575,7 +577,7 @@ describe("TeamStore", () => {
   });
 
   it("reconciles what each build did to the host after they went their separate ways", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const legacyPath = join(root, "team.json");
     const path = join(root, "team-v2.json");
@@ -609,7 +611,7 @@ describe("TeamStore", () => {
   });
 
   it("keeps a member disabled here when the other build only changed their name", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const legacyPath = join(root, "team.json");
     const path = join(root, "team-v2.json");
@@ -654,7 +656,7 @@ describe("TeamStore", () => {
   });
 
   it("keeps the owner's account when the other build binds the host to a recycled address", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const legacyPath = join(root, "team.json");
     const path = join(root, "team-v2.json");
@@ -762,7 +764,7 @@ describe("TeamStore", () => {
     await runCauseEffect(store.activateAccount(owner));
     expect(store.getIdentity()?.serverId).toBe(identity.serverId);
     // Nor may the address alone pass the ownership check on the host it names.
-    expect(() => store.assertOwnerAccount(stranger)).toThrow("Sign in with the OpenBot email");
+    expect(() => store.assertOwnerAccount(stranger)).toThrow("Sign in with the AIKINGBOT email");
   });
 
   it("keeps the owner of a host after the account changes its address", async () => {
@@ -835,7 +837,7 @@ describe("TeamStore", () => {
   });
 
   it("keeps a team file it cannot read instead of writing over it", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
     roots.push(root);
     const path = join(root, "team.json");
     // A file a newer build wrote. Nothing here is backed up, so it has to survive.
@@ -1031,7 +1033,7 @@ describe("TeamStore", () => {
     expect(await readStoredHosts(path)).toHaveLength(0);
   });
 
-  it("allows only the OpenBot email that created the host to own it", async () => {
+  it("allows only the AIKINGBOT email that created the host to own it", async () => {
     const { store } = await createStore();
     await runCauseEffect(
       store.configureWithAccount("Studio Mac", {
@@ -1155,7 +1157,7 @@ async function readStoredHost(path: string, index = 0): Promise<StoredHostFields
 }
 
 async function createStore() {
-  const root = await mkdtemp(join(tmpdir(), "openbot-team-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-team-"));
   roots.push(root);
   const path = join(root, "team.json");
   const store = new TeamStore(path);

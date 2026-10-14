@@ -1,20 +1,20 @@
 export const EXTERNAL_LINK_REL = "noopener noreferrer";
 
 /** The installer each platform's download button starts: Apple silicon on macOS, x64 elsewhere. */
-export const OPENBOT_DOWNLOAD_LINKS = {
+export const AIKINGBOT_DOWNLOAD_LINKS = {
   macos: "/download/macos/latest",
   windows: "/download/windows/latest",
   linux: "/download/linux/latest",
 } as const;
 
 /** The other installer of a platform that ships two architectures. Windows ships x64 only. */
-export const OPENBOT_ALTERNATE_DOWNLOAD_LINKS = {
+export const AIKINGBOT_ALTERNATE_DOWNLOAD_LINKS = {
   macos: "/download/macos/latest?arch=x64",
   linux: "/download/linux/latest?arch=arm64",
 } as const;
 
 /** The pages that describe each installer: requirements, install steps and known limits. */
-export const OPENBOT_DOWNLOAD_PAGE_LINKS = {
+export const AIKINGBOT_DOWNLOAD_PAGE_LINKS = {
   hub: "/download",
   macos: "/download/macos",
   windows: "/download/windows",
@@ -23,8 +23,8 @@ export const OPENBOT_DOWNLOAD_PAGE_LINKS = {
   android: "/download/android",
 } as const;
 
-export const OPENBOT_LINKS = {
-  contact: "https://x.com/OpenBot_",
+export const AIKINGBOT_LINKS = {
+  contact: "https://x.com/AIKINGBOT_",
   download: "#download",
   /** The same anchor from a page that is not the landing page. */
   downloadFromOtherPage: "/#download",
@@ -32,15 +32,15 @@ export const OPENBOT_LINKS = {
   guides: "/guides",
   plugins: "/plugins",
   changelog: "/changelog",
-  releases: "https://github.com/nightly-labs/openbot/releases",
-  repository: "https://github.com/nightly-labs/openbot",
-  license: "https://github.com/nightly-labs/openbot/blob/main/LICENSE",
-  privacy: "https://github.com/nightly-labs/openbot/blob/main/PRIVACY.md",
-  documentation: "https://github.com/nightly-labs/openbot#readme",
-  troubleshooting: "https://github.com/nightly-labs/openbot/blob/main/docs/TROUBLESHOOTING.md",
-  selfHostedServer: "https://github.com/nightly-labs/openbot/blob/main/docs/self-hosted-server.md",
-  architecture: "https://github.com/nightly-labs/openbot#architecture",
-  contributing: "https://github.com/nightly-labs/openbot/blob/main/CONTRIBUTING.md",
+  releases: "https://github.com/aikingcorp-spec/aikingx_bot/releases",
+  repository: "https://github.com/aikingcorp-spec/aikingx_bot",
+  license: "https://github.com/aikingcorp-spec/aikingx_bot/blob/main/LICENSE",
+  privacy: "https://github.com/aikingcorp-spec/aikingx_bot/blob/main/PRIVACY.md",
+  documentation: "https://github.com/aikingcorp-spec/aikingx_bot#readme",
+  troubleshooting: "https://github.com/aikingcorp-spec/aikingx_bot/blob/main/docs/TROUBLESHOOTING.md",
+  selfHostedServer: "https://github.com/aikingcorp-spec/aikingx_bot/blob/main/docs/self-hosted-server.md",
+  architecture: "https://github.com/aikingcorp-spec/aikingx_bot#architecture",
+  contributing: "https://github.com/aikingcorp-spec/aikingx_bot/blob/main/CONTRIBUTING.md",
   codex: "https://learn.chatgpt.com/docs/app-server",
   claude: "https://code.claude.com/docs/en/overview",
   anthropicAgents: "https://www.anthropic.com/engineering/building-effective-agents",
@@ -81,21 +81,21 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: "Guides", external: false, to: "/guides" },
       { label: "Plugins", external: false, to: "/plugins" },
       { label: "Changelog", external: false, to: "/changelog" },
-      { label: "Source code", external: true, href: OPENBOT_LINKS.repository },
-      { label: "License", external: true, href: OPENBOT_LINKS.license },
-      { label: "Privacy", external: true, href: OPENBOT_LINKS.privacy },
+      { label: "Source code", external: true, href: AIKINGBOT_LINKS.repository },
+      { label: "License", external: true, href: AIKINGBOT_LINKS.license },
+      { label: "Privacy", external: true, href: AIKINGBOT_LINKS.privacy },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Documentation", external: true, href: OPENBOT_LINKS.documentation },
-      { label: "Troubleshooting", external: true, href: OPENBOT_LINKS.troubleshooting },
-      { label: "Self-hosted server", external: true, href: OPENBOT_LINKS.selfHostedServer },
-      { label: "Architecture", external: true, href: OPENBOT_LINKS.architecture },
-      { label: "Contributing", external: true, href: OPENBOT_LINKS.contributing },
-      { label: "Codex", external: true, href: OPENBOT_LINKS.codex },
-      { label: "Claude Code", external: true, href: OPENBOT_LINKS.claude },
+      { label: "Documentation", external: true, href: AIKINGBOT_LINKS.documentation },
+      { label: "Troubleshooting", external: true, href: AIKINGBOT_LINKS.troubleshooting },
+      { label: "Self-hosted server", external: true, href: AIKINGBOT_LINKS.selfHostedServer },
+      { label: "Architecture", external: true, href: AIKINGBOT_LINKS.architecture },
+      { label: "Contributing", external: true, href: AIKINGBOT_LINKS.contributing },
+      { label: "Codex", external: true, href: AIKINGBOT_LINKS.codex },
+      { label: "Claude Code", external: true, href: AIKINGBOT_LINKS.claude },
     ],
   },
   {
@@ -115,14 +115,14 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
     title: "Compare",
     links: [
-      { label: "OpenBot vs ChatGPT dots", external: false, to: "/compare/$slug", slug: "chatgpt-dots" },
-      { label: "OpenBot vs Grok Bot", external: false, to: "/compare/$slug", slug: "grok-bot" },
-      { label: "OpenBot vs Muse", external: false, to: "/compare/$slug", slug: "muse" },
-      { label: "OpenBot vs Hermes Agent", external: false, to: "/compare/$slug", slug: "hermes-agent" },
-      { label: "OpenBot vs OpenClaw", external: false, to: "/compare/$slug", slug: "openclaw" },
-      { label: "OpenBot vs Manus", external: false, to: "/compare/$slug", slug: "manus" },
-      { label: "OpenBot vs Claude Cowork", external: false, to: "/compare/$slug", slug: "claude-cowork" },
-      { label: "OpenBot vs Devin", external: false, to: "/compare/$slug", slug: "devin" },
+      { label: "AIKINGBOT vs ChatGPT dots", external: false, to: "/compare/$slug", slug: "chatgpt-dots" },
+      { label: "AIKINGBOT vs Grok Bot", external: false, to: "/compare/$slug", slug: "grok-bot" },
+      { label: "AIKINGBOT vs Muse", external: false, to: "/compare/$slug", slug: "muse" },
+      { label: "AIKINGBOT vs Hermes Agent", external: false, to: "/compare/$slug", slug: "hermes-agent" },
+      { label: "AIKINGBOT vs OpenClaw", external: false, to: "/compare/$slug", slug: "openclaw" },
+      { label: "AIKINGBOT vs Manus", external: false, to: "/compare/$slug", slug: "manus" },
+      { label: "AIKINGBOT vs Claude Cowork", external: false, to: "/compare/$slug", slug: "claude-cowork" },
+      { label: "AIKINGBOT vs Devin", external: false, to: "/compare/$slug", slug: "devin" },
       { label: "Best AI agent apps", external: false, to: "/compare/$slug", slug: "best-ai-agent-apps" },
       { label: "All comparisons", external: false, to: "/compare" },
     ],

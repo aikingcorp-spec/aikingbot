@@ -10,7 +10,7 @@ describe("avatar storage", () => {
   it("accepts a bounded image and creates stable object keys", async () => {
     const upload = await runApiEffect(
       readAvatarUpload(
-        new Request("https://api.openbot.run/v1/me/avatar", {
+        new Request("https://api.aikingbot.aikingx.com/v1/me/avatar", {
           method: "PUT",
           headers: { "Content-Type": "image/png" },
           body: PNG,
@@ -26,7 +26,7 @@ describe("avatar storage", () => {
     await expect(
       runApiEffect(
         readAvatarUpload(
-          new Request("https://api.openbot.run/v1/me/avatar", {
+          new Request("https://api.aikingbot.aikingx.com/v1/me/avatar", {
             method: "PUT",
             headers: { "Content-Type": "image/png" },
             body: Uint8Array.from([0xff, 0xd8, 0xff]),
@@ -37,7 +37,7 @@ describe("avatar storage", () => {
     await expect(
       runApiEffect(
         readAvatarUpload(
-          new Request("https://api.openbot.run/v1/me/avatar", {
+          new Request("https://api.aikingbot.aikingx.com/v1/me/avatar", {
             method: "PUT",
             headers: { "Content-Type": "image/gif" },
             body: PNG,

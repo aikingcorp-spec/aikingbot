@@ -1,4 +1,4 @@
-import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
+import type { RemoteFileUpload } from "@aikingbot/team-client/remote-peer";
 import { assert, describe, expect, it } from "vitest";
 import { type ChatMessage, type PendingChatMessage, presentChatMessages } from "./chat-messages";
 import { retainConfirmedAttachments, uploadChatAttachments } from "./upload-chat-attachments";

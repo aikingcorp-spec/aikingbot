@@ -2,8 +2,8 @@ import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentProfileDraft, SaveAgentProfileInput } from "@openbot/contracts/ipc";
-import { saveReviewedAgentProfile } from "@openbot/team-client";
+import type { AgentProfileDraft, SaveAgentProfileInput } from "@aikingbot/contracts/ipc";
+import { saveReviewedAgentProfile } from "@aikingbot/team-client";
 import { Effect } from "effect";
 import { afterEach, expect, it, vi } from "vitest";
 import { AgentStore } from "../agent-store";
@@ -26,7 +26,7 @@ const draft: AgentProfileDraft = {
   sectionId: null,
 };
 async function fixture() {
-  const root = await mkdtemp(join(tmpdir(), "openbot-profile-save-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-profile-save-"));
   const store = new AgentStore(join(root, "data"), join(root, "home"));
   await runCauseEffect(store.initialize());
   const sidebar = new SidebarLayoutStore(join(root, "sidebar.json"));
@@ -185,7 +185,7 @@ it("allows correcting a rejected creation while retaining its original retry ide
 it("removes a profile workspace left before its agent row was written", async () => {
   const { store, root } = await fixture();
   const agentId = `agent-${randomUUID()}`;
-  const workspaces = join(root, "home", "OpenBot", "Agents");
+  const workspaces = join(root, "home", "AIKINGBOT", "Agents");
   const markers = join(root, "data", "agent-profile-creations");
   await runCauseEffect(new ProfileCreationRecovery(markers, workspaces).begin(agentId, randomUUID()));
   await mkdir(join(workspaces, agentId));

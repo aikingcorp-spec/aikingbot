@@ -1,5 +1,5 @@
-import type { RemoteDesktopSession } from "@openbot/contracts/ipc";
-import { RemoteDesktopWorkspace } from "@openbot/ui/features/remote-desktop/RemoteDesktopWorkspace";
+import type { RemoteDesktopSession } from "@aikingbot/contracts/ipc";
+import { RemoteDesktopWorkspace } from "@aikingbot/ui/features/remote-desktop/RemoteDesktopWorkspace";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import macDesktopMock from "./assets/remote-desktop-mac-mock.png";
@@ -48,7 +48,7 @@ const meta = {
   title: "Team/RemoteDesktopWorkspace",
   component: RemoteDesktopWorkspace,
   args,
-  decorators: [(Story) => <div style="height: 720px; background: var(--openbot-bg-canvas);">{Story()}</div>],
+  decorators: [(Story) => <div style="height: 720px; background: var(--aikingbot-bg-canvas);">{Story()}</div>],
   parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof RemoteDesktopWorkspace>;
 
@@ -81,7 +81,7 @@ export const ConnectionError: Story = {
 export const ScreenRecordingBlocked: Story = {
   args: {
     session: undefined,
-    connectionError: "The host has not allowed OpenBot to record its screen.",
+    connectionError: "The host has not allowed AIKINGBOT to record its screen.",
     connectionErrorCode: "host_permissions_required",
   },
 };
@@ -93,7 +93,7 @@ export const UpdateRequired: Story = {
 function createMockViewerUrl(imageUrl: string, id: string) {
   const absoluteImageUrl = new URL(imageUrl, window.location.origin).href;
   const viewerState = JSON.stringify({
-    source: "openbot-moonlight",
+    source: "aikingbot-moonlight",
     type: "viewer-state",
     sessionId: id,
     state: "connected",

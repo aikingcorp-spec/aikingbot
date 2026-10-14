@@ -1,5 +1,5 @@
-import { Button, Minus, Plus } from "@openbot/ui";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { Button, Minus, Plus } from "@aikingbot/ui";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createSignal, onSettled } from "solid-js";
 import { useText } from "../../text";
 

@@ -1,4 +1,4 @@
-import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle, UserRound } from "@openbot/ui";
+import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle, UserRound } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { Show } from "solid-js";
 import type { AgentProfile } from "../../data";

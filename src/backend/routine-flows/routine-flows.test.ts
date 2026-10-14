@@ -3,7 +3,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { Routine } from "@openbot/contracts/ipc";
+import type { Routine } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentRoutineStore } from "../agent-routine-store";
@@ -32,7 +32,7 @@ interface Sent {
 }
 
 async function setup() {
-  const root = await mkdtemp(join(tmpdir(), "openbot-routine-flows-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-routine-flows-"));
   roots.push(root);
   const agents = new AgentStore(join(root, "data"), join(root, "home"));
   await runCauseEffect(agents.initialize());

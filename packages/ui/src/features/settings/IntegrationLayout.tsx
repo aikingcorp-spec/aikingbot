@@ -1,10 +1,10 @@
 /**
  * The parts that every integration page shares: the logo on its tile, the status pill, the page
- * header, the danger zone, and the connect dialog with OpenBot and the other app side by side.
+ * header, the danger zone, and the connect dialog with AIKINGBOT and the other app side by side.
  * GitHub, Slack, Discord and Telegram use them.
  */
 
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@aikingbot/brand";
 import {
   Badge,
   Button,
@@ -22,7 +22,7 @@ import {
   SettingsSection,
   Text,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
@@ -217,7 +217,7 @@ export function Stepper(props: { steps: readonly string[]; current: number; labe
   );
 }
 
-/** The line between OpenBot and the other app: moving while connecting, solid when done, broken on an error. */
+/** The line between AIKINGBOT and the other app: moving while connecting, solid when done, broken on an error. */
 export type WizardLink = "connecting" | "connected" | "broken";
 
 export interface WizardProps {

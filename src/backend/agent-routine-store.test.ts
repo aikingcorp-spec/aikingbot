@@ -3,13 +3,13 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ROUTINE_MISSED_COUNT_LIMIT } from "@openbot/contracts/ipc";
+import { ROUTINE_MISSED_COUNT_LIMIT } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentRoutineStore } from "./agent-routine-store";
 import { AgentStore } from "./agent-store";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { ChannelRoutineStore } from "./channel-routine-store";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
 
 const roots: string[] = [];
 
@@ -42,7 +42,7 @@ describe("AgentRoutineStore", () => {
     });
     database.close();
 
-    const reopened = new OpenBotDatabase(database.userDataPath);
+    const reopened = new AIKINGBOTDatabase(database.userDataPath);
     await runCauseEffect(reopened.initialize());
     expect(new AgentRoutineStore(reopened).list("chief")).toHaveLength(1);
     reopened.close();
@@ -323,7 +323,7 @@ describe("AgentRoutineStore", () => {
   });
 
   it("removes routines when the agent is deleted", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-routine-agent-delete-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-routine-agent-delete-"));
     roots.push(root);
     const agents = new AgentStore(join(root, "data"), join(root, "home"));
     await runCauseEffect(agents.initialize());
@@ -374,7 +374,7 @@ describe("ChannelRoutineStore", () => {
     });
     database.close();
 
-    const reopened = new OpenBotDatabase(database.userDataPath);
+    const reopened = new AIKINGBOTDatabase(database.userDataPath);
     await runCauseEffect(reopened.initialize());
     expect(new ChannelRoutineStore(reopened).list("channel-1")).toHaveLength(1);
     reopened.close();
@@ -561,10 +561,10 @@ describe("ChannelRoutineStore", () => {
   });
 });
 
-async function setup(): Promise<{ database: OpenBotDatabase; routines: AgentRoutineStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-routine-store-"));
+async function setup(): Promise<{ database: AIKINGBOTDatabase; routines: AgentRoutineStore }> {
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-routine-store-"));
   roots.push(root);
-  const database = new OpenBotDatabase(root);
+  const database = new AIKINGBOTDatabase(root);
   await runCauseEffect(database.initialize());
   return { database, routines: new AgentRoutineStore(database) };
 }
@@ -572,10 +572,10 @@ async function setup(): Promise<{ database: OpenBotDatabase; routines: AgentRout
 /** A routine needs its channel row: the owner column is a cascading foreign key. */
 async function channelSetup(
   channelIds: string[] = ["channel-1"],
-): Promise<{ database: OpenBotDatabase; routines: ChannelRoutineStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-channel-routine-store-"));
+): Promise<{ database: AIKINGBOTDatabase; routines: ChannelRoutineStore }> {
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-channel-routine-store-"));
   roots.push(root);
-  const database = new OpenBotDatabase(root);
+  const database = new AIKINGBOTDatabase(root);
   await runCauseEffect(database.initialize());
   const insert = database.connection.prepare("INSERT INTO projection_channels(channel_id, channel_json) VALUES (?, ?)");
   for (const channelId of channelIds) insert.run(channelId, JSON.stringify({ id: channelId }));

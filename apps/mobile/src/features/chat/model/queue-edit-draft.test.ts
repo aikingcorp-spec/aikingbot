@@ -1,4 +1,4 @@
-import type { ConversationMessage, QueueDelivery } from "@openbot/contracts/ipc";
+import type { ConversationMessage, QueueDelivery } from "@aikingbot/contracts/ipc";
 import { expect, it } from "vitest";
 import { projectChatMessages } from "./chat-messages";
 import { decodeQueueEditDraft, orderedQueue, queueReceiptMessages, queueRowsWithHeldEdit } from "./queue-edit-draft";

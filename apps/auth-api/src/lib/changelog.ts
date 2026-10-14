@@ -8,18 +8,18 @@
 // `### Added` style groups, `-` bullets with indented continuation lines, plain paragraphs
 // under a heading, and inline `**bold**`, `code` and [links](url).
 
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import {
-  OPENBOT_SITE_URL,
-  OPENBOT_SOCIAL_IMAGE_ALT,
-  OPENBOT_SOCIAL_IMAGE_URL,
-  OPENBOT_X_HANDLE,
+  AIKINGBOT_SITE_URL,
+  AIKINGBOT_SOCIAL_IMAGE_ALT,
+  AIKINGBOT_SOCIAL_IMAGE_URL,
+  AIKINGBOT_X_HANDLE,
 } from "./site-metadata";
 
 export const CHANGELOG_ROUTE = "/changelog";
-const CHANGELOG_TITLE = "OpenBot Changelog: Release Notes for Every Version";
+const CHANGELOG_TITLE = "AIKINGBOT Changelog: Release Notes for Every Version";
 export const CHANGELOG_DESCRIPTION =
-  "Every OpenBot release, newest first: new features, improvements and fixes, with what to do after you upgrade.";
+  "Every AIKINGBOT release, newest first: new features, improvements and fixes, with what to do after you upgrade.";
 
 /** The app a changelog covers. The web client ships with the desktop app, so it has no own list. */
 export type ChangelogPlatform = "desktop" | "mobile";
@@ -189,7 +189,7 @@ export function parseInline(text: string): InlineSegment[] {
   return segments;
 }
 
-export function changelogUrl(siteUrl: string = OPENBOT_SITE_URL, platform: ChangelogPlatform = "desktop"): string {
+export function changelogUrl(siteUrl: string = AIKINGBOT_SITE_URL, platform: ChangelogPlatform = "desktop"): string {
   const url = new URL(CHANGELOG_ROUTE, siteUrl);
   if (platform === "mobile") url.searchParams.set("platform", platform);
   return url.toString();
@@ -203,19 +203,19 @@ export function changelogHead(siteUrl: string, platform: ChangelogPlatform = "de
       { title: CHANGELOG_TITLE },
       { name: "description", content: CHANGELOG_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "OpenBot" },
+      { property: "og:site_name", content: "AIKINGBOT" },
       { property: "og:locale", content: "en_US" },
       { property: "og:url", content: url },
       { property: "og:title", content: CHANGELOG_TITLE },
       { property: "og:description", content: CHANGELOG_DESCRIPTION },
-      { property: "og:image", content: OPENBOT_SOCIAL_IMAGE_URL },
-      { property: "og:image:alt", content: OPENBOT_SOCIAL_IMAGE_ALT },
+      { property: "og:image", content: AIKINGBOT_SOCIAL_IMAGE_URL },
+      { property: "og:image:alt", content: AIKINGBOT_SOCIAL_IMAGE_ALT },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: OPENBOT_X_HANDLE },
+      { name: "twitter:site", content: AIKINGBOT_X_HANDLE },
       { name: "twitter:title", content: CHANGELOG_TITLE },
       { name: "twitter:description", content: CHANGELOG_DESCRIPTION },
-      { name: "twitter:image", content: OPENBOT_SOCIAL_IMAGE_URL },
-      { name: "twitter:image:alt", content: OPENBOT_SOCIAL_IMAGE_ALT },
+      { name: "twitter:image", content: AIKINGBOT_SOCIAL_IMAGE_URL },
+      { name: "twitter:image:alt", content: AIKINGBOT_SOCIAL_IMAGE_ALT },
     ],
     links: [{ rel: "canonical", href: url }],
   };

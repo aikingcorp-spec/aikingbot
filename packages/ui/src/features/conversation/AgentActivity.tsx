@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@aikingbot/i18n";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

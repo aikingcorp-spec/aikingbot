@@ -1,10 +1,10 @@
-import type { AgentStatus } from "@openbot/contracts/ipc";
+import type { AgentStatus } from "@aikingbot/contracts/ipc";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { InitialSetup } from "../src/features/onboarding/InitialSetup";
 import { STORY_AGENT_STATUS } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 import { createFakeConnection } from "./provider-connection-fixture";
 
 type InitialSetupArgs = Parameters<typeof InitialSetup>[0];
@@ -19,12 +19,12 @@ const openCodeInstalledAgentStatus: AgentStatus = {
 };
 
 function MockedInitialSetup(props: { args: InitialSetupArgs }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot();
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT();
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return <InitialSetup {...props.args} />;
 }

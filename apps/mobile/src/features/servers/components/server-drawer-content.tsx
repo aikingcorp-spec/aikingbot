@@ -1,5 +1,5 @@
+import type { MobileTranslate } from "@aikingbot/i18n/mobile";
 import { type MenuAction, type MenuComponentRef, MenuView } from "@expo/ui/community/menu";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
 import type { Href } from "expo-router";
 import { Typography } from "heroui-native";
 import { Check, Plus, Settings } from "lucide-react-native";

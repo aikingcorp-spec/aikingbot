@@ -1,7 +1,13 @@
 // The routine flow group of the preview: links and positions in memory, over the mock's routines.
 // It runs no flow, so a step only exists when a story seeds one.
 
-import type { OpenBotDesktopApi, Routine, RoutineFlowLink, RoutineFlowStep, RoutineRun } from "@openbot/contracts/ipc";
+import type {
+  AIKINGBOTDesktopApi,
+  Routine,
+  RoutineFlowLink,
+  RoutineFlowStep,
+  RoutineRun,
+} from "@aikingbot/contracts/ipc";
 
 interface MockRoutineFlowsSource {
   routines: Map<string, Routine[]>;
@@ -14,7 +20,7 @@ interface MockRoutineFlowsSource {
 export function mockRoutineFlows(
   source: MockRoutineFlowsSource,
   emit: (agentId: string) => void,
-): OpenBotDesktopApi["routineFlows"] {
+): AIKINGBOTDesktopApi["routineFlows"] {
   const links: RoutineFlowLink[] = structuredClone(source.links ?? []);
   const steps: RoutineFlowStep[] = structuredClone(source.steps ?? []);
   const positions = new Map<string, Map<string, { x: number; y: number }>>();

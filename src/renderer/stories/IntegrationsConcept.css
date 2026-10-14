@@ -1,10 +1,10 @@
-/* Concept only: Concepts/Integrations. Tokens from @openbot/brand; no literal colours. */
+/* Concept only: Concepts/Integrations. Tokens from @aikingbot/brand; no literal colours. */
 
 .ic-canvas {
   min-height: 100vh;
-  padding: var(--openbot-space-8);
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
+  padding: var(--aikingbot-space-8);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
 }
 
 .ic-canvas[data-width="narrow"] {
@@ -15,7 +15,7 @@
 .ic-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   align-items: start;
 }
 
@@ -33,34 +33,34 @@
 .ic-hub,
 .ic-detail {
   display: grid;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 /* First-run hero: the landing grid and accent glow, with the brand marks on one line. */
 .ic-hero {
   position: relative;
   display: flex;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  padding: var(--openbot-space-4);
-  border: 1px solid var(--openbot-glass-border);
-  border-radius: var(--openbot-radius-lg);
+  padding: var(--aikingbot-space-4);
+  border: 1px solid var(--aikingbot-glass-border);
+  border-radius: var(--aikingbot-radius-lg);
   background:
-    radial-gradient(45% 140% at 80% 50%, var(--openbot-accent-strong), var(--openbot-transparent) 70%),
+    radial-gradient(45% 140% at 80% 50%, var(--aikingbot-accent-strong), var(--aikingbot-transparent) 70%),
     radial-gradient(
       50% 120% at 100% 0%,
-      color-mix(in srgb, var(--openbot-file-pink) 22%, var(--openbot-transparent)),
-      var(--openbot-transparent) 70%
+      color-mix(in srgb, var(--aikingbot-file-pink) 22%, var(--aikingbot-transparent)),
+      var(--aikingbot-transparent) 70%
     ),
     radial-gradient(
       60% 160% at 0% 100%,
-      color-mix(in srgb, var(--openbot-onboarding-desktop-indigo) 20%, var(--openbot-transparent)),
-      var(--openbot-transparent) 70%
+      color-mix(in srgb, var(--aikingbot-onboarding-desktop-indigo) 20%, var(--aikingbot-transparent)),
+      var(--aikingbot-transparent) 70%
     ),
-    var(--openbot-bg-surface);
-  box-shadow: inset 0 1px 0 var(--openbot-glass-highlight);
+    var(--aikingbot-bg-surface);
+  box-shadow: inset 0 1px 0 var(--aikingbot-glass-highlight);
 }
 
 .ic-hero-grid {
@@ -68,16 +68,16 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(90deg, var(--openbot-hero-grid-line) 1px, var(--openbot-transparent) 1px),
-    linear-gradient(var(--openbot-hero-grid-line) 1px, var(--openbot-transparent) 1px);
+    linear-gradient(90deg, var(--aikingbot-hero-grid-line) 1px, var(--aikingbot-transparent) 1px),
+    linear-gradient(var(--aikingbot-hero-grid-line) 1px, var(--aikingbot-transparent) 1px);
   background-size: 20px 20px;
-  mask-image: radial-gradient(45% 120% at 80% 50%, var(--openbot-mask-solid) 20%, var(--openbot-transparent) 100%);
+  mask-image: radial-gradient(45% 120% at 80% 50%, var(--aikingbot-mask-solid) 20%, var(--aikingbot-transparent) 100%);
 }
 
 .ic-hero-copy {
   position: relative;
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   max-width: 320px;
 }
 
@@ -85,7 +85,7 @@
   position: relative;
   display: flex;
   flex: none;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   align-items: center;
 }
 
@@ -96,8 +96,8 @@
   height: 1.5px;
   background: repeating-linear-gradient(
     90deg,
-    color-mix(in srgb, var(--openbot-file-blue) 60%, var(--openbot-transparent)) 0 3px,
-    var(--openbot-transparent) 3px 8px
+    color-mix(in srgb, var(--aikingbot-file-blue) 60%, var(--aikingbot-transparent)) 0 3px,
+    var(--aikingbot-transparent) 3px 8px
   );
   background-size: 8px 100%;
   animation: ic-hero-flow 0.8s linear infinite;
@@ -115,13 +115,13 @@
   width: 32px;
   height: 32px;
   place-items: center;
-  border: 1px solid var(--openbot-glass-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-glass-surface);
+  border: 1px solid var(--aikingbot-glass-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-glass-surface);
   box-shadow:
-    inset 0 1px 0 var(--openbot-glass-highlight),
-    0 6px 16px var(--openbot-glass-shadow);
-  color: var(--openbot-text-primary);
+    inset 0 1px 0 var(--aikingbot-glass-highlight),
+    0 6px 16px var(--aikingbot-glass-shadow);
+  color: var(--aikingbot-text-primary);
   backdrop-filter: blur(8px);
 }
 
@@ -133,7 +133,7 @@
 /* The hero clips its glow, so the close button sits on a frame and straddles the corner. */
 .ic-hero-frame {
   position: relative;
-  margin-top: var(--openbot-space-3);
+  margin-top: var(--aikingbot-space-3);
 }
 
 .ic-hero-close {
@@ -141,18 +141,18 @@
   top: 0;
   right: 0;
   z-index: 1;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface-raised);
-  box-shadow: 0 4px 12px var(--openbot-glass-shadow);
-  color: var(--openbot-text-secondary);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface-raised);
+  box-shadow: 0 4px 12px var(--aikingbot-glass-shadow);
+  color: var(--aikingbot-text-secondary);
   transform: translate(35%, -35%);
 }
 
 .ic-hero-close:hover:not(:disabled):not([data-disabled]) {
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-primary);
-  border-color: var(--openbot-text-secondary);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-primary);
+  border-color: var(--aikingbot-text-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -183,92 +183,92 @@
 
 .ic-wizard-figure {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   margin: 0;
 }
 
 .ic-waiting-line {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
   justify-content: center;
 }
 
 .ic-waiting-line .ui-text {
   display: inline-flex;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   align-items: center;
 }
 
 .ic-checklist {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   margin: 0;
-  padding: var(--openbot-space-3) var(--openbot-space-4);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
   list-style: none;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .ic-checklist li {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
 }
 
 .ic-checklist li[data-state="done"] {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .ic-checklist li[data-state="done"] svg {
-  color: var(--openbot-success);
+  color: var(--aikingbot-success);
 }
 
 .ic-check-dot {
   width: 14px;
   height: 14px;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
 }
 
 .ic-form {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .ic-form .ui-text[data-tone="success"] {
   display: inline-flex;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   align-items: center;
 }
 
 .ic-agent-picker {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .ic-agent-option {
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   justify-items: center;
-  padding: var(--openbot-space-3) var(--openbot-space-2);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-2);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
   color: inherit;
   text-align: center;
   cursor: pointer;
 }
 
 .ic-agent-option:hover:not(:disabled) {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .ic-agent-option[aria-pressed="true"] {
-  border-color: var(--openbot-accent);
-  box-shadow: inset 0 0 0 1px var(--openbot-accent);
+  border-color: var(--aikingbot-accent);
+  box-shadow: inset 0 0 0 1px var(--aikingbot-accent);
 }
 
 .ic-agent-option:disabled {
@@ -278,32 +278,32 @@
 
 .ic-agent-option:focus-visible,
 .ic-segment-option:focus-visible {
-  outline: 2px solid var(--openbot-focus-ring);
+  outline: 2px solid var(--aikingbot-focus-ring);
   outline-offset: 2px;
 }
 
 .ic-segment {
   display: flex;
-  padding: var(--openbot-space-0-5);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
+  padding: var(--aikingbot-space-0-5);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
 }
 
 .ic-segment-option {
   flex: 1;
-  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
   border: 0;
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-transparent);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-transparent);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
   cursor: pointer;
 }
 
 .ic-segment-option[aria-pressed="true"] {
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-primary);
-  box-shadow: var(--openbot-shadow-ring);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-primary);
+  box-shadow: var(--aikingbot-shadow-ring);
 }
 
 /* ------------------------------------------------ slack preview */
@@ -311,24 +311,24 @@
 .ic-slack-preview {
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .ic-slack-channel {
   display: flex;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   align-items: center;
-  padding: var(--openbot-space-2) var(--openbot-space-3);
-  border-bottom: 1px solid var(--openbot-border);
-  color: var(--openbot-text-secondary);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
+  border-bottom: 1px solid var(--aikingbot-border);
+  color: var(--aikingbot-text-secondary);
 }
 
 .ic-slack-message {
   display: flex;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-3);
 }
 
 .ic-slack-avatar {
@@ -336,35 +336,35 @@
   width: 36px;
   height: 36px;
   overflow: hidden;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .ic-slack-body {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
 }
 
 .ic-slack-meta {
   display: flex;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   align-items: center;
 }
 
 .ic-slack-app {
-  padding: 0 var(--openbot-space-1);
-  border-radius: var(--openbot-radius-xs);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  padding: 0 var(--aikingbot-space-1);
+  border-radius: var(--aikingbot-radius-xs);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 /* ------------------------------------------------ bot table */
 
 .ic-table-wrap {
   overflow-x: auto;
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .ic-table {
@@ -374,20 +374,20 @@
 
 .ic-table th,
 .ic-table td {
-  padding: var(--openbot-space-2) var(--openbot-space-3);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
   text-align: left;
   vertical-align: middle;
 }
 
 .ic-table thead th {
-  color: var(--openbot-data-table-header-text);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-data-table-header-text);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
   white-space: nowrap;
 }
 
 .ic-table tbody tr {
-  border-top: 1px solid var(--openbot-data-table-border);
+  border-top: 1px solid var(--aikingbot-data-table-border);
 }
 
 .ic-table tbody th {
@@ -396,21 +396,21 @@
 
 .ic-agent-cell {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
   white-space: nowrap;
 }
 
 .ic-status-cell {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   justify-items: start;
 }
 
 .ic-channels {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   align-items: center;
 }
 
@@ -423,13 +423,13 @@
 
 .ic-agent-settings {
   display: grid;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   max-width: 640px;
 }
 
 .ic-agent-settings-head {
   display: flex;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   align-items: center;
 }
 
@@ -440,7 +440,7 @@
 
 .ic-agent-settings .ui-item-title {
   display: inline-flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
 }
 
@@ -454,19 +454,19 @@
 
 .ic-fieldset {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .ic-legend {
-  margin-bottom: var(--openbot-space-2);
+  margin-bottom: var(--aikingbot-space-2);
   padding: 0;
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .ic-cell-stack {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   justify-items: start;
 }
 
@@ -474,7 +474,7 @@
 
 .ic-face-stack {
   display: inline-flex;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   align-items: center;
 }
 
@@ -482,23 +482,23 @@
   display: inline-grid;
   min-width: 24px;
   height: 24px;
-  padding: 0 var(--openbot-space-1);
+  padding: 0 var(--aikingbot-space-1);
   place-items: center;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
 }
 
 /* The whole row opens the integration, as on Marketplace cards. Buttons in the row stay on top. */
 .ic-hub-row {
   position: relative;
-  border-radius: var(--openbot-radius-md);
-  transition: background-color var(--openbot-duration-hover) var(--openbot-ease-out);
+  border-radius: var(--aikingbot-radius-md);
+  transition: background-color var(--aikingbot-duration-hover) var(--aikingbot-ease-out);
 }
 
 .ic-hub-row:has(> .ic-hub-row-hitarea:hover) {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
 }
 
 .ic-hub-row-hitarea {
@@ -510,17 +510,17 @@
   padding: 0;
   border: 0;
   border-radius: inherit;
-  background: var(--openbot-transparent);
+  background: var(--aikingbot-transparent);
   cursor: pointer;
   transition: none;
 }
 
 .ic-hub-row-hitarea:hover:not(:disabled):not([data-disabled]) {
-  background: var(--openbot-transparent);
+  background: var(--aikingbot-transparent);
 }
 
 .ic-hub-row-hitarea:focus-visible {
-  outline: 2px solid var(--openbot-accent-strong);
+  outline: 2px solid var(--aikingbot-accent-strong);
   outline-offset: -2px;
 }
 
@@ -530,35 +530,35 @@
 }
 
 .ic-hub-row-chevron {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  margin: 0 var(--openbot-space-1-5);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  margin: 0 var(--aikingbot-space-1-5);
+  color: var(--aikingbot-text-muted);
 }
 
 .ic-hub-title {
   display: inline-flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
 }
 
 .ic-hub-summary[data-status="attention"] {
-  color: var(--openbot-warning-text);
+  color: var(--aikingbot-warning-text);
 }
 
 .ic-hub-actions {
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .ic-hub-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .ic-hub-chip {
-  gap: var(--openbot-space-1-5);
-  padding-left: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1-5);
+  padding-left: var(--aikingbot-space-1);
 }
 
 .ic-hub-chip > .ic-hub-chip-icon {
@@ -567,8 +567,8 @@
 }
 
 .ic-hub-chip > .ic-hub-chip-plus {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
-  margin-left: var(--openbot-space-0-5);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
+  margin-left: var(--aikingbot-space-0-5);
+  color: var(--aikingbot-text-muted);
 }

@@ -3,11 +3,11 @@ import type { messages as source } from "../../en/error/provider";
 
 export const messages = {
   "error.provider.mcpConfig":
-    "OpenBot no pudo registrar los servidores MCP en la configuración de Codex. Comprueba que tu config.toml de Codex sea válido y se pueda escribir, y reinicia OpenBot.",
+    "AIKINGBOT no pudo registrar los servidores MCP en la configuración de Codex. Comprueba que tu config.toml de Codex sea válido y se pueda escribir, y reinicia AIKINGBOT.",
   "error.provider.computerUseConfig":
-    "OpenBot no pudo registrar el uso del equipo en la configuración de Codex. Comprueba que tu config.toml de Codex sea válido y se pueda escribir, y reinicia OpenBot. Puedes desactivar el uso del equipo en los ajustes del compañero para continuar sin él.",
+    "AIKINGBOT no pudo registrar el uso del equipo en la configuración de Codex. Comprueba que tu config.toml de Codex sea válido y se pueda escribir, y reinicia AIKINGBOT. Puedes desactivar el uso del equipo en los ajustes del compañero para continuar sin él.",
   "error.provider.endpointsReadOnly":
-    "Los endpoints guardados se escribieron con una versión más reciente de OpenBot o el archivo no se puede leer. Actualiza OpenBot para cambiarlos.",
+    "Los endpoints guardados se escribieron con una versión más reciente de AIKINGBOT o el archivo no se puede leer. Actualiza AIKINGBOT para cambiarlos.",
   "error.provider.endpointNoSecureStorage":
     "Este equipo no tiene almacenamiento seguro, por lo que no se puede guardar una clave API ni una cabecera. Elimínalas o usa un endpoint que no necesite credenciales.",
   "error.provider.endpointDuplicate":
@@ -18,14 +18,14 @@ export const messages = {
   "error.provider.endpointSecretUnreadable":
     "Este equipo no puede leer la clave API ni las cabeceras guardadas. Introdúcelas de nuevo para que no se pierda ninguna.",
   "error.provider.discoveryTimeout": "{host} no respondió a tiempo.",
-  "error.provider.discoveryUnreachable": "OpenBot no pudo conectarse a {host}.",
+  "error.provider.discoveryUnreachable": "AIKINGBOT no pudo conectarse a {host}.",
   "error.provider.discoveryRedirect": "{host} envió una redirección. Introduce la dirección final del servidor.",
   "error.provider.discoveryRefused": "{host} rechazó la solicitud. Comprueba la clave API y las cabeceras.",
   "error.provider.discoveryHttp": "{host} respondió con HTTP {status}.",
   "error.provider.discoveryTooLarge": "La lista de modelos de {host} es demasiado grande.",
   "error.provider.discoveryInvalid": "{host} no envió una lista de modelos compatible con OpenAI.",
   "error.provider.detectionSettingsReadOnly":
-    "Los ajustes de detección se escribieron con una versión más reciente de OpenBot o el archivo no se puede leer. Actualiza OpenBot para cambiarlos.",
+    "Los ajustes de detección se escribieron con una versión más reciente de AIKINGBOT o el archivo no se puede leer. Actualiza AIKINGBOT para cambiarlos.",
   "error.provider.detectionEntryInvalid":
     "Una dirección debe ser una URL http:// o https:// sin contraseña, y una carpeta debe ser una ruta absoluta.",
   "error.provider.detectionEntriesTooMany": "Hay demasiadas direcciones o carpetas.",
@@ -54,11 +54,11 @@ export const messages = {
   "error.provider.bunLicenseChecksum": "La suma de comprobación de la licencia de Bun no coincide.",
   "error.provider.bunxDamaged": "El ejecutor del gestor de paquetes de Bun falta o está dañado.",
   "error.provider.releaseSourcesUnreachable":
-    "OpenBot no pudo acceder a las fuentes de versiones del proveedor. Comprueba la conexión e inténtalo de nuevo.",
+    "AIKINGBOT no pudo acceder a las fuentes de versiones del proveedor. Comprueba la conexión e inténtalo de nuevo.",
   "error.provider.runtimesUnsupported":
     "Los entornos de ejecución de proveedores no están disponibles en esta plataforma.",
-  "error.provider.closing": "OpenBot se está cerrando.",
-  "error.provider.cliOverride": "Elimina la ruta de CLI definida explícitamente antes de actualizar en OpenBot.",
+  "error.provider.closing": "AIKINGBOT se está cerrando.",
+  "error.provider.cliOverride": "Elimina la ruta de CLI definida explícitamente antes de actualizar en AIKINGBOT.",
   "error.provider.runtimeUpdateIncomplete": "La actualización del entorno de ejecución no se completó.",
   "error.provider.downloadHttp": "La descarga del entorno de ejecución falló con HTTP {status}.",
   "error.provider.downloadNoData": "La descarga del entorno de ejecución no devolvió datos.",
@@ -75,7 +75,7 @@ export const messages = {
   "error.provider.unexpectedVersion": "El entorno de ejecución del proveedor devolvió una versión inesperada.",
   "error.provider.metadataNoData": "La descarga de metadatos del entorno de ejecución no devolvió datos.",
   "error.provider.metadataTooLarge": "Los metadatos del entorno de ejecución son demasiado grandes.",
-  "error.provider.requestFailed": "OpenBot no pudo descargar {url}. {reason}",
+  "error.provider.requestFailed": "AIKINGBOT no pudo descargar {url}. {reason}",
   "error.provider.installRecordMismatch": "El registro de instalación del entorno de ejecución no coincide.",
   "error.provider.runtimeChecksum": "La suma de comprobación del entorno de ejecución del proveedor no coincide.",
   "error.provider.codexReleaseShape": "La versión de Codex tiene una estructura inesperada.",
@@ -111,14 +111,14 @@ export const messages = {
   "error.provider.noModel": "El proveedor seleccionado no tiene ningún modelo disponible.",
   "error.provider.noModelNamed": "{provider} no tiene ningún modelo disponible.",
   "error.provider.acpNoModels":
-    "La CLI de ACP no anunció ningún modelo ACP. OpenBot no adivinará un modelo alternativo.",
+    "La CLI de ACP no anunció ningún modelo ACP. AIKINGBOT no adivinará un modelo alternativo.",
   "error.provider.endpointRemoveBusy":
     "Espera a que terminen el turno activo y la cola antes de eliminar este endpoint.",
-  "error.provider.codexOutdated": "Codex CLI {version} es demasiado antiguo. OpenBot requiere 0.156.0 o posterior.",
+  "error.provider.codexOutdated": "Codex CLI {version} es demasiado antiguo. AIKINGBOT requiere 0.156.0 o posterior.",
   "error.provider.codexNotStarted": "Se encontró Codex CLI, pero no se pudo iniciar.",
   "error.provider.codexNotStartedHint":
     "Se encontró Codex CLI, pero no se pudo iniciar. Ejecuta `codex --version` en una nueva terminal.",
-  "error.provider.codexMissing": "ChatGPT no está descargado. Descárgalo en OpenBot para continuar.",
+  "error.provider.codexMissing": "ChatGPT no está descargado. Descárgalo en AIKINGBOT para continuar.",
   "error.provider.codexConfigIgnored": {
     one: "Codex ignoró {count} ajuste de su configuración: {settings}. Corrígelo, elimínalo o actualiza Codex.",
     other: "Codex ignoró {count} ajustes de su configuración: {settings}. Corrígelos, elimínalos o actualiza Codex.",
@@ -127,18 +127,19 @@ export const messages = {
     one: "Codex ignoró {count} ajuste de su configuración. Corrígelo, elimínalo o actualiza Codex.",
     other: "Codex ignoró {count} ajustes de su configuración. Corrígelos, elimínalos o actualiza Codex.",
   },
-  "error.provider.claudeOutdated": "Claude Code {version} es demasiado antiguo. OpenBot requiere 2.1.232 o posterior.",
+  "error.provider.claudeOutdated":
+    "Claude Code {version} es demasiado antiguo. AIKINGBOT requiere 2.1.232 o posterior.",
   "error.provider.claudeNotStarted": "Se encontró Claude CLI, pero no se pudo iniciar.",
   "error.provider.claudeNotStartedHint":
     "Se encontró Claude CLI, pero no se pudo iniciar. Ejecuta `claude --version` en una nueva terminal.",
-  "error.provider.claudeMissing": "Claude no está descargado. Descárgalo en OpenBot para continuar.",
-  "error.provider.grokOutdated": "Grok CLI {version} es demasiado antiguo. OpenBot requiere 1.0.5 o posterior.",
+  "error.provider.claudeMissing": "Claude no está descargado. Descárgalo en AIKINGBOT para continuar.",
+  "error.provider.grokOutdated": "Grok CLI {version} es demasiado antiguo. AIKINGBOT requiere 1.0.5 o posterior.",
   "error.provider.grokNotStarted": "Se encontró Grok CLI, pero no se pudo iniciar.",
   "error.provider.grokNotStartedHint":
     "Se encontró Grok CLI, pero no se pudo iniciar. Ejecuta `grok --version` en una nueva terminal.",
-  "error.provider.grokMissing": "Grok no está descargado. Descárgalo en OpenBot para continuar.",
+  "error.provider.grokMissing": "Grok no está descargado. Descárgalo en AIKINGBOT para continuar.",
   "error.provider.opencodeNotStarted": "OpenCode no pudo iniciarse. Ejecuta `opencode --version` en una terminal.",
-  "error.provider.opencodeMissing": "OpenCode no está descargado. Descárgalo en OpenBot para continuar.",
+  "error.provider.opencodeMissing": "OpenCode no está descargado. Descárgalo en AIKINGBOT para continuar.",
   "error.provider.codexVersionUnreadable": "No se pudo leer la versión de Codex CLI.",
   "error.provider.claudeVersionUnreadable": "No se pudo leer la versión de Claude CLI.",
   "error.provider.grokVersionUnreadable": "No se pudo leer la versión de Grok CLI.",
@@ -147,7 +148,7 @@ export const messages = {
   "error.provider.connectBeforeProfile": "Conecta el proveedor seleccionado antes de generar un perfil.",
   "error.provider.cliNotReady": "La CLI de {provider} no está lista o no tiene una sesión iniciada.",
   "error.provider.cliTimedOut":
-    "{provider} no respondió a tiempo. El equipo puede estar ocupado. OpenBot lo intentará de nuevo.",
+    "{provider} no respondió a tiempo. El equipo puede estar ocupado. AIKINGBOT lo intentará de nuevo.",
   "error.provider.cliTimedOutRefresh":
     "{provider} no respondió a tiempo. El equipo puede estar ocupado. Actualiza los proveedores para intentarlo de nuevo.",
   "error.provider.noCodeSignIn": "No se puede iniciar sesión en {provider} con un código.",
@@ -164,10 +165,10 @@ export const messages = {
     "La CLI de {provider} está iniciando sesión. Termina o cancela el inicio de sesión y luego actualiza.",
   "error.provider.cliBusyUpdate":
     "La CLI de {provider} está procesando un turno. Espera a que termine y luego actualiza.",
-  "error.provider.cliSelectFailed": "OpenBot no pudo seleccionar la CLI gestionada instalada.",
+  "error.provider.cliSelectFailed": "AIKINGBOT no pudo seleccionar la CLI gestionada instalada.",
   "error.provider.noAuthenticatedAccount": "{provider} no devolvió una cuenta autenticada.",
   "error.provider.signInExpired": "Tu sesión de {provider} caducó. Vuelve a iniciar sesión para continuar.",
-  "error.provider.cliActivateFailed": "OpenBot no pudo activar la CLI gestionada.",
+  "error.provider.cliActivateFailed": "AIKINGBOT no pudo activar la CLI gestionada.",
   "error.provider.cliBusyReconnect":
     "La CLI de {provider} está procesando un turno. Espera a que termine y vuelve a conectar.",
   "error.provider.opencodeCredentialsRejected":
@@ -183,17 +184,17 @@ export const messages = {
   "error.provider.opencodeProviderFailed":
     "El proveedor del modelo tuvo un fallo interno. Tu conexión no es la causa. Inténtalo más tarde o elige otro modelo.\n{detail}",
   "error.provider.opencodeNetwork":
-    "OpenCode no pudo conectarse al proveedor del modelo. Comprueba la conexión de red del equipo que ejecuta OpenBot e inténtalo de nuevo.\n{detail}",
+    "OpenCode no pudo conectarse al proveedor del modelo. Comprueba la conexión de red del equipo que ejecuta AIKINGBOT e inténtalo de nuevo.\n{detail}",
   "error.provider.opencodeNoAnswer":
     "El modelo de OpenCode terminó el turno sin respuesta. Inténtalo de nuevo o elige otro modelo.",
   "error.provider.opencodeReasoningWithoutAnswer":
     "El modelo de OpenCode terminó el turno después de razonar, sin respuesta. Inténtalo de nuevo o elige otro modelo.",
-  "error.provider.chatgptPageFailed": "OpenBot no pudo abrir la página de conexión de ChatGPT.",
+  "error.provider.chatgptPageFailed": "AIKINGBOT no pudo abrir la página de conexión de ChatGPT.",
   "error.provider.noneReady": "Ningún proveedor de agentes está listo.",
   "error.provider.claudeTurnActive": "Espera a que termine el turno activo de Claude antes de actualizar su contexto.",
   "error.provider.codexLoginRequired":
     "Codex requiere iniciar sesión con una suscripción de ChatGPT. Ejecuta `codex login`.",
-  "error.provider.cliUpdateFailed": "OpenBot no pudo actualizar la CLI de {provider}. {reason}",
+  "error.provider.cliUpdateFailed": "AIKINGBOT no pudo actualizar la CLI de {provider}. {reason}",
   "error.provider.tryAgain": "Inténtalo de nuevo.",
   "error.provider.noAgentProcess": "{provider} no tiene ningún proceso en ejecución para este agente.",
   "error.provider.stoppedBeforeAgentProcess": "{provider} se detuvo antes de que se iniciara el proceso del agente.",
@@ -202,7 +203,7 @@ export const messages = {
   "error.provider.antigravityArchivePath": "El archivo de Gemini contiene un archivo inesperado.",
   "error.provider.antigravityChecksum": "La suma de comprobación del entorno de ejecución de Gemini no coincide.",
   "error.provider.antigravityReleaseShape": "La versión de Gemini tiene una estructura inesperada.",
-  "error.provider.antigravityMissing": "Gemini no está descargado. Descárgalo en OpenBot para continuar.",
+  "error.provider.antigravityMissing": "Gemini no está descargado. Descárgalo en AIKINGBOT para continuar.",
   "error.provider.antigravityNotStarted": "Se encontró el servidor de Gemini, pero no se puede leer su versión.",
   "error.provider.antigravityVersionUnreadable": "No se pudo leer la versión del servidor de Gemini.",
   "error.provider.antigravitySignIn": "Inicia sesión con Google para usar Gemini.",
@@ -215,7 +216,7 @@ export const messages = {
   "error.provider.cursorArchivePath": "El archivo de Cursor contiene un archivo inesperado.",
   "error.provider.cursorChecksum": "La suma de comprobación del entorno de ejecución de Cursor no coincide.",
   "error.provider.cursorReleaseShape": "La versión de Cursor tiene una estructura inesperada.",
-  "error.provider.cursorMissing": "Cursor no está descargado. Descárgalo en OpenBot para continuar.",
+  "error.provider.cursorMissing": "Cursor no está descargado. Descárgalo en AIKINGBOT para continuar.",
   "error.provider.cursorNotStarted": "Se encontró el agente de Cursor, pero no se puede leer su versión.",
   "error.provider.cursorVersionUnreadable": "No se pudo leer la versión del agente de Cursor.",
   "error.provider.cursorSignIn": "Inicia sesión con Cursor o define CURSOR_API_KEY para usar Cursor.",
@@ -223,14 +224,14 @@ export const messages = {
   "error.provider.clinePackageMismatch": "El paquete de Cline no coincide con el catálogo de entornos de ejecución.",
   "error.provider.clineChecksum": "La suma de comprobación del entorno de ejecución de Cline no coincide.",
   "error.provider.clineLicenseChecksum": "La suma de comprobación de la licencia de Cline no coincide.",
-  "error.provider.clineMissing": "Cline no está descargado. Descárgalo en OpenBot para continuar.",
-  "error.provider.clineOutdated": "Cline CLI {version} es demasiado antiguo. OpenBot requiere 3.0.68 o posterior.",
+  "error.provider.clineMissing": "Cline no está descargado. Descárgalo en AIKINGBOT para continuar.",
+  "error.provider.clineOutdated": "Cline CLI {version} es demasiado antiguo. AIKINGBOT requiere 3.0.68 o posterior.",
   "error.provider.clineNotStarted": "Cline no pudo iniciarse. Ejecuta `cline --version` en una terminal.",
   "error.provider.clineVersionUnreadable": "No se pudo leer la versión de Cline CLI.",
   "error.provider.clineSignIn": "Inicia sesión con Cline o define CLINE_API_KEY para usar Cline.",
   "error.provider.usageLimitReached": "La cuenta alcanzó su límite de uso.",
   "error.provider.foreignReasoning":
-    "{provider} no aceptó el razonamiento anterior de este chat porque lo recibió otra cuenta o clave API. OpenBot inició una nueva sesión de {provider} con el historial del chat. Inténtalo de nuevo.",
+    "{provider} no aceptó el razonamiento anterior de este chat porque lo recibió otra cuenta o clave API. AIKINGBOT inició una nueva sesión de {provider} con el historial del chat. Inténtalo de nuevo.",
   "error.provider.grokSignIn": "Ejecuta `grok login` o define XAI_API_KEY para usar Grok.",
   "error.provider.acpSignInTimedOut": "Se agotó el tiempo del inicio de sesión.",
   "error.provider.acpSignInStopped": "El inicio de sesión se detuvo antes de completarse.",
@@ -243,7 +244,7 @@ export const messages = {
   "error.provider.httpsSignInLinkOnly": "Solo se pueden abrir en el navegador enlaces de inicio de sesión HTTPS.",
   "error.provider.geminiKeyRefused":
     "Gemini rechazó la clave de API guardada. Reemplaza o elimina la clave en Ajustes y vuelve a conectar.",
-  "error.provider.messageTooLarge": "OpenBot detuvo {provider} porque envió un mensaje de más de {limit} MB.",
+  "error.provider.messageTooLarge": "AIKINGBOT detuvo {provider} porque envió un mensaje de más de {limit} MB.",
   "error.provider.customAgentIdInvalid":
     "Un ID de agente debe contener letras minúsculas, dígitos o `-`, y no puede ser el ID de un proveedor integrado.",
   "error.provider.customAgentEnvInvalid":
@@ -254,10 +255,10 @@ export const messages = {
     "Un argumento no puede contener saltos de línea. Usa un máximo de 32 argumentos.",
   "error.provider.customAgentWindowsScript":
     "Un comando .cmd o .bat solo puede aceptar letras, números y - _ . , : = @ + / \\ en sus argumentos.",
-  "error.provider.customAgentNotFound": "OpenBot no encuentra {command}. Introduce la ruta completa del comando.",
+  "error.provider.customAgentNotFound": "AIKINGBOT no encuentra {command}. Introduce la ruta completa del comando.",
   "error.provider.customAgentCheckTimedOut": "El agente no respondió en 20 segundos.",
   "error.provider.customAgentCheckStopped": "El agente se detuvo antes de responder.",
-  "error.provider.customAgentProtocolVersion": "El agente usa la versión {version} de ACP. OpenBot usa la versión 1.",
+  "error.provider.customAgentProtocolVersion": "El agente usa la versión {version} de ACP. AIKINGBOT usa la versión 1.",
   "error.provider.customAgentCheckFailed": "El agente no respondió como un agente ACP.",
   "error.provider.customAgentRemoveBusy":
     "Espera a que terminen el turno activo y la cola antes de eliminar este agente personalizado.",
@@ -265,20 +266,20 @@ export const messages = {
   "error.provider.customAgentMissing": "Este agente personalizado no está guardado ahora. Elige otro modelo.",
   "error.provider.customAgentSignIn": "Inicia sesión con el comando propio del agente e inténtalo de nuevo.",
   "error.provider.customAgentsReadOnly":
-    "Los agentes personalizados guardados se escribieron con una versión más reciente de OpenBot o el archivo no se puede leer. Actualiza OpenBot para cambiarlos.",
+    "Los agentes personalizados guardados se escribieron con una versión más reciente de AIKINGBOT o el archivo no se puede leer. Actualiza AIKINGBOT para cambiarlos.",
   "error.provider.customAgentNoSecureStorage":
     "Este equipo no tiene almacenamiento seguro, por lo que no se pueden guardar los valores del entorno. Elimínalos e inténtalo de nuevo.",
   "error.provider.customAgentNotSaved":
     "Este agente personalizado no está guardado. Actualiza la lista e inténtalo de nuevo.",
   "error.provider.customAgentTooMany": "Puedes guardar un máximo de {count} agentes personalizados.",
   "error.provider.customAgentEnvValueMissing": "Introduce un valor para {name}.",
-  "error.provider.off": "{provider} está desactivado en OpenBot. Actívalo primero en los ajustes de proveedores.",
+  "error.provider.off": "{provider} está desactivado en AIKINGBOT. Actívalo primero en los ajustes de proveedores.",
   "error.provider.inUse": "Un agente usa {provider}. Cambia su modelo antes de desactivar este proveedor.",
   "error.provider.useBusy":
     "Espera a que termine la comprobación del proveedor o el inicio de sesión e inténtalo de nuevo.",
   "error.provider.useSettingsReadOnly":
-    "No se pueden leer los ajustes guardados del proveedor. Actualiza OpenBot antes de cambiarlos.",
-  "error.provider.useChangeFailed": "OpenBot no pudo cambiar el ajuste del proveedor.",
+    "No se pueden leer los ajustes guardados del proveedor. Actualiza AIKINGBOT antes de cambiarlos.",
+  "error.provider.useChangeFailed": "AIKINGBOT no pudo cambiar el ajuste del proveedor.",
   "error.provider.sessionSettingUnavailable": "Este ajuste no está disponible en la sesión actual del proveedor.",
   "error.provider.sessionSettingInvalid": "Este valor no está disponible para el ajuste.",
   "error.provider.sessionSettingsBusy": "Espera a que termine el turno actual antes de cambiar un ajuste de la sesión.",
@@ -310,7 +311,7 @@ export const messages = {
   "error.provider.museConnectionFailed":
     "Falló la conexión con Muse. Reanuda la conversación para recuperar su historial guardado.",
   "error.provider.museUnknownSession": "Sesión de Muse desconocida.",
-  "error.provider.museInvalidToolResult": "Resultado de herramienta de OpenBot no válido.",
+  "error.provider.museInvalidToolResult": "Resultado de herramienta de AIKINGBOT no válido.",
   "error.provider.museMcpRequired": "Muse debe admitir servidores MCP de sesión.",
   "error.provider.museSessionMismatch": "Muse devolvió una sesión diferente.",
   "error.provider.museCompactRejected": "Muse no aceptó la compactación.",

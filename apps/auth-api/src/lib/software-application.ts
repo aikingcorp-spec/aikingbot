@@ -4,10 +4,10 @@
 // release script changes it and `CHANGELOG.md` in one step.
 
 import { version } from "../../../../package.json";
-import channelScreenshot from "../content/guides/media/openbot-101/a-channel.webp";
-import { OPENBOT_SITE_URL, openBotSoftwareApplication } from "./site-metadata";
+import channelScreenshot from "../content/guides/media/aikingbot-101/a-channel.webp";
+import { AIKINGBOT_SITE_URL, aikingBotSoftwareApplication } from "./site-metadata";
 
-export const OPENBOT_SOFTWARE_APPLICATION = openBotSoftwareApplication({
+export const AIKINGBOT_SOFTWARE_APPLICATION = aikingBotSoftwareApplication({
   version,
-  screenshot: new URL(channelScreenshot, OPENBOT_SITE_URL).toString(),
+  screenshot: new URL(channelScreenshot, AIKINGBOT_SITE_URL).toString(),
 });

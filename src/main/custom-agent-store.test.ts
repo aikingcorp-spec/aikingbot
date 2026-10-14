@@ -4,7 +4,7 @@ import { Effect } from "effect";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { SaveCustomAgentInput } from "@openbot/contracts/ipc";
+import type { SaveCustomAgentInput } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { CustomAgentStore } from "./custom-agent-store";
@@ -14,7 +14,7 @@ let root = "";
 let path = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-custom-agents-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-custom-agents-"));
   path = join(root, "nested", "custom-agents.json");
 });
 

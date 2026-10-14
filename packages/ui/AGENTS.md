@@ -10,9 +10,9 @@ Primitives live in `src/`; feature components and their local interaction logic 
 models live in `src/data.ts`.
 
 Keep app contexts, desktop persistence, host transports, and platform controllers in consumers.
-Do not import renderer, main, backend, or preload code, or call `window.openbot` here.
+Do not import renderer, main, backend, or preload code, or call `window.aikingbot` here.
 Receive data and actions through typed props and callbacks. Move components; do not copy them.
-The one exception is interface text: call `useText()` from `@openbot/ui/text` for `t`, `format`
+The one exception is interface text: call `useText()` from `@aikingbot/ui/text` for `t`, `format`
 and `errorMessage`. Do not add a `t` prop. See [docs/i18n.md](../../docs/i18n.md).
 Preserve existing markup, styles, and behavior unless the user requests a design change.
 Shared feature CSS lives in this package. The app stylesheet imports it in the existing order.

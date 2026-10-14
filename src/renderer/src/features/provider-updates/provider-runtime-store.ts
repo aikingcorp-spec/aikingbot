@@ -5,13 +5,13 @@ import {
   MANAGED_RUNTIME_PROVIDERS,
   type ProviderRuntimeSnapshot,
   type ProviderRuntimesDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   type ProviderUpdate,
   providerUpdateAvailable,
   providerUpdatesToAnnounce,
-} from "@openbot/ui/features/provider-updates/provider-update";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/provider-updates/provider-update";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, flush, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { FALLBACK_PROVIDER_RUNTIMES } from "../../app-defaults";
@@ -39,7 +39,7 @@ export interface ProviderCliOwners {
    * Whether the runtimes `api` reaches belong to the workspace on screen. Left out, it is
    * `isLocalServer`.
    *
-   * `window.openbot.providerRuntimes` addresses only this computer, while the agent status beside it
+   * `window.aikingbot.providerRuntimes` addresses only this computer, while the agent status beside it
    * describes whichever server is open. An Update button raised for a joined server would then
    * change a runtime the user is not looking at, unless `api` reaches that server's host.
    */
@@ -72,7 +72,7 @@ export function createProviderRuntimeStore(
   const isLocalServer = owners.isLocalServer ?? (() => true);
   const managesRuntimes = owners.managesRuntimes ?? isLocalServer;
   function providerUpdate(provider: AgentProviderId, snapshot = providerRuntimeSnapshot()): ProviderUpdate {
-    if (!isManagedRuntimeProvider(provider)) throw new Error("OpenBot does not manage this provider's CLI.");
+    if (!isManagedRuntimeProvider(provider)) throw new Error("AIKINGBOT does not manage this provider's CLI.");
     const runtime = snapshot.providers[provider];
     const systemVersion = owners.systemCliVersion?.(provider) ?? null;
     const availableVersion = runtime.availableVersion ?? null;
@@ -207,7 +207,7 @@ export function createProviderRuntimeStore(
   }
 
   async function downloadProviderRuntime(provider: AgentProviderId): Promise<void> {
-    // A custom agent is the user's own command: OpenBot downloads nothing for it.
+    // A custom agent is the user's own command: AIKINGBOT downloads nothing for it.
     if (!isManagedRuntimeProvider(provider)) return;
     const source = api();
     if (!source) throw new Error(currentText().t("update.provider.downloadsUnavailable"));
@@ -254,7 +254,7 @@ export function createProviderRuntimeStore(
   }
 
   async function cancelProviderRuntimeDownload(provider: AgentProviderId): Promise<void> {
-    // A custom agent is the user's own command: OpenBot downloads nothing for it.
+    // A custom agent is the user's own command: AIKINGBOT downloads nothing for it.
     if (!isManagedRuntimeProvider(provider)) return;
     const source = api();
     if (!source) throw new Error(currentText().t("update.provider.downloadsUnavailable"));

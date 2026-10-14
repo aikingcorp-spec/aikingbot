@@ -1,6 +1,6 @@
 /** The server name, the marketplace or expand toggle, and new agent - plus the window drag region. */
 
-import { Bot, Button, DropdownMenu, FolderPlus, Hash, Puzzle } from "@openbot/ui";
+import { Bot, Button, DropdownMenu, FolderPlus, Hash, Puzzle } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { ServerMenu } from "../servers/ServerMenu";

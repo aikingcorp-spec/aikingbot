@@ -1,4 +1,4 @@
-import type { QueueSnapshot } from "@openbot/contracts/ipc";
+import type { QueueSnapshot } from "@aikingbot/contracts/ipc";
 import type { SidebarAgentState, SidebarRoutinePhase } from "./sidebar-types";
 
 /** A question or a browser takeover that an agent is blocked on. */

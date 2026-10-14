@@ -5,7 +5,7 @@
 // what a CHECK change costs (migrations 17, 22 and 23). The code only accepts the platforms it has
 // a driver for.
 //
-// A connection is one workspace of a platform, such as a Slack workspace that installed the OpenBot
+// A connection is one workspace of a platform, such as a Slack workspace that installed the AIKINGBOT
 // app. Its orchestrator agent receives each new conversation and asks its teammates. No token is
 // stored here. The tokens of a connection live in the main process's
 // encrypted credential file, keyed by `connection_id`.
@@ -47,7 +47,7 @@ export const MESSAGING_SCHEMA_SQL = `
 // Shared by migration v36 and the separate new-database schema. IF NOT EXISTS throughout.
 //
 // Facts that agents save about one connection (a Slack workspace, a Discord server, a Telegram chat)
-// with messaging_remember. Every conversation of the connection sees them; the OpenBot user's own
+// with messaging_remember. Every conversation of the connection sees them; the AIKINGBOT user's own
 // chats and the agents' private memories do not. The columns mirror `projection_channel_memories`,
 // because one store implementation serves every owner. No CASCADE: no code deletes a connection
 // (disconnect only disables it), and code that does must purge these rows and their

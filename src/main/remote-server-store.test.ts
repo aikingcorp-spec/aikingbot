@@ -8,7 +8,7 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
+import { LOCAL_SERVER_ID } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { RemoteServerStore } from "./remote-server-store";
@@ -21,7 +21,7 @@ afterEach(async () => {
 });
 
 async function storePath(contents: unknown): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-remote-store-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-store-"));
   directories.push(directory);
   const path = join(directory, "servers.json");
   await writeFile(path, JSON.stringify(contents), "utf8");

@@ -20,7 +20,7 @@ export const messages = {
   "plugin.uninstallDialog.appsLabel": "Aplicaciones que se eliminarán: {number}",
   "plugin.uninstallDialog.appsTitle": "Aplicaciones eliminadas de este host",
   "plugin.uninstallDialog.appsNote":
-    "Sus herramientas dejan de estar disponibles y se olvidan los datos de inicio de sesión que OpenBot guardaba para ellas.",
+    "Sus herramientas dejan de estar disponibles y se olvidan los datos de inicio de sesión que AIKINGBOT guardaba para ellas.",
   "plugin.uninstallDialog.skillsLabel": "Habilidades que se eliminarán: {number}",
   "plugin.uninstallDialog.skillsTitle": "Habilidades eliminadas de {agentName}",
 } as const satisfies PartialTranslation<typeof source>;

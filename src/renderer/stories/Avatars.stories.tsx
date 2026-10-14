@@ -1,9 +1,9 @@
+import { type AvatarMood, avatarMoodPresentation } from "@aikingbot/brand/bloub-avatar-motion";
+import { Button } from "@aikingbot/ui";
+import { bloubAvatarProfile } from "@aikingbot/ui/bloub-avatar";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { TeamPersonAvatar } from "@aikingbot/ui/features/team/TeamPersonAvatar";
 import { BloubBot, POSES } from "@norbert_bodziony/bloub";
-import { type AvatarMood, avatarMoodPresentation } from "@openbot/brand/bloub-avatar-motion";
-import { Button } from "@openbot/ui";
-import { bloubAvatarProfile } from "@openbot/ui/bloub-avatar";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { TeamPersonAvatar } from "@openbot/ui/features/team/TeamPersonAvatar";
 import { createStore, For, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENTS, STORY_PRESENCE } from "./fixtures";
@@ -116,7 +116,7 @@ export const SizesAndMoods: AgentStory = {
     return (
       <div
         class="grid gap-6 p-8"
-        style={{ background: "var(--openbot-bg-canvas)", color: "var(--openbot-text-primary)" }}
+        style={{ background: "var(--aikingbot-bg-canvas)", color: "var(--aikingbot-text-primary)" }}
       >
         {AVATAR_MOODS.map((mood) => {
           const presentation = avatarMoodPresentation(mood);
@@ -138,7 +138,7 @@ export const SizesAndMoods: AgentStory = {
                         class="bloub-avatar-svg"
                       />
                     </span>
-                    <small style={{ color: "var(--openbot-text-muted)" }}>{size}</small>
+                    <small style={{ color: "var(--aikingbot-text-muted)" }}>{size}</small>
                   </div>
                 ))}
               </div>
@@ -157,7 +157,7 @@ export const Moods: AgentStory = {
       {AVATAR_MOODS.map((mood) => (
         <div class="grid justify-items-center gap-3">
           <AgentAvatar seed="story-avatar" hue={215} mood={mood} motion="always" class="size-12" />
-          <small style={{ color: "var(--openbot-text-muted)" }}>{mood}</small>
+          <small style={{ color: "var(--aikingbot-text-muted)" }}>{mood}</small>
         </div>
       ))}
     </div>

@@ -7,7 +7,7 @@ import {
   createAgentTemplateShareUrl,
   isAgentTemplateId,
   isAgentTemplateShareOrigin,
-} from "@openbot/contracts/agent-template-links";
+} from "@aikingbot/contracts/agent-template-links";
 import {
   type AgentPublicationPreview,
   type AgentSubmission,
@@ -35,15 +35,15 @@ import {
   type SkillPackagePreview,
   type SkillSubmission,
   toAgentTemplateSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   decodeRecord,
   nullableString,
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc-decoding";
+import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
 import { decodeAgent } from "./agent-decoding";
 
 function decodeSkillSummary(value: unknown) {
@@ -301,7 +301,7 @@ export function decodeAgentTemplatePublication(value: unknown): AgentTemplatePub
   const item = decodeRecord(value, "agent template publication");
   const templateId = requiredString(item, "templateId");
   if (!isAgentTemplateId(templateId)) throw new Error("Invalid templateId.");
-  // Rebuilt from the id on the origin main names, which must be `openbot.run` or the local Worker, so
+  // Rebuilt from the id on the origin main names, which must be `aikingbot.aikingx.com` or the local Worker, so
   // main cannot put a foreign address behind the link the dialog copies.
   let origin: string;
   try {

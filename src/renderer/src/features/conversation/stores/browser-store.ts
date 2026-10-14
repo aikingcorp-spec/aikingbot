@@ -1,6 +1,6 @@
-import type { BrowserControlSession, BrowserPreview, BrowserTab } from "@openbot/contracts/ipc";
-import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { currentText } from "@openbot/ui/text";
+import type { BrowserControlSession, BrowserPreview, BrowserTab } from "@aikingbot/contracts/ipc";
+import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 import { desktopAnalytics } from "../../../analytics";
 import { serverSupportsCapability } from "../../servers/server-capabilities";

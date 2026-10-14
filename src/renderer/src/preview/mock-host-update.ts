@@ -1,5 +1,5 @@
-import type { HostAdminDesktopApi, HostReleaseStatus, HostUpdateStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { HostAdminDesktopApi, HostReleaseStatus, HostUpdateStatus } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { clone } from "./mock-support";
 
 export interface MockHostUpdateOptions {

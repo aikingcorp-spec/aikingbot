@@ -1,4 +1,4 @@
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
+import { ProviderModelPicker } from "@aikingbot/ui/components/ProviderModelPicker";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT_STATUS, STORY_MODELS } from "./fixtures";

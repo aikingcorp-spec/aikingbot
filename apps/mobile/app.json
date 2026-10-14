@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "OpenBot",
-    "slug": "openbot",
+    "name": "AIKINGBOT",
+    "slug": "aikingbot",
     "platforms": ["ios", "android"],
     "version": "1.3.1",
     "orientation": "portrait",
     "icon": "./assets/icons/app-icon.png",
-    "scheme": "openbot",
+    "scheme": "aikingbot",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "run.openbot.mobile",
-      "associatedDomains": ["applinks:openbot.run"],
+      "bundleIdentifier": "run.aikingbot.mobile",
+      "associatedDomains": ["applinks:aikingbot.aikingx.com"],
       "infoPlist": {
-        "NSLocalNetworkUsageDescription": "Allow OpenBot to connect to your desktop during local development.",
+        "NSLocalNetworkUsageDescription": "Allow AIKINGBOT to connect to your desktop during local development.",
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
         },
@@ -21,7 +21,7 @@
       "icon": "./assets/icons/app-icon.icon"
     },
     "android": {
-      "package": "run.openbot.mobile",
+      "package": "run.aikingbot.mobile",
       "icon": "./assets/icons/app-icon.png",
       "predictiveBackGestureEnabled": false,
       "permissions": ["android.permission.CAMERA"],
@@ -50,8 +50,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow OpenBot to use your camera to scan QR codes.",
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages.",
+          "cameraPermission": "Allow AIKINGBOT to use your camera to scan QR codes.",
+          "microphonePermission": "Allow AIKINGBOT to use the microphone to dictate messages.",
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": true
         }
@@ -59,16 +59,16 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow OpenBot to access the photos you choose to share.",
-          "cameraPermission": "Allow OpenBot to use your camera to add photos.",
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages."
+          "photosPermission": "Allow AIKINGBOT to access the photos you choose to share.",
+          "cameraPermission": "Allow AIKINGBOT to use your camera to add photos.",
+          "microphonePermission": "Allow AIKINGBOT to use the microphone to dictate messages."
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow OpenBot to access the photos you choose to share.",
-          "savePhotosPermission": "Allow OpenBot to save images you download from a chat to your photo library.",
+          "photosPermission": "Allow AIKINGBOT to access the photos you choose to share.",
+          "savePhotosPermission": "Allow AIKINGBOT to save images you download from a chat to your photo library.",
           "granularPermissions": ["photo"]
         }
       ],
@@ -77,11 +77,11 @@
         "./plugins/with-ios-notification-sounds",
         {
           "sounds": [
-            "./assets/sounds/openbot-task.wav",
-            "./assets/sounds/openbot-warm.wav",
-            "./assets/sounds/openbot-mech.wav",
-            "./assets/sounds/openbot-bubble.wav",
-            "./assets/sounds/openbot-press.wav"
+            "./assets/sounds/aikingbot-task.wav",
+            "./assets/sounds/aikingbot-warm.wav",
+            "./assets/sounds/aikingbot-mech.wav",
+            "./assets/sounds/aikingbot-bubble.wav",
+            "./assets/sounds/aikingbot-press.wav"
           ]
         }
       ],
@@ -103,15 +103,15 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages.",
-          "speechRecognitionPermission": "Allow OpenBot to turn your speech into message text."
+          "microphonePermission": "Allow AIKINGBOT to use the microphone to dictate messages.",
+          "speechRecognitionPermission": "Allow AIKINGBOT to turn your speech into message text."
         }
       ],
       [
         "expo-widgets",
         {
-          "bundleIdentifier": "run.openbot.mobile.ExpoWidgetsTarget",
-          "groupIdentifier": "group.run.openbot.mobile",
+          "bundleIdentifier": "run.aikingbot.mobile.ExpoWidgetsTarget",
+          "groupIdentifier": "group.run.aikingbot.mobile",
           "enablePushNotifications": true,
           "frequentUpdates": true
         }
@@ -119,9 +119,9 @@
       [
         "./plugins/with-notification-service",
         {
-          "targetName": "OpenBotNotificationService",
-          "bundleIdentifier": "run.openbot.mobile.NotificationService",
-          "groupIdentifier": "group.run.openbot.mobile"
+          "targetName": "AIKINGBOTNotificationService",
+          "bundleIdentifier": "run.aikingbot.mobile.NotificationService",
+          "groupIdentifier": "group.run.aikingbot.mobile"
         }
       ]
     ],
@@ -135,7 +135,7 @@
         "projectId": "eeec730f-c8f4-42c0-a750-64df8af14940"
       }
     },
-    "owner": "openbot",
+    "owner": "aikingbot",
     "runtimeVersion": {
       "policy": "fingerprint"
     },

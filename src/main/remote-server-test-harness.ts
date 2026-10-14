@@ -26,8 +26,8 @@ import { RemoteWorkflowError } from "./remote-service-effects";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { ServerSummary } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { expect, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import type { RemoteHostSummary } from "./central-auth-records";
@@ -196,7 +196,7 @@ export function fakeWebRtcTransport(
     getPrincipalId: () => "user-1",
     controlPlaneUrl: "https://api.example.test",
     downloadHostLogo: () => Effect.sync(() => ({ bytes: new Uint8Array(), mimeType: "image/png" })),
-    transferDirectory: join(tmpdir(), "openbot-remote-harness-transfers"),
+    transferDirectory: join(tmpdir(), "aikingbot-remote-harness-transfers"),
     ...overrides,
   });
 }
@@ -227,7 +227,7 @@ const openFixtures: RemoteManagerFixture[] = [];
 
 export async function createRemoteManager(options: RemoteManagerOptions = {}): Promise<RemoteManagerFixture> {
   const servers = options.servers ?? [storedHttpsServer("server-1")];
-  const directory = await mkdtemp(join(tmpdir(), "openbot-remote-servers-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-servers-"));
   const statePath = join(directory, "servers.json");
   await writeFile(
     statePath,

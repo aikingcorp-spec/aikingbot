@@ -1,9 +1,9 @@
 {
-  "name": "openbot",
-  "productName": "OpenBot",
-  "desktopName": "openbot.desktop",
+  "name": "aikingbot",
+  "productName": "AIKINGBOT",
+  "desktopName": "aikingbot.desktop",
   "version": "0.38.2",
-  "description": "A local-first multi-agent desktop workspace for Codex, Claude, and Grok.",
+  "description": "AIKINGBOT — an experimental local-first multi-agent desktop workspace, based on AIKINGBOT.",
   "author": {
     "name": "Norbert Bodziony",
     "url": "https://x.com/norbertbodziony"
@@ -11,12 +11,12 @@
   "license": "PolyForm-Noncommercial-1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nightly-labs/openbot.git"
+    "url": "git+https://github.com/aikingcorp-spec/aikingx_bot.git"
   },
   "bugs": {
-    "url": "https://github.com/nightly-labs/openbot/issues"
+    "url": "https://github.com/aikingcorp-spec/aikingx_bot/issues"
   },
-  "homepage": "https://github.com/nightly-labs/openbot#readme",
+  "homepage": "https://github.com/aikingcorp-spec/aikingx_bot#readme",
   "keywords": [
     "ai-agents",
     "bun",
@@ -88,8 +88,8 @@
     "hosting:setup": "bun scripts/hosting/setup-account-server.ts",
     "api:deploy:test": "bun run --cwd apps/auth-api deploy:test",
     "sites:deploy": "bun run --cwd apps/site-router deploy",
-    "sites:bucket:create": "bunx wrangler r2 bucket create openbot-sites --storage-class Standard",
-    "sites:lifecycle": "bunx wrangler r2 bucket lifecycle set openbot-sites --file apps/site-router/r2-lifecycle.json --force",
+    "sites:bucket:create": "bunx wrangler r2 bucket create aikingbot-sites --storage-class Standard",
+    "sites:lifecycle": "bunx wrangler r2 bucket lifecycle set aikingbot-sites --file apps/site-router/r2-lifecycle.json --force",
     "api:migrate:local": "bun run --cwd apps/auth-api db:migrate:local",
     "api:migrate:remote": "bun run --cwd apps/auth-api db:migrate:remote",
     "api:stripe:bootstrap": "bun run --cwd apps/auth-api stripe:bootstrap",
@@ -256,14 +256,14 @@
     "@muse-code/sdk": "1.4.2",
     "@noble/hashes": "catalog:",
     "@norbert_bodziony/bloub": "catalog:",
-    "@openbot/brand": "workspace:*",
-    "@openbot/contracts": "workspace:*",
-    "@openbot/i18n": "workspace:*",
-    "@openbot/logging": "workspace:*",
-    "@openbot/team-client": "workspace:*",
-    "@openbot/telemetry": "workspace:*",
-    "@openbot/ui": "workspace:*",
-    "@openbot/user-errors": "workspace:*",
+    "@aikingbot/brand": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
+    "@aikingbot/i18n": "workspace:*",
+    "@aikingbot/logging": "workspace:*",
+    "@aikingbot/team-client": "workspace:*",
+    "@aikingbot/telemetry": "workspace:*",
+    "@aikingbot/ui": "workspace:*",
+    "@aikingbot/user-errors": "workspace:*",
     "@openpanel/web": "catalog:",
     "@paper-design/shaders": "catalog:",
     "@solidjs/signals": "catalog:",

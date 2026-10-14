@@ -1,4 +1,4 @@
-import type { AttachmentSummary, MessageReaction } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, MessageReaction } from "@aikingbot/contracts/ipc";
 import { LANDING_PREVIEW_ATTACHMENTS } from "./landing-fixtures";
 
 const LANDING_EVIDENCE_MAP: AttachmentSummary = {

@@ -25,7 +25,7 @@ Allowed states: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED: <reason>`,
   rewritten once the developer decided the runtime, the configuration policy and
   the OAuth question. Stages 1 to 3 are implemented; Stage 4 is open.
 - The plan was written against a dirty working tree at commit `8229759`.
-  Uncommitted files of the OpenBot Remote feature are part of the input state.
+  Uncommitted files of the AIKINGBOT Remote feature are part of the input state.
   The implementer must preserve them and check them before making a change.
 
 - Plan 004 was written by the `improve-animations` skill on 2026-10-12 for the mobile search sheet. It

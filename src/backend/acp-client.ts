@@ -18,11 +18,11 @@ import {
   type SessionConfigOption,
   type SessionNotification,
 } from "@agentclientprotocol/sdk";
-import { agentProviderName } from "@openbot/contracts/agent-providers";
-import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isString } from "@openbot/contracts/runtime-values";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { agentProviderName } from "@aikingbot/contracts/agent-providers";
+import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isBoolean, isString } from "@aikingbot/contracts/runtime-values";
+import { type SourceMessages, sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import {
   AcpConfiguration,
@@ -86,7 +86,7 @@ import { TimeoutError } from "./with-timeout";
 /** How long OpenCode's second `session/load` waits after an internal service failure. */
 const OPENCODE_LOAD_RETRY_MS = 500;
 
-/** How many `session/list` pages OpenBot reads to find a session before it stops looking. */
+/** How many `session/list` pages AIKINGBOT reads to find a session before it stops looking. */
 const OPENCODE_SESSION_LIST_PAGES = 50;
 
 /** Maximum replay work waiting for the storage consumer before the import fails safely. */
@@ -216,17 +216,17 @@ interface HistoryReplay {
 }
 
 /**
- * What OpenBot offers every ACP agent in `initialize`. One value, so the trial start that "Check
+ * What AIKINGBOT offers every ACP agent in `initialize`. One value, so the trial start that "Check
  * agent" makes (`acp-agent-check.ts`) and the real client cannot differ.
  */
-export const OPENBOT_ACP_CLIENT_CAPABILITIES = {
+export const AIKINGBOT_ACP_CLIENT_CAPABILITIES = {
   fs: { readTextFile: false, writeTextFile: false },
   terminal: false,
   elicitation: { form: {} },
   session: { configOptions: { boolean: {} } },
 } as const;
 
-export const OPENBOT_ACP_CLIENT_INFO = { name: "openbot", title: "OpenBot", version: "0.1.0" } as const;
+export const AIKINGBOT_ACP_CLIENT_INFO = { name: "aikingbot", title: "AIKINGBOT", version: "0.1.0" } as const;
 
 export interface AcpProviderOptions {
   provider: AgentProvider;
@@ -271,7 +271,7 @@ export interface AcpProviderOptions {
    */
   servesModel?: ((modelId: string) => boolean) | undefined;
   /**
-   * The user's own MCP servers, read at spawn. OpenBot's bridge servers are appended after these,
+   * The user's own MCP servers, read at spawn. AIKINGBOT's bridge servers are appended after these,
    * so a configuration can never displace the tools the agent depends on.
    */
   mcpServers?: McpServerSource | undefined;
@@ -507,7 +507,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
           ),
         );
       } catch (error) {
-        // A provider can delete an old session. Stored OpenBot history remains valid, so a read
+        // A provider can delete an old session. Stored AIKINGBOT history remains valid, so a read
         // reports the available fragments and leaves the caller to create a replacement session.
         if (error instanceof MissingAcpSessionError) {
           if (stored && durableReplay) yield* readStored(request);
@@ -606,7 +606,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
 
   #publishSessionSettings(thread: AcpThread): void {
     this.emit("notification", {
-      method: "openbot/sessionSettings/updated",
+      method: "aikingbot/sessionSettings/updated",
       params: { threadId: thread.id, ...sessionSettingsSnapshot(thread.configOptions) },
     });
   }
@@ -914,8 +914,8 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
     this.#initialization = yield* providerCall(() =>
       connection.initialize({
         protocolVersion: 1,
-        clientCapabilities: OPENBOT_ACP_CLIENT_CAPABILITIES,
-        clientInfo: OPENBOT_ACP_CLIENT_INFO,
+        clientCapabilities: AIKINGBOT_ACP_CLIENT_CAPABILITIES,
+        clientInfo: AIKINGBOT_ACP_CLIENT_INFO,
       }),
     ).pipe(
       Effect.timeoutOrElse({
@@ -1076,7 +1076,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
             let id: string;
             let configOptions: SessionConfigOption[];
             let currentModelId: string | null;
-            // OpenBot's bridge servers last: all providers key MCP servers by name, so a user
+            // AIKINGBOT's bridge servers last: all providers key MCP servers by name, so a user
             // configuration that reached one of those names would take the agent's own tools away.
             const handoff = acpMcpServers(
               providerResult(
@@ -1511,7 +1511,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
     if (thread.developerInstructions) {
       blocks.unshift({
         type: "text",
-        text: `<openbot-developer-instructions>\n${thread.developerInstructions}\n</openbot-developer-instructions>`,
+        text: `<aikingbot-developer-instructions>\n${thread.developerInstructions}\n</aikingbot-developer-instructions>`,
       });
     }
     yield* providerSync(() => this.#requireServedModel(thread));
@@ -1575,7 +1575,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
       if (thread.activeTurn !== turn || turn.completing) return;
       if (response.usage)
         this.emit("notification", {
-          method: "openbot/usage",
+          method: "aikingbot/usage",
           params: { threadId: thread.id, turnId: turn.id, usage: response.usage },
         });
       // OpenCode reports a model reply with no text, or with reasoning only, as a successful empty
@@ -1884,7 +1884,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
   /**
    * OpenCode retries a rate limit or a provider failure by itself. When it stops, it fails the prompt
    * with the provider's text behind `Internal error:`, so a billing refusal, a rate limit and an
-   * offline computer all read as one failure of OpenBot, and the user could not tell whether
+   * offline computer all read as one failure of AIKINGBOT, and the user could not tell whether
    * waiting helps (#1163). The kind comes first; the provider's own text follows it.
    */
   #openCodeRequestFailure(error: unknown, detail: string): string {
@@ -2019,7 +2019,7 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
       .call("item/tool/call", params, signal)
       .pipe(toProviderClientOperationError);
     if (!isDynamicToolResult(result))
-      return yield* providerFailure(new Error("OpenBot returned an invalid dynamic tool result."));
+      return yield* providerFailure(new Error("AIKINGBOT returned an invalid dynamic tool result."));
     return yield* providerSync(() => result);
   });
 

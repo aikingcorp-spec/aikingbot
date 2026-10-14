@@ -128,7 +128,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Edycja pliku poza tymi folderami najpierw zapyta cię o zgodę, także przy włączonym automatycznym zatwierdzaniu. Polecenie nie może zapisać poza nimi.",
   "agentSettings.runtime.workspaceUnlimited":
-    "Sterowanie komputerem i przeglądarka OpenBot nie są ograniczone; Sterowanie komputerem możesz wyłączyć poniżej.",
+    "Sterowanie komputerem i przeglądarka AIKINGBOT nie są ograniczone; Sterowanie komputerem możesz wyłączyć poniżej.",
   "agentSettings.computerUse.title": "Sterowanie komputerem",
   "agentSettings.computerUse.description": "Pozwól temu agentowi sterować aplikacjami na tym komputerze",
   "agentSettings.automation.title": "Lokalne skrypty",

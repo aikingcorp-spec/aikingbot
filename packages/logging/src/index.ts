@@ -94,8 +94,8 @@ const RULE_WORD =
 // The characters of a credential, a URL path or an email address. Not `=`, `:` or quotes, so the
 // label before a value stays readable.
 const TOKEN_CHARACTER = /[A-Za-z0-9._~+/@%-]/u;
-const VALUE_MARKER = "__openbot_registered_value__";
-const LABEL_MARKER = "__openbot_registered_secret_authorization";
+const VALUE_MARKER = "__aikingbot_registered_value__";
+const LABEL_MARKER = "__aikingbot_registered_secret_authorization";
 const MARKERS = new RegExp(`${VALUE_MARKER}|${LABEL_MARKER}`, "gu");
 const registeredSecrets = new Set<string>();
 // One alternation, longest first, so a secret that contains another one is masked whole.
@@ -448,7 +448,7 @@ function formatLine(level: string, prefix: string, message: LogValue, params: Lo
 }
 
 // `info` by default, so a `debug` call added for one investigation does not
-// keep writing on every user's machine. `OPENBOT_LOG_LEVEL` raises or lowers
+// keep writing on every user's machine. `AIKINGBOT_LOG_LEVEL` raises or lowers
 // it without a rebuild; an unknown value is ignored rather than silencing the
 // log.
 export function resolveLogLevel(raw: string | undefined, fallback: LogLevel = "info"): LogLevel {
@@ -486,8 +486,8 @@ function writeTees(prefix: string, line: string): void {
   }
 }
 
-export function createOpenBotLogger(prefix: string, sink?: (line: string) => void, level?: LogLevel): Logger {
-  const threshold = LEVEL_RANK[level ?? resolveLogLevel(process.env.OPENBOT_LOG_LEVEL)];
+export function createAIKINGBOTLogger(prefix: string, sink?: (line: string) => void, level?: LogLevel): Logger {
+  const threshold = LEVEL_RANK[level ?? resolveLogLevel(process.env.AIKINGBOT_LOG_LEVEL)];
   const out = sink ?? ((line: string) => process.stdout.write(`${line}\n`));
   const err = sink ?? ((line: string) => process.stderr.write(`${line}\n`));
   const write = (

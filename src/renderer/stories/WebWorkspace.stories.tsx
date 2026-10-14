@@ -1,16 +1,16 @@
-import type { AgentProviderStatus, AgentStatus } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
-import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@openbot/contracts/team-protocol/providers-v2";
-import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@openbot/contracts/team-protocol/providers-v3";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { Toaster } from "@openbot/ui";
+import type { AgentProviderStatus, AgentStatus } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { PROVIDERS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v1";
+import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v2";
+import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v3";
+import type { TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
+import { Toaster } from "@aikingbot/ui";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { WebWorkspace } from "../src/features/web-client/WebWorkspace";
 import type { WebRuntimeFactory } from "../src/features/web-client/web-client-context";
 import { WebHostIncompatibleError } from "../src/features/web-client/web-runtime";
+import { createMockAIKINGBOT } from "../src/preview/mock-aikingbot";
 import { MOCK_HOSTED_SERVER_CATALOG } from "../src/preview/mock-hosted-servers";
-import { createMockOpenBot } from "../src/preview/mock-openbot";
 import { createMockWebRuntime } from "../src/preview/mock-web-runtime";
 import "../src/features/web-client/web-client.css";
 
@@ -95,7 +95,7 @@ const NEW_SERVER_ID = "cloud-server";
  */
 const newServerRuntime: WebRuntimeFactory = (accountId, events, accountFetch) => {
   const base = createMockWebRuntime(accountId, events, accountFetch);
-  const team = createMockOpenBot();
+  const team = createMockAIKINGBOT();
   let status: AgentStatus = {
     phase: "blocked",
     cliVersion: null,

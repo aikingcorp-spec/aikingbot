@@ -1,4 +1,4 @@
-import type { MarketplaceSkillSummary } from "@openbot/contracts/ipc";
+import type { MarketplaceSkillSummary } from "@aikingbot/contracts/ipc";
 import {
   ArrowRight,
   Button,
@@ -10,10 +10,10 @@ import {
   Puzzle,
   Sparkles,
   Text,
-} from "@openbot/ui";
-import { ReferenceChip } from "@openbot/ui/reference-chip";
-import { SkillGradient } from "@openbot/ui/skill-gradient";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { ReferenceChip } from "@aikingbot/ui/reference-chip";
+import { SkillGradient } from "@aikingbot/ui/skill-gradient";
+import { useText } from "@aikingbot/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Match, Show, Switch } from "solid-js";
 import { GitHubMark, LogoTile, OnePasswordMark } from "../settings/IntegrationLayout";

@@ -1,6 +1,6 @@
 NVIDIA Parakeet TDT 0.6B v3
 
-OpenBot downloads this speech recognition model on first voice use. The model is not part of the
+AIKINGBOT downloads this speech recognition model on first voice use. The model is not part of the
 application package.
 
 Model: nvidia/parakeet-tdt-0.6b-v3
@@ -10,7 +10,7 @@ License: Creative Commons Attribution 4.0 International (CC BY 4.0)
 https://creativecommons.org/licenses/by/4.0/
 
 Changes: the model was exported to ONNX and quantized to int8 for sherpa-onnx by the sherpa-onnx
-project. OpenBot uses that converted model without further changes:
+project. AIKINGBOT uses that converted model without further changes:
 https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8
 (revision 2bda32ec70b097a55adaa07d9a7173915b43cc78)
 

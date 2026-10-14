@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AccountSession } from "@openbot/contracts/mobile-connect";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AccountSession } from "@aikingbot/contracts/mobile-connect";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -385,7 +385,7 @@ describe("email one-time codes", () => {
     }
   });
 
-  it("signs in once and stores an OpenBot session", async () => {
+  it("signs in once and stores an AIKINGBOT session", async () => {
     const repository = new MemoryAuthRepository();
     let deliveredCode = "";
     const profileChanged = vi.fn((_userId: string): Effect.Effect<void, RemoteOperationError> => Effect.void);
@@ -844,17 +844,17 @@ describe("email one-time codes", () => {
   });
 
   it("gives every email path the same answer for a refused mailbox", () => {
-    expect(emailDeliveryFailure("email_delivery_rate_limited", "OpenBot could not send the invitation.")).toMatchObject(
-      {
-        status: 429,
-        code: "email_delivery_rate_limited",
-        retryAfterSeconds: 300,
-      },
-    );
-    expect(emailDeliveryFailure("smtp_message_failed", "OpenBot could not send the invitation.")).toMatchObject({
+    expect(
+      emailDeliveryFailure("email_delivery_rate_limited", "AIKINGBOT could not send the invitation."),
+    ).toMatchObject({
+      status: 429,
+      code: "email_delivery_rate_limited",
+      retryAfterSeconds: 300,
+    });
+    expect(emailDeliveryFailure("smtp_message_failed", "AIKINGBOT could not send the invitation.")).toMatchObject({
       status: 502,
       code: "email_delivery_failed",
-      message: "OpenBot could not send the invitation.",
+      message: "AIKINGBOT could not send the invitation.",
     });
     expect(isEmailDeliveryFailure(new Error("email_delivery_rate_limited"))).toBe(true);
     expect(isEmailDeliveryFailure(new Error("smtp_message_failed"))).toBe(true);

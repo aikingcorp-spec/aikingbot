@@ -1,6 +1,6 @@
-import { AttachmentCards } from "@openbot/ui/features/conversation/AttachmentCards";
-import { attachmentReferenceBadge } from "@openbot/ui/features/conversation/AttachmentReference";
-import { messageFileReferences } from "@openbot/ui/features/conversation/FileReference";
+import { AttachmentCards } from "@aikingbot/ui/features/conversation/AttachmentCards";
+import { attachmentReferenceBadge } from "@aikingbot/ui/features/conversation/AttachmentReference";
+import { messageFileReferences } from "@aikingbot/ui/features/conversation/FileReference";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 
@@ -41,13 +41,13 @@ describe("messageFileReferences", () => {
   });
 
   it("recognizes full shared paths and keeps the path out of the label", () => {
-    expect(messageFileReferences("Open ~/OpenBot/Shared/raport.csv now.")).toEqual([
+    expect(messageFileReferences("Open ~/AIKINGBOT/Shared/raport.csv now.")).toEqual([
       {
         kind: "shared",
-        path: "~/OpenBot/Shared/raport.csv",
+        path: "~/AIKINGBOT/Shared/raport.csv",
         name: "raport.csv",
         start: 5,
-        end: 32,
+        end: 34,
       },
     ]);
   });
@@ -70,21 +70,21 @@ describe("messageFileReferences", () => {
   });
 
   it("recognizes a quoted shared path with spaces", () => {
-    expect(messageFileReferences('Open "~/OpenBot/Shared/quarterly report.v1.csv".')).toMatchObject([
+    expect(messageFileReferences('Open "~/AIKINGBOT/Shared/quarterly report.v1.csv".')).toMatchObject([
       {
         kind: "shared",
-        path: "~/OpenBot/Shared/quarterly report.v1.csv",
+        path: "~/AIKINGBOT/Shared/quarterly report.v1.csv",
         name: "quarterly report.v1.csv",
       },
     ]);
   });
 
   it("recognizes Windows shared paths", () => {
-    expect(messageFileReferences(String.raw`Open C:\Users\me\OpenBot\Shared\budget.xlsx.`)).toMatchObject([
+    expect(messageFileReferences(String.raw`Open C:\Users\me\AIKINGBOT\Shared\budget.xlsx.`)).toMatchObject([
       {
         kind: "shared",
         name: "budget.xlsx",
-        path: String.raw`C:\Users\me\OpenBot\Shared\budget.xlsx`,
+        path: String.raw`C:\Users\me\AIKINGBOT\Shared\budget.xlsx`,
       },
     ]);
   });
@@ -92,7 +92,7 @@ describe("messageFileReferences", () => {
   it("does not turn unrelated names or URLs into file references", () => {
     expect(
       messageFileReferences(
-        "See https://example.com/raport.csv and https://example.com/OpenBot/Shared/other.csv and raport.csv.bak.",
+        "See https://example.com/raport.csv and https://example.com/AIKINGBOT/Shared/other.csv and raport.csv.bak.",
         [attachment],
       ),
     ).toEqual([]);

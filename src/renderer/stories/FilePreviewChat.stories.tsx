@@ -1,6 +1,6 @@
-import { Bubble, BubbleContent } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { MessageBody } from "@openbot/ui/features/conversation/MessageRendering";
+import { Bubble, BubbleContent } from "@aikingbot/ui";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { MessageBody } from "@aikingbot/ui/features/conversation/MessageRendering";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -11,7 +11,7 @@ import { STORY_AGENTS } from "./fixtures";
 // The chat opens the file preview as a conversation does: a file link in the text of a
 // message calls `onOpenWorkspaceFile`, and the panel shows the file on the right side.
 // An attachment card is a different flow: it opens the media lightbox, not this panel.
-const WORKSPACE = "/Users/test/OpenBot/Agents/agent-4f2c";
+const WORKSPACE = "/Users/test/AIKINGBOT/Agents/agent-4f2c";
 
 const MESSAGES: AgentMessage[] = [
   {

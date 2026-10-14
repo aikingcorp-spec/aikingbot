@@ -4,11 +4,11 @@ import {
   fileReferenceName,
   fileReferenceTone,
   isFileReference,
-} from "@openbot/brand/file-reference";
-import { chatMathStart } from "@openbot/contracts/chat-math";
-import { chatPreviewKind } from "@openbot/contracts/chat-preview";
-import { chatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+} from "@aikingbot/brand/file-reference";
+import { chatMathStart } from "@aikingbot/contracts/chat-math";
+import { chatPreviewKind } from "@aikingbot/contracts/chat-preview";
+import { chatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { MobileTranslate } from "@aikingbot/i18n/mobile";
 import * as Linking from "expo-linking";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
@@ -126,14 +126,14 @@ function sourceEntries<T>(values: T[], source: (value: T) => string) {
 
 /** The colour family of each file tone, as the desktop `data-file-tone` rules use them. */
 const FILE_TONE_COLORS: Record<FileReferenceTone, [string, string]> = {
-  source: ["--openbot-file-blue", "--openbot-file-blue-soft"],
-  script: ["--openbot-file-yellow", "--openbot-file-yellow-soft"],
-  markup: ["--openbot-file-orange", "--openbot-file-orange-soft"],
-  style: ["--openbot-file-teal", "--openbot-file-teal-soft"],
-  data: ["--openbot-file-green", "--openbot-file-green-soft"],
-  document: ["--openbot-file-red", "--openbot-file-red-soft"],
-  media: ["--openbot-file-pink", "--openbot-file-pink-soft"],
-  default: ["--openbot-file-default", "--openbot-file-default-soft"],
+  source: ["--aikingbot-file-blue", "--aikingbot-file-blue-soft"],
+  script: ["--aikingbot-file-yellow", "--aikingbot-file-yellow-soft"],
+  markup: ["--aikingbot-file-orange", "--aikingbot-file-orange-soft"],
+  style: ["--aikingbot-file-teal", "--aikingbot-file-teal-soft"],
+  data: ["--aikingbot-file-green", "--aikingbot-file-green-soft"],
+  document: ["--aikingbot-file-red", "--aikingbot-file-red-soft"],
+  media: ["--aikingbot-file-pink", "--aikingbot-file-pink-soft"],
+  default: ["--aikingbot-file-default", "--aikingbot-file-default-soft"],
 };
 
 /**

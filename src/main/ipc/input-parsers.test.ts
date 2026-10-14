@@ -2,8 +2,8 @@ import { parseDownloadAttachments } from "./agent-inputs";
 import { parseRemoteDesktopSetupAction, parseRemoteDesktopTest } from "./server-inputs";
 // @vitest-environment node
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { CUSTOM_PROVIDER_LIMITS, isCustomProviderSummary } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { CUSTOM_PROVIDER_LIMITS, isCustomProviderSummary } from "@aikingbot/contracts/ipc";
 import { describe, expect, it, vi } from "vitest";
 import {
   agentRequest,
@@ -443,8 +443,8 @@ function voiceWav(sampleBytes: number): Uint8Array {
 describe("server IPC input parsing", () => {
   it("parses host and connection values", () => {
     expect(parseHostConfig({ serverName: "My server" })).toEqual({ serverName: "My server" });
-    expect(parseJoinServer({ inviteUrl: "https://openbot.run/invite" })).toEqual({
-      inviteUrl: "https://openbot.run/invite",
+    expect(parseJoinServer({ inviteUrl: "https://aikingbot.aikingx.com/invite" })).toEqual({
+      inviteUrl: "https://aikingbot.aikingx.com/invite",
     });
     expect(parseLoginServer({ serverId: "server-1" })).toEqual({ serverId: "server-1" });
     expect(parseReorderServers({ serverIds: ["server-2", "server-1"] })).toEqual({
@@ -599,8 +599,8 @@ describe("agent IPC input parsing", () => {
       attachmentId: "attachment-1",
       action: "download",
     });
-    expect(parseOpenSharedFile({ path: "~/OpenBot/Shared/report.csv" })).toEqual({
-      path: "~/OpenBot/Shared/report.csv",
+    expect(parseOpenSharedFile({ path: "~/AIKINGBOT/Shared/report.csv" })).toEqual({
+      path: "~/AIKINGBOT/Shared/report.csv",
       action: "open",
     });
     expect(parseOpenWorkspaceFile({ agentId: "bot-1", path: "app/page.tsx" })).toEqual({

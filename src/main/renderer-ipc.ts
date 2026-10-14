@@ -1,4 +1,4 @@
-import type { EventEndpoint, Untyped } from "@openbot/contracts/ipc";
+import type { EventEndpoint, Untyped } from "@aikingbot/contracts/ipc";
 
 // A typed event takes its payload, or nothing when the payload is `undefined`. An event whose group is not
 // typed yet takes anything, as every event did before endpoints had types. The payload comes from the

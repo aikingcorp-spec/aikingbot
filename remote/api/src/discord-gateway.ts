@@ -1,10 +1,10 @@
-// The OpenBot Discord bot's connections: the Gateway WebSocket (`@discordjs/ws`) and the REST client
+// The AIKINGBOT Discord bot's connections: the Gateway WebSocket (`@discordjs/ws`) and the REST client
 // (`@discordjs/rest`). Under Bun, both use the global WebSocket and fetch. The bot token stays in
 // this module and in the libraries; no log holds it, a payload, or Discord's error text.
 
+import { DISCORD_GATEWAY_INTENTS } from "@aikingbot/contracts/discord-app";
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RequestMethod } from "@discordjs/rest";
 import { WebSocketManager, WebSocketShardEvents } from "@discordjs/ws";
-import { DISCORD_GATEWAY_INTENTS } from "@openbot/contracts/discord-app";
 import { Context, Effect, FiberSet, Layer, Schedule, Schema } from "effect";
 import type { DiscordBotConfig } from "./config";
 import {
@@ -85,7 +85,7 @@ function makeDiscordRestTransport(rest: REST): DiscordTransport {
 }
 
 export class DiscordGateway extends Context.Service<DiscordGateway, { readonly api: DiscordApi }>()(
-  "@openbot/remote-api/DiscordGateway",
+  "@aikingbot/remote-api/DiscordGateway",
 ) {
   /** Connects the bot. The scope's finalizer closes the Gateway connection. */
   static layer(config: DiscordBotConfig, signal: SignalService, links: DiscordLinks) {
@@ -114,7 +114,9 @@ export class DiscordGateway extends Context.Service<DiscordGateway, { readonly a
           unlinking.add(guildId);
           run(
             links.removed(guildId).pipe(
-              Effect.catch(() => Effect.sync(() => console.error("OpenBot Discord could not unlink a removed guild."))),
+              Effect.catch(() =>
+                Effect.sync(() => console.error("AIKINGBOT Discord could not unlink a removed guild.")),
+              ),
               Effect.ensuring(Effect.sync(() => unlinking.delete(guildId))),
             ),
           );
@@ -131,7 +133,7 @@ export class DiscordGateway extends Context.Service<DiscordGateway, { readonly a
                 .reconcile(guildIds, Date.now() - DISCORD_RECONCILE_GRACE_MILLISECONDS)
                 .pipe(
                   Effect.catch(() =>
-                    Effect.sync(() => console.error("OpenBot Discord could not reconcile the guild links.")),
+                    Effect.sync(() => console.error("AIKINGBOT Discord could not reconcile the guild links.")),
                   ),
                 );
         });
@@ -165,7 +167,9 @@ export class DiscordGateway extends Context.Service<DiscordGateway, { readonly a
           run(
             call.pipe(
               Effect.catch((error) =>
-                Effect.sync(() => console.error(`OpenBot Discord ${action.type} failed with status ${error.status}.`)),
+                Effect.sync(() =>
+                  console.error(`AIKINGBOT Discord ${action.type} failed with status ${error.status}.`),
+                ),
               ),
             ),
           );
@@ -180,24 +184,24 @@ export class DiscordGateway extends Context.Service<DiscordGateway, { readonly a
                 actions = state.handle(payload);
               } catch {
                 // The event name only: the payload can hold a message.
-                console.error(`OpenBot Discord could not read a ${payload.t} event.`);
+                console.error(`AIKINGBOT Discord could not read a ${payload.t} event.`);
                 return;
               }
               // The acknowledgement goes first: Discord waits 3 seconds for it.
               for (const action of actions) act(action);
             });
-            gateway.on(WebSocketShardEvents.Ready, () => console.log("OpenBot Discord Gateway is ready."));
+            gateway.on(WebSocketShardEvents.Ready, () => console.log("AIKINGBOT Discord Gateway is ready."));
             gateway.on(WebSocketShardEvents.Resumed, (shardId) => {
-              console.log("OpenBot Discord Gateway resumed.");
+              console.log("AIKINGBOT Discord Gateway resumed.");
               for (const action of state.shardResumed(shardId)) act(action);
             });
             gateway.on(WebSocketShardEvents.Closed, (code, shardId) => {
               // Until the shard resumes or is ready again, its guild list can be stale: a reconcile with
               // it could unlink a guild that installed the bot meanwhile.
               state.shardClosed(shardId);
-              console.log(`OpenBot Discord Gateway closed with code ${code}.`);
+              console.log(`AIKINGBOT Discord Gateway closed with code ${code}.`);
             });
-            gateway.on(WebSocketShardEvents.Error, () => console.error("OpenBot Discord Gateway failed."));
+            gateway.on(WebSocketShardEvents.Error, () => console.error("AIKINGBOT Discord Gateway failed."));
             return gateway;
           }),
           (gateway) =>
@@ -210,7 +214,7 @@ export class DiscordGateway extends Context.Service<DiscordGateway, { readonly a
         // The fiber ends with the runtime, which stops the retries.
         run(
           Effect.tryPromise({ try: () => manager.connect(), catch: () => new DiscordGatewayConnectError() }).pipe(
-            Effect.tapError(() => Effect.sync(() => console.error("OpenBot Discord Gateway could not connect."))),
+            Effect.tapError(() => Effect.sync(() => console.error("AIKINGBOT Discord Gateway could not connect."))),
             Effect.retry(DISCORD_CONNECT_RETRY),
             Effect.ignore,
           ),

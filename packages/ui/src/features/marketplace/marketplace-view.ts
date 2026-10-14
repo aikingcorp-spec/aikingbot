@@ -3,8 +3,8 @@ import type {
   MarketplaceSkillSummary,
   McpServerConfig,
   SkillCategory,
-} from "@openbot/contracts/ipc";
-import { errorReference } from "@openbot/user-errors";
+} from "@aikingbot/contracts/ipc";
+import { errorReference } from "@aikingbot/user-errors";
 import { createStore, onCleanup, onSettled, untrack } from "solid-js";
 import type { MarketplaceListing } from "./marketplace-listing";
 import type { MarketplaceApp, MarketplaceModel } from "./marketplace-model";

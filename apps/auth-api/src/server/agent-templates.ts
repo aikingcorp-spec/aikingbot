@@ -1,13 +1,13 @@
-import { isAgentTemplateId } from "@openbot/contracts/agent-template-links";
-import { isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { isAgentTemplateId } from "@aikingbot/contracts/agent-template-links";
+import { isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type AgentTemplateSnapshot,
   isAgentTemplateCardPng,
   isAgentTemplateSnapshot,
   toAgentTemplateSnapshot,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect, Result, Schema } from "effect";
 import { AgentMarketplaceError } from "./agent-marketplace";
 import { encodeBase64Url } from "./crypto";
@@ -221,7 +221,7 @@ export class AgentTemplates {
           id: row.id,
           avatarUrl: row.avatar_key ? `/v1/agent-templates/${row.id}/avatar?v=${row.updated_at}` : null,
           cardUrl: row.card_key ? `/v1/agent-templates/${row.id}/card?v=${row.updated_at}` : null,
-          creatorName: row.creator_name?.trim() || "OpenBot user",
+          creatorName: row.creator_name?.trim() || "AIKINGBOT user",
           updatedAt: new Date(row.updated_at).toISOString(),
         };
       }),

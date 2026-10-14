@@ -5,11 +5,11 @@ import {
   type SidebarLayoutSnapshot,
   type TeamRealtimeEvent,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/agent-admin-v1";
-import { AGENT_HOST_SETTINGS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { AGENT_PUBLISH_CAPABILITY } from "@openbot/contracts/team-protocol/agent-publish-v1";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { AGENT_ADMIN_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
+import { AGENT_HOST_SETTINGS_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
+import { AGENT_PUBLISH_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-publish-v1";
 import {
   TEAM_BROWSER_VIEW_CAPABILITY,
   TEAM_BROWSER_VIEW_CLIPBOARD_CAPABILITY,
@@ -17,18 +17,18 @@ import {
   TEAM_BROWSER_VIEW_CURSOR_CAPABILITY,
   TEAM_BROWSER_VIEW_FRAME_POINT_CAPABILITY,
   TEAM_BROWSER_VIEW_VIEWPORT_CAPABILITY,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
-import { TEAM_CONVERSATION_UNREAD_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
-import { HOST_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/host-admin-v1";
-import { LIVE_ACTIVITY_PUSH_CAPABILITY } from "@openbot/contracts/team-protocol/live-activity-push-v1";
-import { PUSH_NOTIFICATIONS_CAPABILITY } from "@openbot/contracts/team-protocol/push-notifications-v1";
-import { SHARED_TABLES_CAPABILITY } from "@openbot/contracts/team-protocol/shared-tables-v1";
-import { SKILLS_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { decodeTeamProtocolSupportV7Base } from "@openbot/contracts/team-protocol/v7-base";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
+import { TEAM_CONVERSATION_UNREAD_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { EVENTS_CAPABILITY } from "@aikingbot/contracts/team-protocol/events-v1";
+import { HOST_ADMIN_CAPABILITY } from "@aikingbot/contracts/team-protocol/host-admin-v1";
+import { LIVE_ACTIVITY_PUSH_CAPABILITY } from "@aikingbot/contracts/team-protocol/live-activity-push-v1";
+import { PUSH_NOTIFICATIONS_CAPABILITY } from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import { SHARED_TABLES_CAPABILITY } from "@aikingbot/contracts/team-protocol/shared-tables-v1";
+import { SKILLS_ADMIN_CAPABILITY } from "@aikingbot/contracts/team-protocol/skills-admin-v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { decodeTeamProtocolSupportV7Base } from "@aikingbot/contracts/team-protocol/v7-base";
+import { sourceText } from "@aikingbot/i18n/source";
 import {
   createRemoteAccountRefresh,
   createRemoteReadRefresh,
@@ -42,11 +42,11 @@ import {
   type RemoteWorkspacePreferences,
   readAgentAnalytics,
   runTeamEffect,
-} from "@openbot/team-client";
-import { createHostedServerWake, WAKE_RECONNECT_DELAY_MS } from "@openbot/team-client/hosted-server-wake";
-import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
-import { reconcilePendingRequests } from "@openbot/team-client/runtime-attention";
-import { updateHostIdentity } from "@openbot/team-client/team-admin-requests";
+} from "@aikingbot/team-client";
+import { createHostedServerWake, WAKE_RECONNECT_DELAY_MS } from "@aikingbot/team-client/hosted-server-wake";
+import type { RemoteFileUpload } from "@aikingbot/team-client/remote-peer";
+import { reconcilePendingRequests } from "@aikingbot/team-client/runtime-attention";
+import { updateHostIdentity } from "@aikingbot/team-client/team-admin-requests";
 import {
   deleteAgent,
   discardAttachmentDraft,
@@ -56,7 +56,7 @@ import {
   respondToBrowserTakeover,
   type TeamApiRequest,
   uploadAttachmentDraft,
-} from "@openbot/team-client/team-api-requests";
+} from "@aikingbot/team-client/team-api-requests";
 import { replaceEqualDeep, useQueryClient } from "@tanstack/react-query";
 import { Effect } from "effect";
 import * as SecureStore from "expo-secure-store";
@@ -145,7 +145,7 @@ const NO_IDS: string[] = [];
 const OTHER_SERVERS_RETURN_DELAY_MS = 3_000;
 const EMPTY_SERVER: MobileServer = {
   id: "unavailable",
-  name: "OpenBot",
+  name: "AIKINGBOT",
   logoKey: null,
   kind: "local",
   state: "connecting",
@@ -498,7 +498,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       supportLog.add(
         "info",
         "connection",
-        `${serverId} host OpenBot ${compatibility.appVersion}, protocol ${compatibility.protocol.minimum}-${compatibility.protocol.maximum}, capabilities: ${compatibility.capabilities.join(" ")}`,
+        `${serverId} host AIKINGBOT ${compatibility.appVersion}, protocol ${compatibility.protocol.minimum}-${compatibility.protocol.maximum}, capabilities: ${compatibility.capabilities.join(" ")}`,
       );
       if (compatibility.protocol.minimum > TEAM_PROTOCOL_V3 || compatibility.protocol.maximum < TEAM_PROTOCOL_V3) {
         throw new Error(sourceText("error.remote.mobileUpdateRequired"));

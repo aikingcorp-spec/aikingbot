@@ -1,9 +1,9 @@
-import { CONNECTORS_ROUTES } from "@openbot/contracts/team-protocol/connectors-v1";
+import { CONNECTORS_ROUTES } from "@aikingbot/contracts/team-protocol/connectors-v1";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { type RelayedInstallsRemote, RelayedMessagingInstalls } from "./relayed-messaging-installs";
 
-// Failure modes: an `openbot://` link that this computer did not start sends a grant to a server; a
+// Failure modes: an `aikingbot://` link that this computer did not start sends a grant to a server; a
 // Slack grant goes to a Discord install; one grant goes to the server twice.
 describe("RelayedMessagingInstalls", () => {
   it("sends a grant only to the server whose install this computer opened, once", async () => {

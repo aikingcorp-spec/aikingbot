@@ -1,6 +1,6 @@
-import type { CustomProviderRestart, CustomProviderSummary, SaveCustomProviderInput } from "@openbot/contracts/ipc";
-import { customAgentRestartKey } from "@openbot/ui/features/custom-providers/CustomAgentSettings";
-import { currentText } from "@openbot/ui/text";
+import type { CustomProviderRestart, CustomProviderSummary, SaveCustomProviderInput } from "@aikingbot/contracts/ipc";
+import { customAgentRestartKey } from "@aikingbot/ui/features/custom-providers/CustomAgentSettings";
+import { currentText } from "@aikingbot/ui/text";
 import { createStore } from "solid-js";
 import { customProviderRestartMessage } from "./custom-provider-restart";
 

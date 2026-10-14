@@ -1,12 +1,12 @@
-# OpenBot Mobile Design Guidelines
+# AIKINGBOT Mobile Design Guidelines
 
 These rules apply to design, implementation, review, and AI-generated mobile UI. They define which layer owns each part of the interface and prevent the app from drifting into multiple visual systems.
 
 ## Core rule
 
-HeroUI Native is the foundation for application content. It is already installed, its provider is mounted in `src/app/_layout.tsx`, and its theme aliases are mapped to OpenBot tokens in `global.css`.
+HeroUI Native is the foundation for application content. It is already installed, its provider is mounted in `src/app/_layout.tsx`, and its theme aliases are mapped to AIKINGBOT tokens in `global.css`.
 
-Use HeroUI Native for product UI such as buttons, cards, fields, alerts, chips, accordions, and other content rendered inside a screen. Reuse an existing OpenBot component first, then a HeroUI Native component. Do not recreate a component that either layer already provides.
+Use HeroUI Native for product UI such as buttons, cards, fields, alerts, chips, accordions, and other content rendered inside a screen. Reuse an existing AIKINGBOT component first, then a HeroUI Native component. Do not recreate a component that either layer already provides.
 
 HeroUI Native is a component source, not a requirement to decorate every screen. Start with the lightest useful composition. A focused screen may need only layout, `Typography`, and one `Button`; add `Card`, `Chip`, `Surface`, or `Alert` only when it expresses real grouping, state, interaction, or actionable information.
 
@@ -69,7 +69,7 @@ a standalone sheet with a native title is:
 }
 ```
 
-Resolve `sheetBackground` from `--openbot-bg-sheet`, as in `src/app/(app)/_layout.tsx`.
+Resolve `sheetBackground` from `--aikingbot-bg-sheet`, as in `src/app/(app)/_layout.tsx`.
 Keep `headerShadowVisible: false` from the parent stack. A headerless sheet uses
 `headerShown: false`; do not add a fake navigation bar. Full-height detents are appropriate for
 search or similarly large content, not the default for a short form.
@@ -221,7 +221,7 @@ saved name. Reserve a compact Cancel area so editing does not shift the page.
 Group the identity, action area and Profile photo section together instead of applying the
 standard section gap on both sides of the reserved area. Keep the email close to the name.
 
-About ends with a centered, interactive `AppLogo`, the OpenBot name and the app version, including
+About ends with a centered, interactive `AppLogo`, the AIKINGBOT name and the app version, including
 the build number when available. Reuse the logo's existing tap animation; do not create another
 mascot animation or add a marketing subtitle. Read version metadata from the app rather than
 hardcoding it.
@@ -248,9 +248,9 @@ The text colors must retain at least 4.5:1 contrast on the surfaces that use the
 Fixed colors in camera overlays, QR codes, SVG alpha masks and agent artwork serve their
 respective media or identity roles. Do not replace these with foreground/background theme colors.
 
-- `packages/brand/src/tokens.css` is the single source of truth for OpenBot color, typography, radius, shadow, and motion tokens, shared with the desktop and web apps; `tokens-native.css` beside it carries the light and dark values for the tokens mobile themes. `global.css` imports both and declares none of its own — it maps them to Tailwind utilities and HeroUI semantic aliases.
+- `packages/brand/src/tokens.css` is the single source of truth for AIKINGBOT color, typography, radius, shadow, and motion tokens, shared with the desktop and web apps; `tokens-native.css` beside it carries the light and dark values for the tokens mobile themes. `global.css` imports both and declares none of its own — it maps them to Tailwind utilities and HeroUI semantic aliases.
 - Use HeroUI semantic variants and existing utility classes. Do not add raw colors, arbitrary radii, or one-off shadows to a screen when a token or component variant can express the intent.
-- Extend OpenBot tokens only for a new semantic role that will be reused. Keep HeroUI aliases mapped to OpenBot tokens rather than creating a second palette.
+- Extend AIKINGBOT tokens only for a new semantic role that will be reused. Keep HeroUI aliases mapped to AIKINGBOT tokens rather than creating a second palette.
 - Support light and dark appearance, dynamic type, reduced motion, reduced transparency, and sufficient contrast.
 - Favor composition and shared variants over copying styled JSX between screens.
 - Keep status and instructional copy evidence-based. Do not introduce badges, alerts, or lifecycle requirements that cannot be derived from the actual session, connectivity, or persistence implementation.

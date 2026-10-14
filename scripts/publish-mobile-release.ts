@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { IN_REVIEW, MOBILE_CHANGELOG, MOBILE_VERSION_FILES, releaseNotesProblems } from "./release-notes";
 
 //   bun scripts/publish-mobile-release.ts
@@ -8,7 +8,7 @@ import { IN_REVIEW, MOBILE_CHANGELOG, MOBILE_VERSION_FILES, releaseNotesProblems
 // Run when the store makes the build of the app.json version available. It replaces
 // "In review" with today's date, so the Mobile tab of /changelog shows the version.
 
-const logger = createOpenBotLogger("publish-mobile-release");
+const logger = createAIKINGBOTLogger("publish-mobile-release");
 
 const appJson = JSON.parse(await readFile(MOBILE_VERSION_FILES[0], "utf8"));
 const version = isDynamicRecord(appJson) && isDynamicRecord(appJson.expo) ? appJson.expo.version : undefined;

@@ -1,25 +1,25 @@
-import { chatVisualReply } from "@openbot/contracts/chat-visual";
-import type { ConversationMessageSender } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import type { AgentMessage, ChatActionMarkerModel } from "@openbot/ui/data";
-import { AgentActivityIndicator } from "@openbot/ui/features/conversation/AgentActivity";
-import { AttachmentCards } from "@openbot/ui/features/conversation/AttachmentCards";
-import { ChatActionMarker } from "@openbot/ui/features/conversation/ChatActionMarker";
-import { type ChatMessageAuthor, ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ChatRowBoundary } from "@openbot/ui/features/conversation/ChatRowBoundary";
-import { ChatScrollRail, createChatScrollRail } from "@openbot/ui/features/conversation/ChatScrollRail";
-import { ChatSearch } from "@openbot/ui/features/conversation/ChatSearch";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
-import { ContextCompactionMarker, type ContextCompactionView } from "@openbot/ui/features/conversation/ContextUsage";
-import { BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
-import { dayMarkerLabel } from "@openbot/ui/features/conversation/chat-day-markers";
-import { ScrollToLatestButton } from "@openbot/ui/features/conversation/MessageNavigation";
-import { MessageActions } from "@openbot/ui/features/conversation/MessageRendering";
-import { PendingSendStatus } from "@openbot/ui/features/conversation/PendingSendStatus";
-import { TaskList } from "@openbot/ui/features/conversation/TaskList";
-import { UnreadMessagesBanner, UnreadMessagesDivider } from "@openbot/ui/features/conversation/UnreadMessages";
-import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
-import { useText } from "@openbot/ui/text";
+import { chatVisualReply } from "@aikingbot/contracts/chat-visual";
+import type { ConversationMessageSender } from "@aikingbot/contracts/ipc";
+import { Button } from "@aikingbot/ui";
+import type { AgentMessage, ChatActionMarkerModel } from "@aikingbot/ui/data";
+import { AgentActivityIndicator } from "@aikingbot/ui/features/conversation/AgentActivity";
+import { AttachmentCards } from "@aikingbot/ui/features/conversation/AttachmentCards";
+import { ChatActionMarker } from "@aikingbot/ui/features/conversation/ChatActionMarker";
+import { type ChatMessageAuthor, ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ChatRowBoundary } from "@aikingbot/ui/features/conversation/ChatRowBoundary";
+import { ChatScrollRail, createChatScrollRail } from "@aikingbot/ui/features/conversation/ChatScrollRail";
+import { ChatSearch } from "@aikingbot/ui/features/conversation/ChatSearch";
+import { ChatVisual } from "@aikingbot/ui/features/conversation/ChatVisual";
+import { ContextCompactionMarker, type ContextCompactionView } from "@aikingbot/ui/features/conversation/ContextUsage";
+import { BrowserTakeoverCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
+import { dayMarkerLabel } from "@aikingbot/ui/features/conversation/chat-day-markers";
+import { ScrollToLatestButton } from "@aikingbot/ui/features/conversation/MessageNavigation";
+import { MessageActions } from "@aikingbot/ui/features/conversation/MessageRendering";
+import { PendingSendStatus } from "@aikingbot/ui/features/conversation/PendingSendStatus";
+import { TaskList } from "@aikingbot/ui/features/conversation/TaskList";
+import { UnreadMessagesBanner, UnreadMessagesDivider } from "@aikingbot/ui/features/conversation/UnreadMessages";
+import { teamMemberName } from "@aikingbot/ui/features/team/TeamPersonAvatar";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo, createSignal, For, Loading, lazy, onCleanup, Show, untrack } from "solid-js";
 import { planItems, planTitle } from "../../app-message-projection";
 import { deviceSendShortcut } from "../../send-shortcut-preference";
@@ -883,8 +883,10 @@ export function ConversationTimeline() {
 }
 
 const ApprovalCard = lazy(() =>
-  import("@openbot/ui/features/conversation/ConversationPrompts").then((module) => ({ default: module.ApprovalCard })),
+  import("@aikingbot/ui/features/conversation/ConversationPrompts").then((module) => ({
+    default: module.ApprovalCard,
+  })),
 );
 const QuestionPromptBubble = lazy(() =>
-  import("@openbot/ui/components/QuestionPromptBubble").then((module) => ({ default: module.QuestionPromptBubble })),
+  import("@aikingbot/ui/components/QuestionPromptBubble").then((module) => ({ default: module.QuestionPromptBubble })),
 );

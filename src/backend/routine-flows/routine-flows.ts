@@ -31,15 +31,15 @@ import type {
   RoutineRun,
   SaveRoutineFlowPositionInput,
   UpdateRoutineFlowLinkInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { nextValidRoutineOccurrence } from "@openbot/team-client/routine-schedule";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
+import { nextValidRoutineOccurrence } from "@aikingbot/team-client/routine-schedule";
 import { Context, Effect, Exit, Layer, ManagedRuntime, Schema, Scope, Semaphore } from "effect";
 import { routineFlowDepths } from "./routine-flow-graph";
 import { RoutineFlowError, type RoutineFlowRun, type RoutineFlowStore } from "./routine-flow-store";
 
-const logger = createOpenBotLogger("routine-flows");
+const logger = createAIKINGBOTLogger("routine-flows");
 
 /** How far back a sweep looks for a run whose flow may still move. */
 const SWEEP_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
@@ -101,7 +101,7 @@ export interface RoutineFlowsShape {
   notice(event: AgentEvent): Effect.Effect<void>;
 }
 
-class RoutineFlows extends Context.Service<RoutineFlows, RoutineFlowsShape>()("openbot/backend/RoutineFlows") {
+class RoutineFlows extends Context.Service<RoutineFlows, RoutineFlowsShape>()("aikingbot/backend/RoutineFlows") {
   static layer(dependencies: RoutineFlowsDependencies) {
     return Layer.effect(
       RoutineFlows,

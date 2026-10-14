@@ -1,4 +1,4 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
 import { describe, expect, it, vi } from "vitest";
 import { createWebAttachmentMedia, WEB_THUMBNAIL_BYTES } from "./web-attachment-media";
 import type { WebFile } from "./web-runtime";

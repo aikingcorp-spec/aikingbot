@@ -2,7 +2,7 @@ import {
   accountUsageProviderRows,
   accountUsageRowLabel,
   accountUsageSummary,
-} from "@openbot/ui/features/account/account-usage-view";
+} from "@aikingbot/ui/features/account/account-usage-view";
 import { assert, describe, expect, it } from "vitest";
 
 describe("account usage view", () => {

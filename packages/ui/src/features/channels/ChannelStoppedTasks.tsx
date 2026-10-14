@@ -1,5 +1,5 @@
-import type { ChannelMember, ChannelTask } from "@openbot/contracts/ipc";
-import { Button, buttonVariants, DropdownMenu } from "@openbot/ui";
+import type { ChannelMember, ChannelTask } from "@aikingbot/contracts/ipc";
+import { Button, buttonVariants, DropdownMenu } from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 

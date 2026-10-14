@@ -15,7 +15,7 @@ for (const cancel of [false, true]) {
     cancel ? "does not persist a late token after cancellation" : "removes stored and tool credentials on disconnect",
     async () => {
       vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
-      const directory = await mkdtemp(join(tmpdir(), "openbot-github-effect-"));
+      const directory = await mkdtemp(join(tmpdir(), "aikingbot-github-effect-"));
       const path = join(directory, "account.json");
       const tools = join(directory, "tools");
       const store = new GitHubConnectorStore(path, {

@@ -1,5 +1,5 @@
-import { HOSTED_SITES_CAPABILITY, HOSTED_SITES_ROUTES } from "@openbot/contracts/team-protocol/hosted-sites-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { HOSTED_SITES_CAPABILITY, HOSTED_SITES_ROUTES } from "@aikingbot/contracts/team-protocol/hosted-sites-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiHostedSites } from "./dependencies";
 import { HttpError } from "./http-error";
@@ -7,7 +7,7 @@ import type { RouteOutcome, TeamApiRequestContext } from "./request-context";
 import { readJson, requireAdmin, stringField } from "./request-helpers";
 
 /**
- * The openbot.site sites of this server, read from a joined server. Every member can read the list, as
+ * The aikingbot-sites.aikingx.com sites of this server, read from a joined server. Every member can read the list, as
  * every member can open a published site. Deleting a site changes what the server publishes, so only an
  * owner or an admin can. The host calls the account service with its own credential. Frozen by
  * `hosted-sites-v1`.

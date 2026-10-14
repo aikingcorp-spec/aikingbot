@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Context, Deferred, Effect, Layer, Result, Semaphore } from "effect";
 import { recordRestartActivity } from "../backend/restart-activity";
 import { RemoteWorkflowError, remoteDecode } from "./remote-service-effects";
@@ -32,7 +32,7 @@ import {
   encodeBrowserViewCopied,
   encodeBrowserViewFrame,
   encodeBrowserViewHostMessage,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import type * as Ws from "ws";
 import type { BrowserHost } from "../backend/browser-host";
 import { rawDataSize, rawDataText } from "./ws-raw-data";
@@ -81,7 +81,7 @@ class BrowserViewPort extends Context.Service<
     input(...args: Parameters<BrowserHost["dispatchViewInput"]>): Effect.Effect<void, RemoteWorkflowError>;
     copy(...args: Parameters<BrowserHost["copyViewSelection"]>): Effect.Effect<string | null, RemoteWorkflowError>;
   }
->()("openbot/main/BrowserViewPort") {
+>()("aikingbot/main/BrowserViewPort") {
   static layer(browser: BrowserViewGatewayOptions["browser"]) {
     return Layer.succeed(
       BrowserViewPort,
@@ -252,11 +252,11 @@ export class BrowserViewGateway {
    * the member the session was made for -- another member's token opens their own view, not this one.
    */
   #authorized(request: IncomingMessage, session: ManagedViewSession): boolean {
-    const remoteSession = request.headers["x-openbot-webrtc-session"];
+    const remoteSession = request.headers["x-aikingbot-webrtc-session"];
     if (remoteSession === session.teamSessionId) return true;
     const protocols = (request.headers["sec-websocket-protocol"] ?? "").split(",").map((value) => value.trim());
-    const encodedToken = protocols.find((value) => value.startsWith("openbot-token."));
-    const token = encodedToken?.slice("openbot-token.".length) ?? "";
+    const encodedToken = protocols.find((value) => value.startsWith("aikingbot-token."));
+    const token = encodedToken?.slice("aikingbot-token.".length) ?? "";
     if (!token || token.length > 512) return false;
     return this.#options.authenticate(token)?.id === session.memberId;
   }

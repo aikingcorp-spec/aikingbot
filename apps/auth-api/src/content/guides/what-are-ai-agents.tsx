@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/solid-router";
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 
 export function WhatAreAIAgents() {
   return (
@@ -46,7 +46,7 @@ export function WhatAreAIAgents() {
       </p>
       <p>
         The terminology varies, but{" "}
-        <a href={OPENBOT_LINKS.anthropicAgents} target="_blank" rel={EXTERNAL_LINK_REL}>
+        <a href={AIKINGBOT_LINKS.anthropicAgents} target="_blank" rel={EXTERNAL_LINK_REL}>
           Anthropic describes agents
         </a>{" "}
         as systems that “dynamically direct their own processes and tool usage,” in contrast to workflows that follow
@@ -81,7 +81,7 @@ export function WhatAreAIAgents() {
         An agent can misunderstand a request, use incomplete or outdated information, or make a poor choice about what
         to do next. Errors can also build up over a longer task, so check important facts, sources, and changes before
         relying on the result.{" "}
-        <a href={OPENBOT_LINKS.anthropicAgents} target="_blank" rel={EXTERNAL_LINK_REL}>
+        <a href={AIKINGBOT_LINKS.anthropicAgents} target="_blank" rel={EXTERNAL_LINK_REL}>
           Anthropic also notes
         </a>{" "}
         that greater autonomy can bring higher costs and compounding errors in some systems.
@@ -104,21 +104,21 @@ export function WhatAreAIAgents() {
         action.
       </p>
 
-      <h2>AI Agents in OpenBot</h2>
+      <h2>AI Agents in AIKINGBOT</h2>
       <p>
-        OpenBot gives each agent a role, workspace, and conversation. Agents can hand work and files to one another
-        while the project stays together. OpenBot organizes the work around the connected provider; that provider still
-        handles the model requests.
+        AIKINGBOT gives each agent a role, workspace, and conversation. Agents can hand work and files to one another
+        while the project stays together. AIKINGBOT organizes the work around the connected provider; that provider
+        still handles the model requests.
       </p>
       <p>
-        OpenBot is local-first, but that does not necessarily mean the model runs on your computer. The workspace can be
-        local while a connected provider handles the requests. For a closer look, see{" "}
-        <Link to="/guides/$slug" params={{ slug: "openbot-101" }}>
-          OpenBot 101
+        AIKINGBOT is local-first, but that does not necessarily mean the model runs on your computer. The workspace can
+        be local while a connected provider handles the requests. For a closer look, see{" "}
+        <Link to="/guides/$slug" params={{ slug: "aikingbot-101" }}>
+          AIKINGBOT 101
         </Link>
         . To see how this differs from an agent app that runs in the cloud, read{" "}
         <Link to="/compare/$slug" params={{ slug: "grok-bot" }}>
-          OpenBot vs Grok Bot
+          AIKINGBOT vs Grok Bot
         </Link>
         .
       </p>

@@ -18,7 +18,8 @@ export const messages = {
   "mobile.workspace.error.leaveOwnServer": "Выйти можно только с подключённых удалённых серверов.",
   "mobile.workspace.error.removeOwnedServerOnly": "Удалить этот сервер может только владелец.",
   "mobile.workspace.error.agentNotOnHost": "Агента нет на этом хосте.",
-  "mobile.workspace.error.filesUnsupported": "Этот хост не поддерживает управление файлами. Обновите OpenBot на хосте.",
+  "mobile.workspace.error.filesUnsupported":
+    "Этот хост не поддерживает управление файлами. Обновите AIKINGBOT на хосте.",
   "mobile.workspace.error.agentUnavailableOnHost": "Агент недоступен на этом хосте.",
   "mobile.workspace.error.agentUnavailable": "Агент недоступен.",
   "mobile.workspace.error.formUnavailable": "Эта форма больше недоступна.",

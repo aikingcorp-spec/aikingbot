@@ -1,4 +1,4 @@
-import type { ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
+import type { ConversationMessage, ConversationSnapshot } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   CURRENT_MESSAGE_SEPARATOR,

@@ -26,7 +26,7 @@ process.stdin.on("data", chunk => {
   let line;
   while ((line = buffer.indexOf("\\n")) >= 0) {
     const command = JSON.parse(buffer.slice(0, line)); buffer = buffer.slice(line + 1);
-    fs.appendFileSync(path.join(process.cwd(), "commands.jsonl"), JSON.stringify({...command, mcpServers: JSON.parse(process.env.OPENBOT_PI_MCP_SERVERS || "[]")}) + "\\n");
+    fs.appendFileSync(path.join(process.cwd(), "commands.jsonl"), JSON.stringify({...command, mcpServers: JSON.parse(process.env.AIKINGBOT_PI_MCP_SERVERS || "[]")}) + "\\n");
     let data = {};
     if (command.type === "get_state") { fs.writeFileSync(session, "{}"); data = { sessionFile: session }; }
     if (command.type === "switch_session") session = command.sessionPath;
@@ -61,7 +61,7 @@ afterEach(async () => {
 });
 
 async function fixture() {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-pi-test-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-pi-test-"));
   cleanup.push(() => rm(directory, { recursive: true, force: true }));
   const script = join(directory, "pi.cjs");
   await writeFile(script, FAKE, { mode: 0o755 });
@@ -118,7 +118,7 @@ describe("Pi native sessions", () => {
       await done;
     }
     const usage = test.events
-      .filter((event) => event.method === "openbot/usage")
+      .filter((event) => event.method === "aikingbot/usage")
       .map((event) => getRecord(event.params, "usage"));
     const commands = (await readFile(join(test.directory, "commands.jsonl"), "utf8"))
       .trim()
@@ -215,8 +215,8 @@ describe("Pi native sessions", () => {
     const source = await readFile(extension.path, "utf8");
     expect(source).not.toContain("!credential-command");
     expect(source).not.toContain("${DO_NOT_EXPAND}");
-    const entries = JSON.parse(extension.environment.OPENBOT_PI_MCP_SERVERS ?? "[]");
-    expect(entries[0].config.headers.Authorization).toBe("${OPENBOT_PI_MCP_VALUE_0}");
-    expect(extension.environment.OPENBOT_PI_MCP_VALUE_0).toBe("!credential-command");
+    const entries = JSON.parse(extension.environment.AIKINGBOT_PI_MCP_SERVERS ?? "[]");
+    expect(entries[0].config.headers.Authorization).toBe("${AIKINGBOT_PI_MCP_VALUE_0}");
+    expect(extension.environment.AIKINGBOT_PI_MCP_VALUE_0).toBe("!credential-command");
   });
 });

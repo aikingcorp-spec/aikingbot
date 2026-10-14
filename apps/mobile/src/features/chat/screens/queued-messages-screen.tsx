@@ -1,4 +1,4 @@
-import type { QueueDelivery } from "@openbot/contracts/ipc";
+import type { QueueDelivery } from "@aikingbot/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { X } from "lucide-react-native";
@@ -26,7 +26,7 @@ function QueuePosition({ label }: { label: string }) {
 
 function UploadRow({ pending }: { pending: QueuedUpload }) {
   const { t } = useText();
-  const muted = String(useCSSVariable("--openbot-text-grouped-secondary"));
+  const muted = String(useCSSVariable("--aikingbot-text-grouped-secondary"));
   const uploading = pending.total > 0 && pending.progress < pending.total;
   return (
     <SettingsRow

@@ -3,6 +3,7 @@ import {
   type AgentProviderId,
   type AgentStatus,
   type AgentSummary,
+  type AIKINGBOTDesktopApi,
   type AttachmentImportEvent,
   type BridgedDesktopApi,
   type BrowserLiveViewEvent,
@@ -23,13 +24,12 @@ import {
   type IpcEndpoint,
   type IpcEndpoints,
   type IpcGroupName,
-  type OpenBotDesktopApi,
   type QueueDelivery,
   type ScopedAgentEvent,
   type ServerSummary,
   type TeamPresenceSnapshot,
   type UpdateStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { screen } from "@solidjs/testing-library";
 import { vi } from "vitest";
 import { type AnalyticsEventName, type DesktopAnalyticsEvents, desktopAnalytics } from "./analytics";
@@ -225,7 +225,7 @@ type EventBridge<Event> = {
 
 /**
  * Fans one stub event out to every subscriber, matching the real preload
- * (`ipcRenderer.on` + `removeListener`) and `preview/mock-openbot.ts`. A
+ * (`ipcRenderer.on` + `removeListener`) and `preview/mock-aikingbot.ts`. A
  * single-holder stub hides the two things that go wrong when state moves into
  * separate providers: a second subscription silently replaces the first, and a
  * missing cleanup is invisible because unsubscribing did nothing anyway.
@@ -361,7 +361,7 @@ export const AGENTS: [AgentSummary, AgentSummary] = [
     avatarHue: null,
     avatarUrl: null,
     threadId: "thread-chief",
-    workspacePath: "/tmp/OpenBot/Agents/chief",
+    workspacePath: "/tmp/AIKINGBOT/Agents/chief",
     preview: "No messages yet",
     updatedAt: null,
   },
@@ -378,7 +378,7 @@ export const AGENTS: [AgentSummary, AgentSummary] = [
     avatarHue: 280,
     avatarUrl: null,
     threadId: null,
-    workspacePath: "/tmp/OpenBot/Agents/sales-outbound",
+    workspacePath: "/tmp/AIKINGBOT/Agents/sales-outbound",
     preview: "No messages yet",
     updatedAt: null,
   },
@@ -497,7 +497,7 @@ export function installVoiceRecordingMocks(): void {
  * so a test that starts to reach it fails at the call rather than on a value nobody chose.
  */
 function notStubbed(name: string) {
-  return vi.fn(() => Promise.reject(new Error(`window.openbot.${name} is not stubbed`)));
+  return vi.fn(() => Promise.reject(new Error(`window.aikingbot.${name} is not stubbed`)));
 }
 
 type StubMethod = (...args: never[]) => unknown;
@@ -531,14 +531,14 @@ function stubMethods(
     else api[method] = notStubbed(path ? `${path}.${method}` : method);
   }
   for (const method of Object.keys(stubbed)) {
-    if (!Object.hasOwn(api, method)) throw new Error(`window.openbot${path ? `.${path}` : ""} has no ${method}`);
+    if (!Object.hasOwn(api, method)) throw new Error(`window.aikingbot${path ? `.${path}` : ""} has no ${method}`);
   }
   return api;
 }
 
 /**
  * Every group at its `IPC_GROUP_PATHS` place with nothing stubbed, except the paths in `absent`, so a
- * new group needs no line in this file. `installOpenbotStub` replaces the groups that tests reach.
+ * new group needs no line in this file. `installAIKINGBOTStub` replaces the groups that tests reach.
  */
 function unstubbedGroups<Absent extends string>(absent: readonly Absent[]): Omit<BridgedDesktopApi, Absent>;
 function unstubbedGroups(absent: readonly string[]): object {
@@ -560,7 +560,7 @@ function isGroupName(name: string): name is IpcGroupName {
   return Object.hasOwn(IPC_ENDPOINTS, name);
 }
 
-export function installOpenbotStub(): void {
+export function installAIKINGBOTStub(): void {
   for (const bridge of Object.values(eventBridges)) bridge.reset();
   trackAnalytics.mockClear();
   installAnalyticsSpies();
@@ -587,7 +587,7 @@ export function installOpenbotStub(): void {
     ...unstubbedGroups(["providerRuntimes"]),
     ...stubGroup("app", {
       getAppInfo: vi.fn().mockResolvedValue({
-        name: "OpenBot",
+        name: "AIKINGBOT",
         version: "0.1.0",
         platform: "darwin",
         variant: "production",
@@ -923,7 +923,7 @@ export function installOpenbotStub(): void {
           id: `${agentId}-copy`,
           name: `${source.name} copy`,
           threadId: null,
-          workspacePath: `/tmp/OpenBot/Agents/${agentId}-copy`,
+          workspacePath: `/tmp/AIKINGBOT/Agents/${agentId}-copy`,
           preview: "No messages yet",
           updatedAt: null,
         };
@@ -944,7 +944,7 @@ export function installOpenbotStub(): void {
       })),
       setAvatar: vi.fn().mockImplementation(async (input) => ({
         ...AGENTS.find((agent) => agent.id === input.agentId),
-        avatarUrl: input.image ? "openbot-avatar://agent/chief?v=test" : null,
+        avatarUrl: input.image ? "aikingbot-avatar://agent/chief?v=test" : null,
       })),
       deleteAgent: vi.fn().mockResolvedValue(undefined),
       readConversation: vi.fn().mockImplementation(async (agentId) => ({
@@ -956,7 +956,7 @@ export function installOpenbotStub(): void {
         readState: { unreadCount: 0, firstUnreadMessageId: null, throughMessageId: null },
       })),
       readConversationPage: vi.fn().mockImplementation(async (input) => {
-        const snapshot = await window.openbot.agent.readConversation(input.agentId);
+        const snapshot = await window.aikingbot.agent.readConversation(input.agentId);
         const messages = snapshot.messages.slice(-Math.min(input.limit ?? 50, 100));
         return {
           ...snapshot,
@@ -1010,7 +1010,7 @@ export function installOpenbotStub(): void {
       acknowledgeFailedTurn: vi.fn().mockResolvedValue(undefined),
       cancelQueuedMessage: vi.fn().mockResolvedValue(undefined),
       steerQueuedMessage: vi.fn().mockResolvedValue(undefined),
-      editQueuedMessage: vi.fn().mockImplementation(async (input) => window.openbot.agent.listQueue(input.agentId)),
+      editQueuedMessage: vi.fn().mockImplementation(async (input) => window.aikingbot.agent.listQueue(input.agentId)),
       updateQueuedMessage: vi.fn().mockResolvedValue(undefined),
       reorderQueue: vi.fn().mockResolvedValue(undefined),
       interrupt: vi.fn().mockResolvedValue(undefined),
@@ -1143,7 +1143,7 @@ export function installOpenbotStub(): void {
       previewInvite: vi.fn().mockResolvedValue({
         serverId: "00000000-0000-4000-8000-000000000000",
         serverName: "Studio Mac",
-        apiHostname: "studio-host.openbot.run",
+        apiHostname: "studio-host.aikingbot.aikingx.com",
         role: "member",
         expiresAt: "2026-08-21T10:00:00.000Z",
         emailBound: false,
@@ -1156,7 +1156,7 @@ export function installOpenbotStub(): void {
       getPresence: vi.fn().mockResolvedValue({ serverId: null, members: [], updatedAt: "" }),
       getPresenceFor: vi.fn().mockResolvedValue({ serverId: null, members: [], updatedAt: "" }),
       refreshIdentity: vi.fn().mockImplementation(async (serverId) => {
-        const server = (await window.openbot.servers.list()).find((item) => item.id === serverId);
+        const server = (await window.aikingbot.servers.list()).find((item) => item.id === serverId);
         if (!server) throw new Error("Server not found");
         return server;
       }),
@@ -1184,7 +1184,7 @@ export function installOpenbotStub(): void {
         readState: { unreadCount: 0, firstUnreadMessageId: null, throughSequence: 0 },
       })),
       readDirectConversationPage: vi.fn().mockImplementation(async (input) => {
-        const snapshot = await window.openbot.servers.readDirectConversation(input.memberId);
+        const snapshot = await window.aikingbot.servers.readDirectConversation(input.memberId);
         const messages = snapshot.messages.slice(-Math.min(input.limit ?? 50, 100));
         return {
           ...snapshot,
@@ -1289,8 +1289,8 @@ export function installOpenbotStub(): void {
       scanModelServers: vi.fn().mockResolvedValue([]),
       scanAgents: vi.fn().mockResolvedValue([]),
     }),
-  } satisfies Omit<OpenBotDesktopApi, "providerRuntimes">;
-  Object.defineProperty(window, "openbot", { configurable: true, writable: true, value: stub });
+  } satisfies Omit<AIKINGBOTDesktopApi, "providerRuntimes">;
+  Object.defineProperty(window, "aikingbot", { configurable: true, writable: true, value: stub });
 }
 
 export function presenceMember(id: string, email: string, name: string): TeamPresenceSnapshot["members"][number] {
@@ -1354,6 +1354,6 @@ export function attachment(id: string, name: string, kind: "image" | "pdf") {
     kind: kind === "image" ? ("image" as const) : ("file" as const),
     mimeType: kind === "image" ? "image/png" : "application/pdf",
     previewKind: kind,
-    previewUrl: `openbot-attachment://file/${id}`,
+    previewUrl: `aikingbot-attachment://file/${id}`,
   };
 }

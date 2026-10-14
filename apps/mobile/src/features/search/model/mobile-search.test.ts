@@ -3,7 +3,7 @@ import type {
   ConversationMessage,
   ConversationSearchPage,
   RoutineCalendarRoutine,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { expect, it } from "vitest";
 import { decodeConversationSearchPage } from "../../workspace/model/conversation";
 import type { MobileAgent } from "../../workspace/model/workspace-types";

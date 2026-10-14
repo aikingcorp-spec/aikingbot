@@ -1,5 +1,5 @@
-import type { RemoteDesktopSetupStatus } from "@openbot/contracts/ipc";
-import { TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
+import type { RemoteDesktopSetupStatus } from "@aikingbot/contracts/ipc";
+import { TEAM_PROTOCOL_VERSION_HEADER } from "@aikingbot/contracts/team-protocol";
 import { Effect } from "effect";
 // @vitest-environment node
 

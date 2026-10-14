@@ -2,7 +2,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { EventRoutineOwner, SaveEventRoutineInput } from "@openbot/contracts/ipc-events";
+import type { EventRoutineOwner, SaveEventRoutineInput } from "@aikingbot/contracts/ipc-events";
 import { Effect, Exit } from "effect";
 import { afterEach, describe, expect, it } from "vitest";
 import type { AgentService } from "../backend/agent-service";
@@ -356,9 +356,9 @@ describe("signed webhook flow", () => {
         runId: runs()[0]?.id,
       }),
     ]);
-    await mkdir(join(process.cwd(), ".openbot-build"), { recursive: true });
+    await mkdir(join(process.cwd(), ".aikingbot-build"), { recursive: true });
     await writeFile(
-      join(process.cwd(), ".openbot-build/webhook-signed-flow-report.json"),
+      join(process.cwd(), ".aikingbot-build/webhook-signed-flow-report.json"),
       `${JSON.stringify(
         {
           scenario: "signed receipt → routine run",

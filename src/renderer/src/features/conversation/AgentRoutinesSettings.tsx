@@ -3,8 +3,8 @@ import {
   eventFilterDraft,
   eventFilterDraftsValid,
   eventFiltersFromDrafts,
-} from "@openbot/contracts/event-filter-value";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@aikingbot/contracts/event-filter-value";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   ROUTINE_LIMIT_POLICIES,
   ROUTINE_MISSED_POLICIES,
@@ -12,9 +12,9 @@ import {
   type RoutineMissedPolicy,
   type RoutineRunFields,
   type RoutineSchedule,
-} from "@openbot/contracts/ipc";
-import type { EventRoutine, RoutineWebhookTriggerInput } from "@openbot/contracts/ipc-events";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { EventRoutine, RoutineWebhookTriggerInput } from "@aikingbot/contracts/ipc-events";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Button,
   CirclePause,
@@ -32,27 +32,27 @@ import {
   Text,
   Textarea,
   toast,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { SettingsBackIcon, SettingsForwardIcon } from "@openbot/ui/components/SettingsPanel";
-import { RoutineRunHistory } from "@openbot/ui/features/conversation/RoutineRunHistory";
-import { RoutineSchedulePicker } from "@openbot/ui/features/conversation/RoutineSchedulePicker";
-import { RoutineTriggerMenu } from "@openbot/ui/features/conversation/RoutineTriggerMenu";
-import { RoutineWebhookTrigger } from "@openbot/ui/features/conversation/RoutineWebhookTrigger";
+} from "@aikingbot/ui";
+import { createScrollFades } from "@aikingbot/ui/components/createScrollFades";
+import { SettingsBackIcon, SettingsForwardIcon } from "@aikingbot/ui/components/SettingsPanel";
+import { RoutineRunHistory } from "@aikingbot/ui/features/conversation/RoutineRunHistory";
+import { RoutineSchedulePicker } from "@aikingbot/ui/features/conversation/RoutineSchedulePicker";
+import { RoutineTriggerMenu } from "@aikingbot/ui/features/conversation/RoutineTriggerMenu";
+import { RoutineWebhookTrigger } from "@aikingbot/ui/features/conversation/RoutineWebhookTrigger";
 import {
   ROUTINE_EVERY_DAY,
   type RoutineScheduleDraft,
   routineDraftSummary,
   switchDraftKind,
-} from "@openbot/ui/features/conversation/routine-schedule-draft";
+} from "@aikingbot/ui/features/conversation/routine-schedule-draft";
 import {
   ROUTINE_SAVED_DRAFT_KINDS,
   routineDraftProblem,
   routineScheduleFromDraft,
   routineScheduleToDraft,
-} from "@openbot/ui/features/conversation/routine-schedule-saved";
-import { type RoutineText, routineScheduleSummary } from "@openbot/ui/features/conversation/routine-schedule-ui";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/routine-schedule-saved";
+import { type RoutineText, routineScheduleSummary } from "@aikingbot/ui/features/conversation/routine-schedule-ui";
+import { useText } from "@aikingbot/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { type DesktopAnalyticsScope, desktopAnalytics } from "../../analytics";

@@ -1,4 +1,4 @@
-import { ConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
+import { ConversationHeader } from "@aikingbot/ui/features/conversation/ConversationHeader";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_MODELS } from "./fixtures";

@@ -75,7 +75,7 @@ function assertWindowsOwnerOnlyDirectory(directory: string): void {
         "-NonInteractive",
         "-Command",
         "$sid = [System.Security.Principal.SecurityIdentifier]; " +
-          "$acl = Get-Acl -LiteralPath $env:OPENBOT_REGISTRY_DIRECTORY; " +
+          "$acl = Get-Acl -LiteralPath $env:AIKINGBOT_REGISTRY_DIRECTORY; " +
           "$acl.GetOwner($sid).Value; " +
           "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value; " +
           "$acl.GetAccessRules($true, $true, $sid) | Where-Object { " +
@@ -84,7 +84,7 @@ function assertWindowsOwnerOnlyDirectory(directory: string): void {
       ],
       {
         encoding: "utf8",
-        env: { ...process.env, OPENBOT_REGISTRY_DIRECTORY: directory },
+        env: { ...process.env, AIKINGBOT_REGISTRY_DIRECTORY: directory },
         timeout: 5_000,
         stdio: ["ignore", "pipe", "ignore"],
       },

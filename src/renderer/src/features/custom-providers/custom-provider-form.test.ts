@@ -4,7 +4,7 @@ import {
   emptyCustomProviderDraft,
   hasCustomProviderError,
   validateCustomProvider,
-} from "@openbot/ui/features/custom-providers/custom-provider-form";
+} from "@aikingbot/ui/features/custom-providers/custom-provider-form";
 import { describe, expect, it } from "vitest";
 
 function draft(overrides: Partial<CustomProviderDraft> = {}): CustomProviderDraft {

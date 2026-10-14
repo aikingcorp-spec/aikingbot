@@ -8,78 +8,78 @@
   height: var(--left-header-height, 38px);
   flex: 0 0 auto;
   align-items: center;
-  gap: var(--openbot-space-1);
-  padding: 0 var(--openbot-space-3);
-  color: var(--openbot-text-secondary);
+  gap: var(--aikingbot-space-1);
+  padding: 0 var(--aikingbot-space-3);
+  color: var(--aikingbot-text-secondary);
 }
 
 .browser-preview-header > span {
   flex: 1;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .browser-preview-header > .ui-button,
 .browser-preview-close {
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
 }
 
 .browser-preview-header > .ui-button:focus-visible,
 .browser-preview-close:focus-visible {
-  outline: 1px solid var(--openbot-text-muted);
+  outline: 1px solid var(--aikingbot-text-muted);
   outline-offset: 1px;
   box-shadow: none;
 }
 
 .browser-preview-sidebar .ui-button:active:not(:disabled):not([data-disabled]) {
-  background: var(--openbot-bg-control-active);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-control-active);
+  color: var(--aikingbot-text-primary);
 }
 
 .browser-preview-header > .ui-button > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .browser-preview-list {
   min-height: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
-  padding: var(--openbot-space-2) var(--openbot-space-4) var(--openbot-space-4);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-4) var(--aikingbot-space-4);
 }
 
 .browser-preview-list > .browser-empty-state {
   height: auto;
   justify-items: center;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-8) var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-8) var(--aikingbot-space-4);
 }
 
 .browser-preview-list > .browser-empty-state > svg,
 .browser-preview-image > svg {
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
-  color: var(--openbot-text-muted);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-lg);
+  height: var(--aikingbot-icon-lg);
+  color: var(--aikingbot-text-muted);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .browser-preview-list > .browser-empty-state > svg {
-  margin-bottom: var(--openbot-space-1);
+  margin-bottom: var(--aikingbot-space-1);
 }
 
 .browser-preview-list > .browser-empty-state > strong {
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
   font-weight: 500;
 }
 
 .browser-preview-list > .browser-empty-state > .ui-button {
-  margin-top: var(--openbot-space-1);
+  margin-top: var(--aikingbot-space-1);
 }
 
 .browser-preview-card {
   position: relative;
-  margin-bottom: var(--openbot-space-4);
+  margin-bottom: var(--aikingbot-space-4);
 }
 
 .browser-preview-open {
@@ -87,9 +87,9 @@
   height: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-1);
-  color: var(--openbot-text-secondary);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-1);
+  color: var(--aikingbot-text-secondary);
   font-weight: 400;
 }
 
@@ -101,9 +101,9 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-bg-surface);
 }
 
 .browser-preview-image img,
@@ -119,28 +119,28 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .browser-preview-open-label {
   position: absolute;
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
+  gap: var(--aikingbot-space-1);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1;
   pointer-events: none;
   opacity: 0;
 }
 
 .browser-preview-open-label > svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .browser-preview-open:hover .browser-preview-open-label {
@@ -149,15 +149,15 @@
 
 .browser-preview-close {
   position: absolute;
-  top: var(--openbot-space-2);
-  right: var(--openbot-space-2);
+  top: var(--aikingbot-space-2);
+  right: var(--aikingbot-space-2);
   opacity: 0;
 }
 
 .browser-preview-close > svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .browser-preview-card:hover .browser-preview-close,
@@ -173,7 +173,7 @@ body:has(.browser-panel-expanded) .app-frame {
 .browser-expanded-backdrop {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--openbot-layer-dropdown) - 2);
+  z-index: calc(var(--aikingbot-layer-dropdown) - 2);
 }
 
 /*
@@ -192,7 +192,7 @@ body:has(.browser-panel-expanded) .app-frame {
   /* The shared `.browser-panel` rule sizes the sidebar with `--browser-panel-width`; a set width
    * wins over `inset`, so the panel has to give it up to reach the right window edge. */
   width: auto;
-  z-index: calc(var(--openbot-layer-dropdown) - 1);
+  z-index: calc(var(--aikingbot-layer-dropdown) - 1);
   border: 0;
   border-radius: 0;
   overflow: hidden;
@@ -217,18 +217,18 @@ body:has(.browser-panel-expanded) .app-frame {
   right: 5px;
   width: 24px;
   height: 24px;
-  border-radius: var(--openbot-radius-xs);
-  z-index: calc(var(--openbot-layer-dropdown) - 1);
+  border-radius: var(--aikingbot-radius-xs);
+  z-index: calc(var(--aikingbot-layer-dropdown) - 1);
 }
 
 .browser-panel-expanded .browser-panel-header {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   /* The inline end reserves the corner `.browser-hide` sits in, which is fixed to the window rather
    * than to this header, so the tab strip would otherwise scroll underneath it: the button's own
    * 8px inset and 24px box, and 8px between it and the last tab. */
-  padding-inline: var(--openbot-space-2) calc(var(--openbot-space-8) + var(--openbot-space-2));
+  padding-inline: var(--aikingbot-space-2) calc(var(--aikingbot-space-8) + var(--aikingbot-space-2));
 }
 
 /*
@@ -258,7 +258,7 @@ body:has(.browser-panel-expanded) .app-frame {
  * until then the card takes a common desktop shape.
  */
 .browser-panel-expanded.browser-panel-live {
-  --browser-live-gutter: var(--openbot-space-6);
+  --browser-live-gutter: var(--aikingbot-space-6);
   --browser-live-gutter-top: var(--browser-live-gutter);
   /* The header and toolbar heights from `browser-panel.css`. */
   --browser-live-chrome: calc(34px + 39px);
@@ -275,18 +275,18 @@ body:has(.browser-panel-expanded) .app-frame {
   max-height: calc(100dvh - var(--browser-live-gutter-top) - var(--browser-live-gutter));
   /* With `inset` and a content height, auto margins center the card in the space inside the gutters. */
   margin: auto;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  box-shadow: var(--openbot-shadow-overlay);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  box-shadow: var(--aikingbot-shadow-overlay);
 }
 
 /* The card starts below the macOS traffic lights (y 13..26), so the header needs no inset for them. */
 .browser-panel-expanded.browser-panel-live.browser-panel-mac-controls {
-  --browser-live-gutter-top: calc(var(--openbot-space-8) + var(--openbot-space-2));
+  --browser-live-gutter-top: calc(var(--aikingbot-space-8) + var(--aikingbot-space-2));
 }
 
 .browser-panel-expanded.browser-panel-live .browser-panel-header {
-  padding-inline: var(--openbot-space-2) var(--openbot-space-1);
+  padding-inline: var(--aikingbot-space-2) var(--aikingbot-space-1);
 }
 
 .browser-panel-expanded.browser-panel-live .browser-surface {
@@ -301,39 +301,39 @@ body:has(.browser-panel-expanded) .app-frame {
 
 .browser-secret-card {
   display: grid;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
 }
 
 .browser-secret-card > p {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .browser-secret-card strong {
   display: block;
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
   overflow-wrap: anywhere;
 }
 
 .browser-secret-card .browser-takeover-actions {
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .browser-secret-password,
 .browser-secret-code {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .browser-secret-label {
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .browser-secret-code .otp-input {
@@ -354,7 +354,7 @@ body:has(.browser-panel-expanded) .app-frame {
 }
 
 .browser-secret-card > .browser-secret-error {
-  color: var(--openbot-danger);
+  color: var(--aikingbot-danger);
 }
 
 .browser-secret-card .browser-takeover-preview-viewport {

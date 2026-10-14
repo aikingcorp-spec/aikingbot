@@ -1,5 +1,5 @@
-import type { CentralAuthState } from "@openbot/contracts/ipc";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
+import type { CentralAuthState } from "@aikingbot/contracts/ipc";
+import { AccountLogin } from "@aikingbot/ui/features/account/AccountLogin";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
@@ -161,7 +161,7 @@ describe("AccountLogin", () => {
         status: "error",
         issue: {
           code: "email_delivery_pending",
-          message: "OpenBot is still confirming delivery.",
+          message: "AIKINGBOT is still confirming delivery.",
           retryAfterSeconds: 45,
         },
       });
@@ -205,7 +205,7 @@ describe("AccountLogin", () => {
         issue:
           request === 1
             ? { code: "email_delivery_timeout", message: "The code may still arrive." }
-            : { code: "email_delivery_failed", message: "OpenBot could not send the sign-in code." },
+            : { code: "email_delivery_failed", message: "AIKINGBOT could not send the sign-in code." },
       });
     });
     render(() => (
@@ -316,7 +316,7 @@ describe("AccountLogin", () => {
     renderLogin(
       {
         status: "error",
-        issue: { code: "auth_api_unavailable", message: "OpenBot could not reach the account service." },
+        issue: { code: "auth_api_unavailable", message: "AIKINGBOT could not reach the account service." },
       },
       { onRetry },
     );

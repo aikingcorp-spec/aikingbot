@@ -1,49 +1,49 @@
 .agent-usage-secondary,
 .agent-usage-footer {
-  font-size: var(--openbot-text-sm);
-  color: var(--openbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  color: var(--aikingbot-text-muted);
 }
 .agent-usage-overview {
   display: grid;
-  gap: var(--openbot-space-8);
+  gap: var(--aikingbot-space-8);
 }
 .agent-usage-summary {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-8);
+  gap: var(--aikingbot-space-8);
 }
 .agent-usage-hero {
-  font-size: var(--openbot-text-usage-total);
+  font-size: var(--aikingbot-text-usage-total);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
-  margin-bottom: var(--openbot-space-3);
+  margin-bottom: var(--aikingbot-space-3);
 }
 .agent-usage-providers {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 .agent-usage-provider-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-4);
-  font-size: var(--openbot-text-lg);
+  gap: var(--aikingbot-space-4);
+  font-size: var(--aikingbot-text-lg);
 }
 .agent-usage-provider-heading > span {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 /* The legend mark for the row's series. Its colour is an inline style, because it is the
    provider that decides it rather than the stylesheet. */
 .agent-usage-series-dot {
-  width: var(--openbot-space-2);
-  height: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-pill);
+  width: var(--aikingbot-space-2);
+  height: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-pill);
   flex-shrink: 0;
 }
 .agent-usage-provider-heading strong {
@@ -51,14 +51,14 @@
   font-variant-numeric: tabular-nums;
 }
 .agent-usage-provider p {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  margin-top: var(--openbot-space-2);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  margin-top: var(--aikingbot-space-2);
 }
 .agent-usage-provider-icon {
-  fill: var(--openbot-provider-current);
-  width: var(--openbot-space-4);
-  height: var(--openbot-space-4);
+  fill: var(--aikingbot-provider-current);
+  width: var(--aikingbot-space-4);
+  height: var(--aikingbot-space-4);
   flex-shrink: 0;
 }
 .agent-usage-trend {
@@ -68,8 +68,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-4);
-  margin-bottom: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
+  margin-bottom: var(--aikingbot-space-4);
 }
 
 /* One line, never two. A wrapped second row put two entries under five and read as a
@@ -78,19 +78,19 @@
 .agent-usage-totals {
   display: flex;
   flex-wrap: nowrap;
-  gap: calc(var(--openbot-space-6) * 2);
-  margin-top: var(--openbot-space-4);
+  gap: calc(var(--aikingbot-space-6) * 2);
+  margin-top: var(--aikingbot-space-4);
   overflow: hidden;
 }
 .agent-usage-totals dt {
-  font-size: var(--openbot-text-sm);
-  color: var(--openbot-text-muted);
-  margin-bottom: var(--openbot-space-1);
+  font-size: var(--aikingbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  margin-bottom: var(--aikingbot-space-1);
   white-space: nowrap;
 }
 .agent-usage-totals dd {
   margin: 0;
-  font-size: var(--openbot-text-xl);
+  font-size: var(--aikingbot-text-xl);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -100,14 +100,14 @@
 .agent-usage-table table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--openbot-text-lg);
+  font-size: var(--aikingbot-text-lg);
   font-variant-numeric: tabular-nums;
 }
 .agent-usage-table th,
 .agent-usage-table td {
   text-align: right;
-  padding: var(--openbot-space-2) var(--openbot-space-3);
-  border-bottom: 1px solid var(--openbot-border-strong);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
+  border-bottom: 1px solid var(--aikingbot-border-strong);
   white-space: nowrap;
   font-weight: 400;
 }
@@ -120,31 +120,31 @@
   padding-right: 0;
 }
 .agent-usage-table thead th {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 .agent-usage-table td {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 .agent-usage-model-name {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   overflow-wrap: anywhere;
   min-width: 10rem;
 }
 .agent-usage-footer {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-3);
-  padding-bottom: var(--openbot-space-6);
+  gap: var(--aikingbot-space-3);
+  padding-bottom: var(--aikingbot-space-6);
 }
 .agent-usage-footer summary {
   cursor: pointer;
   width: fit-content;
 }
 .agent-usage-footer details p {
-  margin-top: var(--openbot-space-3);
+  margin-top: var(--aikingbot-space-3);
   max-width: 72ch;
   line-height: 1.6;
 }

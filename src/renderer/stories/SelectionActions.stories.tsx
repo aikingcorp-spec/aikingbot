@@ -1,4 +1,4 @@
-import { type MessageTextSelection, SelectionActionsBar } from "@openbot/ui/features/conversation/SelectionActions";
+import { type MessageTextSelection, SelectionActionsBar } from "@aikingbot/ui/features/conversation/SelectionActions";
 import { createSignal, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -27,8 +27,8 @@ function SelectionActionsDemo(props: {
         width: props.width ?? "560px",
         "max-width": "calc(100vw - 48px)",
         padding: "96px 36px 120px",
-        background: "var(--openbot-bg-canvas)",
-        color: "var(--openbot-text-primary)",
+        background: "var(--aikingbot-bg-canvas)",
+        color: "var(--aikingbot-text-primary)",
       }}
     >
       <p style={{ margin: "0", "font-size": "14px", "line-height": "21px" }}>

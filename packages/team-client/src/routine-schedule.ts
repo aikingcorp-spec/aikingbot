@@ -3,8 +3,8 @@ import {
   ROUTINE_MINIMUM_INTERVAL_MINUTES,
   type RoutineIntervalUnit,
   type RoutineSchedule,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 
 const MINIMUM_INTERVAL_MS = ROUTINE_MINIMUM_INTERVAL_MINUTES * 60_000;
 const MAX_SEARCH_DAYS = 366 * 5;

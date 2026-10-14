@@ -1,5 +1,5 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { RemoteCompatibilityScreen } from "@openbot/ui/features/remote-desktop/RemoteCompatibilityScreen";
+import type { ServerSummary } from "@aikingbot/contracts/ipc";
+import { RemoteCompatibilityScreen } from "@aikingbot/ui/features/remote-desktop/RemoteCompatibilityScreen";
 import type { JSX } from "@solidjs/web";
 import { omit, type ParentProps, Show } from "solid-js";
 import { useLayout } from "./layout";

@@ -13,10 +13,10 @@ import { formatSupportLogEntry, type SupportLogLevel, supportLog } from "@/featu
 import { clearSupportLog, supportLogFileText } from "@/features/support/model/support-log-capture";
 import { useText } from "@/shared/lib/text";
 
-/** The OpenBot account, the same contact as the website. */
-const SUPPORT_X_HANDLE = "@OpenBot_";
-const SUPPORT_X_URL = "https://x.com/OpenBot_";
-const ISSUES_URL = "https://github.com/nightly-labs/openbot/issues/new";
+/** The AIKINGBOT account, the same contact as the website. */
+const SUPPORT_X_HANDLE = "@AIKINGBOT_";
+const SUPPORT_X_URL = "https://x.com/AIKINGBOT_";
+const ISSUES_URL = "https://github.com/aikingcorp-spec/aikingx_bot/issues/new";
 /** The screen shows the newest events. The saved file has all of them. */
 const SHOWN_ENTRIES = 100;
 const LEVEL_CLASS = {
@@ -44,7 +44,7 @@ export function SupportSettingsScreen() {
       return;
     }
     setSaving(true);
-    const file = new File(Paths.cache, `openbot-support-log-${new Date().toISOString().replace(/[:.]/gu, "-")}.txt`);
+    const file = new File(Paths.cache, `aikingbot-support-log-${new Date().toISOString().replace(/[:.]/gu, "-")}.txt`);
     try {
       file.write(supportLogFileText());
       await Sharing.shareAsync(file.uri, {

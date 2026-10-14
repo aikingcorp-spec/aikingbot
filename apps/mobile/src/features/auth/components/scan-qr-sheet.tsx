@@ -53,10 +53,10 @@ export function ScanQrSheet({
   const blurTarget = useRef<View>(null);
   const reducedMotion = useReducedMotion();
   const insets = useSafeAreaInsets();
-  const brand = String(useCSSVariable("--openbot-logo-production") ?? "#cdadec");
-  const surface = String(useCSSVariable("--openbot-bg-sheet"));
-  const scrim = String(useCSSVariable("--openbot-drawer-scrim"));
-  const radius = Number.parseFloat(String(useCSSVariable("--openbot-radius-lg") ?? "12"));
+  const brand = String(useCSSVariable("--aikingbot-logo-production") ?? "#cdadec");
+  const surface = String(useCSSVariable("--aikingbot-bg-sheet"));
+  const scrim = String(useCSSVariable("--aikingbot-drawer-scrim"));
+  const radius = Number.parseFloat(String(useCSSVariable("--aikingbot-radius-lg") ?? "12"));
   const width = Math.min(400, viewport.width - 32);
   const height = Math.min(560, viewport.height - insets.top - insets.bottom - 32);
   const x = (viewport.width - width) / 2;

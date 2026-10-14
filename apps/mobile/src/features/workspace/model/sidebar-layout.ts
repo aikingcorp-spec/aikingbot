@@ -1,6 +1,6 @@
-import type { SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
-import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { SidebarLayoutSnapshot } from "@aikingbot/contracts/ipc";
+import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@aikingbot/contracts/ipc";
+import type { MobileTranslate } from "@aikingbot/i18n/mobile";
 import { currentText } from "@/shared/lib/text";
 import type { MobileAgent } from "./workspace-types";
 

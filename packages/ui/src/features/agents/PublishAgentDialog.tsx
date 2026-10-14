@@ -1,6 +1,6 @@
-import type { AgentTemplatePreview, MarketplaceAgentRoutine } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
-import { classifyFailure } from "@openbot/telemetry";
+import type { AgentTemplatePreview, MarketplaceAgentRoutine } from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@aikingbot/i18n";
+import { classifyFailure } from "@aikingbot/telemetry";
 import {
   ArrowLeft,
   Badge,
@@ -15,7 +15,7 @@ import {
   Text,
   toast,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createSignal, Show } from "solid-js";
 import { useText } from "../../text";
 import { AgentAvatar } from "./AgentAvatar";

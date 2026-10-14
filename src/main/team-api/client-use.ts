@@ -1,23 +1,23 @@
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/agent-admin-v1";
-import { AGENT_HOST_SETTINGS_ROUTES } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { AGENT_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
+import { AGENT_HOST_SETTINGS_ROUTES } from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
 import {
   AGENT_MEMORIES_PAGE_ROUTE,
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
-} from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { AGENT_PUBLISH_ROUTES } from "@openbot/contracts/team-protocol/agent-publish-v1";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { HOST_MEMBER_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-member-update-v1";
-import { HOST_RELEASE_ROUTES } from "@openbot/contracts/team-protocol/host-release-v1";
-import { HOST_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-update-v1";
-import { HOSTED_SITES_ROUTES } from "@openbot/contracts/team-protocol/hosted-sites-v1";
-import { LIVE_ACTIVITY_PUSH_ROUTES } from "@openbot/contracts/team-protocol/live-activity-push-v1";
-import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
-import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@openbot/contracts/team-protocol/providers-v2";
-import { PUSH_NOTIFICATIONS_ROUTES } from "@openbot/contracts/team-protocol/push-notifications-v1";
-import { SHARED_TABLES_ROUTES } from "@openbot/contracts/team-protocol/shared-tables-v1";
-import { SKILLS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
+} from "@aikingbot/contracts/team-protocol/agent-memories-v1";
+import { AGENT_PUBLISH_ROUTES } from "@aikingbot/contracts/team-protocol/agent-publish-v1";
+import { CHANNEL_ROUTES } from "@aikingbot/contracts/team-protocol/channels-v1";
+import { HOST_MEMBER_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/host-member-update-v1";
+import { HOST_RELEASE_ROUTES } from "@aikingbot/contracts/team-protocol/host-release-v1";
+import { HOST_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { HOSTED_SITES_ROUTES } from "@aikingbot/contracts/team-protocol/hosted-sites-v1";
+import { LIVE_ACTIVITY_PUSH_ROUTES } from "@aikingbot/contracts/team-protocol/live-activity-push-v1";
+import { PROVIDERS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v1";
+import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v2";
+import { PUSH_NOTIFICATIONS_ROUTES } from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import { SHARED_TABLES_ROUTES } from "@aikingbot/contracts/team-protocol/shared-tables-v1";
+import { SKILLS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/skills-admin-v1";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
 
 /**
  * POST routes that a client sends with no user action: polls, previews, mark-read, and reads that use

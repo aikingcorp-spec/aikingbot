@@ -1,4 +1,4 @@
-import type { BrowserControlState, BrowserDisplayState, BrowserTab, ServerSummary } from "@openbot/contracts/ipc";
+import type { BrowserControlState, BrowserDisplayState, BrowserTab, ServerSummary } from "@aikingbot/contracts/ipc";
 import { createSignal } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { usePlatform } from "../../platform";

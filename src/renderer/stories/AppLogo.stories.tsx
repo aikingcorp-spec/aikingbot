@@ -1,4 +1,4 @@
-import { AppLogo, type AppLogoAnimation } from "@openbot/brand";
+import { AppLogo, type AppLogoAnimation } from "@aikingbot/brand";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 const ANIMATIONS: Array<{ animation: AppLogoAnimation; label: string }> = [

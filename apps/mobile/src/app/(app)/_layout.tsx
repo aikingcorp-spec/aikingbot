@@ -28,7 +28,7 @@ function AuthenticatedStack() {
   // Reduced motion, from the device or from Settings, replaces the full-screen slide with a cross-fade.
   const pushAnimation = useReducedMotion() ? "fade" : "slide_from_right";
   const background = useThemeColor("background");
-  const sheetBackground = String(useCSSVariable("--openbot-bg-sheet") ?? background);
+  const sheetBackground = String(useCSSVariable("--aikingbot-bg-sheet") ?? background);
   const [navigationGate] = useState(createChatNavigationGate);
   const { agentId: openAgentId } = useGlobalSearchParams<{ agentId?: string }>();
   const openChat = useRef<string | null>(null);

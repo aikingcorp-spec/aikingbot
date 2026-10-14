@@ -29,7 +29,7 @@ function input(overrides: Partial<CuaDriverArtifactInput> = {}): CuaDriverArtifa
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-cua-driver-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-cua-driver-"));
 });
 
 describe("resolveCuaDriver", () => {

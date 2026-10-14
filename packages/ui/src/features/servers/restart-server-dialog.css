@@ -1,11 +1,11 @@
 .restart-server-steps {
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
-  padding: var(--openbot-space-2) var(--openbot-space-3);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-control);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-control);
   list-style: none;
 }
 
@@ -13,29 +13,29 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
-  gap: var(--openbot-space-3);
-  padding-block: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-3);
+  padding-block: var(--aikingbot-space-1-5);
 }
 
 .restart-server-step-icon {
   display: grid;
   place-items: center;
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-leading-md);
-  color: var(--openbot-text-dim);
+  width: var(--aikingbot-icon-lg);
+  height: var(--aikingbot-leading-md);
+  color: var(--aikingbot-text-dim);
 }
 
 .restart-server-step-icon svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
 }
 
 .restart-server-step[data-status="done"] .restart-server-step-icon {
-  color: var(--openbot-success-text);
+  color: var(--aikingbot-success-text);
 }
 
 .restart-server-step[data-status="failed"] .restart-server-step-icon {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }
 
 .restart-server-step-text {
@@ -45,18 +45,18 @@
 
 .restart-server-step-label {
   overflow-wrap: anywhere;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .restart-server-step[data-status="pending"] .restart-server-step-label,
 .restart-server-step-detail {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .restart-server-step-detail {
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }

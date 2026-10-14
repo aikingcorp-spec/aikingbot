@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type HostedSiteConversationEventAction,
   type HostedSiteConversationEventDetails,
@@ -6,7 +6,7 @@ import {
   type HostedSiteSummary,
   hostedSiteConversationEventText,
   isHostedSiteConversationEventUrl,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 export type HostedSiteMutationTool = "publish_site" | "replace_site" | "delete_site";
 
@@ -57,7 +57,9 @@ function hostedSiteMarkerHostname(value: string): string | null {
   if (!value || value.length > INPUT_LIMITS.hostname || value !== value.toLowerCase()) return null;
   try {
     const parsed = new URL(`https://${value}`);
-    return parsed.hostname === value && parsed.port === "" && value.endsWith(".openbot.site") ? value : null;
+    return parsed.hostname === value && parsed.port === "" && value.endsWith(".aikingbot-sites.aikingx.com")
+      ? value
+      : null;
   } catch {
     return null;
   }

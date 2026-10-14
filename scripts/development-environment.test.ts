@@ -19,7 +19,7 @@ afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 function fixture(): string {
-  const root = mkdtempSync(join(tmpdir(), "openbot-environment-"));
+  const root = mkdtempSync(join(tmpdir(), "aikingbot-environment-"));
   roots.push(root);
   mkdirSync(join(root, "apps/auth-api"), { recursive: true });
   return root;
@@ -87,7 +87,7 @@ describe("development environment loading", () => {
       DOTENV_PRIVATE_KEY_DEV: "private",
       DOTENV_PRIVATE_KEY_PRODUCTION: "private-prod",
       STRIPE_SECRET_KEY: "stripe",
-      OPENBOT_DEV_SLACK_SIGNING_SECRET: "slack-signing",
+      AIKINGBOT_DEV_SLACK_SIGNING_SECRET: "slack-signing",
       REMOTE_TICKET_PRIVATE_JWK: "signer",
       REMOTE_TICKET_PUBLIC_JWKS: "verifier",
       REMOTE_AUTH_WEBHOOK_SECRET: "webhook",

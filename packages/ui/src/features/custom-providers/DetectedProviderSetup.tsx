@@ -1,4 +1,4 @@
-import type { CustomProviderRestart } from "@openbot/contracts/ipc";
+import type { CustomProviderRestart } from "@aikingbot/contracts/ipc";
 import { createEffect, createSignal } from "solid-js";
 import { useText } from "../../text";
 import { CustomAcpAgentDialog } from "./CustomAcpAgentDialog";
@@ -26,7 +26,7 @@ interface DetectedProviderSetupProps {
 
 /**
  * The step between Add and a saved provider: the form of its kind, filled from what the scan found,
- * so the user sees and can change every value before OpenBot saves it.
+ * so the user sees and can change every value before AIKINGBOT saves it.
  */
 export function DetectedProviderSetup(props: DetectedProviderSetupProps) {
   const { t, errorMessage } = useText();

@@ -1,7 +1,7 @@
-import type { BillingState } from "@openbot/contracts/billing";
-import { BillingDialog } from "@openbot/ui/features/billing/BillingDialog";
-import { BillingPanel } from "@openbot/ui/features/billing/BillingPanel";
-import { type BillingCalls, createBillingStore } from "@openbot/ui/features/billing/billing-store";
+import type { BillingState } from "@aikingbot/contracts/billing";
+import { BillingDialog } from "@aikingbot/ui/features/billing/BillingDialog";
+import { BillingPanel } from "@aikingbot/ui/features/billing/BillingPanel";
+import { type BillingCalls, createBillingStore } from "@aikingbot/ui/features/billing/billing-store";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createMockBilling, previewBillingServers } from "../src/preview/mock-billing";

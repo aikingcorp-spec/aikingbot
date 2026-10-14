@@ -1,4 +1,4 @@
-import type { QueueDelivery } from "@openbot/contracts/ipc";
+import type { QueueDelivery } from "@aikingbot/contracts/ipc";
 
 export interface TurnSlotsOptions {
   /** The most turns that run at the same time, or null for no limit. */

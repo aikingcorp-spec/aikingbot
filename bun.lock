@@ -7,6 +7,14 @@
       "dependencies": {
         "@1password/sdk": "0.5.0",
         "@agentclientprotocol/sdk": "1.4.0",
+        "@aikingbot/brand": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/i18n": "workspace:*",
+        "@aikingbot/logging": "workspace:*",
+        "@aikingbot/team-client": "workspace:*",
+        "@aikingbot/telemetry": "workspace:*",
+        "@aikingbot/ui": "workspace:*",
+        "@aikingbot/user-errors": "workspace:*",
         "@anthropic-ai/claude-agent-sdk": "0.3.263",
         "@anthropic-ai/sdk": "0.116.0",
         "@fontsource-variable/inter": "catalog:",
@@ -15,14 +23,6 @@
         "@muse-code/sdk": "1.4.2",
         "@noble/hashes": "catalog:",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/ui": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
         "@openpanel/web": "catalog:",
         "@paper-design/shaders": "catalog:",
         "@solidjs/signals": "catalog:",
@@ -75,14 +75,14 @@
       },
     },
     "apps/auth-api": {
-      "name": "@openbot/auth-api",
+      "name": "@aikingbot/auth-api",
       "version": "0.0.0",
       "dependencies": {
+        "@aikingbot/brand": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/ui": "workspace:*",
         "@fontsource-variable/inter": "catalog:",
         "@kobalte/core": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/ui": "workspace:*",
         "@openpanel/web": "catalog:",
         "@paper-design/shaders": "catalog:",
         "@solidjs/signals": "catalog:",
@@ -113,19 +113,19 @@
       },
     },
     "apps/mobile": {
-      "name": "@openbot/mobile",
+      "name": "@aikingbot/mobile",
       "version": "1.3.1",
       "dependencies": {
+        "@aikingbot/brand": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/i18n": "workspace:*",
+        "@aikingbot/logging": "workspace:*",
+        "@aikingbot/team-client": "workspace:*",
+        "@aikingbot/telemetry": "workspace:*",
+        "@aikingbot/user-errors": "workspace:*",
         "@expo/metro-runtime": "~57.0.16",
         "@expo/ui": "~57.0.19",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
         "@openpanel/react-native": "1.4.1",
         "@react-native-masked-view/masked-view": "0.3.2",
         "@shopify/react-native-skia": "2.6.2",
@@ -197,10 +197,10 @@
       },
     },
     "apps/site-router": {
-      "name": "@openbot/site-router",
+      "name": "@aikingbot/site-router",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -211,11 +211,11 @@
       },
     },
     "packages/brand": {
-      "name": "@openbot/brand",
+      "name": "@aikingbot/brand",
       "version": "0.0.0",
       "dependencies": {
+        "@aikingbot/contracts": "workspace:*",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/contracts": "workspace:*",
       },
       "devDependencies": {
         "@solidjs/testing-library": "catalog:",
@@ -232,7 +232,7 @@
       },
     },
     "packages/contracts": {
-      "name": "@openbot/contracts",
+      "name": "@aikingbot/contracts",
       "version": "0.0.0",
       "dependencies": {
         "emoji-regex": "10.6.0",
@@ -244,10 +244,10 @@
       },
     },
     "packages/i18n": {
-      "name": "@openbot/i18n",
+      "name": "@aikingbot/i18n",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "catalog:",
@@ -256,7 +256,7 @@
       },
     },
     "packages/logging": {
-      "name": "@openbot/logging",
+      "name": "@aikingbot/logging",
       "version": "0.0.0",
       "dependencies": {
         "ts-log": "3.0.3",
@@ -267,14 +267,14 @@
       },
     },
     "packages/team-client": {
-      "name": "@openbot/team-client",
+      "name": "@aikingbot/team-client",
       "version": "0.0.0",
       "dependencies": {
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/i18n": "workspace:*",
+        "@aikingbot/user-errors": "workspace:*",
         "@noble/ed25519": "3.1.0",
         "@noble/hashes": "catalog:",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -282,10 +282,10 @@
       },
     },
     "packages/telemetry": {
-      "name": "@openbot/telemetry",
+      "name": "@aikingbot/telemetry",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -295,17 +295,17 @@
       },
     },
     "packages/ui": {
-      "name": "@openbot/ui",
+      "name": "@aikingbot/ui",
       "version": "0.0.0",
       "dependencies": {
+        "@aikingbot/brand": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/i18n": "workspace:*",
+        "@aikingbot/team-client": "workspace:*",
+        "@aikingbot/telemetry": "workspace:*",
+        "@aikingbot/user-errors": "workspace:*",
         "@kobalte/core": "catalog:",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
         "@speed-highlight/core": "catalog:",
         "@tanstack/virtual-core": "catalog:",
         "class-variance-authority": "catalog:",
@@ -325,12 +325,12 @@
       },
     },
     "packages/user-errors": {
-      "name": "@openbot/user-errors",
+      "name": "@aikingbot/user-errors",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
+        "@aikingbot/contracts": "workspace:*",
+        "@aikingbot/i18n": "workspace:*",
+        "@aikingbot/logging": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "catalog:",
@@ -339,12 +339,12 @@
       },
     },
     "remote/api": {
-      "name": "@openbot/remote-api",
+      "name": "@aikingbot/remote-api",
       "version": "0.0.0",
       "dependencies": {
+        "@aikingbot/contracts": "workspace:*",
         "@discordjs/rest": "2.6.3",
         "@discordjs/ws": "2.0.4",
-        "@openbot/contracts": "workspace:*",
         "discord-api-types": "0.38.56",
         "effect": "catalog:",
         "elysia": "1.4.30",
@@ -421,6 +421,30 @@
     "@adobe/css-tools": ["@adobe/css-tools@4.5.0", "", {}, "sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q=="],
 
     "@agentclientprotocol/sdk": ["@agentclientprotocol/sdk@1.4.0", "", { "peerDependencies": { "zod": "^3.25.0 || ^4.0.0" } }, "sha512-/eufudw+aFY1LKLolT6yFE6UMmYRl7fMJ/DEONSIyR6wI3slHWITBsANRGqXEY8FRzqUxwh7QEaGiZHcJPVThg=="],
+
+    "@aikingbot/auth-api": ["@aikingbot/auth-api@workspace:apps/auth-api"],
+
+    "@aikingbot/brand": ["@aikingbot/brand@workspace:packages/brand"],
+
+    "@aikingbot/contracts": ["@aikingbot/contracts@workspace:packages/contracts"],
+
+    "@aikingbot/i18n": ["@aikingbot/i18n@workspace:packages/i18n"],
+
+    "@aikingbot/logging": ["@aikingbot/logging@workspace:packages/logging"],
+
+    "@aikingbot/mobile": ["@aikingbot/mobile@workspace:apps/mobile"],
+
+    "@aikingbot/remote-api": ["@aikingbot/remote-api@workspace:remote/api"],
+
+    "@aikingbot/site-router": ["@aikingbot/site-router@workspace:apps/site-router"],
+
+    "@aikingbot/team-client": ["@aikingbot/team-client@workspace:packages/team-client"],
+
+    "@aikingbot/telemetry": ["@aikingbot/telemetry@workspace:packages/telemetry"],
+
+    "@aikingbot/ui": ["@aikingbot/ui@workspace:packages/ui"],
+
+    "@aikingbot/user-errors": ["@aikingbot/user-errors@workspace:packages/user-errors"],
 
     "@ampproject/remapping": ["@ampproject/remapping@2.3.0", "", { "dependencies": { "@jridgewell/gen-mapping": "^0.3.5", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw=="],
 
@@ -961,30 +985,6 @@
     "@oozcitak/url": ["@oozcitak/url@3.0.0", "", { "dependencies": { "@oozcitak/infra": "^2.0.2", "@oozcitak/util": "^10.0.0" } }, "sha512-ZKfET8Ak1wsLAiLWNfFkZc/BraDccuTJKR6svTYc7sVjbR+Iu0vtXdiDMY4o6jaFl5TW2TlS7jbLl4VovtAJWQ=="],
 
     "@oozcitak/util": ["@oozcitak/util@10.0.0", "", {}, "sha512-hAX0pT/73190NLqBPPWSdBVGtbY6VOhWYK3qqHqtXQ1gK7kS2yz4+ivsN07hpJ6I3aeMtKP6J6npsEKOAzuTLA=="],
-
-    "@openbot/auth-api": ["@openbot/auth-api@workspace:apps/auth-api"],
-
-    "@openbot/brand": ["@openbot/brand@workspace:packages/brand"],
-
-    "@openbot/contracts": ["@openbot/contracts@workspace:packages/contracts"],
-
-    "@openbot/i18n": ["@openbot/i18n@workspace:packages/i18n"],
-
-    "@openbot/logging": ["@openbot/logging@workspace:packages/logging"],
-
-    "@openbot/mobile": ["@openbot/mobile@workspace:apps/mobile"],
-
-    "@openbot/remote-api": ["@openbot/remote-api@workspace:remote/api"],
-
-    "@openbot/site-router": ["@openbot/site-router@workspace:apps/site-router"],
-
-    "@openbot/team-client": ["@openbot/team-client@workspace:packages/team-client"],
-
-    "@openbot/telemetry": ["@openbot/telemetry@workspace:packages/telemetry"],
-
-    "@openbot/ui": ["@openbot/ui@workspace:packages/ui"],
-
-    "@openbot/user-errors": ["@openbot/user-errors@workspace:packages/user-errors"],
 
     "@openpanel/react-native": ["@openpanel/react-native@1.4.1", "", { "dependencies": { "@openpanel/sdk": "1.3.1" }, "peerDependencies": { "expo-application": "5 - 7", "expo-constants": "14 - 18", "react-native": "*" } }, "sha512-Ix0KAlys2V8LVQIfYTQIdyk5r9xlLSUyaPA7Asf2tqjm2lBa/26JbpUslHHbVS2rk28fYcvmdgAw739pJZXatQ=="],
 

@@ -1,4 +1,4 @@
-import { APP_LANGUAGES, type AppLanguage } from "@openbot/contracts/app-language";
+import { APP_LANGUAGES, type AppLanguage } from "@aikingbot/contracts/app-language";
 
 /**
  * The rows of the language selector.

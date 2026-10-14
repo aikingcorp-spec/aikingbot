@@ -1,10 +1,10 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
 import {
   MarketplaceSuggestionCard,
   type MarketplaceSuggestionCardProps,
   type MarketplaceSuggestionState,
-} from "@openbot/ui/features/conversation/MarketplaceSuggestionCard";
+} from "@aikingbot/ui/features/conversation/MarketplaceSuggestionCard";
 import { createStore, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -38,7 +38,7 @@ const meta = {
   title: "Conversation/Marketplace suggestion",
   component: MarketplaceSuggestionCard,
   render: (args) => (
-    <main style={{ width: "min(560px, 100vw)", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "min(560px, 100vw)", padding: "var(--aikingbot-space-4)" }}>
       <MarketplaceSuggestionCard {...args} />
     </main>
   ),
@@ -114,7 +114,7 @@ export const NarrowNoIcon: Story = {
     iconUrl: null,
   },
   render: (args) => (
-    <main style={{ width: "320px", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "320px", padding: "var(--aikingbot-space-4)" }}>
       <MarketplaceSuggestionCard {...args} />
     </main>
   ),
@@ -162,7 +162,7 @@ function CardStage(props: MarketplaceSuggestionCardProps) {
 
 export const Interactive: Story = {
   render: (args) => (
-    <main style={{ width: "min(560px, 100vw)", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "min(560px, 100vw)", padding: "var(--aikingbot-space-4)" }}>
       <CardStage {...args} />
     </main>
   ),

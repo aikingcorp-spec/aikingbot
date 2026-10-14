@@ -1,4 +1,4 @@
-import { createHostedServerStatusCheck, createHostedServerWake } from "@openbot/team-client/hosted-server-wake";
+import { createHostedServerStatusCheck, createHostedServerWake } from "@aikingbot/team-client/hosted-server-wake";
 import { Effect } from "effect";
 
 /**
@@ -17,7 +17,7 @@ export function createWebHostedServerWake(accountFetch: typeof fetch, now: () =>
               method: "POST",
               credentials: "same-origin",
               cache: "no-store",
-              headers: { "Content-Type": "application/json", "X-OpenBot-Browser": "1" },
+              headers: { "Content-Type": "application/json", "X-AIKINGBOT-Browser": "1" },
               body: "{}",
             }
           : {
@@ -25,7 +25,7 @@ export function createWebHostedServerWake(accountFetch: typeof fetch, now: () =>
               method: "GET",
               credentials: "same-origin",
               cache: "no-store",
-              headers: { "X-OpenBot-Browser": "1" },
+              headers: { "X-AIKINGBOT-Browser": "1" },
             },
       ),
     );

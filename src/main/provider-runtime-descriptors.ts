@@ -13,9 +13,9 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { join } from "node:path";
-import type { ManagedRuntimeId } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import type { ManagedRuntimeId } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import type { AgentRuntimeLock } from "../../scripts/agent-runtime-lock";
 import {
@@ -83,7 +83,7 @@ export interface RuntimeSpec {
  * against a damaged or replaced install, not against a writer who can change the record as well:
  * the store is the user's, and anything that can write to it can already run as the user.
  */
-export const INSTALL_RECORD = "openbot-install.json";
+export const INSTALL_RECORD = "aikingbot-install.json";
 
 /** Everything a staging step may use. `downloadSmallFile` is passed in so fetching stays private
  *  to the manager: a descriptor can ask for a checksummed LICENSE, and nothing else. */
@@ -641,9 +641,9 @@ const PROVIDER_RUNTIME_DESCRIPTORS: Record<ManagedRuntimeId, ProviderRuntimeDesc
         });
       }
     }),
-    // The server takes no `--version`: it starts and waits for ACP on stdin. OpenBot writes the
+    // The server takes no `--version`: it starts and waits for ACP on stdin. AIKINGBOT writes the
     // manifest at install. `verify` hashes only the programs, so the version check compares the
-    // manifest with the version that OpenBot wrote, not with the programs.
+    // manifest with the version that AIKINGBOT wrote, not with the programs.
     versionFile: ANTIGRAVITY_MANIFEST,
     parseVersion: parseAntigravityVersion,
   },
@@ -666,7 +666,7 @@ const PROVIDER_RUNTIME_DESCRIPTORS: Record<ManagedRuntimeId, ProviderRuntimeDesc
     },
     // The launcher starts the Node.js runtime and the script beside it, so the whole folder goes to
     // `bin/`. The archive has no licence file; the manifest names the terms Cursor publishes instead.
-    // GNU tar on Linux reads no zip, so the Windows zip is read by OpenBot.
+    // GNU tar on Linux reads no zip, so the Windows zip is read by AIKINGBOT.
     stage: Effect.fn("ProviderRuntime.cursor.stage")(function* ({
       spec,
       downloadedPath,
@@ -709,7 +709,7 @@ const PROVIDER_RUNTIME_DESCRIPTORS: Record<ManagedRuntimeId, ProviderRuntimeDesc
       }
     }),
     // The Windows launcher is a `.cmd` file, which `execFile` cannot start, so the version comes from
-    // the manifest that OpenBot wrote, as for Antigravity.
+    // the manifest that AIKINGBOT wrote, as for Antigravity.
     versionFile: CURSOR_MANIFEST,
     parseVersion: parseCursorManifestVersion,
   },

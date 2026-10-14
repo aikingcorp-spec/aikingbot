@@ -1,4 +1,4 @@
-import type { AgentSummary, MarketplaceAgentDetail } from "@openbot/contracts/ipc";
+import type { AgentSummary, MarketplaceAgentDetail } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";

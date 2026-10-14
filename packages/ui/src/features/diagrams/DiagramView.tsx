@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
   Workflow,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createSignal, createStore, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

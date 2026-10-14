@@ -1,14 +1,17 @@
 import { Effect } from "effect";
 import type { AcpHistoryPersistence } from "./acp-client";
 import type { AgentProvider } from "./agent-client";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import { databaseRow, optionalStringColumn, requiredStringColumn } from "./database/database-rows";
 import type { ProviderHistoryTurnCursor } from "./database/provider-history-store";
-import type { OpenBotDatabase } from "./openbot-database";
 import { providerSync } from "./provider-client-effects";
 import type { ProviderHistoryConsumer, ProviderHistoryRequest } from "./provider-history";
 
 /** Builds the ACP history port from SQLite without exposing the database to a provider process. */
-export function providerHistoryPersistence(database: OpenBotDatabase, provider: AgentProvider): AcpHistoryPersistence {
+export function providerHistoryPersistence(
+  database: AIKINGBOTDatabase,
+  provider: AgentProvider,
+): AcpHistoryPersistence {
   const recordsOnly = provider !== "codex" && provider !== "claude";
   const findSession = (externalSessionId: string) => {
     const row = database.connection

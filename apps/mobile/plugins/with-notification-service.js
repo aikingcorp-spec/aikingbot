@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { withDangerousMod, withXcodeProject } = require("expo/config-plugins");
 
-// Adds the Notification Service Extension that opens a sealed OpenBot notification before iOS shows
+// Adds the Notification Service Extension that opens a sealed AIKINGBOT notification before iOS shows
 // it (`notification-service/NotificationService.swift`). It reads the keys that the app writes into
 // the App Group, so it has the App Group entitlement and nothing else.
 
@@ -43,7 +43,7 @@ function infoPlist({ targetName, groupIdentifier }) {
     <key>NSExtensionPrincipalClass</key>
     <string>$(PRODUCT_MODULE_NAME).NotificationService</string>
   </dict>
-  <key>OpenBotAppGroup</key>
+  <key>AIKINGBOTAppGroup</key>
   <string>${groupIdentifier}</string>
 </dict>
 </plist>

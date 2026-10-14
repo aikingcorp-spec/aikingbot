@@ -301,7 +301,7 @@ export const messages = {
   "chat.suggestion.dismissed": "Sugerencia de {name} descartada.",
   "chat.suggestion.undo": "Deshacer",
   "chat.suggestion.githubLocalOnly": "Conecta GitHub en el equipo donde se ejecuta este servidor.",
-  "chat.suggestion.githubUnavailable": "Esta compilación de OpenBot no puede conectar GitHub.",
+  "chat.suggestion.githubUnavailable": "Esta compilación de AIKINGBOT no puede conectar GitHub.",
   "chat.compaction.running": "Compactando el contexto",
   "chat.compaction.completed": "Contexto compactado",
   "chat.compaction.failed": "No se pudo compactar el contexto",

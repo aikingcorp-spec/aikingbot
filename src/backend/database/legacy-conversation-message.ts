@@ -1,6 +1,6 @@
-import type { ConversationMessage } from "@openbot/contracts/ipc";
-import { isConversationMessage } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import type { ConversationMessage } from "@aikingbot/contracts/ipc";
+import { isConversationMessage } from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 
 /**
  * A conversation message a released build persisted spells the product agent `bot`.

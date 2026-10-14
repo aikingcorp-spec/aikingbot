@@ -8,7 +8,7 @@
 // graph would make the build depend on the UI it is only illustrating. Article
 // bodies live in src/content and are wired up separately.
 
-import { OPENBOT_SITE_URL } from "./site-metadata";
+import { AIKINGBOT_SITE_URL } from "./site-metadata";
 
 export type CollectionId = "news" | "guides" | "compare" | "providers";
 /** The collections whose articles are prose, drawn by the article page. */
@@ -79,18 +79,18 @@ export function reportedArticlePath(collection: ContentCollection, slug: string)
 
 // The absolute URLs below take the site they sit on. The head tags pass the site
 // that served the page (see `servingSiteUrl`); the feed and the sitemap keep
-// openbot.run.
+// aikingbot.aikingx.com.
 
-export function articleUrl(collection: ContentCollection, slug: string, siteUrl = OPENBOT_SITE_URL): string {
+export function articleUrl(collection: ContentCollection, slug: string, siteUrl = AIKINGBOT_SITE_URL): string {
   return new URL(articlePath(collection, slug), siteUrl).toString();
 }
 
 /** The article's text as Markdown, which `src/server/page-markdown.ts` serves. */
-export function articleMarkdownUrl(collection: ContentCollection, slug: string, siteUrl = OPENBOT_SITE_URL): string {
+export function articleMarkdownUrl(collection: ContentCollection, slug: string, siteUrl = AIKINGBOT_SITE_URL): string {
   return new URL(`${articlePath(collection, slug)}.md`, siteUrl).toString();
 }
 
-export function collectionIndexUrl(collection: ContentCollection, siteUrl = OPENBOT_SITE_URL): string {
+export function collectionIndexUrl(collection: ContentCollection, siteUrl = AIKINGBOT_SITE_URL): string {
   return new URL(collection.indexRoute, siteUrl).toString();
 }
 
@@ -98,12 +98,12 @@ function collectionFeedPath(collection: ContentCollection): string {
   return `${collection.indexRoute}/rss.xml`;
 }
 
-export function collectionFeedUrl(collection: ContentCollection, siteUrl = OPENBOT_SITE_URL): string {
+export function collectionFeedUrl(collection: ContentCollection, siteUrl = AIKINGBOT_SITE_URL): string {
   return new URL(collectionFeedPath(collection), siteUrl).toString();
 }
 
 /** The 1200x630 social card, with the title baked in. Drawn by `bun run api:images`. */
-export function articleOgImageUrl(collection: ContentCollection, slug: string, siteUrl = OPENBOT_SITE_URL): string {
+export function articleOgImageUrl(collection: ContentCollection, slug: string, siteUrl = AIKINGBOT_SITE_URL): string {
   return new URL(`/${collection.id}/og/${slug}.png`, siteUrl).toString();
 }
 

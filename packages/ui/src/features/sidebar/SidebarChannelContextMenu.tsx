@@ -1,7 +1,7 @@
 /** The right-click menu on a channel, in the pinned strip and in a section alike. */
 
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import { ContextMenu, Hash, Pin, PinOff } from "@openbot/ui";
+import type { ChannelSummary } from "@aikingbot/contracts/ipc";
+import { ContextMenu, Hash, Pin, PinOff } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { DeleteIcon, EditIcon } from "./SidebarIcons";

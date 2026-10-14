@@ -1,14 +1,14 @@
 // The routines twin of `memories-port.ts`: one settings panel, two owners.
 
 import type {
-  OpenBotDesktopApi,
+  AIKINGBOTDesktopApi,
   RoutineFields,
   RoutineLimitPolicy,
   RoutineMissedPolicy,
   RoutineRunFields,
   RoutineSchedule,
-} from "@openbot/contracts/ipc";
-import type { EventRoutine, EventRoutineOwner, EventRoutineTriggerInput } from "@openbot/contracts/ipc-events";
+} from "@aikingbot/contracts/ipc";
+import type { EventRoutine, EventRoutineOwner, EventRoutineTriggerInput } from "@aikingbot/contracts/ipc-events";
 import type { EventRoutinesApi, RoutineWebhooksApi } from "./routine-webhooks-api";
 
 interface RoutineSaveInput {
@@ -44,7 +44,7 @@ export interface RoutinesPort {
    */
   limitPolicy: boolean;
   /**
-   * Whether the host keeps what a routine does with a run that came due while OpenBot was closed.
+   * Whether the host keeps what a routine does with a run that came due while AIKINGBOT was closed.
    * Only this computer's host does, for the same reason as `limitPolicy`.
    */
   missedPolicy: boolean;
@@ -66,27 +66,27 @@ export function agentRoutinesPort(agentId: string, automation = false, localHost
     ownerNoun: "agent",
     limitPolicy: localHost,
     missedPolicy: localHost,
-    list: () => window.openbot.agent.listRoutines(agentId),
-    listRuns: (routineId, limit) => window.openbot.agent.listRoutineRuns({ agentId, routineId, limit }),
+    list: () => window.aikingbot.agent.listRoutines(agentId),
+    listRuns: (routineId, limit) => window.aikingbot.agent.listRoutineRuns({ agentId, routineId, limit }),
     save: ({ routineId, name, instruction, active, timezone, schedule, limitPolicy, missedPolicy }) => {
       const policy = localHost
         ? { ...(limitPolicy ? { limitPolicy } : {}), ...(missedPolicy ? { missedPolicy } : {}) }
         : {};
       return (
         routineId
-          ? window.openbot.agent.updateRoutine({ agentId, routineId, name, instruction, active, schedule, ...policy })
-          : window.openbot.agent.createRoutine({ agentId, name, instruction, active, timezone, schedule, ...policy })
+          ? window.aikingbot.agent.updateRoutine({ agentId, routineId, name, instruction, active, schedule, ...policy })
+          : window.aikingbot.agent.createRoutine({ agentId, name, instruction, active, timezone, schedule, ...policy })
       ).then((routine) => ({ routine, secret: null }));
     },
-    remove: (routineId) => window.openbot.agent.deleteRoutine({ agentId, routineId }),
+    remove: (routineId) => window.aikingbot.agent.deleteRoutine({ agentId, routineId }),
     test: async (routineId) => {
-      await window.openbot.agent.testRoutine({ agentId, routineId });
+      await window.aikingbot.agent.testRoutine({ agentId, routineId });
     },
     ...(automation
-      ? { runCommand: (routineId: string) => window.openbot.agent.automationRunCommand({ agentId, routineId }) }
+      ? { runCommand: (routineId: string) => window.aikingbot.agent.automationRunCommand({ agentId, routineId }) }
       : {}),
     subscribe: (reload) =>
-      window.openbot.agent.onEvent((event) => {
+      window.aikingbot.agent.onEvent((event) => {
         if (event.type === "routines-changed" && event.agentId === agentId) reload();
       }),
   };
@@ -94,7 +94,7 @@ export function agentRoutinesPort(agentId: string, automation = false, localHost
 
 /** The host calls a channel's routines make. The desktop sends them through preload. */
 export type ChannelRoutinesApi = Pick<
-  OpenBotDesktopApi["agent"],
+  AIKINGBOTDesktopApi["agent"],
   | "listChannelRoutines"
   | "listChannelRoutineRuns"
   | "createChannelRoutine"
@@ -106,7 +106,7 @@ export type ChannelRoutinesApi = Pick<
 
 export function channelRoutinesPort(
   channelId: string,
-  api: ChannelRoutinesApi = window.openbot.agent,
+  api: ChannelRoutinesApi = window.aikingbot.agent,
   localHost = false,
 ): RoutinesPort {
   return {

@@ -1,4 +1,4 @@
-import type { HostedServerActivityReport } from "@openbot/contracts/hosted-servers";
+import type { HostedServerActivityReport } from "@aikingbot/contracts/hosted-servers";
 import { Deferred, Effect } from "effect";
 import { runCauseEffect } from "../backend/effect-boundary";
 import type { RemoteWorkflowError } from "./remote-service-effects";

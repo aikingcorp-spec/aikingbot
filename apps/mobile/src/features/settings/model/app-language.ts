@@ -1,4 +1,4 @@
-import { type AppLanguage, DEFAULT_APP_LANGUAGE, isAppLanguage } from "@openbot/i18n/mobile";
+import { type AppLanguage, DEFAULT_APP_LANGUAGE, isAppLanguage } from "@aikingbot/i18n/mobile";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 
@@ -6,7 +6,7 @@ import { create } from "zustand";
  * The interface language on this phone. `"system"` follows the phone's first language. The desktop
  * keeps its own setting: a phone and a computer can read in different languages.
  */
-const key = "openbot.mobile.app-language.v1";
+const key = "aikingbot.mobile.app-language.v1";
 export const useAppLanguage = create<{ value: AppLanguage; ready: boolean; saving: boolean }>(() => ({
   value: DEFAULT_APP_LANGUAGE,
   ready: false,

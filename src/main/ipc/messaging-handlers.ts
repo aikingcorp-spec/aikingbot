@@ -8,12 +8,12 @@ import {
   isAddMessagingOrchestratorResult,
   type MessagingPlatform,
   messagingPage,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, nullableString } from "@openbot/contracts/ipc-decoding";
-import { CONNECTORS_CAPABILITY, CONNECTORS_ROUTES } from "@openbot/contracts/team-protocol/connectors-v1";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { decodeRecord, nullableString } from "@aikingbot/contracts/ipc-decoding";
+import { CONNECTORS_CAPABILITY, CONNECTORS_ROUTES } from "@aikingbot/contracts/team-protocol/connectors-v1";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { MessagingService } from "../../backend/messaging/messaging-service";

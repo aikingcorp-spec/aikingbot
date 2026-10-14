@@ -278,7 +278,7 @@ export const messages = defineMessages("chat", {
   "chat.suggestion.dismissed": "{name} suggestion dismissed.",
   "chat.suggestion.undo": "Undo",
   "chat.suggestion.githubLocalOnly": "Connect GitHub on the computer that runs this server.",
-  "chat.suggestion.githubUnavailable": "This OpenBot build cannot connect GitHub.",
+  "chat.suggestion.githubUnavailable": "This AIKINGBOT build cannot connect GitHub.",
   "chat.compaction.running": "Compacting context",
   "chat.compaction.completed": "Context compacted",
   "chat.compaction.failed": "Could not compact context",

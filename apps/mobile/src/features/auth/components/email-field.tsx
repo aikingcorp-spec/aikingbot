@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { type Ref, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";

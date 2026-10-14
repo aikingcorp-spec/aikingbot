@@ -1,8 +1,8 @@
-import { chatPreviewKind } from "@openbot/contracts/chat-preview";
-import type { AttachmentSummary, InstalledSkill, MessageReaction } from "@openbot/contracts/ipc";
-import { canPreviewAttachment, MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@openbot/contracts/ipc";
-import { type BubbleVariant, Button, DropdownMenu } from "@openbot/ui";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { chatPreviewKind } from "@aikingbot/contracts/chat-preview";
+import type { AttachmentSummary, InstalledSkill, MessageReaction } from "@aikingbot/contracts/ipc";
+import { canPreviewAttachment, MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@aikingbot/contracts/ipc";
+import { type BubbleVariant, Button, DropdownMenu } from "@aikingbot/ui";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createEffect, createMemo, createSignal, For, Match, onCleanup, Show, Switch, untrack } from "solid-js";
 import type { AgentMessage, AgentProfile } from "../../data";
 import { useText } from "../../text";

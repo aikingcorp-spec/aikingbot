@@ -1,11 +1,11 @@
-import { CHAT_HTML_PREVIEW_POLICY } from "@openbot/contracts/chat-preview";
-import { MarkdownMessageText } from "@openbot/ui/features/conversation/MarkdownMessageText";
+import { CHAT_HTML_PREVIEW_POLICY } from "@aikingbot/contracts/chat-preview";
+import { MarkdownMessageText } from "@aikingbot/ui/features/conversation/MarkdownMessageText";
 import { render, screen } from "@solidjs/testing-library";
 import { expect, it, vi } from "vitest";
 
 // Agent HTML, also from a teammate's host, renders inside the renderer that holds the IPC bridge.
 it("shows agent HTML in a frame that runs no scripts and loads nothing from a server", async () => {
-  const body = ["```html", '<img src="https://example.com/pixel.png"><script>parent.openbot</script>', "```"].join(
+  const body = ["```html", '<img src="https://example.com/pixel.png"><script>parent.aikingbot</script>', "```"].join(
     "\n",
   );
   render(() => <MarkdownMessageText body={body} agents={[]} onSelectAgent={vi.fn()} onOpenLink={vi.fn()} />);

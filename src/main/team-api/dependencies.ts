@@ -30,8 +30,8 @@ import type {
   SidebarLayoutSnapshot,
   TeamPresenceSnapshot,
   UpdateHostIdentityInput,
-} from "@openbot/contracts/ipc";
-import type { Logger } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import type { Logger } from "@aikingbot/logging";
 import type { AgentService } from "../../backend/agent-service";
 import type { BrowserHost } from "../../backend/browser-host";
 import type { MailboxStore } from "../../backend/mailbox-store";
@@ -186,7 +186,7 @@ export type TeamApiProviderHostSignIns = Pick<ProviderHostSignIns, "start" | "st
 
 /** Its presence is what `#protocolSupport` advertises `storage-v1` on. */
 export type TeamApiStorage = Pick<StorageUsageService, "usage" | "deleteFile" | "clear">;
-/** `hosted-sites-v1`: the openbot.site sites of this server. Members list; only admins delete. */
+/** `hosted-sites-v1`: the aikingbot-sites.aikingx.com sites of this server. Members list; only admins delete. */
 export type TeamApiHostedSites = Pick<HostedSiteDesktopService, "listServerSites" | "deleteServerSite">;
 
 /** Its presence is what `#protocolSupport` advertises `agent-import-v1` on. Any member can use it. */

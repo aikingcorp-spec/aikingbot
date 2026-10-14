@@ -8,7 +8,7 @@ import { fileResponse } from "./file-response";
 
 describe("fileResponse", () => {
   it("serves the whole file with the given headers", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-file-response-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-file-response-"));
     const path = join(directory, "image.png");
     const bytes = randomBytes(300_000);
     await writeFile(path, bytes);
@@ -24,13 +24,13 @@ describe("fileResponse", () => {
   });
 
   it("rejects a file that cannot be opened, so the protocol can answer 404", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-file-response-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-file-response-"));
 
     await expect(runCauseEffect(fileResponse(join(directory, "missing.png"), {}))).rejects.toThrow(/ENOENT/);
   });
 
   it("rejects a directory instead of a body that fails after the headers", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-file-response-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-file-response-"));
 
     await expect(runCauseEffect(fileResponse(directory, {}))).rejects.toThrow("Not a regular file.");
   });

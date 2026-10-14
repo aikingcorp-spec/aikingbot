@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the OpenBot iPhone app will be documented here. The project follows
+All notable changes to the AIKINGBOT iPhone app will be documented here. The project follows
 [Semantic Versioning](https://semver.org/). Notes for the next release are in
 [`changelog.d/`](changelog.d/README.md). The changes of the desktop app and the web client are in
 the [root changelog](../../CHANGELOG.md).
@@ -16,15 +16,15 @@ the [root changelog](../../CHANGELOG.md).
 - Italian interface. Choose Italiano in Settings > App language, or keep System default on an
   iPhone that uses Italian.
 - Get a notification when an agent finishes, stops with an error, or needs your input, an approval,
-  or a step in the browser while OpenBot is not on screen. It shows the agent name and the start of
-  the reply, the question, or the action to approve, and a tap opens the chat. Apple and the OpenBot
+  or a step in the browser while AIKINGBOT is not on screen. It shows the agent name and the start of
+  the reply, the question, or the action to approve, and a tap opens the chat. Apple and the AIKINGBOT
   account service cannot read the text. An answer or an error does not come while you use the
   desktop app. While the Live Activity shows, no notification comes: the Live Activity shows the
   event, and with Play sound on it lights up the screen and plays the sound, also with notifications
-  off. The server must run an OpenBot version with this change.
+  off. The server must run an AIKINGBOT version with this change.
 - Settings > Notifications now has the notification and Live Activity settings on one screen. It
   turns notifications on or off, hides the reply preview, and sets the one sound of notifications
-  and the Live Activity: Play sound on or off, and the OpenBot sound of the desktop app, one of the
+  and the Live Activity: Play sound on or off, and the AIKINGBOT sound of the desktop app, one of the
   four sounds of the desktop sound themes, or the iOS sound. The app plays a sound when you choose
   it. For each server you can choose all activity, only the events that need you, or nothing, and
   mute the server for a time, as in the desktop app. Server settings have the same choices.
@@ -40,7 +40,7 @@ the [root changelog](../../CHANGELOG.md).
 
 ### Removed
 
-- The app no longer shows channels, with any version of OpenBot on your computer. You cannot make a new channel, and Settings no longer has Deleted channels. Search and the routine calendar show only agents. To make agents work together, put them in one sidebar section.
+- The app no longer shows channels, with any version of AIKINGBOT on your computer. You cannot make a new channel, and Settings no longer has Deleted channels. Search and the routine calendar show only agents. To make agents work together, put them in one sidebar section.
 
 ### Fixed
 
@@ -77,26 +77,26 @@ the [root changelog](../../CHANGELOG.md).
 - The arrows in the bottom bar of the browser go to the previous and the next page. Reload page is
   in the ··· menu. The tabs button shows the agent's tabs: select a tab to show it, or open a new
   tab or close the tab on screen.
-- The page in the browser keeps the same size on your phone when the window of OpenBot on the
-  server changes size. The server needs this version of OpenBot.
+- The page in the browser keeps the same size on your phone when the window of AIKINGBOT on the
+  server changes size. The server needs this version of AIKINGBOT.
 - When an agent asks you to take over its browser, the request has an Open browser button. In the
   browser, choose I'm done in the ··· menu to give control back to the agent.
 - You can allow or deny an agent's approval request in the chat. The card shows the command, files or permissions, and says what each answer does on the computer. Before, the chat only showed "Waiting for your input on desktop".
-- When a request is too long to show on the phone, the card lets you deny it and tells you to open OpenBot on the computer to allow it.
+- When a request is too long to show on the phone, the card lets you deny it and tells you to open AIKINGBOT on the computer to allow it.
 - Mark agents that wait for you in the agent list, with an icon for a question, an approval, or a browser takeover. A "Needs you" group shows them above the sections.
 - When an agent waits for you, the compact Dynamic Island shows an amber mark on the agent's photo, and the agent's name has the agent color.
 - Mark all agent chats and channels on a server as read from the home screen chat options menu. If a chat cannot be marked read, it stays unread and the app tells you.
 - Agent info groups the agent settings as the desktop app does: **Brain**, **Knows**, **Does**, and **Rules**. **Rules** has **Permissions**, **Notifications**, and **Advanced**.
 - **Advanced** shows the workspace folder of the agent and can start a **New chat**. A new chat shows a "New chat started" divider in the chat.
-- Owners and admins can turn **Computer Use** and **Local scripts** on or off for an agent, and select what a message does while the agent works (**Queue** or **Steer**). A change made on the computer or on another device shows at once. The computer that runs the agent must have the newest OpenBot desktop version.
-- Owners and admins can see and delete the **Tables** that the agents share, and **Publish** an agent as a link template. The link preview of a template that you publish from the phone shows the general OpenBot image, not an agent card.
+- Owners and admins can turn **Computer Use** and **Local scripts** on or off for an agent, and select what a message does while the agent works (**Queue** or **Steer**). A change made on the computer or on another device shows at once. The computer that runs the agent must have the newest AIKINGBOT desktop version.
+- Owners and admins can see and delete the **Tables** that the agents share, and **Publish** an agent as a link template. The link preview of a template that you publish from the phone shows the general AIKINGBOT image, not an agent card.
 - Support Pi and Muse agents on hosts with Team API v7.
 - Add provider session settings and reset on hosts that support this feature.
 - Choose which agent memories enter every prompt on updated hosts. Keep other memories saved for search, and let the agent manage the selection when needed.
 - Polish interface. Choose Polski in Settings > App language, or keep System default on an iPhone
   that uses Polish.
 - Write and send messages while your server is offline. Waiting messages are drawn lighter, one line under them says they send when the server is online, and you touch and hold a message to edit it or not send it. They send on their own when the server is back. The phone keeps waiting messages and their files when you close the app.
-- Search finds the same kinds of results as the desktop search: agents, channels, messages, files and routines. It also finds the settings pages of the app and of the server. The filter button next to the search field shows one kind of result. Files show when the computer has the latest OpenBot.
+- Search finds the same kinds of results as the desktop search: agents, channels, messages, files and routines. It also finds the settings pages of the app and of the server. The filter button next to the search field shows one kind of result. Files show when the computer has the latest AIKINGBOT.
 - A search result opens what it names. A message or a file opens the chat at its message. A channel opens the channel, a routine opens its settings, and a settings result opens its page.
 - Settings > Animations has "Animate search results". It turns off the blur when search results change.
 
@@ -106,7 +106,7 @@ the [root changelog](../../CHANGELOG.md).
 - The screen that creates an agent now has a soft glow in the color of the agent. When you select a different color, the glow and the avatar change to the new color smoothly.
 - Settings has no General page. Appearance, Animations, Language, Haptics, Live Activities and
   Privacy each have their own page. Hidden chats and deleted channels are on the Settings page.
-- Show what a hosted server gives at the top of the plans sheet: it runs OpenBot 24/7 on an external
+- Show what a hosted server gives at the top of the plans sheet: it runs AIKINGBOT 24/7 on an external
   server, keeps agents and routines running when the computer is off, and needs no technical setup.
 - Like on desktop, consecutive messages between agents show as one line in the chat, such as "3 messages with 2 agents". Tap it to see each message.
 - A message to several agents shows their avatars and the number of agents. Tap it to see their names.
@@ -140,7 +140,7 @@ the [root changelog](../../CHANGELOG.md).
 - The agent's browser follows the light or dark appearance of the app.
 - Live Activity answer buttons show as one capsule each and share the full width.
 - The owner of a server can now remove it from the account in server settings, also when its computer is offline or gone. Before, an owner could not remove such a server. The removal applies to all members and all devices. Members lose access, and connected Slack, Discord, Telegram and webhook routes stop. If you add the server again, invite its members again and set up its connections again. Old webhook URLs do not work again.
-- Open a chat of an agent on a connected server that is not the active one, for example from a Live Activity, and OpenBot now loads the messages, loads older messages and marks them read on the agent's own server. Before, it asked the active server.
+- Open a chat of an agent on a connected server that is not the active one, for example from a Live Activity, and AIKINGBOT now loads the messages, loads older messages and marks them read on the agent's own server. Before, it asked the active server.
 - Report failed browser Live View connections and input as failures instead of normal view termination. Release failed sessions so the view can be opened again.
 - Tasks card. The step in progress shows all its lines at each text size. Before, a larger text
   size cut off the bottom of the step, and the next step touched it.
@@ -152,7 +152,7 @@ the [root changelog](../../CHANGELOG.md).
 - A browser request in a chat stays visible, with the typed value, while Notification Center or another system overlay is open.
 - In Settings > Support, the recent log scrolls in its own box, so a long log does not make the page very long.
 - After 45 minutes on one server connection, and on each return to the app after that, the app asked the signalling service for new relay credentials many times a second, until the service closed the socket for a minute. A lost connection could not recover in that minute. The app now asks once every 45 minutes.
-- A remote connection that Signal refuses for a reason other than a rate limit, such as an invalid ticket, reconnects at once. Before, OpenBot waited 60 seconds as if Signal had limited its rate.
+- A remote connection that Signal refuses for a reason other than a rate limit, such as an invalid ticket, reconnects at once. Before, AIKINGBOT waited 60 seconds as if Signal had limited its rate.
 - A server is usable sooner after you return to the app. Before, "Reconnecting" stayed until every chat that you had opened before had loaded again, one after another. Now it ends when the agents and the unread counts load, and the chats load after it, the open chat first.
 - After more than 30 seconds away, the app waited 3 seconds for a dead connection before it connected again. Now it repairs the connection at once, or replaces it at once when the server has already dropped it. After more than about 3 minutes away, it shows at once that it connects, instead of a server that looked online but did not answer.
 - On a return to the app, the selected server connects first, and your other servers follow when it is online.
@@ -169,7 +169,7 @@ the [root changelog](../../CHANGELOG.md).
 - Routines for a server. Touch and hold a server in the server list, then select Routines. The week view shows the runs of each day with the agents that do them. Swipe the days to change the week. Select Day in the header to see one day; today also shows the next runs. Select a run to open its routine.
 - Buy a cloud server from the iPhone app. Tap + in the server list, choose a plan, and pay on a secure Stripe page. The app shows the setup until the server is ready, and the server shows on your computer too.
 - Usage for a server. Touch and hold a server in the server list, then select Usage. The report shows the processed tokens and the estimated cost of all agents on the server, with the share of each agent. Select an agent in the list, or in the Agent row at the top, to see the usage of one agent.
-- Settings → Support. It shows how to get help: report a problem on GitHub or message us on X. It also shows a support log of recent app events, connection steps, requests and errors. Select Save log file to save the log or attach it to a message. The log stays on your phone and OpenBot never sends it. It does not record messages or files, and it masks passwords and tokens. Select Clear log to remove it.
+- Settings → Support. It shows how to get help: report a problem on GitHub or message us on X. It also shows a support log of recent app events, connection steps, requests and errors. Select Save log file to save the log or attach it to a message. The log stays on your phone and AIKINGBOT never sends it. It does not record messages or files, and it masks passwords and tokens. Select Clear log to remove it.
 - Cursor and Cline agents on a server now show in the app. Before, the server kept them hidden.
 - HTML pages and Mermaid diagrams in a reply. A code block marked `html` or `mermaid` shows as a
   card with a header and a small picture of the page or the diagram. Tap the card to open it on its
@@ -184,7 +184,7 @@ the [root changelog](../../CHANGELOG.md).
 - A routine run in a chat shows as one short line with the routine name and its state. The chat no
   longer shows the routine instruction as your message.
 - The routine schedule is easier to set. Select how often it repeats (hourly, daily, weekly, monthly or yearly), then the days and the time, as on desktop. A cron expression is now the last choice, for advanced schedules only.
-- The OpenBot logo no longer turns when you turn your phone, and the app no longer uses motion access.
+- The AIKINGBOT logo no longer turns when you turn your phone, and the app no longer uses motion access.
 - Settings → About shows the build number after the version, such as "1.1.0 (17)".
 - The agent Usage page has a clearer period control. Select 7 days, 30 days, 90 days, 1 year or Custom. For Custom, set the start and end dates with the date pickers. The report changes at once. The daily chart is now the chart of the desktop app: one area for each provider, in its color, with the values on a grid. Touch or drag across the chart to see a day, with the value of each provider under it. When you change the period or the agent, the report stays on screen and its numbers and chart move to the new values.
 - On Android, the app no longer asks for access to all photos and videos. You still choose photos and files with the system picker, and you can still save images from a chat.
@@ -262,7 +262,7 @@ the [root changelog](../../CHANGELOG.md).
   logo.
 - Haptic feedback when you open and close screens, pick options, save, and when an action succeeds
   or fails. Turn it off with the Haptics setting.
-- Open a shared agent link (`https://openbot.run/agents/...` or `openbot://agents/...`) in the app.
+- Open a shared agent link (`https://aikingbot.aikingx.com/agents/...` or `aikingbot://agents/...`) in the app.
   You see the agent before you add it, and you choose the server where you are owner or admin.
   Before, the link opened Safari or showed "Link unavailable".
 - Manage the skills of an agent from Agent info > Skills. An owner or admin can turn a skill on or
@@ -280,10 +280,10 @@ the [root changelog](../../CHANGELOG.md).
 - When you open a hosted server that stopped after it was not in use, the app starts it again and connects when it is ready.
 - The Lock Screen and the Dynamic Island show what your agents do, as the desktop Dynamic Island
   does: work, new replies, questions, approvals, browser steps, and failed tasks. You can answer an
-  approval or a short question from the Lock Screen. OpenBot asks again before it approves a command.
+  approval or a short question from the Lock Screen. AIKINGBOT asks again before it approves a command.
   When several agents have new replies, the activity lists them. Settings > General > Live Activities
-  turns this off. When iOS stops OpenBot in the background, the host keeps the activity current
-  through Apple. The update is encrypted for your phone, so Apple and OpenBot cannot read it.
+  turns this off. When iOS stops AIKINGBOT in the background, the host keeps the activity current
+  through Apple. The update is encrypted for your phone, so Apple and AIKINGBOT cannot read it.
 
 ### Changed
 

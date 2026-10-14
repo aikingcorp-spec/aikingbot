@@ -1,5 +1,5 @@
-import type { ConversationMessage, QueueDelivery } from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
+import type { ConversationMessage, QueueDelivery } from "@aikingbot/contracts/ipc";
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
 
 /**
  * The rows of the waiting block: which teammates this agent asked, and where each answer is.

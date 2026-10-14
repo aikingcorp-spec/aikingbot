@@ -3,8 +3,8 @@ import {
   type AppLanguage,
   type AppLanguageOption,
   appLanguageOption,
-} from "@openbot/i18n/languages";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+} from "@aikingbot/i18n/languages";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { useText } from "../../text";
 

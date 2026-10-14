@@ -115,7 +115,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "外部のファイル編集は、自動承認がオンでも先に確認します。コマンドは外部に書き込めません。",
   "agentSettings.runtime.workspaceUnlimited":
-    "Computer Use と OpenBot ブラウザーは制限されません。Computer Use は下でオフにできます。",
+    "Computer Use と AIKINGBOT ブラウザーは制限されません。Computer Use は下でオフにできます。",
   "agentSettings.computerUse.title": "Computer Use",
   "agentSettings.computerUse.description": "このエージェントにこのコンピューターのアプリの操作を許可します",
   "agentSettings.automation.title": "ローカルスクリプト",

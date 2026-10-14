@@ -1,11 +1,11 @@
-import { NOTIFICATION_SOUND_FILES } from "@openbot/contracts/notification-relay";
+import { NOTIFICATION_SOUND_FILES } from "@aikingbot/contracts/notification-relay";
 import { File, Paths } from "expo-file-system";
 import * as Notifications from "expo-notifications";
 import type { NotificationPermission } from "@/features/settings/model/push-notifications";
 import { type PushNotificationsNative, SOUND_PREVIEW_KEY } from "./push-notifications-native.types";
 
 /** The App Group of the app and its extensions. `app.json` names the same group. */
-const APP_GROUP = "group.run.openbot.mobile";
+const APP_GROUP = "group.run.aikingbot.mobile";
 /** `NotificationService.swift` reads this file. */
 const KEYS_FILE = "push-notifications.json";
 

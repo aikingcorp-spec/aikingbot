@@ -1,14 +1,14 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
+import { AVATAR_IMAGE_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../effect-boundary";
 import { loadAvatarFile } from "./avatar-file";
 
 let root: string;
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-avatar-file-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-avatar-file-"));
 });
 afterEach(async () => {
   await rm(root, { recursive: true, force: true });

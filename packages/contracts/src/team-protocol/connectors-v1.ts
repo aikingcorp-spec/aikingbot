@@ -12,7 +12,7 @@
 //
 // The messaging routes manage the host's Slack workspaces, Discord servers and Telegram chats. A
 // connect opens no page on the host: it answers the page, and the client opens it. A Slack or Discord
-// install ends in an `openbot://` link that only the client's app receives. That link carries a grant
+// install ends in an `aikingbot://` link that only the client's app receives. That link carries a grant
 // that is sealed to a one-use key of the host, under `nonce`. The client sends it back with
 // `messagingComplete` and cannot open it. A Telegram link has no callback, so its `nonce` is null.
 // `state` and `credentials` are text, so a later host state does not break an older client.

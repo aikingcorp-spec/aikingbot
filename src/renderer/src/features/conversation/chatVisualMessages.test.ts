@@ -3,7 +3,7 @@ import {
   chatVisualDocument,
   chatVisualFrameHeight,
   parseChatVisualMessage,
-} from "@openbot/contracts/chat-visual";
+} from "@aikingbot/contracts/chat-visual";
 import { describe, expect, it } from "vitest";
 
 // A visual reply page runs the agent's scripts, so every message it posts is untrusted input.
@@ -17,9 +17,9 @@ describe("parseChatVisualMessage", () => {
         jsonrpc: "2.0",
         id: 3,
         method: "ui/open-link",
-        params: { url: "https://openbot.run/docs" },
+        params: { url: "https://aikingbot.aikingx.com/docs" },
       }),
-    ).toEqual({ type: "open-link", id: 3, url: "https://openbot.run/docs" });
+    ).toEqual({ type: "open-link", id: 3, url: "https://aikingbot.aikingx.com/docs" });
   });
 
   it.each([
@@ -33,8 +33,11 @@ describe("parseChatVisualMessage", () => {
     ["a negative height", { jsonrpc: "2.0", method: "ui/notifications/size-changed", params: { height: -1 } }],
     ["a script link", { jsonrpc: "2.0", id: 1, method: "ui/open-link", params: { url: "javascript:alert(1)" } }],
     ["a file link", { jsonrpc: "2.0", id: 1, method: "ui/open-link", params: { url: "file:///etc/passwd" } }],
-    ["a link without an id", { jsonrpc: "2.0", method: "ui/open-link", params: { url: "https://openbot.run" } }],
-    ["a string", "ui/open-link https://openbot.run"],
+    [
+      "a link without an id",
+      { jsonrpc: "2.0", method: "ui/open-link", params: { url: "https://aikingbot.aikingx.com" } },
+    ],
+    ["a string", "ui/open-link https://aikingbot.aikingx.com"],
     ["null", null],
   ])("rejects %s", (_name, data) => {
     expect(parseChatVisualMessage(data)).toBeNull();
@@ -48,7 +51,7 @@ describe("parseChatVisualMessage", () => {
 
 describe("chatVisualDocument", () => {
   const bootstrapBefore = (document: string, marker: string) =>
-    document.indexOf('id="openbot-visual-bootstrap"') < document.indexOf(marker);
+    document.indexOf('id="aikingbot-visual-bootstrap"') < document.indexOf(marker);
 
   it("puts the bootstrap before the agent's first script in its head", () => {
     const page = chatVisualDocument(

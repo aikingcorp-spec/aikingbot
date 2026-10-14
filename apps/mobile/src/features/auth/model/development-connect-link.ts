@@ -2,7 +2,7 @@ import {
   isMobileConnectDevelopmentHost,
   type MobileConnectHostBinding,
   parseMobileConnectUrl,
-} from "@openbot/contracts/mobile-connect";
+} from "@aikingbot/contracts/mobile-connect";
 
 // `bun run dev:mobile` pairs a simulator, which has no camera, by opening the
 // Mobile Connect QR link with `simctl openurl`. Any app or web page on a device
@@ -16,7 +16,7 @@ let pendingLink: string | null = null;
 const listeners = new Set<Listener>();
 
 function isMobileConnectLink(value: string): boolean {
-  return /^openbot:\/\/mobile-connect(?:[/?#]|$)/iu.test(value.trim());
+  return /^aikingbot:\/\/mobile-connect(?:[/?#]|$)/iu.test(value.trim());
 }
 
 export function readDevelopmentConnectLink(value: string, development: boolean): string | null {

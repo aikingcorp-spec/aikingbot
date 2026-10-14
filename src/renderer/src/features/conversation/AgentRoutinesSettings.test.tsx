@@ -1,8 +1,8 @@
-import type { Routine, RoutineFields, RoutineRun } from "@openbot/contracts/ipc";
+import type { Routine, RoutineFields, RoutineRun } from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { AgentRoutinesSettings, type RoutineSelectionRequest } from "./AgentRoutinesSettings";
 import { agentRoutinesPort } from "./routines-port";
 
@@ -41,12 +41,12 @@ const run: RoutineRun = {
   updatedAt: "2026-08-25T05:01:00.000Z",
 };
 
-let mock: MockOpenBotControls | undefined;
+let mock: MockAIKINGBOTControls | undefined;
 
-function setupOpenBot(options?: Parameters<typeof createMockOpenBot>[0]): MockOpenBotControls {
+function setupAIKINGBOT(options?: Parameters<typeof createMockAIKINGBOT>[0]): MockAIKINGBOTControls {
   mock?.dispose();
-  mock = createMockOpenBot(options);
-  window.openbot = mock.api;
+  mock = createMockAIKINGBOT(options);
+  window.aikingbot = mock.api;
   return mock;
 }
 
@@ -59,7 +59,7 @@ afterEach(() => {
 describe("AgentRoutinesSettings", () => {
   it("opens the current routine from a message selection and can reopen it", async () => {
     const renamedRoutine = { ...routine, name: "Renamed morning brief" };
-    const mock = setupOpenBot({ routines: { chief: [renamedRoutine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [renamedRoutine] } });
     const listRoutineRuns = vi.spyOn(mock.api.agent, "listRoutineRuns");
     const onSelectionRequestHandled = vi.fn();
     const [selectionRequest, setSelectionRequest] = createSignal<RoutineSelectionRequest | null>({
@@ -89,7 +89,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("keeps the routine list open and reports a missing message selection", async () => {
-    setupOpenBot();
+    setupAIKINGBOT();
     const onSelectionRequestHandled = vi.fn();
     render(() => (
       <AgentRoutinesSettings
@@ -113,7 +113,7 @@ describe("AgentRoutinesSettings", () => {
       name: "Evening brief",
       trigger: { ...routine.trigger, id: "trigger-2", routineId: "routine-2" },
     };
-    setupOpenBot({ routines: { chief: [routine, eveningRoutine] } });
+    setupAIKINGBOT({ routines: { chief: [routine, eveningRoutine] } });
     const [selectionRequest, setSelectionRequest] = createSignal<RoutineSelectionRequest | null>({
       routineId: routine.id,
       routineName: routine.name,
@@ -139,7 +139,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("protects unsaved changes before opening a run in chat", async () => {
-    const mock = setupOpenBot({ routines: { chief: [routine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [routine] } });
     vi.spyOn(mock.api.agent, "listRoutineRuns").mockResolvedValue([run]);
     const onOpenRun = vi.fn();
     render(() => (
@@ -161,7 +161,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("keeps an empty draft local and discards it on Back", async () => {
-    const mock = setupOpenBot();
+    const mock = setupAIKINGBOT();
     const createRoutine = vi.spyOn(mock.api.agent, "createRoutine");
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
@@ -176,7 +176,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("asks before discarding an edited draft on Back", async () => {
-    setupOpenBot({ routines: { chief: [routine] } });
+    setupAIKINGBOT({ routines: { chief: [routine] } });
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
     await fireEvent.click(await screen.findByRole("button", { name: /Morning brief/ }));
@@ -195,7 +195,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("runs the requested Close action after discard confirmation", async () => {
-    setupOpenBot({ routines: { chief: [routine] } });
+    setupAIKINGBOT({ routines: { chief: [routine] } });
     const onClose = vi.fn();
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} onClose={onClose} />);
 
@@ -211,7 +211,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("saves a valid draft only after the user clicks Save", async () => {
-    const mock = setupOpenBot();
+    const mock = setupAIKINGBOT();
     const createRoutine = vi.spyOn(mock.api.agent, "createRoutine");
     const onCountChange = vi.fn();
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={onCountChange} />);
@@ -248,7 +248,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("updates Active, starts a test run, shows history, and confirms deletion", async () => {
-    const mock = setupOpenBot({ routines: { chief: [routine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [routine] } });
     const updateRoutine = vi.spyOn(mock.api.agent, "updateRoutine");
     const testRoutine = vi.spyOn(mock.api.agent, "testRoutine");
     const deleteRoutine = vi.spyOn(mock.api.agent, "deleteRoutine");
@@ -276,7 +276,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("tells the user how a routine stays silent when there is nothing to report", async () => {
-    setupOpenBot({ routines: { chief: [routine] } });
+    setupAIKINGBOT({ routines: { chief: [routine] } });
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
     await fireEvent.click(await screen.findByRole("button", { name: /Morning brief/ }));
@@ -287,7 +287,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("blocks editor navigation while Save is running", async () => {
-    const mock = setupOpenBot({ routines: { chief: [routine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [routine] } });
     let resolveUpdate: ((value: Routine) => void) | undefined;
     vi.spyOn(mock.api.agent, "updateRoutine").mockImplementation(
       () =>
@@ -310,7 +310,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("saves a typed time", async () => {
-    const mock = setupOpenBot({ routines: { chief: [routine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [routine] } });
     const updateRoutine = vi.spyOn(mock.api.agent, "updateRoutine");
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
@@ -336,7 +336,7 @@ describe("AgentRoutinesSettings", () => {
       ...routine,
       trigger: { ...routine.trigger, schedule: { kind: "weekdays", time: "07:07" } },
     };
-    setupOpenBot({ routines: { chief: [customTimeRoutine] } });
+    setupAIKINGBOT({ routines: { chief: [customTimeRoutine] } });
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
     expect(await screen.findByRole("button", { name: /Weekdays at 7:07 AM/ })).toBeInTheDocument();
@@ -352,7 +352,7 @@ describe("AgentRoutinesSettings", () => {
         schedule: { kind: "interval", amount: 15, unit: "minutes", anchorAt: "2026-08-25T12:00:00.000Z" },
       },
     };
-    const mock = setupOpenBot({ routines: { chief: [intervalRoutine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [intervalRoutine] } });
     const updateRoutine = vi.spyOn(mock.api.agent, "updateRoutine");
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
@@ -369,7 +369,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("keeps a schedule saved from a chat card when a rename is saved here", async () => {
-    const mock = setupOpenBot({ routines: { chief: [routine] } });
+    const mock = setupAIKINGBOT({ routines: { chief: [routine] } });
     const updateRoutine = vi.spyOn(mock.api.agent, "updateRoutine");
     render(() => <AgentRoutinesSettings port={agentRoutinesPort("chief")} onCountChange={vi.fn()} />);
 
@@ -394,7 +394,7 @@ describe("AgentRoutinesSettings", () => {
   });
 
   it("ignores a routine list that arrives after a newer one", async () => {
-    setupOpenBot({ routines: { chief: [routine] } });
+    setupAIKINGBOT({ routines: { chief: [routine] } });
     const lists: ((routines: RoutineFields[]) => void)[] = [];
     let reload = () => {};
     const port = {

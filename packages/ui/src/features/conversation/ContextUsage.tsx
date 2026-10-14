@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Button,
   CircleCheck,
@@ -9,8 +9,8 @@ import {
   RadialProgress,
   type RadialProgressTone,
   TriangleAlert,
-} from "@openbot/ui";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
+} from "@aikingbot/ui";
+import { ContentExitMotion } from "@aikingbot/ui/menu-motion";
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { CloseIcon } from "./ConversationIcons";

@@ -19,28 +19,28 @@ describe("linux desktop entry", () => {
     const path = await Effect.runPromise(
       installLinuxDesktopEntry({
         platform: "linux",
-        environment: { APPIMAGE: "/home/jane/Applications/OpenBot-0.8.0-x86_64.AppImage" },
+        environment: { APPIMAGE: "/home/jane/Applications/AIKINGBOT-0.8.0-x86_64.AppImage" },
         iconPath: await temporaryIcon(home),
         homeDirectory: home,
       }),
     );
 
-    expect(path).toBe(join(home, ".local/share/applications/openbot.desktop"));
+    expect(path).toBe(join(home, ".local/share/applications/aikingbot.desktop"));
     const entry = await readFile(String(path), "utf8");
-    expect(entry).toContain('Exec="/home/jane/Applications/OpenBot-0.8.0-x86_64.AppImage" %U');
-    expect(entry).toContain("MimeType=x-scheme-handler/openbot;");
+    expect(entry).toContain('Exec="/home/jane/Applications/AIKINGBOT-0.8.0-x86_64.AppImage" %U');
+    expect(entry).toContain("MimeType=x-scheme-handler/aikingbot;");
     expect((await stat(String(path))).mode & 0o777).toBe(0o644);
   });
 
   // An AppImage unmounts its resources when it exits, so an entry that names the packaged icon
-  // leaves the application menu without one for as long as OpenBot is not running.
+  // leaves the application menu without one for as long as AIKINGBOT is not running.
   it("copies the icon out of the package and names the copy", async () => {
     const home = await temporaryHome();
-    const iconPath = join(home, ".local/share/icons/openbot.png");
+    const iconPath = join(home, ".local/share/icons/aikingbot.png");
     const path = await Effect.runPromise(
       installLinuxDesktopEntry({
         platform: "linux",
-        environment: { APPIMAGE: "/tmp/.mount_OpenBoAbc123/OpenBot.AppImage" },
+        environment: { APPIMAGE: "/tmp/.mount_OpenBoAbc123/AIKINGBOT.AppImage" },
         iconPath: await temporaryIcon(home),
         homeDirectory: home,
       }),
@@ -57,7 +57,7 @@ describe("linux desktop entry", () => {
     const path = await Effect.runPromise(
       installLinuxDesktopEntry({
         platform: "linux",
-        environment: { APPIMAGE: "/opt/OpenBot.AppImage" },
+        environment: { APPIMAGE: "/opt/AIKINGBOT.AppImage" },
         iconPath: join(home, "absent.png"),
         homeDirectory: home,
       }),
@@ -71,14 +71,14 @@ describe("linux desktop entry", () => {
     const path = await Effect.runPromise(
       installLinuxDesktopEntry({
         platform: "linux",
-        environment: { APPIMAGE: "/opt/OpenBot.AppImage", XDG_DATA_HOME: join(home, "data") },
+        environment: { APPIMAGE: "/opt/AIKINGBOT.AppImage", XDG_DATA_HOME: join(home, "data") },
         iconPath: await temporaryIcon(home),
         homeDirectory: home,
       }),
     );
 
-    expect(path).toBe(join(home, "data/applications/openbot.desktop"));
-    expect(await readFile(String(path), "utf8")).toContain(`Icon=${join(home, "data/icons/openbot.png")}`);
+    expect(path).toBe(join(home, "data/applications/aikingbot.desktop"));
+    expect(await readFile(String(path), "utf8")).toContain(`Icon=${join(home, "data/icons/aikingbot.png")}`);
   });
 
   it("leaves an entry a package manager owns alone", async () => {
@@ -93,7 +93,7 @@ describe("linux desktop entry", () => {
       Effect.runPromise(
         installLinuxDesktopEntry({
           platform: "darwin",
-          environment: { APPIMAGE: "/opt/OpenBot.AppImage" },
+          environment: { APPIMAGE: "/opt/AIKINGBOT.AppImage" },
           iconPath: "/icon.png",
           homeDirectory: home,
         }),
@@ -111,7 +111,7 @@ describe("linux desktop entry", () => {
 });
 
 async function temporaryHome(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-desktop-entry-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-desktop-entry-test-"));
   roots.push(root);
   return root;
 }

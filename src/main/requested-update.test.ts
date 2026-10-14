@@ -4,8 +4,8 @@ import { UpdateOperationFailure } from "./update-service";
 // @vitest-environment node
 
 import { EventEmitter } from "node:events";
-import type { ScheduledUpdateRestart, UpdatePreference, UpdateStatus } from "@openbot/contracts/ipc";
-import type { HostRestartState } from "@openbot/contracts/team-protocol/host-update-v1";
+import type { ScheduledUpdateRestart, UpdatePreference, UpdateStatus } from "@aikingbot/contracts/ipc";
+import type { HostRestartState } from "@aikingbot/contracts/team-protocol/host-update-v1";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { RequestedUpdate, RequestedUpdateRefusal } from "./requested-update";
@@ -197,7 +197,7 @@ describe("RequestedUpdate", () => {
   it("clears the schedule and reports install_failed when the install is refused", async () => {
     updater.status = { ...updater.status, phase: "ready", availableVersion: "0.25.0", progress: 100 };
     updater.installUpdate.mockReturnValueOnce(
-      Effect.fail(new UpdateOperationFailure({ cause: new Error("Another OpenBot session is still running.") })),
+      Effect.fail(new UpdateOperationFailure({ cause: new Error("Another AIKINGBOT session is still running.") })),
     );
     await runCauseEffect(create().start(ADA, "now"));
     await vi.advanceTimersByTimeAsync(1_000);
@@ -299,7 +299,7 @@ describe("RequestedUpdate automatic install", () => {
   it("does not retry a failed automatic install for the same version", async () => {
     updater.status = { ...updater.status, phase: "ready", availableVersion: "0.25.0", progress: 100 };
     updater.installUpdate.mockReturnValue(
-      Effect.fail(new UpdateOperationFailure({ cause: new Error("Another OpenBot session is still running.") })),
+      Effect.fail(new UpdateOperationFailure({ cause: new Error("Another AIKINGBOT session is still running.") })),
     );
     create({ autoInstall: true });
     await vi.advanceTimersByTimeAsync(1_000);

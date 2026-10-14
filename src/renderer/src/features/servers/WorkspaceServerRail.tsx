@@ -1,4 +1,4 @@
-import { ServerRail } from "@openbot/ui/features/servers/ServerRail";
+import { ServerRail } from "@aikingbot/ui/features/servers/ServerRail";
 import { onSettled, Show } from "solid-js";
 import { playActionSound } from "../../action-sounds";
 import { useLayout } from "../../layout";

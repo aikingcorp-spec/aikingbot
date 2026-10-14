@@ -14,8 +14,8 @@
  * it today. It moves out the day `ServerMcpPanel` offers the same guided connect.
  */
 
-import type { McpKeyValue, McpServerConfig } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+import type { McpKeyValue, McpServerConfig } from "@aikingbot/contracts/ipc";
+import type { AppTranslate } from "@aikingbot/i18n";
 
 /** One credential the user pastes. */
 export interface McpAuthField {

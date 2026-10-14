@@ -28,7 +28,7 @@ export {
 } from "./provider-aware-codec";
 
 export const TEAM_PROTOCOL_V5Base = 5;
-export const TEAM_PROTOCOL_V5Base_WEBSOCKET = "openbot-team-v5";
+export const TEAM_PROTOCOL_V5Base_WEBSOCKET = "aikingbot-team-v5";
 
 const codec = createProviderAwareCodec({
   providers: ["codex", "claude", "grok", "opencode", "antigravity", "acp"],

@@ -12,9 +12,9 @@ import type {
   RemoteDesktopSession,
   RemoteDesktopSetupStatus,
   RemoteDesktopTestStatus,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Deferred, Effect, Exit, Fiber, Layer, Result, Schema, Scope } from "effect";
 import type * as Ws from "ws";
 import { z } from "zod";
@@ -37,15 +37,15 @@ import { rawDataSize, rawDataText } from "./ws-raw-data";
 
 const GRANT_TTL_MS = 60_000;
 const REMOTE_DESKTOP_MAX_SESSIONS = 4;
-const VIEWER_COOKIE = "openbotRemoteViewer";
+const VIEWER_COOKIE = "aikingbotRemoteViewer";
 const MAX_PENDING_STREAM_FRAMES = 32;
 const MAX_PENDING_STREAM_BYTES = 1_048_576;
 const MAX_TIMER_DELAY_MS = 2_147_000_000;
 const MAX_CLIPBOARD_BYTES = 1_048_576;
 // Served here, not by Moonlight. They sit under `moonlight/` because the released Team API adapters
 // forward only the viewer routes of that family.
-const PASTE_SCRIPT_PATH = "/openbot-paste.js";
-const CLIPBOARD_PATH = "/openbot-clipboard";
+const PASTE_SCRIPT_PATH = "/aikingbot-paste.js";
+const CLIPBOARD_PATH = "/aikingbot-clipboard";
 const RUNTIME_START_FAILURE = {
   sunshine: "error.remote.sunshineStartFailed",
   moonlight: "error.remote.moonlightStartFailed",
@@ -53,7 +53,7 @@ const RUNTIME_START_FAILURE = {
 } as const satisfies Record<RemoteRuntimeStartStage, string>;
 const viewerGrantSchema = z.object({ grant: z.string().min(1).max(256) });
 const viewerStateSchema = z.object({
-  source: z.literal("openbot-moonlight"),
+  source: z.literal("aikingbot-moonlight"),
   type: z.literal("viewer-state"),
   sessionId: z.string().min(1).max(128),
   state: z.enum(["connecting", "connected", "error"]),
@@ -133,7 +133,7 @@ class ScreenDependencies extends Context.Service<
     credentials(): Effect.Effect<{ username: string; password: string }, RemoteWorkflowError>;
     iceServers(): Effect.Effect<RemoteDesktopIceServer[], RemoteWorkflowError>;
   }
->()("openbot/main/ScreenDependencies") {
+>()("aikingbot/main/ScreenDependencies") {
   static layer(options: RemoteScreenGatewayOptions) {
     return Layer.succeed(
       ScreenDependencies,
@@ -831,7 +831,7 @@ export class RemoteScreenGateway {
           if (message.includes("FatalDescription")) {
             this.#options.onDiagnostic?.(
               "moonlight",
-              `OpenBot: Moonlight rejected remote session ${session.snapshot.id}: ${message.slice(0, 500)}\n`,
+              `AIKINGBOT: Moonlight rejected remote session ${session.snapshot.id}: ${message.slice(0, 500)}\n`,
             );
             this.#audit(session, "error", "moonlight_stream_rejected");
           }
@@ -1074,7 +1074,7 @@ export class RemoteScreenGateway {
     const cause = error instanceof RemoteRuntimeStartError ? error.cause : error;
     this.#options.onDiagnostic?.(
       stage === "sunshine" ? "sunshine" : "moonlight",
-      `OpenBot: the remote desktop runtime did not start (${stage ?? "runtime"}): ${describeCause(cause)}\n`,
+      `AIKINGBOT: the remote desktop runtime did not start (${stage ?? "runtime"}): ${describeCause(cause)}\n`,
     );
     return new RemoteScreenError(
       503,
@@ -1221,7 +1221,7 @@ export class RemoteScreenGateway {
   }
 
   #viewerAuthorized(request: IncomingMessage, session: ManagedRemoteScreenSession): boolean {
-    const remoteSession = request.headers["x-openbot-webrtc-session"];
+    const remoteSession = request.headers["x-aikingbot-webrtc-session"];
     if (remoteSession === session.teamSessionId) return true;
     const cookie = parseCookie(request.headers.cookie, VIEWER_COOKIE);
     return Boolean(cookie && session.viewerCookieHash && safeHashEqual(secretHash(cookie), session.viewerCookieHash));
@@ -1288,7 +1288,7 @@ function sendViewer(
   const sessionPath = TEAM_API_ROUTES.remoteScreen.session(sessionId);
   const hostId = runtime.hostIds[streamerSlot - 1] ?? runtime.hostId;
   const target = `${sessionPath}/moonlight/stream.html?hostId=${hostId}&appId=${runtime.desktopAppId}`;
-  const html = `<!doctype html><meta charset="utf-8"><title>OpenBot Moonlight Remote</title><meta name="color-scheme" content="dark"><style>html,body{margin:0;width:100%;height:100%;background:#090b0c;color:#fff;font:14px system-ui}main{display:grid;place-items:center;height:100%}</style><main>Connecting…</main><script type="module">const grant=new URL(location.href).hash.slice(1);history.replaceState(null,"",location.pathname);const response=await fetch(${JSON.stringify(`${sessionPath}/authorize`)},{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({grant})});if(!response.ok){document.querySelector("main").textContent="Remote access expired";const refused=()=>parent.postMessage(${JSON.stringify({ source: "openbot-moonlight", type: "viewer-state", sessionId, state: "error" })},"*");document.readyState==="complete"?refused():addEventListener("load",refused);throw new Error("grant rejected")}location.replace(${JSON.stringify(target)});</script>`;
+  const html = `<!doctype html><meta charset="utf-8"><title>AIKINGBOT Moonlight Remote</title><meta name="color-scheme" content="dark"><style>html,body{margin:0;width:100%;height:100%;background:#090b0c;color:#fff;font:14px system-ui}main{display:grid;place-items:center;height:100%}</style><main>Connecting…</main><script type="module">const grant=new URL(location.href).hash.slice(1);history.replaceState(null,"",location.pathname);const response=await fetch(${JSON.stringify(`${sessionPath}/authorize`)},{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({grant})});if(!response.ok){document.querySelector("main").textContent="Remote access expired";const refused=()=>parent.postMessage(${JSON.stringify({ source: "aikingbot-moonlight", type: "viewer-state", sessionId, state: "error" })},"*");document.readyState==="complete"?refused():addEventListener("load",refused);throw new Error("grant rejected")}location.replace(${JSON.stringify(target)});</script>`;
   response.writeHead(200, {
     "Content-Type": "text/html; charset=utf-8",
     "Content-Security-Policy":
@@ -1313,7 +1313,7 @@ function allowedMoonlightPath(path: string): boolean {
 }
 
 function moonlightRuntimeUser(session: ManagedRemoteScreenSession): string {
-  return `openbot-remote-slot-${session.streamerSlot}`;
+  return `aikingbot-remote-slot-${session.streamerSlot}`;
 }
 
 async function readSmallJson<T>(request: IncomingMessage, schema: z.ZodType<T>): Promise<T | null> {

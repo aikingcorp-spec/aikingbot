@@ -1,5 +1,5 @@
 // @vitest-environment node
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { isPlanLimitDiagnostic, isUsageLimitDiagnostic } from "./agent/provider-diagnostics";
@@ -134,7 +134,7 @@ describe.sequential("AgentService: usage limit", () => {
   });
 
   it("lets a held agent move to another provider and runs the held queue there", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const codex = new PlanClient("codex");
     const started = await startService(root, {
       preferredProvider: "codex",

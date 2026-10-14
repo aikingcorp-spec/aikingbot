@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { loopbackCallback } from "@openbot/contracts/ipc";
-import { redactText } from "@openbot/logging";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import { loopbackCallback } from "@aikingbot/contracts/ipc";
+import { redactText } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -181,6 +181,6 @@ describe("loopbackCallback", () => {
     expect(
       loopbackCallback("https://auth.example.com/authorize?redirect_uri=http%3A%2F%2F10.0.0.2%3A80%2Fcb"),
     ).toBeNull();
-    expect(loopbackCallback("https://auth.example.com/authorize?redirect_uri=openbot%3A%2F%2Fmcp-auth")).toBeNull();
+    expect(loopbackCallback("https://auth.example.com/authorize?redirect_uri=aikingbot%3A%2F%2Fmcp-auth")).toBeNull();
   });
 });

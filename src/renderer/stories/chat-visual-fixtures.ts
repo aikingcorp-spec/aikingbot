@@ -1,9 +1,9 @@
-import { chatVisualDocument } from "@openbot/contracts/chat-visual";
-import logoUrl from "../src/assets/openbot-logo-production.png?inline";
+import { chatVisualDocument } from "@aikingbot/contracts/chat-visual";
+import logoUrl from "../src/assets/aikingbot-logo-production.png?inline";
 import takeoverUrl from "./assets/browser-takeover-preview.svg?inline";
 import macMockUrl from "./assets/remote-desktop-mac-mock.png?inline";
 
-const PAGES_ROUTE = "/__openbot/chat-visual";
+const PAGES_ROUTE = "/__aikingbot/chat-visual";
 
 /** Publishes a page to the Storybook server (`.storybook/chat-visual-pages.ts`) and gives its URL. */
 export async function publishChatVisualPage(html: string): Promise<string> {
@@ -165,6 +165,6 @@ export const IMAGE_COLLAGE = `<!doctype html>
 <div class="grid">
   <figure class="wide"><img src="${macMockUrl}" alt="Remote desktop on a Mac"><figcaption>Remote desktop, full screen</figcaption></figure>
   <figure><img src="${takeoverUrl}" alt="Browser takeover"><figcaption>Browser takeover</figcaption></figure>
-  <figure><img src="${logoUrl}" alt="OpenBot logo" style="object-fit: contain"><figcaption>App logo</figcaption></figure>
+  <figure><img src="${logoUrl}" alt="AIKINGBOT logo" style="object-fit: contain"><figcaption>App logo</figcaption></figure>
 </div>
 </body></html>`;

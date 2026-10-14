@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentMemoryLimitPreference,
   AgentProviderId,
@@ -31,7 +31,7 @@ import type {
   UninstallSkillInput,
   UpdatePreferenceChange,
   VerifyEmailCodeInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   IDLE_RESTART_TARGETS,
   isAgentMemoryLimit,
@@ -46,7 +46,7 @@ import {
   isDynamicIslandPresentation,
   isSetApprovalAutomationInput,
   isSkillCategory,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   type DynamicRecord,
   isBoolean,
@@ -54,8 +54,8 @@ import {
   isNumber,
   isOneOf,
   isString,
-} from "@openbot/contracts/runtime-values";
-import { validateProfileName } from "@openbot/contracts/validation";
+} from "@aikingbot/contracts/runtime-values";
+import { validateProfileName } from "@aikingbot/contracts/validation";
 import { parseAvatarImage } from "./avatar-inputs";
 import { isObject, optionalBoolean, requireString } from "./validation";
 

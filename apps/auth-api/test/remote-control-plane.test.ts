@@ -125,9 +125,9 @@ describe("account profile invalidation outbox", () => {
           { payload, attempts: 0 },
         ]);
         await vi.waitFor(() => expect(deliveredBody).toBe(payload));
-        expect(deliveredHeaders.get("OpenBot-Signature")).toBe(
+        expect(deliveredHeaders.get("AIKINGBOT-Signature")).toBe(
           createHmac("sha256", bindings.REMOTE_AUTH_WEBHOOK_SECRET)
-            .update(`${deliveredHeaders.get("OpenBot-Timestamp")}.${payload}`)
+            .update(`${deliveredHeaders.get("AIKINGBOT-Timestamp")}.${payload}`)
             .digest("base64url"),
         );
         if (failure === "unavailable") finishDelivery?.(new Response(null, { status: 503 }));
@@ -179,7 +179,7 @@ describe("RemoteTicketSigner", () => {
     );
     const key = await importJWK(publicJwk, "ES256");
     const verified = await jwtVerify(result.ticket, key, {
-      audience: "openbot-remote",
+      audience: "aikingbot-remote",
       algorithms: ["ES256"],
       currentDate: new Date(1_900_000_001_000),
     });
@@ -673,7 +673,7 @@ describe("RemoteControlPlane", () => {
     const route = await runApiEffect(controlPlane.issueSlackRoute("host-1", registration.machineToken));
     expect(route.teams).toEqual(["T1"]);
     expect(decodeJwt(route.ticket)).toMatchObject({
-      aud: "openbot-slack-route",
+      aud: "aikingbot-slack-route",
       hid: "host-1",
       teams: [{ id: "T1", appId: "A1", linkedAt: 1 }],
     });
@@ -735,7 +735,7 @@ describe("RemoteControlPlane", () => {
       .run();
     const discordRoute = await runApiEffect(controlPlane.issueDiscordRoute("host-1", registration.machineToken));
     expect(decodeJwt(discordRoute.ticket)).toMatchObject({
-      aud: "openbot-discord-route",
+      aud: "aikingbot-discord-route",
       hid: "host-1",
       guilds: [{ id: "111", linkedAt: 1 }],
     });
@@ -785,7 +785,7 @@ describe("RemoteControlPlane", () => {
     );
     const webhookTicket = await runApiEffect(controlPlane.issueWebhookRoute("host-1", registration.machineToken));
     expect(decodeJwt(webhookTicket.ticket)).toMatchObject({
-      aud: "openbot-webhook-route",
+      aud: "aikingbot-webhook-route",
       hid: "host-1",
       routes: [{ id: "source-1", linkedAt: expect.any(Number) }],
     });

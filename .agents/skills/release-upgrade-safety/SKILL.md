@@ -1,11 +1,11 @@
 ---
 name: release-upgrade-safety
-description: Audit a pending OpenBot release for upgrade and data-loss hazards before the version is bumped or tagged. Use when asked to cut a release, create or bump a version, prepare a tag, or check whether a change is safe to ship to installed users.
+description: Audit a pending AIKINGBOT release for upgrade and data-loss hazards before the version is bumped or tagged. Use when asked to cut a release, create or bump a version, prepare a tag, or check whether a change is safe to ship to installed users.
 ---
 
 # Release upgrade safety
 
-Every hazard here is one an installed user pays for and you cannot take back. `openbot.db` is
+Every hazard here is one an installed user pays for and you cannot take back. `aikingbot.db` is
 migrated in place with no backup, two dozen files under `userData` are rewritten by whichever build
 opens them last, a released Team API adapter is spoken by peers you will never update, and the
 account Worker's D1 migrations are applied before the Worker that needs them. A build that ships
@@ -23,7 +23,7 @@ This runs *before* `docs/RELEASING.md`, which stays authoritative for the publis
   Run the narrowest test file named by a gate and lint the changed files. Do not run the repo-wide
   `bun run lint` or `bun run typecheck`: the pre-commit hook and CI run them.
 - **If gate C or D fired, confirm the mobile typecheck passed.** `apps/mobile` depends on
-  `@openbot/contracts`, which is exactly what those two gates change. The pre-commit hook runs
+  `@aikingbot/contracts`, which is exactly what those two gates change. The pre-commit hook runs
   `typecheck:mobile` when a commit stages a file that mobile can see, such as one in
   `packages/contracts`, and the CI Surfaces job runs it on each pull request.
 - It never runs `bun run dev:seed` or `dev:reset` — both destroy the developer's own profile — and
@@ -70,8 +70,8 @@ audit delegates a check to can be dismissed by the bucket its file lives in.**
   `userData` does. Route it through gate B.
 - **The tests a gate relies on.** "Not in the shipped app" is true of every test and irrelevant for
   these, because a gate that delegates its check to a test inherits that test's weakening.
-  `openbot-database-schema-parity.test.ts` is the whole mechanical half of gate A's DDL rule;
-  `openbot-database.test.ts` carries the downgrade guard; `ipc-channel-coverage.test.ts` is gate D's
+  `aikingbot-database-schema-parity.test.ts` is the whole mechanical half of gate A's DDL rule;
+  `aikingbot-database.test.ts` carries the downgrade guard; `ipc-channel-coverage.test.ts` is gate D's
   only static link between main and preload; `electron-updater-assumptions.test.ts` pins the updater
   behaviour gate F rests on; the `v*.test.ts` files are gate C's. A change that makes one of those
   assertions vacuous passes every later gate, and once it is tagged the weakening is behind the
@@ -99,7 +99,7 @@ Load a gate's reference when its trigger fires, not before. The trigger sets are
 a gate can be selected without opening anything:
 
 - **A. SQLite schema** → [gate-a-sqlite.md](references/gate-a-sqlite.md)
-  `src/backend/openbot-database-schema.ts`, `src/backend/database/`.
+  `src/backend/aikingbot-database-schema.ts`, `src/backend/database/`.
 - **B. On-disk state outside SQLite** → [gate-b-on-disk-state.md](references/gate-b-on-disk-state.md)
   `src/main/index.ts`, `src/backend/workspace-paths.ts`, `src/main/sunshine-moonlight-runtime.ts`,
   `electron-builder.yml`, **any file that decodes a versioned payload**, and **any file that reads
@@ -113,7 +113,7 @@ a gate can be selected without opening anything:
   audit defers its compatibility matrix to.
 - **D. IPC channels** → [gate-d-ipc.md](references/gate-d-ipc.md)
   `packages/contracts/src/ipc-endpoints.ts` **or any of its mirrors** — `src/main/index.ts`,
-  `src/main/ipc/`, `src/preload/index.ts`, `src/renderer/src/preview/mock-openbot.ts`. Deleting a
+  `src/main/ipc/`, `src/preload/index.ts`, `src/renderer/src/preview/mock-aikingbot.ts`. Deleting a
   handler or an `invoke` breaks a live channel without touching the list at all.
 - **E. Account Worker** → [gate-e-account-worker.md](references/gate-e-account-worker.md)
   any change under `apps/auth-api/migrations/`, any non-UI file under `apps/auth-api/src/`, and the
@@ -129,7 +129,7 @@ a gate can be selected without opening anything:
 - **H. Signal** — no reference file.
   always triggered: an earlier release can have left Signal behind, so a range with no `remote/`
   change does not prove that Signal is current. Signal is not deployed by CI or by the release
-  workflow. Read `commit` from `curl -fsS https://signal.openbot.run/health/live`; if it is missing,
+  workflow. Read `commit` from `curl -fsS https://signal.aikingbot.aikingx.com/health/live`; if it is missing,
   `unknown`, or not a commit in this repository, the verdict is **needs a human**. Pass when
   `git diff --quiet <running commit> HEAD -- remote packages/contracts/src/signal-protocol`
   succeeds. Otherwise the verdict is **deploy Signal from the new tag** before the tag is pushed
@@ -162,7 +162,7 @@ bun run pin:opencode-runtime
 Ask two questions and report the answers with the table:
 
 - **Has the pinned version a published security fix?** If so, moving the pin is part of this
-  release, not the next one. A user cannot update Bun themselves: OpenBot downloaded it, OpenBot
+  release, not the next one. A user cannot update Bun themselves: AIKINGBOT downloaded it, AIKINGBOT
   owns it.
 - **Did the range move a pin?** Then read the diff as a dependency change. A moved `assetSha256`
   with an unmoved `version` is a stop and needs a human: the registry does not rewrite a published

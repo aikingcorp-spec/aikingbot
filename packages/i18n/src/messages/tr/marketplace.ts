@@ -27,7 +27,7 @@ export const messages = {
   "marketplace.tab.skills": "Beceriler",
 
   // A plugin link.
-  "marketplace.plugins.missing": "Bu eklenti OpenBot kataloğunda yok.",
+  "marketplace.plugins.missing": "Bu eklenti AIKINGBOT kataloğunda yok.",
 
   // The agent page.
   "marketplace.agents.loadingDetail": "Ajan ayrıntıları yükleniyor…",
@@ -39,7 +39,7 @@ export const messages = {
   // The skill page, and why Try is off.
   "marketplace.skill.loading": "Beceri yükleniyor",
   "marketplace.skill.update": "Beceriyi güncelle",
-  "marketplace.try.readFailed": "OpenBot bu ajanın becerilerini okuyamadı. Tekrar deneyin.",
+  "marketplace.try.readFailed": "AIKINGBOT bu ajanın becerilerini okuyamadı. Tekrar deneyin.",
   "marketplace.try.enable": "Bu beceriyi denemek için ajan ayarlarından etkinleştirin.",
   "marketplace.try.repair": "Bu beceriyi denemek için ajan ayarlarından onarın.",
   "marketplace.try.update": "Bu sürümü denemek için bu beceriyi güncelleyin.",
@@ -179,7 +179,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "Pazarlama simgelerini uygulama paketi için 2x boyutunda dışa aktar.",
   "marketplace.plugin.paper.tagline": "HTML ve CSS üzerine kurulu tasarım tuvali",
   "marketplace.plugin.paper.description":
-    "Paper, ajanların Paper Desktop'ta açık olan tasarım dosyasını okuyup yazmasına olanak tanır: çizim yüzeylerini, seçimleri, hesaplanan stilleri, JSX'i ve token'ları inceler; çerçeveler, metinler ve stiller oluşturur veya değiştirir. Başlamadan önce Paper Desktop'u yükleyin, bir kez açın ve bir dosya açın. OpenBot, Paper Desktop'un yüklediği Paper CLI'ı başlatır. Paper anahtar gerektirmez. Yazma araçları açık dosyayı değiştirir, bu yüzden her yazmayı onaylamadan önce inceleyin.",
+    "Paper, ajanların Paper Desktop'ta açık olan tasarım dosyasını okuyup yazmasına olanak tanır: çizim yüzeylerini, seçimleri, hesaplanan stilleri, JSX'i ve token'ları inceler; çerçeveler, metinler ve stiller oluşturur veya değiştirir. Başlamadan önce Paper Desktop'u yükleyin, bir kez açın ve bir dosya açın. AIKINGBOT, Paper Desktop'un yüklediği Paper CLI'ı başlatır. Paper anahtar gerektirmez. Yazma araçları açık dosyayı değiştirir, bu yüzden her yazmayı onaylamadan önce inceleyin.",
   "marketplace.plugin.paper.app":
     "Açık Paper Desktop dosyasını, Paper CLI'ın aktardığı yerel MCP sunucusu üzerinden okur ve yazar. Bir dosyası açık Paper Desktop gerektirir.",
   "marketplace.plugin.paper.prompt.implement":

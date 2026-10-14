@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { set } from "@dotenvx/dotenvx";
-import { createOpenBotLogger } from "@openbot/logging";
 import { setDevelopmentOverrides } from "./development-secrets";
 
 // Puts an Apple Push Notification service key into this checkout's ignored development state, so
@@ -16,7 +16,7 @@ import { setDevelopmentOverrides } from "./development-secrets";
 // `.env.keys`, which `bun run api:deploy` reads. The key is one line there, with `\n` for each line
 // break, and the Worker turns them back into line breaks.
 
-const logger = createOpenBotLogger("dev-apns-key");
+const logger = createAIKINGBOTLogger("dev-apns-key");
 
 if (import.meta.main) {
   const args = process.argv.slice(2);

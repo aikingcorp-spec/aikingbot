@@ -9,8 +9,8 @@ export const messages = {
   "error.voice.modelUnavailable": "El modelo de voz no está disponible.",
   "error.voice.transcriptionTimedOut": "Se agotó el tiempo de la transcripción de voz.",
   "error.voice.prepareRequired":
-    "La transcripción de voz local no está disponible. Ejecuta `bun run voice:prepare` y reinicia OpenBot.",
-  "error.voice.transcriptionFailed": "OpenBot no pudo transcribir esta grabación.",
+    "La transcripción de voz local no está disponible. Ejecuta `bun run voice:prepare` y reinicia AIKINGBOT.",
+  "error.voice.transcriptionFailed": "AIKINGBOT no pudo transcribir esta grabación.",
   "error.voice.cloud.keyRequired": "Añade tu clave de API de ElevenLabs en Ajustes → Voz.",
   "error.voice.cloud.keyRejected": "ElevenLabs no aceptó la clave de API. Revisa la clave en Ajustes → Voz.",
   "error.voice.cloud.quotaExceeded": "Tu cuota de ElevenLabs se ha agotado.",

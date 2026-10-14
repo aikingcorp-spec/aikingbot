@@ -55,7 +55,7 @@ addEventListener("paste", (event) => {
   queue = queue.then(async () => {
     let paste = true;
     if (text && text !== sent) {
-      const response = await fetch("openbot-clipboard", { method: "POST", headers: { "Content-Type": "text/plain; charset=utf-8" }, body: text }).catch(() => null);
+      const response = await fetch("aikingbot-clipboard", { method: "POST", headers: { "Content-Type": "text/plain; charset=utf-8" }, body: text }).catch(() => null);
       paste = response?.ok === true;
       if (paste) sent = text;
     }

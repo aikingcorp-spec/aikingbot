@@ -4,7 +4,7 @@ import { Effect } from "effect";
 import { mkdir, mkdtemp, readdir, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { attachmentReferenceIds } from "@openbot/contracts/attachment-references";
+import { attachmentReferenceIds } from "@aikingbot/contracts/attachment-references";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryStore } from "../src/backend/agent-memory-store";
 import { AgentRoutineStore } from "../src/backend/agent-routine-store";
@@ -36,7 +36,7 @@ afterEach(async () => {
 describe("development state seed", () => {
   it("creates a durable showcase through the public stores", async () => {
     const { appDataRoot, homeDirectory } = await createRoots();
-    const productionSentinel = join(appDataRoot, "OpenBot", "production.txt");
+    const productionSentinel = join(appDataRoot, "AIKINGBOT", "production.txt");
     const testClientSentinel = join(appDataRoot, developmentUserDataName("test-client"), "test-client.txt");
     await Promise.all([
       writeSentinel(productionSentinel, "production"),
@@ -67,7 +67,7 @@ describe("development state seed", () => {
       channelRoutines: 2,
       channelRoutineRuns: 2,
     });
-    await expect(Effect.runPromise(readSetupState(join(profilePath, "openbot-setup-v2.json")))).resolves.toEqual({
+    await expect(Effect.runPromise(readSetupState(join(profilePath, "aikingbot-setup-v2.json")))).resolves.toEqual({
       completed: true,
       preferredProvider: "codex",
       preferredModel: null,
@@ -133,11 +133,11 @@ describe("development state seed", () => {
     );
     expect(attachments.size).toBe(9);
     expect([...attachments.values()].map((attachment) => attachment.name).sort()).toEqual([
+      "aikingbot-launch-concept.png",
       "evidence-map.json",
       "invoice-2026-09.pdf",
       "launch-brief.md",
       "launch-metrics.csv",
-      "openbot-launch-concept.png",
       "operating-plan.xlsx",
       "provider-session.log",
       "standup-recap.mp3",
@@ -218,13 +218,13 @@ describe("development state seed", () => {
     }
 
     const team = new TeamStore(
-      join(profilePath, "openbot-team-server-v2.json"),
-      join(profilePath, "openbot-team-server-v1.json"),
+      join(profilePath, "aikingbot-team-server-v2.json"),
+      join(profilePath, "aikingbot-team-server-v1.json"),
     );
     await runCauseEffect(team.initialize());
     const members = team.listMembers();
     const owner = members.find((member) => member.role === "owner");
-    expect(owner?.email).toBe("openbot-dev-host@example.com");
+    expect(owner?.email).toBe("aikingbot-dev-host@example.com");
     expect(members).toHaveLength(2);
     expect(team.listInvites().filter((invite) => invite.usedAt === null)).toHaveLength(1);
     expect(team.listSessions()).toHaveLength(2);
@@ -290,7 +290,7 @@ describe("development state seed", () => {
   it("replaces the app profile and removes only files from the previous seed", async () => {
     const { appDataRoot, homeDirectory } = await createRoots();
     await seedDevelopmentState({ appDataRoot, homeDirectory, agentModel: SEED_FALLBACK_AGENT });
-    const generatedRoot = join(homeDirectory, "OpenBot", "Shared", "Transfers", "generated");
+    const generatedRoot = join(homeDirectory, "AIKINGBOT", "Shared", "Transfers", "generated");
     const firstDirectories = await readdir(generatedRoot);
     expect(firstDirectories).toHaveLength(10);
 
@@ -312,7 +312,7 @@ describe("development state seed", () => {
     await symlink(`test-host-${process.pid}`, join(profilePath, "SingletonLock"));
 
     await expect(seedDevelopmentState({ appDataRoot, homeDirectory, agentModel: SEED_FALLBACK_AGENT })).rejects.toThrow(
-      "Quit the OpenBot dev app",
+      "Quit the AIKINGBOT dev app",
     );
     await expect(readFile(sentinel, "utf8")).resolves.toBe("keep");
   });
@@ -402,15 +402,15 @@ describe("development state seed", () => {
       instanceId: "5197",
       agentModel: SEED_FALLBACK_AGENT,
     });
-    while (!(await readdir(appDataRoot)).some((entry) => entry.startsWith(".openbot-dev-seed-"))) {
+    while (!(await readdir(appDataRoot)).some((entry) => entry.startsWith(".aikingbot-dev-seed-"))) {
       await new Promise<void>((resolve) => setImmediate(resolve));
     }
     await writeSentinel(sentinel, "keep");
     await expect(seeding).resolves.toMatchObject({ targetProfile: profilePath });
 
     await expect(readFile(sentinel, "utf8")).resolves.toBe("keep");
-    expect((await readdir(appDataRoot)).filter((entry) => entry.startsWith(".openbot-dev-seed-"))).toEqual([]);
-    await expect(readdir(join(homeDirectory, "OpenBot", "Shared", "Transfers", "generated"))).resolves.toEqual([]);
+    expect((await readdir(appDataRoot)).filter((entry) => entry.startsWith(".aikingbot-dev-seed-"))).toEqual([]);
+    await expect(readdir(join(homeDirectory, "AIKINGBOT", "Shared", "Transfers", "generated"))).resolves.toEqual([]);
   });
 
   it("seeds an isolated development instance without changing the default profile", async () => {
@@ -451,7 +451,7 @@ describe("development state seed", () => {
 });
 
 async function createRoots(): Promise<{ appDataRoot: string; homeDirectory: string }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-dev-seed-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-dev-seed-test-"));
   temporaryDirectories.push(root);
   const appDataRoot = join(root, "app-data");
   const homeDirectory = join(root, "home");

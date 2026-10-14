@@ -106,7 +106,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Dışarıdaki bir dosya düzenlemesi, Otomatik onay açık olsa bile önce size sorar. Bir komut dışarıya yazamaz.",
   "agentSettings.runtime.workspaceUnlimited":
-    "Bilgisayar Kullanımı ve OpenBot tarayıcısı sınırlandırılmamıştır; Bilgisayar Kullanımını aşağıdan kapatabilirsiniz.",
+    "Bilgisayar Kullanımı ve AIKINGBOT tarayıcısı sınırlandırılmamıştır; Bilgisayar Kullanımını aşağıdan kapatabilirsiniz.",
   "agentSettings.computerUse.title": "Bilgisayar Kullanımı",
   "agentSettings.computerUse.description": "Bu ajanın bu bilgisayardaki uygulamaları kontrol etmesine izin verin",
   "agentSettings.automation.title": "Yerel betikler",

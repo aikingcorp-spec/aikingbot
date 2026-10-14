@@ -1,4 +1,4 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -63,7 +63,7 @@ function service(
       });
     },
     downloadAuthorized: vi.fn(() => Effect.sync(() => new Uint8Array())),
-    resolveApiUrl: (path: string) => new URL(path, "https://api.openbot.run").toString(),
+    resolveApiUrl: (path: string) => new URL(path, "https://api.aikingbot.aikingx.com").toString(),
   };
   const createAgentProfile = vi.fn(() => Effect.sync(() => agent));
   const templates = new AgentTemplateService(
@@ -72,7 +72,7 @@ function service(
       listAgents: () => [{ ...agent, description }],
       listRoutines: () => [],
       resolveAvatar: () =>
-        options.avatarUnreadable ? { path: "/nonexistent/openbot-avatar.png", mimeType: "image/png" as const } : null,
+        options.avatarUnreadable ? { path: "/nonexistent/aikingbot-avatar.png", mimeType: "image/png" as const } : null,
       createAgentProfile,
       setAvatar: vi.fn(() => Effect.sync(() => agent)),
       createRoutine: vi.fn(() => ({ id: "routine" })),

@@ -1,13 +1,13 @@
 #!/bin/bash
-# Installs OpenBot in a boat builder sandbox, so the sandbox can be saved as the hosted server
+# Installs AIKINGBOT in a boat builder sandbox, so the sandbox can be saved as the hosted server
 # template. `build-boat-template.ts` uploads this directory to the builder and runs:
 #
 #   sudo bash provision.sh <service-user> <appimage-url> <appimage-sha256> <auth-api-url>
 #
-# It enables openbot.service and the update units and never starts them. The builder then has no
+# It enables aikingbot.service and the update units and never starts them. The builder then has no
 # host identity and no account session, so every server made from the template starts empty and
-# redeems its own claim. To upgrade a server in place, stop openbot.service, run the same command,
-# and start the service again. After that, openbot-hosted-update keeps the server on the newest release.
+# redeems its own claim. To upgrade a server in place, stop aikingbot.service, run the same command,
+# and start the service again. After that, aikingbot-hosted-update keeps the server on the newest release.
 set -euo pipefail
 
 if [ "$(id -u)" -ne 0 ] || [ "$#" -ne 4 ]; then
@@ -19,8 +19,8 @@ APPIMAGE_URL=$2
 APPIMAGE_SHA256=$3
 AUTH_API_URL=$4
 SOURCE=$(cd "$(dirname "$0")" && pwd)
-# shellcheck source=openbot-hosted-update
-source "$SOURCE/openbot-hosted-update"
+# shellcheck source=aikingbot-hosted-update
+source "$SOURCE/aikingbot-hosted-update"
 
 [[ $SERVICE_USER =~ ^[a-z_][a-z0-9_-]*$ ]] && id "$SERVICE_USER" >/dev/null || fail "Unknown service user."
 [[ $APPIMAGE_URL == https://* ]] || fail "The AppImage URL must use HTTPS."
@@ -44,16 +44,16 @@ fi
 apt-get clean
 install -d -m 0755 "$INSTALL" "$INSTALL/hosted"
 recover
-work=$(mktemp -d "$SCRATCH/openbot-update.XXXXXX")
+work=$(mktemp -d "$SCRATCH/aikingbot-update.XXXXXX")
 trap 'rm -rf "$work"' EXIT
-fetch --output "$work/OpenBot.AppImage" "$APPIMAGE_URL"
-echo "$APPIMAGE_SHA256  $work/OpenBot.AppImage" | sha256sum --check --quiet
-unpack "$work/OpenBot.AppImage"
+fetch --output "$work/AIKINGBOT.AppImage" "$APPIMAGE_URL"
+echo "$APPIMAGE_SHA256  $work/AIKINGBOT.AppImage" | sha256sum --check --quiet
+unpack "$work/AIKINGBOT.AppImage"
 prepare_release "$work/squashfs-root"
-# An older OpenBot cannot open a database that a newer one migrated.
+# An older AIKINGBOT cannot open a database that a newer one migrated.
 installed=$(version_of "$INSTALL/app")
 if [ -n "$installed" ] && newer "$installed" "$(version_of "$work/squashfs-root")"; then
-  fail "OpenBot $installed is installed, and this AppImage has an older version."
+  fail "AIKINGBOT $installed is installed, and this AppImage has an older version."
 fi
 stage_release "$work/squashfs-root"
 swap_in
@@ -63,8 +63,8 @@ install_hosting "$SOURCE"
 finish_swap
 
 # The server keyring. boat keeps changes in /srv, and /srv is on the disk while /home is still on
-# the restore mount after a resume. openbot-hosted-server explains why that matters.
-install -d -o "$SERVICE_USER" -g "$(id -gn "$SERVICE_USER")" -m 0700 /srv/openbot-hosted
+# the restore mount after a resume. aikingbot-hosted-server explains why that matters.
+install -d -o "$SERVICE_USER" -g "$(id -gn "$SERVICE_USER")" -m 0700 /srv/aikingbot-hosted
 # Not a secret: the account server that this template's servers sign in to.
-printf 'OPENBOT_AUTH_API_URL=%s\n' "${AUTH_API_URL%/}" >"$INSTALL/hosted/openbot.env"
-chmod 0644 "$INSTALL/hosted/openbot.env"
+printf 'AIKINGBOT_AUTH_API_URL=%s\n' "${AUTH_API_URL%/}" >"$INSTALL/hosted/aikingbot.env"
+chmod 0644 "$INSTALL/hosted/aikingbot.env"

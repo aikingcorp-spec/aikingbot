@@ -7,7 +7,7 @@ const { mergeContents, removeContents } = require("@expo/config-plugins/build/ut
  * @param {string | undefined} frameworkPath
  */
 function addRocketSim(contents, frameworkPath) {
-  if (!frameworkPath) return removeContents({ src: contents, tag: "openbot-rocketsim" }).contents;
+  if (!frameworkPath) return removeContents({ src: contents, tag: "aikingbot-rocketsim" }).contents;
   // JSON string escapes are also valid Swift escapes for local paths, except control characters.
   if (Array.from(frameworkPath).some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)) {
     throw new Error("RocketSim path contains control characters.");
@@ -20,7 +20,7 @@ function addRocketSim(contents, frameworkPath) {
   return mergeContents({
     src: contents,
     newSrc: connect,
-    tag: "openbot-rocketsim",
+    tag: "aikingbot-rocketsim",
     anchor: /\) -> Bool \{/,
     offset: 1,
     comment: "//",
@@ -33,7 +33,7 @@ module.exports = (config) =>
     if (mod.modResults.language !== "swift") {
       throw new Error("RocketSim Connect requires a Swift AppDelegate.");
     }
-    mod.modResults.contents = addRocketSim(mod.modResults.contents, process.env.OPENBOT_ROCKETSIM_FRAMEWORK);
+    mod.modResults.contents = addRocketSim(mod.modResults.contents, process.env.AIKINGBOT_ROCKETSIM_FRAMEWORK);
     return mod;
   });
 

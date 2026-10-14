@@ -17,11 +17,11 @@ export const messages = {
   "connector.github.connectedAs": "Verbunden als @{login}",
   "connector.github.repositoriesTitle": "Repositories",
   "connector.github.repositoriesDescription":
-    "Agenten können nur Repositories verwenden, in denen die OpenBot GitHub App installiert ist.",
+    "Agenten können nur Repositories verwenden, in denen die AIKINGBOT GitHub App installiert ist.",
   "connector.github.chooseRepositories": "Repositories auswählen",
   "connector.github.repositoriesLoading": "Repositories werden von GitHub gelesen",
-  "connector.github.repositoriesFailed": "OpenBot konnte die Repositories von GitHub nicht lesen.",
-  "connector.github.noRepositories": "Die OpenBot GitHub App ist noch in keinem Repository installiert.",
+  "connector.github.repositoriesFailed": "AIKINGBOT konnte die Repositories von GitHub nicht lesen.",
+  "connector.github.noRepositories": "Die AIKINGBOT GitHub App ist noch in keinem Repository installiert.",
   "connector.github.moreRepositories": {
     one: "Und {count} weiteres Repository",
     other: "Und {count} weitere Repositories",
@@ -35,7 +35,7 @@ export const messages = {
   "connector.github.expiredDescription":
     "Verbinde dich erneut als @{login}, damit Agenten wieder auf GitHub zugreifen können.",
   "connector.github.reconnect": "Erneut verbinden",
-  "connector.github.actionFailed": "OpenBot konnte die GitHub-Verbindung nicht ändern.",
+  "connector.github.actionFailed": "AIKINGBOT konnte die GitHub-Verbindung nicht ändern.",
   "connector.github.statusConnected": "Verbunden",
   "connector.github.statusConnecting": "Verbindung wird hergestellt",
   "connector.github.statusExpired": "Abgelaufen",
@@ -49,7 +49,7 @@ export const messages = {
   "connector.github.noMatch": "Kein Repository entspricht „{query}“.",
   "connector.github.stepSignIn": "Anmelden",
   "connector.github.stepConnected": "Verbunden",
-  "connector.github.requestingCode": "OpenBot fordert einen Code von GitHub an.",
+  "connector.github.requestingCode": "AIKINGBOT fordert einen Code von GitHub an.",
   "connector.github.codeLabel": "Code {code}",
   "connector.github.failedTitle": "GitHub wurde nicht verbunden",
   "connector.github.cancelConnecting": "GitHub-Verbindung abbrechen",
@@ -64,7 +64,7 @@ export const messages = {
     "Beim Trennen wird die Anmeldung von @{login} von diesem Computer entfernt.",
   "connector.github.disconnectEffectTools": "Alle Agenten verlieren die GitHub-Werkzeuge, gh und git.",
   "connector.github.disconnectEffectRevoke":
-    "Danach öffnet sich GitHub. Dort kannst du den Zugriff von OpenBot widerrufen.",
+    "Danach öffnet sich GitHub. Dort kannst du den Zugriff von AIKINGBOT widerrufen.",
   "connector.github.disconnectEffectKept": "Chats, Dateien und Agentenspeicher bleiben auf diesem Computer erhalten.",
   // The same text for the connection of a joined server. {host} is the server name, such as Studio.
   "connector.github.descriptionHost":
@@ -88,7 +88,7 @@ export const messages = {
   "connector.hub.usedBy": "Verwendet von {names}",
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Personen erwähnen @OpenBot in Slack oder senden ihm eine Direktnachricht. Der Slack Orchestrator fragt den passenden Agenten und antwortet.",
+    "Personen erwähnen @AIKINGBOT in Slack oder senden ihm eine Direktnachricht. Der Slack Orchestrator fragt den passenden Agenten und antwortet.",
   "connector.slack.statusNotSetUp": "Nicht eingerichtet",
   "connector.slack.statusConnected": "Verbunden",
   "connector.slack.statusAttention": "Handlungsbedarf",
@@ -103,11 +103,11 @@ export const messages = {
   "connector.slack.addAgent": "Agent hinzufügen",
   "connector.slack.actionFailed": "Slack hat die Änderung nicht angenommen",
   "connector.slack.workspaceTitle": "Arbeitsbereich",
-  "connector.slack.workspaceDescription": "Personen erwähnen @OpenBot oder senden ihm eine Direktnachricht.",
+  "connector.slack.workspaceDescription": "Personen erwähnen @AIKINGBOT oder senden ihm eine Direktnachricht.",
   "connector.slack.disconnectWorkspace": "Trennen",
   "connector.slack.missingScopes":
-    "OpenBot hat diese Berechtigungen in Slack nicht: {scopes}. Trenne den Arbeitsbereich und verbinde ihn erneut.",
-  "connector.slack.retryAt": "Slack hat OpenBot gebeten zu warten. OpenBot versucht es um {time} erneut.",
+    "AIKINGBOT hat diese Berechtigungen in Slack nicht: {scopes}. Trenne den Arbeitsbereich und verbinde ihn erneut.",
+  "connector.slack.retryAt": "Slack hat AIKINGBOT gebeten zu warten. AIKINGBOT versucht es um {time} erneut.",
   "connector.slack.reconnect": "Erneut verbinden",
   "connector.slack.resume": "Fortsetzen",
   "connector.slack.rowAction": "{action}: {name}",
@@ -117,12 +117,12 @@ export const messages = {
   "connector.slack.orchestratorNone": "Noch kein Agent antwortet",
   "connector.slack.orchestratorNoneDescription": "Füge den Slack Orchestrator hinzu, sonst erhält Slack keine Antwort.",
   "connector.slack.inviteNote":
-    "OpenBot tritt allen öffentlichen Kanälen und jedem neuen Kanal automatisch bei. Lade ihn in einen privaten Kanal ein: /invite @OpenBot.",
+    "AIKINGBOT tritt allen öffentlichen Kanälen und jedem neuen Kanal automatisch bei. Lade ihn in einen privaten Kanal ein: /invite @AIKINGBOT.",
   "connector.slack.stepWorkspace": "Arbeitsbereich",
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Slack-Arbeitsbereich verbinden",
   "connector.slack.connectDescription":
-    "OpenBot installiert eine App namens OpenBot im Arbeitsbereich. Sie tritt allen öffentlichen Kanälen bei.",
+    "AIKINGBOT installiert eine App namens AIKINGBOT im Arbeitsbereich. Sie tritt allen öffentlichen Kanälen bei.",
   "connector.slack.connectStepBrowser": "Slack öffnet sich in deinem Browser",
   "connector.slack.connectStepAllow": "Wähle den Arbeitsbereich oben rechts und dann „Zulassen“",
   "connector.slack.connectStepReturn": "Dieser Dialog wird fortgesetzt, sobald Slack fertig ist",
@@ -130,30 +130,30 @@ export const messages = {
   "connector.slack.connectWaiting": "Warten auf Slack. Schließe die Installation in deinem Browser ab.",
   "connector.slack.agentStepTitle": "Slack Orchestrator hinzufügen",
   "connector.slack.agentStepDescription":
-    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @OpenBot senden.",
+    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @AIKINGBOT senden.",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "Antwortet in Slack und fragt das Team",
   "connector.slack.orchestratorDoesReceive": "Erhält jede Slack-Anfrage zuerst",
   "connector.slack.orchestratorDoesDelegate": "Gibt jede Aufgabe an den am besten geeigneten Agenten weiter",
   "connector.slack.orchestratorDoesAnswer": "Veröffentlicht die Antwort im Slack-Thread",
   "connector.slack.orchestratorModel": "Modell",
-  "connector.slack.doneTitle": "OpenBot ist in {workspace}",
+  "connector.slack.doneTitle": "AIKINGBOT ist in {workspace}",
   "connector.slack.doneDescription":
-    "Erwähne @OpenBot in einem öffentlichen Kanal oder sende ihm eine Direktnachricht.",
+    "Erwähne @AIKINGBOT in einem öffentlichen Kanal oder sende ihm eine Direktnachricht.",
   "connector.slack.done": "Fertig",
   "connector.slack.disconnectTitle": "{workspace} trennen?",
   "connector.slack.disconnectDescription":
-    "OpenBot antwortet nicht mehr in {workspace} und entfernt sein Slack-Token von diesem Computer.",
+    "AIKINGBOT antwortet nicht mehr in {workspace} und entfernt sein Slack-Token von diesem Computer.",
   "connector.slack.disconnectDescriptionHost":
-    "OpenBot antwortet nicht mehr in {workspace} und entfernt sein Slack-Token von {host}.",
+    "AIKINGBOT antwortet nicht mehr in {workspace} und entfernt sein Slack-Token von {host}.",
   "connector.slack.disconnectEffect":
-    "Personen in {workspace} können deine Agenten nicht mehr über @OpenBot erreichen.",
-  "connector.slack.removeEffectKept": "Die Unterhaltungen und der Slack Orchestrator bleiben in OpenBot erhalten.",
+    "Personen in {workspace} können deine Agenten nicht mehr über @AIKINGBOT erreichen.",
+  "connector.slack.removeEffectKept": "Die Unterhaltungen und der Slack Orchestrator bleiben in AIKINGBOT erhalten.",
   "connector.slack.keep": "Verbindung beibehalten",
   "connector.slack.close": "Schließen",
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Personen erwähnen @OpenBot in einem Kanal eines Discord-Servers. Der Discord Orchestrator fragt den passenden Agenten und antwortet.",
+    "Personen erwähnen @AIKINGBOT in einem Kanal eines Discord-Servers. Der Discord Orchestrator fragt den passenden Agenten und antwortet.",
   "connector.discord.statusNotSetUp": "Nicht eingerichtet",
   "connector.discord.statusConnected": "Verbunden",
   "connector.discord.statusAttention": "Handlungsbedarf",
@@ -168,11 +168,11 @@ export const messages = {
   "connector.discord.addAgent": "Agent hinzufügen",
   "connector.discord.actionFailed": "Discord hat die Änderung nicht angenommen",
   "connector.discord.workspaceTitle": "Discord-Server",
-  "connector.discord.workspaceDescription": "Erwähne @OpenBot in einem Kanal. Antworte OpenBot, um fortzufahren.",
+  "connector.discord.workspaceDescription": "Erwähne @AIKINGBOT in einem Kanal. Antworte AIKINGBOT, um fortzufahren.",
   "connector.discord.disconnectWorkspace": "Trennen",
   "connector.discord.missingScopes":
-    "OpenBot hat diese Berechtigungen in Discord nicht: {scopes}. Trenne den Discord-Server und verbinde ihn erneut.",
-  "connector.discord.retryAt": "Discord hat OpenBot gebeten zu warten. OpenBot versucht es um {time} erneut.",
+    "AIKINGBOT hat diese Berechtigungen in Discord nicht: {scopes}. Trenne den Discord-Server und verbinde ihn erneut.",
+  "connector.discord.retryAt": "Discord hat AIKINGBOT gebeten zu warten. AIKINGBOT versucht es um {time} erneut.",
   "connector.discord.reconnect": "Erneut verbinden",
   "connector.discord.resume": "Fortsetzen",
   "connector.discord.rowAction": "{action}: {name}",
@@ -182,11 +182,11 @@ export const messages = {
   "connector.discord.orchestratorNone": "Noch kein Agent antwortet",
   "connector.discord.orchestratorNoneDescription":
     "Füge den Discord Orchestrator hinzu, sonst erhält Discord keine Antwort.",
-  "connector.discord.channelsNote": "OpenBot sieht die Kanäle, die seine Rolle sehen darf.",
+  "connector.discord.channelsNote": "AIKINGBOT sieht die Kanäle, die seine Rolle sehen darf.",
   "connector.discord.stepWorkspace": "Discord-Server",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Discord-Server verbinden",
-  "connector.discord.connectDescription": "OpenBot fügt dem Discord-Server einen Bot namens OpenBot hinzu.",
+  "connector.discord.connectDescription": "AIKINGBOT fügt dem Discord-Server einen Bot namens AIKINGBOT hinzu.",
   "connector.discord.connectStepBrowser": "Discord öffnet sich in deinem Browser",
   "connector.discord.connectStepAllow": "Wähle den Server und dann „Autorisieren“",
   "connector.discord.connectStepReturn": "Dieser Dialog wird fortgesetzt, sobald Discord fertig ist",
@@ -194,29 +194,30 @@ export const messages = {
   "connector.discord.connectWaiting": "Warten auf Discord. Schließe die Autorisierung in deinem Browser ab.",
   "connector.discord.agentStepTitle": "Discord Orchestrator hinzufügen",
   "connector.discord.agentStepDescription":
-    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @OpenBot senden.",
+    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @AIKINGBOT senden.",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "Antwortet in Discord und fragt das Team",
   "connector.discord.orchestratorDoesReceive": "Erhält jede Discord-Anfrage zuerst",
   "connector.discord.orchestratorDoesDelegate": "Gibt jede Aufgabe an den am besten geeigneten Agenten weiter",
   "connector.discord.orchestratorDoesAnswer": "Sendet die Antwort im Discord-Kanal",
   "connector.discord.orchestratorModel": "Modell",
-  "connector.discord.doneTitle": "OpenBot ist in {workspace}",
-  "connector.discord.doneDescription": "Erwähne @OpenBot in einem Kanal. Antworte OpenBot, um fortzufahren.",
+  "connector.discord.doneTitle": "AIKINGBOT ist in {workspace}",
+  "connector.discord.doneDescription": "Erwähne @AIKINGBOT in einem Kanal. Antworte AIKINGBOT, um fortzufahren.",
   "connector.discord.done": "Fertig",
   "connector.discord.disconnectTitle": "{workspace} trennen?",
   "connector.discord.disconnectDescription":
-    "OpenBot antwortet nicht mehr in {workspace} und entfernt die Discord-Verbindung von diesem Computer.",
+    "AIKINGBOT antwortet nicht mehr in {workspace} und entfernt die Discord-Verbindung von diesem Computer.",
   "connector.discord.disconnectDescriptionHost":
-    "OpenBot antwortet nicht mehr in {workspace} und entfernt die Discord-Verbindung von {host}.",
+    "AIKINGBOT antwortet nicht mehr in {workspace} und entfernt die Discord-Verbindung von {host}.",
   "connector.discord.disconnectEffect":
-    "Personen in {workspace} können deine Agenten nicht mehr über @OpenBot erreichen.",
-  "connector.discord.removeEffectKept": "Die Unterhaltungen und der Discord Orchestrator bleiben in OpenBot erhalten.",
+    "Personen in {workspace} können deine Agenten nicht mehr über @AIKINGBOT erreichen.",
+  "connector.discord.removeEffectKept":
+    "Die Unterhaltungen und der Discord Orchestrator bleiben in AIKINGBOT erhalten.",
   "connector.discord.keep": "Verbindung beibehalten",
   "connector.discord.close": "Schließen",
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "Füge den OpenBot-Bot zu einer Telegram-Gruppe hinzu oder öffne einen direkten Chat mit ihm. Der Telegram-Orchestrator fragt den passenden Agenten und antwortet.",
+    "Füge den AIKINGBOT-Bot zu einer Telegram-Gruppe hinzu oder öffne einen direkten Chat mit ihm. Der Telegram-Orchestrator fragt den passenden Agenten und antwortet.",
   "connector.telegram.statusNotSetUp": "Nicht eingerichtet",
   "connector.telegram.statusConnected": "Verbunden",
   "connector.telegram.statusAttention": "Erfordert Aufmerksamkeit",
@@ -240,13 +241,14 @@ export const messages = {
   "connector.telegram.groupDescription": "Personen erwähnen den Bot oder antworten auf seine Nachrichten.",
   "connector.telegram.directDescription": "Jede Nachricht in diesem Chat geht an den Telegram-Orchestrator.",
   "connector.telegram.helpRemoved":
-    "Der OpenBot-Bot ist nicht mehr in diesem Chat. Trenne den Chat und füge den Bot dann erneut hinzu.",
+    "Der AIKINGBOT-Bot ist nicht mehr in diesem Chat. Trenne den Chat und füge den Bot dann erneut hinzu.",
   "connector.telegram.helpRelayUnavailable":
-    "OpenBot kann auf diesem Computer keine Telegram-Nachrichten empfangen. Melde dich an, gib diesem Computer in den Servereinstellungen einen Namen und lass OpenBot geöffnet.",
+    "AIKINGBOT kann auf diesem Computer keine Telegram-Nachrichten empfangen. Melde dich an, gib diesem Computer in den Servereinstellungen einen Namen und lass AIKINGBOT geöffnet.",
   "connector.telegram.helpRelayUnavailableHost":
-    "OpenBot auf {host} kann keine Telegram-Nachrichten empfangen. Melde dich auf {host} an, gib dem Server in den Servereinstellungen einen Namen und lass OpenBot geöffnet.",
-  "connector.telegram.helpError": "OpenBot kann diesen Chat nicht erreichen. Verbinde ihn erneut oder trenne den Chat.",
-  "connector.telegram.retryAt": "Telegram hat OpenBot gebeten zu warten. Neuer Versuch um {time}.",
+    "AIKINGBOT auf {host} kann keine Telegram-Nachrichten empfangen. Melde dich auf {host} an, gib dem Server in den Servereinstellungen einen Namen und lass AIKINGBOT geöffnet.",
+  "connector.telegram.helpError":
+    "AIKINGBOT kann diesen Chat nicht erreichen. Verbinde ihn erneut oder trenne den Chat.",
+  "connector.telegram.retryAt": "Telegram hat AIKINGBOT gebeten zu warten. Neuer Versuch um {time}.",
   "connector.telegram.pause": "Pausieren",
   "connector.telegram.resume": "Fortsetzen",
   "connector.telegram.reconnect": "Erneut verbinden",
@@ -260,7 +262,7 @@ export const messages = {
   "connector.telegram.openDirectChat": "Direkten Chat öffnen",
   "connector.telegram.orchestratorTitle": "Telegram-Orchestrator",
   "connector.telegram.orchestratorDescription":
-    "Dieser Agent empfängt die Nachrichten für OpenBot aus all deinen Telegram-Chats. Kurze beantwortet er selbst, andere Aufgaben gibt er an den passenden Agenten weiter und postet die Antwort im Chat.",
+    "Dieser Agent empfängt die Nachrichten für AIKINGBOT aus all deinen Telegram-Chats. Kurze beantwortet er selbst, andere Aufgaben gibt er an den passenden Agenten weiter und postet die Antwort im Chat.",
   "connector.telegram.orchestratorNone": "Noch kein Agent antwortet",
   "connector.telegram.orchestratorNoneDescription":
     "Füge den Telegram-Orchestrator hinzu, sonst bekommt Telegram keine Antwort.",
@@ -270,35 +272,35 @@ export const messages = {
   "connector.telegram.stepAgent": "Agent",
   "connector.telegram.connectTitle": "Telegram-Chat verknüpfen",
   "connector.telegram.connectDescription":
-    "Füge den OpenBot-Bot zu einer Gruppe hinzu oder öffne einen direkten Chat mit ihm. Ein Bot bedient all deine Chats.",
+    "Füge den AIKINGBOT-Bot zu einer Gruppe hinzu oder öffne einen direkten Chat mit ihm. Ein Bot bedient all deine Chats.",
   "connector.telegram.connectStepBrowser": "Telegram wird in deinem Browser geöffnet",
   "connector.telegram.connectStepPick": "Wähle die Gruppe aus oder tippe im direkten Chat auf Start",
   "connector.telegram.connectStepReturn": "Dieser Dialog geht weiter, sobald der Chat verknüpft ist",
   "connector.telegram.connectWaiting": "Warten auf Telegram. Wähle den Chat in Telegram aus.",
   "connector.telegram.agentStepTitle": "Telegram-Orchestrator hinzufügen",
   "connector.telegram.agentStepDescription":
-    "Dieser neue Agent beantwortet die Nachrichten für OpenBot in {chat} und in jedem Chat, den du später verknüpfst.",
+    "Dieser neue Agent beantwortet die Nachrichten für AIKINGBOT in {chat} und in jedem Chat, den du später verknüpfst.",
   "connector.telegram.orchestratorName": "Telegram-Orchestrator",
   "connector.telegram.orchestratorRole": "Antwortet in Telegram und fragt das Team",
-  "connector.telegram.orchestratorDoesReceive": "Empfängt jede Telegram-Nachricht für OpenBot zuerst",
+  "connector.telegram.orchestratorDoesReceive": "Empfängt jede Telegram-Nachricht für AIKINGBOT zuerst",
   "connector.telegram.orchestratorDoesDelegate": "Gibt jede Aufgabe an den am besten passenden Agenten",
   "connector.telegram.orchestratorDoesAnswer": "Postet die Antwort im Telegram-Chat",
   "connector.telegram.orchestratorModel": "Modell",
-  "connector.telegram.doneTitle": "OpenBot ist in {chat}",
+  "connector.telegram.doneTitle": "AIKINGBOT ist in {chat}",
   "connector.telegram.done": "Fertig",
   "connector.telegram.disconnectTitle": "{chat} trennen?",
   "connector.telegram.disconnectDescription":
-    "Der OpenBot-Bot verlässt {chat}, und OpenBot antwortet dort nicht mehr. Die Unterhaltungen bleiben in OpenBot.",
+    "Der AIKINGBOT-Bot verlässt {chat}, und AIKINGBOT antwortet dort nicht mehr. Die Unterhaltungen bleiben in AIKINGBOT.",
   "connector.telegram.disconnectEffect":
-    "Personen in {chat} können deine Agenten nicht mehr über den OpenBot-Bot erreichen.",
-  "connector.telegram.removeEffectKept": "Die Unterhaltungen und der Telegram-Orchestrator bleiben in OpenBot.",
+    "Personen in {chat} können deine Agenten nicht mehr über den AIKINGBOT-Bot erreichen.",
+  "connector.telegram.removeEffectKept": "Die Unterhaltungen und der Telegram-Orchestrator bleiben in AIKINGBOT.",
   "connector.telegram.keep": "Verbunden lassen",
   "connector.telegram.close": "Schließen",
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "Teile einen eigenen 1Password-Tresor über ein Dienstkonto mit OpenBot. So können sich Agenten im OpenBot-Browser auf Websites anmelden.",
+    "Teile einen eigenen 1Password-Tresor über ein Dienstkonto mit AIKINGBOT. So können sich Agenten im AIKINGBOT-Browser auf Websites anmelden.",
   "connector.onePassword.howItWorks":
-    "Beim Verbinden werden in deinem 1Password-Konto ein Tresor „Shared with OpenBot“ und ein Dienstkonto erstellt, das nur diesen Tresor lesen kann. OpenBot füllt gespeicherte Anmeldedaten in seinem Browser auf diesem Computer aus. Nur Einträge, die du in diesen Tresor verschiebst, werden geteilt. Agenten sehen niemals ein Passwort.",
+    "Beim Verbinden werden in deinem 1Password-Konto ein Tresor „Shared with AIKINGBOT“ und ein Dienstkonto erstellt, das nur diesen Tresor lesen kann. AIKINGBOT füllt gespeicherte Anmeldedaten in seinem Browser auf diesem Computer aus. Nur Einträge, die du in diesen Tresor verschiebst, werden geteilt. Agenten sehen niemals ein Passwort.",
   "connector.onePassword.connect": "1Password verbinden",
   "connector.onePassword.setupTitle": "Einrichten",
   "connector.onePassword.stepCliTitle": "1Password CLI installieren",
@@ -306,9 +308,9 @@ export const messages = {
   "connector.onePassword.stepCliInstalling": "1Password CLI wird von 1Password heruntergeladen",
   "connector.onePassword.stepCliReady": "Version {version} ist installiert.",
   "connector.onePassword.stepCliMissing":
-    "OpenBot lädt sie von 1Password in seinen eigenen Ordner herunter. Dafür ist kein Administratorpasswort erforderlich.",
+    "AIKINGBOT lädt sie von 1Password in seinen eigenen Ordner herunter. Dafür ist kein Administratorpasswort erforderlich.",
   "connector.onePassword.stepCliManual":
-    "OpenBot kann sie auf diesem Computer nicht installieren. Installiere sie über 1Password und kehre dann zu dieser Seite zurück.",
+    "AIKINGBOT kann sie auf diesem Computer nicht installieren. Installiere sie über 1Password und kehre dann zu dieser Seite zurück.",
   "connector.onePassword.installCli": "Installieren",
   "connector.onePassword.stepAppTitle": "CLI-Integration aktivieren",
   "connector.onePassword.stepAppDescription":
@@ -318,7 +320,7 @@ export const messages = {
   "connector.onePassword.checkAgain": "Erneut prüfen",
   "connector.onePassword.stepVaultTitle": "Geteilten Tresor erstellen",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot erstellt den Tresor „Shared with OpenBot“ und ein Dienstkonto, das ihn nur lesen kann. 1Password bittet dich um Bestätigung.",
+    "AIKINGBOT erstellt den Tresor „Shared with AIKINGBOT“ und ein Dienstkonto, das ihn nur lesen kann. 1Password bittet dich um Bestätigung.",
   "connector.onePassword.useToken": "Stattdessen ein Dienstkonto-Token verwenden",
   "connector.onePassword.tokenLabel": "Dienstkonto-Token",
   "connector.onePassword.tokenPlaceholder": "ops_…",
@@ -327,7 +329,7 @@ export const messages = {
   "connector.onePassword.cancel": "Abbrechen",
   "connector.onePassword.chooseAccountTitle": "Konto auswählen",
   "connector.onePassword.chooseAccountDescription":
-    "OpenBot erstellt den geteilten Tresor in dem Konto, das du auswählst.",
+    "AIKINGBOT erstellt den geteilten Tresor in dem Konto, das du auswählst.",
   "connector.onePassword.useAccount": "Dieses Konto verwenden",
   "connector.onePassword.vaultTitle": "Geteilter Tresor",
   "connector.onePassword.vaultDescription":
@@ -340,19 +342,19 @@ export const messages = {
   "connector.onePassword.disconnect": "Trennen",
   "connector.onePassword.disconnectTitle": "1Password trennen",
   "connector.onePassword.disconnectSummary":
-    "OpenBot entfernt das Token. Der Tresor und das Dienstkonto bleiben in 1Password erhalten. Entferne sie dort, wenn du sie nicht mehr benötigst.",
-  "connector.onePassword.actionFailed": "OpenBot konnte die 1Password-Verbindung nicht ändern.",
+    "AIKINGBOT entfernt das Token. Der Tresor und das Dienstkonto bleiben in 1Password erhalten. Entferne sie dort, wenn du sie nicht mehr benötigst.",
+  "connector.onePassword.actionFailed": "AIKINGBOT konnte die 1Password-Verbindung nicht ändern.",
   "connector.onePassword.statusConnected": "Verbunden",
   "connector.onePassword.statusConnecting": "Verbindung wird hergestellt",
   "connector.onePassword.statusNotSetUp": "Nicht eingerichtet",
   "connector.bitwarden.title": "Bitwarden",
   "connector.bitwarden.description": "Anmeldedaten aus Bitwarden im Browser ausfüllen.",
   "connector.bitwarden.setup":
-    "Installiere die Bitwarden CLI und melde dich mit bw login an. Erstelle einen Ordner namens Shared with OpenBot und lege dort nur Anmeldedaten ab, die Agenten verwenden dürfen. Führe bw unlock --raw aus und füge den Sitzungsschlüssel unten ein. Füge nicht dein Master-Passwort ein.",
+    "Installiere die Bitwarden CLI und melde dich mit bw login an. Erstelle einen Ordner namens Shared with AIKINGBOT und lege dort nur Anmeldedaten ab, die Agenten verwenden dürfen. Führe bw unlock --raw aus und füge den Sitzungsschlüssel unten ein. Füge nicht dein Master-Passwort ein.",
   "connector.bitwarden.scope":
-    "Alle Agenten auf diesem Computer können passende Anmeldedaten in Shared with OpenBot verwenden. OpenBot verwendet exakte HTTPS-Ursprünge. Einträge, die eine Master-Passwort-Abfrage oder eine eigene URI-Abgleichsregel erfordern, werden nicht verwendet.",
+    "Alle Agenten auf diesem Computer können passende Anmeldedaten in Shared with AIKINGBOT verwenden. AIKINGBOT verwendet exakte HTTPS-Ursprünge. Einträge, die eine Master-Passwort-Abfrage oder eine eigene URI-Abgleichsregel erfordern, werden nicht verwendet.",
   "connector.bitwarden.session":
-    "Der Sitzungsschlüssel bleibt im Arbeitsspeicher. Verbinde dich erneut, wenn der Tresor 8 Stunden nicht verwendet wurde oder OpenBot beendet wurde. Trennen beendet den Zugriff von OpenBot. Andere Bitwarden-Clients werden dadurch nicht gesperrt.",
+    "Der Sitzungsschlüssel bleibt im Arbeitsspeicher. Verbinde dich erneut, wenn der Tresor 8 Stunden nicht verwendet wurde oder AIKINGBOT beendet wurde. Trennen beendet den Zugriff von AIKINGBOT. Andere Bitwarden-Clients werden dadurch nicht gesperrt.",
   "connector.bitwarden.sessionKey": "Bitwarden-Sitzungsschlüssel",
   "connector.bitwarden.connect": "Bitwarden verbinden",
   "connector.bitwarden.disconnect": "Bitwarden trennen",

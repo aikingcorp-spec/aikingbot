@@ -3,10 +3,10 @@ import {
   ROUTINE_MISSED_COUNT_LIMIT,
   type RoutineMissedRuns,
   type RoutineRunFields,
-} from "@openbot/contracts/ipc";
-import type { EventActivity, EventRoutineRef, ListEventActivityInput } from "@openbot/contracts/ipc-events";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, Check, CirclePause, Clock3, Minus, Text, TriangleAlert, X } from "@openbot/ui";
+} from "@aikingbot/contracts/ipc";
+import type { EventActivity, EventRoutineRef, ListEventActivityInput } from "@aikingbot/contracts/ipc-events";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, Check, CirclePause, Clock3, Minus, Text, TriangleAlert, X } from "@aikingbot/ui";
 import { createEffect, createSignal, For, Match, Show, Switch, untrack } from "solid-js";
 import { type TextValue, useText } from "../../text";
 
@@ -29,7 +29,7 @@ type HistoryEntry =
 
 const VISIBLE_ENTRIES = 10;
 const ACTIVITY_LIMIT = 50;
-/** A scheduled run that started this long after its time ran late: OpenBot was closed or asleep. */
+/** A scheduled run that started this long after its time ran late: AIKINGBOT was closed or asleep. */
 const LATE_RUN_MS = 60_000;
 
 /**

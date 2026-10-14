@@ -17,7 +17,7 @@ export function SettingsPicker<T extends string | number>({
   label,
   onChange,
 }: SettingsPickerProps<T>) {
-  const muted = String(useCSSVariable("--openbot-text-grouped-secondary"));
+  const muted = String(useCSSVariable("--aikingbot-text-grouped-secondary"));
   const selected = options.find((option) => option.value === value);
   return (
     <MenuView
@@ -52,7 +52,7 @@ export function SettingsPicker<T extends string | number>({
 }
 
 export function SettingsSwitch({ value, disabled, label, onValueChange }: SettingsSwitchProps) {
-  const accent = String(useCSSVariable("--openbot-accent"));
+  const accent = String(useCSSVariable("--aikingbot-accent"));
   return (
     <View className="min-w-0 flex-1 flex-row items-center gap-3">
       <Typography.Paragraph className="min-w-0 flex-1">{label}</Typography.Paragraph>

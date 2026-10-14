@@ -1,5 +1,5 @@
-import { agentProviderDescriptor, agentProviderName } from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { agentProviderDescriptor, agentProviderName } from "@aikingbot/contracts/agent-providers";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_ACCESS_MODES,
   type AgentAccess,
@@ -19,8 +19,8 @@ import {
   DEFAULT_BUSY_MESSAGE_MODE,
   type ProviderRuntimeStatus,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Bell,
   Brain,
@@ -44,10 +44,10 @@ import {
   Switch,
   Text,
   Textarea,
-} from "@openbot/ui";
-import { normalizeAvatarFile } from "@openbot/ui/avatar-image";
-import { AVATAR_HUE_OPTIONS, avatarCandidateSeeds, avatarHueSwatch } from "@openbot/ui/bloub-avatar";
-import { ProviderModelPicker, reasoningLabel } from "@openbot/ui/components/ProviderModelPicker";
+} from "@aikingbot/ui";
+import { normalizeAvatarFile } from "@aikingbot/ui/avatar-image";
+import { AVATAR_HUE_OPTIONS, avatarCandidateSeeds, avatarHueSwatch } from "@aikingbot/ui/bloub-avatar";
+import { ProviderModelPicker, reasoningLabel } from "@aikingbot/ui/components/ProviderModelPicker";
 import {
   SettingsField,
   SettingsLinkGroup,
@@ -55,10 +55,10 @@ import {
   SettingsPanel,
   SettingsPanelContent,
   SettingsPanelHeader,
-} from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/ui/components/SettingsPanel";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { errorReference, type UserErrorDetails } from "@aikingbot/user-errors";
 import type { JSX } from "@solidjs/web";
 import {
   createEffect,

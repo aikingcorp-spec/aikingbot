@@ -1,10 +1,10 @@
-import { GITHUB_MARKETPLACE_APP_ID, type GitHubConnectorStatus } from "@openbot/contracts/ipc";
+import { GITHUB_MARKETPLACE_APP_ID, type GitHubConnectorStatus } from "@aikingbot/contracts/ipc";
 import {
   MarketplaceSuggestionCard,
   type MarketplaceSuggestionState,
-} from "@openbot/ui/features/conversation/MarketplaceSuggestionCard";
-import { GitHubMark } from "@openbot/ui/features/settings/IntegrationLayout";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/MarketplaceSuggestionCard";
+import { GitHubMark } from "@aikingbot/ui/features/settings/IntegrationLayout";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo, createSignal, onSettled, untrack } from "solid-js";
 import { githubConnectorPort } from "../connectors/github-connector-port";
 import { MARKETPLACE_PLUGINS } from "../settings/marketplace-plugin-catalog";
@@ -14,7 +14,7 @@ import { dismissMarketplaceSuggestion, marketplaceSuggestionDismissed } from "./
 export interface MarketplaceSuggestionChatCardProps {
   messageId: string;
   appId: string;
-  /** GitHub connects only on the computer that runs OpenBot. */
+  /** GitHub connects only on the computer that runs AIKINGBOT. */
   localServer: boolean;
   onOpenMarketplaceApp?: ((request: { appId: string; connect: boolean }) => void) | undefined;
 }
@@ -36,7 +36,7 @@ export function MarketplaceSuggestionChatCard(props: MarketplaceSuggestionChatCa
     return listing ? localizedPlugin(listing, t).tagline : undefined;
   };
   const github = () => props.appId === GITHUB_MARKETPLACE_APP_ID;
-  // Only the desktop app of the computer that runs OpenBot has this connection, and `window.openbot`.
+  // Only the desktop app of the computer that runs AIKINGBOT has this connection, and `window.aikingbot`.
   const githubStatus = createGitHubStatus(untrack(() => github() && props.localServer));
   const state = (): MarketplaceSuggestionState => {
     if (!github()) return "available";

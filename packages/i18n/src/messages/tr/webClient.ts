@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "OpenBot yükleniyor…",
+  "webClient.loading": "AIKINGBOT yükleniyor…",
   "webClient.loadingLine.wake": "Ajanlar uyandırılıyor…",
   "webClient.loadingLine.coffee": "Ajanlara kahve dolduruluyor…",
   "webClient.loadingLine.tokens": "Token'lar parmakla sayılıyor…",
@@ -22,11 +22,11 @@ export const messages = {
   "webClient.notice.hostsFailed": "Bilgisayarlarınız yüklenemedi",
   "webClient.notice.connectComputer": "Bilgisayarınızı bağlayın",
   "webClient.connect.description":
-    "Bu tarayıcıdan ajanlarınızla sohbet etmek için bilgisayarınızda OpenBot'u çalıştırın. Ayrıca bir davetle bir bilgisayara da katılabilirsiniz.",
-  "webClient.connect.stepInstall": "Bilgisayarınıza OpenBot'u yükleyin ve açın.",
+    "Bu tarayıcıdan ajanlarınızla sohbet etmek için bilgisayarınızda AIKINGBOT'u çalıştırın. Ayrıca bir davetle bir bilgisayara da katılabilirsiniz.",
+  "webClient.connect.stepInstall": "Bilgisayarınıza AIKINGBOT'u yükleyin ve açın.",
   "webClient.connect.stepSignIn": "E-posta adresinizle giriş yapın.",
   "webClient.connect.stepRemote": "Uzaktan erişimi açın.",
-  "webClient.notice.download": "OpenBot'u İndir",
+  "webClient.notice.download": "AIKINGBOT'u İndir",
   "webClient.notice.join": "Davet ile katıl",
   "webClient.notice.refreshHosts": "Ana makineleri yenile",
   "webClient.agent.modelsFailed": "Ana makine modelleri yüklenemedi.",
@@ -37,7 +37,7 @@ export const messages = {
   "webClient.error.usageOffline": "Kullanımı görüntülemek için ana makinenize bağlanın.",
   "webClient.error.desktopOnly": "Bu eylem masaüstü uygulamasında kullanılabilir.",
   "webClient.settings.preferences.title": "Tercihler",
-  "webClient.settings.preferences.description": "Bu tarayıcıda OpenBot'un dilini ve seslerini seçin.",
+  "webClient.settings.preferences.description": "Bu tarayıcıda AIKINGBOT'un dilini ve seslerini seçin.",
   "webClient.error.checkConversation": "Tekrar göndermeden önce konuşmayı kontrol edin.",
   "webClient.error.hostReported": "Ana makine bir hata bildirdi. Konuşmayı ve ana makine durumunu kontrol edin.",
   "webClient.error.requestFailed": "İstek başarısız oldu.",
@@ -65,14 +65,14 @@ export const messages = {
   "webClient.error.identityChanged": "Ana makine kimliği değişti. Bağlantı reddedildi.",
   "webClient.error.connectionUnavailable": "Ana makine bağlantısı kullanılamıyor.",
   "webClient.error.incompatible":
-    "Bu ana makine OpenBot web ile uyumlu değil. Ana makineyi güncelleyin ve bu sayfayı yeniden yükleyin.",
+    "Bu ana makine AIKINGBOT web ile uyumlu değil. Ana makineyi güncelleyin ve bu sayfayı yeniden yükleyin.",
   "webClient.error.sendUnconfirmed": "Mesaj teslimatı doğrulanmadı. Tekrar göndermeden önce sayfayı yenileyin.",
   "webClient.error.fileType": "Bu dosya türünü eklemek için ana makineyi güncelleyin.",
   "webClient.error.uploadCancelled": "Ek yüklemesi iptal edildi.",
   "webClient.error.duplication": "Bu ana makine ajan kopyalamayı desteklemiyor.",
   "webClient.error.connectServerFirst": "Önce bu sunucuya bağlanın.",
   "webClient.error.agentInstallNotAllowed":
-    "Buraya yalnızca bir sahip veya yönetici bir ajan ekleyebilir ve ana makine güncel bir OpenBot çalıştırmalıdır.",
+    "Buraya yalnızca bir sahip veya yönetici bir ajan ekleyebilir ve ana makine güncel bir AIKINGBOT çalıştırmalıdır.",
   "webClient.error.linkDesktopOnly": "Bu bağlantı yalnızca masaüstü uygulamasında açılır.",
   "webClient.error.saveEndpointOffline": "Bir uç noktayı kaydetmek için ana makinenize bağlanın.",
   "webClient.error.removeEndpointOffline": "Bir uç noktayı kaldırmak için ana makinenize bağlanın.",

@@ -2,20 +2,21 @@
 import { randomUUID } from "node:crypto";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentEvent } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { registerSecretValue } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEVELOPMENT_DEFAULT_MODEL, DEVELOPMENT_DEFAULT_REASONING_EFFORT } from "./agent/development-defaults";
 import type { AgentProvider } from "./agent-client";
 import type { AgentService } from "./agent-service";
 import {
+  aikingBotToolPayload,
   CREATE_AGENT_INPUT,
-  callOpenBotTool,
+  callAIKINGBOTTool,
   createTestService,
-  expectOpenBotToolFailure,
+  expectAIKINGBOTToolFailure,
   FakeAgentClient,
   fakeClaudeCli,
   fakeGrokCli,
@@ -23,7 +24,6 @@ import {
   firstInputText,
   inputRecords,
   notification,
-  openBotToolPayload,
   protocolMessages,
   startAgentTestFixture,
   startService,
@@ -272,7 +272,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("starts a new agent in a development build on the OpenCode development model", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     service = createTestService({
       store,
@@ -302,8 +302,8 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("leaves a packaged build and a recorded preference on their own model", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { service: agentService } = await startService(root, {
       client: (provider) => {
         const client = new FakeAgentClient(provider);
@@ -349,7 +349,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("starts a new agent on the requested provider and model before the initial message", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
     service = createTestService({
@@ -379,7 +379,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("rejects creation with an unlisted model and removes the incomplete agent", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { service: agentService } = await startService(root, {
       client: (provider) => new FakeAgentClient(provider),
     });
@@ -394,7 +394,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("updates the active account and new-agent defaults with the preferred provider", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { service: agentService } = await startService(root, { preferredProvider: "claude" });
     service = agentService;
 
@@ -472,8 +472,8 @@ describe.sequential("AgentService: queue", () => {
   it("starts a new agent on another signed-in provider when the preferred one lists no model", async () => {
     // Grok has no built-in model list, so a Grok CLI that is not ready lists nothing. Codex and
     // Claude are not installed either, but still list their built-in models.
-    process.env.OPENBOT_CODEX_PATH = join(root, "missing-codex");
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_CODEX_PATH = join(root, "missing-codex");
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { service: agentService } = await startService(root, {
       preferredProvider: "grok",
       client: (provider) => new FakeAgentClient(provider),
@@ -488,9 +488,9 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("detects a newly installed provider without disconnecting an available one", async () => {
-    const codexPath = process.env.OPENBOT_CODEX_PATH;
+    const codexPath = process.env.AIKINGBOT_CODEX_PATH;
     if (!codexPath) throw new Error("The fake Codex path is missing.");
-    process.env.OPENBOT_CODEX_PATH = join(root, "missing-codex");
+    process.env.AIKINGBOT_CODEX_PATH = join(root, "missing-codex");
     const workingDirectory = process.cwd();
     process.chdir(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
@@ -523,7 +523,7 @@ describe.sequential("AgentService: queue", () => {
         ],
       });
 
-      process.env.OPENBOT_CODEX_PATH = codexPath;
+      process.env.AIKINGBOT_CODEX_PATH = codexPath;
       await expect(runCauseEffect(service.refreshProviders())).resolves.toMatchObject({
         phase: "ready",
         providers: [
@@ -625,7 +625,7 @@ describe.sequential("AgentService: queue", () => {
 
     expect(service.listAgents()).toEqual([]);
     expect(store.database.listAgents()).toEqual([]);
-    await expect(readdir(join(root, "home", "OpenBot", "Agents"))).resolves.toEqual([]);
+    await expect(readdir(join(root, "home", "AIKINGBOT", "Agents"))).resolves.toEqual([]);
   });
 
   it("removes queued profile creation on receipt failure and runs only the successful retry", async () => {
@@ -665,7 +665,7 @@ describe.sequential("AgentService: queue", () => {
     expect(mailbox.listQueue(failedAgentId).deliveries).toEqual([]);
     expect(sidebar.getSnapshot().agentAssignments).toEqual({});
     expect(client.requests.filter((request) => request.method === "turn/start")).toEqual([]);
-    await expect(readdir(join(root, "home", "OpenBot", "Agents"))).resolves.toEqual([]);
+    await expect(readdir(join(root, "home", "AIKINGBOT", "Agents"))).resolves.toEqual([]);
     failure.mockRestore();
     const result = await runCauseEffect(service.saveProfile(input, sidebar));
     expect((await runCauseEffect(service.saveProfile(input, sidebar))).agent.id).toBe(result.agent.id);
@@ -728,7 +728,7 @@ describe.sequential("AgentService: queue", () => {
       if (!committed) {
         expect(restarted.mailbox.listQueue(pending.id).deliveries).toEqual([]);
         expect(client.requests.filter((request) => request.method === "turn/start")).toEqual([]);
-        await expect(readdir(join(root, "home", "OpenBot", "Agents"))).resolves.toEqual([existing.id]);
+        await expect(readdir(join(root, "home", "AIKINGBOT", "Agents"))).resolves.toEqual([existing.id]);
       }
       const result = await runCauseEffect(service.saveProfile(input, sidebar));
       if (committed) expect(result.agent.id).toBe(pending.id);
@@ -755,7 +755,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("starts the second provider when an agent selects its model", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { service: agentService, store } = await startService(root);
     service = agentService;
     await runCauseEffect(store.getOrCreate("chief"));
@@ -779,8 +779,8 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("hands one SQLite conversation across repeated provider switches", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const clients = new Map<AgentProvider, FakeAgentClient>();
     const { service: agentService, store } = await startService(root, {
       client: (provider) => {
@@ -834,7 +834,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("captures the work steps at the switch and hands them to the next provider, with secrets redacted", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const secret = "handoff-secret-7c1f9e2a4b";
     registerSecretValue(secret);
     const clients = new Map<AgentProvider, FakeAgentClient>();
@@ -910,7 +910,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("resumes and retries once when Grok loses its in-memory session", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     let rejectTurnStart = true;
     let grokClient: FakeAgentClient | undefined;
     const { store, mailbox } = stores(root);
@@ -956,8 +956,8 @@ describe.sequential("AgentService: queue", () => {
   it.each(["grok", "opencode"] as const)(
     "replaces a %s session that the provider can no longer resume",
     async (target) => {
-      process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
-      process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+      process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
+      process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
       let rejectResume = false;
       let providerClient: FakeAgentClient | undefined;
       const { store, mailbox } = stores(root);
@@ -1019,7 +1019,7 @@ describe.sequential("AgentService: queue", () => {
   );
 
   it("bounds a provider handoff and keeps the complete result in local history", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const clients = new Map<AgentProvider, FakeAgentClient>();
     const { service: agentService, store } = await startService(root, {
       client: (provider) => {
@@ -1101,8 +1101,8 @@ describe.sequential("AgentService: queue", () => {
     expect(instructions).toContain('"title": "Research & writing"');
     expect(instructions).toContain('"description": "Researches topics and turns findings into clear writing."');
     expect(instructions).toContain("Give the shortest complete answer");
-    expect(instructions).toContain("openbot.ask_user");
-    expect(instructions).toContain("openbot.tool_describe");
+    expect(instructions).toContain("aikingbot.ask_user");
+    expect(instructions).toContain("aikingbot.tool_describe");
     expect(instructions).toContain("standing remit");
   });
 
@@ -1258,7 +1258,7 @@ describe.sequential("AgentService: queue", () => {
     const callId = "c".repeat(INPUT_LIMITS.identifier);
 
     const send = () =>
-      callOpenBotTool(
+      callAIKINGBOTTool(
         client,
         chiefThreadId,
         "send_message",
@@ -1266,8 +1266,8 @@ describe.sequential("AgentService: queue", () => {
         "provider-turn",
         callId,
       );
-    const first = openBotToolPayload((await send()).result);
-    const retry = openBotToolPayload((await send()).result);
+    const first = aikingBotToolPayload((await send()).result);
+    const retry = aikingBotToolPayload((await send()).result);
 
     expect(first).toMatchObject({ messageId: expect.any(String) });
     expect(retry.messageId).toBe(first.messageId);
@@ -1292,7 +1292,7 @@ describe.sequential("AgentService: queue", () => {
     const chiefThreadId = store.activeProviderSession("chief")?.externalSessionId;
     assert(chiefThreadId);
 
-    await callOpenBotTool(client, chiefThreadId, "send_message", {
+    await callAIKINGBOTTool(client, chiefThreadId, "send_message", {
       recipientAgentIds: ["worker"],
       text: "Report sent.",
       replyToMessageId: "",
@@ -1324,18 +1324,18 @@ describe.sequential("AgentService: queue", () => {
     const chiefThreadId = store.activeProviderSession("chief")?.externalSessionId;
     assert(chiefThreadId);
 
-    await callOpenBotTool(client, chiefThreadId, "send_message", {
+    await callAIKINGBOTTool(client, chiefThreadId, "send_message", {
       recipientAgentIds: ["worker"],
       text: "Draft the report.",
     });
     await waitForQueue(service, "worker", (queue) => queue.deliveries[0]?.status === "running");
-    await callOpenBotTool(client, chiefThreadId, "send_message", { recipientAgentIds: ["worker"], text: "Send it." });
+    await callAIKINGBOTTool(client, chiefThreadId, "send_message", { recipientAgentIds: ["worker"], text: "Send it." });
     const workerTurnId = service.listQueue("worker").deliveries[0]?.turnId;
     const workerThreadId = store.activeProviderSession("worker")?.externalSessionId;
     assert(workerTurnId && workerThreadId);
     await waitFor(() => events.some((event) => event.type === "turn-started" && event.turnId === workerTurnId));
 
-    const listed = openBotToolPayload((await callOpenBotTool(client, chiefThreadId, "list_agents", {})).result);
+    const listed = aikingBotToolPayload((await callAIKINGBOTTool(client, chiefThreadId, "list_agents", {})).result);
     expect(listed.agents).toContainEqual(
       expect.objectContaining({
         id: "worker",
@@ -1346,11 +1346,11 @@ describe.sequential("AgentService: queue", () => {
       }),
     );
 
-    const interrupted = await callOpenBotTool(client, chiefThreadId, "interrupt_agent", {
+    const interrupted = await callAIKINGBOTTool(client, chiefThreadId, "interrupt_agent", {
       agentId: "worker",
       reason: "The plan changed.",
     });
-    expect(openBotToolPayload(interrupted.result)).toEqual({ interruptedTurnId: workerTurnId, cancelledMessages: 1 });
+    expect(aikingBotToolPayload(interrupted.result)).toEqual({ interruptedTurnId: workerTurnId, cancelledMessages: 1 });
     expect(client.requests).toContainEqual({
       method: "turn/interrupt",
       params: { threadId: workerThreadId, turnId: workerTurnId },
@@ -1393,8 +1393,8 @@ describe.sequential("AgentService: queue", () => {
       ["worker", "This agent works on a task that your message did not start."],
       ["chief", "An agent cannot interrupt itself."],
     ]) {
-      const refused = await callOpenBotTool(client, chiefThreadId, "interrupt_agent", { agentId });
-      expect(openBotToolPayload(refused.result).error).toContain(error);
+      const refused = await callAIKINGBOTTool(client, chiefThreadId, "interrupt_agent", { agentId });
+      expect(aikingBotToolPayload(refused.result).error).toContain(error);
     }
     expect(client.requests.some((request) => request.method === "turn/interrupt")).toBe(false);
     expect(service.listQueue("worker").deliveries.map((delivery) => delivery.status)).toEqual(["running"]);
@@ -1402,7 +1402,7 @@ describe.sequential("AgentService: queue", () => {
 
   describe("a message sent while the agent works, in steer mode", () => {
     async function startBusyAgent(provider: AgentProvider, requestHook?: (method: string) => Promise<void>) {
-      if (provider === "opencode") process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+      if (provider === "opencode") process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
       const started = await startService(root, {
         provider,
         preferredProvider: provider,
@@ -2158,7 +2158,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("waits for active queue drains before shutdown completes", async () => {
-    process.env.OPENBOT_FAKE_TURN_START_RESPONSE_DELAY = "100";
+    process.env.AIKINGBOT_FAKE_TURN_START_RESPONSE_DELAY = "100";
     const { service: agentService } = await startService(root);
     service = agentService;
 
@@ -2172,14 +2172,14 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("fans out an idempotent agent tool message with referenced files", async () => {
-    process.env.OPENBOT_FAKE_AGENT_TOOL = "1";
+    process.env.AIKINGBOT_FAKE_AGENT_TOOL = "1";
     const notePath = join(root, "generated-note.txt");
     const imagePath = join(root, "generated-image.png");
     await Promise.all([
-      writeFile(notePath, "OPENBOT_SHARED_FILE_OK\n"),
+      writeFile(notePath, "AIKINGBOT_SHARED_FILE_OK\n"),
       writeFile(imagePath, Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])),
     ]);
-    process.env.OPENBOT_FAKE_AGENT_TOOL_PATHS = JSON.stringify([notePath, imagePath]);
+    process.env.AIKINGBOT_FAKE_AGENT_TOOL_PATHS = JSON.stringify([notePath, imagePath]);
     const { service: agentService, store, mailbox } = await startService(root);
     service = agentService;
     await Promise.all([
@@ -2206,7 +2206,7 @@ describe.sequential("AgentService: queue", () => {
     const managedImage = await runCauseEffect(mailbox.resolveAttachment(sales.attachments[1]?.id ?? ""));
     expect(managedNote?.path).not.toBe(notePath);
     expect(managedImage?.path).not.toBe(imagePath);
-    await expect(readFile(managedNote?.path ?? "", "utf8")).resolves.toBe("OPENBOT_SHARED_FILE_OK\n");
+    await expect(readFile(managedNote?.path ?? "", "utf8")).resolves.toBe("AIKINGBOT_SHARED_FILE_OK\n");
 
     const chiefMessages = (await runCauseEffect(service.readConversation("chief"))).messages;
     expect(chiefMessages).toEqual(
@@ -2266,8 +2266,8 @@ describe.sequential("AgentService: queue", () => {
     { provider: "codex", context: "unavailable" },
     { provider: "codex", context: "rollback" },
   ])("preserves the caller's space for $provider with $context context", async ({ provider, context }) => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const { store, mailbox } = stores(root);
     const sidebarPath = join(root, "sidebar-layout.json");
     const sidebar = new SidebarLayoutStore(sidebarPath);
@@ -2322,7 +2322,7 @@ describe.sequential("AgentService: queue", () => {
       }),
     );
 
-    const result = await callOpenBotTool(client, threadId, "create_agent", {
+    const result = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Research Partner",
       description: "Find primary sources.",
       initialMessage: "Research train routes to Berlin.",
@@ -2332,7 +2332,7 @@ describe.sequential("AgentService: queue", () => {
     const expectedAssignments =
       context === "assigned" ? { ...originalAssignments, [createdAgentId]: sectionId } : originalAssignments;
     expect({
-      error: result.error?.message ?? openBotToolPayload(result.result).error,
+      error: result.error?.message ?? aikingBotToolPayload(result.result).error,
       assignmentAtEnqueue,
       assignments: sidebar.getSnapshot().agentAssignments,
       persistedAssignments: restored.getSnapshot().agentAssignments,
@@ -2371,7 +2371,7 @@ describe.sequential("AgentService: queue", () => {
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!client || !threadId) throw new Error("The agent session did not start.");
 
-    const listed = openBotToolPayload((await callOpenBotTool(client, threadId, "list_models", {})).result);
+    const listed = aikingBotToolPayload((await callAIKINGBOTTool(client, threadId, "list_models", {})).result);
     expect(listed).toMatchObject({
       preferredProvider: "codex",
       providers: expect.arrayContaining([
@@ -2384,7 +2384,7 @@ describe.sequential("AgentService: queue", () => {
       ]),
     });
 
-    const created = await callOpenBotTool(client, threadId, "create_agent", {
+    const created = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Terra",
       description: "",
       initialMessage: "Start.",
@@ -2399,7 +2399,7 @@ describe.sequential("AgentService: queue", () => {
       reasoningEffort: "high",
     });
 
-    const unknownModel = await callOpenBotTool(client, threadId, "create_agent", {
+    const unknownModel = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Unknown model",
       description: "",
       initialMessage: "Start.",
@@ -2407,18 +2407,18 @@ describe.sequential("AgentService: queue", () => {
       model: "gpt-missing",
     });
     expect(unknownModel.result).toMatchObject({ success: false });
-    expect(openBotToolPayload(unknownModel.result).error).toContain(
+    expect(aikingBotToolPayload(unknownModel.result).error).toContain(
       'Model "gpt-missing" is not available. Available models: ',
     );
-    expect(openBotToolPayload(unknownModel.result).error).toContain("gpt-5.6-terra");
-    const unsupportedEffort = await callOpenBotTool(client, threadId, "create_agent", {
+    expect(aikingBotToolPayload(unknownModel.result).error).toContain("gpt-5.6-terra");
+    const unsupportedEffort = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Unsupported effort",
       description: "",
       initialMessage: "Start.",
       model: "gpt-5.5",
       reasoningEffort: "high",
     });
-    expect(openBotToolPayload(unsupportedEffort.result).error).toContain(
+    expect(aikingBotToolPayload(unsupportedEffort.result).error).toContain(
       'Model "gpt-5.5" does not support reasoning effort "high". Supported efforts: medium.',
     );
     expect(
@@ -2450,7 +2450,12 @@ describe.sequential("AgentService: queue", () => {
     if (!client || !threadId) throw new Error("The agent session did not start.");
 
     const create = (name: string, fields: Record<string, string> = {}) =>
-      callOpenBotTool(client, threadId, "create_agent", { name, description: "", initialMessage: "Start.", ...fields });
+      callAIKINGBOTTool(client, threadId, "create_agent", {
+        name,
+        description: "",
+        initialMessage: "Start.",
+        ...fields,
+      });
     for (const name of ["Scout", "Analyst"]) expect((await create(name)).error).toBeUndefined();
     expect((await create("Writer", { model: "gpt-5.6-luna" })).error).toBeUndefined();
     expect((await create("Editor", { reasoningEffort: "low" })).error).toBeUndefined();
@@ -2495,12 +2500,12 @@ describe.sequential("AgentService: queue", () => {
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!client || !threadId) throw new Error("The agent session did not start.");
 
-    const rejected = await callOpenBotTool(client, threadId, "update_profile", {
+    const rejected = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "design",
       name: "Renamed",
       model: "gpt-missing",
     });
-    expect(openBotToolPayload(rejected.result).error).toContain(
+    expect(aikingBotToolPayload(rejected.result).error).toContain(
       'Model "gpt-missing" is not available. Available models: ',
     );
     expect(service.listAgents().find((agent) => agent.id === "design")).toMatchObject({
@@ -2508,11 +2513,11 @@ describe.sequential("AgentService: queue", () => {
       model: "gpt-6-luna",
     });
 
-    const changed = await callOpenBotTool(client, threadId, "update_profile", {
+    const changed = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "design",
       model: "gpt-5.6-terra",
     });
-    expect(openBotToolPayload(changed.result)).toMatchObject({ provider: "codex", model: "gpt-5.6-terra" });
+    expect(aikingBotToolPayload(changed.result)).toMatchObject({ provider: "codex", model: "gpt-5.6-terra" });
     expect(service.listAgents().find((agent) => agent.id === "design")).toMatchObject({
       provider: "codex",
       model: "gpt-5.6-terra",
@@ -2588,10 +2593,10 @@ describe.sequential("AgentService: queue", () => {
     if (!client || !threadId) throw new Error("The agent session did not start.");
     const agent = (id: string) => service?.listAgents().find((candidate) => candidate.id === id);
 
-    const read = await callOpenBotTool(client, threadId, "read_agent", { agentId: "design" });
+    const read = await callAIKINGBOTTool(client, threadId, "read_agent", { agentId: "design" });
     const text = JSON.stringify(read.result);
     for (const secret of [envSecret, headerSecret, urlSecret]) expect(text).not.toContain(secret);
-    expect(openBotToolPayload(read.result)).toMatchObject({
+    expect(aikingBotToolPayload(read.result)).toMatchObject({
       id: "design",
       access: "workspace",
       computerUse: false,
@@ -2604,7 +2609,7 @@ describe.sequential("AgentService: queue", () => {
     });
 
     for (const widen of [{ access: "full", name: "Renamed" }, { computerUse: true }]) {
-      await expectOpenBotToolFailure(
+      await expectAIKINGBOTToolFailure(
         client,
         threadId,
         "update_profile",
@@ -2614,19 +2619,19 @@ describe.sequential("AgentService: queue", () => {
     }
     expect(agent("design")).toMatchObject({ name: "Designer", access: "workspace", computerUse: false });
 
-    const restricted = await callOpenBotTool(client, threadId, "update_profile", {
+    const restricted = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "chief",
       access: "workspace",
       computerUse: false,
       notifications: false,
     });
-    expect(openBotToolPayload(restricted.result)).toMatchObject({
+    expect(aikingBotToolPayload(restricted.result)).toMatchObject({
       access: "workspace",
       computerUse: false,
       notifications: false,
     });
     expect(agent("chief")).toMatchObject({ access: "workspace", computerUse: false, notifications: false });
-    await expectOpenBotToolFailure(
+    await expectAIKINGBOTToolFailure(
       client,
       threadId,
       "update_profile",
@@ -2634,12 +2639,12 @@ describe.sequential("AgentService: queue", () => {
       "Only the user can give an agent Full access or turn Computer Use on.",
     );
 
-    const created = await callOpenBotTool(client, threadId, "create_agent", {
+    const created = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Researcher",
       description: "Research",
       initialMessage: "Start.",
     });
-    const createdId = openBotToolPayload(created.result).id;
+    const createdId = aikingBotToolPayload(created.result).id;
     expect(service.listAgents().find((candidate) => candidate.id === createdId)).toMatchObject({
       access: "workspace",
       computerUse: false,
@@ -2672,7 +2677,7 @@ describe.sequential("AgentService: queue", () => {
     const client = clients.get("codex");
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     if (!client || !threadId) throw new Error("The agent session did not start.");
-    const result = await callOpenBotTool(client, threadId, "create_agent", {
+    const result = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Research Partner",
       title: "Research",
       description: "Find primary sources.",
@@ -2681,7 +2686,7 @@ describe.sequential("AgentService: queue", () => {
       avatarHue: 150,
     });
     expect(result.error).toBeUndefined();
-    const created = openBotToolPayload(result.result);
+    const created = aikingBotToolPayload(result.result);
     expect(created).toMatchObject({
       name: "Research Partner",
       title: "Research",
@@ -2709,14 +2714,14 @@ describe.sequential("AgentService: queue", () => {
     await writeFile(avatarPath, avatarBytes);
     const events: AgentEvent[] = [];
     service.on("event", (event) => events.push(event));
-    const custom = await callOpenBotTool(client, threadId, "update_profile", {
+    const custom = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId,
       avatarPath: "custom-avatar.png",
     });
     expect(custom.error).toBeUndefined();
     const customUrl = service.listAgents().find((agent) => agent.id === agentId)?.avatarUrl;
     expect(customUrl).toBeTruthy();
-    expect(openBotToolPayload(custom.result)).toMatchObject({ id: agentId, avatarUrl: customUrl });
+    expect(aikingBotToolPayload(custom.result)).toMatchObject({ id: agentId, avatarUrl: customUrl });
     expect(await readFile(store.resolveAvatar(agentId)?.path ?? "")).toEqual(avatarBytes);
     expect(await readFile(avatarPath)).toEqual(avatarBytes);
     expect(events).toContainEqual(
@@ -2734,7 +2739,7 @@ describe.sequential("AgentService: queue", () => {
       { avatarPath, avatarHue: null },
       { avatarPath, avatarSeed: "new-seed" },
     ]) {
-      const rejected = await callOpenBotTool(client, threadId, "update_profile", {
+      const rejected = await callAIKINGBOTTool(client, threadId, "update_profile", {
         agentId,
         name: "Must not change",
         ...fields,
@@ -2745,41 +2750,41 @@ describe.sequential("AgentService: queue", () => {
         avatarUrl: customUrl,
       });
     }
-    const replaced = await callOpenBotTool(client, threadId, "update_profile", { agentId, avatarPath });
+    const replaced = await callAIKINGBOTTool(client, threadId, "update_profile", { agentId, avatarPath });
     expect(replaced.error).toBeUndefined();
     expect(service.listAgents().find((agent) => agent.id === agentId)?.avatarUrl).not.toBe(customUrl);
-    const invalid = await callOpenBotTool(client, threadId, "update_profile", {
+    const invalid = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId,
       name: "Invalid",
       avatarHue: 999,
     });
     expect(invalid.error).toBeUndefined();
     expect(invalid.result).toMatchObject({ success: false });
-    expect(openBotToolPayload(invalid.result).error).toContain("avatarHue");
+    expect(aikingBotToolPayload(invalid.result).error).toContain("avatarHue");
     expect(service.listAgents().find((agent) => agent.id === agentId)?.name).toBe("Research Partner");
-    const invalidCreation = await callOpenBotTool(client, threadId, "create_agent", {
+    const invalidCreation = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Invalid",
       description: "",
       initialMessage: " ",
     });
     expect(invalidCreation.error).toBeUndefined();
     expect(invalidCreation.result).toMatchObject({ success: false });
-    expect(openBotToolPayload(invalidCreation.result).error).toContain("initialMessage");
+    expect(aikingBotToolPayload(invalidCreation.result).error).toContain("initialMessage");
     expect(service.listAgents().filter((agent) => agent.name === "Invalid")).toEqual([]);
-    await callOpenBotTool(client, threadId, "update_profile", { agentId, avatarHue: null });
+    await callAIKINGBOTTool(client, threadId, "update_profile", { agentId, avatarHue: null });
     expect(service.listAgents().find((agent) => agent.id === agentId)?.avatarUrl).toBeNull();
     expect(store.resolveAvatar(agentId)).toBeNull();
-    const initialLayout = await callOpenBotTool(client, threadId, "list_sections", {});
-    expect(openBotToolPayload(initialLayout.result)).toMatchObject({ sections: [], agentAssignments: {} });
-    const grouped = await callOpenBotTool(client, threadId, "create_section", { name: "Research" });
+    const initialLayout = await callAIKINGBOTTool(client, threadId, "list_sections", {});
+    expect(aikingBotToolPayload(initialLayout.result)).toMatchObject({ sections: [], agentAssignments: {} });
+    const grouped = await callAIKINGBOTTool(client, threadId, "create_section", { name: "Research" });
     expect(grouped.error).toBeUndefined();
     const sectionId = sidebar.getSnapshot().sections[0]?.id;
     if (!sectionId) throw new Error("The section was not created.");
-    const assigned = await callOpenBotTool(client, threadId, "assign_agent_section", { agentId, sectionId });
-    expect(openBotToolPayload(assigned.result)).toMatchObject({ agentAssignments: { [agentId]: sectionId } });
+    const assigned = await callAIKINGBOTTool(client, threadId, "assign_agent_section", { agentId, sectionId });
+    expect(aikingBotToolPayload(assigned.result)).toMatchObject({ agentAssignments: { [agentId]: sectionId } });
     expect(changes.at(-1)).toMatchObject({ agentAssignments: { [agentId]: sectionId } });
-    const renamed = await callOpenBotTool(client, threadId, "rename_section", { sectionId, name: "Travel" });
-    expect(openBotToolPayload(renamed.result)).toMatchObject({ sections: [{ id: sectionId, name: "Travel" }] });
+    const renamed = await callAIKINGBOTTool(client, threadId, "rename_section", { sectionId, name: "Travel" });
+    expect(aikingBotToolPayload(renamed.result)).toMatchObject({ sections: [{ id: sectionId, name: "Travel" }] });
     const persistedSidebar = new SidebarLayoutStore(sidebarPath);
     await runCauseEffect(persistedSidebar.initialize());
     expect(persistedSidebar.getSnapshot()).toMatchObject({
@@ -2793,16 +2798,16 @@ describe.sequential("AgentService: queue", () => {
       ["assign_agent_section", { agentId: "missing-agent", sectionId }],
       ["assign_agent_section", { agentId, sectionId: "missing-section" }],
     ] as const) {
-      const rejected = await callOpenBotTool(client, threadId, tool, args);
+      const rejected = await callAIKINGBOTTool(client, threadId, tool, args);
       expect(rejected.error).toBeDefined();
       expect(sidebar.getSnapshot()).toEqual(beforeInvalid);
     }
-    const ungrouped = await callOpenBotTool(client, threadId, "assign_agent_section", { agentId, sectionId: null });
-    expect(openBotToolPayload(ungrouped.result).agentAssignments).toEqual({});
-    await callOpenBotTool(client, threadId, "assign_agent_section", { agentId, sectionId });
-    const deleted = await callOpenBotTool(client, threadId, "delete_section", { sectionId });
-    expect(openBotToolPayload(deleted.result).sections).toEqual([]);
-    expect(openBotToolPayload(deleted.result).agentAssignments).toEqual({});
+    const ungrouped = await callAIKINGBOTTool(client, threadId, "assign_agent_section", { agentId, sectionId: null });
+    expect(aikingBotToolPayload(ungrouped.result).agentAssignments).toEqual({});
+    await callAIKINGBOTTool(client, threadId, "assign_agent_section", { agentId, sectionId });
+    const deleted = await callAIKINGBOTTool(client, threadId, "delete_section", { sectionId });
+    expect(aikingBotToolPayload(deleted.result).sections).toEqual([]);
+    expect(aikingBotToolPayload(deleted.result).agentAssignments).toEqual({});
     expect(service.listAgents().some((agent) => agent.id === agentId)).toBe(true);
     await runCauseEffect(service.stop());
     service = null;
@@ -2832,7 +2837,7 @@ describe.sequential("AgentService: queue", () => {
     const events: AgentEvent[] = [];
     service.on("event", (event) => events.push(event));
     const description = "private-profile-text".padEnd(INPUT_LIMITS.agentDescription + 1, "x");
-    const rejected = await callOpenBotTool(client, threadId, "update_profile", {
+    const rejected = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "design",
       name: "Must not be saved",
       title: "Must not be saved",
@@ -2840,7 +2845,7 @@ describe.sequential("AgentService: queue", () => {
     });
     expect(rejected.error).toBeUndefined();
     expect(rejected.result).toMatchObject({ success: false });
-    const failure = openBotToolPayload(rejected.result).error;
+    const failure = aikingBotToolPayload(rejected.result).error;
     expect(failure).toContain("description");
     expect(failure).toContain(`at most ${INPUT_LIMITS.agentDescription} characters`);
     expect(failure).toContain(`received ${description.length}`);
@@ -2848,17 +2853,17 @@ describe.sequential("AgentService: queue", () => {
     expect(store.list().find((agent) => agent.id === "design")).toEqual(original);
 
     const beforeCreation = service.listAgents();
-    const creation = await callOpenBotTool(client, threadId, "create_agent", {
+    const creation = await callAIKINGBOTTool(client, threadId, "create_agent", {
       name: "Must not exist",
       description,
       initialMessage: "Start.",
     });
     expect(creation.error).toBeUndefined();
     expect(creation.result).toMatchObject({ success: false });
-    expect(openBotToolPayload(creation.result).error).toContain(`received ${description.length}`);
+    expect(aikingBotToolPayload(creation.result).error).toContain(`received ${description.length}`);
     expect(service.listAgents()).toEqual(beforeCreation);
 
-    const unknownField = await callOpenBotTool(client, threadId, "update_profile", {
+    const unknownField = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "design",
       "private-field-name": "private-field-value",
     });
@@ -2869,14 +2874,14 @@ describe.sequential("AgentService: queue", () => {
     expect(events.filter((event) => event.type === "error")).toEqual([]);
 
     const corrected = description.slice(0, INPUT_LIMITS.agentDescription);
-    const retry = await callOpenBotTool(client, threadId, "update_profile", {
+    const retry = await callAIKINGBOTTool(client, threadId, "update_profile", {
       agentId: "design",
       name: "Updated designer",
       description: corrected,
     });
     expect(retry.error).toBeUndefined();
     expect(retry.result).toMatchObject({ success: true });
-    expect(openBotToolPayload(retry.result)).toMatchObject({ name: "Updated designer", description: corrected });
+    expect(aikingBotToolPayload(retry.result)).toMatchObject({ name: "Updated designer", description: corrected });
     await runCauseEffect(service.stop());
     service = null;
     const restored = stores(root);
@@ -2894,7 +2899,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("lists complete local profiles and updates a selected agent profile", async () => {
-    process.env.OPENBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
+    process.env.AIKINGBOT_FAKE_AGENT_TOOL_CALLS = JSON.stringify([
       { tool: "list_agents", arguments: {} },
       {
         tool: "update_profile",
@@ -2931,7 +2936,7 @@ describe.sequential("AgentService: queue", () => {
   });
 
   it("keeps a message queued during a Grok turn after that turn's answer on reload (#1540)", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const started = await startService(root, {
       provider: "grok",
       preferredProvider: "grok",

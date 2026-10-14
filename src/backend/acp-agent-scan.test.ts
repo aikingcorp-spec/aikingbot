@@ -14,7 +14,7 @@ let root = "";
 let marker = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-acp-scan-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-acp-scan-"));
   marker = join(root, "ran");
 });
 

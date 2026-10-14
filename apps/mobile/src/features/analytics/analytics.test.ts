@@ -1,7 +1,7 @@
 vi.mock("./failure-reports", () => ({ mobileReportQueue: () => undefined }));
 
-import { RemoteTeamDirectoryClient } from "@openbot/team-client";
-import { type Report, ReportQueue } from "@openbot/telemetry";
+import { RemoteTeamDirectoryClient } from "@aikingbot/team-client";
+import { type Report, ReportQueue } from "@aikingbot/telemetry";
 import { Effect } from "effect";
 import { afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
 import { MobileConversationStore } from "../workspace/model/conversation-store";
@@ -258,8 +258,8 @@ describe("installed React Native SDK", () => {
     mobileAnalytics.track("message_send", { result: "succeeded", channel: "agent", attachment_count: 1 });
     await mobileAnalytics.settled();
     expect(requests.map((request) => request.url)).toEqual([
-      "https://analytics.openbot.run/api/track",
-      "https://analytics.openbot.run/api/track",
+      "https://analytics.aikingbot.aikingx.com/api/track",
+      "https://analytics.aikingbot.aikingx.com/api/track",
     ]);
     const bodies = requests.map((request) => JSON.parse(request.body));
     expect(bodies[0]).toEqual({

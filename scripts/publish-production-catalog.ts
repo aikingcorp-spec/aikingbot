@@ -3,25 +3,25 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { buildProductionCatalog } from "./build-production-catalog";
 
-const logger = createOpenBotLogger("publish-production-catalog");
+const logger = createAIKINGBOTLogger("publish-production-catalog");
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const authApiRoot = join(projectRoot, "apps", "auth-api");
 const executableSuffix = process.platform === "win32" ? ".exe" : "";
 const wrangler = join(projectRoot, "node_modules", ".bin", `wrangler${executableSuffix}`);
-const productionApiUrl = "https://api.openbot.run";
-const productionDatabase = "openbot-auth";
-const productionBucket = "openbot-skills";
+const productionApiUrl = "https://api.aikingbot.aikingx.com";
+const productionDatabase = "aikingbot-auth";
+const productionBucket = "aikingbot-skills";
 const owner = {
-  id: "openbot-production-catalog",
-  identityKey: "openbot-production-catalog",
-  email: "catalog@openbot.run",
-  name: "OpenBot",
-  avatarUrl: "https://openbot.run/icon-192x192.png",
+  id: "aikingbot-production-catalog",
+  identityKey: "aikingbot-production-catalog",
+  email: "catalog@aikingbot.aikingx.com",
+  name: "AIKINGBOT",
+  avatarUrl: "https://aikingbot.aikingx.com/icon-192x192.png",
 } as const;
 
 interface PublishedSkill {
@@ -94,8 +94,8 @@ export async function publishProductionCatalog(
   target: "local" | "production" = "production",
 ): Promise<void> {
   const mode = target === "local" ? "--local" : "--remote";
-  const bucket = target === "local" ? "openbot-skills-test" : productionBucket;
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-production-publish-"));
+  const bucket = target === "local" ? "aikingbot-skills-test" : productionBucket;
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-production-publish-"));
   try {
     const artifactRoot = join(temporaryRoot, "artifacts");
     await buildProductionCatalog(artifactRoot);

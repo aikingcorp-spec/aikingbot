@@ -8,30 +8,30 @@ import type {
   MarketplaceSkillSummary,
   McpServerConfig,
   McpSignInRelayPage,
-} from "@openbot/contracts/ipc";
-import { mcpConfigErrors } from "@openbot/contracts/ipc";
-import { createPluginShareUrl } from "@openbot/contracts/plugin-links";
-import { safeBrowserUrl } from "@openbot/ui/features/conversation/RichMessageText";
+} from "@aikingbot/contracts/ipc";
+import { mcpConfigErrors } from "@aikingbot/contracts/ipc";
+import { createPluginShareUrl } from "@aikingbot/contracts/plugin-links";
+import { safeBrowserUrl } from "@aikingbot/ui/features/conversation/RichMessageText";
 import type {
   AgentListingState,
   MarketplaceApp,
   MarketplaceAppStatus,
   MarketplaceModel,
   SkillRead,
-} from "@openbot/ui/features/marketplace/marketplace-model";
-import { serverAddress } from "@openbot/ui/features/marketplace/marketplace-view";
-import type { BitwardenConnectorPanelProps } from "@openbot/ui/features/settings/BitwardenConnectorPanel";
-import type { McpConnectSubject } from "@openbot/ui/features/settings/McpConnectShell";
+} from "@aikingbot/ui/features/marketplace/marketplace-model";
+import { serverAddress } from "@aikingbot/ui/features/marketplace/marketplace-view";
+import type { BitwardenConnectorPanelProps } from "@aikingbot/ui/features/settings/BitwardenConnectorPanel";
+import type { McpConnectSubject } from "@aikingbot/ui/features/settings/McpConnectShell";
 import {
   isPluginAppConfig,
   type MarketplacePluginApp,
   type MarketplacePluginDetail,
   type MarketplacePluginPrompt,
-} from "@openbot/ui/features/settings/marketplace-plugins";
-import type { McpConnectFlow } from "@openbot/ui/features/settings/mcp-connect-auth";
-import type { PluginUninstallPlan } from "@openbot/ui/features/settings/PluginUninstallDialog";
-import { useText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+} from "@aikingbot/ui/features/settings/marketplace-plugins";
+import type { McpConnectFlow } from "@aikingbot/ui/features/settings/mcp-connect-auth";
+import type { PluginUninstallPlan } from "@aikingbot/ui/features/settings/PluginUninstallDialog";
+import { useText } from "@aikingbot/ui/text";
+import { errorReference } from "@aikingbot/user-errors";
 import { createEffect, createMemo, createSignal, createStore, onCleanup, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { writeClipboardText } from "../../clipboard";

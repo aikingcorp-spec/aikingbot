@@ -1,4 +1,4 @@
-import type { BrowserViewContextMenu, BrowserViewCursor } from "@openbot/contracts/team-protocol/browser-view-v1";
+import type { BrowserViewContextMenu, BrowserViewCursor } from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import { type SkImage, Skia } from "@shopify/react-native-skia";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSharedValue } from "react-native-reanimated";

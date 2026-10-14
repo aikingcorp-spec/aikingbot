@@ -1,17 +1,17 @@
 # Local scripts API
 
-A script on the computer that runs OpenBot can send an agent a message, run a routine, read pending
+A script on the computer that runs AIKINGBOT can send an agent a message, run a routine, read pending
 questions and approvals, and submit responses. Enable **Local scripts** for each agent that the
 integration needs. Use this API for a local Slack bridge or to report a build result.
 
 ```sh
-long-job; curl -sS -X POST "$(cat "$OPENBOT_AUTOMATION/url")/v1/agents/<agentId>/routines/<routineId>/run" \
-  -H @"$OPENBOT_AUTOMATION/headers" \
+long-job; curl -sS -X POST "$(cat "$AIKINGBOT_AUTOMATION/url")/v1/agents/<agentId>/routines/<routineId>/run" \
+  -H @"$AIKINGBOT_AUTOMATION/headers" \
   -H 'Content-Type: application/json' \
   -d '{"payload":"long-job ended with code 0"}'
 ```
 
-`$OPENBOT_AUTOMATION` is not set by OpenBot. It stands for the folder below.
+`$AIKINGBOT_AUTOMATION` is not set by AIKINGBOT. It stands for the folder below.
 
 ## Turn it on
 
@@ -22,10 +22,10 @@ An agent cannot turn it on for itself or for a teammate.
 
 For a headless host, connect as its owner or administrator and turn on the setting there. The
 listener and the files below are on the host. Run the script on that host, as the OS user that
-runs OpenBot. No local screen is necessary. Turn the same setting off to remove access for that agent.
+runs AIKINGBOT. No local screen is necessary. Turn the same setting off to remove access for that agent.
 
 The setting also permits scripts to answer questions and accept or decline approvals. Browser
-takeovers and secret questions must be completed in OpenBot.
+takeovers and secret questions must be completed in AIKINGBOT.
 Agents that already have Local scripts enabled get these operations after upgrade. No new opt-in
 is needed. Older clients can still change this setting, although their text can describe routines only.
 
@@ -36,7 +36,7 @@ so it can start a long command in the background and ask to be woken when it end
 
 ## Files
 
-While at least one agent allows local scripts, OpenBot listens on `127.0.0.1` on a free port and
+While at least one agent allows local scripts, AIKINGBOT listens on `127.0.0.1` on a free port and
 writes three files in `<userData>/automation/`:
 
 | File | Contents |
@@ -45,16 +45,16 @@ writes three files in `<userData>/automation/`:
 | `token` | The bearer token |
 | `headers` | `Authorization: Bearer <token>`, for `curl -H @headers` |
 
-The folder is `0700` and the files are `0600`, so only the same OS user can read them. OpenBot
+The folder is `0700` and the files are `0600`, so only the same OS user can read them. AIKINGBOT
 makes a new token and a new port at each start. A command reads the files when it runs, so a
 command that you copied before a restart still works. When the last agent turns the setting off, or
-OpenBot quits, OpenBot stops listening and deletes the files.
+AIKINGBOT quits, AIKINGBOT stops listening and deletes the files.
 
-`<userData>` is the OpenBot application data folder:
+`<userData>` is the AIKINGBOT application data folder:
 
-- macOS: `~/Library/Application Support/OpenBot`
-- Linux: `~/.config/OpenBot`
-- Windows: `%APPDATA%\OpenBot`
+- macOS: `~/Library/Application Support/AIKINGBOT`
+- Linux: `~/.config/AIKINGBOT`
+- Windows: `%APPDATA%\AIKINGBOT`
 
 ## Routes
 
@@ -76,7 +76,7 @@ heading `--- event from a local script ---`, with a line that tells the agent to
 not as instructions. The run history keeps it, so a run that a restart
 interrupts sends it again.
 
-An agent can stop a request and wait for an event: it opens a wait with `openbot.await_event` and
+An agent can stop a request and wait for an event: it opens a wait with `aikingbot.await_event` and
 gives the user its wait ID. A run without `waitId` wakes every open wait of the agent that has no
 routine or has this routine. A run with `waitId` wakes only that wait. When no such wait is open,
 the run starts without a wait. The run's input repeats the request and the agent's note, so the
@@ -119,7 +119,7 @@ returned. The response has three arrays:
 {
   "prompts": [{
     "requestId": "opaque-request-id",
-    "requiresOpenBot": false,
+    "requiresAIKINGBOT": false,
     "questions": [{ "id": "build", "header": "Build", "question": "Which build?",
       "options": [{ "label": "Debug", "description": "Use debug settings" }] }]
   }],
@@ -130,10 +130,10 @@ returned. The response has three arrays:
 
 An approval has `requestId`, `agentId`, `threadId`, `turnId`, `kind`, `command`, `cwd`, `reason`,
 `grantRoot`, and `permissions`. Show the full details to the person before accepting it. Text is
-secret-redacted. A browser takeover has only `requestId` and `requiresOpenBot: true`.
+secret-redacted. A browser takeover has only `requestId` and `requiresAIKINGBOT: true`.
 A secret question, or a question whose IDs or choice labels need redaction, has
-`requiresOpenBot: true` and an empty `questions` array.
-Direct the person to the agent in OpenBot for these requests.
+`requiresAIKINGBOT: true` and an empty `questions` array.
+Direct the person to the agent in AIKINGBOT for these requests.
 
 Request IDs are opaque. Keep them unchanged. They identify one pending request and expire when
 it ends, even if the provider reuses its own ID. They do not survive a host restart.
@@ -162,8 +162,8 @@ that limit. Routine runs have no retry key; retrying a run can start it twice.
 
 ```powershell
 Invoke-RestMethod -Method Post `
-  -Uri ((Get-Content -Raw "$env:APPDATA\OpenBot\automation\url").Trim() + '/v1/agents/<agentId>/routines/<routineId>/run') `
-  -Headers @{ Authorization = 'Bearer ' + (Get-Content -Raw "$env:APPDATA\OpenBot\automation\token").Trim() } `
+  -Uri ((Get-Content -Raw "$env:APPDATA\AIKINGBOT\automation\url").Trim() + '/v1/agents/<agentId>/routines/<routineId>/run') `
+  -Headers @{ Authorization = 'Bearer ' + (Get-Content -Raw "$env:APPDATA\AIKINGBOT\automation\token").Trim() } `
   -ContentType 'application/json' -Body '{"payload":"long-job ended"}'
 ```
 
@@ -171,12 +171,12 @@ Invoke-RestMethod -Method Post `
 
 - The listener binds only `127.0.0.1`. Other computers cannot reach it.
 - A request with an `Origin` header, or with a `Host` other than `127.0.0.1:<port>`, gets 403 before
-  OpenBot reads the token. A web page cannot use it through DNS rebinding.
-- The token is a secret: OpenBot redacts it from logs and never puts it in a prompt. The agent gets
+  AIKINGBOT reads the token. A web page cannot use it through DNS rebinding.
+- The token is a secret: AIKINGBOT redacts it from logs and never puts it in a prompt. The agent gets
   only the file paths.
 - Do not put the token in a command's arguments, for example with `-H "Authorization: Bearer
   $(cat token)"`. On Linux, other users can read the arguments of a running process. Use
   `-H @headers`.
-- OpenBot logs the agent and the routine of each run, never the payload.
+- AIKINGBOT logs the agent and the routine of each run, never the payload.
 - A process that runs as the same OS user can read the token. Turn the setting on only for agents
   that you want such processes to message and control, including approval decisions.

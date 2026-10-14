@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   DirectConversationPage,
   DirectConversationPageAnchor,
@@ -7,9 +7,10 @@ import type {
   DirectConversationSnapshot,
   DirectMessage,
   DirectThreadSummary,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import {
   databaseRow,
   databaseRows,
@@ -18,10 +19,9 @@ import {
   requiredNumberColumn,
   requiredStringColumn,
 } from "./database/database-rows";
-import type { OpenBotDatabase } from "./openbot-database";
 
 export class TeamChatStore {
-  constructor(readonly database: OpenBotDatabase) {}
+  constructor(readonly database: AIKINGBOTDatabase) {}
 
   listThreads(memberId: string): DirectThreadSummary[] {
     const rows = databaseRows(

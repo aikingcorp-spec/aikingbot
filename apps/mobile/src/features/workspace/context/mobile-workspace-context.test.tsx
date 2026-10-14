@@ -1,9 +1,9 @@
-import type { AgentEvent, SidebarLayoutSnapshot, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { HOST_ADMIN_CAPABILITY, HOST_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/host-admin-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { remoteHostFingerprint } from "@openbot/team-client";
-import type { RemoteTeamConnectionUpdate } from "@openbot/team-client/remote-peer";
+import type { AgentEvent, SidebarLayoutSnapshot, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { HOST_ADMIN_CAPABILITY, HOST_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/host-admin-v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { remoteHostFingerprint } from "@aikingbot/team-client";
+import type { RemoteTeamConnectionUpdate } from "@aikingbot/team-client/remote-peer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, type PropsWithChildren, useImperativeHandle, useRef } from "react";
 import { createRoot } from "react-dom/client";

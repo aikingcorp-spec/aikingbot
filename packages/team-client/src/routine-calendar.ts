@@ -3,7 +3,7 @@ import { Effect } from "effect";
 // A past run comes from the run history, a later one from the schedule. The local host, a remote
 // one and the phone give the same source, so every calendar places runs with the same schedule code.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   ROUTINE_MINIMUM_INTERVAL_MINUTES,
   type RoutineCalendar,
@@ -11,7 +11,7 @@ import {
   type RoutineCalendarRun,
   type RoutineFields,
   type RoutineRunFields,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { nextValidRoutineOccurrence, validateStoredRoutineSchedule } from "./routine-schedule";
 
 /** A remote host gets one request for each owner and each routine; this many run at the same time. */

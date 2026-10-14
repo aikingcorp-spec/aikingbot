@@ -1,4 +1,4 @@
-import { buttonVariants, DropdownMenu, Ellipsis, MessageCircle, X } from "@openbot/ui";
+import { buttonVariants, DropdownMenu, Ellipsis, MessageCircle, X } from "@aikingbot/ui";
 import { createSignal, createUniqueId, For, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { createTaskListPlayState, TaskListHeader, TaskMark, type TaskMarkState } from "./TaskList";

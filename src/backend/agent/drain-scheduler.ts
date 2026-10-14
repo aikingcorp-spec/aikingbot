@@ -1,6 +1,6 @@
-import { AGENT_PROVIDERS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { AGENT_PROVIDERS } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { Deferred, Effect, Result, Schema } from "effect";
 import { type AgentProvider, ProviderTurnActiveError } from "../agent-client";
 import type { AgentStore } from "../agent-store";
@@ -34,7 +34,7 @@ import { codexSandboxPolicy, workspaceWritableRoots } from "./workspace-sandbox"
 /** Shown to the user when a message names a model of an endpoint that was taken out. */
 export const REMOVED_ENDPOINT_MESSAGE = sourceText("error.agent.endpointRemoved");
 
-const logger = createOpenBotLogger("drain-scheduler");
+const logger = createAIKINGBOTLogger("drain-scheduler");
 
 export interface DrainHooks {
   emitError(code: string, error: unknown, agentId?: string): void;
@@ -595,7 +595,7 @@ export class DrainScheduler {
             this.#channels?.deliveryUncertain(delivery.id);
             this.#hooks.emitError(
               "delivery_start_unconfirmed",
-              `${error.providerName} did not confirm the turn start in time. OpenBot will wait for lifecycle events instead of retrying potentially duplicated work.`,
+              `${error.providerName} did not confirm the turn start in time. AIKINGBOT will wait for lifecycle events instead of retrying potentially duplicated work.`,
               delivery.recipientAgentId,
             );
             return;

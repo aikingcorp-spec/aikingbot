@@ -19,7 +19,7 @@ import {
   decodeBrowserViewFrame,
   decodeBrowserViewHostMessage,
   encodeBrowserViewInput,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import type * as Ws from "ws";
 import { z } from "zod";
@@ -68,7 +68,7 @@ describe("the live browser view on a host", () => {
     for (let attempt = 1; attempt <= 2; attempt += 1) {
       const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
       const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-        headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+        headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
       });
       const frames = collect(socket);
       await new Promise<void>((resolve, reject) => {
@@ -129,7 +129,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const answers: string[] = [];
     socket.on("message", (data, binary) => {
@@ -172,7 +172,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const ended = await new Promise<{ code: number; reason: string }>((resolve, reject) => {
       socket.once("close", (code, reason) => resolve({ code, reason: reason.toString() }));
@@ -204,7 +204,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -256,7 +256,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -319,7 +319,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(acknowledgingViewUrl(origin, session.streamPath), {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -371,7 +371,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(acknowledgingViewUrl(origin, session.streamPath), {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -434,7 +434,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(acknowledgingViewUrl(origin, session.streamPath), {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -493,7 +493,7 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     await new Promise((resolve) => socket.once("open", resolve));
@@ -540,7 +540,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(acknowledgingViewUrl(origin, session.streamPath), {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const frames = collect(socket);
     const closed = new Promise((resolve) => socket.once("close", resolve));
@@ -577,7 +577,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(acknowledgingViewUrl(origin, session.streamPath), {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     await new Promise((resolve) => socket.once("open", resolve));
     await vi.waitFor(() => expect(send).toBeDefined());
@@ -630,7 +630,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     await new Promise((resolve) => socket.once("open", resolve));
     await vi.waitFor(() => expect(invalidate).toBeDefined());
@@ -641,7 +641,7 @@ describe("the live browser view on a host", () => {
     expect(stop).toHaveBeenCalledOnce();
     expect(dispatch).not.toHaveBeenCalled();
     const retry = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     const failure = await new Promise<string>((resolve) => retry.once("error", (error) => resolve(error.message)));
     expect(failure).toContain("401");
@@ -661,8 +661,8 @@ describe("the live browser view on a host", () => {
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
 
     for (const options of [
-      { headers: { "X-OpenBot-WebRTC-Session": "another-team-session" } },
-      { protocols: ["openbot-token.other-member-token"] },
+      { headers: { "X-AIKINGBOT-WebRTC-Session": "another-team-session" } },
+      { protocols: ["aikingbot-token.other-member-token"] },
       {},
     ]) {
       const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, options.protocols ?? [], options);
@@ -688,7 +688,7 @@ describe("the live browser view on a host", () => {
 
     const before = restartActivityGeneration();
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     await new Promise((resolve) => socket.once("open", resolve));
     await vi.waitFor(() => expect(gateway.activeViewCount()).toBe(1));
@@ -712,7 +712,7 @@ describe("the live browser view on a host", () => {
     const origin = await serve(gateway);
     const session = gateway.createSession({ memberId: "member-1", teamSessionId: TEAM_SESSION, tabId: "tab-1" });
     const socket = new webSockets.WebSocket(`${origin}${session.streamPath}`, {
-      headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION },
+      headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION },
     });
     await new Promise((resolve) => socket.once("open", resolve));
     await vi.waitFor(() => expect(startView).toHaveBeenCalledOnce());
@@ -762,7 +762,7 @@ describe("the cursor, menus and page size of a live view", () => {
     if (asks.cursor) url.searchParams.set(BROWSER_VIEW_CURSOR_QUERY, "1");
     if (asks.menu) url.searchParams.set(BROWSER_VIEW_CONTEXT_MENU_QUERY, "1");
     if (asks.viewport) url.searchParams.set(BROWSER_VIEW_VIEWPORT_QUERY, asks.viewport);
-    const socket = new webSockets.WebSocket(url, { headers: { "X-OpenBot-WebRTC-Session": TEAM_SESSION } });
+    const socket = new webSockets.WebSocket(url, { headers: { "X-AIKINGBOT-WebRTC-Session": TEAM_SESSION } });
     const messages: unknown[] = [];
     socket.on("message", (data, binary) => {
       if (!binary) messages.push(decodeBrowserViewHostMessage(String(data)));

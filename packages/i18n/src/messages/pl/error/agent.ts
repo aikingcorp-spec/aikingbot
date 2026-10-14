@@ -52,11 +52,11 @@ export const messages = {
   "error.agent.hostLimit": "Host może mieć maksymalnie {limit} agentów.",
   "error.agent.changedWhileDuplicating": "Agent zmienił się podczas duplikowania. Spróbuj ponownie.",
   "error.agent.duplicatedAgentGone": "Zduplikowany agent już nie istnieje.",
-  "error.agent.stateCorrupt": "Stan agenta jest uszkodzony lub pochodzi z nowszej wersji OpenBot; odmowa nadpisania.",
+  "error.agent.stateCorrupt": "Stan agenta jest uszkodzony lub pochodzi z nowszej wersji AIKINGBOT; odmowa nadpisania.",
   "error.agent.oldRoleField":
-    "Zapisane profile agentów używają starego pola roli; zaktualizuj dane przed uruchomieniem OpenBot.",
+    "Zapisane profile agentów używają starego pola roli; zaktualizuj dane przed uruchomieniem AIKINGBOT.",
   "error.agent.duplicateIds": "Stan agentów zawiera zduplikowane identyfikatory agentów; odmowa nadpisania.",
-  "error.agent.copyNameFailed": "OpenBot nie mógł utworzyć unikalnej nazwy kopii agenta.",
+  "error.agent.copyNameFailed": "AIKINGBOT nie mógł utworzyć unikalnej nazwy kopii agenta.",
   "error.agent.endpointRemoved": "Endpoint używany przez tego agenta został usunięty. Wybierz dla niego inny model.",
   "error.agent.selectedGone": "Wybrany agent już nie istnieje.",
   "error.agent.profileEndpointsChanged": "Własne endpointy zmieniły się w trakcie generowania. Spróbuj ponownie.",
@@ -77,9 +77,9 @@ export const messages = {
   "error.agent.saveOtherAgent": "Ten zapis należy do innego agenta.",
   "error.agent.savedGone": "Zapisany agent już nie istnieje.",
   "error.agent.storedProfileUnreadable":
-    "Zapisany profil agenta ma nieczytelną wartość „{field}”; zaktualizuj dane przed uruchomieniem OpenBot.",
+    "Zapisany profil agenta ma nieczytelną wartość „{field}”; zaktualizuj dane przed uruchomieniem AIKINGBOT.",
   "error.agent.storedProfileUnreadableId":
-    "Zapisany profil agenta {id} ma nieczytelną wartość „{field}”; zaktualizuj dane przed uruchomieniem OpenBot.",
+    "Zapisany profil agenta {id} ma nieczytelną wartość „{field}”; zaktualizuj dane przed uruchomieniem AIKINGBOT.",
   "error.agent.queueEditRejected": "Odrzucono edycję kolejki: {reason}",
   "error.agent.computerUseLocalOnly":
     "Sterowanie komputerem można zmienić tylko na komputerze, na którym działa agent.",
@@ -98,5 +98,5 @@ export const messages = {
   "error.agent.lowMemory":
     "Na tym serwerze brakuje pamięci. Twoja wiadomość czeka w kolejce i ruszy, gdy pamięć się zwolni. Większy plan daje serwerowi więcej pamięci.",
   "error.agent.workspaceOnlyToolMissing":
-    "Tryb „Tylko obszar roboczy” wymaga narzędzia {tool}, którego OpenBot nie znalazł. Zainstaluj je lub wybierz pełny dostęp w ustawieniach agenta.",
+    "Tryb „Tylko obszar roboczy” wymaga narzędzia {tool}, którego AIKINGBOT nie znalazł. Zainstaluj je lub wybierz pełny dostęp w ustawieniach agenta.",
 } as const satisfies PartialTranslation<typeof source>;

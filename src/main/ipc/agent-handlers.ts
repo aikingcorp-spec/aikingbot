@@ -1,7 +1,7 @@
 import {
   AGENT_SESSION_SETTINGS_CAPABILITY,
   AGENT_SESSION_SETTINGS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-session-settings-v1";
+} from "@aikingbot/contracts/team-protocol/agent-session-settings-v1";
 // An agent's core surface: status, agents, conversations, the queue and the prompts
 // a turn can raise. Memories, routines and attachments are their own registrars.
 // Every one of these routes to the local service or to a remote server by the
@@ -29,13 +29,13 @@ import {
   parseResetAgentSessionSetting,
   parseSaveAgentProfile,
   parseSetAgentSessionSetting,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { CONTEXT_RESET_CAPABILITY, CONTEXT_RESET_ROUTES } from "@openbot/contracts/team-protocol/context-reset-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { CHANNEL_ROUTES } from "@aikingbot/contracts/team-protocol/channels-v1";
+import { CONTEXT_RESET_CAPABILITY, CONTEXT_RESET_ROUTES } from "@aikingbot/contracts/team-protocol/context-reset-v1";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { duplicateAgentIntoLayout } from "../../backend/agent/duplication-gate";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
@@ -92,7 +92,7 @@ import { type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";
 import { scopedHandler, scopedQueryHandler } from "./scoped-handler";
 
 /** Its lines also go to the provider log. See `PROVIDER_LOG_PREFIXES`. */
-const modelLogger = createOpenBotLogger("provider-models");
+const modelLogger = createAIKINGBOTLogger("provider-models");
 
 /**
  * Names each member of a model list that fails `isAgentModelOption`, and returns the list unchanged.

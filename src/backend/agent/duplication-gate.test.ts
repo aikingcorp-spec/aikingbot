@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryStore } from "../agent-memory-store";

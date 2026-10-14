@@ -1,15 +1,15 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { restartReasonKey } from "@openbot/ui/features/updates/restart-reasons";
-import { currentText } from "@openbot/ui/text";
+import type { UpdateStatus } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import { restartReasonKey } from "@aikingbot/ui/features/updates/restart-reasons";
+import { currentText } from "@aikingbot/ui/text";
 import { type Accessor, createEffect, onCleanup } from "solid-js";
 
 const TOAST_ID = "idle-app-restart";
 
 /**
  * A notice while a restart that the user asked for waits for idle, so the user knows why the
- * routines wait and why OpenBot will restart. A restart that did not start stays as an error until
+ * routines wait and why AIKINGBOT will restart. A restart that did not start stays as an error until
  * the user closes it. The text is built where the effect tracks it, so it follows a language change.
  */
 export function createIdleRestartToast(options: { status: Accessor<UpdateStatus>; cancel: () => Promise<void> }): void {

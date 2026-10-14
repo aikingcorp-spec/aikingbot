@@ -18,14 +18,14 @@ const NOTION = "https://mcp.notion.com/mcp";
 
 function record(accessToken: string): McpOAuthRecord {
   return {
-    client: { client_id: "client-abc", redirect_uris: ["openbot://mcp-auth"] },
+    client: { client_id: "client-abc", redirect_uris: ["aikingbot://mcp-auth"] },
     tokens: { access_token: accessToken, token_type: "Bearer", refresh_token: "refresh-xyz", expires_in: 3600 },
     obtainedAt: 1_700_000_000_000,
   };
 }
 
 async function createStore(): Promise<{ path: string; store: McpOAuthStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-mcp-oauth-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-oauth-"));
   const path = join(root, "mcp-oauth.json");
   const store = new McpOAuthStore(path, cipher);
   await Effect.runPromise(store.load());
@@ -48,7 +48,7 @@ describe("McpOAuthStore", () => {
     await runCauseEffect(store.write(LINEAR, record("linear-access")));
 
     // The file is what a backup tool or a support bundle picks up. `mcp-remote` kept these tokens
-    // where OpenBot could not redact them; the point of holding them here is that it can.
+    // where AIKINGBOT could not redact them; the point of holding them here is that it can.
     const source = await readFile(path, "utf8");
     expect(source).not.toContain("linear-access");
     expect(source).not.toContain("refresh-xyz");
@@ -131,7 +131,7 @@ describe("McpOAuthStore", () => {
           authorizationServerUrl: "https://auth.example.com",
           resourceMetadataUrl: "https://mcp.example.com/.well-known/oauth-protected-resource",
         },
-        client: { client_id: "client-abc", redirect_uris: ["openbot://mcp-auth"] },
+        client: { client_id: "client-abc", redirect_uris: ["aikingbot://mcp-auth"] },
       }),
     );
     const reloaded = new McpOAuthStore(path, cipher);
@@ -206,7 +206,7 @@ describe("McpOAuthStore", () => {
     await expect(
       runCauseEffect(
         refusing.write("https://mcp.figma.com/mcp", {
-          client: { client_id: "new-client", redirect_uris: ["openbot://mcp-auth"] },
+          client: { client_id: "new-client", redirect_uris: ["aikingbot://mcp-auth"] },
         }),
       ),
     ).rejects.toThrow("The MCP sign-in file is unreadable.");
@@ -286,7 +286,7 @@ describe("McpOAuthStore", () => {
   });
 
   it("refuses to report a sign-in before it is loaded", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-mcp-oauth-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-oauth-"));
     // Reporting "not signed in" here would send a provider an http server with no credential, and
     // the tools would go missing for a reason that looks like the server's fault.
     expect(() => new McpOAuthStore(join(root, "mcp-oauth.json"), cipher).read(LINEAR)).toThrow();

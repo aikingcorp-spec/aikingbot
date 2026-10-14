@@ -1,5 +1,5 @@
-import type { HostedServerIssue, HostedServerSleep } from "@openbot/contracts/ipc";
-import { runTeamEffect } from "@openbot/team-client";
+import type { HostedServerIssue, HostedServerSleep } from "@aikingbot/contracts/ipc";
+import { runTeamEffect } from "@aikingbot/team-client";
 import { createWebHostedServerWake } from "./web-hosted-server-wake";
 
 const START_LIMIT_MS = 5 * 60_000;

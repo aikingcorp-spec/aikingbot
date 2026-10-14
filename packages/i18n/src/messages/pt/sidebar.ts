@@ -81,7 +81,7 @@ export const messages = {
   "sidebar.delete.pending": "Excluindo…",
   "sidebar.delete.title": "Excluir {name}?",
   "sidebar.delete.agentDescription":
-    "Isso remove o agente e sua conversa no OpenBot do aplicativo. A fila, as memórias, as rotinas e o espaço de trabalho são excluídos. O histórico armazenado separadamente pelo provedor de CLI conectado não é excluído.",
+    "Isso remove o agente e sua conversa no AIKINGBOT do aplicativo. A fila, as memórias, as rotinas e o espaço de trabalho são excluídos. O histórico armazenado separadamente pelo provedor de CLI conectado não é excluído.",
   "sidebar.delete.channelDescription":
     "Isso para o canal. O histórico continua em Canais excluídos, somente para visualização. Você não pode restaurá-lo. Os agentes membros são mantidos.",
   "sidebar.delete.sectionDescription":
@@ -95,7 +95,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Chat fixado movido para a posição {position} de {total}.",
   "sidebar.announce.personFallback": "pessoa",
   "sidebar.announce.chatFallback": "chat",
-  "sidebar.mobileApp.title": "OpenBot para celular",
+  "sidebar.mobileApp.title": "AIKINGBOT para celular",
   "sidebar.mobileApp.body": "O aplicativo já está disponível para iPhone e Android.",
   "sidebar.mobileApp.howToInstall": "Como instalar",
   "sidebar.mobileApp.dismiss": "Dispensar anúncio do aplicativo para celular",

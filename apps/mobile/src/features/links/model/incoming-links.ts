@@ -1,11 +1,11 @@
 import {
+  AIKINGBOT_AGENT_TEMPLATE_PATH_PREFIX,
   createAgentTemplateShareUrl,
-  OPENBOT_AGENT_TEMPLATE_PATH_PREFIX,
   parseAgentTemplateUrl,
-} from "@openbot/contracts/agent-template-links";
-import { parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
-import { parseMobileConnectUrl } from "@openbot/contracts/mobile-connect";
-import { createPluginShareUrl, parsePluginUrl } from "@openbot/contracts/plugin-links";
+} from "@aikingbot/contracts/agent-template-links";
+import { parseInviteUrl, selfHostedApiOrigin } from "@aikingbot/contracts/invite-links";
+import { parseMobileConnectUrl } from "@aikingbot/contracts/mobile-connect";
+import { createPluginShareUrl, parsePluginUrl } from "@aikingbot/contracts/plugin-links";
 
 export type IncomingLink =
   | { kind: "invite"; url: string }
@@ -36,7 +36,7 @@ export function parseIncomingLink(value: string): IncomingLink {
 }
 
 /**
- * The session is not loaded when the system opens a link, so an `openbot://join` link for any
+ * The session is not loaded when the system opens a link, so an `aikingbot://join` link for any
  * self-hosted account service counts as an invitation here. The add-server screen checks it again
  * with the service of the session, and refuses a link for another service.
  */
@@ -49,7 +49,7 @@ function isInviteLink(value: string): boolean {
   }
   try {
     const url = new URL(value);
-    if (url.protocol !== "openbot:") return false;
+    if (url.protocol !== "aikingbot:") return false;
     parseInviteUrl(value, { selfHostedApiOrigin: selfHostedApiOrigin(url.searchParams.get("api") ?? undefined) });
     return true;
   } catch {
@@ -90,15 +90,15 @@ export function pendingSignInLinkId(): string | undefined {
 }
 
 export function redirectIncomingLink(path: string): string {
-  if (path === "openbot://" || path === "openbot:///" || path === "openbot:") return "/";
+  if (path === "aikingbot://" || path === "aikingbot:///" || path === "aikingbot:") return "/";
   // Expo Go and ordinary internal routes retain Expo Router's normal behavior.
   if (/^exps?:\/\//u.test(path)) return path;
   if (path.startsWith("/") && !path.startsWith("//")) {
-    const url = new URL(path, "https://openbot.run");
+    const url = new URL(path, "https://aikingbot.aikingx.com");
     if (
       url.pathname !== "/join" &&
       !url.pathname.startsWith("/plugins/") &&
-      !url.pathname.startsWith(OPENBOT_AGENT_TEMPLATE_PATH_PREFIX)
+      !url.pathname.startsWith(AIKINGBOT_AGENT_TEMPLATE_PATH_PREFIX)
     )
       return path;
     path = url.toString();

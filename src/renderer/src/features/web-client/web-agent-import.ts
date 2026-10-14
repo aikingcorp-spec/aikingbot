@@ -1,12 +1,12 @@
-import { type AgentSummary, GROK_BOT_EXPORT_URL, resolveRemoteAgentImportResult } from "@openbot/contracts/ipc";
-import { AGENT_IMPORT_UPLOAD_BYTES } from "@openbot/contracts/team-protocol/agent-import-v1";
+import { type AgentSummary, GROK_BOT_EXPORT_URL, resolveRemoteAgentImportResult } from "@aikingbot/contracts/ipc";
+import { AGENT_IMPORT_UPLOAD_BYTES } from "@aikingbot/contracts/team-protocol/agent-import-v1";
 import {
   applyAgentImport,
   discardAgentImport,
   stageAgentImport,
   type TeamApiRequest,
-} from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/team-client/team-api-requests";
+import { currentText } from "@aikingbot/ui/text";
 import { Effect } from "effect";
 import type { AgentImportCalls } from "../servers/ServerImportPanel";
 import { openWebLink } from "./web-attachments";

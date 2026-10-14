@@ -4,7 +4,7 @@
  * caller - both regions that show a section header reach it through here.
  */
 
-import { ArrowDown, ArrowUp, buttonVariants, ChevronDown, ContextMenu, Pencil, Trash2 } from "@openbot/ui";
+import { ArrowDown, ArrowUp, buttonVariants, ChevronDown, ContextMenu, Pencil, Trash2 } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { SidebarSectionEditor } from "./SidebarSectionEditor";

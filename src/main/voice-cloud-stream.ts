@@ -4,14 +4,14 @@
 // the request header of the socket that `openScribeSocket` opens; nothing here logs it, and the
 // provider's own error text is not logged or shown either, only its category.
 
-import { AUTOMATIC_VOICE_LANGUAGE, type VoiceLanguage } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { AUTOMATIC_VOICE_LANGUAGE, type VoiceLanguage } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import WebSocket from "ws";
 import { rawDataText } from "./ws-raw-data";
 
-const logger = createOpenBotLogger("voice-cloud-stream");
+const logger = createAIKINGBOTLogger("voice-cloud-stream");
 
 const SCRIBE_REALTIME_URL = "wss://api.elevenlabs.io/v1/speech-to-text/realtime";
 const SAMPLE_RATE = 16_000;

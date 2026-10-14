@@ -1,10 +1,10 @@
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { isQueueEditRoute, QueueEditRejectedError } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
-import type { RemoteTeamDirectoryClient } from "@openbot/team-client";
-import { runTeamEffect } from "@openbot/team-client";
+import type { AgentEvent, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { isQueueEditRoute, QueueEditRejectedError } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { RemoteTeamDirectoryClient } from "@aikingbot/team-client";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   createRemoteCommandMailbox,
   type RemoteFileUpload,
@@ -13,8 +13,8 @@ import {
   type RemoteTeamConnectionUpdate,
   type RemoteTeamDiagnostic,
   type RemoteUploadProgress,
-} from "@openbot/team-client/remote-peer";
-import { referenceFrom } from "@openbot/user-errors";
+} from "@aikingbot/team-client/remote-peer";
+import { referenceFrom } from "@aikingbot/user-errors";
 import * as Crypto from "expo-crypto";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useMobileSession } from "@/features/auth/context/mobile-session-context";

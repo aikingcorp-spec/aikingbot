@@ -6,8 +6,11 @@
  * bun run marketplace:build:plugins -- --check to verify.
  */
 
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import type { MarketplacePluginApp, MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import type {
+  MarketplacePluginApp,
+  MarketplacePluginDetail,
+} from "@aikingbot/ui/features/settings/marketplace-plugins";
 
 /**
  * The configuration an app installs as. The catalog states the name and how the server is reached -
@@ -73,7 +76,7 @@ const AAVE: MarketplacePluginDetail = {
   installs: 0,
   featured: true,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/aave",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/aave",
 };
 
 const CANVA: MarketplacePluginDetail = {
@@ -114,7 +117,7 @@ const CANVA: MarketplacePluginDetail = {
   installs: 0,
   featured: true,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/canva",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/canva",
 };
 
 const LINEAR: MarketplacePluginDetail = {
@@ -155,7 +158,7 @@ const LINEAR: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/linear",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/linear",
 };
 
 const NOTION: MarketplacePluginDetail = {
@@ -196,7 +199,7 @@ const NOTION: MarketplacePluginDetail = {
   installs: 0,
   featured: true,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/notion",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/notion",
 };
 
 const COBRAIN: MarketplacePluginDetail = {
@@ -236,7 +239,7 @@ const COBRAIN: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/cobrain",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/cobrain",
 };
 
 const FIGMA: MarketplacePluginDetail = {
@@ -291,7 +294,7 @@ const FIGMA: MarketplacePluginDetail = {
   installs: 0,
   featured: true,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/figma",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/figma",
 };
 
 const PAPER: MarketplacePluginDetail = {
@@ -300,7 +303,7 @@ const PAPER: MarketplacePluginDetail = {
   name: "Paper",
   tagline: "Design canvas built on HTML and CSS",
   description:
-    "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. OpenBot starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
+    "Paper lets agents read and write the design file that is open in Paper Desktop: inspect artboards, selections, computed styles, JSX and tokens, and create or change frames, text and styles. Install Paper Desktop, open it once, and open a file before you start. AIKINGBOT starts the Paper CLI that Paper Desktop installs. Paper needs no key. Write tools change the open file, so review each write before you approve it.",
   category: "design",
   creatorName: "paper.design",
   iconUrl: "https://paper.design/favicon.ico",
@@ -327,7 +330,7 @@ const PAPER: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/paper",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/paper",
 };
 
 const SENTRY: MarketplacePluginDetail = {
@@ -367,7 +370,7 @@ const SENTRY: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/sentry",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/sentry",
 };
 
 const CONTEXT7: MarketplacePluginDetail = {
@@ -402,7 +405,7 @@ const CONTEXT7: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/context7",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/context7",
 };
 
 const STRIPE: MarketplacePluginDetail = {
@@ -442,7 +445,7 @@ const STRIPE: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/stripe",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/stripe",
 };
 
 const POSTHOG: MarketplacePluginDetail = {
@@ -500,7 +503,7 @@ const POSTHOG: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/posthog",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/posthog",
 };
 
 const AIRTABLE: MarketplacePluginDetail = {
@@ -550,7 +553,7 @@ const AIRTABLE: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/airtable",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/airtable",
 };
 
 const FIRECRAWL: MarketplacePluginDetail = {
@@ -608,7 +611,7 @@ const FIRECRAWL: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/firecrawl",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/firecrawl",
 };
 
 const BRAVE_SEARCH: MarketplacePluginDetail = {
@@ -660,7 +663,7 @@ const BRAVE_SEARCH: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/brave-search",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/brave-search",
 };
 
 const RESEND: MarketplacePluginDetail = {
@@ -712,7 +715,7 @@ const RESEND: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/resend",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/resend",
 };
 
 const COMPOSIO: MarketplacePluginDetail = {
@@ -776,7 +779,7 @@ const COMPOSIO: MarketplacePluginDetail = {
   installs: 0,
   featured: false,
   updatedAt: "2026-09-30T00:00:00.000Z",
-  shareUrl: "https://openbot.run/plugins/composio",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/composio",
 };
 
 export const MARKETPLACE_PLUGINS: MarketplacePluginDetail[] = [

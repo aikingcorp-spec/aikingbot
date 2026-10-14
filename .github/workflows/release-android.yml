@@ -90,7 +90,7 @@ jobs:
       - name: Install and verify Android tools
         shell: bash
         run: |
-          echo "AAB_PATH=$RUNNER_TEMP/openbot-play.aab" >> "$GITHUB_ENV"
+          echo "AAB_PATH=$RUNNER_TEMP/aikingbot-play.aab" >> "$GITHUB_ENV"
           gem install fastlane --version 2.240.1 --no-document
           java -version
           echo "ANDROID_HOME=$ANDROID_HOME"

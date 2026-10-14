@@ -1,12 +1,12 @@
 import { randomBytes } from "node:crypto";
-import { createSlackWorkspaceKeyPair, openSlackWorkspaceGrant } from "@openbot/contracts/slack-workspace-grant";
+import { createSlackWorkspaceKeyPair, openSlackWorkspaceGrant } from "@aikingbot/contracts/slack-workspace-grant";
 import { Effect, Schema } from "effect";
 import { causeHelpers } from "../../effect-boundary";
 
 /** How long a connect link stays usable. */
 const PENDING_TTL_MS = 15 * 60_000;
 
-/** The account service half of the OpenBot Slack app: the Worker holds its client secret. */
+/** The account service half of the AIKINGBOT Slack app: the Worker holds its client secret. */
 export interface SlackAppPort {
   /** The Slack install URL for one connect of this host, which seals the bot token to `hostPublicKey`. */
   authorize(input: { hostNonce: string; hostPublicKey: string }): Effect.Effect<string, SlackConnectFailed>;
@@ -16,7 +16,7 @@ export interface SlackAppPort {
 }
 
 /**
- * The install of the OpenBot Slack app in a workspace, started on this computer. Each connect has a
+ * The install of the AIKINGBOT Slack app in a workspace, started on this computer. Each connect has a
  * one-use key pair: the Worker seals the bot token to its public key, and only this run can open it.
  */
 export class SlackConnect {

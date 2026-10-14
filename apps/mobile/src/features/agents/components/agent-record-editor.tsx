@@ -1,6 +1,5 @@
-import { Host, Switch } from "@expo/ui";
-import { eventFilterDraftsValid, eventFiltersFromDrafts } from "@openbot/contracts/event-filter-value";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { eventFilterDraftsValid, eventFiltersFromDrafts } from "@aikingbot/contracts/event-filter-value";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type AgentMemorySelectionState,
   type EventRoutine,
@@ -11,15 +10,16 @@ import {
   type RoutineSchedule,
   type SaveEventRoutineInput,
   type RoutineWebhookTrigger as WebhookTriggerFields,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@aikingbot/contracts/ipc";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import {
   type RoutineScheduleDraft,
   routineDraftProblemCode,
   routineScheduleFromDraft,
   routineScheduleToDraft,
   switchDraftKind,
-} from "@openbot/team-client/routine-schedule-draft";
+} from "@aikingbot/team-client/routine-schedule-draft";
+import { Host, Switch } from "@expo/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
@@ -109,7 +109,7 @@ export function MemoryEditor({
   const action = useRecordAction();
   const inclusion = useRecordAction();
   const selected = selection?.selections.find((entry) => entry.memoryId === memory?.id);
-  const accent = String(useCSSVariable("--openbot-accent"));
+  const accent = String(useCSSVariable("--aikingbot-accent"));
   const [editedText, setEditedText] = useState<string | undefined>();
   const text = editedText ?? memory?.text ?? "";
   const [savedText, setSavedText] = useState<string | null>(null);

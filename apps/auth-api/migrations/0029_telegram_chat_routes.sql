@@ -1,5 +1,5 @@
 -- New tables only. The Worker that runs before this deploy does not read them.
--- Which OpenBot host answers each Telegram chat of the OpenBot bot. Signal routes a chat's updates to
+-- Which AIKINGBOT host answers each Telegram chat of the AIKINGBOT bot. Signal routes a chat's updates to
 -- that host. No chat title, message or token is kept here: Signal has the bot token.
 CREATE TABLE telegram_chat_routes (
   -- The bot in the chat. The production and development bots can share a chat.

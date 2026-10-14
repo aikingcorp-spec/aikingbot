@@ -1,5 +1,5 @@
-import { type MarketplaceSkillQuery, SKILL_CATEGORIES, type SkillCategory } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { type MarketplaceSkillQuery, SKILL_CATEGORIES, type SkillCategory } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import { createEffect, createStore, onCleanup, untrack } from "solid-js";
 import { currentText } from "../../text";
 

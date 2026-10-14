@@ -3,28 +3,28 @@ import { constants, existsSync } from "node:fs";
 import { access, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { FuseV1Options, getCurrentFuseWire } from "@electron/fuses";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
 
-const logger = createOpenBotLogger("verify-linux-package");
+const logger = createAIKINGBOTLogger("verify-linux-package");
 
-/** The scripts that a server installs from a release (`RELEASE_FILES` in scripts/hosting/openbot-hosted-update). */
+/** The scripts that a server installs from a release (`RELEASE_FILES` in scripts/hosting/aikingbot-hosted-update). */
 const HOSTED_SCRIPTS = [
-  "openbot-hosted-server",
-  "openbot-hosted-env",
-  "openbot-hosted-update",
-  "openbot",
+  "aikingbot-hosted-server",
+  "aikingbot-hosted-env",
+  "aikingbot-hosted-update",
+  "aikingbot",
   // Not installed on a server: `install-server.sh` runs it from the unpacked release.
-  "openbot-server-setup",
+  "aikingbot-server-setup",
 ];
 const HOSTED_UNITS = [
-  "openbot.service",
-  "openbot-update.service",
-  "openbot-update.timer",
-  "openbot-update-apply.service",
-  "openbot-update-request.path",
-  "openbot-update-request.service",
+  "aikingbot.service",
+  "aikingbot-update.service",
+  "aikingbot-update.timer",
+  "aikingbot-update-apply.service",
+  "aikingbot-update-request.path",
+  "aikingbot-update-request.service",
 ];
 
 const FUSE_DISABLED = 48;
@@ -51,7 +51,7 @@ const appPath = resolve(
   appPathArgument ?? (architecture === "x64" ? "dist/linux-unpacked" : "dist/linux-arm64-unpacked"),
 );
 // electron-builder names the Linux binary after `name` in package.json, not `productName`.
-const executablePath = resolve(appPath, "openbot");
+const executablePath = resolve(appPath, "aikingbot");
 const resourcesPath = resolve(appPath, "resources");
 const asarPath = resolve(resourcesPath, "app.asar");
 
@@ -64,7 +64,7 @@ await Promise.all([
   access(resolve(resourcesPath, "licenses/Electron-LICENSE")),
   access(resolve(resourcesPath, "licenses/LICENSES.chromium.html")),
   // A hosted server refuses an update to a release without all of its hosting files.
-  ...["packages.txt", "openbot-hosted.apparmor", ...HOSTED_UNITS].map((file) =>
+  ...["packages.txt", "aikingbot-hosted.apparmor", ...HOSTED_UNITS].map((file) =>
     access(resolve(resourcesPath, "hosting", file)),
   ),
   ...HOSTED_SCRIPTS.map((file) => access(resolve(resourcesPath, "hosting", file), constants.X_OK)),
@@ -121,8 +121,8 @@ if (!isString(packageJson.version)) throw new Error("package.json version is mis
 // was built. It is the same file the running app reports through `app.getVersion()`.
 const packagedManifest = JSON.parse(await readAsarFile(asarPath, "package.json"));
 if (!isDynamicRecord(packagedManifest)) throw new Error("The packaged package.json is not a JSON object.");
-expectEqual(packagedManifest.name, "openbot", "packaged name");
-expectEqual(packagedManifest.productName, "OpenBot", "packaged product name");
+expectEqual(packagedManifest.name, "aikingbot", "packaged name");
+expectEqual(packagedManifest.productName, "AIKINGBOT", "packaged product name");
 expectEqual(packagedManifest.version, packageJson.version, "packaged version");
 
 const executable = await readFile(executablePath);
@@ -137,8 +137,10 @@ if (machine !== target.elfMachine) {
 
 const appImages = existsSync("dist") ? await findAppImages() : [];
 for (const appImage of appImages) {
-  if (!appImage.startsWith(`OpenBot-${packageJson.version}-`)) {
-    throw new Error(`Unexpected AppImage name: ${appImage} (expected OpenBot-${packageJson.version}-<arch>.AppImage)`);
+  if (!appImage.startsWith(`AIKINGBOT-${packageJson.version}-`)) {
+    throw new Error(
+      `Unexpected AppImage name: ${appImage} (expected AIKINGBOT-${packageJson.version}-<arch>.AppImage)`,
+    );
   }
 }
 
@@ -174,7 +176,7 @@ await verifyLaunch(executablePath);
 
 logger.info(`Verified ${appPath}`);
 logger.info(
-  `OpenBot ${packageJson.version} · Linux ${architecture} · manifest · no voice or remote desktop · ASAR integrity · hardened fuses · launch`,
+  `AIKINGBOT ${packageJson.version} · Linux ${architecture} · manifest · no voice or remote desktop · ASAR integrity · hardened fuses · launch`,
 );
 
 function expectEqual(actual: unknown, expected: unknown, label: string): void {
@@ -237,7 +239,7 @@ async function verifyLaunch(executable: string): Promise<void> {
   if (!process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) {
     throw new Error("The launch check needs a display. Run it under `xvfb-run -a`.");
   }
-  const userDataPath = await mkdtemp(join(tmpdir(), "openbot-package-smoke-"));
+  const userDataPath = await mkdtemp(join(tmpdir(), "aikingbot-package-smoke-"));
   const child = spawn(executable, [`--user-data-dir=${userDataPath}`], {
     env: launchEnvironment(userDataPath),
     stdio: ["ignore", "ignore", "pipe"],
@@ -253,7 +255,9 @@ async function verifyLaunch(executable: string): Promise<void> {
       new Promise<never>((_, reject) => {
         child.once("exit", (code, signal) => {
           reject(
-            new Error(`Packaged OpenBot exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`),
+            new Error(
+              `Packaged AIKINGBOT exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`,
+            ),
           );
         });
       }),
@@ -280,9 +284,9 @@ function launchEnvironment(userDataPath: string): NodeJS.ProcessEnv {
     ...process.env,
     CODEX_HOME: join(userDataPath, "codex-home"),
     CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
-    OPENBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
-    OPENBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
-    OPENBOT_GROK_PATH: join(userDataPath, "missing-grok"),
+    AIKINGBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
+    AIKINGBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
+    AIKINGBOT_GROK_PATH: join(userDataPath, "missing-grok"),
   };
 }
 
@@ -299,11 +303,11 @@ async function verifySecondInstanceExits(executable: string, userDataPath: strin
   ]);
   if (!result) {
     second.kill();
-    throw new Error("A second OpenBot instance did not exit.");
+    throw new Error("A second AIKINGBOT instance did not exit.");
   }
   if (result.code !== 0 || result.signal) {
     throw new Error(
-      `A second OpenBot instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
+      `A second AIKINGBOT instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
     );
   }
 }

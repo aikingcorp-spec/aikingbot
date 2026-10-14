@@ -301,7 +301,7 @@ export const messages = {
   "chat.suggestion.dismissed": "Vorschlag für {name} ausgeblendet.",
   "chat.suggestion.undo": "Rückgängig",
   "chat.suggestion.githubLocalOnly": "Verbinde GitHub auf dem Computer, auf dem dieser Server läuft.",
-  "chat.suggestion.githubUnavailable": "Diese OpenBot-Version kann GitHub nicht verbinden.",
+  "chat.suggestion.githubUnavailable": "Diese AIKINGBOT-Version kann GitHub nicht verbinden.",
   "chat.compaction.running": "Kontext wird komprimiert",
   "chat.compaction.completed": "Kontext komprimiert",
   "chat.compaction.failed": "Kontext konnte nicht komprimiert werden",

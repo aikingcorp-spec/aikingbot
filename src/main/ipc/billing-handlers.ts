@@ -1,7 +1,7 @@
 // The Stripe plans of the account's servers.
 
-import { parseBillingPortalRequest } from "@openbot/contracts/billing";
-import { sourceText } from "@openbot/i18n/source";
+import { parseBillingPortalRequest } from "@aikingbot/contracts/billing";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { BillingDesktopService } from "../billing-service";
 import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";

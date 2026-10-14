@@ -1,7 +1,7 @@
 // The one GitHub sign-in of this computer, encrypted at rest by the operating system.
 
 import { readFile, rm } from "node:fs/promises";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result, Semaphore } from "effect";
 import { z } from "zod";
 import { writeJsonFileAtomically } from "../backend/atomic-json-file";

@@ -12,7 +12,7 @@ export async function isCurrentInstallation(verify: () => Promise<void>): Promis
 
 export async function download(fetchImpl: typeof fetch, url: string, label: string): Promise<Buffer> {
   const response = await fetchImpl(url, {
-    headers: { "User-Agent": "OpenBot-runtime-installer" },
+    headers: { "User-Agent": "AIKINGBOT-runtime-installer" },
     redirect: "follow",
   });
   if (!response.ok) throw new Error(`${label} download failed with HTTP ${response.status}.`);

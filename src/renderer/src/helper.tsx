@@ -1,4 +1,4 @@
-import { installPointerFocusGuard } from "@openbot/ui/pointer-focus";
+import { installPointerFocusGuard } from "@aikingbot/ui/pointer-focus";
 import { render } from "@solidjs/web";
 import { ComputerUseHighlightSurface } from "./features/computer-use/ComputerUseHighlightSurface";
 import { ComputerUsePermissionHelp, permissionFromQuery } from "./features/computer-use/ComputerUsePermissionHelp";

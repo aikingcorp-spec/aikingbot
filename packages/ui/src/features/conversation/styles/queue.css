@@ -24,19 +24,19 @@
   margin: 0;
   border: 0;
   padding: 0;
-  border-radius: var(--openbot-radius-md);
-  color: var(--openbot-queue-text);
+  border-radius: var(--aikingbot-radius-md);
+  color: var(--aikingbot-queue-text);
   cursor: grab;
   outline: 0;
   transform: translate3d(0, calc(var(--queue-drag-step) * var(--queue-row-height)), 0);
   transition:
-    height var(--openbot-duration-slow) var(--openbot-ease-out),
-    opacity var(--openbot-duration-fast) ease,
-    transform var(--openbot-duration-slow) var(--openbot-ease-out);
+    height var(--aikingbot-duration-slow) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-fast) ease,
+    transform var(--aikingbot-duration-slow) var(--aikingbot-ease-out);
 }
 
 .agent-queue-item-entering {
-  animation: queue-item-in var(--openbot-duration-slow) var(--openbot-ease-out) both;
+  animation: queue-item-in var(--aikingbot-duration-slow) var(--aikingbot-ease-out) both;
 }
 
 .agent-queue-item-removing {
@@ -58,11 +58,11 @@
   z-index: 0;
   inset: 0 calc(var(--queue-row-gutter) - var(--queue-row-inset-end)) 0
     calc(var(--queue-row-gutter) - var(--queue-row-inset-start));
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
   content: "";
   pointer-events: none;
-  transition: background-color var(--openbot-duration-hover) ease;
+  transition: background-color var(--aikingbot-duration-hover) ease;
 }
 
 .agent-queue-item > * {
@@ -78,7 +78,7 @@
 
 .agent-queue-item:hover::before,
 .agent-queue-item:focus-visible::before {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
 }
 
 .agent-queue-panel-dragging .agent-queue-item:not(.agent-queue-item-dragging):hover::before {
@@ -86,7 +86,7 @@
 }
 
 .agent-queue-item:focus-visible {
-  box-shadow: 0 0 0 2px var(--openbot-border-focus);
+  box-shadow: 0 0 0 2px var(--aikingbot-border-focus);
 }
 
 .agent-queue-item-dragging {
@@ -102,13 +102,13 @@
 
 .agent-queue-drag-preview {
   position: fixed;
-  z-index: var(--openbot-layer-dropdown);
+  z-index: var(--aikingbot-layer-dropdown);
   box-sizing: border-box;
   min-height: 31px;
   margin: 0;
-  border: 1px solid var(--openbot-border-strong);
-  background: var(--openbot-bg-surface-raised);
-  box-shadow: var(--openbot-shadow-raised);
+  border: 1px solid var(--aikingbot-border-strong);
+  background: var(--aikingbot-bg-surface-raised);
+  box-shadow: var(--aikingbot-shadow-raised);
   opacity: 0.96;
   pointer-events: none;
   transform: none;
@@ -119,20 +119,20 @@
 }
 
 .agent-queue-item-steering {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .agent-queue-item-editing {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .agent-queue-editing-badge {
   flex: none;
   padding: 0 6px;
-  border-radius: var(--openbot-radius-xs);
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-xs);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 18px;
   white-space: nowrap;
 }
@@ -144,7 +144,7 @@
 .agent-queue-icon {
   display: grid;
   place-items: center;
-  color: var(--openbot-queue-action);
+  color: var(--aikingbot-queue-action);
 }
 
 .agent-queue-icon svg {
@@ -154,7 +154,7 @@
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-queue-attachment {
@@ -163,12 +163,12 @@
   height: 24px;
   overflow: hidden;
   place-items: center;
-  border: 1px solid var(--openbot-queue-border);
-  border-radius: var(--openbot-radius-xs);
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-queue-action);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-glyph-xs);
+  border: 1px solid var(--aikingbot-queue-border);
+  border-radius: var(--aikingbot-radius-xs);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-queue-action);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-glyph-xs);
   line-height: 1;
 }
 
@@ -187,7 +187,7 @@
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .agent-queue-icon-button .conversation-more-icon {
@@ -199,7 +199,7 @@
   min-width: 0;
   overflow: hidden;
   color: inherit;
-  font-size: var(--openbot-text-lg);
+  font-size: var(--aikingbot-text-lg);
   line-height: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -209,7 +209,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--openbot-queue-action);
+  color: var(--aikingbot-queue-action);
 }
 
 .agent-queue-steer,
@@ -220,23 +220,23 @@
   justify-content: center;
   gap: 4px;
   border: 0;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
   padding: 0 4px;
   color: inherit;
-  font-size: var(--openbot-text-lg);
+  font-size: var(--aikingbot-text-lg);
   line-height: 18px;
   transition:
-    background var(--openbot-duration-hover) ease,
-    color var(--openbot-duration-hover) ease;
+    background var(--aikingbot-duration-hover) ease,
+    color var(--aikingbot-duration-hover) ease;
 }
 
 .agent-queue-steer:hover:not(:disabled),
 .agent-queue-steer:focus-visible,
 .agent-queue-icon-button:hover:not(:disabled),
 .agent-queue-icon-button:focus-visible {
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-control-hover);
+  color: var(--aikingbot-text-primary);
   outline: 0;
 }
 
@@ -253,8 +253,8 @@
 
 .agent-queue-icon-button.agent-queue-delete:hover:not(:disabled),
 .agent-queue-icon-button.agent-queue-delete:focus-visible {
-  background: var(--openbot-danger-soft);
-  color: var(--openbot-danger);
+  background: var(--aikingbot-danger-soft);
+  color: var(--aikingbot-danger);
   opacity: 1;
 }
 

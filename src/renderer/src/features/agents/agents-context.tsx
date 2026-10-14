@@ -4,10 +4,10 @@ import type {
   AgentSummary,
   AvatarImageInput,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
-import { createFirstAgentDraft, type FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { createFirstAgentDraft, type FirstAgentDraft } from "@aikingbot/ui/features/agents/FirstAgentSetup";
+import { currentText } from "@aikingbot/ui/text";
 import { createMemo, createSignal, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { FALLBACK_STATUS } from "../../app-defaults";
@@ -90,7 +90,7 @@ const Agents = createSimpleContext({
     const [serverSetupChoice, setServerSetupChoice] = createSignal<CreationPreference | null>(null);
     /**
      * A joined server with no agents shows the provider step before the agent form, when the account
-     * can sign its host in. OpenBot includes no AI subscription, so an agent made first could not
+     * can sign its host in. AIKINGBOT includes no AI subscription, so an agent made first could not
      * answer. A member, an older host and this computer open the form as before.
      */
     const serverOnboardingOpen = createMemo(
@@ -179,7 +179,7 @@ const Agents = createSimpleContext({
       }
     }
 
-    function openBotSetup(): void {
+    function aikingBotSetup(): void {
       // The form renders in the workspace content the Usage report covers, and the
       // sidebar button that asks for it is outside that markup. Above the guard
       // below, so a second press reveals a form that is already open rather than
@@ -308,7 +308,7 @@ const Agents = createSimpleContext({
       setExplicitlyOpenedAgentChatId,
       analyticsAgentProperties,
       applyStoredAgents,
-      openBotSetup,
+      aikingBotSetup,
       cancelAgentSetup,
       updateAgent,
       setAgentAvatar,

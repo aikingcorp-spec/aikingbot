@@ -1,9 +1,12 @@
-import { createOpenBotAgentTemplateUrl, createWebAppAgentTemplatePath } from "@openbot/contracts/agent-template-links";
-import type { AgentTemplateDetail } from "@openbot/contracts/ipc";
+import {
+  createAIKINGBOTAgentTemplateUrl,
+  createWebAppAgentTemplatePath,
+} from "@aikingbot/contracts/agent-template-links";
+import type { AgentTemplateDetail } from "@aikingbot/contracts/ipc";
 import { createSignal, For, lazy, onSettled, Show } from "solid-js";
 import { agentTemplatePath } from "../../lib/agent-template-path";
 import { landingAnalytics } from "../../lib/analytics";
-import { OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS } from "../../lib/landing-links";
 import { SiteHeader } from "../landing/SiteHeader";
 import { PluginOpenButtons } from "../plugins/PluginOpenButtons";
 
@@ -11,7 +14,7 @@ import { PluginOpenButtons } from "../plugins/PluginOpenButtons";
 // its module loads, so the Worker must never import it. The page loads both parts in the browser
 // after hydration.
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@aikingbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 export interface AgentTemplatePageProps {
@@ -22,7 +25,7 @@ export interface AgentTemplatePageProps {
  * One shared agent as a single card: the page a link on X or in a chat opens.
  *
  * The card is tinted with the agent's own avatar colour, so each shared agent looks like itself.
- * The button opens `openbot://agents/<id>`, built from the id, and the app then shows its own preview
+ * The button opens `aikingbot://agents/<id>`, built from the id, and the app then shows its own preview
  * with Install; nothing here installs. The button below the card links `/app?agent=<id>`, where the
  * browser client shows the same preview.
  */
@@ -37,14 +40,14 @@ export function AgentTemplatePage(props: AgentTemplatePageProps) {
   let description: HTMLParagraphElement | undefined;
   onSettled(() => {
     setMounted(true);
-    void import("@openbot/brand/bloub-avatar").then(({ avatarHeadColor }) =>
+    void import("@aikingbot/brand/bloub-avatar").then(({ avatarHeadColor }) =>
       setAccent(avatarHeadColor(props.template.avatarSeed, props.template.avatarHue)),
     );
     if (description) setClamped(description.scrollHeight > description.clientHeight + 1);
     return landingAnalytics.start(document, window.location.hostname, agentTemplatePath(props.template.id));
   });
 
-  const openUrl = () => createOpenBotAgentTemplateUrl(props.template.id);
+  const openUrl = () => createAIKINGBOTAgentTemplateUrl(props.template.id);
   const counts = () =>
     [countLabel(props.template.skills.length, "skill"), countLabel(props.template.routines.length, "routine")].filter(
       (label): label is string => label !== null,
@@ -92,19 +95,19 @@ export function AgentTemplatePage(props: AgentTemplatePageProps) {
             </Show>
 
             <hr class="agent-share-divider" />
-            <p class="agent-share-notice">Made by another OpenBot user. It can act on your behalf once added.</p>
+            <p class="agent-share-notice">Made by another AIKINGBOT user. It can act on your behalf once added.</p>
             <div class="agent-share-action">
               <PluginOpenButtons
                 href={openUrl()}
-                label="Add to OpenBot"
-                downloadCopy={`${props.template.name} is added from inside OpenBot. Get the app, then open this link again.`}
+                label="Add to AIKINGBOT"
+                downloadCopy={`${props.template.name} is added from inside AIKINGBOT. Get the app, then open this link again.`}
               />
             </div>
           </div>
         </article>
 
         <p class="agent-share-fallback">
-          OpenBot didn't open? <a href={OPENBOT_LINKS.downloadFromOtherPage}>Download it</a>,{" "}
+          AIKINGBOT didn't open? <a href={AIKINGBOT_LINKS.downloadFromOtherPage}>Download it</a>,{" "}
           <a href={openUrl()}>open the app</a>, or{" "}
           <a href={createWebAppAgentTemplatePath(props.template.id)}>open in browser</a>.
         </p>

@@ -1,6 +1,6 @@
-import { MANAGED_RUNTIME_PROVIDERS, type ManagedProviderId } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { MANAGED_RUNTIME_PROVIDERS, type ManagedProviderId } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import type { AgentRuntimeLock } from "../../scripts/agent-runtime-lock";
 import {
@@ -16,8 +16,8 @@ import { ProviderRuntimeFailure, runtimeIO, runtimeSync } from "./provider-runti
 /**
  * The latest release of each provider CLI, read from the source that publishes it.
  *
- * OpenBot used to install only the version `native-runtime.lock.json` pinned, so a new CLI reached
- * users with the next OpenBot release. Providers ship faster than that, so the update offer now
+ * AIKINGBOT used to install only the version `native-runtime.lock.json` pinned, so a new CLI reached
+ * users with the next AIKINGBOT release. Providers ship faster than that, so the update offer now
  * follows upstream. The lock still names the version a first install uses when no source answers.
  *
  * Every download keeps a hash from its source: GitHub's asset `digest` for Codex and npm's
@@ -35,14 +35,14 @@ export interface LatestReleaseContext {
 }
 
 /**
- * Versions the OpenBot repository asks every installation not to offer.
+ * Versions the AIKINGBOT repository asks every installation not to offer.
  *
- * This is the one way to stop a broken upstream release without shipping an OpenBot release. It is a
+ * This is the one way to stop a broken upstream release without shipping an AIKINGBOT release. It is a
  * block list, not an allow list: a new release is offered at once, and only a version named here is
  * held back. A list that cannot be read blocks nothing.
  */
 const BLOCKED_VERSIONS_URL =
-  "https://raw.githubusercontent.com/nightly-labs/openbot/main/provider-runtime-blocklist.json";
+  "https://raw.githubusercontent.com/aikingcorp-spec/aikingx_bot/main/provider-runtime-blocklist.json";
 
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_METADATA_BYTES = 4 * 1024 * 1024;
@@ -53,7 +53,7 @@ const VERSION = /^\d+\.\d+\.\d+$/u;
  */
 const CURSOR_DATE = /^\d{4}\.\d{2}\.\d{2}$/u;
 const CURSOR_BUILD = /^\d{4}\.\d{2}\.\d{2}(?:-\d{2}-\d{2}-\d{2})?-[0-9a-f]{7,40}$/u;
-const HEADERS = { "User-Agent": "OpenBot-runtime-installer" };
+const HEADERS = { "User-Agent": "AIKINGBOT-runtime-installer" };
 
 export type BlockedVersions = ReadonlyMap<ManagedProviderId, ReadonlySet<string>>;
 

@@ -3,10 +3,10 @@ import {
   type AgentStatus,
   agentProviderDescriptor,
   LOCAL_SERVER_ID,
-} from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, flush, onSettled } from "solid-js";
 import { desktopAnalytics } from "./analytics";
 import { appPort } from "./app-port";

@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_PROVIDERS,
   type AgentModelId,
@@ -8,10 +8,10 @@ import {
   type DesktopPlatform,
   type InvitePreview,
   type JoinServerInput,
-} from "@openbot/contracts/ipc";
-import { Button, Dialog, ErrorReference, Textarea } from "@openbot/ui";
-import { InvitePreviewCard } from "@openbot/ui/features/servers/JoinServerDialog";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { Button, Dialog, ErrorReference, Textarea } from "@aikingbot/ui";
+import { InvitePreviewCard } from "@aikingbot/ui/features/servers/JoinServerDialog";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, onSettled, Show, untrack } from "solid-js";
 import { ComputerUseSetup } from "../computer-use/ComputerUseSetup";
 import {

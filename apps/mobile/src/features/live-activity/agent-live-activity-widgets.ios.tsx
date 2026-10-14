@@ -1,3 +1,5 @@
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import type { AgentLiveActivityProps } from "@aikingbot/team-client/live-activity-props";
 import { HStack, Image, Link, Spacer, Text, VStack, ZStack } from "@expo/ui/swift-ui";
 import {
   background,
@@ -13,8 +15,6 @@ import {
   shapes,
   widgetURL,
 } from "@expo/ui/swift-ui/modifiers";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { AgentLiveActivityProps } from "@openbot/team-client/live-activity-props";
 import { Directory, File, Paths } from "expo-file-system";
 import {
   LiveActivity,

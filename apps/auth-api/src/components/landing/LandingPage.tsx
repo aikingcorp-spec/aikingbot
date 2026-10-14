@@ -1,7 +1,7 @@
-import { AppLogo, PlatformLogo, ProviderLogo } from "@openbot/brand";
+import { AppLogo, PlatformLogo, ProviderLogo } from "@aikingbot/brand";
 import { onSettled } from "solid-js";
 import { landingAnalytics } from "../../lib/analytics";
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 import { Button } from "../ui/button";
 import { DownloadSection } from "./DownloadSection";
 import { FaqSection } from "./FaqSection";
@@ -61,9 +61,9 @@ export function LandingPage() {
 
             <h1 id="landing-title" class="landing-title landing-hero-line" style={{ "--landing-hero-line": 1 }}>
               {/* The spaces do not render in the flex row. They keep the words apart in
-                  the text that search engines read, which was "MeetOpenBot". */}
+                  the text that search engines read, which was "MeetAIKINGBOT". */}
               <span>Meet</span> <AppLogo variant="production" animation="blink" interactive class="landing-hero-logo" />{" "}
-              <span>OpenBot</span>
+              <span>AIKINGBOT</span>
             </h1>
 
             <p class="landing-description landing-hero-line" style={{ "--landing-hero-line": 2 }}>
@@ -97,7 +97,7 @@ export function LandingPage() {
             <div class="landing-actions landing-hero-line" style={{ "--landing-hero-line": 3 }}>
               <HeroDownloadSelector />
               <Button
-                href={OPENBOT_LINKS.contact}
+                href={AIKINGBOT_LINKS.contact}
                 target="_blank"
                 rel={EXTERNAL_LINK_REL}
                 variant="secondary"

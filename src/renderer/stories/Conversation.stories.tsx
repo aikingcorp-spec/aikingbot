@@ -1,8 +1,8 @@
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import type { AgentEvent, AttachmentSummary, DraftAttachment, QueueSnapshot } from "@openbot/contracts/ipc";
-import type { AgentMessage as RendererAgentMessage, RoutineRunMarkerModel } from "@openbot/ui/data";
-import { BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
-import { currentText } from "@openbot/ui/text";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import type { AgentEvent, AttachmentSummary, DraftAttachment, QueueSnapshot } from "@aikingbot/contracts/ipc";
+import type { AgentMessage as RendererAgentMessage, RoutineRunMarkerModel } from "@aikingbot/ui/data";
+import { BrowserTakeoverCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
+import { currentText } from "@aikingbot/ui/text";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, onCleanup, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
@@ -28,7 +28,7 @@ import {
   STORY_PRESENCE,
   STORY_QUEUES,
 } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 const storyAttachment = CONVERSATION_STORY_ATTACHMENT;
 const messages = CONVERSATION_STORY_MESSAGES;
@@ -87,8 +87,8 @@ const imageGenerationMessages: RendererAgentMessage[] = [
   },
 ];
 
-const generatedImagePreview = new URL("../src/assets/openbot-logo-production.png", import.meta.url).href;
-const generatedImagePreviewAlternate = new URL("../src/assets/openbot-logo-dev.png", import.meta.url).href;
+const generatedImagePreview = new URL("../src/assets/aikingbot-logo-production.png", import.meta.url).href;
+const generatedImagePreviewAlternate = new URL("../src/assets/aikingbot-logo-dev.png", import.meta.url).href;
 const generatedImageAttachment: AttachmentSummary = {
   id: "generated-image-in-chat",
   name: "generated-image.png",
@@ -223,9 +223,9 @@ const agentMessageGalleryMessages: RendererAgentMessage[] = [
     body: [
       "## Links and references",
       "",
-      "Review [OpenBot documentation](https://openbot.run/docs), the [Kobalte guide](https://kobalte.dev/docs/core/overview/introduction), and https://zaidan.carere.dev/docs/components/kobalte/bubble.",
+      "Review [AIKINGBOT documentation](https://aikingbot.aikingx.com/docs), the [Kobalte guide](https://kobalte.dev/docs/core/overview/introduction), and https://zaidan.carere.dev/docs/components/kobalte/bubble.",
       "",
-      "You can also open [ConversationView.tsx](/Users/test/OpenBot/src/renderer/src/features/conversation/ConversationView.tsx), ask @Research, or inspect the attached source file below.",
+      "You can also open [ConversationView.tsx](/Users/test/AIKINGBOT/src/renderer/src/features/conversation/ConversationView.tsx), ask @Research, or inspect the attached source file below.",
       "",
       `Attachment reference: ${serializeAttachmentReference(storyAttachment.name, storyAttachment.id)}.`,
       "",
@@ -491,7 +491,7 @@ const markdownImageMessages: RendererAgentMessage[] = [
       "",
       `![Development logo](${generatedImagePreviewAlternate})`,
       "",
-      `![](${new URL("../src/assets/openbot-logo-preview.png", import.meta.url).href})`,
+      `![](${new URL("../src/assets/aikingbot-logo-preview.png", import.meta.url).href})`,
     ].join("\n"),
     time: "10:03",
     kind: "text",
@@ -890,8 +890,8 @@ function MockedConversation(props: {
   takeoverStateGallery?: boolean;
   conversationError?: string;
 }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot();
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT();
   const controller = createConversationController({ onTypingChange: props.args.onTypingChange });
   const previewUrls = new Set<string>();
   let storyFrameElement: HTMLDivElement | undefined;
@@ -942,7 +942,7 @@ function MockedConversation(props: {
       setFirstUnreadMessageId(messageId);
     },
   );
-  window.openbot = mock.api;
+  window.aikingbot = mock.api;
   if (props.takeoverStateGallery) {
     onSettled(() => {
       const mount = storyFrameElement?.querySelector<HTMLElement>(".conversation-scroll") ?? null;
@@ -990,7 +990,7 @@ function MockedConversation(props: {
     if (takeoverGalleryScrollTimer !== undefined) window.clearTimeout(takeoverGalleryScrollTimer);
     for (const previewUrl of previewUrls) URL.revokeObjectURL(previewUrl);
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return (
     <div ref={setStoryFrameElement} class="conversation-story-frame">
@@ -1833,8 +1833,8 @@ const actionMarkerMessages: RendererAgentMessage[] = [
       operationId: "op-1",
       siteId: "site-1",
       title: "Launch status page",
-      hostname: "launch-status-23456789ab.openbot.site",
-      url: "https://launch-status-23456789ab.openbot.site",
+      hostname: "launch-status-23456789ab.aikingbot-sites.aikingx.com",
+      url: "https://launch-status-23456789ab.aikingbot-sites.aikingx.com",
       timestamp: "2026-08-19T22:50:00.000Z",
     },
   },

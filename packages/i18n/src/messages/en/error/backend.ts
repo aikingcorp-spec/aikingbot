@@ -12,8 +12,8 @@ export const messages = defineMessages("error.backend", {
   "error.backend.browserViewLimit": "Too many browser views are open on this host.",
   "error.backend.browserViewEnded": "The live view of this page ended.",
   "error.backend.browserViewFailed": "The live view of this page failed.",
-  "error.backend.windowTemporarilyUnavailable": "The OpenBot window is temporarily unavailable.",
-  "error.backend.windowUnavailable": "The OpenBot window is unavailable.",
+  "error.backend.windowTemporarilyUnavailable": "The AIKINGBOT window is temporarily unavailable.",
+  "error.backend.windowUnavailable": "The AIKINGBOT window is unavailable.",
   "error.backend.sunshineApiHttp": "Sunshine API failed with HTTP {status}.",
   "error.backend.sunshinePortsUnavailable": "Could not reserve a free Sunshine port family for Remote Desktop.",
   "error.backend.moonlightPortsUnavailable": "Could not reserve a free Moonlight WebRTC port range for Remote Desktop.",
@@ -28,7 +28,7 @@ export const messages = defineMessages("error.backend", {
   "error.backend.moonlightRejectedPairing": "Moonlight rejected Sunshine pairing.",
   "error.backend.moonlightNoPin": "Moonlight did not return a pairing PIN.",
   "error.backend.moonlightPairingIncomplete": "Moonlight pairing did not complete.",
-  "error.backend.moonlightWebNotEmbedded": "Moonlight Web is not an OpenBot embedded build.",
+  "error.backend.moonlightWebNotEmbedded": "Moonlight Web is not an AIKINGBOT embedded build.",
   "error.backend.moonlightEmptyResponse": "Moonlight returned an empty response.",
   "error.backend.remoteDesktopTimeout": "Remote desktop request timed out.",
   "error.backend.moonlightApiHttp": "Moonlight API failed with HTTP {status}.",
@@ -46,7 +46,7 @@ export const messages = defineMessages("error.backend", {
   "error.backend.sunshineNotReadyReason": "Sunshine did not become ready. {reason}",
   "error.backend.channelLeadModelUnavailable": "The channel lead model is unavailable.",
   "error.backend.sharedDataUnavailable": "Shared data is unavailable.",
-  "error.backend.shuttingDown": "OpenBot is shutting down.",
+  "error.backend.shuttingDown": "AIKINGBOT is shutting down.",
   "error.backend.channelUnconfirmedStart":
     "The channel has an unconfirmed assignment start. Check its outcome before deleting it.",
   "error.backend.channelNotFound": "Channel not found.",
@@ -110,13 +110,13 @@ export const messages = defineMessages("error.backend", {
   "error.backend.fileGone": "The file does not exist or is already deleted.",
   "error.backend.managedAttachmentChanged": "Managed attachment is missing or has changed: {name}",
   "error.backend.mailboxStateCorrupt":
-    "Mailbox state is corrupt or from a newer OpenBot version; refusing to overwrite it.",
+    "Mailbox state is corrupt or from a newer AIKINGBOT version; refusing to overwrite it.",
   "error.backend.recipientDeleting": "The recipient is being deleted. Retry after deletion finishes.",
   "error.backend.attachBetween": "Attach between 1 and {limit} files.",
   "error.backend.attachmentNotFile": "Attachment is not a file: {path}",
   "error.backend.generatedImageTooLarge": "Generated image exceeds the 100 MB limit.",
   "error.backend.attachmentNotRegularFile": "Only regular files can be attached: {name}",
-  "error.backend.attachmentCopyFailed": "OpenBot could not copy {name}.",
+  "error.backend.attachmentCopyFailed": "AIKINGBOT could not copy {name}.",
   "error.backend.routineNameRequired": "A routine name is required.",
   "error.backend.routineNameTooLong": "The routine name is too long.",
   "error.backend.routineInstructionRequired": "A routine instruction is required.",
@@ -137,13 +137,13 @@ export const messages = defineMessages("error.backend", {
   "error.backend.routineWaitForAgent": "Wait until the agent operation finishes before running a routine.",
   "error.backend.routineRunStarting": "This routine run is still starting. Try again after its turn starts.",
   "error.backend.routineRunNoSession":
-    "OpenBot cannot interrupt the active routine run because its provider session is unavailable.",
+    "AIKINGBOT cannot interrupt the active routine run because its provider session is unavailable.",
   "error.backend.interruptSelf": "An agent cannot interrupt itself.",
   "error.backend.interruptOtherWork":
     "This agent works on a task that your message did not start. Only the user or the sender of that task can stop it.",
   "error.backend.interruptStarting": "This agent is still starting a turn. Try again after the turn starts.",
   "error.backend.interruptNoSession":
-    "OpenBot cannot interrupt this agent because its provider session is unavailable.",
+    "AIKINGBOT cannot interrupt this agent because its provider session is unavailable.",
   "error.backend.memoryTextRequired": "Memory text is required.",
   "error.backend.memoryTextTooLong": "Memory text is too long.",
   "error.backend.mcpServerGone": "This MCP server no longer exists.",
@@ -156,38 +156,38 @@ export const messages = defineMessages("error.backend", {
   "error.backend.routineFlowCycle": "This connection would make a loop.",
   "error.backend.routineFlowLinkLimit": "A routine can have at most {limit} connections.",
   "error.backend.agentWaitLimit":
-    "This agent already has {count} open waits. Close a wait with openbot.close_wait before you open another one.",
+    "This agent already has {count} open waits. Close a wait with aikingbot.close_wait before you open another one.",
   "error.backend.agentWaitGone": "This wait is not open. The agent closed it, or someone cancelled it.",
   "error.backend.agentWaitNoRequest": "A wait needs a message to continue. This turn has no message.",
   "error.backend.agentWaitOwnChatOnly": "Open a wait only in your own chat. A channel or messaging task cannot wait.",
   "error.backend.agentWaitNoteRequired": "Give a short note that says what the wait is for.",
   "error.backend.agentWaitRoutineGone": "This agent has no routine with this id.",
   "error.backend.agentWaitNoRoutine":
-    "Only a run of one of your routines wakes a wait, and you have no routine. Create one with openbot.create_routine, then open the wait.",
+    "Only a run of one of your routines wakes a wait, and you have no routine. Create one with aikingbot.create_routine, then open the wait.",
   "error.backend.agentWaitRemoteUnsupported": "Open waits are only available for agents on this computer.",
   "error.backend.routineFlowHandoffFailed": "The routine could not pass the work on to this agent.",
-  "error.backend.mcpServerLimit": "OpenBot keeps up to {limit} MCP servers.",
+  "error.backend.mcpServerLimit": "AIKINGBOT keeps up to {limit} MCP servers.",
   "error.backend.mcpServerNameTaken": "An MCP server named {name} already exists.",
   "error.backend.mcpServerNoAnswer": "The server did not answer in {seconds} seconds.",
   "error.backend.mcpSignInNotAccepted": "The server did not accept that sign-in.",
   "error.backend.mcpCommandNotFound": "Command not found: {command}",
   "error.backend.mcpRegistrationRefused":
-    "The sign-in server does not accept OpenBot as an app yet. Your account is not the cause. Use another way to connect, such as a local MCP server.",
+    "The sign-in server does not accept AIKINGBOT as an app yet. Your account is not the cause. Use another way to connect, such as a local MCP server.",
   "error.backend.mcpSignInAbandonedGeneric": "The sign-in was abandoned.",
   "error.backend.mcpSignInForgotten": "The MCP sign-in was forgotten while it was running.",
   "error.backend.mcpSignInAbandoned": "The MCP sign-in was abandoned.",
   "error.backend.mcpSignInNoBrowser": "This MCP sign-in cannot open a browser.",
   "error.backend.mcpSignInNotWebPage": "The sign-in address is not a web page.",
   "error.backend.mcpSignInRequired": "This server asks you to sign in. Choose Sign in to continue in your browser.",
-  "error.backend.mcpSignInOnHost": "This server asks for a sign-in. Sign in to it in OpenBot on the host computer.",
+  "error.backend.mcpSignInOnHost": "This server asks for a sign-in. Sign in to it in AIKINGBOT on the host computer.",
   "error.backend.mcpSignInNeedsHttps":
-    "This server asks for a sign-in, and OpenBot signs in only over https. Change the URL to {url}.",
+    "This server asks for a sign-in, and AIKINGBOT signs in only over https. Change the URL to {url}.",
   "error.backend.mcpSignInCancelled": "The sign-in was cancelled.",
   "error.backend.mcpSignInTimedOut": "The sign-in was not finished in the browser.",
   "error.backend.mcpSignInResponseTimedOut": "The sign-in response did not arrive in time.",
   "error.backend.mcpServerExited":
     "The server stopped before it answered. Run the command in a terminal to see its error.",
-  "error.backend.mcpServerUnreachable": "OpenBot could not reach the server. Check the URL and your network.",
+  "error.backend.mcpServerUnreachable": "AIKINGBOT could not reach the server. Check the URL and your network.",
   "error.backend.mcpLocalServerOff":
     "No server answers at {address} on this computer. Start the server, or turn it on in the app that runs it, then try again.",
   "error.backend.mcpServerBlocked":
@@ -195,7 +195,7 @@ export const messages = defineMessages("error.backend", {
   "error.backend.mcpServerIncompatible":
     "Something answered at this address, but not as an MCP server over Streamable HTTP. Check the URL, and update the app that runs the server.",
   "error.backend.mcpRemoteBridge":
-    "{reason} This command runs the mcp-remote bridge. Choose Streamable HTTP with the URL {url} instead, and OpenBot signs you in.",
+    "{reason} This command runs the mcp-remote bridge. Choose Streamable HTTP with the URL {url} instead, and AIKINGBOT signs you in.",
   "error.backend.oauthNotHttps": "The OAuth endpoint {origin} is not https, so the credentials were not sent.",
   "error.backend.oauthTooManyRedirects": "The OAuth endpoint redirected too many times.",
   "error.backend.oauthRedirectOrigin":
@@ -261,7 +261,7 @@ export const messages = defineMessages("error.backend", {
   "error.backend.mcpSignInAppUrl": "The sign-in app needs a valid server URL.",
   "error.backend.mcpSignInAppClientId": "Enter the client ID of the sign-in app.",
   "error.backend.mcpSignInAppIssuerChanged":
-    "The sign-in server of this MCP server changed, so OpenBot did not send it the sign-in app. If the change is correct, remove the sign-in app and add it again.",
+    "The sign-in server of this MCP server changed, so AIKINGBOT did not send it the sign-in app. If the change is correct, remove the sign-in app and add it again.",
   "error.backend.mcpSignInAppNoServer": "Save this MCP server as a URL server before you add a sign-in app.",
   "error.backend.mcpSignInAppUnavailable": "This computer cannot keep a sign-in app.",
 });

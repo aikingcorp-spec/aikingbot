@@ -1,0 +1,11 @@
+# AIKINGBOT asks for an update now with an empty file in its runtime directory. This starts
+# aikingbot-update-request.service as root, which removes the file and never reads it.
+[Unit]
+Description=Watch for an AIKINGBOT update request
+
+[Path]
+PathExists=/run/aikingbot/update-stage
+PathExists=/run/aikingbot/update-install
+
+[Install]
+WantedBy=paths.target

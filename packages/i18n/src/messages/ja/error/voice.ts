@@ -9,8 +9,8 @@ export const messages = {
   "error.voice.modelUnavailable": "音声モデルを使用できません。",
   "error.voice.transcriptionTimedOut": "音声文字起こしがタイムアウトしました。",
   "error.voice.prepareRequired":
-    "ローカル音声文字起こしを使用できません。`bun run voice:prepare` を実行し、OpenBot を再起動してください。",
-  "error.voice.transcriptionFailed": "OpenBot はこの録音を文字起こしできませんでした。",
+    "ローカル音声文字起こしを使用できません。`bun run voice:prepare` を実行し、AIKINGBOT を再起動してください。",
+  "error.voice.transcriptionFailed": "AIKINGBOT はこの録音を文字起こしできませんでした。",
   "error.voice.cloud.keyRequired": "設定 → 音声 で ElevenLabs の API キーを追加してください。",
   "error.voice.cloud.keyRejected":
     "ElevenLabs が API キーを受け付けませんでした。設定 → 音声 でキーを確認してください。",

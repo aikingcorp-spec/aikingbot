@@ -1,5 +1,5 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import type { TeamProtocolV1JsonObject, TeamProtocolV1JsonValue } from "@openbot/contracts/team-protocol/v1";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
+import type { TeamProtocolV1JsonObject, TeamProtocolV1JsonValue } from "@aikingbot/contracts/team-protocol/v1";
 
 /**
  * Tells if a peer on this protocol must not see the provider. Protocols 1 to 5 do not know Cursor

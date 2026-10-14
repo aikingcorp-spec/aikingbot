@@ -1,4 +1,4 @@
-import type { BrowserTakeoverRequest } from "@openbot/contracts/ipc";
+import type { BrowserTakeoverRequest } from "@aikingbot/contracts/ipc";
 import { createMemo } from "solid-js";
 import { useNavigation } from "../../navigation";
 import { usePlatform } from "../../platform";

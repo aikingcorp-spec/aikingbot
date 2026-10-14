@@ -1,6 +1,6 @@
-import { isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
-import { isUuidV4 } from "@openbot/contracts/validation";
+import { isAvatarMimeType, isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isUuidV4 } from "@aikingbot/contracts/validation";
 import { Effect, Result, Schema } from "effect";
 import { AuthOperationError, type AuthService, AuthServiceError } from "./auth-service";
 import type { AuthUser } from "./types";
@@ -127,7 +127,7 @@ export function avatarObjectKey(userId: string, version: string): string {
 export function avatarVersion(avatarUrl: string | null, expectedUserId: string): string | null {
   if (!avatarUrl) return null;
   try {
-    const url = new URL(avatarUrl, "https://api.openbot.run");
+    const url = new URL(avatarUrl, "https://api.aikingbot.aikingx.com");
     const match = url.pathname.match(/^\/v1\/avatars\/([^/]+)$/u);
     const userId = decodeURIComponent(match?.[1] ?? "");
     const version = url.searchParams.get("v") ?? "";

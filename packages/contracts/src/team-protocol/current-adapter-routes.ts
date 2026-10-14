@@ -22,11 +22,11 @@ export function decodeUnreadRequest(value: unknown): TeamProtocolV1JsonObject {
 }
 
 export function readPath(path: string): string {
-  return new URL(path, "http://openbot.invalid").pathname.replace(/\/unread$/u, "/read");
+  return new URL(path, "http://aikingbot.invalid").pathname.replace(/\/unread$/u, "/read");
 }
 
 export function scopedUsageRoute(method: string, path: string): boolean {
-  const pathname = new URL(path, "http://openbot.invalid").pathname;
+  const pathname = new URL(path, "http://aikingbot.invalid").pathname;
   return method === "GET" && /^\/v1\/agents\/[^/]+\/usage$/u.test(pathname);
 }
 
@@ -38,7 +38,7 @@ export function decodeScopedUsageRequest(value: unknown): TeamProtocolV1JsonObje
 }
 
 export function duplicateRoute(method: string, path: string): boolean {
-  const pathname = new URL(path, "http://openbot.invalid").pathname;
+  const pathname = new URL(path, "http://aikingbot.invalid").pathname;
   return method === "POST" && /^\/v1\/agents\/[^/]+\/duplicate$/u.test(pathname);
 }
 
@@ -100,5 +100,5 @@ function profileAgent(parsed: TeamProtocolV1JsonObject): TeamProtocolV1JsonValue
 }
 
 function profileGeneration(path: string): boolean {
-  return new URL(path, "http://openbot.invalid").pathname.endsWith("/generate");
+  return new URL(path, "http://aikingbot.invalid").pathname.endsWith("/generate");
 }

@@ -1,4 +1,4 @@
-import { DISCORD_ORCHESTRATOR_AVATAR } from "@openbot/contracts/discord-app";
+import { DISCORD_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/discord-app";
 import type {
   AgentModelId,
   AgentModelOption,
@@ -8,9 +8,9 @@ import type {
   CustomProviderSummary,
   MessagingConnection,
   MessagingPlatform,
-} from "@openbot/contracts/ipc";
-import { SLACK_ORCHESTRATOR_AVATAR } from "@openbot/contracts/slack-app";
-import type { AppMessages, AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import { SLACK_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/slack-app";
+import type { AppMessages, AppTextKey } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -32,7 +32,7 @@ import {
   Spinner,
   Text,
   TriangleAlert,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import { ProviderModelPicker } from "../../components/ProviderModelPicker";
 import { useText } from "../../text";
@@ -270,7 +270,7 @@ export function slackIntegrationState(
 }
 
 /**
- * Server settings > Connectors > Slack. A workspace installs the one OpenBot app, and its Slack
+ * Server settings > Connectors > Slack. A workspace installs the one AIKINGBOT app, and its Slack
  * Orchestrator agent receives every request, asks the team and answers. The connect dialog does both
  * steps. No token reaches this component. Server settings > Connectors > Discord is the same page
  * for a Discord server, with `platform` "discord".

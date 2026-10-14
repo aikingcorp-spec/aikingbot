@@ -16,8 +16,8 @@ const LEGACY_ID = "bot-6d3e8b17-9c04-4f21-8a55-1b2c3d4e5f60";
 
 describe("rebaseLegacyWorkspacePath", () => {
   it("finds a file the workspace move left on the other side of the rename", () => {
-    const current = `/Users/dev/OpenBot/Agents/${AGENT_ID}`;
-    const legacy = `/Users/dev/OpenBot/Bots/${LEGACY_ID}`;
+    const current = `/Users/dev/AIKINGBOT/Agents/${AGENT_ID}`;
+    const legacy = `/Users/dev/AIKINGBOT/Bots/${LEGACY_ID}`;
 
     // The provider keeps its own transcript, and migration v13 cannot reach into it, so a resumed thread
     // still hands back the path it wrote before the workspace moved.
@@ -27,7 +27,7 @@ describe("rebaseLegacyWorkspacePath", () => {
     expect(rebaseLegacyWorkspacePath(legacy, AGENT_ID, `${current}/app/page.tsx`)).toBe(`${legacy}/app/page.tsx`);
 
     // Neither direction is a way out of the workspace, and neither applies to a path that was never one.
-    expect(rebaseLegacyWorkspacePath(current, AGENT_ID, "/Users/dev/OpenBot/Bots/secret.env")).toBeNull();
+    expect(rebaseLegacyWorkspacePath(current, AGENT_ID, "/Users/dev/AIKINGBOT/Bots/secret.env")).toBeNull();
     expect(rebaseLegacyWorkspacePath(current, AGENT_ID, `${legacy}/../../secret.env`)).toBeNull();
     expect(rebaseLegacyWorkspacePath(`/Users/dev/code/${AGENT_ID}`, AGENT_ID, `${legacy}/app/page.tsx`)).toBeNull();
   });
@@ -40,7 +40,7 @@ describe("listWorkspaceDirectory", () => {
   });
 
   async function fixture() {
-    const root = await realpath(await mkdtemp(join(tmpdir(), "openbot-workspace-list-")));
+    const root = await realpath(await mkdtemp(join(tmpdir(), "aikingbot-workspace-list-")));
     roots.push(root);
     const workspacePath = join(root, "workspace");
     await mkdir(join(workspacePath, "research", "eyeliner"), { recursive: true });

@@ -2,19 +2,19 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  min-width: var(--openbot-space-8);
-  height: var(--openbot-space-8);
-  color: var(--openbot-text-muted);
+  min-width: var(--aikingbot-space-8);
+  height: var(--aikingbot-space-8);
+  color: var(--aikingbot-text-muted);
 }
 .channel-avatar .agent-avatar {
-  width: var(--openbot-space-8);
-  height: var(--openbot-space-8);
+  width: var(--aikingbot-space-8);
+  height: var(--aikingbot-space-8);
   flex-shrink: 0;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface);
 }
 .channel-avatar:not(.channel-avatar-cluster) .agent-avatar + .agent-avatar {
-  margin-left: calc(-1 * var(--openbot-space-4));
+  margin-left: calc(-1 * var(--aikingbot-space-4));
 }
 /*
  * The cluster holds the members in the square an agent avatar occupies, so a channel row keeps the
@@ -67,11 +67,11 @@
   height: var(--channel-avatar-face);
 }
 .channel-avatar-count {
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   /* The count is type, so it takes a step off the type scale rather than a share of the square:
      the smallest step that stays legible beside a face at both cluster sizes. */
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
   line-height: 1;
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
   font-variant-numeric: tabular-nums;
 }

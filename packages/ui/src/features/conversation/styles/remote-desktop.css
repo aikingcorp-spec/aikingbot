@@ -9,14 +9,14 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   transition:
-    opacity var(--openbot-duration-fast) cubic-bezier(0.2, 0, 0, 1),
-    visibility 0s linear var(--openbot-duration-fast);
+    opacity var(--aikingbot-duration-fast) cubic-bezier(0.2, 0, 0, 1),
+    visibility 0s linear var(--aikingbot-duration-fast);
 }
 
 .remote-desktop-workspace-visible {
@@ -38,9 +38,9 @@
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
-  border-bottom: 1px solid var(--openbot-border);
+  border-bottom: 1px solid var(--aikingbot-border);
   padding: 0 8px 0 0;
-  background: var(--openbot-bg-sidebar);
+  background: var(--aikingbot-bg-sidebar);
 }
 
 .remote-desktop-workspace-darwin .remote-desktop-header {
@@ -71,13 +71,13 @@
 }
 
 .remote-desktop-disconnect-button {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .remote-desktop-disconnect-button:hover:not(:disabled),
 .remote-desktop-disconnect-button:focus-visible:not(:disabled) {
-  background: var(--openbot-danger-soft);
-  color: var(--openbot-danger);
+  background: var(--aikingbot-danger-soft);
+  color: var(--aikingbot-danger);
 }
 
 .remote-desktop-stage {
@@ -85,7 +85,7 @@
   min-height: 0;
   flex: 1;
   overflow: hidden;
-  background: var(--openbot-accent);
+  background: var(--aikingbot-accent);
 }
 
 .remote-desktop-viewer,
@@ -104,11 +104,11 @@
   width: min(168px, 22vw);
   min-width: 112px;
   flex: 0 1 168px;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .remote-desktop-display-select-content {
-  z-index: calc(var(--openbot-layer-toast) + 1);
+  z-index: calc(var(--aikingbot-layer-toast) + 1);
 }
 
 .remote-desktop-overlay {
@@ -120,15 +120,15 @@
   justify-content: center;
   flex-direction: column;
   gap: 7px;
-  background: var(--openbot-bg-overlay);
+  background: var(--aikingbot-bg-overlay);
   padding: 24px;
   text-align: center;
 }
 
 .remote-desktop-overlay strong {
   max-width: 330px;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
   font-weight: 600;
 }
 
@@ -136,12 +136,12 @@
   width: 56px;
   height: 56px;
   margin-bottom: 5px;
-  filter: drop-shadow(0 8px 18px var(--openbot-accent-soft));
+  filter: drop-shadow(0 8px 18px var(--aikingbot-accent-soft));
   opacity: 1;
   transform: translateY(0) scale(1);
   transition:
-    opacity var(--openbot-duration-overlay) var(--openbot-ease-out),
-    transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-overlay) var(--aikingbot-ease-out),
+    transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
   will-change: opacity, transform;
 }
 
@@ -154,8 +154,8 @@
 
 .remote-desktop-overlay > span:not(.ui-spinner):not(.remote-desktop-empty-mark) {
   max-width: 330px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 16px;
 }
 
@@ -165,10 +165,10 @@
   height: 38px;
   margin-bottom: 5px;
   place-items: center;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-hover);
-  color: var(--openbot-text-muted);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-hover);
+  color: var(--aikingbot-text-muted);
 }
 
 .remote-desktop-empty-mark svg {
@@ -178,21 +178,21 @@
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .remote-desktop-overlay > button {
   height: 34px;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-border);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-border);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 600;
 }
 
 .remote-desktop-overlay > button:hover {
-  background: var(--openbot-border-strong);
+  background: var(--aikingbot-border-strong);
 }
 
 .remote-desktop-overlay > button {
@@ -206,8 +206,8 @@
 }
 
 .remote-desktop-button[aria-expanded="true"] {
-  background: var(--openbot-border);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-border);
+  color: var(--aikingbot-text-primary);
 }
 
 .remote-desktop-button-dot {
@@ -216,7 +216,7 @@
   bottom: 4px;
   width: 5px;
   height: 5px;
-  border: 1px solid var(--openbot-bg-sidebar);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-success);
+  border: 1px solid var(--aikingbot-bg-sidebar);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-success);
 }

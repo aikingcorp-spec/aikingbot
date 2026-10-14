@@ -1,7 +1,7 @@
-import { type ChatTagKind, chatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@openbot/contracts/ipc";
-import { referenceChipClasses } from "@openbot/ui/reference-chip";
-import { usesTouchLayout } from "@openbot/ui/utils";
+import { type ChatTagKind, chatTagReferences } from "@aikingbot/contracts/chat-tag-references";
+import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@aikingbot/contracts/ipc";
+import { referenceChipClasses } from "@aikingbot/ui/reference-chip";
+import { usesTouchLayout } from "@aikingbot/ui/utils";
 import { createStaticAvatarSvg } from "../../bloub-avatar";
 import type { AgentProfile } from "../../data";
 import { currentText } from "../../text";

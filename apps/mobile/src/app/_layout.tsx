@@ -158,7 +158,7 @@ export default function RootLayout() {
   const { theme: colorScheme } = useUniwind();
   const animations = useMotionPreferences((state) => state.allAnimations);
   const heroConfig = useMemo(() => (animations ? {} : { animation: "disable-all" as const }), [animations]);
-  const canvas = String(useCSSVariable("--openbot-bg-native-canvas"));
+  const canvas = String(useCSSVariable("--aikingbot-bg-native-canvas"));
   // React Navigation paints its near-black dark background behind screens during transitions.
   const darkTheme = useMemo(() => ({ ...DarkTheme, colors: { ...DarkTheme.colors, background: canvas } }), [canvas]);
   // Android shows the window background behind the system bars. Without this it keeps the light splash color.

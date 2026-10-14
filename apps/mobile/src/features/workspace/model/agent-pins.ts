@@ -1,4 +1,4 @@
-import type { createWorkspacePreferences } from "@openbot/team-client";
+import type { createWorkspacePreferences } from "@aikingbot/team-client";
 
 const MAX_PINNED_AGENTS = 16;
 

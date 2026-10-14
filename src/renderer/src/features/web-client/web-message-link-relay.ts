@@ -3,18 +3,18 @@
 // browser shows at the end, because a browser cannot listen for the callback.
 
 import {
+  type AIKINGBOTDesktopApi,
   type McpSignInRelayPage,
   type McpTestResult,
-  type OpenBotDesktopApi,
   relayableSignInLink,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
 import { openWebLink } from "./web-attachments";
 import { webMcpRelay } from "./web-mcp-relay";
 
 export type WebMessageLinks = Pick<
-  OpenBotDesktopApi["agent"],
+  AIKINGBOTDesktopApi["agent"],
   "openMessageLink" | "pasteMessageLink" | "cancelMessageLink"
 >;
 

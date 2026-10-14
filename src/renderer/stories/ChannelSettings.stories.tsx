@@ -1,4 +1,4 @@
-import { Button, buttonVariants, Input, ItemActions, ItemGroup, Plus, Textarea } from "@openbot/ui";
+import { Button, buttonVariants, Input, ItemActions, ItemGroup, Plus, Textarea } from "@aikingbot/ui";
 import {
   SettingsField,
   SettingsLinkGroup,
@@ -6,15 +6,15 @@ import {
   SettingsPanel,
   SettingsPanelContent,
   SettingsPanelHeader,
-} from "@openbot/ui/components/SettingsPanel";
-import { ChannelMemberRow } from "@openbot/ui/features/channels/ChannelMemberRow";
+} from "@aikingbot/ui/components/SettingsPanel";
+import { ChannelMemberRow } from "@aikingbot/ui/features/channels/ChannelMemberRow";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { saveSettingsPanelWidth } from "../src/components/settings-panel-width";
 import AgentSettingsPanel from "../src/features/conversation/AgentSettingsPanel";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_AGENTS, STORY_MODELS } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 /*
  * The channel panel and the agent panel open in the same slot, so this file draws them together:
@@ -22,7 +22,7 @@ import { createMockOpenBot } from "./mock-openbot";
  *
  * The channel body is written out here rather than mounted from `ChannelEditor`, because that
  * component reads the channels context, which needs the account, server and agent contexts and a
- * channel-aware `window.openbot` behind it. What is under test here is the shared panel, and the
+ * channel-aware `window.aikingbot` behind it. What is under test here is the shared panel, and the
  * body below uses the same components the editor does.
  */
 
@@ -97,12 +97,12 @@ function ChannelPanelStory(props: { title: string; body: () => ReturnType<typeof
 
 /** The agent panel beside it, so the two headers and the two field stacks can be compared. */
 function AgentPanelStory() {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot({});
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT({});
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return (
     <main class="conversation-panel agent-memories-story-stage" style="--settings-panel-width: 296px">

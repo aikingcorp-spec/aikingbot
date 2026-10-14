@@ -1,4 +1,4 @@
-import type { MobileFeature } from "@openbot/contracts/mobile-features";
+import type { MobileFeature } from "@aikingbot/contracts/mobile-features";
 
 /**
  * Development builds only. Set a feature to `true` or `false` and save: Fast Refresh shows the result,

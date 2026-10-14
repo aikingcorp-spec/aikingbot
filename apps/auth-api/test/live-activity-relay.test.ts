@@ -23,7 +23,7 @@ async function sender(respond: () => Response) {
       privateKey: await exportPKCS8(privateKey),
       keyId: "KEY1234567",
       teamId: "ZTRDTUL87R",
-      topic: "run.openbot.mobile",
+      topic: "run.aikingbot.mobile",
     },
     fetch,
   );
@@ -42,7 +42,7 @@ describe("Live Activity relay", () => {
     expect(url).toBe(`https://api.push.apple.com/3/device/${token}`);
     expect(init?.headers).toMatchObject({
       "apns-push-type": "liveactivity",
-      "apns-topic": "run.openbot.mobile.push-type.liveactivity",
+      "apns-topic": "run.aikingbot.mobile.push-type.liveactivity",
       "apns-priority": "10",
     });
     expect(JSON.parse(String(init?.body))).toEqual({
@@ -65,9 +65,9 @@ describe("Live Activity relay", () => {
     expect(await runApiEffect(apns.send(push))).toBe("sent");
     const [, init] = fetch.mock.calls[0] ?? [];
     expect(JSON.parse(String(init?.body)).aps.alert).toEqual({
-      title: "OpenBot",
-      body: "OpenBot",
-      sound: "openbot-bubble.wav",
+      title: "AIKINGBOT",
+      body: "AIKINGBOT",
+      sound: "aikingbot-bubble.wav",
     });
   });
 

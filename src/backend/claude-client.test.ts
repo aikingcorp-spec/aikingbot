@@ -3,9 +3,9 @@
 import { chmod, mkdtemp, readlink, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import type { CanUseTool, ModelInfo, SDKUserMessage, SessionMessage } from "@anthropic-ai/claude-agent-sdk";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { VISIBLE_DYNAMIC_TOOLS } from "./agent/tool-catalog";
@@ -229,7 +229,7 @@ describe("ClaudeAgentClient", () => {
   });
 
   it("streams a Claude SDK turn through the App Server event contract", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-client-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-client-"));
     const sharedRoot = join(root, "shared");
     const executable = join(root, "claude");
     await writeFile(
@@ -254,9 +254,9 @@ fi
       });
       const options: DynamicRecord | null = isDynamicRecord(params.options) ? params.options : null;
       const mcpServers: DynamicRecord | null = isDynamicRecord(options?.mcpServers) ? options.mcpServers : null;
-      expect(mcpServers?.openbot_browser).toBeUndefined();
-      const openbotServer = mcpServers?.openbot;
-      const serverInstance = isDynamicRecord(openbotServer) ? openbotServer.instance : null;
+      expect(mcpServers?.aikingbot_browser).toBeUndefined();
+      const aikingbotServer = mcpServers?.aikingbot;
+      const serverInstance = isDynamicRecord(aikingbotServer) ? aikingbotServer.instance : null;
       const registeredTools = isDynamicRecord(serverInstance) ? serverInstance._registeredTools : null;
       // Compare the declarations passed to the providers, including schema constraints and guidance.
       // Claude uses the SDK's AskUserQuestion instead of the ask_user MCP tool.
@@ -353,7 +353,7 @@ fi
     });
     await waitFor(() => notifications.some((event) => event.method === "turn/completed"));
 
-    expect(notifications.find((event) => event.method === "openbot/usage")?.params).toMatchObject({
+    expect(notifications.find((event) => event.method === "aikingbot/usage")?.params).toMatchObject({
       turnId: deliveryId,
       modelUsage: {
         "claude-sonnet-5": {
@@ -569,7 +569,7 @@ fi
   });
 
   it("uses alias-only discovery values for Claude SDK model selection", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-model-alias-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-model-alias-"));
     const discoveryQuery = new TestQuery(new TestQueue<TestStreamMessage>(), [
       {
         value: "sonnet",
@@ -615,7 +615,7 @@ fi
   });
 
   it("keeps neutral UI effort for unsupported models without sending effort to Claude", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-effort-support-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-effort-support-"));
     const discoveryQuery = new TestQuery(new TestQueue<TestStreamMessage>(), [
       {
         value: "haiku",
@@ -720,7 +720,7 @@ fi
   ])(
     "reuses a resumed query and applies live settings: $model/$effort",
     async ({ model, effort, expectedModel, expectedEffort }) => {
-      root = await mkdtemp(join(tmpdir(), "openbot-claude-live-resume-"));
+      root = await mkdtemp(join(tmpdir(), "aikingbot-claude-live-resume-"));
       const queries: TestQuery[] = [];
       const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.280" }, () => {
         const query = new TestQuery(new TestQueue<TestStreamMessage>());
@@ -744,7 +744,7 @@ fi
   );
 
   it("reports native compaction and reads local context without a model turn", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-context-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-context-"));
     const output = new TestQueue<TestStreamMessage>();
     const contextRead = vi.fn(async () => ({ totalTokens: 41000, rawMaxTokens: 200000 }));
     class ContextQuery extends TestQuery {
@@ -783,7 +783,7 @@ fi
     expect(contextRead).toHaveBeenCalledWith({ detail: "summary" });
     expect(notifications.filter((event) => event.method === "turn/started")).toHaveLength(1);
     expect(
-      notifications.filter((event) => event.method === "openbot/context-compaction").map((event) => event.params),
+      notifications.filter((event) => event.method === "aikingbot/context-compaction").map((event) => event.params),
     ).toEqual([
       { threadId: thread.thread.id, status: "running" },
       { threadId: thread.thread.id, status: "completed" },
@@ -796,7 +796,7 @@ fi
   });
 
   it("sends changed memories with the next turn and keeps the query and its system prompt", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-memory-resume-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-memory-resume-"));
     // Long enough that the change alone is shorter than the full block.
     const saved = ["release", "deploy", "review"].map((topic) => ({
       id: `memory-${topic}`,
@@ -858,7 +858,9 @@ fi
     expect(await runTurn("11111111-1111-4111-8111-111111111111")).toEqual([
       {
         type: "text",
-        text: expect.stringMatching(/^<openbot_saved_memories>\n[\s\S]*memory-review[\s\S]*You have 3 saved memories/),
+        text: expect.stringMatching(
+          /^<aikingbot_saved_memories>\n[\s\S]*memory-review[\s\S]*You have 3 saved memories/,
+        ),
       },
       { type: "text", text: "Hello" },
     ]);
@@ -874,7 +876,7 @@ fi
       {
         type: "text",
         text: expect.stringMatching(
-          /^<openbot_saved_memories_update>\n[\s\S]*Uses metric units\.[\s\S]*\["memory-release"\]\nYou have 4 saved memories/,
+          /^<aikingbot_saved_memories_update>\n[\s\S]*Uses metric units\.[\s\S]*\["memory-release"\]\nYou have 4 saved memories/,
         ),
       },
       { type: "text", text: "Hello" },
@@ -883,10 +885,10 @@ fi
     // A compaction summary can drop the memory blocks, so the agent gets all of them again.
     output.push({ type: "system", subtype: "compact_boundary", compact_metadata: { pre_tokens: 1, post_tokens: 1 } });
     await vi.waitFor(() =>
-      expect(notifications.some((event) => event.method === "openbot/context-compaction")).toBe(true),
+      expect(notifications.some((event) => event.method === "aikingbot/context-compaction")).toBe(true),
     );
     expect(await runTurn("44444444-4444-4444-8444-444444444444")).toEqual([
-      { type: "text", text: expect.stringMatching(/^<openbot_saved_memories>\n[\s\S]*Uses metric units\./) },
+      { type: "text", text: expect.stringMatching(/^<aikingbot_saved_memories>\n[\s\S]*Uses metric units\./) },
       { type: "text", text: "Hello" },
     ]);
 
@@ -897,7 +899,7 @@ fi
   });
 
   it("restarts an inactive session when resumed with an updated profile", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-profile-resume-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-profile-resume-"));
     const instructions: string[] = [];
     const snapshots: unknown[] = [];
     const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.280" }, (params) => {
@@ -931,7 +933,7 @@ fi
   });
 
   it("closes an idle thread's process and resumes the same session on the next turn", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-idle-release-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-idle-release-"));
     const spawned: Array<{ query: TestQuery; options: DynamicRecord | null }> = [];
     const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.231" }, (params) => {
       const query = new TestQuery(new TestQueue<TestStreamMessage>());
@@ -966,7 +968,7 @@ fi
   });
 
   it("keeps the process of a thread whose background subagents still run", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-background-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-background-"));
     const output = new TestQueue<TestStreamMessage>();
     const query = new TestQuery(output);
     const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.231" }, () => query);
@@ -1002,7 +1004,7 @@ fi
   });
 
   it("shows the answer of a turn that the CLI starts when a background subagent ends", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-unprompted-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-unprompted-"));
     const output = new TestQueue<TestStreamMessage>();
     const query = new TestQuery(output);
     const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.231" }, () => query);
@@ -1061,7 +1063,7 @@ fi
   });
 
   it("keeps only the most recently idle thread processes and resumes a released one", async () => {
-    root = await mkdtemp(join(tmpdir(), "openbot-claude-idle-limit-"));
+    root = await mkdtemp(join(tmpdir(), "aikingbot-claude-idle-limit-"));
     const spawned: Array<{ query: TestQuery; output: TestQueue<TestStreamMessage>; options: DynamicRecord | null }> =
       [];
     const client = new ClaudeAgentClient({ executable: "/bin/true", version: "2.1.231" }, (params) => {
@@ -1800,7 +1802,7 @@ async function createHarness(history?: SessionMessage[]): Promise<{
   prompt: AsyncIterable<SDKUserMessage>;
   threadId: string;
 }> {
-  root = await mkdtemp(join(tmpdir(), "openbot-claude-client-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-claude-client-"));
   const output = new TestQueue<TestStreamMessage>();
   let prompt: AsyncIterable<SDKUserMessage> | null = null;
   const generator = new TestQuery(output);
@@ -2053,7 +2055,7 @@ it("hands the enabled MCP servers to the spawn and keeps the bridge names", asyn
     mcpConfig({ id: "mcp-2", name: "Disabled", enabled: false }),
     // All four providers key MCP servers by name, so a configuration taking a bridge name would
     // displace the tools the agent depends on.
-    mcpConfig({ id: "mcp-3", name: "openbot", command: "/bin/echo" }),
+    mcpConfig({ id: "mcp-3", name: "aikingbot", command: "/bin/echo" }),
   ];
   const client = new ClaudeAgentClient(
     { executable: "/bin/true", version: "2.1.251" },
@@ -2072,11 +2074,11 @@ it("hands the enabled MCP servers to the spawn and keeps the bridge names", asyn
     const servers = isDynamicRecord(started?.mcpServers) ? started.mcpServers : {};
     expect(servers.Filesystem).toMatchObject({ type: "stdio", command: "/bin/echo", args: ["ready"] });
     expect(servers.Disabled).toBeUndefined();
-    expect(isDynamicRecord(servers.openbot) ? servers.openbot.instance : null).toBeTruthy();
+    expect(isDynamicRecord(servers.aikingbot) ? servers.aikingbot.instance : null).toBeTruthy();
     /*
      * The record above is the whole set. Without the flag, Claude adds the servers of project
      * `.mcp.json`, user settings, plugins and agent frontmatter to it - including one that takes
-     * the bridge name `openbot` - and the panel stops describing what the agent has. The setting
+     * the bridge name `aikingbot` - and the panel stops describing what the agent has. The setting
      * sources stay, because the flag takes away MCP and leaves permissions and hooks.
      */
     expect(started?.strictMcpConfig).toBe(true);
@@ -2091,7 +2093,7 @@ it("hands the enabled MCP servers to the spawn and keeps the bridge names", asyn
 it("keeps the workspace settings out of a Workspace only thread and still loads its skills", async () => {
   const query = new TestQuery(new TestQueue<TestStreamMessage>());
   const spawned: DynamicRecord[] = [];
-  const root = await mkdtemp(join(tmpdir(), "openbot-claude-workspace-only-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-claude-workspace-only-"));
   const cwd = join(root, "workspace");
   const client = new ClaudeAgentClient(
     { executable: "/bin/true", version: "2.1.251" },
@@ -2139,7 +2141,7 @@ it("reports an MCP server whose command this machine does not have", async () =>
     undefined,
     () => [
       mcpConfig({ id: "mcp-1", name: "Filesystem", command: "/bin/echo", args: ["ready"] }),
-      mcpConfig({ id: "mcp-2", name: "Missing", command: "openbot-not-a-real-command" }),
+      mcpConfig({ id: "mcp-2", name: "Missing", command: "aikingbot-not-a-real-command" }),
     ],
     reportMcpDrops,
   );
@@ -2147,7 +2149,7 @@ it("reports an MCP server whose command this machine does not have", async () =>
   try {
     await runCauseEffect(client.request("thread/start", { cwd: process.cwd() }, decodeThreadResponse));
     expect(reportMcpDrops).toHaveBeenCalledWith("claude", [
-      { name: "Missing", reason: "command_not_found", detail: "Command not found: openbot-not-a-real-command" },
+      { name: "Missing", reason: "command_not_found", detail: "Command not found: aikingbot-not-a-real-command" },
     ]);
     const servers = isDynamicRecord(spawned.at(-1)?.mcpServers) ? spawned.at(-1)?.mcpServers : {};
     expect(isDynamicRecord(servers) ? servers.Missing : null).toBeUndefined();

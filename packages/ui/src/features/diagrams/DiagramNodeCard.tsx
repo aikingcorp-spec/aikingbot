@@ -5,7 +5,7 @@
  * it and draws connections from its ports, and finds it through the `data-diagram-*` attributes.
  */
 
-import { Button, Check, Clock3, Minus, Play, Spinner, TriangleAlert, Webhook, X } from "@openbot/ui";
+import { Button, Check, Clock3, Minus, Play, Spinner, TriangleAlert, Webhook, X } from "@aikingbot/ui";
 import { For, Match, Show, Switch } from "solid-js";
 import type { AvatarMood } from "../../bloub-avatar";
 import type { AgentProfile } from "../../data";

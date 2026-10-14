@@ -1,12 +1,12 @@
 import { Effect } from "effect";
 // @vitest-environment node
 
-import { IPC_ENDPOINTS, LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
-import { sourceText } from "@openbot/i18n/source";
+import { IPC_ENDPOINTS, LOCAL_SERVER_ID } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@aikingbot/contracts/team-protocol/events-v1";
+import { teamSideRouteCodec } from "@aikingbot/contracts/team-protocol/side-routes";
+import { sourceText } from "@aikingbot/i18n/source";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { type HostEventsApi, HostEventsFailure } from "../host-events-api";
 import type { ResponseDecoder } from "../remote-host-decoding";
@@ -26,7 +26,7 @@ vi.mock("electron", () => ({
   ipcMain: { handle: (channel: string, invoke: Invoke) => bound.set(channel, invoke) },
 }));
 
-const TRUSTED_EVENT = { senderFrame: { url: "openbot-app://app/index.html" } };
+const TRUSTED_EVENT = { senderFrame: { url: "aikingbot-app://app/index.html" } };
 
 function unusedEvents(): HostEventsApi {
   const unused = () => Effect.fail(new HostEventsFailure({ cause: new Error("unused in this test") }));
@@ -124,9 +124,9 @@ describe("events-v1 over a real host", () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            "OpenBot-App-Version": APP_VERSION,
-            "OpenBot-Protocol-Version": "7",
-            "OpenBot-Capabilities": TEAM_CURRENT_CAPABILITIES.join(","),
+            "AIKINGBOT-App-Version": APP_VERSION,
+            "AIKINGBOT-Protocol-Version": "7",
+            "AIKINGBOT-Capabilities": TEAM_CURRENT_CAPABILITIES.join(","),
           },
           body:
             init.body === undefined ? null : JSON.stringify(sideRoute ? sideRoute.request(path, init.body) : init.body),

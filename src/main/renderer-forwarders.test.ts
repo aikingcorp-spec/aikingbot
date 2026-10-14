@@ -1,9 +1,9 @@
 import { remoteCall } from "./remote-service-effects";
 // @vitest-environment node
 
-import type { AgentEvent, AgentSummary, ConversationMessage, ServerSummary } from "@openbot/contracts/ipc";
-import { createFormat, translateFor } from "@openbot/i18n";
-import type { AgentNotificationContent } from "@openbot/team-client/agent-notifications";
+import type { AgentEvent, AgentSummary, ConversationMessage, ServerSummary } from "@aikingbot/contracts/ipc";
+import { createFormat, translateFor } from "@aikingbot/i18n";
+import type { AgentNotificationContent } from "@aikingbot/team-client/agent-notifications";
 import { BrowserWindow } from "electron";
 import { assert, beforeEach, expect, it, vi } from "vitest";
 import { createRendererForwarders } from "./renderer-forwarders";

@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 
 /** The process scan failed. The cause is the message the install refusal shows. */
@@ -8,11 +8,11 @@ export class SiblingScanFailed extends Schema.TaggedError<SiblingScanFailed>()("
 }) {}
 
 /**
- * Another OpenBot process running from the same application bundle. On a Mac shared by several
+ * Another AIKINGBOT process running from the same application bundle. On a Mac shared by several
  * macOS users this is how one tenant finds the others: the bundle is shared, the network
  * namespace is shared, and replacing the bundle under a live session breaks it.
  */
-export interface OpenBotSiblingInstance {
+export interface AIKINGBOTSiblingInstance {
   pid: number;
   uid: number;
 }
@@ -35,9 +35,9 @@ interface SiblingScanInput {
  * with `--type=` arguments, so a scan there always finds this session's own children. An AppImage
  * also mounts at a new path for each launch, so no other session can share the executable path.
  */
-export function listSiblingOpenBotInstances(
+export function listSiblingAIKINGBOTInstances(
   input: SiblingScanInput,
-): Effect.Effect<OpenBotSiblingInstance[], SiblingScanFailed> {
+): Effect.Effect<AIKINGBOTSiblingInstance[], SiblingScanFailed> {
   return Effect.suspend(() => {
     const platform = input.platform ?? process.platform;
     if (platform !== "darwin") return Effect.succeed([]);
@@ -50,8 +50,8 @@ export function listSiblingOpenBotInstances(
 export function parseSiblingInstances(
   output: string,
   input: Pick<SiblingScanInput, "executablePath" | "currentPid">,
-): OpenBotSiblingInstance[] {
-  const siblings: OpenBotSiblingInstance[] = [];
+): AIKINGBOTSiblingInstance[] {
+  const siblings: AIKINGBOTSiblingInstance[] = [];
   if (!input.executablePath.trim()) return siblings;
   for (const line of output.split("\n")) {
     const match = /^\s*(\d+)\s+(\d+)\s+(.+?)\s*$/.exec(line);

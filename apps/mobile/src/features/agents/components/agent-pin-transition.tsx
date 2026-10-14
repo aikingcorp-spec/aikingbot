@@ -1,4 +1,4 @@
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
 import {
   createContext,
   type PropsWithChildren,

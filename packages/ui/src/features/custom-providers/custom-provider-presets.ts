@@ -1,7 +1,7 @@
 // The starting points of the add flow. A preset only fills the form: the user still sees and can
-// change every field before OpenBot saves anything.
+// change every field before AIKINGBOT saves anything.
 
-import { DEFAULT_MODEL_SERVERS, type DefaultModelServerId, detectedModelServerKey } from "@openbot/contracts/ipc";
+import { DEFAULT_MODEL_SERVERS, type DefaultModelServerId, detectedModelServerKey } from "@aikingbot/contracts/ipc";
 import type { DetectedProvider, ProviderDetection } from "./detected-providers";
 
 export type CustomProviderPresetId = "ollama" | "lmstudio" | "openai-compatible" | "acp";

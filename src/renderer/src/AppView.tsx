@@ -1,4 +1,4 @@
-import { useText } from "@openbot/ui/text";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, Loading, Show } from "solid-js";
 import { useAuth } from "./features/account/account-context";
 import { useProviderDetection } from "./features/custom-providers/provider-detection-context";
@@ -59,7 +59,7 @@ export function AppAccessGate() {
   );
   // A startup mark for `dev:bench`: the first moment the app can leave the splash.
   createEffect(started, (ready) => {
-    if (ready) performance.mark("openbot:app-started");
+    if (ready) performance.mark("aikingbot:app-started");
   });
 
   return (

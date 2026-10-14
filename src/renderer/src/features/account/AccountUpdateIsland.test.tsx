@@ -1,5 +1,5 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { AccountUpdateIsland } from "@openbot/ui/features/account/AccountUpdateIsland";
+import type { UpdateStatus } from "@aikingbot/contracts/ipc";
+import { AccountUpdateIsland } from "@aikingbot/ui/features/account/AccountUpdateIsland";
 import { render, screen } from "@solidjs/testing-library";
 import { createSignal, flush } from "solid-js";
 import { describe, expect, it, vi } from "vitest";

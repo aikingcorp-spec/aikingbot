@@ -1,8 +1,8 @@
-import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@openbot/ui/features/sidebar/sidebar-pins";
+import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@aikingbot/ui/features/sidebar/sidebar-pins";
 import { z } from "zod";
 export type SidebarPinsByServer = Record<string, SidebarPinnedItem[]>;
 
-export const SIDEBAR_PINS_STORAGE_KEY = "openbot:sidebar-pins:v1";
+export const SIDEBAR_PINS_STORAGE_KEY = "aikingbot:sidebar-pins:v1";
 
 type SidebarPinStorage = Pick<Storage, "getItem" | "setItem">;
 

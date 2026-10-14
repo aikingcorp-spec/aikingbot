@@ -18,7 +18,7 @@ const cipher = {
 };
 
 async function createStore(): Promise<{ path: string; store: ProviderCredentialStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-provider-credentials-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-credentials-"));
   const path = join(root, "credentials.json");
   const store = new ProviderCredentialStore(path, cipher);
   await Effect.runPromise(store.load());
@@ -59,7 +59,7 @@ describe("ProviderCredentialStore", () => {
 
   it("reports an envelope it cannot understand, and leaves it on disk", async () => {
     const { path } = await createStore();
-    // Startup continues past this file: a key OpenBot cannot read must not stop the app, and it
+    // Startup continues past this file: a key AIKINGBOT cannot read must not stop the app, and it
     // must not be read as "no key" and then written over by the next unrelated save.
     for (const envelope of [
       { version: 2, credentials: {} },
@@ -165,10 +165,10 @@ describe("ProviderCredentialStore", () => {
   });
 
   it("refuses to report a key before it is loaded", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-provider-credentials-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-provider-credentials-"));
     const store = new ProviderCredentialStore(join(root, "credentials.json"), cipher);
     // Reporting "no key" here would start the free tier for a user who paid for the full catalog,
-    // and the mistake would look like an OpenCode fault rather than a load OpenBot never ran.
+    // and the mistake would look like an OpenCode fault rather than a load AIKINGBOT never ran.
     expect(() => store.get("opencode")).toThrow();
   });
 });

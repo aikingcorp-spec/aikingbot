@@ -1,9 +1,9 @@
 import { EventEmitter } from "node:events";
 import { join } from "node:path";
-import type { RemoteDesktopIceServer } from "@openbot/contracts/ipc";
-import type { IceServer } from "@openbot/contracts/signal-protocol/messages";
-import type { RemoteMemberRole } from "@openbot/contracts/signal-protocol/ticket";
-import { sourceText } from "@openbot/i18n/source";
+import type { RemoteDesktopIceServer } from "@aikingbot/contracts/ipc";
+import type { IceServer } from "@aikingbot/contracts/signal-protocol/messages";
+import type { RemoteMemberRole } from "@aikingbot/contracts/signal-protocol/ticket";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import { BrowserWindow, MessageChannelMain, type MessagePortMain } from "electron";
 import { z } from "zod";
@@ -227,7 +227,7 @@ export class TeamWebRtcBridge extends EventEmitter<TeamWebRtcBridgeEvents> {
     yield* remoteCall(() =>
       this.#options.developmentUrl
         ? window.loadURL(new URL("team-webrtc.html", `${this.#options.developmentUrl}/`).toString())
-        : window.loadURL("openbot-app://app/team-webrtc.html"),
+        : window.loadURL("aikingbot-app://app/team-webrtc.html"),
     );
     const { port1, port2 } = yield* remoteDecode(() => new MessageChannelMain());
     this.#port = port1;
@@ -242,7 +242,7 @@ export class TeamWebRtcBridge extends EventEmitter<TeamWebRtcBridgeEvents> {
       port1.start();
     });
     yield* Effect.gen(function* () {
-      yield* remoteDecode(() => window.webContents.postMessage("openbot-team-webrtc-port", null, [port2]));
+      yield* remoteDecode(() => window.webContents.postMessage("aikingbot-team-webrtc-port", null, [port2]));
       yield* Deferred.await(ready).pipe(
         Effect.timeoutOrElse({
           duration: 10_000,

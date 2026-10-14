@@ -1,4 +1,4 @@
-import { createIngressQueueKeyPair } from "@openbot/contracts/signal-protocol/ingress-queue";
+import { createIngressQueueKeyPair } from "@aikingbot/contracts/signal-protocol/ingress-queue";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { IngressQueue, type RouteWake, type RouteWaker } from "../src/ingress-queue";

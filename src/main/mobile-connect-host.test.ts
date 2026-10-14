@@ -8,7 +8,7 @@ const binding = { hostId: "host-a", fingerprint: "a".repeat(43) };
 describe("createHostedMobileConnect", () => {
   it("creates and starts a local server before issuing the pairing code", async () => {
     const operations: string[] = [];
-    const ticket = { qrData: "openbot://mobile-connect?ticket=test", expiresAt: Date.now() + 60_000 };
+    const ticket = { qrData: "aikingbot://mobile-connect?ticket=test", expiresAt: Date.now() + 60_000 };
 
     await expect(
       runCauseEffect(
@@ -35,7 +35,7 @@ describe("createHostedMobileConnect", () => {
                 return {
                   serverId: binding.hostId,
                   apiOnline: true,
-                  apiUrl: "wss://signal.openbot.run/v1/signal",
+                  apiUrl: "wss://signal.aikingbot.aikingx.com/v1/signal",
                   message: null,
                   phase: "online" as const,
                 };
@@ -56,7 +56,7 @@ describe("createHostedMobileConnect", () => {
           createMobileConnect: () =>
             Effect.sync(() => {
               operations.push("ticket");
-              return { qrData: "openbot://mobile-connect?ticket=test", expiresAt: Date.now() + 60_000 };
+              return { qrData: "aikingbot://mobile-connect?ticket=test", expiresAt: Date.now() + 60_000 };
             }),
         },
         host: {
@@ -73,7 +73,7 @@ describe("createHostedMobileConnect", () => {
               return {
                 serverId: binding.hostId,
                 apiOnline: true,
-                apiUrl: "wss://signal.openbot.run/v1/signal",
+                apiUrl: "wss://signal.aikingbot.aikingx.com/v1/signal",
                 message: null,
                 phase: "online" as const,
               };

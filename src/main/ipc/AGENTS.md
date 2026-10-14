@@ -11,12 +11,12 @@ here registers anything: `index.ts` spreads them all into `registerIpcGroups`, w
    endpoints are typed except `browserInput.sendLiveViewInput`: the renderer sends `BrowserLiveViewInput`
    and main decodes the different wire `BrowserViewInput`. Do not add another `untypedRequest(...)`.
 2. In a group the preload builds with `bridgeGroup`, skip this step: the method exists already. A
-   new group needs only its place in `IPC_GROUP_PATHS`, beside `IPC_ENDPOINTS`; `OpenBotDesktopApi`
-   is built from that table. In a hand-written group, declare the `OpenBotDesktopApi` method as
+   new group needs only its place in `IPC_GROUP_PATHS`, beside `IPC_ENDPOINTS`; `AIKINGBOTDesktopApi`
+   is built from that table. In a hand-written group, declare the `AIKINGBOTDesktopApi` method as
    `Invoke<typeof IPC_ENDPOINTS.group.name>` (or `Subscribe<...>` for an event).
 3. Run `bun run typecheck:node`, then `bun run typecheck:renderer`. The errors name the file to
    change and the key to add.
-4. Add the handler here and the method in `src/renderer/src/preview/mock-openbot.ts`, or in the
+4. Add the handler here and the method in `src/renderer/src/preview/mock-aikingbot.ts`, or in the
    `mock-*.ts` module there that owns the group, such as `mock-team.ts`. In the preload,
    a bridged group needs one decoder in its `bridgeGroup` map (`TS2741` names it). A hand-written group
    needs the call (`invokeAgentForServer` for a server-scoped payload, `ipcRenderer.invoke` for the

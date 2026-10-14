@@ -13,7 +13,7 @@ export function CompareIndexPage(props: CompareIndexPageProps) {
   return (
     <DataIndexPage
       collection={props.collection}
-      title="Compare OpenBot"
+      title="Compare AIKINGBOT"
       label="Comparisons"
       action="Read the comparison"
       marks={(article) => <Show when={COMPARISONS[article.slug]}>{(page) => <CompareCardMarks page={page()} />}</Show>}
@@ -41,7 +41,7 @@ function CompareCardMarks(props: { page: ComparePage }) {
         <CompareMarks
           small
           sides={[
-            { side: "openbot", name: "OpenBot" },
+            { side: "aikingbot", name: "AIKINGBOT" },
             { side: "rival", name: page.rival.name, mark: page.rival.mark },
           ]}
         />

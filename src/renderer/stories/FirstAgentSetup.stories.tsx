@@ -5,7 +5,7 @@ import {
   FirstAgentSetup,
   type FirstAgentSetupProps,
   type FirstAgentSuggestion,
-} from "@openbot/ui/features/agents/FirstAgentSetup";
+} from "@aikingbot/ui/features/agents/FirstAgentSetup";
 import { createEffect, createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

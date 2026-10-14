@@ -1,6 +1,6 @@
 /** The sidebar's agent, channel and section confirmations share one pending delete state. */
 
-import { ConfirmDialog } from "@openbot/ui";
+import { ConfirmDialog } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";

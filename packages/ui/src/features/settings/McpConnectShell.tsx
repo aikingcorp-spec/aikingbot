@@ -19,8 +19,8 @@
  * stays out of the store until a connection with it worked.
  */
 
-import { AppLogo } from "@openbot/brand";
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
+import { AppLogo } from "@aikingbot/brand";
+import type { McpServerConfig, McpTestResult } from "@aikingbot/contracts/ipc";
 import {
   Alert,
   AlertContent,
@@ -31,7 +31,7 @@ import {
   IconButton,
   OctagonX,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createStore, Show } from "solid-js";
 import { useText } from "../../text";

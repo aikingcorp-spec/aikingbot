@@ -3,7 +3,7 @@
 import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Fiber } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CodexAppServerClient } from "./app-server-client";
@@ -309,7 +309,7 @@ function createClient(executable: string, timeout: number): CodexAppServerClient
 }
 
 async function createFakeCodex(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-fake-codex-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-fake-codex-"));
   temporaryRoots.push(root);
   const executable = join(root, "codex");
   await writeFile(

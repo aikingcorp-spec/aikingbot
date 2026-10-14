@@ -1,13 +1,13 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
- * What the account context reaches in main: the OpenBot account session, its devices, and the
+ * What the account context reaches in main: the AIKINGBOT account session, its devices, and the
  * usage the account dock shows.
  */
 export interface AccountPort {
-  agent: Pick<OpenBotDesktopApi["agent"], "getUsage">;
+  agent: Pick<AIKINGBOTDesktopApi["agent"], "getUsage">;
   auth: Pick<
-    OpenBotDesktopApi["auth"],
+    AIKINGBOTDesktopApi["auth"],
     | "cancelMobileConnect"
     | "createMobileConnect"
     | "createMobileConnectLink"
@@ -28,7 +28,7 @@ export interface AccountPort {
   >;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function accountPort(): AccountPort {
-  return window.openbot;
+  return window.aikingbot;
 }

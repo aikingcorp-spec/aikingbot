@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 // @vitest-environment node
 
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
 import { describe, expect, it, vi } from "vitest";
 import type { BrowserIpcDependencies } from "./browser-handlers";
 
@@ -17,7 +17,7 @@ vi.mock("electron", () => ({
 
 const { browserIpcHandlers } = await import("./browser-handlers");
 
-const APP_FRAME = { senderFrame: { url: "openbot-app://app/index.html" } };
+const APP_FRAME = { senderFrame: { url: "aikingbot-app://app/index.html" } };
 const REMOTE = "studio-mac";
 const TAB = {
   id: "tab-1",

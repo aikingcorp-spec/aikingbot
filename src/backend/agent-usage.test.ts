@@ -2,16 +2,16 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { type AgentAnalyticsInput, parseAgentAnalyticsInput, type UsageTokens } from "@openbot/contracts/ipc";
+import { type AgentAnalyticsInput, parseAgentAnalyticsInput, type UsageTokens } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { collectProviderUsage } from "./agent/usage-collection";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
+import { migrateAIKINGBOTDatabase } from "./aikingbot-database-schema";
 import { recordUsageMessage, type UsageSample } from "./database/agent-usage";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
-import { migrateOpenBotDatabase } from "./openbot-database-schema";
 
 const roots: string[] = [];
-const databases: OpenBotDatabase[] = [];
+const databases: AIKINGBOTDatabase[] = [];
 afterEach(async () => {
   for (const db of databases.splice(0)) db.close();
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
@@ -35,9 +35,9 @@ const sample: UsageSample = {
   occurredAt: "2026-09-02T12:00:00Z",
 };
 async function database() {
-  const root = await mkdtemp(join(tmpdir(), "openbot-usage-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-usage-"));
   roots.push(root);
-  const db = new OpenBotDatabase(root);
+  const db = new AIKINGBOTDatabase(root);
   await runCauseEffect(db.initialize());
   databases.push(db);
   return db;
@@ -103,7 +103,7 @@ describe("local agent usage", () => {
       turnId: "turn-a",
       tokenUsage: { total: { inputTokens: 300, cachedInputTokens: 200, outputTokens: 50, reasoningOutputTokens: 20 } },
     });
-    collectProviderUsage(db.usage, agent, { ...session, provider: "claude" }, "openbot/usage", {
+    collectProviderUsage(db.usage, agent, { ...session, provider: "claude" }, "aikingbot/usage", {
       turnId: "turn-a",
       counterId: "query-a",
       modelUsage: {
@@ -116,7 +116,7 @@ describe("local agent usage", () => {
         },
       },
     });
-    collectProviderUsage(db.usage, agent, { ...session, provider: "grok" }, "openbot/usage", {
+    collectProviderUsage(db.usage, agent, { ...session, provider: "grok" }, "aikingbot/usage", {
       turnId: "turn-a",
       usage: { inputTokens: 100, outputTokens: 40 },
     });
@@ -279,7 +279,7 @@ describe("local agent usage", () => {
   it("upgrades v14 without touching existing data and rolls back a failed migration", () => {
     const db = new DatabaseSync(":memory:");
     try {
-      migrateOpenBotDatabase(db);
+      migrateAIKINGBOTDatabase(db);
       db.exec(
         "DROP TABLE agent_usage_records; DROP TABLE agent_usage_checkpoints; DROP TABLE agent_usage_activity; DELETE FROM schema_migrations WHERE version >= 15; CREATE TABLE preservation(value TEXT); INSERT INTO preservation VALUES ('keep'); CREATE TABLE agent_usage_date (conflict TEXT)",
       );
@@ -288,11 +288,11 @@ describe("local agent usage", () => {
       // The squatted name is the index's, not a table's: the migration creates its tables with
       // IF NOT EXISTS, and SQLite refuses an index whose name a table already holds however the
       // statement is spelled. What is under test is the rollback, not which object collides.
-      expect(() => migrateOpenBotDatabase(db)).toThrow("migration to version 15 failed");
+      expect(() => migrateAIKINGBOTDatabase(db)).toThrow("migration to version 15 failed");
       expect(db.prepare("SELECT name FROM sqlite_master WHERE name = 'agent_usage_records'").get()).toBeUndefined();
       expect(db.prepare("SELECT version FROM schema_migrations WHERE version = 15").get()).toBeUndefined();
       db.exec("DROP TABLE agent_usage_date");
-      migrateOpenBotDatabase(db);
+      migrateAIKINGBOTDatabase(db);
       expect(db.prepare("SELECT value FROM preservation").get()).toMatchObject({ value: "keep" });
       // A host-wide report constrains the date alone, so it can only seek on an index that
       // leads with `occurred_at`. Without these a report scans all retained history, and

@@ -5,7 +5,7 @@
  * selected routine shows what it asks for, which agents it starts, when it fires and how it went.
  */
 
-import { Badge, Button, ChevronLeft, CopyButton, Textarea } from "@openbot/ui";
+import { Badge, Button, ChevronLeft, CopyButton, Textarea } from "@aikingbot/ui";
 import { createEffect, createMemo, createSignal, For, flush, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

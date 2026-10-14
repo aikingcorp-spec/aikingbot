@@ -1,6 +1,6 @@
 /**
- * How much memory the computer that runs OpenBot has left. Only a hosted server gives one: its
- * machine is small, and one unit holds OpenBot, its browser tabs and every provider process. The main
+ * How much memory the computer that runs AIKINGBOT has left. Only a hosted server gives one: its
+ * machine is small, and one unit holds AIKINGBOT, its browser tabs and every provider process. The main
  * process reads the system; this file has no Electron import, so the backend can use it.
  */
 export type HostMemoryLevel = "ok" | "low" | "critical";

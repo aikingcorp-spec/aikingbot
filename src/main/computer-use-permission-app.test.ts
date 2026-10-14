@@ -3,8 +3,8 @@ import { applicationBundlePath, applicationIconName } from "./computer-use-permi
 
 describe("applicationBundlePath", () => {
   it("finds the bundle a packaged executable sits inside", () => {
-    expect(applicationBundlePath("/Applications/OpenBot.app/Contents/MacOS/OpenBot", "darwin")).toBe(
-      "/Applications/OpenBot.app",
+    expect(applicationBundlePath("/Applications/AIKINGBOT.app/Contents/MacOS/AIKINGBOT", "darwin")).toBe(
+      "/Applications/AIKINGBOT.app",
     );
   });
 
@@ -16,28 +16,28 @@ describe("applicationBundlePath", () => {
   });
 
   it("finds nothing for an executable in a plain directory", () => {
-    expect(applicationBundlePath("/usr/local/bin/openbot", "darwin")).toBeNull();
+    expect(applicationBundlePath("/usr/local/bin/aikingbot", "darwin")).toBeNull();
   });
 
   // Only macOS asks for a bundle in a permission list, so there is nothing to drag anywhere else.
   it("finds nothing away from macOS", () => {
-    expect(applicationBundlePath("/Applications/OpenBot.app/Contents/MacOS/OpenBot", "linux")).toBeNull();
+    expect(applicationBundlePath("/Applications/AIKINGBOT.app/Contents/MacOS/AIKINGBOT", "linux")).toBeNull();
   });
 });
 
 describe("applicationIconName", () => {
   it("prefers the icon named after the bundle", () => {
-    expect(applicationIconName("/Applications/OpenBot.app", ["document.icns", "openbot.icns", "en.lproj"])).toBe(
-      "openbot.icns",
+    expect(applicationIconName("/Applications/AIKINGBOT.app", ["document.icns", "aikingbot.icns", "en.lproj"])).toBe(
+      "aikingbot.icns",
     );
   });
 
   it("takes any icon the bundle carries", () => {
-    expect(applicationIconName("/Applications/OpenBot.app", ["app-picture.icns"])).toBe("app-picture.icns");
+    expect(applicationIconName("/Applications/AIKINGBOT.app", ["app-picture.icns"])).toBe("app-picture.icns");
   });
 
   // A drag with no image is refused, so the caller has to know there is nothing to draw.
   it("finds nothing in a bundle with no icon", () => {
-    expect(applicationIconName("/Applications/OpenBot.app", ["Info.plist"])).toBeNull();
+    expect(applicationIconName("/Applications/AIKINGBOT.app", ["Info.plist"])).toBeNull();
   });
 });

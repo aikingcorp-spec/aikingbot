@@ -9,7 +9,7 @@ export const messages = {
   "remoteDesktop.workspaceLabel": "Zdalne sterowanie",
   "remoteDesktop.displayLabel": "Zdalny ekran",
   "remoteDesktop.selectDisplay": "Wybierz ekran",
-  "remoteDesktop.backToOpenBot": "Wróć do OpenBot",
+  "remoteDesktop.backToAIKINGBOT": "Wróć do AIKINGBOT",
   "remoteDesktop.disconnect": "Rozłącz",
   "remoteDesktop.viewerTitle": "Zdalny pulpit Sunshine",
   "remoteDesktop.viewerLoadFailed": "Nie udało się wczytać podglądu Moonlight.",
@@ -20,7 +20,7 @@ export const messages = {
   "remoteDesktop.openFailed": "Nie udało się otworzyć pulpitu",
   "remoteDesktop.notSharingTitle": "{name} nie udostępnia ekranu",
   "remoteDesktop.notSharingDescription":
-    "Host blokuje OpenBot przed nagrywaniem ekranu. Na tamtym komputerze otwórz Ustawienia systemowe → Prywatność i ochrona → Nagrywanie ekranu, włącz OpenBot, a potem spróbuj ponownie tutaj.",
+    "Host blokuje AIKINGBOT przed nagrywaniem ekranu. Na tamtym komputerze otwórz Ustawienia systemowe → Prywatność i ochrona → Nagrywanie ekranu, włącz AIKINGBOT, a potem spróbuj ponownie tutaj.",
   "remoteDesktop.setup.check.screenRecording": "Nagrywanie ekranu",
   "remoteDesktop.setup.check.accessibility": "Dostępność",
   "remoteDesktop.setup.check.service": "Usługa Sunshine",
@@ -40,7 +40,7 @@ export const messages = {
   "remoteDesktop.setup.startFailed": "Nie udało się uruchomić testu zdalnego pulpitu.",
   "remoteDesktop.setup.connectionLost": "Utracono połączenie testowe.",
   "remoteDesktop.setup.hostUpdateRequired":
-    "Zaktualizuj OpenBot na hoście, aby sprawdzić uprawnienia i przetestować zdalny pulpit.",
+    "Zaktualizuj AIKINGBOT na hoście, aby sprawdzić uprawnienia i przetestować zdalny pulpit.",
   "remoteDesktop.setup.permissions": "Uprawnienia",
   "remoteDesktop.setup.checked": "Sprawdzono",
   "remoteDesktop.setup.checkAgain": "Sprawdź ponownie",

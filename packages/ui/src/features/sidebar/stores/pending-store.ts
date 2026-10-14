@@ -4,7 +4,7 @@
  * closing either is then what discards what the failed attempt was saying.
  */
 
-import type { ChannelSummary, SidebarSection } from "@openbot/contracts/ipc";
+import type { ChannelSummary, SidebarSection } from "@aikingbot/contracts/ipc";
 import { createMemo, createStore } from "solid-js";
 import { currentText } from "../../../text";
 import type { SidebarProps } from "../sidebar-types";

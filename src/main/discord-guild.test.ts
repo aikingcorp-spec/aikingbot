@@ -1,28 +1,28 @@
 // @vitest-environment node
 
-// End to end on the host half of the OpenBot Discord app: the real `SignalIngress` socket, the
+// End to end on the host half of the AIKINGBOT Discord app: the real `SignalIngress` socket, the
 // messaging core with its Discord driver, and `AgentService` with its SQLite database. Signal is a
 // local fake that speaks the `ingress` frames and answers the Discord calls at `DISCORD_API_PATH`, as
 // the real Signal does with the bot token. Signal's own Gateway and call checks are tested in
 // `remote/api/test`, and the Worker's install in `apps/auth-api/test/discord-app.test.ts`. Only the
 // provider is faked, as in every agent service test. Writes
-// .openbot-build/discord-guild-e2e/report.json.
+// .aikingbot-build/discord-guild-e2e/report.json.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { join, resolve } from "node:path";
-import { sealDiscordGuildGrant } from "@openbot/contracts/discord-guild-grant";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import type { DiscordDelivery, DiscordInboundMessage } from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_API_PATH } from "@openbot/contracts/signal-protocol/discord-route";
+import { sealDiscordGuildGrant } from "@aikingbot/contracts/discord-guild-grant";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import type { DiscordDelivery, DiscordInboundMessage } from "@aikingbot/contracts/signal-protocol/discord-api";
+import { DISCORD_API_PATH } from "@aikingbot/contracts/signal-protocol/discord-route";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { type WebSocket, WebSocketServer } from "ws";
 import type { AgentService } from "../backend/agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   inputRecords,
-  openBotToolPayload,
   startAgentTestFixture,
   startService,
   stopAgentTestFixture,
@@ -34,7 +34,7 @@ import { discordDriver } from "../backend/messaging/discord/discord-driver";
 import { type MessagingCredentials, MessagingService } from "../backend/messaging/messaging-service";
 import { SignalIngress } from "./signal-ingress";
 
-const REPORT_DIR = resolve(import.meta.dirname, "../../.openbot-build/discord-guild-e2e");
+const REPORT_DIR = resolve(import.meta.dirname, "../../.aikingbot-build/discord-guild-e2e");
 const GUILD_ID = "111";
 const CHANNEL_ID = "222";
 const APP_ID = "333";
@@ -199,7 +199,7 @@ afterEach(async () => {
   service = null;
 });
 
-describe.sequential("OpenBot Discord app end to end", () => {
+describe.sequential("AIKINGBOT Discord app end to end", () => {
   it("connects a guild, answers its mentions in a reply chain through Signal, and disconnects it", async () => {
     const started = await startService(root, { provider: "codex", autoComplete: true });
     service = started.service;
@@ -276,7 +276,7 @@ describe.sequential("OpenBot Discord app end to end", () => {
     await waitFor(() => signal.hellos.some((hello) => isString(hello.discordRoute) && routeTickets >= 2));
     expect(signal.hellos.every((hello) => hello.peer === "ingress" && hello.slackRoute === undefined)).toBe(true);
 
-    // A mention runs the agent once, however often Signal passes it on. OpenBot replies to it.
+    // A mention runs the agent once, however often Signal passes it on. AIKINGBOT replies to it.
     // The status post is rate limited once: it waits, and arrives.
     signal.rateLimitNext = "createMessage";
     signal.deliver(GUILD_ID, mention("1000"));
@@ -294,7 +294,7 @@ describe.sequential("OpenBot Discord app end to end", () => {
     if (!link) throw new Error("The mention has no conversation.");
     expect(link.threadKey).toBe("1000");
 
-    // A reply to an OpenBot post continues the same conversation, which OpenBot still replies to.
+    // A reply to an AIKINGBOT post continues the same conversation, which AIKINGBOT still replies to.
     signal.deliver(GUILD_ID, mention("1001", { messageId: statusId, authorIsBot: true, rootId: "1000" }));
     await waitFor(() => turns().length === 2);
     await waitFor(() => signal.of("createMessage").filter((call) => call.replyTo === "1000").length >= 2);
@@ -328,7 +328,7 @@ describe.sequential("OpenBot Discord app end to end", () => {
       {
         id: "991",
         authorId: APP_ID,
-        authorName: "OpenBot",
+        authorName: "AIKINGBOT",
         authorIsBot: true,
         content: "Done.",
         replyToId: null,
@@ -339,13 +339,13 @@ describe.sequential("OpenBot Discord app end to end", () => {
     const session = namedLink && started.store.database.listProviderSessions(namedLink.threadId).at(-1);
     if (!session) throw new Error("The named mention has no session.");
     const listedBefore = signal.of("listMessages").length;
-    const history = await callOpenBotTool(started.client, session.externalSessionId, "tool_call", {
-      name: "openbot.messaging_history",
+    const history = await callAIKINGBOTTool(started.client, session.externalSessionId, "tool_call", {
+      name: "aikingbot.messaging_history",
       arguments: {},
     });
-    expect(openBotToolPayload(history.result).messages).toEqual([
+    expect(aikingBotToolPayload(history.result).messages).toEqual([
       { author: "Bob", sentAt: "2026-10-06T09:00:00.000Z", text: "@Alice see @Bob" },
-      { author: "OpenBot (bot)", sentAt: "2026-10-06T09:01:00.000Z", text: "Done." },
+      { author: "AIKINGBOT (bot)", sentAt: "2026-10-06T09:01:00.000Z", text: "Done." },
     ]);
     const historyCalls = signal.of("listMessages").slice(listedBefore);
     expect(historyCalls.length).toBeGreaterThan(0);
@@ -356,7 +356,7 @@ describe.sequential("OpenBot Discord app end to end", () => {
     // An event of a guild that this host does not have does nothing.
     signal.deliver("999", mention("1003"));
 
-    // OpenBot was removed from the guild: the connection stops, and Signal stops routing it here.
+    // AIKINGBOT was removed from the guild: the connection stops, and Signal stops routing it here.
     signal.deliver(GUILD_ID, { kind: "removed" });
     await waitFor(() => connection()?.state === "invalid_token");
     expect(unlinked).toEqual([GUILD_ID]);

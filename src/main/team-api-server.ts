@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_RUNTIME_SNAPSHOT_BYTES_LIMIT,
   type AgentEvent,
@@ -22,10 +22,10 @@ import {
   type TeamMemberSummary,
   type TeamPresenceSnapshot,
   type TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { ACP_REGISTRY_CAPABILITY } from "@openbot/contracts/team-protocol/acp-registry-v1";
-import { AGENT_SESSION_SETTINGS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-session-settings-v1";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { ACP_REGISTRY_CAPABILITY } from "@aikingbot/contracts/team-protocol/acp-registry-v1";
+import { AGENT_SESSION_SETTINGS_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-session-settings-v1";
 import {
   AGENT_ADMIN_CAPABILITY,
   AGENT_HOST_SETTINGS_CAPABILITY,
@@ -66,15 +66,15 @@ import {
   TEAM_CURRENT_CAPABILITIES,
   TEAM_HISTORY_EXTENT_CAPABILITY,
   type TeamCurrentCapability,
-} from "@openbot/contracts/team-protocol/current";
+} from "@aikingbot/contracts/team-protocol/current";
 import {
   HOST_RESTART_EVENT,
   type HostRestartEvent,
   type HostRestartState,
-} from "@openbot/contracts/team-protocol/host-update-v1";
-import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
-import { optionalTeamEvent } from "@openbot/contracts/team-protocol/optional-events";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
+} from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { teamHttpCodec } from "@aikingbot/contracts/team-protocol/http-codecs";
+import { optionalTeamEvent } from "@aikingbot/contracts/team-protocol/optional-events";
+import { teamSideRouteCodec } from "@aikingbot/contracts/team-protocol/side-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_PROTOCOL_V1,
@@ -82,20 +82,20 @@ import {
   TEAM_PROTOCOL_V1_WEBSOCKET,
   TEAM_PROTOCOL_VERSION_HEADER,
   type TeamProtocolSupportV1,
-} from "@openbot/contracts/team-protocol/v1";
+} from "@aikingbot/contracts/team-protocol/v1";
 import {
   decodeTeamProtocolV1CurrentClientEvent,
   encodeTeamProtocolV1CurrentEvent,
-} from "@openbot/contracts/team-protocol/v1-adapter";
-import { encodeTeamProtocolV4BaseCurrentEvent } from "@openbot/contracts/team-protocol/v4-base-adapter";
-import { TEAM_LOCAL_PROVIDERS_CAPABILITY } from "@openbot/contracts/team-protocol/v5";
-import { encodeTeamProtocolV5BaseCurrentEvent } from "@openbot/contracts/team-protocol/v5-base-adapter";
-import { TEAM_CURSOR_CLINE_CAPABILITY } from "@openbot/contracts/team-protocol/v6";
-import { encodeTeamProtocolV6BaseCurrentEvent } from "@openbot/contracts/team-protocol/v6-base-adapter";
-import { TEAM_PI_MUSE_CAPABILITY, TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
-import { encodeTeamProtocolV7BaseCurrentEvent } from "@openbot/contracts/team-protocol/v7-base-adapter";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/team-protocol/v1-adapter";
+import { encodeTeamProtocolV4BaseCurrentEvent } from "@aikingbot/contracts/team-protocol/v4-base-adapter";
+import { TEAM_LOCAL_PROVIDERS_CAPABILITY } from "@aikingbot/contracts/team-protocol/v5";
+import { encodeTeamProtocolV5BaseCurrentEvent } from "@aikingbot/contracts/team-protocol/v5-base-adapter";
+import { TEAM_CURSOR_CLINE_CAPABILITY } from "@aikingbot/contracts/team-protocol/v6";
+import { encodeTeamProtocolV6BaseCurrentEvent } from "@aikingbot/contracts/team-protocol/v6-base-adapter";
+import { TEAM_PI_MUSE_CAPABILITY, TEAM_PROTOCOL_V7 } from "@aikingbot/contracts/team-protocol/v7";
+import { encodeTeamProtocolV7BaseCurrentEvent } from "@aikingbot/contracts/team-protocol/v7-base-adapter";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Scope } from "effect";
 import type * as Ws from "ws";
 import { AgentDuplicationFailed, duplicateAgentIntoLayout } from "../backend/agent/duplication-gate";
@@ -175,12 +175,12 @@ const RATE_LIMIT_SWEEP_MS = 60_000;
 const RATE_LIMIT_ATTEMPTS = 5;
 const RATE_LIMIT_CAPACITY = 10_000;
 const RUNTIME_SNAPSHOT_REQUEST_INTERVAL_MS = 1_000;
-const TEST_LEGACY_EVENT_PROTOCOL = "openbot-events";
-const TEST_LEGACY_SNAPSHOT_PROTOCOL = "openbot-events-v2";
+const TEST_LEGACY_EVENT_PROTOCOL = "aikingbot-events";
+const TEST_LEGACY_SNAPSHOT_PROTOCOL = "aikingbot-events-v2";
 const requireModule = createRequire(import.meta.url);
 const webSockets: typeof Ws = requireModule(join(dirname(requireModule.resolve("ws/package.json")), "index.js"));
 
-const logger = createOpenBotLogger("team-api-server");
+const logger = createAIKINGBOTLogger("team-api-server");
 
 interface EventClientState {
   token: string;
@@ -312,8 +312,8 @@ export class TeamApiServer {
         socket.destroy();
         return;
       }
-      const encodedToken = protocols.find((value) => value.startsWith("openbot-token."));
-      const token = encodedToken?.slice("openbot-token.".length) ?? "";
+      const encodedToken = protocols.find((value) => value.startsWith("aikingbot-token."));
+      const token = encodedToken?.slice("aikingbot-token.".length) ?? "";
       const member = token.length <= 512 ? this.#options.store.authenticate(token) : null;
       if (!member) {
         socket.write("HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n");

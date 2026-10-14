@@ -6,8 +6,8 @@ import {
   decodeAgentProfileDraft,
   type GenerateAgentProfileInput,
   type SidebarSection,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Fiber, Result, Schema } from "effect";
 import type { AgentClient } from "../agent-client";
 import { causeHelpers } from "../effect-boundary";
@@ -79,7 +79,7 @@ export const generateTextWithoutTools = Effect.fn("Agent.generateTextWithoutTool
 ) {
   let cleanupFailure: ProfileGenerationFailed | null = null;
   const result = yield* Effect.acquireUseRelease(
-    profileIo(() => mkdtemp(join(tmpdir(), "openbot-profile-"))),
+    profileIo(() => mkdtemp(join(tmpdir(), "aikingbot-profile-"))),
     (cwd) =>
       Effect.gen(function* () {
         const completion = yield* Effect.forkChild(profileCompletion(client), { startImmediately: true });
@@ -91,7 +91,7 @@ export const generateTextWithoutTools = Effect.fn("Agent.generateTextWithoutTool
           .request(
             "initialize",
             {
-              clientInfo: { name: "openbot-profile", title: "OpenBot profile generation", version: "0.1.0" },
+              clientInfo: { name: "aikingbot-profile", title: "AIKINGBOT profile generation", version: "0.1.0" },
               capabilities: { experimentalApi: true },
             },
             decodeRecordResponse,

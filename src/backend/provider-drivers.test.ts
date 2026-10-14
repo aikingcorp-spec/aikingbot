@@ -1,4 +1,4 @@
-import { AGENT_PROVIDERS, agentProviderDescriptor } from "@openbot/contracts/ipc";
+import { AGENT_PROVIDERS, agentProviderDescriptor } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { BUILT_IN_PROVIDER_DRIVERS } from "./provider-drivers";
 

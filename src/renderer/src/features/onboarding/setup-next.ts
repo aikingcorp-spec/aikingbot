@@ -1,6 +1,6 @@
-import type { AgentProviderId } from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { AgentProviderId } from "@aikingbot/contracts/ipc";
+import { toast } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo } from "solid-js";
 import type { SetupProviders } from "./SetupProviderPicker";
 

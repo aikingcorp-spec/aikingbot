@@ -11,13 +11,13 @@ import type {
   RoutineRun,
   RoutineSchedule,
   ServerSummary,
-} from "@openbot/contracts/ipc";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V6 } from "@openbot/contracts/team-protocol/v6";
-import developmentLogoUrl from "../assets/openbot-logo-dev.png";
-import productionLogoUrl from "../assets/openbot-logo-production.png";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V6 } from "@aikingbot/contracts/team-protocol/v6";
+import developmentLogoUrl from "../assets/aikingbot-logo-dev.png";
+import productionLogoUrl from "../assets/aikingbot-logo-production.png";
 import { STORY_PRESENCE } from "./fixtures";
-import type { MockOpenBotOptions } from "./mock-openbot";
+import type { MockAIKINGBOTOptions } from "./mock-aikingbot";
 
 const LANDING_PREVIEW_NOW = "2026-08-21T10:00:00.000Z";
 
@@ -32,7 +32,7 @@ const LANDING_PREVIEW_AGENTS: AgentSummary[] = [
     model: "gpt-5.6-luna",
     reasoningEffort: "low",
     threadId: "thread-chief",
-    workspacePath: "/mock/OpenBot/Agents/chief",
+    workspacePath: "/mock/AIKINGBOT/Agents/chief",
     preview: "The launch plan is ready with owners, evidence, and next actions.",
     updatedAt: LANDING_PREVIEW_NOW,
     avatarSeed: "chief",
@@ -49,7 +49,7 @@ const LANDING_PREVIEW_AGENTS: AgentSummary[] = [
     model: "gpt-5.6-luna",
     reasoningEffort: "low",
     threadId: "thread-research",
-    workspacePath: "/mock/OpenBot/Agents/research",
+    workspacePath: "/mock/AIKINGBOT/Agents/research",
     preview: "The source review and evidence map are complete.",
     updatedAt: "2026-08-21T09:48:00.000Z",
     avatarSeed: "research",
@@ -66,7 +66,7 @@ const LANDING_PREVIEW_AGENTS: AgentSummary[] = [
     model: "gpt-5.6-luna",
     reasoningEffort: "low",
     threadId: "thread-builder",
-    workspacePath: "/mock/OpenBot/Agents/builder",
+    workspacePath: "/mock/AIKINGBOT/Agents/builder",
     preview: "The implementation checklist includes tests and rollback steps.",
     updatedAt: "2026-08-21T09:36:00.000Z",
     avatarSeed: "builder",
@@ -83,7 +83,7 @@ const LANDING_PREVIEW_AGENTS: AgentSummary[] = [
     model: "gpt-5.6-luna",
     reasoningEffort: "low",
     threadId: "thread-launch",
-    workspacePath: "/mock/OpenBot/Agents/launch",
+    workspacePath: "/mock/AIKINGBOT/Agents/launch",
     preview: "The launch brief is ready for final review.",
     updatedAt: "2026-08-21T09:24:00.000Z",
     avatarSeed: "launch",
@@ -215,7 +215,7 @@ const LANDING_PREVIEW_SERVERS: ServerSummary[] = [
   },
   {
     id: "team",
-    name: "OpenBot team",
+    name: "AIKINGBOT team",
     logoUrl: productionLogoUrl,
     notificationsMuted: false,
     notificationsMutedUntil: null,
@@ -684,4 +684,4 @@ export const LANDING_PREVIEW_OPTIONS = {
   routineRuns: LANDING_PREVIEW_ROUTINE_RUNS,
   routineFlowLinks: LANDING_PREVIEW_ROUTINE_LINKS,
   routineFlowSteps: LANDING_PREVIEW_ROUTINE_STEPS,
-} satisfies MockOpenBotOptions;
+} satisfies MockAIKINGBOTOptions;

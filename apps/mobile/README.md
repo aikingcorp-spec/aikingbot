@@ -1,4 +1,4 @@
-# OpenBot Mobile
+# AIKINGBOT Mobile
 
 React Native app built with Expo SDK 57, Expo Router, TypeScript 7, Biome, and Bun. The app uses Expo Continuous Native Generation, so native `ios/` and `android/` directories are intentionally not committed.
 
@@ -13,7 +13,7 @@ React Native app built with Expo SDK 57, Expo Router, TypeScript 7, Biome, and B
 The repository uses Bun’s hoisted linker so native Expo modules resolve to one installation.
 The root `postinstall` runs `bun run --cwd apps/mobile setup:skia` after dependency installation.
 Skia 2.6.2 needs this step to copy its packaged native libraries before CocoaPods runs;
-EAS and local installs use the same setup. `OPENBOT_SKIP_SKIA=1` skips the step for desktop and
+EAS and local installs use the same setup. `AIKINGBOT_SKIP_SKIA=1` skips the step for desktop and
 API work. If you installed with it, run `bun run --cwd apps/mobile setup:skia` before a native build.
 
 EAS profiles pin Bun 1.4.2 to match the root `packageManager`. Use the same Bun version
@@ -71,7 +71,7 @@ then build and launch the app with Expo. Expo arguments such as `--device` and
 `--port` pass through. The RocketSim command requires the app in `/Applications`
 or `~/Applications`, or `ROCKETSIM_APP_PATH` set to its `.app` directory. If it is
 missing, the command stops with setup instructions. The standard command does not
-look for RocketSim, even if `ROCKETSIM_APP_PATH` or the old `OPENBOT_ROCKETSIM`
+look for RocketSim, even if `ROCKETSIM_APP_PATH` or the old `AIKINGBOT_ROCKETSIM`
 variable is set.
 
 The local launcher enables RocketSim Connect in the local native project. The config plugin
@@ -291,7 +291,7 @@ bun run mobile:ios:build:local
 
 From `apps/mobile`, the equivalent command is `bun run ios:build:local`.
 This runs EAS Build locally with the `production` profile and writes
-`/private/tmp/openbot-testflight.ipa`. Each successful build replaces that output file.
+`/private/tmp/aikingbot-testflight.ipa`. Each successful build replaces that output file.
 The profile uses remote build numbers and increments the build number automatically.
 EAS CLI prompts for signing credentials when needed.
 
@@ -315,19 +315,19 @@ One-time setup:
 1. In GitHub repository settings, create the `release-ios` environment. Under deployment branches
    and tags, select only the `main` branch.
 2. Add environment secrets `EXPO_TOKEN`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, and `ASC_PRIVATE_KEY`.
-   The Expo token needs access to the OpenBot project. The Apple secrets are the Key ID, Issuer ID,
+   The Expo token needs access to the AIKINGBOT project. The Apple secrets are the Key ID, Issuer ID,
    and full `.p8` contents of an App Store Connect team API key with the App Manager role.
 3. Keep the iOS distribution certificate and provisioning profiles configured in EAS. CI downloads
    these existing credentials. If they expire or need repair, update them interactively through
    EAS before retrying; the upload API key is not passed to the build step. Each target has its own
-   profile: the app, `ExpoWidgetsTarget` (`run.openbot.mobile.ExpoWidgetsTarget`) and
-   `OpenBotNotificationService` (`run.openbot.mobile.NotificationService`, the Notification Service
-   Extension). Both extensions need the App Group `group.run.openbot.mobile`. When a release adds a
+   profile: the app, `ExpoWidgetsTarget` (`run.aikingbot.mobile.ExpoWidgetsTarget`) and
+   `AIKINGBOTNotificationService` (`run.aikingbot.mobile.NotificationService`, the Notification Service
+   Extension). Both extensions need the App Group `group.run.aikingbot.mobile`. When a release adds a
    target, set up its profile interactively once (`bunx eas-cli credentials -p ios`) before CI builds
    it. Keep the saved push key; do not let EAS make a new one.
 4. Keep the OpenPanel variables in EAS `production` with `Plain text` or `Sensitive` visibility.
    `Secret` variables are unavailable to this local build. Do not copy these values into source.
-5. Ensure App Store Connect has the app `run.openbot.mobile` and the intended TestFlight group.
+5. Ensure App Store Connect has the app `run.aikingbot.mobile` and the intended TestFlight group.
 
 After this workflow is merged into `main`, authenticate GitHub CLI with `gh auth login`, then run
 from the repository root:
@@ -385,7 +385,7 @@ One-time setup:
    same as in `release-ios`. The Google secret is the full JSON key of a Google Cloud service account.
 3. In the Google Cloud project of that service account, enable the Google Play Android Developer API.
    In Play Console, under **Users and permissions**, invite the service account email and give it
-   access to `run.openbot.mobile` with the release permissions for testing tracks.
+   access to `run.aikingbot.mobile` with the release permissions for testing tracks.
 4. Keep the Android upload keystore configured in EAS as the default build credentials. CI downloads
    it. Play App Signing keeps the app signing key; the EAS keystore is the upload key.
 5. Keep the OpenPanel variables in EAS `production`, as for iOS.
@@ -416,22 +416,22 @@ A successful workflow means Google Play accepted the bundle on the selected trac
 upload store metadata, screenshots or release notes. Write the release notes in Play Console.
 
 To build a signed `.aab` on your computer, run `bun run mobile:android:build:local`. It needs JDK 17
-and the Android SDK, and writes `/private/tmp/openbot-play.aab`.
+and the Android SDK, and writes `/private/tmp/aikingbot-play.aab`.
 See [Fastlane Google Play upload](https://docs.fastlane.tools/actions/upload_to_play_store/).
 
 ## OpenPanel product analytics
 
 The app uses the official [`@openpanel/react-native` SDK](https://openpanel.dev/docs/sdks/react-native)
 and `expo-application`, following the [React Native guide](https://openpanel.dev/guides/react-native-analytics).
-The endpoint is fixed to `https://analytics.openbot.run/api`. No analytics credentials are committed.
+The endpoint is fixed to `https://analytics.aikingbot.aikingx.com/api`. No analytics credentials are committed.
 
 ### Production configuration
 
-1. In the self-hosted OpenPanel dashboard, open the existing **Openbot** project used by desktop and the website.
-   Do not create or select a separate **Openbot Mobile** project.
-   Create a separate client for OpenBot Mobile with **write** access only. Copy its Client ID and
+1. In the self-hosted OpenPanel dashboard, open the existing **AIKINGBOT** project used by desktop and the website.
+   Do not create or select a separate **AIKINGBOT Mobile** project.
+   Create a separate client for AIKINGBOT Mobile with **write** access only. Copy its Client ID and
    Client Secret. Do not use an organization/root client or a client with read access.
-2. In the Expo dashboard, open the **openbot** project → **Environment variables**, select the
+2. In the Expo dashboard, open the **aikingbot** project → **Environment variables**, select the
    **production** environment, and add:
 
    | Variable | Value |
@@ -455,7 +455,7 @@ The endpoint is fixed to `https://analytics.openbot.run/api`. No analytics crede
 React Native requires a Client Secret according to OpenPanel's native SDK guide. In this direct
 native integration it is an **embedded write credential**, not a confidential server secret.
 Expo's `EXPO_PUBLIC_` values are visible in the shipped bundle. Use only a dedicated write client;
-never embed a key for Export, Insights, Manage, or an OpenBot account/session. EAS visibility can hide
+never embed a key for Export, Insights, Manage, or an AIKINGBOT account/session. EAS visibility can hide
 values in its UI but does not hide them in the app. See [OpenPanel client access levels](https://openpanel.dev/docs/api/authentication)
 and [Expo environment variables](https://docs.expo.dev/guides/environment-variables/).
 
@@ -494,7 +494,7 @@ where available, `duration_ms`. Failure codes are fixed categories, never raw er
 | `account_sign_out` | Sign-out result under the initiating account |
 
 Use a mobile activation funnel from open → successful QR redemption → successful connection →
-conversation load or message send. Measure signed-in D1/D7 retention by OpenBot account ID. Eligible
+conversation load or message send. Measure signed-in D1/D7 retention by AIKINGBOT account ID. Eligible
 pre-session events join that account after sign-in. Unclaimed and expired attempts are not sent, so
 this funnel does not measure all abandoned pairing attempts.
 A message receipt means the host accepted the message, not that the agent finished its work.
@@ -520,7 +520,7 @@ Opt-out and process exit discard the buffer. Sign-out ends the previous account'
 new signed-out activity can be claimed by the next sign-in. There is no disk queue.
 Existing anonymous events already sent by older builds are not reassigned by this fix.
 If mobile credentials belong to another project, replace both production variables with credentials
-for a write-only client in **Openbot**, then ship a build or compatible update with those values.
+for a write-only client in **AIKINGBOT**, then ship a build or compatible update with those values.
 
 Mobile schema generation 2 adds safe error diagnostics. Native error alerts and chat send errors
 emit `notification_shown`; existing failed actions emit a separate `client_operation_failed`.

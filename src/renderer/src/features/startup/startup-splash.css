@@ -5,11 +5,11 @@
 
 .startup-splash {
   position: absolute;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   inset: 0;
   display: grid;
   place-items: center;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
   -webkit-app-region: drag;
 }
 
@@ -17,14 +17,14 @@
   display: block;
   width: 96px;
   height: 96px;
-  animation: startup-splash-in var(--openbot-duration-overlay) var(--openbot-ease-out) backwards;
+  animation: startup-splash-in var(--aikingbot-duration-overlay) var(--aikingbot-ease-out) backwards;
 }
 
 /* The fade also runs with reduced motion: its animationend removes the splash. */
 .startup-splash[data-phase="exit"] {
   pointer-events: none;
   -webkit-app-region: no-drag;
-  animation: startup-splash-exit var(--openbot-duration-overlay) var(--openbot-ease-in-out) forwards;
+  animation: startup-splash-exit var(--aikingbot-duration-overlay) var(--aikingbot-ease-in-out) forwards;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -32,8 +32,8 @@
   .startup-splash-logo .app-logo-eye {
     stroke-dasharray: var(--splash-eye-length) calc(var(--splash-eye-length) + 24px);
     animation:
-      startup-splash-eye-draw 480ms var(--openbot-ease-in-out) 160ms backwards,
-      app-logo-blink 4.8s var(--openbot-ease-in-out) 1s infinite;
+      startup-splash-eye-draw 480ms var(--aikingbot-ease-in-out) 160ms backwards,
+      app-logo-blink 4.8s var(--aikingbot-ease-in-out) 1s infinite;
   }
 }
 

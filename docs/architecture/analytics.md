@@ -9,7 +9,7 @@ first buffered event. The next account claims this buffer; identify precedes ord
 original timestamps. Reconnects do not replay it. Expiry, opt-out, and process exit discard it.
 Account changes invalidate prior operation scopes; the anonymous-to-account transition retains the
 pairing scope so its completion can be recorded. Mobile uses a write-only client in the existing
-Openbot OpenPanel project shared with desktop and the website.
+AIKINGBOT OpenPanel project shared with desktop and the website.
 Workspace command wrappers record outcomes once at the mobile caller; conversation availability is measured in
 the visible chat view, including cached reads, not from background broadcasts. The host remains the only source of turn lifecycle
 events. No Team API or database schema changes are required.
@@ -24,7 +24,7 @@ semantics and native verification steps are in [the mobile README](../../apps/mo
 ## Website analytics
 
 Public website tracking lives in `apps/auth-api/src/lib/analytics.ts`. It runs only on the
-production `openbot.run` hostname. Landing and invitation events carry a bounded
+production `aikingbot.aikingx.com` hostname. Landing and invitation events carry a bounded
 `source_platform`, the existing `acquisition_source` category, and a domain-only referrer.
 
 A recognized `utm_source` tag takes precedence over the referring domain. Exact domain and
@@ -79,7 +79,7 @@ and ends between two samples, such as a short tool run, is not counted. The main
 Database time comes from `AgentDatabaseSupervisor`, from the send of a statement to its answer or to
 the end of the host; the host process is not changed. Renderer and child process exits other than a
 clean exit are counted and written to the trace as `crash` spans at the next sample. A utility
-process with the reason `killed` is not counted: OpenBot stops these processes itself. An exit in the
+process with the reason `killed` is not counted: AIKINGBOT stops these processes itself. An exit in the
 last minute before a quit is not counted: a stop signal can end the child processes before the
 main process starts its teardown.
 
@@ -125,10 +125,10 @@ Desktop opens Usage from the server context menu. It keeps the previous workspac
 inert until Back, so conversation drafts and settings survive navigation. Agent settings opens
 the same report with an agent filter. Host changes clear the filter and stale responses are rejected.
 The iPhone app opens Usage from the server menu in a sheet. It reads the same route through
-`readHostAnalytics` in `@openbot/team-client` and shows the per-agent rows; a row or the header
+`readHostAnalytics` in `@aikingbot/team-client` and shows the per-agent rows; a row or the header
 filter narrows the report to one agent. The agent Usage page reads the same route with the agent
 filter, so its chart has the provider split too; a host without `host-analytics` gets the
-agent-scoped route and one area. The series pivot is in `@openbot/team-client/usage-series`, which
+agent-scoped route and one area. The series pivot is in `@aikingbot/team-client/usage-series`, which
 the desktop chart also reads.
 
 `host:get-analytics` and the optional `host-analytics` capability expose `GET /v1/analytics`.
@@ -145,4 +145,4 @@ is stored by the account service or Signal service.
 
 The desktop chart adapts Zaidan's chart and interactive area composition. The pinned
 `solid-recharts` dependency has a Solid 2 compatibility patch and uses the application's single
-Solid runtime. Chart colors use OpenBot tokens. Daily tables provide exact accessible values.
+Solid runtime. Chart colors use AIKINGBOT tokens. Daily tables provide exact accessible values.

@@ -1,6 +1,6 @@
 # Product analytics
 
-OpenBot uses a self-hosted OpenPanel project for production product analytics. This document is the
+AIKINGBOT uses a self-hosted OpenPanel project for production product analytics. This document is the
 contract for event meaning, attribution, privacy, and reporting. Changes to an event name, property,
 or success definition require an analytics schema version bump and corresponding test updates.
 
@@ -70,7 +70,7 @@ lifecycle. A malformed preference fails closed; a missing preference uses the do
 
 | Event | Product question | Success definition |
 |---|---|---|
-| `desktop_app_opened` | How many accounts/devices open OpenBot? | App state and identity have loaded |
+| `desktop_app_opened` | How many accounts/devices open AIKINGBOT? | App state and identity have loaded |
 | `app_updated` | Did an update actually take effect? | A new version is observed on the next launch |
 | `account_sign_in_started` | Can visitors start authentication? | A code was sent |
 | `account_sign_in_completed` | Can visitors become verified accounts? | Verified signed-in state returned |
@@ -89,7 +89,7 @@ lifecycle. A malformed preference fails closed; a missing preference uses the do
 | `system_site_visited` | Which websites do users and agents work on? | A browser tab reached a new registrable domain. `actor` is `user` or `agent`; only the eTLD+1 is sent, and IP addresses, single-label names and names with no public suffix are dropped. An intranet host under a public domain is sent as that domain |
 | `system_routine_run` | Do routine runs succeed, and which schedules are used? | A routine run that this host saw running reached `succeeded`, `failed`, `needs-attention`, `interrupted`, or `cancelled` |
 | `system_inventory` | What have accounts set up? | At most once per local day: counts of agents, enabled routines, custom MCP servers, local and community skills, and the slugs of catalog plugins, curated skills and curated agents |
-| `system_resources` | How much CPU and memory does OpenBot use, by computer class and provider? | At most once per local day, the summary of the last closed local day that has samples. A sample is taken once a minute while the computer is awake. Memory in MB rounded to 50 and CPU percent as integers, as the 95th percentile of the samples (`_p95`) or the largest sample (`_max`), for all processes (`total_`), each process group (`main`, `window`, `browser_tab`, `gpu`, `database_host`, `voice_host`, `utility_other`) and the process tree of each provider id (`provider_<id>_`, `provider_other_` for any other child process). `main_loop_delay_ms_p95` is the 95th percentile of each minute's p99 main event-loop delay; `_max` is the longest delay. `db_request_ms_*`, `db_request_count` and `db_slow_request_count` (over 100 ms) time agent database statements. `renderer_gone_count`, `child_gone_count` and `gone_<reason>_count` count processes that ended for a reason other than a clean exit, except in the minute before a quit; A utility process that OpenBot stops itself, such as the voice host after idle time or a database host at a statement deadline, is not counted. The peak active turns, browser tabs and provider processes; `ram_class`, `cpu_class`, `arch`, `host_kind` (`desktop` or `server`), `provider_tree_supported` (false on Windows, or when `ps` failed), and `sample_count`. A day that closes while analytics is off is dropped, never sent later |
+| `system_resources` | How much CPU and memory does AIKINGBOT use, by computer class and provider? | At most once per local day, the summary of the last closed local day that has samples. A sample is taken once a minute while the computer is awake. Memory in MB rounded to 50 and CPU percent as integers, as the 95th percentile of the samples (`_p95`) or the largest sample (`_max`), for all processes (`total_`), each process group (`main`, `window`, `browser_tab`, `gpu`, `database_host`, `voice_host`, `utility_other`) and the process tree of each provider id (`provider_<id>_`, `provider_other_` for any other child process). `main_loop_delay_ms_p95` is the 95th percentile of each minute's p99 main event-loop delay; `_max` is the longest delay. `db_request_ms_*`, `db_request_count` and `db_slow_request_count` (over 100 ms) time agent database statements. `renderer_gone_count`, `child_gone_count` and `gone_<reason>_count` count processes that ended for a reason other than a clean exit, except in the minute before a quit; A utility process that AIKINGBOT stops itself, such as the voice host after idle time or a database host at a statement deadline, is not counted. The peak active turns, browser tabs and provider processes; `ram_class`, `cpu_class`, `arch`, `host_kind` (`desktop` or `server`), `provider_tree_supported` (false on Windows, or when `ps` failed), and `sample_count`. A day that closes while analytics is off is dropped, never sent later |
 | `agent_input_action` | Can users resolve prompts and approvals? | Response IPC completed |
 | `queue_action` | Can users control queued work? | Queue operation completed |
 | `routine_action` | Are routines adopted and reliable? | Routine operation completed; `duration_ms` measures execution time |
@@ -191,7 +191,7 @@ were recorded before this behavior shipped are not re-attributed.
 The three failure events above use a separate local queue and explicit HTTP transport. Other
 product events keep their existing delivery behavior. Only production clients collect reports.
 The browser app uses `surface: web` and `platform: web`; it enables collection only on
-`https://openbot.run`. Marketing remains `landing` and does not send app notification events.
+`https://aikingbot.aikingx.com`. Marketing remains `landing` and does not send app notification events.
 
 A report carries a fixed `operation`, `source`, `severity`, and `cause_code`. Notifications also
 carry `presentation` (`toast`, `banner`, or `alert`). Host failures retain `failure_code` and
@@ -238,5 +238,5 @@ Track notification counts separately by severity and presentation. No external a
 
 Run `bun run test:desktop -- packages/telemetry/src/reports.test.ts --maxWorkers=1` to verify a
 refused HTTP send followed by restart and delivery. The test writes the received safe payloads
-and result to `.openbot-build/telemetry/transport.json`. Live project access, dashboard creation,
+and result to `.aikingbot-build/telemetry/transport.json`. Live project access, dashboard creation,
 and production delivery must be verified after deployment; local tests do not establish them.

@@ -1,5 +1,5 @@
-import type { UpdatePreference, UpdatePreferenceChange } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { UpdatePreference, UpdatePreferenceChange } from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { readPreferenceFile, writePreferenceFile } from "./preference-file";

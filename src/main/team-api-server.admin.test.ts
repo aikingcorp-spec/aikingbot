@@ -1,5 +1,5 @@
-import { ACP_REGISTRY_ROUTES } from "@openbot/contracts/team-protocol/acp-registry-v1";
-import { legacyTeamCapabilities, TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
+import { ACP_REGISTRY_ROUTES } from "@aikingbot/contracts/team-protocol/acp-registry-v1";
+import { legacyTeamCapabilities, TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
 import { Effect } from "effect";
 import type { AgentLifecycleFailed } from "../backend/agent-service";
 import { RemoteWorkflowError } from "./remote-service-effects";
@@ -26,8 +26,8 @@ import type {
   SharedTable,
   UpdateHostIdentityInput,
   UpdateRestartMode,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { createAIKINGBOTLogger, registerSecretValue } from "@aikingbot/logging";
 import { afterEach, describe, expect, it } from "vitest";
 import { createAgentAdminSettings } from "./agent-admin-settings";
 import { createAgentHostSettings } from "./agent-host-settings";
@@ -64,8 +64,8 @@ async function signedIn(name: string, options: Partial<TeamApiOptions>) {
   const { base } = await fixture.start(options);
   const admin = {
     Authorization: `Bearer ${await fixture.signIn()}`,
-    "OpenBot-Protocol-Version": "3",
-    "OpenBot-Capabilities":
+    "AIKINGBOT-Protocol-Version": "3",
+    "AIKINGBOT-Capabilities":
       "agent-admin-v1, skills-admin-v1, shared-tables-v1, agent-install-v1, agent-update-v1, providers-v1, host-admin-v1, host-update-v1, host-member-update-v1, agent-publish-v1",
     "Content-Type": "application/json",
   };
@@ -119,8 +119,8 @@ describe("Team API agent-session-settings-v1", () => {
       },
     });
     const path = "/v1/admin/agents/session-settings";
-    const headers = { ...admin, "OpenBot-Capabilities": "agent-session-settings-v1" };
-    const memberHeaders = { ...asMember, "OpenBot-Capabilities": "agent-session-settings-v1" };
+    const headers = { ...admin, "AIKINGBOT-Capabilities": "agent-session-settings-v1" };
+    const memberHeaders = { ...asMember, "AIKINGBOT-Capabilities": "agent-session-settings-v1" };
     expect((await post(path, { agentId: "chief" })).status).toBe(400);
     expect((await post(path, { agentId: "chief" }, memberHeaders)).status).toBe(403);
     expect(
@@ -178,7 +178,8 @@ describe("Team API agent-admin-v1", () => {
     const { base, admin, asMember, post } = await signedIn("agent-admin", { admin: { agents: settings } });
 
     expect(
-      (await post("/v1/admin/agents/settings", { agentId: "chief" }, { ...admin, "OpenBot-Capabilities": "" })).status,
+      (await post("/v1/admin/agents/settings", { agentId: "chief" }, { ...admin, "AIKINGBOT-Capabilities": "" }))
+        .status,
     ).toBe(400);
     expect((await post("/v1/admin/agents/settings", { agentId: "chief" }, asMember)).status).toBe(403);
     expect(
@@ -231,8 +232,8 @@ describe("Team API agent-host-settings-v1", () => {
       busyMessageMode: { get: () => ({ mode: "queue" }) },
     });
     const { base, admin, asMember, post } = await signedIn("agent-host-settings", { admin: { agentHost: settings } });
-    const withCapability = { ...admin, "OpenBot-Capabilities": "agent-host-settings-v1" };
-    const memberWithCapability = { ...asMember, "OpenBot-Capabilities": "agent-host-settings-v1" };
+    const withCapability = { ...admin, "AIKINGBOT-Capabilities": "agent-host-settings-v1" };
+    const memberWithCapability = { ...asMember, "AIKINGBOT-Capabilities": "agent-host-settings-v1" };
 
     expect((await post("/v1/admin/agents/host-settings", { agentId: "chief" })).status).toBe(400);
     expect((await post("/v1/admin/agents/host-settings", { agentId: "chief" }, memberWithCapability)).status).toBe(403);
@@ -320,7 +321,7 @@ describe("Team API skills-admin-v1", () => {
     const { base, admin, asMember, post } = await signedIn("skills-admin", { admin: { skills } });
 
     expect(
-      (await post("/v1/admin/skills/list", { agentId: "chief" }, { ...admin, "OpenBot-Capabilities": "" })).status,
+      (await post("/v1/admin/skills/list", { agentId: "chief" }, { ...admin, "AIKINGBOT-Capabilities": "" })).status,
     ).toBe(400);
     expect((await post("/v1/admin/skills/install", { agentId: "chief", skillId: "deploy" }, asMember)).status).toBe(
       403,
@@ -370,7 +371,9 @@ describe("Team API shared-tables-v1", () => {
     };
     const { admin, asMember, post } = await signedIn("shared-tables", { admin: { sharedTables } });
 
-    expect((await post("/v1/admin/shared-tables/list", {}, { ...admin, "OpenBot-Capabilities": "" })).status).toBe(400);
+    expect((await post("/v1/admin/shared-tables/list", {}, { ...admin, "AIKINGBOT-Capabilities": "" })).status).toBe(
+      400,
+    );
     expect((await post("/v1/admin/shared-tables/list", {}, asMember)).status).toBe(403);
     expect((await post("/v1/admin/shared-tables/delete", { name: "leads" }, asMember)).status).toBe(403);
     expect(tables).toHaveLength(1);
@@ -409,7 +412,7 @@ describe("Team API agent-install-v1", () => {
     const template = { templateId: "writer", timezone: "Europe/Warsaw", expectedUpdatedAt: "2026-09-01T00:00:00Z" };
 
     expect(
-      (await post("/v1/admin/agents/install-marketplace", listing, { ...admin, "OpenBot-Capabilities": "" })).status,
+      (await post("/v1/admin/agents/install-marketplace", listing, { ...admin, "AIKINGBOT-Capabilities": "" })).status,
     ).toBe(400);
     expect((await post("/v1/admin/agents/install-marketplace", listing, asMember)).status).toBe(403);
     expect((await post("/v1/admin/agents/install-template", template, asMember)).status).toBe(403);
@@ -457,7 +460,7 @@ describe("Team API agent-publish-v1", () => {
     registerSecretValue(secret);
     const publication = {
       templateId: "tpl_chief",
-      shareUrl: "https://openbot.run/agents/tpl_chief",
+      shareUrl: "https://aikingbot.aikingx.com/agents/tpl_chief",
       publishedAt: "2026-09-29T00:00:00Z",
     };
     const calls: string[] = [];
@@ -510,8 +513,13 @@ describe("Team API agent-publish-v1", () => {
     const card = Buffer.from(CARD).toString("base64");
 
     expect(
-      (await post("/v1/admin/agents/template-preview", { agentId: "chief" }, { ...admin, "OpenBot-Capabilities": "" }))
-        .status,
+      (
+        await post(
+          "/v1/admin/agents/template-preview",
+          { agentId: "chief" },
+          { ...admin, "AIKINGBOT-Capabilities": "" },
+        )
+      ).status,
     ).toBe(400);
     expect((await post("/v1/admin/agents/template-preview", { agentId: "chief" }, asMember)).status).toBe(403);
     expect((await post("/v1/admin/agents/template-publish", { agentId: "chief", card }, asMember)).status).toBe(403);
@@ -564,7 +572,7 @@ describe("Team API agent-update-v1", () => {
     const update = { agentId: "chief", listingId: "researcher", timezone: "Europe/Warsaw" };
     const path = "/v1/admin/agents/update-marketplace";
 
-    expect((await post(path, update, { ...admin, "OpenBot-Capabilities": "agent-install-v1" })).status).toBe(400);
+    expect((await post(path, update, { ...admin, "AIKINGBOT-Capabilities": "agent-install-v1" })).status).toBe(400);
     expect((await post(path, update, asMember)).status).toBe(403);
     expect((await post(path, { listingId: "researcher", timezone: "UTC" })).status).toBe(400);
     expect(updated).toEqual([]);
@@ -710,7 +718,7 @@ describe("Team API providers-v1", () => {
     };
     const { base, admin, asMember, post } = await signedIn("providers", {
       admin: { providers: { service, credentials, runtimes, customProviders, pasteSignIn: true } },
-      logger: createOpenBotLogger("test", (line) => lines.push(line)),
+      logger: createAIKINGBOTLogger("test", (line) => lines.push(line)),
     });
     const bodies: string[] = [];
     const send = async (path: string, body: unknown, headers = admin) => {
@@ -721,7 +729,7 @@ describe("Team API providers-v1", () => {
     const setKey = { provider: "codex", key: `  ${PROVIDER_KEY}  ` };
 
     expect(
-      (await send("/v1/admin/providers/api-key/set", setKey, { ...admin, "OpenBot-Capabilities": "" })).status,
+      (await send("/v1/admin/providers/api-key/set", setKey, { ...admin, "AIKINGBOT-Capabilities": "" })).status,
     ).toBe(400);
     expect((await send("/v1/admin/providers/api-key/set", setKey, asMember)).status).toBe(403);
     expect((await send("/v1/admin/providers/runtimes/status", {}, asMember)).status).toBe(403);
@@ -749,7 +757,7 @@ describe("Team API providers-v1", () => {
     expect(cancelled).toEqual([]);
 
     // providers-v3 signs in Claude and Grok too, behind its own capability and the same admin gate.
-    const v3 = { ...admin, "OpenBot-Capabilities": "providers-v1, providers-v3" };
+    const v3 = { ...admin, "AIKINGBOT-Capabilities": "providers-v1, providers-v3" };
     const claude = { provider: "claude" };
     expect((await send("/v1/admin/providers/v3/code-login/start", claude)).status).toBe(400);
     expect(
@@ -789,7 +797,7 @@ describe("Team API providers-v1", () => {
     expect(keys.size).toBe(0);
 
     // providers-v2 adds Gemini to the runtimes, behind its own capability and the same admin gate.
-    const v2 = { ...admin, "OpenBot-Capabilities": "providers-v1, providers-v2" };
+    const v2 = { ...admin, "AIKINGBOT-Capabilities": "providers-v1, providers-v2" };
     expect((await send("/v1/admin/providers/v2/runtimes/download", { provider: "antigravity" })).status).toBe(400);
     expect(
       (await send("/v1/admin/providers/v2/runtimes/status", {}, { ...v2, Authorization: asMember.Authorization }))
@@ -808,7 +816,7 @@ describe("Team API providers-v1", () => {
 
     // providers-v4 adds Cursor and Cline to the runtimes and the sign-in, behind its own capability
     // and the same admin gate. providers-v3 still refuses them.
-    const v4 = { ...admin, "OpenBot-Capabilities": "providers-v1, providers-v4" };
+    const v4 = { ...admin, "AIKINGBOT-Capabilities": "providers-v1, providers-v4" };
     const cursor = { provider: "cursor" };
     expect((await send("/v1/admin/providers/v4/code-login/start", cursor)).status).toBe(400);
     expect(
@@ -883,7 +891,7 @@ describe("Team API host-admin-v1", () => {
     const logo = { mimeType: "image/png", data: Buffer.from(png).toString("base64") };
 
     expect(
-      (await post("/v1/admin/host/identity", { serverName: "Studio" }, { ...admin, "OpenBot-Capabilities": "" }))
+      (await post("/v1/admin/host/identity", { serverName: "Studio" }, { ...admin, "AIKINGBOT-Capabilities": "" }))
         .status,
     ).toBe(400);
     expect((await post("/v1/admin/host/identity", { serverName: "Studio" }, asMember)).status).toBe(403);
@@ -948,7 +956,8 @@ describe("Team API host-update-v1", () => {
     const { base, admin, asMember, post } = await signedIn("host-update", { admin: { update } });
 
     expect(
-      (await post("/v1/admin/host/update/start", { restart: "now" }, { ...admin, "OpenBot-Capabilities": "" })).status,
+      (await post("/v1/admin/host/update/start", { restart: "now" }, { ...admin, "AIKINGBOT-Capabilities": "" }))
+        .status,
     ).toBe(400);
     expect((await post("/v1/admin/host/update/status", {}, asMember)).status).toBe(403);
     expect((await post("/v1/admin/host/update/start", { restart: "now" }, asMember)).status).toBe(403);
@@ -1022,7 +1031,7 @@ describe("Team API host-member-update-v1", () => {
     for (const path of paths) {
       expect((await post(`/v1/host/update/${path}`, {}, { ...asMember, Authorization: "" })).status).toBe(401);
       expect(
-        (await post(`/v1/host/update/${path}`, {}, { ...asMember, "OpenBot-Capabilities": "host-update-v1" })).status,
+        (await post(`/v1/host/update/${path}`, {}, { ...asMember, "AIKINGBOT-Capabilities": "host-update-v1" })).status,
       ).toBe(400);
     }
     for (const path of ["status", "check", "cancel", "settings", "start"]) {
@@ -1070,7 +1079,7 @@ describe("Team API protocol 7 negotiation", () => {
       },
     });
     const read = async (protocol: string) => {
-      const response = await fetch(`${base}/v1/compatibility`, { headers: { "OpenBot-Protocol-Version": protocol } });
+      const response = await fetch(`${base}/v1/compatibility`, { headers: { "AIKINGBOT-Protocol-Version": protocol } });
       expect(response.status).toBe(200);
       return response.json();
     };
@@ -1112,7 +1121,7 @@ describe("Team API protocol 7 negotiation", () => {
       const patch = (protocol: string) =>
         fetch(`${base}/v1/agents/chief`, {
           method: "PATCH",
-          headers: { ...admin, "OpenBot-Protocol-Version": protocol, "OpenBot-Capabilities": "local-providers-v3" },
+          headers: { ...admin, "AIKINGBOT-Protocol-Version": protocol, "AIKINGBOT-Capabilities": "local-providers-v3" },
           body: JSON.stringify({ provider, model: "default" }),
         });
       expect((await patch("6")).status).toBe(400);
@@ -1158,14 +1167,18 @@ describe("Team API acp-registry-v1 authorization", () => {
       const path = ACP_REGISTRY_ROUTES[name];
       expect((await post(path, payloads[name], admin)).status).toBe(400);
       expect(
-        (await post(path, payloads[name], { ...asMember, "OpenBot-Capabilities": "acp-registry-v1" })).status,
+        (await post(path, payloads[name], { ...asMember, "AIKINGBOT-Capabilities": "acp-registry-v1" })).status,
       ).toBe(403);
     }
     expect(calls).toEqual([]);
     for (const name of ["search", "installed", "status", "install", "cancel", "remove"] as const) {
       expect(
-        (await post(ACP_REGISTRY_ROUTES[name], payloads[name], { ...admin, "OpenBot-Capabilities": "acp-registry-v1" }))
-          .status,
+        (
+          await post(ACP_REGISTRY_ROUTES[name], payloads[name], {
+            ...admin,
+            "AIKINGBOT-Capabilities": "acp-registry-v1",
+          })
+        ).status,
       ).toBe(200);
     }
     expect(calls).toEqual(["search", "installed", "status", "install", "cancel", "remove"]);

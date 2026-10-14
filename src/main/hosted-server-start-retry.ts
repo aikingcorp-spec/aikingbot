@@ -6,7 +6,7 @@ import type { RemoteWorkflowError } from "./remote-service-effects";
  * Nothing here stops the server. The Worker stops it when it reports no use (`HostedServerActivity`).
  */
 
-import type { HostPhase } from "@openbot/contracts/ipc";
+import type { HostPhase } from "@aikingbot/contracts/ipc";
 import { runCauseEffect } from "../backend/effect-boundary";
 
 const CHECK_INTERVAL_MS = 60_000;

@@ -7,15 +7,15 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 /* What the Routines view says instead of a canvas: it is loading, it failed, or the server is remote. */
 .diagram-flows-notice {
   align-items: center;
   justify-content: center;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
 }
 
 /* The Bloub overflows its box. An auto grid track grows to the Bloub and starts at the box's top,
@@ -31,16 +31,16 @@
   height: 38px;
   flex: none;
   align-items: center;
-  gap: var(--openbot-space-1-5);
-  border-bottom: 1px solid var(--openbot-border);
-  padding: 0 var(--openbot-space-3);
+  gap: var(--aikingbot-space-1-5);
+  border-bottom: 1px solid var(--aikingbot-border);
+  padding: 0 var(--aikingbot-space-3);
 }
 
 /* The chevron that closes routine details has no open fill: it is a close action, not a lit toggle. */
 .diagram-view .diagram-view-header .header-panel-toggle[aria-expanded="true"]:not(:hover) {
   border-color: transparent;
   background: transparent;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .diagram-view-icon {
@@ -49,9 +49,9 @@
   height: 18px;
   flex: none;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
 }
 
 .diagram-view-avatar.agent-avatar {
@@ -60,8 +60,8 @@
 }
 
 .diagram-view-icon svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
 }
 
 /* The name keeps its room; the routine picker beside it is the part that narrows. */
@@ -70,8 +70,8 @@
   flex: none;
   overflow: hidden;
   margin: 0;
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-regular);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-regular);
   line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -80,7 +80,7 @@
 .diagram-view-actions {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin-left: auto;
 }
 
@@ -93,7 +93,8 @@
   display: flex;
   min-height: 0;
   flex: 1;
-  transition: padding-right var(--panel-resize-duration, var(--openbot-duration-overlay)) cubic-bezier(0.22, 1, 0.36, 1);
+  transition: padding-right var(--panel-resize-duration, var(--aikingbot-duration-overlay))
+    cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .diagram-view-body[data-inspector="open"] {
@@ -102,10 +103,10 @@
 
 .diagram-view-chat {
   position: absolute;
-  bottom: var(--openbot-space-4);
-  left: var(--openbot-space-4);
+  bottom: var(--aikingbot-space-4);
+  left: var(--aikingbot-space-4);
   z-index: 2;
-  width: min(360px, calc(100% - var(--openbot-space-8)));
+  width: min(360px, calc(100% - var(--aikingbot-space-8)));
   /* The folded panel keeps its box, so the canvas under it still takes the pointer. */
   pointer-events: none;
 }
@@ -124,8 +125,8 @@
   inset: 0;
   overflow: hidden;
   outline: 0;
-  background-color: var(--openbot-bg-canvas);
-  background-image: radial-gradient(circle at 1px 1px, var(--openbot-border-strong) 1px, transparent 0);
+  background-color: var(--aikingbot-bg-canvas);
+  background-image: radial-gradient(circle at 1px 1px, var(--aikingbot-border-strong) 1px, transparent 0);
   background-position: var(--diagram-grid-x) var(--diagram-grid-y);
   background-size: var(--diagram-grid-size) var(--diagram-grid-size);
   cursor: grab;
@@ -133,7 +134,7 @@
 }
 
 .diagram-board-viewport:focus-visible {
-  box-shadow: inset var(--openbot-focus-ring);
+  box-shadow: inset var(--aikingbot-focus-ring);
 }
 
 .diagram-board-viewport:is([data-panning], [data-dragging]) {
@@ -148,7 +149,7 @@
 }
 
 .diagram-board-world[data-settling] {
-  transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .diagram-board-empty {
@@ -157,17 +158,17 @@
   left: 50%;
   display: grid;
   max-width: 280px;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   translate: -50% -50%;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
   pointer-events: none;
   text-align: center;
 }
 
 .diagram-board-empty strong {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-lg);
 }
 
 .diagram-board-empty p {
@@ -188,21 +189,21 @@
 /* An agent row has a name and a title, so it gets more room than a one-line menu row. */
 .ui-action-menu.diagram-canvas-agents:not([data-menu-layout="grid"]) [role="menuitem"] {
   height: auto;
-  gap: var(--openbot-space-3);
-  padding-block: var(--openbot-space-2);
+  gap: var(--aikingbot-space-3);
+  padding-block: var(--aikingbot-space-2);
 }
 
 .diagram-canvas-menu-agent {
   display: grid;
   min-width: 0;
-  gap: var(--openbot-space-0-5);
-  line-height: var(--openbot-leading-md);
+  gap: var(--aikingbot-space-0-5);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .diagram-canvas-menu-agent small {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -210,27 +211,27 @@
 /* A new agent, asked for at the spot the user right-clicked and kept inside the canvas. */
 .diagram-new-agent {
   position: absolute;
-  top: clamp(var(--openbot-space-2), var(--diagram-new-agent-y), calc(100% - 196px));
-  left: clamp(var(--openbot-space-2), var(--diagram-new-agent-x), calc(100% - 288px));
+  top: clamp(var(--aikingbot-space-2), var(--diagram-new-agent-y), calc(100% - 196px));
+  left: clamp(var(--aikingbot-space-2), var(--diagram-new-agent-x), calc(100% - 288px));
   z-index: 3;
   display: grid;
   width: 280px;
-  gap: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-overlay);
+  gap: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-overlay);
   box-shadow:
-    0 0 0 1px var(--openbot-border),
-    var(--openbot-shadow-overlay);
+    0 0 0 1px var(--aikingbot-border),
+    var(--aikingbot-shadow-overlay);
   backdrop-filter: blur(16px);
-  padding: var(--openbot-space-3);
-  font-size: var(--openbot-text-sm);
+  padding: var(--aikingbot-space-3);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .diagram-new-agent-header {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  font-weight: var(--openbot-weight-medium);
+  gap: var(--aikingbot-space-2);
+  font-weight: var(--aikingbot-weight-medium);
   user-select: none;
 }
 
@@ -242,76 +243,76 @@
 
 /* The model field, drawn as the inputs above it are: their height, edge and fill. */
 .diagram-new-agent .provider-model-trigger-field {
-  height: var(--openbot-control-sm);
-  min-height: var(--openbot-control-sm);
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
+  height: var(--aikingbot-control-sm);
+  min-height: var(--aikingbot-control-sm);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
   box-shadow: none;
-  padding-inline: var(--openbot-space-2);
-  font-size: var(--openbot-text-sm);
+  padding-inline: var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .diagram-new-agent .provider-model-trigger-field:hover:not(:disabled),
 .diagram-new-agent .provider-model-trigger-field[aria-expanded="true"] {
-  border-color: var(--openbot-border-strong);
-  background: var(--openbot-bg-control);
+  border-color: var(--aikingbot-border-strong);
+  background: var(--aikingbot-bg-control);
 }
 
 .diagram-new-agent .provider-model-trigger-field:focus-visible {
-  border-color: var(--openbot-border-focus);
+  border-color: var(--aikingbot-border-focus);
   outline: none;
-  box-shadow: var(--openbot-focus-ring);
+  box-shadow: var(--aikingbot-focus-ring);
 }
 
 .diagram-new-agent-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /* Zoom in, zoom out and fit, as a column of separate square buttons. */
 .diagram-board-zoom {
   position: absolute;
-  right: var(--openbot-space-4);
-  bottom: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
+  bottom: var(--aikingbot-space-4);
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .diagram-board-zoom .ui-button {
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-overlay);
-  box-shadow: var(--openbot-shadow-raised);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-overlay);
+  box-shadow: var(--aikingbot-shadow-raised);
 }
 
 .diagram-board-zoom .ui-button svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
+  color: var(--aikingbot-text-muted);
 }
 
 .diagram-board-zoom .ui-button:hover svg {
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
 }
 
 /* Below the routine picker, which holds the top centre of the canvas. */
 .diagram-board-status {
   position: absolute;
-  top: calc(var(--openbot-space-4) + var(--openbot-control-sm) + var(--openbot-space-2));
+  top: calc(var(--aikingbot-space-4) + var(--aikingbot-control-sm) + var(--aikingbot-space-2));
   left: 50%;
   z-index: 2;
   max-width: min(420px, calc(100% - 320px));
   margin: 0;
   translate: -50% 0;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-overlay);
-  box-shadow: 0 0 0 1px var(--openbot-border);
-  padding: var(--openbot-space-1-5) var(--openbot-space-3);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-overlay);
+  box-shadow: 0 0 0 1px var(--aikingbot-border);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-3);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
   pointer-events: none;
   text-align: center;
 }
@@ -321,8 +322,8 @@
 }
 
 .diagram-board-status[data-tone="danger"] {
-  box-shadow: 0 0 0 1px var(--openbot-danger-border);
-  color: var(--openbot-danger-text);
+  box-shadow: 0 0 0 1px var(--aikingbot-danger-border);
+  color: var(--aikingbot-danger-text);
 }
 
 /* Edges. The SVG has no size of its own: it draws outside its box, in canvas coordinates. */
@@ -350,17 +351,17 @@
 }
 
 .diagram-edge-line {
-  stroke: var(--openbot-border-strong);
+  stroke: var(--aikingbot-border-strong);
   stroke-width: 2px;
   stroke-linecap: round;
 }
 
 .diagram-edge[data-state="delivered"] .diagram-edge-line {
-  stroke: var(--diagram-routine-color, var(--openbot-accent));
+  stroke: var(--diagram-routine-color, var(--aikingbot-accent));
 }
 
 .diagram-edge[data-state="running"] .diagram-edge-line {
-  stroke: var(--diagram-routine-color, var(--openbot-accent));
+  stroke: var(--diagram-routine-color, var(--aikingbot-accent));
   stroke-dasharray: 6 6;
   animation: diagram-edge-flow 0.6s linear infinite;
 }
@@ -373,18 +374,18 @@
 
 .diagram-edge:hover .diagram-edge-line,
 .diagram-edge[data-selected] .diagram-edge-line {
-  stroke: var(--openbot-text-primary);
+  stroke: var(--aikingbot-text-primary);
   stroke-width: 3px;
 }
 
 .diagram-edge-draft {
-  stroke: var(--openbot-accent);
+  stroke: var(--aikingbot-accent);
   stroke-width: 2px;
   stroke-dasharray: 6 6;
 }
 
 .diagram-edge-draft[data-target="invalid"] {
-  stroke: var(--openbot-danger);
+  stroke: var(--aikingbot-danger);
 }
 
 .diagram-edge-remove.ui-button {
@@ -393,12 +394,12 @@
   left: var(--diagram-edge-x);
   z-index: 1;
   translate: -50% -50%;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface-raised);
-  box-shadow: 0 0 0 1px var(--openbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface-raised);
+  box-shadow: 0 0 0 1px var(--aikingbot-border-strong);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--openbot-duration-fast) var(--openbot-ease-out);
+  transition: opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .diagram-edge-remove.ui-button:is([data-selected], :focus-visible) {
@@ -421,47 +422,47 @@
   display: flex;
   width: var(--diagram-node-width);
   flex-direction: column;
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-surface-raised);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-surface-raised);
   box-shadow:
-    0 0 0 1px var(--openbot-border),
-    var(--openbot-shadow-raised);
+    0 0 0 1px var(--aikingbot-border),
+    var(--aikingbot-shadow-raised);
   cursor: grab;
   transition:
-    box-shadow var(--openbot-duration-fast) var(--openbot-ease-out),
-    opacity var(--openbot-duration-normal) var(--openbot-ease-out);
+    box-shadow var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
   user-select: none;
 }
 
 .diagram-node[data-status="running"] {
   box-shadow:
-    0 0 0 1px var(--openbot-accent),
-    0 0 0 5px var(--openbot-accent-soft);
+    0 0 0 1px var(--aikingbot-accent),
+    0 0 0 5px var(--aikingbot-accent-soft);
 }
 
 .diagram-node[data-status="failed"] {
   box-shadow:
-    0 0 0 1px var(--openbot-danger-border),
-    var(--openbot-shadow-raised);
+    0 0 0 1px var(--aikingbot-danger-border),
+    var(--aikingbot-shadow-raised);
 }
 
 .diagram-node[data-unreachable] {
-  box-shadow: 0 0 0 1px var(--openbot-warning);
+  box-shadow: 0 0 0 1px var(--aikingbot-warning);
 }
 
 .diagram-node[data-selected] {
   box-shadow:
-    0 0 0 2px var(--openbot-accent),
-    var(--openbot-shadow-raised);
+    0 0 0 2px var(--aikingbot-accent),
+    var(--aikingbot-shadow-raised);
 }
 
 .diagram-node-header {
   display: flex;
   height: 52px;
   align-items: center;
-  gap: var(--openbot-space-1);
-  border-bottom: 1px solid var(--openbot-border);
-  padding: 0 var(--openbot-space-2) 0 var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
+  border-bottom: 1px solid var(--aikingbot-border);
+  padding: 0 var(--aikingbot-space-2) 0 var(--aikingbot-space-1);
 }
 
 .diagram-node-select.ui-button {
@@ -469,8 +470,8 @@
   min-width: 0;
   flex: 1;
   justify-content: flex-start;
-  gap: var(--openbot-space-2);
-  padding: 0 var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-2);
+  padding: 0 var(--aikingbot-space-1-5);
   background: transparent;
   cursor: inherit;
   text-align: left;
@@ -487,14 +488,14 @@
   height: 28px;
   flex: none;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
 }
 
 .diagram-node-icon svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .diagram-node-heading {
@@ -504,19 +505,19 @@
 
 .diagram-node-kicker {
   overflow: hidden;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-regular);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-regular);
+  line-height: var(--aikingbot-leading-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .diagram-node-name {
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-semibold);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -527,20 +528,20 @@
   height: 20px;
   flex: none;
   place-items: center;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control);
-  padding: 0 var(--openbot-space-1);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control);
+  padding: 0 var(--aikingbot-space-1);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .diagram-node-body {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-2) var(--openbot-space-3) var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3) var(--aikingbot-space-3);
 }
 
 .diagram-node-task,
@@ -550,14 +551,14 @@
   margin: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .diagram-node-schedule {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
 }
 
 /* The output of the last run, inside the card, the way a generation shows its result. */
@@ -565,12 +566,12 @@
   display: flex;
   min-height: 64px;
   align-items: flex-start;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
-  padding: var(--openbot-space-2);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
+  padding: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .diagram-node-preview[data-empty] {
@@ -588,12 +589,12 @@
 }
 
 .diagram-node[data-status="failed"] .diagram-node-preview {
-  background: var(--openbot-danger-soft);
-  color: var(--openbot-danger-text);
+  background: var(--aikingbot-danger-soft);
+  color: var(--aikingbot-danger-text);
 }
 
 .diagram-node-preview-empty {
-  color: var(--openbot-text-placeholder);
+  color: var(--aikingbot-text-placeholder);
 }
 
 .diagram-node-footer {
@@ -601,45 +602,45 @@
   min-height: 24px;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .diagram-node-status {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  gap: var(--aikingbot-space-1);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .diagram-node-status svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
 }
 
 :is(.diagram-node-status, .diagram-inspector-step-status)[data-status="succeeded"] {
-  color: var(--openbot-success-text);
+  color: var(--aikingbot-success-text);
 }
 
 :is(.diagram-node-status, .diagram-inspector-step-status)[data-status="failed"] {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }
 
 :is(.diagram-node-status, .diagram-inspector-step-status)[data-status="running"] {
-  color: var(--openbot-accent-text);
+  color: var(--aikingbot-accent-text);
 }
 
 .diagram-node-status[data-status="unreachable"] {
-  color: var(--openbot-warning-text);
+  color: var(--aikingbot-warning-text);
 }
 
 .diagram-node-duration {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .diagram-node-duration::before {
   content: "·";
-  margin-right: var(--openbot-space-1);
+  margin-right: var(--aikingbot-space-1);
 }
 
 .diagram-node-remove.ui-button,
@@ -651,8 +652,8 @@
 
 .diagram-node-run.ui-button svg,
 .diagram-view-actions .ui-button-size-xs svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
 }
 
 /* Ports sit on the card's edge, level with the header. */
@@ -663,15 +664,15 @@
   width: 14px;
   min-width: 14px;
   height: 14px;
-  border: 2px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface-raised);
+  border: 2px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface-raised);
   padding: 0;
   cursor: crosshair;
   transition:
-    scale var(--openbot-duration-fast) var(--openbot-ease-out),
-    border-color var(--openbot-duration-fast) var(--openbot-ease-out),
-    background-color var(--openbot-duration-fast) var(--openbot-ease-out);
+    scale var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    border-color var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    background-color var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 /* A larger target than the dot it shows. */
@@ -693,16 +694,16 @@
 .diagram-port-out.ui-button[data-connecting],
 .diagram-port-in.ui-button[data-target="valid"] {
   scale: 1.25;
-  border-color: var(--openbot-accent);
-  background: var(--openbot-accent-soft);
+  border-color: var(--aikingbot-accent);
+  background: var(--aikingbot-accent-soft);
 }
 
 .diagram-port-out.ui-button[data-connecting] {
-  background: var(--openbot-accent);
+  background: var(--aikingbot-accent);
 }
 
 .diagram-port-in.ui-button[data-target="invalid"] {
-  border-color: var(--openbot-danger);
+  border-color: var(--aikingbot-danger);
   opacity: 0.5;
 }
 
@@ -714,33 +715,33 @@
 /* Routine colours. A routine, the chips that name it on agent cards, and its path while it is in
    focus share one colour, so a run can be followed across the canvas. */
 [data-routine-color="0"] {
-  --diagram-routine-color: var(--openbot-file-blue);
-  --diagram-routine-soft: var(--openbot-file-blue-soft);
+  --diagram-routine-color: var(--aikingbot-file-blue);
+  --diagram-routine-soft: var(--aikingbot-file-blue-soft);
 }
 
 [data-routine-color="1"] {
-  --diagram-routine-color: var(--openbot-file-green);
-  --diagram-routine-soft: var(--openbot-file-green-soft);
+  --diagram-routine-color: var(--aikingbot-file-green);
+  --diagram-routine-soft: var(--aikingbot-file-green-soft);
 }
 
 [data-routine-color="2"] {
-  --diagram-routine-color: var(--openbot-file-orange);
-  --diagram-routine-soft: var(--openbot-file-orange-soft);
+  --diagram-routine-color: var(--aikingbot-file-orange);
+  --diagram-routine-soft: var(--aikingbot-file-orange-soft);
 }
 
 [data-routine-color="3"] {
-  --diagram-routine-color: var(--openbot-file-pink);
-  --diagram-routine-soft: var(--openbot-file-pink-soft);
+  --diagram-routine-color: var(--aikingbot-file-pink);
+  --diagram-routine-soft: var(--aikingbot-file-pink-soft);
 }
 
 [data-routine-color="4"] {
-  --diagram-routine-color: var(--openbot-file-teal);
-  --diagram-routine-soft: var(--openbot-file-teal-soft);
+  --diagram-routine-color: var(--aikingbot-file-teal);
+  --diagram-routine-soft: var(--aikingbot-file-teal-soft);
 }
 
 [data-routine-color="5"] {
-  --diagram-routine-color: var(--openbot-file-yellow);
-  --diagram-routine-soft: var(--openbot-file-yellow-soft);
+  --diagram-routine-color: var(--aikingbot-file-yellow);
+  --diagram-routine-soft: var(--aikingbot-file-yellow-soft);
 }
 
 /* Outside the focused routine's path the canvas recedes, but stays readable and editable. */
@@ -759,7 +760,7 @@
 .diagram-node-routines {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -767,12 +768,12 @@
 
 .diagram-routine-chip.ui-button {
   height: 22px;
-  gap: var(--openbot-space-1);
-  border-radius: var(--openbot-radius-pill);
+  gap: var(--aikingbot-space-1);
+  border-radius: var(--aikingbot-radius-pill);
   background: var(--diagram-routine-soft);
-  padding: 0 var(--openbot-space-2);
+  padding: 0 var(--aikingbot-space-2);
   color: var(--diagram-routine-color);
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .diagram-routine-chip.ui-button[aria-pressed="true"] {
@@ -780,8 +781,8 @@
 }
 
 .diagram-routine-chip.ui-button svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
 }
 
 .diagram-routine-chip-name {
@@ -794,7 +795,7 @@
 /* The webhook of a routine in the details panel: the routine settings' card, and Save under it. */
 .diagram-routine-webhook {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .diagram-routine-webhook-actions {
@@ -805,15 +806,15 @@
 /* The routine picker, at the top centre of the canvas. */
 .diagram-view-lens-bar {
   position: absolute;
-  top: var(--openbot-space-4);
+  top: var(--aikingbot-space-4);
   left: 50%;
   z-index: 2;
   translate: -50% 0;
 }
 
 .diagram-view-lens-bar .ui-select-trigger {
-  background: var(--openbot-bg-overlay);
-  box-shadow: var(--openbot-shadow-raised);
+  background: var(--aikingbot-bg-overlay);
+  box-shadow: var(--aikingbot-shadow-raised);
 }
 
 .diagram-view-lens-trigger.ui-select-trigger {
@@ -825,7 +826,7 @@
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .diagram-view-lens-name {
@@ -835,15 +836,15 @@
 }
 
 .diagram-view-lens-option svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
   flex: none;
 }
 
 /* "All routines" has no colour of its own: its dot is an outline. */
 .diagram-view-lens-dot[data-all] {
   background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--openbot-text-muted);
+  box-shadow: inset 0 0 0 1.5px var(--aikingbot-text-muted);
 }
 
 .diagram-view-lens-dot,
@@ -851,7 +852,7 @@
   width: 8px;
   height: 8px;
   flex: none;
-  border-radius: var(--openbot-radius-pill);
+  border-radius: var(--aikingbot-radius-pill);
   background: var(--diagram-routine-color);
 }
 
@@ -874,7 +875,7 @@
 }
 
 .diagram-node[data-kind="routine"][data-firing] .diagram-node-icon {
-  animation: diagram-routine-fire 1.2s var(--openbot-ease-in-out) infinite;
+  animation: diagram-routine-fire 1.2s var(--aikingbot-ease-in-out) infinite;
 }
 
 .diagram-routine-instruction {
@@ -883,18 +884,18 @@
   margin: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  border-left: 2px solid var(--diagram-routine-color, var(--openbot-accent));
-  padding-left: var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  border-left: 2px solid var(--diagram-routine-color, var(--aikingbot-accent));
+  padding-left: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .diagram-routine-week {
   --diagram-week-height: 40px;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .diagram-routine-week[data-size="panel"] {
@@ -904,7 +905,7 @@
 .diagram-routine-day {
   display: grid;
   justify-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /* One day, midnight at the top: a tick sits at the time the routine fires. */
@@ -912,16 +913,16 @@
   position: relative;
   width: 100%;
   height: var(--diagram-week-height);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-control);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-bg-control);
 }
 
 .diagram-routine-day[data-weekend] .diagram-routine-day-track {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .diagram-routine-day[data-today] .diagram-routine-day-track {
-  box-shadow: inset 0 0 0 1px var(--openbot-accent);
+  box-shadow: inset 0 0 0 1px var(--aikingbot-accent);
 }
 
 /* Noon, so a morning run reads as morning. */
@@ -931,7 +932,7 @@
   right: 3px;
   left: 3px;
   height: 1px;
-  background: var(--openbot-border);
+  background: var(--aikingbot-border);
   content: "";
 }
 
@@ -943,25 +944,25 @@
   z-index: 1;
   height: 3px;
   translate: 0 -50%;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--diagram-routine-color, var(--openbot-accent));
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--diagram-routine-color, var(--aikingbot-accent));
 }
 
 .diagram-routine-day-name {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1;
 }
 
 .diagram-routine-day[data-today] .diagram-routine-day-name {
-  color: var(--openbot-accent-text);
-  font-weight: var(--openbot-weight-semibold);
+  color: var(--aikingbot-accent-text);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .diagram-routine-dots {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -970,20 +971,20 @@
 .diagram-routine-dot {
   width: 8px;
   height: 8px;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-border-strong);
 }
 
 .diagram-routine-dot[data-status="succeeded"] {
-  background: var(--openbot-success);
+  background: var(--aikingbot-success);
 }
 
 .diagram-routine-dot[data-status="failed"] {
-  background: var(--openbot-danger);
+  background: var(--aikingbot-danger);
 }
 
 .diagram-routine-dot[data-status="running"] {
-  background: var(--openbot-accent);
+  background: var(--aikingbot-accent);
 }
 
 @keyframes diagram-routine-fire {
@@ -1003,25 +1004,25 @@
   width: var(--diagram-inspector-width);
   min-height: 0;
   flex-direction: column;
-  border-left: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-surface);
+  border-left: 1px solid var(--aikingbot-border);
+  background: var(--aikingbot-bg-surface);
 }
 
 .diagram-inspector-header {
   display: flex;
   min-height: 52px;
   align-items: center;
-  gap: var(--openbot-space-2);
-  border-bottom: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  border-bottom: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
 }
 
 .diagram-inspector-title {
   overflow: hidden;
   margin: 0;
   flex: 1;
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1036,53 +1037,53 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
   overflow-y: auto;
-  padding: var(--openbot-space-4);
+  padding: var(--aikingbot-space-4);
 }
 
 .diagram-inspector-run {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--openbot-space-1-5) var(--openbot-space-2);
-  font-size: var(--openbot-text-md);
+  gap: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-md);
 }
 
 .diagram-inspector-muted,
 .diagram-inspector-empty {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
 }
 
 .diagram-inspector-section {
   display: grid;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .diagram-inspector-section p {
   margin: 0;
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 /* The task reads as text until the user points at it or types in it. */
 .diagram-inspector-task.ui-textarea {
   min-height: 0;
-  margin: calc(-1 * var(--openbot-space-1-5));
+  margin: calc(-1 * var(--aikingbot-space-1-5));
   border-color: transparent;
   background: transparent;
-  padding: var(--openbot-space-1) var(--openbot-space-1-5);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1-5);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
   resize: none;
   field-sizing: content;
 }
 
 .diagram-inspector-task.ui-textarea:is(:hover, :focus-visible, :focus) {
-  border-color: var(--openbot-border);
-  background: var(--openbot-bg-control);
+  border-color: var(--aikingbot-border);
+  background: var(--aikingbot-bg-control);
 }
 
 .diagram-inspector-section-heading {
@@ -1093,35 +1094,35 @@
 
 .diagram-inspector-section-title {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
-  letter-spacing: var(--openbot-tracking-wide);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
+  letter-spacing: var(--aikingbot-tracking-wide);
 }
 
 .diagram-inspector-text {
   max-height: 320px;
   overflow: auto;
   margin: 0;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-sans);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-sans);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 
 .diagram-inspector-text[data-tone="danger"] {
-  background: var(--openbot-danger-soft);
-  color: var(--openbot-danger-text);
+  background: var(--aikingbot-danger-soft);
+  color: var(--aikingbot-danger-text);
 }
 
 .diagram-inspector-steps {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1131,8 +1132,8 @@
   width: 100%;
   height: auto;
   justify-content: flex-start;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-2);
   text-align: left;
 }
 
@@ -1142,18 +1143,18 @@
   height: 20px;
   flex: none;
   place-items: center;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .diagram-inspector-step-name {
   overflow: hidden;
   flex: 1;
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1161,42 +1162,42 @@
 .diagram-inspector-step-status {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  gap: var(--aikingbot-space-1);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .diagram-inspector-times,
 .diagram-inspector-history {
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
   padding: 0;
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
   list-style: none;
 }
 
 .diagram-inspector-times li {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .diagram-inspector-history li {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .diagram-inspector-history-time {
   overflow: hidden;
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .diagram-inspector-history-kind {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .diagram-inspector-history-kind::before {
@@ -1204,18 +1205,18 @@
 }
 
 .diagram-inspector-step-status svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
 }
 
 /* Assistant */
 
 .diagram-chat,
 .diagram-chat-launcher.ui-button {
-  background: var(--openbot-bg-glass);
+  background: var(--aikingbot-bg-glass);
   box-shadow:
-    0 0 0 1px var(--openbot-glass-border),
-    var(--openbot-shadow-overlay);
+    0 0 0 1px var(--aikingbot-glass-border),
+    var(--aikingbot-shadow-overlay);
   backdrop-filter: blur(16px);
 }
 
@@ -1223,8 +1224,8 @@
    with a clip that relaxes into the panel's own corners, with a little overshoot; closing folds it
    back faster and without one. The panel's shadow sits outside its box, so the open clip leaves room. */
 .diagram-chat-morph {
-  --diagram-chat-open-duration: var(--openbot-duration-island-content);
-  --diagram-chat-close-duration: var(--openbot-duration-island-content-exit);
+  --diagram-chat-open-duration: var(--aikingbot-duration-island-content);
+  --diagram-chat-close-duration: var(--aikingbot-duration-island-content-exit);
   --diagram-chat-open-ease: cubic-bezier(0.34, 1.25, 0.64, 1);
   --diagram-chat-launcher-height: 36px;
   --diagram-chat-blur: 2px;
@@ -1240,14 +1241,14 @@
   height: var(--diagram-chat-launcher-height);
   touch-action: none;
   justify-self: start;
-  gap: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-pill);
-  padding-left: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-pill);
+  padding-left: var(--aikingbot-space-1-5);
   pointer-events: auto;
   transition:
-    opacity var(--diagram-chat-open-duration) var(--openbot-ease-out),
-    filter var(--diagram-chat-open-duration) var(--openbot-ease-out),
-    scale var(--diagram-chat-open-duration) var(--openbot-ease-out);
+    opacity var(--diagram-chat-open-duration) var(--aikingbot-ease-out),
+    filter var(--diagram-chat-open-duration) var(--aikingbot-ease-out),
+    scale var(--diagram-chat-open-duration) var(--aikingbot-ease-out);
 }
 
 .diagram-chat-morph[data-open="true"] .diagram-chat-launcher.ui-button {
@@ -1256,23 +1257,23 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity var(--openbot-duration-fast) var(--openbot-ease-out),
-    filter var(--openbot-duration-fast) var(--openbot-ease-out),
-    scale var(--openbot-duration-fast) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    filter var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    scale var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .diagram-chat {
   display: flex;
   max-height: 340px;
   flex-direction: column;
-  border-radius: var(--openbot-radius-xl);
+  border-radius: var(--aikingbot-radius-xl);
   overflow: hidden;
-  clip-path: inset(calc(100% - var(--diagram-chat-launcher-height)) 24% 0 0 round var(--openbot-radius-pill));
+  clip-path: inset(calc(100% - var(--diagram-chat-launcher-height)) 24% 0 0 round var(--aikingbot-radius-pill));
   opacity: 0;
   pointer-events: none;
   transition:
-    clip-path var(--diagram-chat-close-duration) var(--openbot-ease-out),
-    opacity var(--diagram-chat-close-duration) var(--openbot-ease-out);
+    clip-path var(--diagram-chat-close-duration) var(--aikingbot-ease-out),
+    opacity var(--diagram-chat-close-duration) var(--aikingbot-ease-out);
 }
 
 .diagram-chat-morph[data-open="true"] .diagram-chat {
@@ -1281,18 +1282,18 @@
   pointer-events: auto;
   transition:
     clip-path var(--diagram-chat-open-duration) var(--diagram-chat-open-ease),
-    opacity var(--openbot-duration-fast) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 /* The content settles a beat after the shape, so the panel reads as opening, not appearing. */
 .diagram-chat > * {
   filter: blur(var(--diagram-chat-blur));
   opacity: 0;
-  translate: 0 var(--openbot-space-2);
+  translate: 0 var(--aikingbot-space-2);
   transition:
-    opacity var(--openbot-duration-fast) var(--openbot-ease-out),
-    filter var(--openbot-duration-fast) var(--openbot-ease-out),
-    translate var(--openbot-duration-fast) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    filter var(--aikingbot-duration-fast) var(--aikingbot-ease-out),
+    translate var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .diagram-chat-morph[data-open="true"] .diagram-chat > * {
@@ -1300,9 +1301,9 @@
   opacity: 1;
   translate: 0 0;
   transition:
-    opacity var(--diagram-chat-open-duration) var(--openbot-ease-out) var(--openbot-duration-fast),
-    filter var(--diagram-chat-open-duration) var(--openbot-ease-out) var(--openbot-duration-fast),
-    translate var(--diagram-chat-open-duration) var(--openbot-ease-out) var(--openbot-duration-fast);
+    opacity var(--diagram-chat-open-duration) var(--aikingbot-ease-out) var(--aikingbot-duration-fast),
+    filter var(--diagram-chat-open-duration) var(--aikingbot-ease-out) var(--aikingbot-duration-fast),
+    translate var(--diagram-chat-open-duration) var(--aikingbot-ease-out) var(--aikingbot-duration-fast);
 }
 
 .diagram-chat-avatar.agent-avatar {
@@ -1313,19 +1314,19 @@
 .diagram-chat-header {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   cursor: grab;
   touch-action: none;
-  border-bottom: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-2) var(--openbot-space-2) var(--openbot-space-2) var(--openbot-space-3);
+  border-bottom: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-2) var(--aikingbot-space-2) var(--aikingbot-space-3);
 }
 
 .diagram-chat-title {
   overflow: hidden;
   margin: 0;
   flex: 1;
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1335,21 +1336,21 @@
   min-height: 96px;
   flex: 1;
   flex-direction: column;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   overflow-y: auto;
-  padding: var(--openbot-space-3);
+  padding: var(--aikingbot-space-3);
 }
 
 .diagram-chat-empty {
   margin: auto 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
   text-align: center;
 }
 
 .diagram-chat-bubble {
   max-width: 88%;
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
 }
 
 .diagram-chat-text {
@@ -1360,45 +1361,45 @@
 /* The chat's Markdown, a size down to fit the panel. */
 .diagram-chat-markdown {
   min-width: 0;
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
 }
 
 .diagram-chat-changes {
   display: grid;
-  gap: var(--openbot-space-1);
-  margin: var(--openbot-space-2) 0 0;
+  gap: var(--aikingbot-space-1);
+  margin: var(--aikingbot-space-2) 0 0;
   padding: 0;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   list-style: none;
 }
 
 .diagram-chat-changes li {
   display: flex;
   align-items: flex-start;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .diagram-chat-changes svg {
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
+  width: var(--aikingbot-icon-xs);
+  height: var(--aikingbot-icon-xs);
   flex: none;
   margin-top: 2px;
-  color: var(--openbot-success-text);
+  color: var(--aikingbot-success-text);
 }
 
 .diagram-chat-working {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 
 /* The chat composer's compact row, without its attach button: the editor and the send button. */
 .diagram-chat-composer.composer[data-compact] {
   grid-template-columns: minmax(0, 1fr) auto;
-  margin: var(--openbot-space-2);
+  margin: var(--aikingbot-space-2);
 }
 
 .diagram-chat-composer.composer[data-compact] > .composer-input-label {

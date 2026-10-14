@@ -34,13 +34,13 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { connect } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol/v1";
+} from "@aikingbot/contracts/team-protocol/v1";
 import { expect } from "vitest";
 import type { TeamApiAgents, TeamApiBrowser, TeamApiMailbox, TeamApiOptions } from "./team-api/dependencies";
 import { TeamApiServer } from "./team-api-server";
@@ -209,7 +209,7 @@ export async function createTeamApiFixture(
   slug: string,
   settings: { configure?: boolean } = {},
 ): Promise<TeamApiFixture> {
-  const root = await mkdtemp(join(tmpdir(), `openbot-team-api-${slug}-`));
+  const root = await mkdtemp(join(tmpdir(), `aikingbot-team-api-${slug}-`));
   roots.push(root);
   const store = new TeamStore(join(root, "team.json"));
   await Effect.runPromise(store.initialize());

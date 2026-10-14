@@ -1,60 +1,60 @@
 /* The "What's new" dialog after an app update. One centred card: the logo and version on top, the
  * notes in a scroll area, and the actions in a footer. The groups use the colours of the
- * changelog page on openbot.run, so a reader sees the same notes in the same way. */
+ * changelog page on aikingbot.aikingx.com, so a reader sees the same notes in the same way. */
 
 .whats-new-backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-6);
-  animation: whats-new-fade-in var(--openbot-duration-overlay) var(--openbot-ease-out);
+  padding: var(--aikingbot-space-6);
+  animation: whats-new-fade-in var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .whats-new-dialog {
   position: relative;
   display: flex;
   width: min(480px, 100%);
-  max-height: min(640px, calc(100dvh - 2 * var(--openbot-space-6)));
+  max-height: min(640px, calc(100dvh - 2 * var(--aikingbot-space-6)));
   flex-direction: column;
   overflow: hidden;
   outline: 0;
-  border-radius: var(--openbot-radius-xl);
-  background: var(--openbot-bg-sidebar);
-  color: var(--openbot-text-primary);
+  border-radius: var(--aikingbot-radius-xl);
+  background: var(--aikingbot-bg-sidebar);
+  color: var(--aikingbot-text-primary);
 }
 
 .whats-new-close {
   position: absolute;
   z-index: 1;
-  inset-block-start: var(--openbot-space-3);
-  inset-inline-end: var(--openbot-space-3);
-  color: var(--openbot-text-muted);
+  inset-block-start: var(--aikingbot-space-3);
+  inset-inline-end: var(--aikingbot-space-3);
+  color: var(--aikingbot-text-muted);
 }
 
 .whats-new-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-1);
-  padding: var(--openbot-space-8) var(--openbot-space-6) var(--openbot-space-4);
+  gap: var(--aikingbot-space-1);
+  padding: var(--aikingbot-space-8) var(--aikingbot-space-6) var(--aikingbot-space-4);
   text-align: center;
 }
 
 .whats-new-logo {
-  --app-logo-background: var(--openbot-surface-light);
+  --app-logo-background: var(--aikingbot-surface-light);
   width: 56px;
   height: 56px;
-  margin-block-end: var(--openbot-space-3);
-  border-radius: var(--openbot-radius-logo);
+  margin-block-end: var(--aikingbot-space-3);
+  border-radius: var(--aikingbot-radius-logo);
 }
 
 .whats-new-title {
   margin: 0;
-  font-size: var(--openbot-text-2xl);
-  font-weight: var(--openbot-weight-bold);
-  line-height: var(--openbot-leading-2xl);
+  font-size: var(--aikingbot-text-2xl);
+  font-weight: var(--aikingbot-weight-bold);
+  line-height: var(--aikingbot-leading-2xl);
 }
 
 .whats-new-body {
@@ -62,59 +62,59 @@
   min-height: 0;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   overflow-y: auto;
-  padding: var(--openbot-space-2) var(--openbot-space-6) var(--openbot-space-6);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-6) var(--aikingbot-space-6);
   border-block-start: 1px solid transparent;
 }
 
 .whats-new-body.scroll-fade-top {
-  border-block-start-color: var(--openbot-border);
+  border-block-start-color: var(--aikingbot-border);
 }
 
 .whats-new-body.scroll-fade-bottom {
-  mask-image: linear-gradient(to bottom, var(--openbot-text-primary) calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, var(--aikingbot-text-primary) calc(100% - 32px), transparent);
 }
 
 .whats-new-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-2);
-  padding-block: var(--openbot-space-6);
+  gap: var(--aikingbot-space-2);
+  padding-block: var(--aikingbot-space-6);
   text-align: center;
 }
 
 .whats-new-state .ui-button {
-  margin-block-start: var(--openbot-space-2);
+  margin-block-start: var(--aikingbot-space-2);
 }
 
 .whats-new-state-icon {
   width: 24px;
   height: 24px;
-  color: var(--openbot-warning-text);
+  color: var(--aikingbot-warning-text);
 }
 
 .whats-new-notice {
-  padding: var(--openbot-space-3) var(--openbot-space-4) var(--openbot-space-4);
-  border-radius: var(--openbot-radius-card);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4) var(--aikingbot-space-4);
+  border-radius: var(--aikingbot-radius-card);
   background-image: linear-gradient(
     180deg,
-    var(--openbot-warning-soft),
-    color-mix(in srgb, var(--openbot-warning) 3%, transparent)
+    var(--aikingbot-warning-soft),
+    color-mix(in srgb, var(--aikingbot-warning) 3%, transparent)
   );
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--openbot-warning) 26%, transparent);
-  --whats-new-tone: var(--openbot-warning-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aikingbot-warning) 26%, transparent);
+  --whats-new-tone: var(--aikingbot-warning-text);
 }
 
 .whats-new-notice-title {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  margin: 0 0 var(--openbot-space-2);
-  color: var(--openbot-warning-text);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  gap: var(--aikingbot-space-2);
+  margin: 0 0 var(--aikingbot-space-2);
+  color: var(--aikingbot-warning-text);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .whats-new-notice-title svg {
@@ -124,33 +124,33 @@
 }
 
 .whats-new-group {
-  --whats-new-tone: var(--openbot-text-muted);
+  --whats-new-tone: var(--aikingbot-text-muted);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .whats-new-group[data-type="added"] {
-  --whats-new-tone: var(--openbot-logo-production);
+  --whats-new-tone: var(--aikingbot-logo-production);
 }
 
 .whats-new-group[data-type="changed"] {
-  --whats-new-tone: var(--openbot-accent-text);
+  --whats-new-tone: var(--aikingbot-accent-text);
 }
 
 .whats-new-group[data-type="fixed"] {
-  --whats-new-tone: var(--openbot-success-text);
+  --whats-new-tone: var(--aikingbot-success-text);
 }
 
 .whats-new-group-title {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   margin: 0;
   color: var(--whats-new-tone);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -158,24 +158,24 @@
 .whats-new-group-dot {
   width: 6px;
   height: 6px;
-  border-radius: var(--openbot-radius-pill);
+  border-radius: var(--aikingbot-radius-pill);
   background: var(--whats-new-tone);
   box-shadow: 0 0 10px color-mix(in srgb, var(--whats-new-tone) 70%, transparent);
 }
 
 .whats-new-group-count {
-  padding: 0 var(--openbot-space-1-5);
-  border-radius: var(--openbot-radius-pill);
+  padding: 0 var(--aikingbot-space-1-5);
+  border-radius: var(--aikingbot-radius-pill);
   background: color-mix(in srgb, var(--whats-new-tone) 12%, transparent);
-  font-family: var(--openbot-font-mono);
-  font-weight: var(--openbot-weight-medium);
+  font-family: var(--aikingbot-font-mono);
+  font-weight: var(--aikingbot-weight-medium);
   letter-spacing: 0;
 }
 
 .whats-new-list {
   display: grid;
   width: 100%;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -184,52 +184,52 @@
 /* A hanging mark in the group's colour, so a long item wraps under its own text. */
 .whats-new-item {
   position: relative;
-  padding-inline-start: var(--openbot-space-6);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  padding-inline-start: var(--aikingbot-space-6);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
   text-wrap: pretty;
 }
 
 .whats-new-item-headline {
   display: block;
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .whats-new-item-detail {
   display: block;
-  margin-block-start: var(--openbot-space-0-5);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  margin-block-start: var(--aikingbot-space-0-5);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .whats-new-item::before {
   content: "";
   position: absolute;
   inset-block-start: 0.75em;
-  inset-inline-start: var(--openbot-space-1);
+  inset-inline-start: var(--aikingbot-space-1);
   width: 8px;
   height: 1px;
   background: color-mix(in srgb, var(--whats-new-tone) 70%, transparent);
 }
 
 .whats-new-toggle {
-  margin-inline-start: calc(-1 * var(--openbot-space-2));
-  color: var(--openbot-text-muted);
+  margin-inline-start: calc(-1 * var(--aikingbot-space-2));
+  color: var(--aikingbot-text-muted);
 }
 
 .whats-new-actions .ui-button svg,
 .whats-new-toggle svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .whats-new-toggle svg {
-  transition: transform var(--openbot-duration-fast) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .whats-new-toggle[data-expanded] svg {
@@ -240,9 +240,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-3) var(--openbot-space-4);
-  border-block-start: 1px solid var(--openbot-border);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
+  border-block-start: 1px solid var(--aikingbot-border);
 }
 
 @keyframes whats-new-fade-in {
@@ -253,15 +253,15 @@
 
 @media (max-width: 560px) {
   .whats-new-backdrop {
-    padding: var(--openbot-space-3);
+    padding: var(--aikingbot-space-3);
   }
 
   .whats-new-header {
-    padding-inline: var(--openbot-space-4);
+    padding-inline: var(--aikingbot-space-4);
   }
 
   .whats-new-body {
-    padding-inline: var(--openbot-space-4);
+    padding-inline: var(--aikingbot-space-4);
   }
 }
 

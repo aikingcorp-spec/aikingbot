@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 
-const LANGUAGE_STEP_STORAGE_KEY = "openbot:language-step-done";
+const LANGUAGE_STEP_STORAGE_KEY = "aikingbot:language-step-done";
 
 type StepStorage = Pick<Storage, "getItem" | "setItem">;
 

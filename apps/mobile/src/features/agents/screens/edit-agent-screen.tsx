@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentAccess, AvatarHue, UpdateAgentInput } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentAccess, AvatarHue, UpdateAgentInput } from "@aikingbot/contracts/ipc";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

@@ -1,5 +1,5 @@
 import { Effect, Schema } from "effect";
-import { OPENBOT_LINKS } from "../lib/landing-links";
+import { AIKINGBOT_LINKS } from "../lib/landing-links";
 
 export type AvailableDownloadPlatform = "linux" | "macos" | "windows";
 
@@ -20,7 +20,7 @@ interface DownloadManifestConfig {
   manifest: "latest-linux-arm64.yml" | "latest-linux.yml" | "latest-mac.yml" | "latest.yml";
 }
 
-const RELEASES_BASE_URL = "https://github.com/nightly-labs/openbot/releases";
+const RELEASES_BASE_URL = "https://github.com/aikingcorp-spec/aikingx_bot/releases";
 
 const DOWNLOAD_PLATFORMS = ["linux", "macos", "windows"] as const satisfies readonly AvailableDownloadPlatform[];
 
@@ -83,7 +83,7 @@ function findInstaller(
  */
 function fallbackToReleases(platform: AvailableDownloadPlatform, reason: string): Response {
   console.warn(`latest-download: serving the releases page for ${platform} (${reason})`);
-  return redirect(OPENBOT_LINKS.releases);
+  return redirect(AIKINGBOT_LINKS.releases);
 }
 
 class DownloadManifestError extends Schema.TaggedError<DownloadManifestError>()("DownloadManifestError", {}) {}

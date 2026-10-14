@@ -3,12 +3,12 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryStore } from "./agent-memory-store";
 import { AgentStore } from "./agent-store";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
 
 const roots: string[] = [];
 
@@ -76,14 +76,14 @@ describe("AgentMemoryStore", () => {
   });
 
   it("keeps memories after the database restarts", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-memory-restart-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-memory-restart-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     new AgentMemoryStore(database).createManual("chief", "Use metric units.");
     database.close();
 
-    const reopened = new OpenBotDatabase(root);
+    const reopened = new AIKINGBOTDatabase(root);
     await runCauseEffect(reopened.initialize());
     expect(new AgentMemoryStore(reopened).list("chief").map((memory) => memory.text)).toEqual(["Use metric units."]);
     reopened.close();
@@ -339,7 +339,7 @@ describe("AgentMemoryStore", () => {
   });
 
   it("removes every memory and memory event when its agent is deleted", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-memory-delete-agent-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-memory-delete-agent-"));
     roots.push(root);
     const agentStore = new AgentStore(join(root, "data"), join(root, "home"));
     await runCauseEffect(agentStore.initialize());
@@ -359,10 +359,10 @@ describe("AgentMemoryStore", () => {
   });
 });
 
-async function setup(): Promise<{ database: OpenBotDatabase; memories: AgentMemoryStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-memory-store-"));
+async function setup(): Promise<{ database: AIKINGBOTDatabase; memories: AgentMemoryStore }> {
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-memory-store-"));
   roots.push(root);
-  const database = new OpenBotDatabase(root);
+  const database = new AIKINGBOTDatabase(root);
   await runCauseEffect(database.initialize());
   return { database, memories: new AgentMemoryStore(database) };
 }

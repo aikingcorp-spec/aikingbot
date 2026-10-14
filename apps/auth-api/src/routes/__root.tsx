@@ -2,18 +2,18 @@ import interLatinFont from "@fontsource-variable/inter/files/inter-latin-wght-no
 import type { JSX } from "@solidjs/web";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/solid-router";
 import { onSettled } from "solid-js";
-import "@openbot/brand/logo.css";
-import { installPointerFocusGuard } from "@openbot/ui/pointer-focus";
+import "@aikingbot/brand/logo.css";
+import { installPointerFocusGuard } from "@aikingbot/ui/pointer-focus";
 import "../styles.css";
 import { NotFoundPage } from "../components/landing/NotFoundPage";
 import { PageError } from "../components/landing/PageError";
 import { servingSiteUrl } from "../lib/serving-site-url";
-import { OPENBOT_SECURITY_HEADERS, openBotRootHead } from "../lib/site-metadata";
+import { AIKINGBOT_SECURITY_HEADERS, aikingBotRootHead } from "../lib/site-metadata";
 
 export const Route = createRootRoute({
   beforeLoad: () => ({ siteUrl: servingSiteUrl() }),
-  head: () => openBotRootHead(interLatinFont),
-  headers: () => OPENBOT_SECURITY_HEADERS,
+  head: () => aikingBotRootHead(interLatinFont),
+  headers: () => AIKINGBOT_SECURITY_HEADERS,
   component: RootComponent,
   shellComponent: RootDocument,
   errorComponent: (props) => {

@@ -3,8 +3,8 @@
   grid-template-rows: 1fr;
   opacity: 1;
   transition:
-    grid-template-rows var(--openbot-duration-overlay) var(--openbot-ease-out),
-    opacity var(--openbot-duration-normal) ease-out;
+    grid-template-rows var(--aikingbot-duration-overlay) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-normal) ease-out;
 }
 
 @starting-style {
@@ -31,9 +31,9 @@
 
 .settings-mobile-connect-qr-stage .ui-qr-code {
   transition:
-    opacity var(--openbot-duration-normal) ease-out,
-    filter var(--openbot-duration-overlay) ease-out,
-    transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-normal) ease-out,
+    filter var(--aikingbot-duration-overlay) ease-out,
+    transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .settings-mobile-connect-qr-stage[data-success] .ui-qr-code {
@@ -47,56 +47,56 @@
   inset: 0;
   display: grid;
   place-items: center;
-  color: var(--openbot-success);
-  animation: settings-mobile-connect-success-enter var(--openbot-duration-overlay) var(--openbot-ease-out) both;
+  color: var(--aikingbot-success);
+  animation: settings-mobile-connect-success-enter var(--aikingbot-duration-overlay) var(--aikingbot-ease-out) both;
 }
 
 .settings-mobile-connect-success-mark::before {
   position: absolute;
   width: 84px;
   height: 84px;
-  border: 1px solid var(--openbot-success);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-success-soft);
+  border: 1px solid var(--aikingbot-success);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-success-soft);
   content: "";
-  animation: settings-mobile-connect-success-ring 600ms var(--openbot-ease-out) both;
+  animation: settings-mobile-connect-success-ring 600ms var(--aikingbot-ease-out) both;
 }
 
 .settings-mobile-connect-success-mark > svg {
   position: relative;
   width: 58px;
   height: 58px;
-  padding: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface-raised);
-  filter: drop-shadow(0 6px 16px var(--openbot-shadow-popover-ambient));
-  stroke-width: var(--openbot-icon-stroke);
-  animation: settings-mobile-connect-success-pop 420ms var(--openbot-ease-out) both;
+  padding: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface-raised);
+  filter: drop-shadow(0 6px 16px var(--aikingbot-shadow-popover-ambient));
+  stroke-width: var(--aikingbot-icon-stroke);
+  animation: settings-mobile-connect-success-pop 420ms var(--aikingbot-ease-out) both;
 }
 
 .settings-mobile-connect-success-mark > svg path {
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
-  animation: settings-mobile-connect-check-draw 360ms var(--openbot-duration-fast) var(--openbot-ease-out) forwards;
+  animation: settings-mobile-connect-check-draw 360ms var(--aikingbot-duration-fast) var(--aikingbot-ease-out) forwards;
 }
 
 .settings-mobile-connect-code-copy {
   max-width: 240px;
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-mobile-connect-code-title {
-  font-weight: var(--openbot-weight-semibold);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .settings-mobile-connect-expiry {
-  color: var(--openbot-accent-text);
+  color: var(--aikingbot-accent-text);
   font-variant-numeric: tabular-nums;
 }
 
 .settings-mobile-connect-success-title {
-  color: var(--openbot-success);
+  color: var(--aikingbot-success);
 }
 
 .settings-mobile-connect-expired {
@@ -104,32 +104,32 @@
   display: grid;
   place-items: center;
   align-content: center;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
   text-align: center;
 }
 
 .settings-mobile-connect-expired > svg {
-  width: calc(var(--openbot-icon-lg) + var(--openbot-space-3));
-  height: calc(var(--openbot-icon-lg) + var(--openbot-space-3));
-  margin-bottom: var(--openbot-space-2);
+  width: calc(var(--aikingbot-icon-lg) + var(--aikingbot-space-3));
+  height: calc(var(--aikingbot-icon-lg) + var(--aikingbot-space-3));
+  margin-bottom: var(--aikingbot-space-2);
 }
 
 .settings-mobile-devices {
   display: grid;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .settings-mobile-devices-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .settings-mobile-devices-heading h3 {
   margin: 0;
-  font-weight: var(--openbot-weight-medium);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .settings-mobile-devices-states {
@@ -142,9 +142,9 @@
   opacity: 0;
   transform: translateY(-4px);
   transition:
-    grid-template-rows var(--openbot-duration-overlay) var(--openbot-ease-out),
-    opacity var(--openbot-duration-normal) ease-out,
-    transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+    grid-template-rows var(--aikingbot-duration-overlay) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-normal) ease-out,
+    transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .settings-mobile-devices-state[data-expanded] {
@@ -162,57 +162,57 @@
   min-height: 88px;
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
-  padding: var(--openbot-space-4);
-  color: var(--openbot-text-muted);
+  gap: var(--aikingbot-space-3);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
+  padding: var(--aikingbot-space-4);
+  color: var(--aikingbot-text-muted);
 }
 
 .settings-mobile-devices-empty > svg {
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
+  width: var(--aikingbot-icon-lg);
+  height: var(--aikingbot-icon-lg);
   flex: 0 0 auto;
 }
 
 .settings-mobile-devices-empty > div {
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .settings-mobile-devices-empty-title {
-  color: var(--openbot-text-secondary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-secondary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .settings-mobile-devices-table-frame {
   overflow-x: auto;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .settings-mobile-devices-table {
   width: 100%;
   min-width: 600px;
   border-collapse: collapse;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .settings-mobile-devices-table th,
 .settings-mobile-devices-table td {
-  padding: var(--openbot-space-3) var(--openbot-space-4);
-  border-bottom: 1px solid var(--openbot-border);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
+  border-bottom: 1px solid var(--aikingbot-border);
   text-align: left;
   white-space: nowrap;
 }
 
 .settings-mobile-devices-table th {
-  color: var(--openbot-text-muted);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-muted);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .settings-mobile-devices-table tbody tr:last-child td {
@@ -222,15 +222,15 @@
 .settings-mobile-device-name {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .settings-mobile-device-name svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
+  color: var(--aikingbot-text-muted);
 }
 
 .settings-mobile-devices-table td.settings-mobile-device-action {
@@ -320,18 +320,18 @@
 .settings-mobile-connect-step.ui-item-media {
   min-width: 24px;
   height: 24px;
-  padding-inline: var(--openbot-space-1-5);
+  padding-inline: var(--aikingbot-space-1-5);
   display: inline-grid;
   flex: 0 0 auto;
   align-self: flex-start;
   place-items: center;
   margin-top: 1px;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: var(--openbot-weight-medium);
+  font-weight: var(--aikingbot-weight-medium);
   line-height: 1;
 }
 
@@ -344,7 +344,7 @@
 }
 
 .settings-mobile-connect-link {
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 .settings-mobile-connect-link-bar {
@@ -352,13 +352,13 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2) var(--openbot-space-4);
+  gap: var(--aikingbot-space-2) var(--aikingbot-space-4);
 }
 
 .settings-mobile-connect-link-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-mobile-connect-link-reveal {
@@ -366,8 +366,8 @@
   grid-template-rows: 0fr;
   opacity: 0;
   transition:
-    grid-template-rows var(--openbot-duration-overlay) var(--openbot-ease-out),
-    opacity var(--openbot-duration-normal) ease-out;
+    grid-template-rows var(--aikingbot-duration-overlay) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-normal) ease-out;
 }
 
 .settings-mobile-connect-link-reveal[data-expanded] {
@@ -379,8 +379,8 @@
 .settings-mobile-connect-link-code {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-6);
-  padding-top: var(--openbot-space-4);
+  gap: var(--aikingbot-space-6);
+  padding-top: var(--aikingbot-space-4);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -392,27 +392,27 @@
 .settings-mobile-app-tab {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .settings-mobile-app-tab > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
 }
 
 .settings-mobile-app-panels {
   position: relative;
-  padding: var(--openbot-space-4);
+  padding: var(--aikingbot-space-4);
 }
 
 .settings-mobile-app-panels::before {
   position: absolute;
   top: 0;
-  right: var(--openbot-space-4);
-  left: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
+  left: var(--aikingbot-space-4);
   height: 1px;
-  background: var(--openbot-border);
+  background: var(--aikingbot-border);
   pointer-events: none;
   content: "";
 }
@@ -420,34 +420,34 @@
 .settings-mobile-app-panel {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 /* The code settles in after the panel fades in, so a change of phone reads as a new code. */
 .settings-mobile-app-qr {
   transform: scale(0.96);
-  transition: transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+  transition: transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .settings-mobile-app-panel[data-selected] .settings-mobile-app-qr {
   transform: scale(1);
 }
 
-/* The phone's platform, a link and OpenBot in the middle of the store code. The mark lands just
+/* The phone's platform, a link and AIKINGBOT in the middle of the store code. The mark lands just
  * after the code, and the link draws in last, so the pair reads as one connection. */
 .settings-mobile-app-qr .ui-qr-code-mark {
   gap: 3px;
   opacity: 0;
   transform: scale(0.7);
   transition:
-    opacity var(--openbot-duration-normal) ease-out,
-    transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-normal) ease-out,
+    transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .settings-mobile-app-panel[data-selected] .settings-mobile-app-qr .ui-qr-code-mark {
   opacity: 1;
   transform: scale(1);
-  transition-delay: var(--openbot-duration-fast);
+  transition-delay: var(--aikingbot-duration-fast);
 }
 
 .settings-mobile-app-qr-platform {
@@ -460,19 +460,19 @@
   width: 10px;
   height: 10px;
   flex: 0 0 auto;
-  color: var(--openbot-text-muted-on-light);
+  color: var(--aikingbot-text-muted-on-light);
   stroke-width: 2.5;
   opacity: 0;
   transform: rotate(-45deg) scale(0.6);
   transition:
-    opacity var(--openbot-duration-normal) ease-out,
-    transform var(--openbot-duration-overlay) var(--openbot-ease-out);
+    opacity var(--aikingbot-duration-normal) ease-out,
+    transform var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .settings-mobile-app-panel[data-selected] .settings-mobile-app-qr-link {
   opacity: 1;
   transform: rotate(0) scale(1);
-  transition-delay: calc(var(--openbot-duration-fast) * 2);
+  transition-delay: calc(var(--aikingbot-duration-fast) * 2);
 }
 
 .settings-mobile-app-qr-logo {
@@ -485,66 +485,66 @@
   min-width: 0;
   display: grid;
   justify-items: start;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-mobile-app-heading {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-mobile-app-title {
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-semibold);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .settings-mobile-app-steps {
   display: grid;
   min-width: 0;
-  gap: var(--openbot-space-1-5);
-  margin: var(--openbot-space-1) 0;
-  padding-left: var(--openbot-space-4);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  gap: var(--aikingbot-space-1-5);
+  margin: var(--aikingbot-space-1) 0;
+  padding-left: var(--aikingbot-space-4);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   list-style: decimal;
 }
 
 .settings-mobile-app-steps > li::marker {
-  color: var(--openbot-text-dim);
+  color: var(--aikingbot-text-dim);
   font-variant-numeric: tabular-nums;
 }
 
 .settings-mobile-app-copy > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .settings-mobile-device-platform {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-mobile-device-platform > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .settings-mobile-devices-list {
   display: grid;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 /* A phone that signs in while the tab is open fades into the list. */
 .settings-mobile-devices-table tbody tr {
-  transition: opacity var(--openbot-duration-overlay) var(--openbot-ease-out);
+  transition: opacity var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 @starting-style {

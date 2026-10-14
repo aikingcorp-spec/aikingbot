@@ -1,1 +1,1 @@
-export const preload = window?.openbot; // flag
+export const preload = window?.aikingbot; // flag

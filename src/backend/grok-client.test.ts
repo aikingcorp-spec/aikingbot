@@ -6,12 +6,12 @@ import { NO_PROVIDER_CREDENTIALS, requireProviderDriver } from "./provider-drive
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { runCauseEffect } from "./effect-boundary";
 import { GrokAgentClient } from "./grok-client";
-import { OpenBotDatabase } from "./openbot-database";
 import {
   type AppServerNotification,
   type AppServerRequest,
@@ -34,10 +34,10 @@ let executableRoot: string;
 let executable: string;
 let logPath: string;
 let client: AcpAgentClient | null = null;
-let historyDatabase: OpenBotDatabase | null = null;
+let historyDatabase: AIKINGBOTDatabase | null = null;
 
 beforeAll(async () => {
-  executableRoot = await mkdtemp(join(tmpdir(), "openbot-grok-acp-cli-"));
+  executableRoot = await mkdtemp(join(tmpdir(), "aikingbot-grok-acp-cli-"));
   executable = join(executableRoot, "grok");
   await writeFile(executable, FAKE_GROK_ACP, { mode: 0o700 });
 });
@@ -47,12 +47,12 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-grok-acp-"));
-  historyDatabase = new OpenBotDatabase(join(root, "history"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-grok-acp-"));
+  historyDatabase = new AIKINGBOTDatabase(join(root, "history"));
   await runCauseEffect(historyDatabase.initialize());
   logPath = join(root, "fake-grok.jsonl");
-  process.env.OPENBOT_FAKE_GROK_LOG = logPath;
-  delete process.env.OPENBOT_FAKE_GROK_MODE;
+  process.env.AIKINGBOT_FAKE_GROK_LOG = logPath;
+  delete process.env.AIKINGBOT_FAKE_GROK_MODE;
 });
 
 afterEach(async () => {
@@ -60,9 +60,9 @@ afterEach(async () => {
   client = null;
   historyDatabase?.close();
   historyDatabase = null;
-  delete process.env.OPENBOT_FAKE_GROK_LOG;
-  delete process.env.OPENBOT_FAKE_GROK_MODE;
-  delete process.env.OPENBOT_FAKE_OPENCODE_ERROR;
+  delete process.env.AIKINGBOT_FAKE_GROK_LOG;
+  delete process.env.AIKINGBOT_FAKE_GROK_MODE;
+  delete process.env.AIKINGBOT_FAKE_OPENCODE_ERROR;
   await rm(root, { recursive: true, force: true });
 });
 
@@ -135,7 +135,7 @@ describe.sequential("GrokAgentClient", () => {
     ["answer", "completed"],
     ["cancel", "interrupted"],
   ])("handles OpenCode %s turns and allows a retry in the same session", async (mode, status) => {
-    process.env.OPENBOT_FAKE_GROK_MODE = `opencode-${mode}`;
+    process.env.AIKINGBOT_FAKE_GROK_MODE = `opencode-${mode}`;
     client = new AcpAgentClient({ executable, version: "1.3.13" }, 5_000, {
       provider: "opencode",
       argv: ["acp"],
@@ -207,8 +207,8 @@ describe.sequential("GrokAgentClient", () => {
   it.each(["Invalid API key.", "API key not valid. Please pass a valid API key."])(
     "explains rejected OpenCode credentials %s and permits retry in the same session",
     async (reason) => {
-      process.env.OPENBOT_FAKE_GROK_MODE = "opencode-auth-error";
-      process.env.OPENBOT_FAKE_OPENCODE_ERROR = reason;
+      process.env.AIKINGBOT_FAKE_GROK_MODE = "opencode-auth-error";
+      process.env.AIKINGBOT_FAKE_OPENCODE_ERROR = reason;
       client = new AcpAgentClient({ executable, version: "1.18.30" }, 5_000, {
         provider: "opencode",
         argv: ["acp"],
@@ -257,8 +257,8 @@ describe.sequential("GrokAgentClient", () => {
     ["Upstream request failed: Cannot connect to API: Unable to connect.", "opencodeProviderFailed"],
     ["Cannot connect to API: Unable to connect.", "opencodeNetwork"],
   ] as const)("names the kind of the OpenCode request failure %s", async (reason, kind) => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "opencode-request-error";
-    process.env.OPENBOT_FAKE_OPENCODE_ERROR = reason;
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "opencode-request-error";
+    process.env.AIKINGBOT_FAKE_OPENCODE_ERROR = reason;
     client = new AcpAgentClient({ executable, version: "1.18.30" }, 5_000, {
       provider: "opencode",
       argv: ["acp"],
@@ -279,7 +279,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it.each(["grok", "opencode"] as const)("keeps %s tool names when completion updates omit them", async (provider) => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "end_turn";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "end_turn";
     client = new AcpAgentClient({ executable, version: "1.18.30" }, 5_000, {
       provider,
       argv: ["acp"],
@@ -349,7 +349,7 @@ describe.sequential("GrokAgentClient", () => {
   it.each(["end_turn", "cancelled", "max_tokens"])(
     "shows only the final segment in chat when Grok ends with %s",
     async (stopReason) => {
-      process.env.OPENBOT_FAKE_GROK_MODE = stopReason;
+      process.env.AIKINGBOT_FAKE_GROK_MODE = stopReason;
       client = new GrokAgentClient(
         { executable, version: "1.0.5" },
         5_000,
@@ -375,7 +375,7 @@ describe.sequential("GrokAgentClient", () => {
         ),
       );
       await waitFor(() => notifications.some((notification) => notification.method === "turn/completed"));
-      expect(notifications.find((event) => event.method === "openbot/usage")?.params).toMatchObject({
+      expect(notifications.find((event) => event.method === "aikingbot/usage")?.params).toMatchObject({
         usage: { inputTokens: 300, outputTokens: 50, cachedReadTokens: 200 },
       });
       const history = await runCauseEffect(
@@ -436,7 +436,7 @@ describe.sequential("GrokAgentClient", () => {
   );
 
   it("refuses steering without sending a second prompt or completing the running turn", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "busy-steer";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "busy-steer";
     client = new GrokAgentClient(
       { executable, version: "1.0.5" },
       5_000,
@@ -514,7 +514,7 @@ describe.sequential("GrokAgentClient", () => {
     });
     await runCauseEffect(client.stop());
 
-    process.env.OPENBOT_FAKE_GROK_MODE = "monthly-billing";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "monthly-billing";
     client = new GrokAgentClient({ executable, version: "1.0.5" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -531,7 +531,7 @@ describe.sequential("GrokAgentClient", () => {
 
   it("reads a unified weekly billing period with no usage as 0% used", async () => {
     // proto3 JSON omits a zero `creditUsagePercent`; Grok 1.0.46 sends this shape before any use.
-    process.env.OPENBOT_FAKE_GROK_MODE = "unified-billing";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "unified-billing";
     client = new GrokAgentClient({ executable, version: "1.0.13" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -546,7 +546,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("times out a billing request that stops responding", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "hung-billing";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "hung-billing";
     client = new GrokAgentClient({ executable, version: "1.0.13" }, 1_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -597,7 +597,7 @@ describe.sequential("GrokAgentClient", () => {
           {
             cwd: root,
             runtimeWorkspaceRoots: [root],
-            developerInstructions: "Use OpenBot tools.",
+            developerInstructions: "Use AIKINGBOT tools.",
             dynamicTools: [],
             model: "grok-fast",
             effort: "xhigh",
@@ -740,7 +740,7 @@ describe.sequential("GrokAgentClient", () => {
   );
 
   it("rediscovers Grok models without restarting and closes discovery sessions", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "refresh-models";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "refresh-models";
     client = new GrokAgentClient({ executable, version: "1.0.13" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -756,7 +756,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("bounds Grok model discovery by the caller timeout", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "hung-models";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "hung-models";
     client = new GrokAgentClient({ executable, version: "1.0.13" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -766,7 +766,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("uses one neutral effort when thought_level is not advertised", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "no-thought";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "no-thought";
     client = new GrokAgentClient({ executable, version: "1.0.5" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -782,7 +782,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("discovers and applies per-model reasoning efforts from Grok metadata", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "model-metadata";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "model-metadata";
     client = new GrokAgentClient({ executable, version: "1.0.13" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -847,7 +847,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("supports Grok's legacy ACP model catalog and session/set_model", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "legacy-models";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "legacy-models";
     client = new GrokAgentClient({ executable, version: "1.0.5" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -870,7 +870,7 @@ describe.sequential("GrokAgentClient", () => {
   });
 
   it("reports auth as signed out and rejects empty model discovery without a fallback", async () => {
-    process.env.OPENBOT_FAKE_GROK_MODE = "auth-error";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "auth-error";
     client = new GrokAgentClient({ executable, version: "1.0.5" }, 5_000);
     client.start();
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -880,7 +880,7 @@ describe.sequential("GrokAgentClient", () => {
     expect((await readLog()).some((entry) => entry.method === "_x.ai/auth/info")).toBe(false);
     await runCauseEffect(client.stop());
 
-    process.env.OPENBOT_FAKE_GROK_MODE = "no-model";
+    process.env.AIKINGBOT_FAKE_GROK_MODE = "no-model";
     client = new GrokAgentClient({ executable, version: "1.0.5" }, 5_000);
     client.start();
     await expect(runCauseEffect(client.request("initialize", {}, decodeRecordResponse))).rejects.toThrow(
@@ -891,7 +891,7 @@ describe.sequential("GrokAgentClient", () => {
   it.each(["unsupported-auth-info", "malformed-auth-info", "oversized-auth-info"])(
     "keeps Grok signed in when account identity is %s",
     async (mode) => {
-      process.env.OPENBOT_FAKE_GROK_MODE = mode;
+      process.env.AIKINGBOT_FAKE_GROK_MODE = mode;
       client = new GrokAgentClient({ executable, version: "1.0.22" }, 5_000);
       client.start();
       await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -934,8 +934,8 @@ const FAKE_GROK_ACP = String.raw`#!/usr/bin/env node
 import { appendFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 
-const logPath = process.env.OPENBOT_FAKE_GROK_LOG;
-const mode = process.env.OPENBOT_FAKE_GROK_MODE || "normal";
+const logPath = process.env.AIKINGBOT_FAKE_GROK_LOG;
+const mode = process.env.AIKINGBOT_FAKE_GROK_MODE || "normal";
 let sessionCounter = 0;
 let promptCounter = 0;
 let pendingPrompt = null;
@@ -1166,11 +1166,11 @@ createInterface({ input: process.stdin }).on("line", (line) => {
     if (mode.startsWith("opencode-")) {
       promptCounter += 1;
       if (mode === "opencode-auth-error" && promptCounter === 1) {
-        write({ id: message.id, error: { code: -32603, message: "Internal error: " + process.env.OPENBOT_FAKE_OPENCODE_ERROR } });
+        write({ id: message.id, error: { code: -32603, message: "Internal error: " + process.env.AIKINGBOT_FAKE_OPENCODE_ERROR } });
         return;
       }
       if (mode === "opencode-request-error") {
-        write({ id: message.id, error: { code: -32603, message: "Internal error: " + process.env.OPENBOT_FAKE_OPENCODE_ERROR, data: { service: "session", errorName: "APIError" } } });
+        write({ id: message.id, error: { code: -32603, message: "Internal error: " + process.env.AIKINGBOT_FAKE_OPENCODE_ERROR, data: { service: "session", errorName: "APIError" } } });
         return;
       }
       const update = promptCounter > 1

@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText, registerSecretValue } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText, registerSecretValue } from "@aikingbot/logging";
 import { Effect, Fiber } from "effect";
 import { cliSpawnTarget } from "./cli";
 import { type ProviderClientOperationError, ProviderSignInError, providerFailure } from "./provider-client-effects";
@@ -152,7 +152,7 @@ export const startAcpAuthentication = Effect.fnUntraced(function* (options: {
         params: {
           protocolVersion: 1,
           clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false },
-          clientInfo: { name: "openbot", title: "OpenBot", version: "0.1.0" },
+          clientInfo: { name: "aikingbot", title: "AIKINGBOT", version: "0.1.0" },
         },
       });
       return Effect.sync(() => {

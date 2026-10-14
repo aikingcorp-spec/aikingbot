@@ -1,13 +1,13 @@
-import { BILLING_PLANS, type BillingServerPlan } from "@openbot/contracts/billing";
+import { BILLING_PLANS, type BillingServerPlan } from "@aikingbot/contracts/billing";
 import {
   HOSTED_PLAN_SIZE,
   type HostedServerCatalog,
   type HostedServerState,
   type HostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import type { HostedServersDesktopApi } from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/hosted-servers";
+import type { HostedServersDesktopApi } from "@aikingbot/contracts/ipc";
 
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 
 const CREATED_AT = "2026-09-20T09:30:00.000Z";
 /** How long each mock step takes (payment, then start), so the list shows the transition states. */

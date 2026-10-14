@@ -1,8 +1,8 @@
 import { lstat, readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { SKILL_DESCRIPTION_MAX_LENGTH, type SkillPackagePreview } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { SKILL_DESCRIPTION_MAX_LENGTH, type SkillPackagePreview } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 import { unzipSync, zipSync } from "fflate";
 import { parse as parseYaml } from "yaml";

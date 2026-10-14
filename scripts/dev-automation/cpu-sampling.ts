@@ -13,7 +13,7 @@
 // "Percent" here is percent of one core. 100 means one core fully used; a
 // machine with eight cores can therefore report more than 100 in total.
 
-import { isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
 
 export type ChromiumProcessType = "main" | "renderer" | "gpu" | "utility" | "network" | "crashpad" | "other";
 
@@ -87,7 +87,7 @@ export function parseProcessTime(raw: string): number | null {
 const CHROMIUM_TYPE_SWITCH = /--type=(\S+)/;
 const UTILITY_SUB_TYPE_SWITCH = /--utility-sub-type=(\S+)/;
 // A macOS bundle executable, which is what both the dev Electron binary and a
-// packaged OpenBot are launched as.
+// packaged AIKINGBOT are launched as.
 const BUNDLE_EXECUTABLE = /\.app\/contents\/macos\//;
 
 /**

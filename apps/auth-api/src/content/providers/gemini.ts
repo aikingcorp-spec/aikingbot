@@ -9,14 +9,14 @@ export const GEMINI_PROVIDER: ProviderPage = {
   provider: "antigravity",
   name: "Gemini",
   answer:
-    "OpenBot runs Gemini as one agent of a team, on macOS, Windows or Linux, through Google's Antigravity agent and your Google AI Pro or Ultra plan. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs Gemini as one agent of a team, on macOS, Windows or Linux, through Google's Antigravity agent and your Google AI Pro or Ultra plan. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose Gemini, and OpenBot downloads and pins its own copy of Google's Antigravity agent server. Then sign in with the Google account that has your Google AI Pro or Ultra plan.",
+    "Choose Gemini, and AIKINGBOT downloads and pins its own copy of Google's Antigravity agent server. Then sign in with the Google account that has your Google AI Pro or Ultra plan.",
   adds: [
     {
       icon: "puzzle",
       title: "Gemini next to other providers",
-      text: "Antigravity runs Google's agents. In OpenBot, a Gemini agent works in the same channel as Claude Code, Codex or Grok agents.",
+      text: "Antigravity runs Google's agents. In AIKINGBOT, a Gemini agent works in the same channel as Claude Code, Codex or Grok agents.",
     },
   ],
   vendor: "Google",
@@ -47,20 +47,20 @@ export const GEMINI_PROVIDER: ProviderPage = {
     {
       question: "Is there a Gemini agent desktop app?",
       answer:
-        "Yes. Google's Antigravity 2.0 is a desktop app for coding agents on macOS, Windows and Linux. OpenBot is a different desktop app: it runs Gemini as one agent of a team, with agents on other providers and an app on your phone.",
+        "Yes. Google's Antigravity 2.0 is a desktop app for coding agents on macOS, Windows and Linux. AIKINGBOT is a different desktop app: it runs Gemini as one agent of a team, with agents on other providers and an app on your phone.",
     },
     {
-      question: "Which Google plan does Gemini in OpenBot need?",
+      question: "Which Google plan does Gemini in AIKINGBOT need?",
       answer:
         "Google AI Pro or Ultra. Google gives the Pro plan entry rate limits for agents in Antigravity, which refresh every five hours up to a weekly limit. Ultra has five or twenty times the usage of Pro.",
     },
     {
-      question: "Does OpenBot use Gemini CLI?",
+      question: "Does AIKINGBOT use Gemini CLI?",
       answer:
-        "No. On 18 June 2026, Gemini CLI stopped serving Google AI Pro, Ultra and free accounts. OpenBot runs Gemini through Google's Antigravity agent server, which those plans use now.",
+        "No. On 18 June 2026, Gemini CLI stopped serving Google AI Pro, Ultra and free accounts. AIKINGBOT runs Gemini through Google's Antigravity agent server, which those plans use now.",
     },
     {
-      question: "Can Gemini and Claude Code work together in OpenBot?",
+      question: "Can Gemini and Claude Code work together in AIKINGBOT?",
       answer:
         "Yes. Each agent has its own provider. A Gemini agent and a Claude Code agent can work in the same channel and give tasks to each other.",
     },

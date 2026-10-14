@@ -1,7 +1,7 @@
-import type { Routine } from "@openbot/contracts/ipc";
+import type { Routine } from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { RoutineChatCard } from "./RoutineChatCard";
 
 const routine: Routine = {
@@ -30,12 +30,12 @@ const workdaysAndSaturday = {
   time: { kind: "at-time", time: "07:00" },
 };
 
-let mock: MockOpenBotControls | undefined;
+let mock: MockAIKINGBOTControls | undefined;
 
-function setupOpenBot(): MockOpenBotControls {
+function setupAIKINGBOT(): MockAIKINGBOTControls {
   mock?.dispose();
-  mock = createMockOpenBot({ routines: { chief: [routine] } });
-  window.openbot = mock.api;
+  mock = createMockAIKINGBOT({ routines: { chief: [routine] } });
+  window.aikingbot = mock.api;
   return mock;
 }
 
@@ -54,7 +54,7 @@ async function addSaturday(): Promise<void> {
 
 describe("RoutineChatCard", () => {
   it("saves a changed schedule at once", async () => {
-    const updateRoutine = vi.spyOn(setupOpenBot().api.agent, "updateRoutine");
+    const updateRoutine = vi.spyOn(setupAIKINGBOT().api.agent, "updateRoutine");
     render(() => <RoutineChatCard action="created" routine={routine} agentId="chief" latest onOpenRoutine={vi.fn()} />);
 
     await addSaturday();
@@ -72,7 +72,7 @@ describe("RoutineChatCard", () => {
   });
 
   it("saves a time edit once, when its popover closes", async () => {
-    const updateRoutine = vi.spyOn(setupOpenBot().api.agent, "updateRoutine");
+    const updateRoutine = vi.spyOn(setupAIKINGBOT().api.agent, "updateRoutine");
     render(() => <RoutineChatCard action="created" routine={routine} agentId="chief" latest onOpenRoutine={vi.fn()} />);
 
     await fireEvent.click(screen.getByRole("button", { name: /^Time:/ }));
@@ -94,7 +94,7 @@ describe("RoutineChatCard", () => {
   });
 
   it("saves a change back to the old schedule while an earlier save runs", async () => {
-    const agent = setupOpenBot().api.agent;
+    const agent = setupAIKINGBOT().api.agent;
     const saveRoutine = agent.updateRoutine.bind(agent);
     let release = () => {};
     const held = new Promise<void>((resolve) => {
@@ -122,7 +122,7 @@ describe("RoutineChatCard", () => {
   });
 
   it("shows why a save failed and puts the saved schedule back", async () => {
-    vi.spyOn(setupOpenBot().api.agent, "updateRoutine").mockRejectedValue(new Error("The routine is busy."));
+    vi.spyOn(setupAIKINGBOT().api.agent, "updateRoutine").mockRejectedValue(new Error("The routine is busy."));
     render(() => <RoutineChatCard action="updated" routine={routine} agentId="chief" latest onOpenRoutine={vi.fn()} />);
 
     await addSaturday();
@@ -132,7 +132,7 @@ describe("RoutineChatCard", () => {
   });
 
   it("is read-only when a later card changed the same routine", async () => {
-    setupOpenBot();
+    setupAIKINGBOT();
     const onShowLatest = vi.fn();
     render(() => (
       <RoutineChatCard

@@ -1,4 +1,4 @@
-import { Badge, Button, Check, IconButton, Lock, X } from "@openbot/ui";
+import { Badge, Button, Check, IconButton, Lock, X } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createUniqueId, Match, onSettled, Show, Switch } from "solid-js";
 import { useText } from "../../text";

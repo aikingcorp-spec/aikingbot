@@ -22,9 +22,9 @@ afterEach(async () => {
 });
 
 async function cachePath(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-remote-sessions-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-remote-sessions-"));
   directories.push(directory);
-  return join(directory, "openbot-remote-sessions-v1.bin");
+  return join(directory, "aikingbot-remote-sessions-v1.bin");
 }
 
 function createCache(path: string, overrides: Partial<RemoteSessionCacheOptions> = {}): RemoteSessionCache {

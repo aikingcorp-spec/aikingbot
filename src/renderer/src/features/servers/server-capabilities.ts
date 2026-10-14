@@ -4,13 +4,13 @@ import {
   agentProviderDescriptor,
   pasteCodeSignInSupported,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { PROVIDER_HOST_SIGN_IN_PROVIDERS } from "@openbot/contracts/team-protocol/provider-host-sign-in-v1";
-import { PROVIDERS_ADMIN_CODE_SIGN_IN_PROVIDERS } from "@openbot/contracts/team-protocol/providers-v1";
-import { PROVIDERS_SIGN_IN_V3_PROVIDERS } from "@openbot/contracts/team-protocol/providers-v3";
-import { PROVIDERS_V4_SIGN_IN_PROVIDERS } from "@openbot/contracts/team-protocol/providers-v4";
-import { SIGN_IN_RELAY_PROVIDERS } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
+} from "@aikingbot/contracts/ipc";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import { PROVIDER_HOST_SIGN_IN_PROVIDERS } from "@aikingbot/contracts/team-protocol/provider-host-sign-in-v1";
+import { PROVIDERS_ADMIN_CODE_SIGN_IN_PROVIDERS } from "@aikingbot/contracts/team-protocol/providers-v1";
+import { PROVIDERS_SIGN_IN_V3_PROVIDERS } from "@aikingbot/contracts/team-protocol/providers-v3";
+import { PROVIDERS_V4_SIGN_IN_PROVIDERS } from "@aikingbot/contracts/team-protocol/providers-v4";
+import { SIGN_IN_RELAY_PROVIDERS } from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
 
 /**
  * Whether a server can be asked for a capability-gated feature. A local server
@@ -145,7 +145,7 @@ export function serverCodeRouteProviders(server: ServerSummary | undefined): rea
 
 /**
  * The providers that a code sign-in reaches on this computer, for when the browser callback cannot
- * reach OpenBot: each provider whose driver has one. A pasted code needs a terminal that only some
+ * reach AIKINGBOT: each provider whose driver has one. A pasted code needs a terminal that only some
  * platforms give it.
  */
 export function localCodeSignInProviders(platform: string | undefined): readonly AgentProviderId[] {
@@ -165,7 +165,7 @@ export function remoteAdminServer(
 }
 
 /**
- * Which side of a connection runs the older OpenBot release, so a version notice can say what to
+ * Which side of a connection runs the older AIKINGBOT release, so a version notice can say what to
  * update. Only the release numbers count. `null` when they are equal or one does not parse.
  */
 export function olderAppSide(clientVersion: string, hostVersion: string): "client" | "host" | null {

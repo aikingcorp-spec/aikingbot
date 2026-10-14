@@ -4,9 +4,9 @@ import {
   decodeEventStatus,
   decodeSaveEventRoutineResult,
   decodeWebhookSecret,
-} from "@openbot/contracts/ipc-events";
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc-events";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@aikingbot/contracts/team-protocol/events-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { HostEventsApi } from "../host-events-api";

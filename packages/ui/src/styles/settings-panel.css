@@ -24,10 +24,10 @@
   display: flex;
   width: var(--settings-panel-width, 296px);
   flex-direction: column;
-  border-left: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
-  animation: settings-panel-in var(--openbot-duration-slow) cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  border-left: 1px solid var(--aikingbot-border);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
+  animation: settings-panel-in var(--aikingbot-duration-slow) cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .settings-panel-header {
@@ -36,14 +36,14 @@
   flex: 0 0 auto;
   grid-template-columns: 32px 1fr 32px;
   align-items: center;
-  border-bottom: 1px solid var(--openbot-border);
+  border-bottom: 1px solid var(--aikingbot-border);
   padding: 0 10px;
 }
 
 .settings-panel-header h2 {
   margin: 0;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
   font-weight: 600;
   line-height: 18px;
   text-align: center;
@@ -56,14 +56,14 @@
   height: 28px;
   place-items: center;
   border: 0;
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
   padding: 0;
   background: transparent;
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
   transition:
-    background-color var(--openbot-duration-hover) ease,
-    color var(--openbot-duration-hover) ease,
-    transform var(--openbot-duration-fast) ease;
+    background-color var(--aikingbot-duration-hover) ease,
+    color var(--aikingbot-duration-hover) ease,
+    transform var(--aikingbot-duration-fast) ease;
 }
 
 .settings-panel-nav-button::before {
@@ -83,8 +83,8 @@
 }
 
 .settings-panel-nav-button:hover {
-  background: var(--openbot-hover);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-hover);
+  color: var(--aikingbot-text-primary);
 }
 
 /* The chevron reads a hair right of centre in its box, so it is nudged back onto the axis. */
@@ -106,8 +106,8 @@
 .settings-field > span {
   display: block;
   margin: 0 0 6px 8px;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-md);
   line-height: 18px;
 }
 
@@ -116,18 +116,18 @@
 .settings-field select {
   display: block;
   width: 100%;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-md);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-md);
   outline: 0;
-  background: var(--openbot-shadow-popover-ambient);
+  background: var(--aikingbot-shadow-popover-ambient);
   padding: 10px 11px;
-  color: var(--openbot-text-primary);
-  caret-color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
+  color: var(--aikingbot-text-primary);
+  caret-color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-lg);
   line-height: 19px;
   transition:
-    border-color var(--openbot-duration-hover) ease,
-    background var(--openbot-duration-hover) ease;
+    border-color var(--aikingbot-duration-hover) ease,
+    background var(--aikingbot-duration-hover) ease;
 }
 
 .settings-field input,
@@ -139,8 +139,8 @@
   appearance: none;
   cursor: pointer;
   background-image:
-    linear-gradient(45deg, transparent 50%, var(--openbot-text-secondary) 50%),
-    linear-gradient(135deg, var(--openbot-text-secondary) 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, var(--aikingbot-text-secondary) 50%),
+    linear-gradient(135deg, var(--aikingbot-text-secondary) 50%, transparent 50%);
   background-position:
     calc(100% - 16px) 16px,
     calc(100% - 11px) 16px;
@@ -152,8 +152,8 @@
 }
 
 .settings-field select option {
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-primary);
 }
 
 .settings-field textarea {
@@ -174,14 +174,14 @@
 
 .settings-field input::placeholder,
 .settings-field textarea::placeholder {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .settings-field input:focus,
 .settings-field textarea:focus,
 .settings-field select:focus {
-  border-color: var(--openbot-text-muted);
-  background: var(--openbot-shadow-popover-ambient);
+  border-color: var(--aikingbot-text-muted);
+  background: var(--aikingbot-shadow-popover-ambient);
 }
 
 .settings-field input:focus-visible,
@@ -194,8 +194,8 @@
   display: grid;
   width: 100%;
   margin: 7px 0 22px;
-  border-top: 1px solid var(--openbot-border);
-  border-bottom: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
+  border-bottom: 1px solid var(--aikingbot-border);
 }
 
 .settings-link {
@@ -204,112 +204,112 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   border: 0;
   border-radius: 0;
   background: transparent;
-  padding: 0 var(--openbot-space-1);
+  padding: 0 var(--aikingbot-space-1);
   text-align: left;
   transition: none;
 }
 
 .settings-link + .settings-link {
-  border-top: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
 }
 
 .settings-link-label {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 /* A fixed square, so every label in a group starts on one line whatever the glyph's shape. */
 .settings-link-icon {
   display: grid;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
   place-items: center;
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .settings-link-icon > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .settings-link-value {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  gap: var(--aikingbot-space-2);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .settings-link-value svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .settings-link-group .settings-link:hover {
-    background: var(--openbot-hover);
-    color: var(--openbot-text-primary);
+    background: var(--aikingbot-hover);
+    color: var(--aikingbot-text-primary);
   }
 
   .settings-link:hover .settings-link-value {
-    color: var(--openbot-text-secondary);
+    color: var(--aikingbot-text-secondary);
   }
 }
 
 /* Named groups of rows, one card each. Used where one panel holds several groups. */
 .settings-link-section {
   display: grid;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .settings-link-section-title {
-  margin: 0 0 0 var(--openbot-space-1);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-sm);
+  margin: 0 0 0 var(--aikingbot-space-1);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-sm);
 }
 
 .settings-link-group-inset {
   margin: 0;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface);
 }
 
 .settings-link-group-inset > * + * {
-  border-top: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
 }
 
 /* The card does not clip its rows, because a row can hold an inline popover. The end rows round
    their own hover background instead. A wrapper row rounds the trigger button inside it. */
 .settings-link-group-inset > :first-child,
 .settings-link-group-inset > :first-child > button {
-  border-top-left-radius: calc(var(--openbot-radius-md) - 1px);
-  border-top-right-radius: calc(var(--openbot-radius-md) - 1px);
+  border-top-left-radius: calc(var(--aikingbot-radius-md) - 1px);
+  border-top-right-radius: calc(var(--aikingbot-radius-md) - 1px);
 }
 
 .settings-link-group-inset > :last-child,
 .settings-link-group-inset > :last-child > button {
-  border-bottom-left-radius: calc(var(--openbot-radius-md) - 1px);
-  border-bottom-right-radius: calc(var(--openbot-radius-md) - 1px);
+  border-bottom-left-radius: calc(var(--aikingbot-radius-md) - 1px);
+  border-bottom-right-radius: calc(var(--aikingbot-radius-md) - 1px);
 }
 
 .settings-link-group-inset .settings-link {
   min-height: 40px;
-  gap: var(--openbot-space-2);
-  padding: 0 var(--openbot-space-3);
+  gap: var(--aikingbot-space-2);
+  padding: 0 var(--aikingbot-space-3);
 }

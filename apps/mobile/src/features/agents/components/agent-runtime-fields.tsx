@@ -3,8 +3,8 @@ import {
   type AgentReasoningEffort,
   agentProviderName,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@aikingbot/contracts/ipc";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Typography } from "heroui-native";
 import { useUniwind } from "uniwind";

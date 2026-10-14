@@ -1,4 +1,4 @@
-import { ProviderLogo } from "@openbot/brand";
+import { ProviderLogo } from "@aikingbot/brand";
 import {
   BrowserBackIcon,
   BrowserControlIcon,
@@ -10,7 +10,7 @@ import {
   QueueIcon,
   SteerIcon,
   TrashIcon,
-} from "@openbot/ui/features/conversation/ConversationIcons";
+} from "@aikingbot/ui/features/conversation/ConversationIcons";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { createSignal, For, lazy, onSettled, Show } from "solid-js";
@@ -53,7 +53,7 @@ import { LandingIcon } from "./LandingIcon";
 // Loaded after the page is in the browser, as on the agent template page: the
 // avatar engine is too large for the first load of the home page.
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@aikingbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 /** The second marquee row runs the other way, so it starts from the other end of the list. */
@@ -311,7 +311,7 @@ export function FeaturesSection() {
       </svg>
       <div class="landing-section-inner">
         <header class="landing-section-heading">
-          <h2 id="features-title">What OpenBot does</h2>
+          <h2 id="features-title">What AIKINGBOT does</h2>
           <p>One desktop app for a team of AI agents that work on your computer, with the AI plans you have.</p>
         </header>
         <ul class="landing-features-grid">

@@ -3,12 +3,12 @@ import { existsSync } from "node:fs";
 import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { FuseV1Options, getCurrentFuseWire } from "@electron/fuses";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
 import { parse as parseYaml } from "yaml";
 
-const logger = createOpenBotLogger("verify-windows-package");
+const logger = createAIKINGBOTLogger("verify-windows-package");
 
 const FUSE_DISABLED = 48;
 const FUSE_ENABLED = 49;
@@ -22,7 +22,7 @@ const requireUpdateMetadata = process.argv.includes("--require-update-metadata")
 const requireSignature = process.argv.includes("--require-signature");
 const appPathArgument = process.argv.slice(2).find((argument) => !argument.startsWith("--"));
 const appPath = resolve(appPathArgument ?? "dist/win-unpacked");
-const executablePath = resolve(appPath, "OpenBot.exe");
+const executablePath = resolve(appPath, "AIKINGBOT.exe");
 const resourcesPath = resolve(appPath, "resources");
 const voiceRuntimePath = resolve(resourcesPath, "voice/runtime");
 const voiceRuntimeFiles = [
@@ -51,9 +51,9 @@ await Promise.all([
   access(resolve(resourcesPath, "remote-desktop-runtime/source-manifest.json")),
   access(resolve(resourcesPath, "remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt")),
   access(resolve(resourcesPath, "remote-desktop-runtime/sources/Sunshine-v2026.516.143833-source.tar.gz")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/sunshine-v2026.516.143833-openbot.patch")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-openbot-source.tar.gz")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-openbot.patch")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/sunshine-v2026.516.143833-aikingbot.patch")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-aikingbot-source.tar.gz")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-aikingbot.patch")),
   access(resolve(resourcesPath, "remote-desktop-runtime/win32/x64/sunshine.exe")),
   access(resolve(resourcesPath, "remote-desktop-runtime/win32/x64/web-server.exe")),
   access(resolve(resourcesPath, "remote-desktop-runtime/win32/x64/streamer.exe")),
@@ -98,8 +98,8 @@ const versionInfo = JSON.parse(
   ),
 );
 if (!isDynamicRecord(versionInfo)) throw new Error("Windows version metadata is invalid.");
-expectEqual(versionInfo.ProductName, "OpenBot", "product name");
-expectEqual(versionInfo.FileDescription, "OpenBot", "file description");
+expectEqual(versionInfo.ProductName, "AIKINGBOT", "product name");
+expectEqual(versionInfo.FileDescription, "AIKINGBOT", "file description");
 if (!String(versionInfo.ProductVersion).startsWith(packageJson.version)) {
   throw new Error(
     `Unexpected product version: ${String(versionInfo.ProductVersion)} (expected ${packageJson.version})`,
@@ -160,7 +160,7 @@ await verifyLaunch(executablePath);
 
 logger.info(`Verified ${appPath}`);
 logger.info(
-  `OpenBot ${packageJson.version} · Windows x64 · metadata · GPL remote runtime · ASAR integrity · hardened fuses · launch`,
+  `AIKINGBOT ${packageJson.version} · Windows x64 · metadata · GPL remote runtime · ASAR integrity · hardened fuses · launch`,
 );
 
 function expectEqual(actual: unknown, expected: unknown, label: string): void {
@@ -214,15 +214,15 @@ function verifyAuthenticode(path: string, expectedStatus: "NotSigned" | "Valid",
 }
 
 async function verifyLaunch(executable: string): Promise<void> {
-  const userDataPath = await mkdtemp(join(tmpdir(), "openbot-package-smoke-"));
+  const userDataPath = await mkdtemp(join(tmpdir(), "aikingbot-package-smoke-"));
   const child = spawn(executable, [`--user-data-dir=${userDataPath}`], {
     env: {
       ...process.env,
       CODEX_HOME: join(userDataPath, "codex-home"),
       CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
-      OPENBOT_CODEX_PATH: join(userDataPath, "missing-codex.exe"),
-      OPENBOT_CLAUDE_PATH: join(userDataPath, "missing-claude.exe"),
-      OPENBOT_GROK_PATH: join(userDataPath, "missing-grok.exe"),
+      AIKINGBOT_CODEX_PATH: join(userDataPath, "missing-codex.exe"),
+      AIKINGBOT_CLAUDE_PATH: join(userDataPath, "missing-claude.exe"),
+      AIKINGBOT_GROK_PATH: join(userDataPath, "missing-grok.exe"),
     },
     stdio: ["ignore", "ignore", "pipe"],
     windowsHide: true,
@@ -238,7 +238,9 @@ async function verifyLaunch(executable: string): Promise<void> {
       new Promise<never>((_, reject) => {
         child.once("exit", (code, signal) => {
           reject(
-            new Error(`Packaged OpenBot exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`),
+            new Error(
+              `Packaged AIKINGBOT exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`,
+            ),
           );
         });
       }),
@@ -274,9 +276,9 @@ async function verifySecondInstanceExits(executable: string, userDataPath: strin
       ...process.env,
       CODEX_HOME: join(userDataPath, "codex-home"),
       CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
-      OPENBOT_CODEX_PATH: join(userDataPath, "missing-codex.exe"),
-      OPENBOT_CLAUDE_PATH: join(userDataPath, "missing-claude.exe"),
-      OPENBOT_GROK_PATH: join(userDataPath, "missing-grok.exe"),
+      AIKINGBOT_CODEX_PATH: join(userDataPath, "missing-codex.exe"),
+      AIKINGBOT_CLAUDE_PATH: join(userDataPath, "missing-claude.exe"),
+      AIKINGBOT_GROK_PATH: join(userDataPath, "missing-grok.exe"),
     },
     stdio: "ignore",
     windowsHide: true,
@@ -289,11 +291,11 @@ async function verifySecondInstanceExits(executable: string, userDataPath: strin
   ]);
   if (!result) {
     second.kill();
-    throw new Error("A second OpenBot instance did not exit.");
+    throw new Error("A second AIKINGBOT instance did not exit.");
   }
   if (result.code !== 0 || result.signal) {
     throw new Error(
-      `A second OpenBot instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
+      `A second AIKINGBOT instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
     );
   }
 }

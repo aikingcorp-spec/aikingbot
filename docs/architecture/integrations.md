@@ -1,10 +1,10 @@
 # Integrations and sign-in
 
-This guide tells you how a sign-in reaches OpenBot, how a joined server signs in through the
+This guide tells you how a sign-in reaches AIKINGBOT, how a joined server signs in through the
 computer of its user, and how to add a provider, an application or a connector. Each section has a
 working example with real file paths.
 
-- [How a sign-in reaches OpenBot](#how-a-sign-in-reaches-openbot)
+- [How a sign-in reaches AIKINGBOT](#how-a-sign-in-reaches-aikingbot)
 - [Remote sign-in: the callback relay](#remote-sign-in-the-callback-relay)
 - [Add a provider](#add-a-provider)
 - [Add an application](#add-an-application)
@@ -13,19 +13,19 @@ working example with real file paths.
 - [Test a sign-in through a joined server](#test-a-sign-in-through-a-joined-server)
 - [What cannot be relayed](#what-cannot-be-relayed)
 
-## How a sign-in reaches OpenBot
+## How a sign-in reaches AIKINGBOT
 
-The computer that runs OpenBot keeps every grant. On a joined server, this is the host, not the
+The computer that runs AIKINGBOT keeps every grant. On a joined server, this is the host, not the
 computer of the user who signs in. A sign-in uses one of these kinds:
 
 | Kind | Example | On this computer | On a joined server |
 | --- | --- | --- | --- |
 | Loopback callback | URL MCP servers (`McpOAuth`), Codex browser sign-in, a page that an agent's CLI prints | The page sends the browser to `http://127.0.0.1:<port>/...`. The MCP listener uses port 28417 and path `/mcp-auth` ([`mcp-oauth-redirect-server.ts`](../../src/main/mcp-oauth-redirect-server.ts)). | The [callback relay](#remote-sign-in-the-callback-relay) (`sign-in-relay-v1`). MCP on an older host: the host's live view (`mcp-sign-in-v1`). |
-| Device code | Codex (`codex-device`), Grok, Cline, Muse, the GitHub connector | The user types a short code on the provider's page. Nothing comes back to OpenBot. | The host starts it and the client shows the code (`providers-v1` to `providers-v5`). Muse: the relay opens its device page with no callback. GitHub: `connectors-v1`. |
-| Pasted code | Claude on Linux (`cli` / `paste`), Cursor (`cli` / `link`) | The page shows a code, and the user pastes it into OpenBot. | The host starts it and the client takes the code (`providers-v3` to `providers-v5`). |
+| Device code | Codex (`codex-device`), Grok, Cline, Muse, the GitHub connector | The user types a short code on the provider's page. Nothing comes back to AIKINGBOT. | The host starts it and the client shows the code (`providers-v1` to `providers-v5`). Muse: the relay opens its device page with no callback. GitHub: `connectors-v1`. |
+| Pasted code | Claude on Linux (`cli` / `paste`), Cursor (`cli` / `link`) | The page shows a code, and the user pastes it into AIKINGBOT. | The host starts it and the client takes the code (`providers-v3` to `providers-v5`). |
 | CLI-owned browser login | Claude (`auth login`), Codex, Gemini (`acp-authenticate`) | The provider's CLI opens the browser and takes its own callback. | The relay (`provider/start`): the host captures the page, and the client sends the callback query to the CLI's listener on the host. Grok, Cursor and Cline: a code kind. |
-| Deep link | Slack, Discord (`openbot://slack-workspace`, `openbot://discord-guild`), MCP fallback (`openbot://mcp-auth`) | A hosted page ends in an `openbot://` link, which reaches only the computer that opened it. | Slack and Discord: `connectors-v1`. The client sends the sealed grant on to the host that started the install. The browser client cannot receive the link. |
-| Terminal | Pi | OpenBot opens the CLI in a terminal on the host ([`provider-terminal-login.ts`](../../src/backend/provider-terminal-login.ts)). | Sign in on the host. |
+| Deep link | Slack, Discord (`aikingbot://slack-workspace`, `aikingbot://discord-guild`), MCP fallback (`aikingbot://mcp-auth`) | A hosted page ends in an `aikingbot://` link, which reaches only the computer that opened it. | Slack and Discord: `connectors-v1`. The client sends the sealed grant on to the host that started the install. The browser client cannot receive the link. |
+| Terminal | Pi | AIKINGBOT opens the CLI in a terminal on the host ([`provider-terminal-login.ts`](../../src/backend/provider-terminal-login.ts)). | Sign in on the host. |
 | Key or local session | API keys, 1Password, Bitwarden | The user types a key or gives a CLI session. | Keys go to the host over the encrypted channel. Vault approval stays on the host. |
 
 The sign-in kinds of providers are in `ProviderSignIn` and `ProviderCodeSignIn` in
@@ -37,7 +37,7 @@ The sign-in kinds of providers are in `ProviderSignIn` and `ProviderCodeSignIn` 
 The user is connected to a joined server, for example a cloud server. The host starts the sign-in,
 but the sign-in page opens in the browser of the user's own computer. The user's browser keeps their
 passwords, passkeys and sessions. After the user signs in, the page sends the browser back to a
-loopback address. The user's OpenBot takes that callback and sends it to the host. The host finishes
+loopback address. The user's AIKINGBOT takes that callback and sends it to the host. The host finishes
 the sign-in and keeps the grant.
 
 The optional Team API capability `sign-in-relay-v1` carries the relay. The frozen contract is
@@ -96,7 +96,7 @@ The client tries these, in this order:
 
 1. **Its own MCP listener.** The callback names port 28417 and path `/mcp-auth`, and the client's
    own MCP grant listener has that port. The listener gives a `state` that no local sign-in started
-   to `SignInRelayClient.deliver`. The `openbot://mcp-auth` link does the same.
+   to `SignInRelayClient.deliver`. The `aikingbot://mcp-auth` link does the same.
 2. **The exact port.** The client binds `127.0.0.1:<port>` for the time of the sign-in with
    `listenLoopbackExact`. It never takes another port, because the page sends the browser to the
    host's port.
@@ -182,7 +182,7 @@ other places.
 3. **Backend.** `resolve<X>Cli` in `src/backend/cli.ts`, the state paths in
    `src/backend/process-confinement.ts`, `providerLabel` in `src/backend/agent/thread-items.ts` and
    `src/backend/agent/provider-diagnostics.ts`.
-4. **Managed runtime** (when OpenBot installs the CLI): `native-runtime.lock.json`,
+4. **Managed runtime** (when AIKINGBOT installs the CLI): `native-runtime.lock.json`,
    `scripts/agent-runtime-lock.ts`, and `src/main/provider-runtime-descriptors.ts`,
    `provider-runtime-releases.ts` and `provider-runtime-manager.ts`.
 5. **Contracts and preload.** The `AgentAuthState` arm in `ipc-agent-status.ts`, then
@@ -234,7 +234,7 @@ is one folder per plugin in [`marketplace/plugin-catalog/`](../../marketplace/pl
    URLs. The types are in [`scripts/build-plugin-catalog.ts`](../../scripts/build-plugin-catalog.ts).
 2. Each app has a `server`: `http` with a `url`, or `stdio` with a `command` and `args`. Its `auth`
    names how the user connects:
-   - `link`: a browser sign-in. OpenBot is the OAuth client (`McpOAuth` in
+   - `link`: a browser sign-in. AIKINGBOT is the OAuth client (`McpOAuth` in
      [`mcp-oauth-provider.ts`](../../src/backend/mcp-oauth-provider.ts)): discovery, dynamic
      registration, PKCE and refresh. The tokens stay in encrypted storage. No bridge program.
    - `key`: one or two fields that go into a `header` (http) or an `env` value (stdio).
@@ -249,7 +249,7 @@ is one folder per plugin in [`marketplace/plugin-catalog/`](../../marketplace/pl
    `apps/auth-api/src/lib/plugin-catalog.generated.ts` and `resources/plugin-catalog/`. Do not edit
    them by hand.
 
-A server that does not register OpenBot by itself needs a **sign-in app**: an OAuth app that the
+A server that does not register AIKINGBOT by itself needs a **sign-in app**: an OAuth app that the
 admin registers with the provider. The user enters its client ID in the "Sign-in app" section of the
 MCP server ([`McpSignInAppSection.tsx`](../../src/renderer/src/features/servers/McpSignInAppSection.tsx)).
 The callback URL is `http://127.0.0.1:28417/mcp-auth`. On a joined server, the host keeps the app
@@ -280,14 +280,14 @@ page opens in this computer's browser through the relay.
 
 ## Add a connector
 
-A connector links OpenBot to an outside account for all agents. Each one has a main-process
+A connector links AIKINGBOT to an outside account for all agents. Each one has a main-process
 service, an IPC contract and a settings panel.
 
 | Connector | Service | Sign-in | Contract |
 | --- | --- | --- | --- |
 | GitHub | [`github-connector-service.ts`](../../src/main/github-connector-service.ts), `github-device-flow.ts` | Device flow of a GitHub App with only the public client ID | `ipc-github-connector.ts`; joined server: `connectors-v1` GitHub routes |
-| Slack | `src/backend/messaging/slack/` | Hosted OAuth in the account Worker, which ends in `openbot://slack-workspace` with a sealed grant | `slack-workspace-grant.ts`, `ipc-messaging.ts` |
-| Discord | `src/backend/messaging/discord/` | The same, with `openbot://discord-guild` | `discord-guild-grant.ts`, `ipc-messaging.ts` |
+| Slack | `src/backend/messaging/slack/` | Hosted OAuth in the account Worker, which ends in `aikingbot://slack-workspace` with a sealed grant | `slack-workspace-grant.ts`, `ipc-messaging.ts` |
+| Discord | `src/backend/messaging/discord/` | The same, with `aikingbot://discord-guild` | `discord-guild-grant.ts`, `ipc-messaging.ts` |
 | Telegram | `src/backend/messaging/telegram/` | A one-use link code in a `t.me` link. No OAuth | `telegram-app.ts`, `ipc-messaging.ts` |
 | 1Password | [`onepassword-connector-service.ts`](../../src/main/onepassword-connector-service.ts) | The user's `op` session creates a read-only service account, or the user pastes a token | `ipc-onepassword-connector.ts` |
 | Bitwarden | [`bitwarden-connector-service.ts`](../../src/main/bitwarden-connector-service.ts) | A `bw` session key, kept in memory only | `ipc-bitwarden-connector.ts` |
@@ -300,9 +300,9 @@ To add a connector:
 2. Add the service in `src/main/<name>-connector-service.ts`. Keep its secret in encrypted storage,
    and call `registerSecretValue` on every token before the first log line.
 3. Prefer a device code: it works on any computer and through any joined server. A deep link
-   (`openbot://...`) reaches only the computer that opened the page. Add its kind to
+   (`aikingbot://...`) reaches only the computer that opened the page. Add its kind to
    [`deep-link-router.ts`](../../src/main/deep-link-router.ts), and keep a grant out of the renderer.
-4. Add the panel from `@openbot/ui`, the text keys in all languages, and a
+4. Add the panel from `@aikingbot/ui`, the text keys in all languages, and a
    `changelog.d/<branch>.md` file. Update `PRIVACY.md` when the connector sends new data out.
 
 On a joined server, the optional capability `connectors-v1`
@@ -313,7 +313,7 @@ and Telegram:
 - **GitHub**: the host runs the device flow. The client shows `userCode` and opens
   `verificationUri`. The host sees the sign-in by itself.
 - **Slack and Discord**: the host answers the install page and a `nonce`, and opens nothing. The
-  client opens the page. The install ends in an `openbot://` link on the client, with a grant that is
+  client opens the page. The install ends in an `aikingbot://` link on the client, with a grant that is
   sealed to a one-use key of the host. `RelayedMessagingInstalls`
   ([`relayed-messaging-installs.ts`](../../src/main/relayed-messaging-installs.ts)) sends the grant
   with `messagingComplete` only to the server whose install this computer opened, and only once. The
@@ -359,7 +359,7 @@ Team API adapters are permanent (see [Team API compatibility](team-api.md)). Wor
 8. **Fixtures.** Add accepted and refused payloads to
    [`optional-routes.test.ts`](../../packages/contracts/src/team-protocol/optional-routes.test.ts),
    and assert that the capability is not in bootstrap.
-9. **Text.** Error messages use `sourceText(key)` with keys in all languages of `@openbot/i18n`.
+9. **Text.** Error messages use `sourceText(key)` with keys in all languages of `@aikingbot/i18n`.
 
 ## Test a sign-in through a joined server
 
@@ -390,7 +390,7 @@ Use `bun run dev:automation` for snapshots and screenshots. Do not drive another
 | A sign-in that returns to a public `https:` address of the provider | The provider finishes it by itself. The host only waits. Nothing comes back to a loopback port. |
 | A sign-in that opens an app on the host, such as Pi, which opens Terminal | The step happens on the host's screen. There is no page address to open somewhere else. |
 | A vault that approves in its desktop app, such as 1Password or Bitwarden | The approval is in the vault app on the host. A relay cannot approve for it. |
-| Slack and Discord in the browser client | A web page cannot receive the `openbot://` link that ends the install. Use the desktop app. |
+| Slack and Discord in the browser client | A web page cannot receive the `aikingbot://` link that ends the install. Use the desktop app. |
 | The Slack development return address (`returnUrl`) | Development builds only. It returns to `http://127.0.0.1:<port>/...` on the host, and the relay does not carry it. Use the hosted install. |
 | An agent link for a member who is not an admin | The relay routes are admin only. The link opens as it is, and its callback cannot reach the host. |
 | An agent link in a command, tool output or commentary | The host relays only a link that the text of an agent message holds. |

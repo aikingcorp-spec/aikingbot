@@ -1,4 +1,4 @@
-import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@aikingbot/contracts/chat-visual";
 import type {
   AgentEvent,
   AgentRuntimeWorkItem,
@@ -6,7 +6,7 @@ import type {
   DynamicIslandPresentation,
   QueueSnapshot,
   ScopedAgentEvent,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { cleanAgentMessageText } from "./agent-message-text";
 import {
   countDynamicIslandAttention,

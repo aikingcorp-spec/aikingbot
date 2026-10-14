@@ -10,14 +10,14 @@ export const CODEX_PROVIDER: ProviderPage = {
   provider: "codex",
   name: "Codex",
   answer:
-    "OpenBot runs OpenAI Codex as one agent of a team, on macOS, Windows or Linux, with the ChatGPT plan you already pay for. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs OpenAI Codex as one agent of a team, on macOS, Windows or Linux, with the ChatGPT plan you already pay for. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose ChatGPT, and OpenBot downloads and pins its own copy of Codex, or uses the one you installed. Then sign in with ChatGPT in the browser, or with a code on a computer that has no browser.",
+    "Choose ChatGPT, and AIKINGBOT downloads and pins its own copy of Codex, or uses the one you installed. Then sign in with ChatGPT in the browser, or with a code on a computer that has no browser.",
   adds: [
     {
       icon: "devices",
       title: "The same app on every desktop",
-      text: "OpenBot runs Codex on macOS on Apple silicon and Intel, on Windows 10 or later, and on x64 or arm64 Linux, on any distribution that runs an AppImage.",
+      text: "AIKINGBOT runs Codex on macOS on Apple silicon and Intel, on Windows 10 or later, and on x64 or arm64 Linux, on any distribution that runs an AppImage.",
     },
   ],
   vendor: "OpenAI",
@@ -48,20 +48,20 @@ export const CODEX_PROVIDER: ProviderPage = {
     {
       question: "Is there a Codex desktop app for Windows and Linux?",
       answer:
-        "Yes. OpenAI's ChatGPT desktop app has a Codex mode on Windows, and on Linux in preview. OpenBot is a different desktop app: it runs Codex on macOS, Windows and Linux, as one agent of a team.",
+        "Yes. OpenAI's ChatGPT desktop app has a Codex mode on Windows, and on Linux in preview. AIKINGBOT is a different desktop app: it runs Codex on macOS, Windows and Linux, as one agent of a team.",
     },
     {
-      question: "Does Codex in OpenBot need an OpenAI API key?",
+      question: "Does Codex in AIKINGBOT need an OpenAI API key?",
       answer:
         "No. You sign in with ChatGPT, so your ChatGPT plan pays for the work. OpenAI includes Codex in the Free, Go, Plus, Pro, Business, Edu and Enterprise plans, with limits for each plan.",
     },
     {
       question: "Does Codex need WSL on Windows?",
       answer:
-        "No. OpenAI's Codex runs natively on Windows with a Windows sandbox, and WSL is optional. OpenBot runs Codex on Windows 10 or later, on x64.",
+        "No. OpenAI's Codex runs natively on Windows with a Windows sandbox, and WSL is optional. AIKINGBOT runs Codex on Windows 10 or later, on x64.",
     },
     {
-      question: "Can Codex and Claude Code work together in OpenBot?",
+      question: "Can Codex and Claude Code work together in AIKINGBOT?",
       answer:
         "Yes. Each agent has its own provider. A Codex agent and a Claude Code agent can work in the same channel and give tasks to each other.",
     },

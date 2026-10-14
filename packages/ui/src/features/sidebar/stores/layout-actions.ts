@@ -9,7 +9,7 @@ import {
   SIDEBAR_UNASSIGNED_SECTION_ID,
   type SidebarLayoutAction,
   type TeamPresenceMember,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { currentText } from "../../../text";
 import { teamMemberName } from "../../team/TeamPersonAvatar";
 import type {

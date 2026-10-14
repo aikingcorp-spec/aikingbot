@@ -5,7 +5,7 @@ type ServerOrderStorage = Pick<Storage, "getItem" | "setItem">;
 const serverOrderSchema = z.array(z.string().trim().min(1));
 
 function serverOrderKey(accountId: string): string {
-  return `openbot.web.server-order:${accountId}`;
+  return `aikingbot.web.server-order:${accountId}`;
 }
 
 /** The rail order that this browser keeps for one account. Mobile keeps its own order the same way. */

@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { WAKE_RECONNECT_STATES } from "@openbot/team-client/hosted-server-wake";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { WAKE_RECONNECT_STATES } from "@aikingbot/team-client/hosted-server-wake";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

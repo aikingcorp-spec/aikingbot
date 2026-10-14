@@ -8,12 +8,12 @@
  * is tested as data.
  */
 
-import type { ChannelMessage, ChannelPage } from "@openbot/contracts/ipc";
-import { channelRoutingConversationEvent } from "@openbot/contracts/ipc";
-import type { AgentMessage, AgentProfile, ChatActionMarkerModel } from "@openbot/ui/data";
-import type { ChatMessageAuthor } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { type DayMarkerOptions, dayMarkerLabel } from "@openbot/ui/features/conversation/chat-day-markers";
-import { currentText } from "@openbot/ui/text";
+import type { ChannelMessage, ChannelPage } from "@aikingbot/contracts/ipc";
+import { channelRoutingConversationEvent } from "@aikingbot/contracts/ipc";
+import type { AgentMessage, AgentProfile, ChatActionMarkerModel } from "@aikingbot/ui/data";
+import type { ChatMessageAuthor } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { type DayMarkerOptions, dayMarkerLabel } from "@aikingbot/ui/features/conversation/chat-day-markers";
+import { currentText } from "@aikingbot/ui/text";
 import { messagePlan } from "../../app-message-projection";
 import { withinGroupingWindow } from "../conversation/chat-grouping";
 

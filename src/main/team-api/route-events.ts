@@ -1,5 +1,5 @@
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@aikingbot/contracts/team-protocol/events-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { type HostEventsApi, HostEventsFailure, hostEventsFailureMessage } from "../host-events-api";
 import {

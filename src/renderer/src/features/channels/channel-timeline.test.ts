@@ -1,6 +1,6 @@
-import type { ChannelMessage, ChannelPage } from "@openbot/contracts/ipc";
-import { channelRoutingConversationEventItemType } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
+import type { ChannelMessage, ChannelPage } from "@aikingbot/contracts/ipc";
+import { channelRoutingConversationEventItemType } from "@aikingbot/contracts/ipc";
+import type { AgentProfile } from "@aikingbot/ui/data";
 import { assert, describe, expect, it } from "vitest";
 import { isReaderAuthor } from "../team/reader-identity";
 import { mergeChannelPage } from "./channel-page-merge";

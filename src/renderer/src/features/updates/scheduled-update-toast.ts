@@ -1,7 +1,7 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import type { UpdateStatus } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
 import { type Accessor, createEffect, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 
@@ -10,7 +10,7 @@ const TOAST_ID = "scheduled-app-update";
 /**
  * A notice on the host while a restart that a server admin asked for, or the automatic install
  * scheduled, waits. It stays until the
- * restart starts or someone cancels it, so the host user always knows why OpenBot will restart.
+ * restart starts or someone cancels it, so the host user always knows why AIKINGBOT will restart.
  */
 export function createScheduledUpdateToast(options: {
   status: Accessor<UpdateStatus>;

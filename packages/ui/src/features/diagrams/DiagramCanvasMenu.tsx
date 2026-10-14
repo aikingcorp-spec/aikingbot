@@ -4,7 +4,7 @@
  * asks for in a small card at the same spot.
  */
 
-import { ChevronRight, ContextMenu, Plus, UserRound } from "@openbot/ui";
+import { ChevronRight, ContextMenu, Plus, UserRound } from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

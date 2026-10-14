@@ -295,7 +295,7 @@ export const messages = {
   "chat.suggestion.dismissed": "{name} önerisi kapatıldı.",
   "chat.suggestion.undo": "Geri al",
   "chat.suggestion.githubLocalOnly": "GitHub'ı bu sunucuyu çalıştıran bilgisayarda bağlayın.",
-  "chat.suggestion.githubUnavailable": "Bu OpenBot derlemesi GitHub'a bağlanamaz.",
+  "chat.suggestion.githubUnavailable": "Bu AIKINGBOT derlemesi GitHub'a bağlanamaz.",
   "chat.compaction.running": "Bağlam sıkıştırılıyor",
   "chat.compaction.completed": "Bağlam sıkıştırıldı",
   "chat.compaction.failed": "Bağlam sıkıştırılamadı",

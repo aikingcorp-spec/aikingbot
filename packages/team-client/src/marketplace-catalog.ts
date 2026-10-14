@@ -17,8 +17,8 @@ import {
   type MarketplaceSkillPage,
   type MarketplaceSkillQuery,
   marketplaceQueryParams,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 
 class MarketplaceCatalogError extends Schema.TaggedError<MarketplaceCatalogError>()("MarketplaceCatalogError", {

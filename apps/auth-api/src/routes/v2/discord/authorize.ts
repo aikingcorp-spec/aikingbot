@@ -1,11 +1,11 @@
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { runApiResponse } from "../../../server/effect-runtime";
 import { readJsonObject } from "../../../server/json-body";
 import { apiError, discordAppErrorResponse, json, requestDiscordApp, requestUser } from "../../../server/request-auth";
 
-// Starts the OpenBot Discord app's install for one connect of one host. The host sends a one-use
+// Starts the AIKINGBOT Discord app's install for one connect of one host. The host sends a one-use
 // public key, and the guild link comes back sealed to it.
 export const Route = createFileRoute("/v2/discord/authorize")({
   server: {

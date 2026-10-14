@@ -2,7 +2,7 @@ import { Effect } from "effect";
 
 // @vitest-environment node
 
-import { TEAM_BROWSER_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/browser-view-v1";
+import { TEAM_BROWSER_VIEW_CAPABILITY } from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { BrowserViewClient } from "./browser-view-client";

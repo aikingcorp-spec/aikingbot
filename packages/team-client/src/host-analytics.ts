@@ -4,8 +4,8 @@ import {
   type HostAnalytics,
   type HostAnalyticsInput,
   hostAnalyticsQuery,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import { Effect } from "effect";
 import { AnalyticsRequestError } from "./agent-analytics";
 

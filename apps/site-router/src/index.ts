@@ -4,7 +4,7 @@ import {
   type HostedSiteRouteManifest,
   hostedSiteBlockKey,
   hostedSiteRouteKey,
-} from "@openbot/contracts/hosted-sites";
+} from "@aikingbot/contracts/hosted-sites";
 import { Context, Effect, Layer, Schema } from "effect";
 
 interface SiteBucket {
@@ -57,7 +57,7 @@ class SiteStorage extends Context.Service<
   {
     get(key: string, options?: R2GetOptions): Effect.Effect<R2ObjectBody | R2Object | null, SiteStorageError>;
   }
->()("@openbot/site-router/SiteStorage") {
+>()("@aikingbot/site-router/SiteStorage") {
   static layer(bucket: SiteBucket) {
     return Layer.succeed(
       SiteStorage,
@@ -71,7 +71,7 @@ class SiteStorage extends Context.Service<
 }
 
 const openAssetCache = Effect.fn("SiteRouter.openAssetCache")(() =>
-  storageCall(() => caches.open("openbot-site-assets-v1")).pipe(
+  storageCall(() => caches.open("aikingbot-site-assets-v1")).pipe(
     Effect.catch((error) => {
       console.error(JSON.stringify({ event: "site_asset_cache_open_error", message: error.message }));
       return Effect.succeed(undefined);
@@ -92,8 +92,8 @@ export const routeRequest = Effect.fn("SiteRouter.routeRequest")(
     const url = new URL(request.url);
     const hostname = url.hostname.toLowerCase();
     if (!isHostedSiteHostname(hostname)) return errorResponse(404, "Site not found");
-    if (url.pathname === "/_openbot/report" || url.pathname === "/_openbot/report/") {
-      const report = new URL("https://openbot.run/report-site");
+    if (url.pathname === "/_aikingbot/report" || url.pathname === "/_aikingbot/report/") {
+      const report = new URL("https://aikingbot.aikingx.com/report-site");
       report.searchParams.set("hostname", hostname);
       return new Response(null, {
         status: 302,
@@ -170,7 +170,7 @@ const readCachedAsset = Effect.fn("SiteRouter.readCachedAsset")(
 
 function assetCacheRequest(request: Request, file: HostedSiteRouteFile): Request {
   const url = new URL(request.url);
-  url.pathname = `/_openbot/asset-cache/${encodeURIComponent(file.key)}`;
+  url.pathname = `/_aikingbot/asset-cache/${encodeURIComponent(file.key)}`;
   url.search = "";
   return new Request(url, { method: "GET" });
 }
@@ -216,7 +216,7 @@ function hasBody(object: R2Object | R2ObjectBody): object is R2ObjectBody {
 }
 
 function isHostedSiteHostname(hostname: string): boolean {
-  return /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.openbot\.site$/u.test(hostname);
+  return /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.aikingbot-sites\.aikingx\.com$/u.test(hostname);
 }
 
 function requestPath(pathname: string): string | null {

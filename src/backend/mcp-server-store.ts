@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   createMcpServerId,
   isMcpKeyValue,
@@ -7,12 +7,12 @@ import {
   type McpServerConfig,
   mcpConfigErrors,
   normalizeMcpConfig,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import { databaseRow, databaseRows, requiredStringColumn } from "./database/database-rows";
 import { registerMcpSecretValues } from "./mcp-redaction";
-import type { OpenBotDatabase } from "./openbot-database";
 
 /**
  * The MCP server configurations this machine holds.
@@ -58,7 +58,7 @@ const MCP_REMOTE_BRIDGES: ReadonlyArray<{ name: string; remoteUrl: string; url: 
 const MCP_REMOTE_ARGS = (remoteUrl: string): string[] => ["-y", "mcp-remote@latest", remoteUrl];
 
 export class McpServerStore {
-  constructor(private readonly database: OpenBotDatabase) {}
+  constructor(private readonly database: AIKINGBOTDatabase) {}
 
   list(): McpServerConfig[] {
     return databaseRows(

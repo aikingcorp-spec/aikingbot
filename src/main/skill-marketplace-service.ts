@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentSummary,
   AgentTemplateSkill,
@@ -16,7 +16,7 @@ import type {
   SkillSubmission,
   SubmitSkillInput,
   UninstallSkillInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   AGENT_TEMPLATE_LIMITS,
   decodeMarketplaceSkillDetail,
@@ -24,9 +24,9 @@ import {
   isSkillCategory,
   marketplaceQueryParams,
   SKILL_DESCRIPTION_MAX_LENGTH,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { parse as parseYaml } from "yaml";
 import type { AgentLifecycleFailed } from "../backend/agent-service";
@@ -609,7 +609,7 @@ function targetDirectories(workspace: string, slug: string): [string, string] {
 }
 
 function disabledDirectory(workspace: string, slug: string): string {
-  return join(workspace, ".openbot", "skills-disabled", slug);
+  return join(workspace, ".aikingbot", "skills-disabled", slug);
 }
 
 /**
@@ -733,8 +733,8 @@ const replaceTargets = Effect.fn("SkillMarketplace.replaceTargets")(function* (
     Effect.gen(function* () {
       for (const { target, files } of writes) {
         yield* skillIO(() => mkdir(dirname(target), { recursive: true, mode: 0o700 }));
-        const stage = `${target}.openbot-stage-${randomUUID()}`;
-        const backup = (yield* pathExists(target)) ? `${target}.openbot-backup-${randomUUID()}` : null;
+        const stage = `${target}.aikingbot-stage-${randomUUID()}`;
+        const backup = (yield* pathExists(target)) ? `${target}.aikingbot-backup-${randomUUID()}` : null;
         yield* writeFiles(stage, files);
         if (backup) yield* skillIO(() => rename(target, backup));
         const moved = yield* Effect.result(skillIO(() => rename(stage, target)));
@@ -869,7 +869,7 @@ function lockedSlugs(lock: SkillsLock): Set<string> {
 }
 
 function lockPath(workspace: string): string {
-  return join(workspace, ".openbot", "skills-lock.json");
+  return join(workspace, ".aikingbot", "skills-lock.json");
 }
 const readLock = Effect.fn("SkillMarketplace.readLock")(function* (
   workspace: string,

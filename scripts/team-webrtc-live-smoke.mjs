@@ -1,27 +1,27 @@
 import { app, BrowserWindow } from "electron";
 
-app.setName("OpenBot");
+app.setName("AIKINGBOT");
 app.exit(await main());
 
 async function main() {
-  const signalUrl = process.env.OPENBOT_REMOTE_SIGNAL_URL ?? "wss://signal.openbot.run/v1/signal";
-  const hostTicket = process.env.OPENBOT_REMOTE_SMOKE_HOST_TICKET;
-  const clientTicket = process.env.OPENBOT_REMOTE_SMOKE_CLIENT_TICKET;
-  const iceTransportPolicy = process.env.OPENBOT_REMOTE_SMOKE_ICE_POLICY ?? "all";
-  const payloadBytes = Number(process.env.OPENBOT_REMOTE_SMOKE_BYTES ?? 100 * 1024 * 1024);
+  const signalUrl = process.env.AIKINGBOT_REMOTE_SIGNAL_URL ?? "wss://signal.aikingbot.aikingx.com/v1/signal";
+  const hostTicket = process.env.AIKINGBOT_REMOTE_SMOKE_HOST_TICKET;
+  const clientTicket = process.env.AIKINGBOT_REMOTE_SMOKE_CLIENT_TICKET;
+  const iceTransportPolicy = process.env.AIKINGBOT_REMOTE_SMOKE_ICE_POLICY ?? "all";
+  const payloadBytes = Number(process.env.AIKINGBOT_REMOTE_SMOKE_BYTES ?? 100 * 1024 * 1024);
 
   if (!hostTicket || !clientTicket) {
     console.error(
-      "Set OPENBOT_REMOTE_SMOKE_HOST_TICKET and OPENBOT_REMOTE_SMOKE_CLIENT_TICKET to fresh tickets for the same host and session.",
+      "Set AIKINGBOT_REMOTE_SMOKE_HOST_TICKET and AIKINGBOT_REMOTE_SMOKE_CLIENT_TICKET to fresh tickets for the same host and session.",
     );
     return 2;
   }
   if (iceTransportPolicy !== "all" && iceTransportPolicy !== "relay") {
-    console.error("OPENBOT_REMOTE_SMOKE_ICE_POLICY must be all or relay.");
+    console.error("AIKINGBOT_REMOTE_SMOKE_ICE_POLICY must be all or relay.");
     return 2;
   }
   if (!Number.isSafeInteger(payloadBytes) || payloadBytes < 4 || payloadBytes > 100 * 1024 * 1024) {
-    console.error("OPENBOT_REMOTE_SMOKE_BYTES must be an integer from 4 through 104857600.");
+    console.error("AIKINGBOT_REMOTE_SMOKE_BYTES must be an integer from 4 through 104857600.");
     return 2;
   }
 
@@ -36,7 +36,7 @@ async function main() {
   });
 
   try {
-    await window.loadURL("data:text/html,<meta charset=utf-8><title>OpenBot WebRTC smoke</title>");
+    await window.loadURL("data:text/html,<meta charset=utf-8><title>AIKINGBOT WebRTC smoke</title>");
     const result = await window.webContents.executeJavaScript(
       `(${runWebRtcSmoke.toString()})(${JSON.stringify({
         signalUrl,
@@ -185,7 +185,7 @@ async function runWebRtcSmoke(input) {
 
     const hostChannel = deferred();
     host.ondatachannel = (event) => hostChannel.resolve(event.channel);
-    const clientChannel = client.createDataChannel("openbot.team.rpc.v2", { ordered: true });
+    const clientChannel = client.createDataChannel("aikingbot.team.rpc.v2", { ordered: true });
     const clientOpened = new Promise((resolve, reject) => {
       clientChannel.onopen = resolve;
       clientChannel.onerror = () => reject(new Error("Client DataChannel failed."));

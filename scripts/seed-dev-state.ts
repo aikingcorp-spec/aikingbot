@@ -4,9 +4,9 @@ import { lstat, mkdir, mkdtemp, readFile, readlink, rename, rm, writeFile } from
 import { homedir } from "node:os";
 import { dirname, join, parse, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import { serializeChatTagReference } from "@aikingbot/contracts/chat-tag-references";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
 import type {
   AgentModelId,
   AgentProviderId,
@@ -17,9 +17,9 @@ import type {
   ChannelTask,
   ConversationMessage,
   Routine,
-} from "@openbot/contracts/ipc";
-import { channelRoutingConversationEventItemType } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { channelRoutingConversationEventItemType } from "@aikingbot/contracts/ipc";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { strToU8, zipSync } from "fflate";
 import { z } from "zod";
 import { agentNamesById, displayMessageReferences } from "../src/backend/agent/delivery-content";
@@ -52,14 +52,14 @@ import { resolveDevelopmentAppDataRoot } from "./development-state-paths";
 import { readScriptArguments } from "./script-arguments";
 import { NO_SCALE, parseSeedScale, type SeedScale, seedScale } from "./seed-dev-scale";
 
-export const DEVELOPMENT_SEED_MANIFEST_FILE = "openbot-dev-seed-v1.json";
+export const DEVELOPMENT_SEED_MANIFEST_FILE = "aikingbot-dev-seed-v1.json";
 
-const logger = createOpenBotLogger("seed-dev-state");
+const logger = createAIKINGBOTLogger("seed-dev-state");
 
-const TEAM_FILE = "openbot-team-server-v2.json";
+const TEAM_FILE = "aikingbot-team-server-v2.json";
 /** Read only, exactly as the app reads it: the file a build without accounts owns. */
-const LEGACY_TEAM_FILE = "openbot-team-server-v1.json";
-const SETUP_FILE = "openbot-setup-v2.json";
+const LEGACY_TEAM_FILE = "aikingbot-team-server-v1.json";
+const SETUP_FILE = "aikingbot-setup-v2.json";
 const SEED_VERSION = 1;
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -122,7 +122,7 @@ async function seededAgentModel(appDataRoot: string): Promise<SeededAgentModel> 
 
 /**
  * Where the app's own OpenCode is: the runtime store this computer shares, which is where a CLI the
- * user downloaded in OpenBot is the only copy there is. A seed that looked at the repository's
+ * user downloaded in AIKINGBOT is the only copy there is. A seed that looked at the repository's
  * `build/` tree and the user's own installs instead would find nothing on such a computer, and would
  * put four agents on a provider the app does not start a new agent on.
  *
@@ -138,10 +138,10 @@ function managedOpencodeExecutable(appDataRoot: string): string | null {
 
 const GENERATED_DIRECTORY_PATTERN =
   /^generated\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
-const SHOWCASE_IMAGE_PATH = resolve(process.cwd(), "src", "renderer", "src", "assets", "openbot-logo-dev.png");
+const SHOWCASE_IMAGE_PATH = resolve(process.cwd(), "src", "renderer", "src", "assets", "aikingbot-logo-dev.png");
 
 function previewPdf(): string {
-  const stream = "BT /F1 18 Tf 24 150 Td (OpenBot file preview) Tj ET";
+  const stream = "BT /F1 18 Tf 24 150 Td (AIKINGBOT file preview) Tj ET";
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
@@ -298,7 +298,7 @@ export async function seedDevelopmentState(options: DevelopmentSeedOptions = {})
   );
   assertSafeAppDataRoot(appDataRoot);
   const targetProfile = resolve(appDataRoot, developmentUserDataName("app", options.instanceId ?? null));
-  if (dirname(targetProfile) !== appDataRoot) throw new Error(`Unsafe OpenBot dev profile path: ${targetProfile}`);
+  if (dirname(targetProfile) !== appDataRoot) throw new Error(`Unsafe AIKINGBOT dev profile path: ${targetProfile}`);
 
   const profileActive = await isDevelopmentProfileActive(targetProfile);
   const agentModel = options.agentModel ?? (await seededAgentModel(appDataRoot));
@@ -318,16 +318,16 @@ export async function seedDevelopmentState(options: DevelopmentSeedOptions = {})
   if (options.dryRun) return summary;
   if (options.ifMissing && (await pathExists(targetProfile))) return summary;
   if (profileActive) {
-    throw new Error("Quit the OpenBot dev app before you seed its local state.");
+    throw new Error("Quit the AIKINGBOT dev app before you seed its local state.");
   }
 
   await mkdir(appDataRoot, { recursive: true, mode: 0o700 });
-  const stagingProfile = await mkdtemp(join(appDataRoot, ".openbot-dev-seed-"));
+  const stagingProfile = await mkdtemp(join(appDataRoot, ".aikingbot-dev-seed-"));
   const newTransferDirectories: string[] = [];
   try {
     await buildSeedProfile(stagingProfile, homeDirectory, newTransferDirectories, agentModel, scale);
     if (await isDevelopmentProfileActive(targetProfile)) {
-      throw new Error("Quit the OpenBot dev app before you seed its local state.");
+      throw new Error("Quit the AIKINGBOT dev app before you seed its local state.");
     }
     if (options.ifMissing && (await pathExists(targetProfile))) {
       await cleanupStagedSeed(stagingProfile, homeDirectory, newTransferDirectories);
@@ -446,7 +446,7 @@ function seedMemories(agentStore: AgentStore): void {
     },
     {
       agentId: "chief",
-      text: "The current priority is a traceable OpenBot launch plan.",
+      text: "The current priority is a traceable AIKINGBOT launch plan.",
       origin: "automatic" as const,
       sourceTurnId: "dev-seed-turn-chief-plan",
     },
@@ -485,7 +485,7 @@ function seedMemories(agentStore: AgentStore): void {
 }
 
 /** Not a ciphertext of any secret: the app cannot decrypt it, so the webhook stays closed until regenerated. */
-const SEED_WEBHOOK_SECRET_PLACEHOLDER = Buffer.from("openbot-dev-seed: regenerate this secret").toString("base64");
+const SEED_WEBHOOK_SECRET_PLACEHOLDER = Buffer.from("aikingbot-dev-seed: regenerate this secret").toString("base64");
 
 async function seedRoutines(agentStore: AgentStore, mailbox: MailboxStore, clock: SeedClock): Promise<void> {
   const routines = new AgentRoutineStore(agentStore.database);
@@ -694,7 +694,7 @@ async function seedAttachments(
       bytes: bytes(`${JSON.stringify({ sources: 8, verified: 7, needsReview: 1 }, null, 2)}\n`),
     }),
     image: await store(launch, {
-      name: "openbot-launch-concept.png",
+      name: "aikingbot-launch-concept.png",
       mimeType: "image/png",
       sourcePath: SHOWCASE_IMAGE_PATH,
     }),
@@ -775,7 +775,7 @@ async function seedConversations(
             `| Evidence | ${mention("research")} | In review |`,
             `| Release | ${mention("launch")} | Ready |`,
             "",
-            "Next: review the [OpenBot documentation](https://openbot.run/docs), then run:",
+            "Next: review the [AIKINGBOT documentation](https://aikingbot.aikingx.com/docs), then run:",
             "",
             "```bash",
             "bun run check",
@@ -802,7 +802,7 @@ async function seedConversations(
         itemType: "image_generation",
         attachments: [attachments.image],
         imageGeneration: {
-          prompt: "A calm OpenBot launch command center at blue hour",
+          prompt: "A calm AIKINGBOT launch command center at blue hour",
           resolution: "1024 × 1024",
           aspectRatio: "square",
         },
@@ -883,7 +883,7 @@ async function seedConversations(
           '<div style="display:grid;gap:8px;max-width:420px;padding:16px;border-radius:12px;background:#f4f1fb">',
           '  <strong style="font-size:18px">Launch status</strong>',
           '  <span style="color:#3d7a3d">QA ready · Evidence in review · Release ready</span>',
-          '  <a href="https://openbot.run/docs">Release checklist</a>',
+          '  <a href="https://aikingbot.aikingx.com/docs">Release checklist</a>',
           "</div>",
           "```",
         ].join("\n"),
@@ -1061,7 +1061,7 @@ async function seedLaunchRoom(
     {
       ...store.create(channelId, {
         name: "Launch room",
-        title: "Ship OpenBot 1.0",
+        title: "Ship AIKINGBOT 1.0",
         instructions:
           "Keep every decision traceable. Name the owner and the evidence in each result, and leave an unverified claim out.",
         members: [{ agentId: "chief" }, { agentId: "research" }, { agentId: "builder" }, { agentId: "launch" }],
@@ -1082,7 +1082,7 @@ async function seedLaunchRoom(
       mimeType: "text/markdown",
       bytes: bytes(
         [
-          "# OpenBot 1.0 release note (draft)",
+          "# AIKINGBOT 1.0 release note (draft)",
           "",
           "## What is new",
           "- Channels: several agents share one chat and one task list.",
@@ -1138,7 +1138,7 @@ async function seedLaunchRoom(
   const taskStandup = "channel-launch-task-standup";
   const taskRollback = "channel-launch-task-rollback";
   const releaseNoteText =
-    "Draft the release note for OpenBot 1.0. Keep the evidence with every claim and name an owner for each section.";
+    "Draft the release note for AIKINGBOT 1.0. Keep the evidence with every claim and name an owner for each section.";
   const evidenceText = "Verify the two performance claims in the draft and name a primary source for each.";
   const rollbackText = `Add the rollback owner to the release note. ${mentionAgent(agents, "builder")} should confirm the steps.`;
   const message = (input: SeedChannelMessage): ChannelMessage => channelMessage(channelId, clock, input);
@@ -1430,15 +1430,15 @@ async function seedTeam(profilePath: string, agentStore: AgentStore, clock: Seed
   const team = new TeamStore(join(profilePath, TEAM_FILE), join(profilePath, LEGACY_TEAM_FILE));
   await runCauseEffect(team.initialize());
   const owner = {
-    id: "openbot-dev-owner",
-    email: "openbot-dev-host@example.com",
+    id: "aikingbot-dev-owner",
+    email: "aikingbot-dev-host@example.com",
     name: "Dev Owner",
     avatarUrl: null,
   };
-  const teamIdentity = await runCauseEffect(team.configureWithAccount("OpenBot Dev Team", owner));
+  const teamIdentity = await runCauseEffect(team.configureWithAccount("AIKINGBOT Dev Team", owner));
   const joined = [];
   for (const member of [
-    { id: "openbot-dev-alice", email: "alice@example.com", name: "Alice Chen", role: "admin" as const },
+    { id: "aikingbot-dev-alice", email: "alice@example.com", name: "Alice Chen", role: "admin" as const },
   ]) {
     const invite = await runCauseEffect(team.createInvite(member.role, member.email));
     joined.push(
@@ -1477,7 +1477,7 @@ async function seedTeam(profilePath: string, agentStore: AgentStore, clock: Seed
 }
 
 async function replaceDevelopmentProfile(target: string, staging: string, homeDirectory: string): Promise<void> {
-  const backup = resolve(dirname(target), `.openbot-dev-backup-${randomUUID()}`);
+  const backup = resolve(dirname(target), `.aikingbot-dev-backup-${randomUUID()}`);
   const targetExists = await pathExists(target);
   if (targetExists) await rename(target, backup);
   try {
@@ -1524,7 +1524,7 @@ async function readSeedTransferDirectories(profilePath: string): Promise<string[
 }
 
 async function removeTransferDirectories(homeDirectory: string, directories: string[]): Promise<string[]> {
-  const root = resolve(homeDirectory, "OpenBot", "Shared", "Transfers");
+  const root = resolve(homeDirectory, "AIKINGBOT", "Shared", "Transfers");
   const generatedRoot = resolve(root, "generated");
   const removed: string[] = [];
   for (const relativePath of directories) {
@@ -1639,9 +1639,9 @@ async function main(): Promise<void> {
     dryRun,
     ifMissing: parsed.values["if-missing"] ?? false,
     scale: parsed.values.scale === undefined ? undefined : parseSeedScale(parsed.values.scale),
-    instanceId: readDevelopmentInstanceId(process.env.OPENBOT_DEV_INSTANCE_ID),
+    instanceId: readDevelopmentInstanceId(process.env.AIKINGBOT_DEV_INSTANCE_ID),
   });
-  logger.info(dryRun ? "OpenBot development seed dry run:" : "OpenBot development state seeded:");
+  logger.info(dryRun ? "AIKINGBOT development seed dry run:" : "AIKINGBOT development state seeded:");
   logger.info(`- profile: ${summary.targetProfile}`);
   logger.info(`- profile active: ${summary.profileActive ? "yes" : "no"}`);
   logger.info(`- agent model: ${summary.agentModel}`);

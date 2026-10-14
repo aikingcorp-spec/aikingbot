@@ -1,4 +1,4 @@
-import type { RemoteDesktopSession } from "@openbot/contracts/ipc";
+import type { RemoteDesktopSession } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -34,7 +34,7 @@ describe("RemoteDesktopManager.connect", () => {
     const manager = createManager(async () => {
       throw new RemoteRequestError(
         503,
-        "The host has not allowed OpenBot to record its screen.",
+        "The host has not allowed AIKINGBOT to record its screen.",
         "host_permissions_required",
       );
     });
@@ -42,18 +42,18 @@ describe("RemoteDesktopManager.connect", () => {
     await expect(runCauseEffect(manager.connect({ serverId: "remote-1" }))).resolves.toEqual({
       status: "refused",
       errorCode: "host_permissions_required",
-      message: "The host has not allowed OpenBot to record its screen.",
+      message: "The host has not allowed AIKINGBOT to record its screen.",
     });
     expect(manager.list()).toEqual([]);
   });
 
   it("keeps a broken call a rejection, so a refusal stays the only named answer", async () => {
     const manager = createManager(async () => {
-      throw new RemoteProtocolError("host_update_required", "Update OpenBot on the host.");
+      throw new RemoteProtocolError("host_update_required", "Update AIKINGBOT on the host.");
     });
 
     await expect(runCauseEffect(manager.connect({ serverId: "remote-1" }))).rejects.toThrow(
-      "Update OpenBot on the host.",
+      "Update AIKINGBOT on the host.",
     );
   });
 

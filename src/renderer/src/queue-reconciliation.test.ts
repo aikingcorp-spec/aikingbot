@@ -1,4 +1,4 @@
-import type { QueueDelivery, QueueDeliveryStatus, QueueSnapshot } from "@openbot/contracts/ipc";
+import type { QueueDelivery, QueueDeliveryStatus, QueueSnapshot } from "@aikingbot/contracts/ipc";
 import {
   activeQueueDeliveries,
   presentQueueDeliveries,

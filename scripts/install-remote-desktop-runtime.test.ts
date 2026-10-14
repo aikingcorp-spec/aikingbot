@@ -94,7 +94,7 @@ describe("remote desktop runtime installer", () => {
 });
 
 async function createFixture() {
-  const sourceRoot = await mkdtemp(join(tmpdir(), "openbot-runtime-source-"));
+  const sourceRoot = await mkdtemp(join(tmpdir(), "aikingbot-runtime-source-"));
   const outputRoot = join(sourceRoot, "build/remote-desktop-runtime");
   const stagingRoot = join(sourceRoot, "staging");
   const targetRoot = join(stagingRoot, "darwin/arm64");
@@ -161,7 +161,7 @@ async function createFixture() {
   const manifest = createReleaseManifest({
     lock: baseLock,
     inputDigest: digest,
-    repository: "nightly-labs/openbot",
+    repository: "aikingcorp-spec/aikingx_bot",
     tag: createRemoteDesktopReleaseTag(digest),
     artifacts: {
       "darwin-arm64": {

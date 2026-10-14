@@ -1,6 +1,6 @@
-import { type AppLanguage, DEFAULT_APP_LANGUAGE } from "@openbot/contracts/app-language";
-import { type AppTranslate, formatLocale, resolveLocale, type TranslatedLocale, translateFor } from "@openbot/i18n";
-import { TextProvider } from "@openbot/ui/text";
+import { type AppLanguage, DEFAULT_APP_LANGUAGE } from "@aikingbot/contracts/app-language";
+import { type AppTranslate, formatLocale, resolveLocale, type TranslatedLocale, translateFor } from "@aikingbot/i18n";
+import { TextProvider } from "@aikingbot/ui/text";
 import type { JSX } from "@solidjs/web";
 import {
   createContext,
@@ -118,7 +118,7 @@ const I18nContext = createContext<I18nValue>(FALLBACK, { name: "I18n" });
 
 /**
  * The language setting and the text context shared components read (`useText` from
- * `@openbot/ui/text`). A screen reads text through `useText`; only the language setting itself
+ * `@aikingbot/ui/text`). A screen reads text through `useText`; only the language setting itself
  * needs `useI18n`.
  */
 export function I18nProvider(props: ParentProps): JSX.Element {

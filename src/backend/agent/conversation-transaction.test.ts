@@ -2,7 +2,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
+import type { ConversationMessage } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentStore } from "../agent-store";
 import { runCauseEffect } from "../effect-boundary";
@@ -37,7 +37,7 @@ function threadRowCount(): number {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-conversation-transaction-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-conversation-transaction-"));
   store = new AgentStore(join(root, "user-data"), join(root, "home"));
   await runCauseEffect(store.initialize());
   await runCauseEffect(store.getOrCreate(AGENT_ID, "Design Studio", "Product design"));

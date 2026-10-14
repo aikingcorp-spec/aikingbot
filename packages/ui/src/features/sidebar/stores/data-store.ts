@@ -4,7 +4,11 @@
  * safe for the drag engine to hold - it satisfies the engine's list model and can do nothing else.
  */
 
-import { type ChannelSummary, SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
+import {
+  type ChannelSummary,
+  SIDEBAR_PEOPLE_SECTION_ID,
+  SIDEBAR_UNASSIGNED_SECTION_ID,
+} from "@aikingbot/contracts/ipc";
 import { createMemo } from "solid-js";
 import type { AgentProfile } from "../../../data";
 import { currentText } from "../../../text";

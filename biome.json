@@ -31,7 +31,7 @@
       "!tools/biome/anti-slop",
       "!tools/ui-foundation/fixtures",
       "!!coverage",
-      "!!.openbot-build",
+      "!!.aikingbot-build",
       "!!Agents",
       "!!Bots",
       "!!Shared",
@@ -160,7 +160,7 @@
                 "patterns": [
                   {
                     "group": ["**/main/**", "**/backend/**", "**/preload/**"],
-                    "message": "The renderer reaches main only through the IPC contract. Declare a channel in packages/contracts and go through window.openbot."
+                    "message": "The renderer reaches main only through the IPC contract. Declare a channel in packages/contracts and go through window.aikingbot."
                   }
                 ]
               }
@@ -238,8 +238,8 @@
                     "group": [
                       "electron",
                       "electron/**",
-                      "@openbot/renderer-preview",
-                      "@openbot/renderer-web",
+                      "@aikingbot/renderer-preview",
+                      "@aikingbot/renderer-web",
                       "**/src/main/**",
                       "**/src/backend/**",
                       "**/src/preload/**",

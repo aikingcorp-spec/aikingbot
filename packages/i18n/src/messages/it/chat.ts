@@ -292,7 +292,7 @@ export const messages = {
   "chat.suggestion.dismissed": "Suggerimento {name} ignorato.",
   "chat.suggestion.undo": "Annulla",
   "chat.suggestion.githubLocalOnly": "Connetti GitHub sul computer su cui gira questo server.",
-  "chat.suggestion.githubUnavailable": "Questa versione di OpenBot non può connettere GitHub.",
+  "chat.suggestion.githubUnavailable": "Questa versione di AIKINGBOT non può connettere GitHub.",
   "chat.compaction.running": "Compattazione del contesto",
   "chat.compaction.completed": "Contesto compattato",
   "chat.compaction.failed": "Impossibile compattare il contesto",

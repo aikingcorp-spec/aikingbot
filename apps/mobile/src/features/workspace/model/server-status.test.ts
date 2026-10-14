@@ -1,4 +1,4 @@
-import { createRemoteConnectionRecovery, REMOTE_RETRY_INTERVAL_MS } from "@openbot/team-client";
+import { createRemoteConnectionRecovery, REMOTE_RETRY_INTERVAL_MS } from "@aikingbot/team-client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { textFor } from "../../../shared/lib/text-value";
 import { applyServerFailure, applyServerRecovery, serverKind, serverStatusLabel } from "./server-status";

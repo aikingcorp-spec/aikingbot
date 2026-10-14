@@ -1,4 +1,4 @@
-import { Button, Check, X } from "@openbot/ui";
+import { Button, Check, X } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createUniqueId, For, Show } from "solid-js";
 import { useText } from "../../text";

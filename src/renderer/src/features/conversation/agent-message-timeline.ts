@@ -1,5 +1,5 @@
-import type { AgentMessage, AgentMessageMarkerModel } from "@openbot/ui/data";
-import { dayMarkerLabel } from "@openbot/ui/features/conversation/chat-day-markers";
+import type { AgentMessage, AgentMessageMarkerModel } from "@aikingbot/ui/data";
+import { dayMarkerLabel } from "@aikingbot/ui/features/conversation/chat-day-markers";
 
 interface AgentMessageRow {
   message: AgentMessage;

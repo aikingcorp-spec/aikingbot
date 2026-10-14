@@ -7,23 +7,23 @@ import { Effect } from "effect";
 // local fake: one HTTP server for the Web API and file upload and download. Its events arrive as
 // Signal passes them on, after Signal checked their signature; `src/main/slack-workspace.test.ts`
 // covers the install and the Signal socket. Only the provider is faked, as in every agent service
-// test. Writes .openbot-build/slack-e2e/report.json.
+// test. Writes .aikingbot-build/slack-e2e/report.json.
 
 import { randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { join, resolve } from "node:path";
-import type { AgentEvent, AgentSummary } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { SLACK_BOT_SCOPES } from "@openbot/contracts/slack-app";
+import type { AgentEvent, AgentSummary } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { SLACK_BOT_SCOPES } from "@aikingbot/contracts/slack-app";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentService } from "../agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   type FakeAgentClient,
   inputRecords,
   notification,
-  openBotToolPayload,
   paramsRecord,
   startAgentTestFixture,
   startService,
@@ -36,7 +36,7 @@ import { type MessagingCredentials, MessagingService } from "./messaging-service
 import type { MessagingIngress } from "./messaging-types";
 import { slackDriver } from "./slack/slack-driver";
 
-const REPORT_DIR = resolve(import.meta.dirname, "../../../.openbot-build/slack-e2e");
+const REPORT_DIR = resolve(import.meta.dirname, "../../../.aikingbot-build/slack-e2e");
 const BOT_TOKEN = "xoxb-1111-2222-testbottoken";
 
 interface SlackCall {
@@ -44,7 +44,7 @@ interface SlackCall {
   params: Record<string, string>;
 }
 
-/** A Slack workspace that installed the OpenBot app: the Web API over HTTP, and its events. */
+/** A Slack workspace that installed the AIKINGBOT app: the Web API over HTTP, and its events. */
 class FakeSlack {
   readonly calls: SlackCall[] = [];
   readonly uploads = new Map<string, Buffer>();
@@ -52,7 +52,7 @@ class FakeSlack {
   readonly replies = new Map<string, DynamicRecord[]>();
   /** The newest messages of channel C1, newest first, as `conversations.history` gives them. */
   channelHistory: DynamicRecord[] = [];
-  /** The workspace's channels. `users.conversations` gives the ones that OpenBot is a member of. */
+  /** The workspace's channels. `users.conversations` gives the ones that AIKINGBOT is a member of. */
   channels: DynamicRecord[] = [];
   appId = "A1";
   rejectBotToken = false;
@@ -271,7 +271,7 @@ afterEach(async () => {
 });
 
 /**
- * A workspace that installed the OpenBot app, as `completeSlackWorkspace` leaves it, with `agent` as
+ * A workspace that installed the AIKINGBOT app, as `completeSlackWorkspace` leaves it, with `agent` as
  * its orchestrator unless `orchestrator` is false.
  */
 async function connected(options: { autoComplete?: boolean; orchestrator?: boolean; start?: boolean } = {}) {
@@ -346,7 +346,7 @@ describe.sequential("Slack messaging end to end", () => {
 
     const [start] = turnStarts(client);
     const prompt = start ? promptOf(start) : "";
-    expect(prompt).toContain("Message from a Slack user. This person is not the OpenBot user.");
+    expect(prompt).toContain("Message from a Slack user. This person is not the AIKINGBOT user.");
     expect(prompt).toContain("Author: Name UALICE (Slack user UALICE)");
     expect(prompt).toContain("--- message ---\nhello");
     // The earlier message of the thread is context; the agent's own and the current one are not.
@@ -360,7 +360,7 @@ describe.sequential("Slack messaging end to end", () => {
     ]);
     const working = slack.of("chat.postMessage").find((call) => call.params.text === "Working on it…");
     expect(working?.params).toMatchObject({ channel: "C1", thread_ts: "99.000" });
-    expect(JSON.parse(working?.params.blocks ?? "[]")[1]?.elements?.[0]?.action_id).toBe("openbot_stop");
+    expect(JSON.parse(working?.params.blocks ?? "[]")[1]?.elements?.[0]?.action_id).toBe("aikingbot_stop");
 
     // Nothing of the Slack thread reaches the public chat, the queue, or a client event.
     expect(
@@ -411,17 +411,17 @@ describe.sequential("Slack messaging end to end", () => {
     const privateMessage = privateIn(firstLink.threadId);
     const session = store.database.listProviderSessions(secondLink.threadId).at(-1);
     if (!privateMessage || !session) throw new Error("Missing messaging session");
-    const forged = await callOpenBotTool(client, session.externalSessionId, "tool_call", {
-      name: "openbot.history_read",
+    const forged = await callAIKINGBOTTool(client, session.externalSessionId, "tool_call", {
+      name: "aikingbot.history_read",
       arguments: { messageId: privateMessage.id },
     });
     expect(forged.result).toMatchObject({ success: false });
-    const own = await callOpenBotTool(client, session.externalSessionId, "history_search", {
+    const own = await callAIKINGBOTTool(client, session.externalSessionId, "history_search", {
       query: "LINK_TWO_PRIVATE",
     });
     expect(own.result).toMatchObject({ success: true });
-    expect(JSON.stringify(openBotToolPayload(own.result))).toContain("LINK_TWO_PRIVATE");
-    expect(JSON.stringify(openBotToolPayload(own.result))).not.toContain("LINK_ONE_PRIVATE");
+    expect(JSON.stringify(aikingBotToolPayload(own.result))).toContain("LINK_TWO_PRIVATE");
+    expect(JSON.stringify(aikingBotToolPayload(own.result))).not.toContain("LINK_ONE_PRIVATE");
   });
 
   // Failure modes: a mention or a context message keeps a raw user id; a fact saved in one thread does
@@ -447,14 +447,14 @@ describe.sequential("Slack messaging end to end", () => {
       return session.externalSessionId;
     };
     const call = async (session: string, name: string, args: DynamicRecord) =>
-      (await callOpenBotTool(client, session, "tool_call", { name: `openbot.${name}`, arguments: args })).result;
+      (await callAIKINGBOTTool(client, session, "tool_call", { name: `aikingbot.${name}`, arguments: args })).result;
     const thread = sessionOf("899.000");
 
     const saved = await call(thread, "messaging_remember", { text: "Bob owns the release." });
     expect(saved).toMatchObject({ success: true });
-    const memoryId = String(openBotToolPayload(saved).memoryId);
+    const memoryId = String(aikingBotToolPayload(saved).memoryId);
     const replaced = await call(thread, "messaging_remember", { text: "Bob owns the Friday release.", memoryId });
-    expect(openBotToolPayload(replaced)).toMatchObject({ accepted: true, memoryId, count: 1 });
+    expect(aikingBotToolPayload(replaced)).toMatchObject({ accepted: true, memoryId, count: 1 });
 
     slack.channelHistory = [
       { ts: "898.000", user: "UCAROL", text: "Release moves to Friday, <@UBOB>", reply_count: 2 },
@@ -462,8 +462,8 @@ describe.sequential("Slack messaging end to end", () => {
     ];
     const history = await call(thread, "messaging_history", {});
     expect(history).toMatchObject({ success: true });
-    expect(openBotToolPayload(history).messages).toEqual([
-      { author: "OpenBot", sentAt: expect.any(String), text: "Noted." },
+    expect(aikingBotToolPayload(history).messages).toEqual([
+      { author: "AIKINGBOT", sentAt: expect.any(String), text: "Noted." },
       {
         author: "Name UCAROL",
         sentAt: expect.any(String),
@@ -485,13 +485,17 @@ describe.sequential("Slack messaging end to end", () => {
     const { connectionId: otherId } = service?.messaging.store.ensureConnection("slack", "T2", "Other") ?? {};
     if (!otherId) throw new Error("No second connection.");
     const foreign = memories.saveFromTool(otherId, { text: "Other fact.", sourceTurnId: "t", commandId: "c-other" });
-    expect(openBotToolPayload(await call(thread, "messaging_forget_memory", { memoryId: foreign.id }))).toMatchObject({
-      accepted: false,
-    });
+    expect(aikingBotToolPayload(await call(thread, "messaging_forget_memory", { memoryId: foreign.id }))).toMatchObject(
+      {
+        accepted: false,
+      },
+    );
     expect(memories.list(otherId)).toHaveLength(1);
 
     // Forgetting removes the text from the event log too.
-    expect(openBotToolPayload(await call(thread, "messaging_forget_memory", { memoryId }))).toEqual({ accepted: true });
+    expect(aikingBotToolPayload(await call(thread, "messaging_forget_memory", { memoryId }))).toEqual({
+      accepted: true,
+    });
     const payloads = db
       .prepare("SELECT payload_json FROM orchestration_events WHERE aggregate_type = 'messaging-memory'")
       .all()
@@ -516,7 +520,7 @@ describe.sequential("Slack messaging end to end", () => {
   });
 
   // Failure modes: the user's own chat or a routine run cannot reach a connected platform; a secret
-  // in the text reaches Slack; the list shows a channel OpenBot cannot post in; an unknown
+  // in the text reaches Slack; the list shows a channel AIKINGBOT cannot post in; an unknown
   // connection id posts anyway.
   it("lets an agent outside a platform turn list the places and post to one, without secrets", async () => {
     const { agent, client, store } = await connected();
@@ -529,18 +533,18 @@ describe.sequential("Slack messaging end to end", () => {
     await waitFor(() => Boolean(store.activeProviderSession(agent.id)?.externalSessionId));
     const session = store.activeProviderSession(agent.id)?.externalSessionId ?? "";
     const call = async (name: string, args: DynamicRecord) =>
-      (await callOpenBotTool(client, session, "tool_call", { name: `openbot.${name}`, arguments: args })).result;
+      (await callAIKINGBOTTool(client, session, "tool_call", { name: `aikingbot.${name}`, arguments: args })).result;
 
-    const connections = openBotToolPayload(await call("messaging_list_places", {})).connections;
+    const connections = aikingBotToolPayload(await call("messaging_list_places", {})).connections;
     expect(connections).toEqual([{ connection: expect.any(String), platform: "Slack", name: expect.any(String) }]);
     const connection = String((Array.isArray(connections) ? connections[0] : {})?.connection);
-    expect(openBotToolPayload(await call("messaging_list_places", { connection })).places).toEqual([
+    expect(aikingBotToolPayload(await call("messaging_list_places", { connection })).places).toEqual([
       { id: "C1", name: "#general", kind: "channel" },
       { id: "C9", name: "#bot-inflow", kind: "private" },
     ]);
 
     const posted = await call("messaging_post", { connection, place: "C9", text: `Daily report. Token ${BOT_TOKEN}` });
-    expect(openBotToolPayload(posted)).toEqual({ posted: true });
+    expect(aikingBotToolPayload(posted)).toEqual({ posted: true });
     const post = slack.of("chat.postMessage").find((request) => request.params.channel === "C9");
     expect(post?.params.text).toContain("Daily report.");
     expect(post?.params.text).not.toContain(BOT_TOKEN);
@@ -612,15 +616,15 @@ describe.sequential("Slack messaging end to end", () => {
     await waitFor(() => slack.of("chat.postMessage").some((call) => call.params.text?.includes("npm run build")));
     const approval = slack.of("chat.postMessage").find((call) => call.params.text?.includes("npm run build"));
     const buttons = JSON.parse(approval?.params.blocks ?? "[]")[1]?.elements ?? [];
-    const accept = buttons.find((button: DynamicRecord) => button.action_id === "openbot_accept");
+    const accept = buttons.find((button: DynamicRecord) => button.action_id === "aikingbot_accept");
     const approvalTs = "1000.000";
 
-    await slack.send("interactive", slack.button("openbot_accept", accept.value, "UMALLORY", approvalTs, "500.000"));
+    await slack.send("interactive", slack.button("aikingbot_accept", accept.value, "UMALLORY", approvalTs, "500.000"));
     await waitFor(() => slack.of("chat.postEphemeral").length === 1);
     expect(slack.of("chat.postEphemeral")[0]?.params).toMatchObject({ user: "UMALLORY" });
     expect(client.responses).toEqual([]);
 
-    await slack.send("interactive", slack.button("openbot_accept", accept.value, "UALICE", approvalTs, "500.000"));
+    await slack.send("interactive", slack.button("aikingbot_accept", accept.value, "UALICE", approvalTs, "500.000"));
     await waitFor(() => client.responses.some((response) => response.id === "slack-approval"));
     expect(client.responses.find((response) => response.id === "slack-approval")?.result).toEqual({
       decision: "accept",
@@ -716,7 +720,7 @@ describe.sequential("Slack messaging end to end", () => {
       params: {
         ...slackTurn,
         callId: "ask-research",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "send_message",
         arguments: { recipientAgentIds: [research.id], text: "Check the latest news." },
       },

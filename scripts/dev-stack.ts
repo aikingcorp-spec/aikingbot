@@ -7,7 +7,7 @@
 
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
+import { createAIKINGBOTLogger, redactText, toLogValue } from "@aikingbot/logging";
 import {
   type DevInstanceRecord,
   describeDevInstance,
@@ -30,7 +30,7 @@ import {
 } from "./dev-automation/stack-registry";
 import { type OwnedProcess, stopOwnedProcesses } from "./dev-services";
 
-const logger = createOpenBotLogger("dev-stack", (line) => process.stderr.write(`${line}\n`));
+const logger = createAIKINGBOTLogger("dev-stack", (line) => process.stderr.write(`${line}\n`));
 
 const USAGE = "Usage: bun scripts/dev-stack.ts <status|stop|forget> [--all] [--pid=<supervisor pid>]";
 
@@ -236,7 +236,7 @@ async function main(): Promise<void> {
   if (invocation.command === "status") {
     const document = {
       // The directory this command read, so a stack that is missing from the output can be traced to
-      // an `OPENBOT_DEV_REGISTRY_DIR` that differs between shells.
+      // an `AIKINGBOT_DEV_REGISTRY_DIR` that differs between shells.
       registryDirectory: redactText(devInstanceRegistryDirectory()),
       stacks: selectDevStacks(records, devStackScope(invocation, projectRoot)).map((record) =>
         reportableStack(record, projectRoot),

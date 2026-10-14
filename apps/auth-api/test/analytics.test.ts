@@ -1,4 +1,4 @@
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { getByRole } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -13,19 +13,19 @@ import {
   shouldEnableLandingAnalytics,
 } from "../src/lib/analytics";
 import { GUIDES_COLLECTION } from "../src/lib/guides";
-import { OPENBOT_LINKS } from "../src/lib/landing-links";
+import { AIKINGBOT_LINKS } from "../src/lib/landing-links";
 import { NEWS_COLLECTION } from "../src/lib/news";
 
 describe("landing analytics", () => {
   it("enables only the production landing hostname", () => {
-    expect(shouldEnableLandingAnalytics("openbot.run", true)).toBe(true);
+    expect(shouldEnableLandingAnalytics("aikingbot.aikingx.com", true)).toBe(true);
     expect(shouldEnableLandingAnalytics("localhost", true)).toBe(false);
-    expect(shouldEnableLandingAnalytics("openbot.run", false)).toBe(false);
+    expect(shouldEnableLandingAnalytics("aikingbot.aikingx.com", false)).toBe(false);
   });
 
   it("tracks only allowlisted links and download metadata", () => {
     document.body.innerHTML = `
-      <header class="landing-header"><a id="contact" href="${OPENBOT_LINKS.contact}">Contact</a></header>
+      <header class="landing-header"><a id="contact" href="${AIKINGBOT_LINKS.contact}">Contact</a></header>
       <section class="landing-download"><a id="mac" href="/download/macos/latest">Download</a></section>
       <a id="private" href="https://private.example/secret">Private</a>
     `;
@@ -37,7 +37,7 @@ describe("landing analytics", () => {
     const createClient = vi.fn((_options: unknown) => client);
     window.history.replaceState({}, "", "/?utm_source=Twitter&utm_medium=ad&utm_campaign=mutli");
     const analytics = new LandingAnalytics(createClient, true);
-    const cleanup = analytics.start(document, "openbot.run");
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com");
 
     clickWithoutNavigation("#contact");
     clickWithoutNavigation("#mac");
@@ -79,42 +79,45 @@ describe("landing analytics", () => {
   });
 
   it("reports only bounded, lowercase campaign tags in the screen path", () => {
-    expect(landingCampaignPath("/", "https://openbot.run/?utm_source=Twitter&utm_medium=ad&utm_campaign=mutli")).toBe(
-      "/?utm_source=twitter&utm_medium=ad&utm_campaign=mutli",
-    );
     expect(
-      landingCampaignPath("/", "https://openbot.run/?utm_source=Twitter&utm_medium=ad&utm_campaign=mutli_free"),
+      landingCampaignPath("/", "https://aikingbot.aikingx.com/?utm_source=Twitter&utm_medium=ad&utm_campaign=mutli"),
+    ).toBe("/?utm_source=twitter&utm_medium=ad&utm_campaign=mutli");
+    expect(
+      landingCampaignPath(
+        "/",
+        "https://aikingbot.aikingx.com/?utm_source=Twitter&utm_medium=ad&utm_campaign=mutli_free",
+      ),
     ).toBe("/?utm_source=twitter&utm_medium=ad&utm_campaign=mutli_free");
     // Key order follows the allowlist, not the link, so one campaign is one report row.
-    expect(landingCampaignPath("/", "https://openbot.run/?utm_campaign=mutli&utm_source=twitter")).toBe(
+    expect(landingCampaignPath("/", "https://aikingbot.aikingx.com/?utm_campaign=mutli&utm_source=twitter")).toBe(
       "/?utm_source=twitter&utm_campaign=mutli",
     );
-    expect(landingCampaignPath("/news", "https://openbot.run/news")).toBe("/news");
+    expect(landingCampaignPath("/news", "https://aikingbot.aikingx.com/news")).toBe("/news");
     expect(landingCampaignPath("/", "not a url")).toBe("/");
-    expect(landingCampaignPath("/", `https://openbot.run/?utm_term=${"a".repeat(65)}&utm_content=has%20space`)).toBe(
-      "/",
-    );
     expect(
-      landingCampaignPath("/join", "https://openbot.run/join?invite=private-token&utm_source=twitter#secret"),
+      landingCampaignPath("/", `https://aikingbot.aikingx.com/?utm_term=${"a".repeat(65)}&utm_content=has%20space`),
+    ).toBe("/");
+    expect(
+      landingCampaignPath("/join", "https://aikingbot.aikingx.com/join?invite=private-token&utm_source=twitter#secret"),
     ).toBe("/join?utm_source=twitter");
   });
 
   it("does not create a client outside production", () => {
     const createClient = vi.fn();
     const analytics = new LandingAnalytics(createClient, false);
-    analytics.start(document, "openbot.run");
+    analytics.start(document, "aikingbot.aikingx.com");
     expect(createClient).not.toHaveBeenCalled();
   });
 
   it("tracks the invitation page anonymously and removes its click listener", () => {
     document.body.innerHTML = `
-      <a id="open" href="openbot://join?invite=private">Open app</a>
+      <a id="open" href="aikingbot://join?invite=private">Open app</a>
       <a id="download" href="/download/macos/latest">Download</a>
     `;
     window.history.replaceState({}, "", "/join");
     const client = { setGlobalProperties: vi.fn(), track: vi.fn(), trackScreenView: vi.fn() };
     const analytics = new LandingAnalytics(() => client, true);
-    const cleanup = analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "macos" });
+    const cleanup = analytics.startJoin(document, "aikingbot.aikingx.com", { validInvite: true, platform: "macos" });
 
     document.querySelector<HTMLElement>("#open")?.click();
     document.querySelector<HTMLElement>("#download")?.click();
@@ -142,12 +145,12 @@ describe("landing analytics", () => {
   });
 
   it("replaces an existing document listener instead of double tracking clicks", () => {
-    document.body.innerHTML = '<a id="open" href="openbot://join">Open app</a>';
+    document.body.innerHTML = '<a id="open" href="aikingbot://join">Open app</a>';
     window.history.replaceState({}, "", "/join");
     const client = { setGlobalProperties: vi.fn(), track: vi.fn(), trackScreenView: vi.fn() };
     const analytics = new LandingAnalytics(() => client, true);
-    analytics.startJoin(document, "openbot.run", { validInvite: false, platform: "windows" });
-    const cleanup = analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "windows" });
+    analytics.startJoin(document, "aikingbot.aikingx.com", { validInvite: false, platform: "windows" });
+    const cleanup = analytics.startJoin(document, "aikingbot.aikingx.com", { validInvite: true, platform: "windows" });
 
     document.querySelector<HTMLElement>("#open")?.click();
     cleanup();
@@ -160,7 +163,10 @@ describe("landing analytics", () => {
     expect(client.trackScreenView).toHaveBeenCalledOnce();
 
     cleanup();
-    const remountCleanup = analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "windows" });
+    const remountCleanup = analytics.startJoin(document, "aikingbot.aikingx.com", {
+      validInvite: true,
+      platform: "windows",
+    });
     expect(client.trackScreenView).toHaveBeenCalledTimes(2);
     expect(client.trackScreenView).toHaveBeenLastCalledWith("/join");
     remountCleanup();
@@ -180,11 +186,14 @@ describe("landing analytics", () => {
     vi.stubGlobal("fetch", fetchMock);
     try {
       const analytics = new LandingAnalytics(undefined, true);
-      const cleanup = analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "macos" });
+      const cleanup = analytics.startJoin(document, "aikingbot.aikingx.com", { validInvite: true, platform: "macos" });
 
       await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
       cleanup();
-      const remountCleanup = analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "macos" });
+      const remountCleanup = analytics.startJoin(document, "aikingbot.aikingx.com", {
+        validInvite: true,
+        platform: "macos",
+      });
       remountCleanup();
       await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(4));
       const screenViewRequests = requests.filter(
@@ -210,7 +219,7 @@ describe("landing analytics", () => {
 
   it("derives only coarse acquisition sources and ignores automation", () => {
     window.history.replaceState({}, "", "/?utm_source=github");
-    expect(landingAttribution(document, "openbot.run")).toMatchObject({
+    expect(landingAttribution(document, "aikingbot.aikingx.com")).toMatchObject({
       acquisition_source: "github",
       source_platform: "github",
     });
@@ -222,15 +231,15 @@ describe("landing analytics", () => {
     ["https://l.instagram.com/private?token=secret#hidden", "https://l.instagram.com/"],
     ["https://user:password@t.co:8443/private?token=secret#hidden", "https://t.co/"],
     ["http://www.twitter.com/post/123", "https://www.twitter.com/"],
-    ["https://openbot.run/join?invite=secret", ""],
-    ["https://docs.openbot.run/private", ""],
-    ["https://openbot.run.example.org/path", "https://openbot.run.example.org/"],
+    ["https://aikingbot.aikingx.com/join?invite=secret", ""],
+    ["https://docs.aikingbot.aikingx.com/private", ""],
+    ["https://aikingbot.aikingx.com.example.org/path", "https://aikingbot.aikingx.com.example.org/"],
     ["", ""],
     ["invalid", ""],
     ["file:///private/secret", ""],
     ["javascript:alert(1)", ""],
   ])("keeps only an external web domain from %s", (referrer, expected) => {
-    expect(landingReferrer(referrer, "openbot.run")).toBe(expected);
+    expect(landingReferrer(referrer, "aikingbot.aikingx.com")).toBe(expected);
   });
 
   it.each([
@@ -251,17 +260,17 @@ describe("landing analytics", () => {
     ["secret-campaign", "https://www.reddit.com/", "reddit", "social"],
     ["secret-campaign", "", "unknown", "other"],
     ["", "", "unknown", "direct"],
-    ["", "https://openbot.run/", "unknown", "direct"],
+    ["", "https://aikingbot.aikingx.com/", "unknown", "direct"],
     ["", "https://twitter.com.evil.example/", "unknown", "other"],
     ["", "https://example.com/twitter?utm_source=instagram", "unknown", "other"],
   ])("classifies tag %s and referrer %s without sending raw campaign data", (tag, referrer, platform, category) => {
     window.history.replaceState({}, "", `/?utm_source=${encodeURIComponent(tag)}`);
     const referrerMock = vi.spyOn(document, "referrer", "get").mockReturnValue(referrer);
     try {
-      expect(landingAttribution(document, "openbot.run")).toEqual({
+      expect(landingAttribution(document, "aikingbot.aikingx.com")).toEqual({
         source_platform: platform,
         acquisition_source: category,
-        __referrer: landingReferrer(referrer, "openbot.run"),
+        __referrer: landingReferrer(referrer, "aikingbot.aikingx.com"),
       });
     } finally {
       referrerMock.mockRestore();
@@ -284,8 +293,8 @@ describe("landing analytics", () => {
       const analytics = new LandingAnalytics(undefined, true);
       cleanup =
         page === "join"
-          ? analytics.startJoin(document, "openbot.run", { validInvite: true, platform: "macos" })
-          : analytics.start(document, "openbot.run");
+          ? analytics.startJoin(document, "aikingbot.aikingx.com", { validInvite: true, platform: "macos" })
+          : analytics.start(document, "aikingbot.aikingx.com");
       await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
       document.body.innerHTML =
         '<section class="landing-download"><a href="/download/macos/latest">Download macOS</a></section>';
@@ -347,7 +356,7 @@ describe("landing analytics", () => {
     window.history.replaceState({}, "", `${screenPath}?utm_source=Twitter`);
     const client = { setGlobalProperties: vi.fn(), track: vi.fn(), trackScreenView: vi.fn() };
     const analytics = new LandingAnalytics(() => client, true);
-    const cleanup = analytics.start(document, "openbot.run", screenPath);
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com", screenPath);
 
     analytics.trackArticleRead({ collection: "guides", slug: article.slug }, "half");
     // A slug the registry does not publish must not reach the payload.
@@ -384,7 +393,7 @@ describe("landing analytics", () => {
     window.history.replaceState({}, "", "/news");
     const client = { setGlobalProperties: vi.fn(), track: vi.fn(), trackScreenView: vi.fn() };
     const analytics = new LandingAnalytics(() => client, true);
-    const cleanup = analytics.start(document, "openbot.run", "/news");
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com", "/news");
 
     clickWithoutNavigation("#card");
     clickWithoutNavigation("#related");
@@ -402,7 +411,7 @@ describe("landing analytics", () => {
     window.history.replaceState({}, "", "/");
     const client = { setGlobalProperties: vi.fn(), track: vi.fn(), trackScreenView: vi.fn() };
     const analytics = new LandingAnalytics(() => client, true);
-    const cleanup = analytics.start(document, "openbot.run");
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com");
 
     clickWithoutNavigation("#linux");
     cleanup();
@@ -422,7 +431,7 @@ describe("landing analytics", () => {
 
     // The hero detects its platform before the page component starts analytics.
     analytics.trackDownloadSelected("macos", true);
-    const cleanup = analytics.start(document, "openbot.run");
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com");
     analytics.trackDownloadSelected("linux", false);
     cleanup();
 
@@ -442,12 +451,12 @@ describe("landing analytics", () => {
 
     // The visitor reads an article, then follows the header link home. The client outlives that
     // navigation and still holds the article path, so the hero's detection must not be sent under it.
-    analytics.start(document, "openbot.run", `/news/${article.slug}`)();
+    analytics.start(document, "aikingbot.aikingx.com", `/news/${article.slug}`)();
     analytics.trackDownloadSelected("windows", true);
     expect(client.track.mock.calls.filter(([name]) => name === "landing_download_selected")).toEqual([]);
 
     window.history.replaceState({}, "", "/");
-    const cleanup = analytics.start(document, "openbot.run");
+    const cleanup = analytics.start(document, "aikingbot.aikingx.com");
     cleanup();
 
     expect(client.track.mock.calls.filter(([name]) => name === "landing_download_selected")).toEqual([
@@ -460,7 +469,7 @@ describe("landing analytics", () => {
       throw new Error("unavailable");
     }, true);
 
-    expect(() => analytics.start(document, "openbot.run")).not.toThrow();
+    expect(() => analytics.start(document, "aikingbot.aikingx.com")).not.toThrow();
   });
 });
 

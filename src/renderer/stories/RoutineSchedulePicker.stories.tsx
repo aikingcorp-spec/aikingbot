@@ -1,11 +1,11 @@
-import { Text } from "@openbot/ui";
-import { RoutineSchedulePicker } from "@openbot/ui/features/conversation/RoutineSchedulePicker";
+import { Text } from "@aikingbot/ui";
+import { RoutineSchedulePicker } from "@aikingbot/ui/features/conversation/RoutineSchedulePicker";
 import {
   ROUTINE_EVERY_DAY,
   ROUTINE_WORKDAYS,
   type RoutineScheduleDraft,
   routineDraftSummary,
-} from "@openbot/ui/features/conversation/routine-schedule-draft";
+} from "@aikingbot/ui/features/conversation/routine-schedule-draft";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -33,11 +33,11 @@ function PickerStage(props: PickerArgs) {
     <main
       style={{
         display: "grid",
-        gap: "var(--openbot-space-3)",
+        gap: "var(--aikingbot-space-3)",
         // 296px is the settings panel's default width.
         width: props.width === "panel" ? "296px" : "640px",
-        padding: "var(--openbot-space-4)",
-        background: "var(--openbot-bg-canvas)",
+        padding: "var(--aikingbot-space-4)",
+        background: "var(--aikingbot-bg-canvas)",
       }}
     >
       <RoutineSchedulePicker

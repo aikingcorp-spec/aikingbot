@@ -30,16 +30,16 @@ import { runCauseEffect } from "./effect-boundary";
 const originalAppData = process.env.APPDATA;
 const originalLocalAppData = process.env.LOCALAPPDATA;
 const originalPath = process.env.PATH;
-const originalOpencodePath = process.env.OPENBOT_OPENCODE_PATH;
-const originalGrokPath = process.env.OPENBOT_GROK_PATH;
+const originalOpencodePath = process.env.AIKINGBOT_OPENCODE_PATH;
+const originalGrokPath = process.env.AIKINGBOT_GROK_PATH;
 const temporaryPaths: string[] = [];
 
 afterEach(async () => {
   restoreEnvironment("APPDATA", originalAppData);
   restoreEnvironment("LOCALAPPDATA", originalLocalAppData);
   restoreEnvironment("PATH", originalPath);
-  restoreEnvironment("OPENBOT_GROK_PATH", originalGrokPath);
-  restoreEnvironment("OPENBOT_OPENCODE_PATH", originalOpencodePath);
+  restoreEnvironment("AIKINGBOT_GROK_PATH", originalGrokPath);
+  restoreEnvironment("AIKINGBOT_OPENCODE_PATH", originalOpencodePath);
   await Promise.all(temporaryPaths.splice(0).map((path) => rm(path, { recursive: true })));
 });
 
@@ -55,11 +55,11 @@ describe("Codex CLI version parsing", () => {
 
 describe("bundled Codex resolution", () => {
   it("resolves the packaged runtime path for supported targets", () => {
-    expect(bundledCodexExecutable("darwin", "arm64", "/Applications/OpenBot.app/Contents/Resources")).toBe(
-      "/Applications/OpenBot.app/Contents/Resources/codex/mac/arm64/bin/codex",
+    expect(bundledCodexExecutable("darwin", "arm64", "/Applications/AIKINGBOT.app/Contents/Resources")).toBe(
+      "/Applications/AIKINGBOT.app/Contents/Resources/codex/mac/arm64/bin/codex",
     );
-    expect(bundledCodexExecutable("win32", "x64", "C:\\Program Files\\OpenBot\\resources")).toBe(
-      "C:\\Program Files\\OpenBot\\resources\\codex\\win\\x64\\bin\\codex.exe",
+    expect(bundledCodexExecutable("win32", "x64", "C:\\Program Files\\AIKINGBOT\\resources")).toBe(
+      "C:\\Program Files\\AIKINGBOT\\resources\\codex\\win\\x64\\bin\\codex.exe",
     );
     expect(bundledCodexExecutable("linux", "x64", "/resources")).toBe("/resources/codex/linux/x64/bin/codex");
     expect(bundledCodexExecutable("linux", "arm64", "/resources")).toBe("/resources/codex/linux/arm64/bin/codex");
@@ -116,11 +116,11 @@ describe("Claude CLI version parsing", () => {
 
 describe("bundled Claude resolution", () => {
   it("resolves the packaged runtime path for supported targets", () => {
-    expect(bundledClaudeExecutable("darwin", "arm64", "/Applications/OpenBot.app/Contents/Resources")).toBe(
-      "/Applications/OpenBot.app/Contents/Resources/claude/mac/arm64/bin/claude",
+    expect(bundledClaudeExecutable("darwin", "arm64", "/Applications/AIKINGBOT.app/Contents/Resources")).toBe(
+      "/Applications/AIKINGBOT.app/Contents/Resources/claude/mac/arm64/bin/claude",
     );
-    expect(bundledClaudeExecutable("win32", "x64", "C:\\Program Files\\OpenBot\\resources")).toBe(
-      "C:\\Program Files\\OpenBot\\resources\\claude\\win\\x64\\bin\\claude.exe",
+    expect(bundledClaudeExecutable("win32", "x64", "C:\\Program Files\\AIKINGBOT\\resources")).toBe(
+      "C:\\Program Files\\AIKINGBOT\\resources\\claude\\win\\x64\\bin\\claude.exe",
     );
     expect(bundledClaudeExecutable("linux", "x64", "/resources")).toBe("/resources/claude/linux/x64/bin/claude");
   });
@@ -171,7 +171,7 @@ describe("login shell discovery", () => {
   });
 
   it.runIf(process.platform !== "win32")("runs the shell in a process group of its own", async () => {
-    // An interactive bash in OpenBot's group stops the whole group with SIGTTIN when another
+    // An interactive bash in AIKINGBOT's group stops the whole group with SIGTTIN when another
     // lookup holds the terminal (#766).
     const shell = { command: "/bin/sh", args: ["-c"] };
     const [pid, group] = (await runCauseEffect(runInLoginShell('echo "$$ $(ps -o pgid= -p $$)"', shell)))
@@ -209,22 +209,22 @@ describe("bundled Grok CLI resolution", () => {
   });
 
   it("resolves the packaged runtime path for supported targets", () => {
-    expect(bundledGrokExecutable("darwin", "arm64", "/Applications/OpenBot.app/Contents/Resources")).toBe(
-      "/Applications/OpenBot.app/Contents/Resources/grok/mac/arm64/bin/grok",
+    expect(bundledGrokExecutable("darwin", "arm64", "/Applications/AIKINGBOT.app/Contents/Resources")).toBe(
+      "/Applications/AIKINGBOT.app/Contents/Resources/grok/mac/arm64/bin/grok",
     );
-    expect(bundledGrokExecutable("win32", "x64", "C:\\Program Files\\OpenBot\\resources")).toBe(
-      "C:\\Program Files\\OpenBot\\resources\\grok\\win\\x64\\bin\\grok.exe",
+    expect(bundledGrokExecutable("win32", "x64", "C:\\Program Files\\AIKINGBOT\\resources")).toBe(
+      "C:\\Program Files\\AIKINGBOT\\resources\\grok\\win\\x64\\bin\\grok.exe",
     );
     expect(bundledGrokExecutable("linux", "x64", "/resources")).toBe("/resources/grok/linux/x64/bin/grok");
   });
 
-  it.runIf(process.platform !== "win32")("honors OPENBOT_GROK_PATH and probes --version", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-grok-cli-test-"));
+  it.runIf(process.platform !== "win32")("honors AIKINGBOT_GROK_PATH and probes --version", async () => {
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-grok-cli-test-"));
     temporaryPaths.push(root);
     const executable = join(root, "grok");
     await writeFile(executable, "#!/bin/sh\nprintf 'grok 1.0.5\\n'\n");
     await chmod(executable, 0o700);
-    process.env.OPENBOT_GROK_PATH = executable;
+    process.env.AIKINGBOT_GROK_PATH = executable;
 
     await expect(runCauseEffect(resolveGrokCli({ bundledExecutable: null }))).resolves.toEqual({
       executable,
@@ -234,7 +234,7 @@ describe("bundled Grok CLI resolution", () => {
   });
 
   it("does not fabricate an installed Grok CLI when the configured executable is missing", async () => {
-    process.env.OPENBOT_GROK_PATH = join(tmpdir(), `missing-grok-${Date.now()}`);
+    process.env.AIKINGBOT_GROK_PATH = join(tmpdir(), `missing-grok-${Date.now()}`);
     await expect(runCauseEffect(resolveGrokCli({ bundledExecutable: null }))).rejects.toMatchObject({
       code: "missing",
     });
@@ -259,7 +259,7 @@ describe("managed CLI selection", () => {
   it.runIf(process.platform !== "win32")("keeps explicit overrides ahead of a managed CLI", async () => {
     const system = await createExecutable("system-grok", "grok 1.0.5");
     const managed = await createExecutable("managed-grok", "grok 1.0.22");
-    process.env.OPENBOT_GROK_PATH = system;
+    process.env.AIKINGBOT_GROK_PATH = system;
     await expect(runCauseEffect(resolveGrokCli({ bundledExecutable: managed }))).resolves.toMatchObject({
       executable: system,
       source: "system",
@@ -300,7 +300,7 @@ describe("Windows CLI fallback paths", () => {
   });
 
   it.runIf(process.platform === "win32")("reports a CLI that exists but cannot start", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-cli-test-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-cli-test-"));
     temporaryPaths.push(root);
     const appData = join(root, "User Name", "AppData", "Roaming");
     await mkdir(join(appData, "npm"), { recursive: true });
@@ -318,7 +318,7 @@ describe("CLI spawn target", () => {
   it("starts a Windows executable whose path contains a space", () => {
     // A managed CLI lives under `userData`. Through `cmd.exe` the unquoted path splits at the space
     // and the downloaded CLI never connects, so a native executable must start with no shell.
-    const executable = "C:\\Users\\Jane Doe\\AppData\\Roaming\\OpenBot Dev\\provider-runtimes\\opencode.exe";
+    const executable = "C:\\Users\\Jane Doe\\AppData\\Roaming\\AIKINGBOT Dev\\provider-runtimes\\opencode.exe";
 
     expect(cliSpawnTarget(executable, ["acp"], "win32")).toEqual({
       command: executable,
@@ -356,7 +356,7 @@ describe("CLI spawn target", () => {
 });
 
 async function createWindowsNpmShims(): Promise<void> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-cli-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-cli-test-"));
   temporaryPaths.push(root);
   const appData = join(root, "User Name", "AppData", "Roaming");
   const npmDirectory = join(appData, "npm");
@@ -369,7 +369,7 @@ async function createWindowsNpmShims(): Promise<void> {
 }
 
 async function createExecutable(name: string, versionOutput: string): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-cli-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-cli-test-"));
   temporaryPaths.push(root);
   const path = join(root, name);
   await writeFile(path, `#!/bin/sh\nprintf '%s\\n' '${versionOutput}'\n`);
@@ -406,24 +406,24 @@ describe("OpenCode CLI version parsing", () => {
 
 describe("OpenCode CLI resolution", () => {
   it("resolves the managed runtime path for supported targets", () => {
-    expect(bundledOpencodeExecutable("darwin", "arm64", "/Applications/OpenBot.app/Contents/Resources")).toBe(
-      "/Applications/OpenBot.app/Contents/Resources/opencode/mac/arm64/bin/opencode",
+    expect(bundledOpencodeExecutable("darwin", "arm64", "/Applications/AIKINGBOT.app/Contents/Resources")).toBe(
+      "/Applications/AIKINGBOT.app/Contents/Resources/opencode/mac/arm64/bin/opencode",
     );
     expect(bundledOpencodeExecutable("linux", "x64", "/resources")).toBe("/resources/opencode/linux/x64/bin/opencode");
   });
 
   it.runIf(process.platform !== "win32")("uses the installed CLI and reports a missing override", async () => {
     const executable = await createExecutable("opencode", "1.3.13");
-    process.env.OPENBOT_OPENCODE_PATH = executable;
+    process.env.AIKINGBOT_OPENCODE_PATH = executable;
     await expect(runCauseEffect(resolveOpencodeCli())).resolves.toEqual({
       executable,
       version: "1.3.13",
       source: "system",
     });
-    process.env.OPENBOT_OPENCODE_PATH = join(executable, "missing");
+    process.env.AIKINGBOT_OPENCODE_PATH = join(executable, "missing");
     await expect(runCauseEffect(resolveOpencodeCli())).rejects.toMatchObject({
       code: "missing",
-      message: "OpenCode is not downloaded. Download it in OpenBot to continue.",
+      message: "OpenCode is not downloaded. Download it in AIKINGBOT to continue.",
     });
   });
 
@@ -455,7 +455,7 @@ describe("OpenCode CLI resolution", () => {
   it.runIf(process.platform !== "win32")("lets the path override win over the managed runtime", async () => {
     const override = await createExecutable("opencode", "1.3.13");
     const managed = await createExecutable("opencode", "1.18.30");
-    process.env.OPENBOT_OPENCODE_PATH = override;
+    process.env.AIKINGBOT_OPENCODE_PATH = override;
     await expect(runCauseEffect(resolveOpencodeCli({ bundledExecutable: managed }))).resolves.toEqual({
       executable: override,
       version: "1.3.13",

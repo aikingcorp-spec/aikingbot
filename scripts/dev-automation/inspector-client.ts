@@ -8,7 +8,7 @@
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
-import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 import WebSocket from "ws";
 
 const BYTES_PER_MB = 1_024 * 1_024;

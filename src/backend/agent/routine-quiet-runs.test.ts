@@ -3,7 +3,7 @@ import {
   type ConversationMessage,
   type ConversationSnapshot,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { isNoUpdateAnswer, ROUTINE_NO_UPDATE_MARKER, settleQuietRoutineTurn } from "./routine-quiet-runs";
 

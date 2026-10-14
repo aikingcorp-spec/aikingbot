@@ -1,9 +1,9 @@
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 
-const logger = createOpenBotLogger("deploy-auth-api");
+const logger = createAIKINGBOTLogger("deploy-auth-api");
 
 const scriptsRoot = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(scriptsRoot, "..");
@@ -32,7 +32,7 @@ async function main(): Promise<void> {
   await putOptionalSecretSet("BOAT_API_KEY", "BOAT_WEBHOOK_SECRET");
   // Production releases own the template. Test deployments keep their separate setting.
   if (cloudflareEnvironment === "test") await putOptionalSecret("HOSTED_SERVER_TEMPLATE");
-  // Without the key, agents act on GitHub as the signed-in user and not as the OpenBot GitHub App.
+  // Without the key, agents act on GitHub as the signed-in user and not as the AIKINGBOT GitHub App.
   await putOptionalSecret("GITHUB_APP_PRIVATE_KEY");
   // Slack is optional: without these, the Slack routes answer 503 slack_not_configured. The test
   // Worker takes the development app's values from the .env.dev file.

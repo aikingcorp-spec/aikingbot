@@ -1,11 +1,11 @@
-import { Blocks, HardDrive, Monitor, Settings, Tabs, UsersRound } from "@openbot/ui";
-import { SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
-import AgentSettingsPanel from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { AgentFilesView, agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
-import { ConversationFilesPanel } from "@openbot/ui/features/files/ConversationFilesPanel";
-import { FileList } from "@openbot/ui/features/files/FileList";
-import { StorageOverview } from "@openbot/ui/features/files/StorageOverview";
-import { SettingsDialogShell } from "@openbot/ui/features/settings/SettingsDialogShell";
+import { Blocks, HardDrive, Monitor, Settings, Tabs, UsersRound } from "@aikingbot/ui";
+import { SettingsLinkGroup, SettingsLinkRow } from "@aikingbot/ui/components/SettingsPanel";
+import AgentSettingsPanel from "@aikingbot/ui/features/conversation/AgentSettingsPanel";
+import { AgentFilesView, agentFilesLinkValue } from "@aikingbot/ui/features/files/AgentFilesView";
+import { ConversationFilesPanel } from "@aikingbot/ui/features/files/ConversationFilesPanel";
+import { FileList } from "@aikingbot/ui/features/files/FileList";
+import { StorageOverview } from "@aikingbot/ui/features/files/StorageOverview";
+import { SettingsDialogShell } from "@aikingbot/ui/features/settings/SettingsDialogShell";
 import { createSignal, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -118,7 +118,7 @@ export const StorageError: Story = {
       args={{
         ...overviewArgs(),
         state: "error",
-        error: "OpenBot could not read ~/OpenBot/Agents. Check the folder permissions and try again.",
+        error: "AIKINGBOT could not read ~/AIKINGBOT/Agents. Check the folder permissions and try again.",
         scannedAt: null,
         breakdown: [],
         agentUsage: [],
@@ -389,6 +389,6 @@ export const ListLoading: Story = {
 export const ListError: Story = {
   name: "File list: Error",
   render: () => (
-    <ListStage error="The attachment index is not available. Restart OpenBot and try again." onRetry={fn()} />
+    <ListStage error="The attachment index is not available. Restart AIKINGBOT and try again." onRetry={fn()} />
   ),
 };

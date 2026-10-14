@@ -34,7 +34,7 @@ export const messages = {
   "mobile.browser.status.offline": "サーバーに接続されていません。",
   "mobile.browser.status.noTab": "{name} には開いているブラウザタブがありません。",
   "mobile.browser.status.unsupported":
-    "このサーバーはスマートフォンにブラウザを表示できません。このサーバーの OpenBot をアップデートしてください。",
+    "このサーバーはスマートフォンにブラウザを表示できません。このサーバーの AIKINGBOT をアップデートしてください。",
   "mobile.browser.status.off": "このバージョンのアプリではブラウザを使用できません。",
   "mobile.browser.notice.copied": "スマートフォンにコピーしました。",
   "mobile.browser.notice.nothingSelected": "ページで何も選択されていません。",

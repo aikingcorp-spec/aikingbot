@@ -19,7 +19,7 @@ export class RemoteRequest extends Context.Service<
       init?: RemoteRequestInit,
     ): Effect.Effect<T, RemoteWorkflowError>;
   }
->()("openbot/main/RemoteRequest") {
+>()("aikingbot/main/RemoteRequest") {
   static layer(request: RemoteRequestFn) {
     return Layer.succeed(
       RemoteRequest,

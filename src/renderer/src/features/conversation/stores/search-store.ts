@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createEffect, onCleanup } from "solid-js";
 import type { ChatSearchMatch } from "../chat-search";
 import { clearChatSearchHighlights, findChatSearchMatches, renderChatSearchHighlights } from "../chat-search";

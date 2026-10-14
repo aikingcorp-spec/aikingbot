@@ -2,6 +2,10 @@ import { execFile } from "node:child_process";
 import { randomUUID, type UUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { promisify } from "node:util";
+import { defaultProviderModel } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import {
   type CanUseTool,
   createSdkMcpServer,
@@ -14,10 +18,6 @@ import {
   tool,
 } from "@anthropic-ai/claude-agent-sdk";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import { defaultProviderModel } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import { isMemoryContextBlock, type MemoryContext, memoryContextUpdate } from "./agent/developer-instructions";
 import {
@@ -139,7 +139,7 @@ interface ActiveTurn {
    * message that only states the limit, so its text is held here and not published as the answer.
    */
   usageLimit: { resetsAt: number | null; text: string | null } | null;
-  /** The CLI started this turn itself, with no message from OpenBot, such as after a background task ended. */
+  /** The CLI started this turn itself, with no message from AIKINGBOT, such as after a background task ended. */
   unprompted: boolean;
 }
 
@@ -157,7 +157,7 @@ interface ThreadRuntime {
   consume: Fiber.Fiber<void, ProviderClientOperationError> | null;
   idleRelease: ReturnType<typeof setTimeout> | null;
   idleSince: number;
-  /** The plan Claude keeps with its todo and task tools, which OpenBot shows as a task list. */
+  /** The plan Claude keeps with its todo and task tools, which AIKINGBOT shows as a task list. */
   plan: ClaudePlanState;
   /** Background subagents and commands that outlive their turn. Stopping the process ends them (#1870). */
   backgroundTasks: number;
@@ -217,7 +217,7 @@ type QueryFactory = (params: Parameters<typeof query>[0]) => ClaudeQuery;
 type SessionHistoryReader = (sessionId: string, options?: { dir?: string }) => Promise<SessionMessage[]>;
 type ClaudeEffortCapability = { supported: ClaudeEffort[]; defaultEffort: ClaudeEffort } | null;
 
-const queryLogger = createOpenBotLogger("claude-query");
+const queryLogger = createAIKINGBOTLogger("claude-query");
 
 export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
   readonly contextCompaction = "native";
@@ -233,7 +233,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
   readonly #mcpAuthorization: McpAuthorizationSource | undefined;
   /** Where a Workspace only query keeps its skill plugin. Without it, such a query has no workspace skills. */
   readonly #stateDirectory: string | undefined;
-  /** Read at each session start, so a GitHub connection made while OpenBot runs reaches the next session. */
+  /** Read at each session start, so a GitHub connection made while AIKINGBOT runs reaches the next session. */
   readonly #agentEnvironment: ((inherited?: NodeJS.ProcessEnv) => Readonly<Record<string, string>>) | undefined;
   readonly readHistory: ReadProviderHistory;
   /** Threads whose process was closed for being idle keep the config that resumes them. */
@@ -251,7 +251,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
   readonly #modelEffortCapabilities = new Map<string, ClaudeEffortCapability>();
   readonly #modelSdkValues = new Map<string, string>();
   /**
-   * Each thread's essential memories: the latest that OpenBot gave, and the last that a turn sent.
+   * Each thread's essential memories: the latest that AIKINGBOT gave, and the last that a turn sent.
    * They go with the turns, not in the system prompt, so a memory change keeps the cached prefix
    * and restarts no query. Kept by thread, not by query: a restarted or reopened query resumes a
    * conversation that already holds the memories it was sent.
@@ -468,7 +468,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
       mcpServers: {},
       strictMcpConfig: true,
       persistSession: false,
-      env: { ...claudeEnvironment(this.#cli), CLAUDE_AGENT_SDK_CLIENT_APP: "openbot/0.1.0" },
+      env: { ...claudeEnvironment(this.#cli), CLAUDE_AGENT_SDK_CLIENT_APP: "aikingbot/0.1.0" },
     };
   }
 
@@ -701,7 +701,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
           return yield* this.#requestUserInputEffect(threadId, toolInput, options.toolUseID ?? randomUUID());
         }),
       );
-    // OpenBot's own servers spread last: Claude keys this record by name, so a user configuration
+    // AIKINGBOT's own servers spread last: Claude keys this record by name, so a user configuration
     // that reached one of those names would take the agent's own tools away. Profile generation
     // asks one question and must not act, so it gets neither set.
     const handoff = config.profileGeneration
@@ -719,7 +719,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
     // `stop()` may have run during the await: a query created now would outlive the client.
     if (!this.#running) return yield* providerFailure(new Error("Claude Agent SDK is not running."));
     if (handoff) this.#reportMcpDrops?.(this.provider, handoff.dropped);
-    const mcpServers = handoff ? { ...handoff.servers, ...this.#createOpenBotServers(threadId) } : {};
+    const mcpServers = handoff ? { ...handoff.servers, ...this.#createAIKINGBOTServers(threadId) } : {};
     const claudeQuery = yield* providerSync(() =>
       this.#createQuery({
         prompt: input,
@@ -750,7 +750,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
               : ["user", "project", "local"],
           // The MCP panel is the only door. Without this, Claude merges project `.mcp.json`, user
           // settings, plugin and agent-frontmatter servers into the record above, so two computers
-          // with the same OpenBot settings give their agents different tools and "which servers does
+          // with the same AIKINGBOT settings give their agents different tools and "which servers does
           // my agent have" has no answer. The flag takes away MCP and nothing else, so permissions and
           // hooks still load from those files. Workspace only loads the user settings alone: see
           // `claude-workspace-sandbox.ts`.
@@ -772,9 +772,9 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
           env: {
             ...claudeEnvironment(this.#cli),
             ...this.#agentEnvironment?.(),
-            CLAUDE_AGENT_SDK_CLIENT_APP: "openbot/0.1.0",
+            CLAUDE_AGENT_SDK_CLIENT_APP: "aikingbot/0.1.0",
             // Without a terminal, the CLI gives the newer models no TodoWrite or task tools, so the
-            // agent has no plan for OpenBot to show as a task list.
+            // agent has no plan for AIKINGBOT to show as a task list.
             CLAUDE_CODE_ENABLE_TODO_TOOLS: "1",
           },
         },
@@ -1002,7 +1002,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
               : null;
       if (status) runtime.compacting = status === "running";
       if (status)
-        this.emit("notification", { method: "openbot/context-compaction", params: { threadId: runtime.id, status } });
+        this.emit("notification", { method: "aikingbot/context-compaction", params: { threadId: runtime.id, status } });
       return;
     }
     if (message.type === "system" && message.subtype === "background_tasks_changed") {
@@ -1024,7 +1024,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
       if (memory) memory.delivered = null;
       // Claude's post_tokens counts messages only, not the full context.
       this.emit("notification", {
-        method: "openbot/context-compaction",
+        method: "aikingbot/context-compaction",
         params: {
           threadId: runtime.id,
           status: "completed",
@@ -1139,7 +1139,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
       runtime.usageCost = message.total_cost_usd ?? runtime.usageCost;
     if (runtime.activeTurn && message.modelUsage)
       this.emit("notification", {
-        method: "openbot/usage",
+        method: "aikingbot/usage",
         params: {
           threadId: runtime.id,
           turnId: runtime.activeTurn.id,
@@ -1390,7 +1390,7 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
     if (runtime.compacting && status !== "completed") {
       runtime.compacting = false;
       this.emit("notification", {
-        method: "openbot/context-compaction",
+        method: "aikingbot/context-compaction",
         params: { threadId: runtime.id, status: "failed" },
       });
     }
@@ -1557,17 +1557,17 @@ export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
     return { thread: { id: threadId, turns } };
   });
 
-  #createOpenBotServers(threadId: string) {
+  #createAIKINGBOTServers(threadId: string) {
     const call = (namespace: string, name: string, args: unknown) =>
       runCauseEffect(this.#callDynamicTool(threadId, namespace, name, args));
     return {
-      openbot: createSdkMcpServer({
-        name: "openbot",
+      aikingbot: createSdkMcpServer({
+        name: "aikingbot",
         version: "0.1.0",
         // Claude uses the SDK's AskUserQuestion permission flow.
         tools: VISIBLE_TOOL_DEFINITIONS.filter((definition) => definition.name !== "ask_user").map((definition) =>
           tool(definition.name, definition.description, definition.shape, (args) =>
-            call("openbot", definition.name, args),
+            call("aikingbot", definition.name, args),
           ),
         ),
       }),
@@ -1831,7 +1831,7 @@ function messageText(message: unknown): string {
       (block) =>
         block.type === "text" &&
         isString(block.text) &&
-        // OpenBot's memory block is not text that the user wrote.
+        // AIKINGBOT's memory block is not text that the user wrote.
         !(message.role === "user" && isMemoryContextBlock(block.text)),
     )
     .map((block) => block.text)

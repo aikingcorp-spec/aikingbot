@@ -1,4 +1,4 @@
-import type { BrowserTab } from "@openbot/contracts/ipc";
+import type { BrowserTab } from "@aikingbot/contracts/ipc";
 import { createRoot, createSignal, flush } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
 import { testConversationProps } from "../conversation-test-props";

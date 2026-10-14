@@ -1,4 +1,4 @@
-import { chatMathStart, inlineChatMath } from "@openbot/contracts/chat-math";
+import { chatMathStart, inlineChatMath } from "@aikingbot/contracts/chat-math";
 
 /**
  * A message as one line of inline Markdown for the Live Activity. SwiftUI shows only inline

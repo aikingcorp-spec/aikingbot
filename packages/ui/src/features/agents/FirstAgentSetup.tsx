@@ -1,5 +1,5 @@
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { agentProviderDescriptor } from "@aikingbot/contracts/agent-providers";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentModelId,
   AgentModelOption,
@@ -9,8 +9,8 @@ import type {
   CustomAgentSummary,
   CustomProviderSummary,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
-import { Button, Field, Input, Textarea } from "@openbot/ui";
+} from "@aikingbot/contracts/ipc";
+import { Button, Field, Input, Textarea } from "@aikingbot/ui";
 import { createSignal, For, onSettled, Show } from "solid-js";
 import { AVATAR_HUE_CHOICES, avatarCandidateSeeds, avatarHeadColor, avatarHueSwatch } from "../../bloub-avatar";
 import { ProviderModelPicker } from "../../components/ProviderModelPicker";

@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What the updates context reaches in main: the app update status, its check, download and
@@ -6,7 +6,7 @@ import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
  */
 export interface UpdatesPort {
   update: Pick<
-    OpenBotDesktopApi["update"],
+    AIKINGBOTDesktopApi["update"],
     | "check"
     | "download"
     | "getStatus"
@@ -18,7 +18,7 @@ export interface UpdatesPort {
   >;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function updatesPort(): UpdatesPort {
-  return window.openbot;
+  return window.aikingbot;
 }

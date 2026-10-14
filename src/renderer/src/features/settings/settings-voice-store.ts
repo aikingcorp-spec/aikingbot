@@ -4,9 +4,9 @@ import {
   type VoiceModelId,
   type VoiceModelStatus,
   type VoiceSettings,
-} from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { toast } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createStore } from "solid-js";
 import { voicePort } from "./voice-port";
 

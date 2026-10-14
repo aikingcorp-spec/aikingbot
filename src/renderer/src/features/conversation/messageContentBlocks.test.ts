@@ -1,4 +1,4 @@
-import { messageContentBlocks } from "@openbot/ui/features/conversation/DataTable";
+import { messageContentBlocks } from "@aikingbot/ui/features/conversation/DataTable";
 import { describe, expect, it } from "vitest";
 
 describe("messageContentBlocks", () => {

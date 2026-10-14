@@ -85,7 +85,7 @@ export function SettingsRow({
   /** For a row that shows or hides the rows below it. */
   expanded?: boolean;
 }>) {
-  const muted = String(useCSSVariable("--openbot-text-grouped-secondary"));
+  const muted = String(useCSSVariable("--aikingbot-text-grouped-secondary"));
   const content = (
     <>
       {leading}

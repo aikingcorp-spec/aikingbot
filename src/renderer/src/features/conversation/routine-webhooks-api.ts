@@ -8,8 +8,8 @@ import type {
   SaveEventRoutineInput,
   SaveEventRoutineResult,
   WebhookSecret,
-} from "@openbot/contracts/ipc-events";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@aikingbot/contracts/ipc-events";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   deleteEventRoutine,
   getEventStatus,
@@ -18,8 +18,8 @@ import {
   rotateEventRoutineSecret,
   saveEventRoutine,
   testEventRoutine,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@aikingbot/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
 import { Effect } from "effect";
 
 /** The webhook operations of one host that the routine editor uses. Every action names its routine. */
@@ -39,7 +39,7 @@ export interface EventRoutinesApi extends RoutineWebhooksApi {
 
 /** The desktop adapter for the server-scoped `events` group. */
 export function desktopEventRoutinesApi(serverId: string): EventRoutinesApi {
-  const events = window.openbot.events;
+  const events = window.aikingbot.events;
   return {
     getStatus: () => events.getStatus(serverId),
     listRoutines: (input) => events.listRoutines(input, serverId),

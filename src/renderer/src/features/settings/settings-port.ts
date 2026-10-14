@@ -1,31 +1,34 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What the settings context reaches in main: the app-wide preferences and the switches for
  * updates, notifications and the Dynamic Island.
  */
 export interface SettingsPort {
-  getAgentMemoryLimitPreference: OpenBotDesktopApi["getAgentMemoryLimitPreference"];
-  getAnalyticsPreference: OpenBotDesktopApi["getAnalyticsPreference"];
-  getApprovalAutomation: OpenBotDesktopApi["getApprovalAutomation"];
-  getBusyMessageModePreference: OpenBotDesktopApi["getBusyMessageModePreference"];
-  getRemoteSessionReusePreference: OpenBotDesktopApi["getRemoteSessionReusePreference"];
-  onApprovalAutomation: OpenBotDesktopApi["onApprovalAutomation"];
-  onOpenSettings: OpenBotDesktopApi["onOpenSettings"];
-  setAgentMemoryLimitPreference: OpenBotDesktopApi["setAgentMemoryLimitPreference"];
-  setAnalyticsPreference: OpenBotDesktopApi["setAnalyticsPreference"];
-  setApprovalAutomation: OpenBotDesktopApi["setApprovalAutomation"];
-  setBusyMessageModePreference: OpenBotDesktopApi["setBusyMessageModePreference"];
-  setRemoteSessionReusePreference: OpenBotDesktopApi["setRemoteSessionReusePreference"];
+  getAgentMemoryLimitPreference: AIKINGBOTDesktopApi["getAgentMemoryLimitPreference"];
+  getAnalyticsPreference: AIKINGBOTDesktopApi["getAnalyticsPreference"];
+  getApprovalAutomation: AIKINGBOTDesktopApi["getApprovalAutomation"];
+  getBusyMessageModePreference: AIKINGBOTDesktopApi["getBusyMessageModePreference"];
+  getRemoteSessionReusePreference: AIKINGBOTDesktopApi["getRemoteSessionReusePreference"];
+  onApprovalAutomation: AIKINGBOTDesktopApi["onApprovalAutomation"];
+  onOpenSettings: AIKINGBOTDesktopApi["onOpenSettings"];
+  setAgentMemoryLimitPreference: AIKINGBOTDesktopApi["setAgentMemoryLimitPreference"];
+  setAnalyticsPreference: AIKINGBOTDesktopApi["setAnalyticsPreference"];
+  setApprovalAutomation: AIKINGBOTDesktopApi["setApprovalAutomation"];
+  setBusyMessageModePreference: AIKINGBOTDesktopApi["setBusyMessageModePreference"];
+  setRemoteSessionReusePreference: AIKINGBOTDesktopApi["setRemoteSessionReusePreference"];
   dynamicIsland: Pick<
-    OpenBotDesktopApi["dynamicIsland"],
+    AIKINGBOTDesktopApi["dynamicIsland"],
     "getBuiltInDisplayGeometry" | "getPreference" | "setPreference"
   >;
-  notifications: Pick<OpenBotDesktopApi["notifications"], "getPreference" | "openSettings" | "setPreference" | "test">;
-  update: Pick<OpenBotDesktopApi["update"], "getPreference" | "onPreference" | "setPreference">;
+  notifications: Pick<
+    AIKINGBOTDesktopApi["notifications"],
+    "getPreference" | "openSettings" | "setPreference" | "test"
+  >;
+  update: Pick<AIKINGBOTDesktopApi["update"], "getPreference" | "onPreference" | "setPreference">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function settingsPort(): SettingsPort {
-  return window.openbot;
+  return window.aikingbot;
 }

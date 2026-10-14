@@ -3,12 +3,12 @@ import {
   decodeBrowserViewInput,
   encodeBrowserViewCopied,
   encodeBrowserViewFrame,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import {
   decodeRemoteDesktopSignalControl,
   encodeRemoteDesktopSignalBinary,
   encodeRemoteDesktopSignalControl,
-} from "@openbot/contracts/team-protocol/remote-stream-v1";
+} from "@aikingbot/contracts/team-protocol/remote-stream-v1";
 import { assert, describe, expect, it, vi } from "vitest";
 import { createRemoteBrowserView } from "./browser-view";
 import { runTeamEffect } from "./effect-boundary";

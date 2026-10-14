@@ -5,8 +5,8 @@ import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { request } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { registerSecretValue } from "@openbot/logging";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { registerSecretValue } from "@aikingbot/logging";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AUTOMATION_HEADERS_FILE, AUTOMATION_TOKEN_FILE, AUTOMATION_URL_FILE } from "../backend/automation-command";
 import { AUTOMATION_RUNS_PER_HOUR, AutomationServer, type AutomationServerOptions } from "./automation-server";
@@ -27,7 +27,7 @@ afterEach(async () => {
 });
 
 async function startServer(overrides: Partial<AutomationServerOptions> = {}) {
-  const root = join(await mkdtemp(join(tmpdir(), "openbot-automation-")), "automation");
+  const root = join(await mkdtemp(join(tmpdir(), "aikingbot-automation-")), "automation");
   roots.push(join(root, ".."));
   const agents: { id: string; name: string; allowAutomation?: boolean }[] = [
     { id: "agent-1", name: "Ada", allowAutomation: true },
@@ -140,19 +140,19 @@ describe("AutomationServer", () => {
         prompts: [
           {
             requestId: "public",
-            requiresOpenBot: false,
+            requiresAIKINGBOT: false,
             questions: [{ id: "q", header: "Question", question: `Use ${secret}?`, isSecret: false, options: null }],
           },
           {
             requestId: "private",
-            requiresOpenBot: true,
+            requiresAIKINGBOT: true,
             questions: [
               { id: "q", header: "Secret", question: "unregistered-private-value", isSecret: true, options: null },
             ],
           },
         ],
         approvals: [],
-        browserTakeovers: [{ requestId: "browser", requiresOpenBot: true }],
+        browserTakeovers: [{ requestId: "browser", requiresAIKINGBOT: true }],
       }),
     });
     const reply = await send(url, "/v1/agents/agent-1/pending", { headers: { authorization: `Bearer ${token}` } });
@@ -160,7 +160,7 @@ describe("AutomationServer", () => {
     expect(JSON.stringify(reply.body)).not.toContain(secret);
     expect(JSON.stringify(reply.body)).not.toContain("unregistered-private-value");
     expect(reply.body).toMatchObject({
-      prompts: [{ requestId: "public" }, { requestId: "private", questions: [], requiresOpenBot: true }],
+      prompts: [{ requestId: "public" }, { requestId: "private", questions: [], requiresAIKINGBOT: true }],
     });
   });
 

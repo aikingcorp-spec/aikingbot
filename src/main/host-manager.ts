@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { join } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Deferred, Effect, Result, Schema } from "effect";
 import type { HostManagerConfig, HostTenantStatus, HostUpdateState } from "../../packages/contracts/src/host-manager";
 import { causeHelpers } from "../backend/effect-boundary";
@@ -40,7 +40,7 @@ class HostInstallation extends Context.Service<
     runningTenants(): Effect.Effect<Array<{ uid: number; pid: number }>, HostMaintenanceError>;
     applicationInUse(): Effect.Effect<boolean, HostMaintenanceError>;
   }
->()("openbot/main/HostInstallation") {
+>()("aikingbot/main/HostInstallation") {
   static make(operations: HostManagerOperations) {
     return HostInstallation.of({
       stageLatest: () => maintenanceCall(() => operations.stageLatest()),

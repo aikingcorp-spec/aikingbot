@@ -1,4 +1,4 @@
-import { createMobileConnectUrl } from "@openbot/contracts/mobile-connect";
+import { createMobileConnectUrl } from "@aikingbot/contracts/mobile-connect";
 import { afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveSessionValidation } from "../context/session-validation";
 import {
@@ -37,9 +37,9 @@ vi.mock("expo-secure-store", () => ({
   WHEN_UNLOCKED_THIS_DEVICE_ONLY: "when-unlocked-this-device-only",
 }));
 
-const key = "openbot.mobile.session.v1";
+const key = "aikingbot.mobile.session.v1";
 const session: MobileSession = {
-  apiUrl: "https://api.openbot.run",
+  apiUrl: "https://api.aikingbot.aikingx.com",
   sessionToken: "test-session-token",
   user: { id: "user", email: "user@example.com", name: null, avatarUrl: null },
   host: { hostId: "desktop-host", fingerprint: "a".repeat(43) },
@@ -65,17 +65,17 @@ describe("mobile session revocation", () => {
       native.fetch.mockResolvedValueOnce(Response.json(session.user));
       await logoutMobileSession(session);
       expect(native.storage.has(key)).toBe(false);
-      expect(JSON.parse(native.storage.get("openbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
+      expect(JSON.parse(native.storage.get("aikingbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
         { apiUrl: session.apiUrl, sessionToken: session.sessionToken },
       ]);
       const retry = retryMobileSessionRevocations();
       await vi.advanceTimersByTimeAsync(20_000);
       await retry;
-      expect(native.storage.has("openbot.mobile.pending-revocations.v1")).toBe(true);
+      expect(native.storage.has("aikingbot.mobile.pending-revocations.v1")).toBe(true);
       native.fetch.mockResolvedValueOnce(new Response(null, { status: 204 }));
       expect(await readMobileSession()).toBeNull();
       await retryMobileSessionRevocations();
-      expect(native.storage.has("openbot.mobile.pending-revocations.v1")).toBe(false);
+      expect(native.storage.has("aikingbot.mobile.pending-revocations.v1")).toBe(false);
     },
   );
 
@@ -103,7 +103,7 @@ describe("mobile session revocation", () => {
       [`${session.apiUrl}/v1/mobile-auth/session`, "GET"],
       [`${replacement.apiUrl}/v1/mobile-auth/session`, "DELETE"],
     ]);
-    expect(JSON.parse(native.storage.get("openbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
+    expect(JSON.parse(native.storage.get("aikingbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
       { apiUrl: session.apiUrl, sessionToken: session.sessionToken },
     ]);
     expect(native.storage.has(key)).toBe(false);
@@ -111,18 +111,18 @@ describe("mobile session revocation", () => {
 
   it("does not restore a login if the app stopped after queuing sign-out", async () => {
     native.storage.set(
-      "openbot.mobile.pending-revocations.v1",
+      "aikingbot.mobile.pending-revocations.v1",
       JSON.stringify([{ apiUrl: session.apiUrl, sessionToken: session.sessionToken }]),
     );
     native.fetch.mockRejectedValue(new TypeError("Network unavailable"));
     expect(await readMobileSession()).toBeNull();
     await retryMobileSessionRevocations();
     expect(native.storage.has(key)).toBe(false);
-    expect(native.storage.has("openbot.mobile.pending-revocations.v1")).toBe(true);
+    expect(native.storage.has("aikingbot.mobile.pending-revocations.v1")).toBe(true);
   });
 
   it("allows a new QR login while the old account service is unreachable", async () => {
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     const replacement = { ...session, apiUrl: "https://other.example.com", sessionToken: "replacement-token" };
     native.fetch.mockImplementation(async (url, init) => {
       if (url === `${replacement.apiUrl}/v1/mobile-auth/redeem` && init?.method === "POST") {
@@ -136,7 +136,7 @@ describe("mobile session revocation", () => {
     expect(await redeemMobileConnectUrl(code)).toEqual(replacement);
     expect(await readMobileSession()).toEqual(replacement);
     await retryMobileSessionRevocations();
-    expect(JSON.parse(native.storage.get("openbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
+    expect(JSON.parse(native.storage.get("aikingbot.mobile.pending-revocations.v1") ?? "null")).toEqual([
       { apiUrl: session.apiUrl, sessionToken: session.sessionToken },
     ]);
   });
@@ -147,9 +147,9 @@ describe("mobile session revocation", () => {
     await logoutMobileSession(session);
     await retryMobileSessionRevocations();
     expect(native.storage.has(key)).toBe(false);
-    expect(native.storage.has("openbot.mobile.pending-revocations.v1")).toBe(false);
+    expect(native.storage.has("aikingbot.mobile.pending-revocations.v1")).toBe(false);
     expect(native.fetch).toHaveBeenLastCalledWith(
-      "https://api.openbot.run/v1/mobile-auth/session",
+      "https://api.aikingbot.aikingx.com/v1/mobile-auth/session",
       expect.objectContaining({ headers: { Authorization: "Bearer test-session-token" } }),
     );
   });
@@ -169,7 +169,7 @@ describe("mobile session revocation", () => {
     response.resolve(new Response(null, { status: 204 }));
     await retryMobileSessionRevocations();
     expect(await readMobileSession()).toEqual(replacement);
-    expect(native.storage.has("openbot.mobile.pending-revocations.v1")).toBe(false);
+    expect(native.storage.has("aikingbot.mobile.pending-revocations.v1")).toBe(false);
   });
 
   it("preserves a login at another API with the same token", async () => {
@@ -185,7 +185,7 @@ describe("mobile session revocation", () => {
 describe("Mobile Connect redemption", () => {
   it("rejects a concurrent redemption from any caller and preserves the first session", async () => {
     native.storage.clear();
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     const started = Promise.withResolvers<void>();
     const response = Promise.withResolvers<Response>();
     native.fetch.mockImplementationOnce(() => {
@@ -216,8 +216,8 @@ describe("Mobile Connect redemption", () => {
 
   it("releases the shared lock after validation and network failures", async () => {
     native.storage.clear();
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
-    await expect(redeemMobileConnectUrl("invalid")).rejects.toThrow("not a valid OpenBot Mobile Connect code");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
+    await expect(redeemMobileConnectUrl("invalid")).rejects.toThrow("not a valid AIKINGBOT Mobile Connect code");
     native.fetch.mockRejectedValueOnce(new Error("Offline"));
     await expect(redeemMobileConnectUrl(qrCode)).rejects.toThrow("could not reach the account service");
     native.fetch.mockResolvedValueOnce(Response.json(session));
@@ -229,7 +229,7 @@ describe("Mobile Connect redemption", () => {
 describe("email sign-in", () => {
   it("saves a session with no host and restores it on the next launch without revoking it", async () => {
     native.storage.clear();
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     native.fetch.mockResolvedValueOnce(Response.json({ sessionToken: "email-token", user: session.user }));
     const signedIn = await verifyMobileEmailCode("challenge", "abcd-efgh");
     expect(native.fetch).toHaveBeenCalledWith(
@@ -260,7 +260,7 @@ describe("stored mobile desktop binding", () => {
     ["Saved name", "Saved name"],
   ])("keeps the profile name available through connection and restore (%j)", async (name, expected) => {
     native.storage.clear();
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     const connected = { ...session, user: { ...session.user, name } };
     native.fetch.mockResolvedValueOnce(Response.json(connected));
     const redeemed = await redeemMobileConnectUrl(qrCode);
@@ -331,9 +331,9 @@ describe("stored mobile desktop binding", () => {
   });
 
   it("revokes at the old API before redeeming a QR for another service and restoring its bound session", async () => {
-    const oldApi = "https://previous.openbot.run";
+    const oldApi = "https://previous.aikingbot.aikingx.com";
     native.storage.set(key, JSON.stringify({ ...session, apiUrl: oldApi, host: undefined }));
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     native.fetch.mockResolvedValueOnce(new Response(null, { status: 204 }));
     native.fetch.mockResolvedValueOnce(Response.json(session));
     expect(await redeemMobileConnectUrl(qrCode)).toEqual(session);
@@ -346,7 +346,7 @@ describe("stored mobile desktop binding", () => {
 
   it("serializes legacy cleanup with a new QR login so cleanup cannot erase the new session", async () => {
     native.storage.set(key, JSON.stringify({ ...session, host: undefined }));
-    native.storage.set("openbot.mobile.device-id.v1", "existing-device");
+    native.storage.set("aikingbot.mobile.device-id.v1", "existing-device");
     let confirm!: (response: Response) => void;
     native.fetch.mockImplementationOnce(
       () =>
@@ -402,7 +402,7 @@ describe("mobile profile updates", () => {
     expect(updated.user).toEqual(user);
     expect((await readMobileSession())?.user).toEqual(user);
     expect(native.fetch).toHaveBeenCalledWith(
-      "https://api.openbot.run/v1/me/profile",
+      "https://api.aikingbot.aikingx.com/v1/me/profile",
       expect.objectContaining({ method: "PATCH", body: JSON.stringify({ name: "New name" }) }),
     );
   });
@@ -432,7 +432,7 @@ describe("mobile profile updates", () => {
     await updateMobileProfile(session, { avatar });
     expect((await readMobileSession())?.user.avatarUrl).toBe(user.avatarUrl);
     expect(native.fetch).toHaveBeenLastCalledWith(
-      "https://api.openbot.run/v1/me/avatar",
+      "https://api.aikingbot.aikingx.com/v1/me/avatar",
       expect.objectContaining({
         method: "PUT",
         body: avatar.bytes.buffer,
@@ -443,7 +443,7 @@ describe("mobile profile updates", () => {
     await updateMobileProfile(session, { avatar: null });
     expect((await readMobileSession())?.user.avatarUrl).toBeNull();
     expect(native.fetch).toHaveBeenLastCalledWith(
-      "https://api.openbot.run/v1/me/avatar",
+      "https://api.aikingbot.aikingx.com/v1/me/avatar",
       expect.objectContaining({ method: "DELETE" }),
     );
   });
@@ -471,7 +471,7 @@ it("lists account sessions and only disconnects other devices", async () => {
   native.fetch.mockResolvedValueOnce(new Response(null, { status: 204 }));
   await revokeMobileAccountSession(session, { ...item, current: false });
   expect(native.fetch).toHaveBeenLastCalledWith(
-    `https://api.openbot.run/v1/mobile-auth/devices/${current.sessionId}?includeDesktop=true`,
+    `https://api.aikingbot.aikingx.com/v1/mobile-auth/devices/${current.sessionId}?includeDesktop=true`,
     expect.objectContaining({ method: "DELETE", headers: { Authorization: "Bearer test-session-token" } }),
   );
 });

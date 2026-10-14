@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process";
-import type { ProviderCodeLoginStart } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { ProviderCodeLoginStart } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Fiber, Schema, Scope } from "effect";
 import type { AgentClient, AgentProvider } from "./../agent-client";
 import type { AgentCliInfo } from "./../cli";

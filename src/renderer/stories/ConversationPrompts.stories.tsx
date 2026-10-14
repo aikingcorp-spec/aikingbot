@@ -1,4 +1,4 @@
-import { ChoiceCard } from "@openbot/ui/features/conversation/ConversationPrompts";
+import { ChoiceCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 const choiceArgs: Parameters<typeof ChoiceCard>[0] = {

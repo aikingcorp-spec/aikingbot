@@ -5,7 +5,7 @@ import {
   parseGenerateAgentProfile,
   parseHostAnalyticsInput,
   parseSaveAgentProfile,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { hiddenProviderAgentIds, isPeerHiddenProvider } from "./provider-visibility";
 // Agents: the collection, the sidebar that arranges them, and everything under one agent's id.
 //
@@ -20,13 +20,13 @@ import { hiddenProviderAgentIds, isPeerHiddenProvider } from "./provider-visibil
 // 400 on a malformed identifier into a 404 for some methods and not others.
 
 import { readFile } from "node:fs/promises";
-import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { CreateAgentInput, DuplicateAgentResult } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { V5_AGENT_MODEL } from "@openbot/contracts/team-protocol/v5-adapter";
-import { V6_AGENT_MODEL } from "@openbot/contracts/team-protocol/v6-adapter";
-import { sourceText } from "@openbot/i18n/source";
+import { isAvatarMimeType } from "@aikingbot/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { CreateAgentInput, DuplicateAgentResult } from "@aikingbot/contracts/ipc";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { V5_AGENT_MODEL } from "@aikingbot/contracts/team-protocol/v5-adapter";
+import { V6_AGENT_MODEL } from "@aikingbot/contracts/team-protocol/v6-adapter";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { Effect } from "effect";
 import type { AgentDuplicationFailed } from "../../backend/agent/duplication-gate";
 import { InactiveAttentionRequest } from "../../backend/agent/inactive-attention-request";

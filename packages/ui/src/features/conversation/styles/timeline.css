@@ -4,7 +4,7 @@
   overflow-anchor: none;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 8px 12px var(--openbot-space-6);
+  padding: 8px 12px var(--aikingbot-space-6);
 }
 
 .virtual-chat-list {
@@ -16,16 +16,16 @@
   position: absolute;
   inset: 0 0 auto;
   width: 100%;
-  padding-top: var(--openbot-chat-entry-gap);
+  padding-top: var(--aikingbot-chat-entry-gap);
 }
 
 /* Rows the timeline marks as grouped (marker runs, same-sender messages) sit tighter. */
 .virtual-chat-row[data-grouped] {
-  padding-top: var(--openbot-chat-marker-gap);
+  padding-top: var(--aikingbot-chat-marker-gap);
 }
 
 .virtual-chat-row > .chat-action-marker + .message-entry {
-  margin-top: var(--openbot-chat-marker-gap);
+  margin-top: var(--aikingbot-chat-marker-gap);
 }
 
 .virtual-chat-list-static .virtual-chat-row {
@@ -39,8 +39,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 
 /*
@@ -59,15 +59,15 @@
   height: 44px;
   align-items: center;
   margin-bottom: -44px;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-bg-surface-raised);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-bg-surface-raised);
   box-shadow:
-    0 8px 24px var(--openbot-shadow-popover-ambient),
-    inset 0 0 0 1px var(--openbot-shadow-ring);
-  color: var(--openbot-text-primary);
+    0 8px 24px var(--aikingbot-shadow-popover-ambient),
+    inset 0 0 0 1px var(--aikingbot-shadow-ring);
+  color: var(--aikingbot-text-primary);
   transform: translateX(-50%);
-  transition: background-color var(--openbot-duration-hover) ease;
+  transition: background-color var(--aikingbot-duration-hover) ease;
 }
 
 /*
@@ -80,8 +80,8 @@
   height: 36px;
   border-color: transparent;
   margin-bottom: -36px;
-  background: var(--openbot-unread-surface);
-  color: var(--openbot-unread-text);
+  background: var(--aikingbot-unread-surface);
+  color: var(--aikingbot-unread-text);
 }
 
 .scroll-to-latest-button {
@@ -94,8 +94,8 @@
   background: none;
   color: inherit;
   transition:
-    background-color var(--openbot-duration-hover) ease,
-    transform var(--openbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
+    background-color var(--aikingbot-duration-hover) ease,
+    transform var(--aikingbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /*
@@ -106,12 +106,12 @@
 .scroll-to-latest[data-new-messages] .scroll-to-latest-button {
   width: auto;
   grid-auto-flow: column;
-  gap: var(--openbot-space-2);
-  padding-inline: var(--openbot-space-1-5) var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
+  padding-inline: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
 }
 
 .scroll-to-latest-count {
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 620;
   white-space: nowrap;
 }
@@ -127,9 +127,9 @@
   place-items: center;
   border: 0;
   background: none;
-  padding-inline: 0 var(--openbot-space-1-5);
+  padding-inline: 0 var(--aikingbot-space-1-5);
   color: inherit;
-  transition: transform var(--openbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform var(--aikingbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .scroll-to-latest-button svg {
@@ -139,7 +139,7 @@
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 /* The mark is as tall as the arrow, so one padding can hold both away from every edge. */
@@ -147,14 +147,14 @@
   box-sizing: content-box;
   width: 14px;
   height: 14px;
-  border-radius: var(--openbot-radius-pill);
-  padding: var(--openbot-space-1);
-  transition: background-color var(--openbot-duration-hover) ease;
+  border-radius: var(--aikingbot-radius-pill);
+  padding: var(--aikingbot-space-1);
+  transition: background-color var(--aikingbot-duration-hover) ease;
 }
 
 /* The ring follows the pill: an offset ring would draw a circle around one half of it. */
 .scroll-to-latest-button:focus-visible {
-  outline: 2px solid var(--openbot-border-focus);
+  outline: 2px solid var(--aikingbot-border-focus);
   outline-offset: -2px;
 }
 
@@ -164,15 +164,15 @@
 }
 
 .scroll-to-latest-dismiss:focus-visible svg {
-  outline: 2px solid var(--openbot-border-focus);
+  outline: 2px solid var(--aikingbot-border-focus);
 }
 
 .scroll-to-latest[data-new-messages] .scroll-to-latest-button:focus-visible {
-  outline-color: var(--openbot-unread-text);
+  outline-color: var(--aikingbot-unread-text);
 }
 
 .scroll-to-latest[data-new-messages] .scroll-to-latest-dismiss:focus-visible svg {
-  outline-color: var(--openbot-unread-text);
+  outline-color: var(--aikingbot-unread-text);
 }
 
 .scroll-to-latest-button:active,
@@ -185,7 +185,7 @@
      a plain class. Each rule that has to replace it is matched at the same strength, or its own
      hover paints over the pill and repaints the text for a light background. */
   .scroll-to-latest-button:hover:not(:disabled):not([data-disabled]) {
-    background: var(--openbot-bg-control-active);
+    background: var(--aikingbot-bg-control-active);
     color: inherit;
   }
 
@@ -196,7 +196,7 @@
   }
 
   .scroll-to-latest-dismiss:hover svg {
-    background: var(--openbot-bg-control-active);
+    background: var(--aikingbot-bg-control-active);
   }
 
   /* The pill has one hover, on the dismiss icon. Its body is a wide target and needs no mark. */
@@ -205,7 +205,7 @@
   }
 
   .scroll-to-latest[data-new-messages] .scroll-to-latest-dismiss:hover svg {
-    background: color-mix(in srgb, var(--openbot-unread-text) 18%, transparent);
+    background: color-mix(in srgb, var(--aikingbot-unread-text) 18%, transparent);
   }
 }
 
@@ -230,19 +230,19 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
-  border-radius: 0 0 var(--openbot-radius-md) var(--openbot-radius-md);
-  background: var(--openbot-unread-surface);
+  border-radius: 0 0 var(--aikingbot-radius-md) var(--aikingbot-radius-md);
+  background: var(--aikingbot-unread-surface);
   padding: 0 12px;
-  color: var(--openbot-unread-text);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-unread-text);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 620;
   line-height: 16px;
-  transition: background-color var(--openbot-duration-hover) var(--openbot-ease-out);
+  transition: background-color var(--aikingbot-duration-hover) var(--aikingbot-ease-out);
 }
 
 .unread-messages-banner button {
   border: 0;
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
   background: transparent;
   color: inherit;
 }
@@ -252,7 +252,7 @@
   inset: 0;
   width: 100%;
   padding: 0 12px;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 620;
   line-height: 16px;
   text-align: left;
@@ -263,41 +263,41 @@
   z-index: 1;
   margin-left: auto;
   padding: 0;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 680;
   line-height: 14px;
   text-decoration: underline;
   text-underline-offset: 2px;
-  transition: transform var(--openbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform var(--aikingbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .unread-messages-mark-read-label {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--aikingbot-radius-sm);
   padding: 3px 5px;
-  transition: background-color var(--openbot-duration-hover) var(--openbot-ease-out);
+  transition: background-color var(--aikingbot-duration-hover) var(--aikingbot-ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .unread-messages-banner:hover {
-    background-color: color-mix(in srgb, var(--openbot-unread-surface) 88%, var(--openbot-unread-text));
+    background-color: color-mix(in srgb, var(--aikingbot-unread-surface) 88%, var(--aikingbot-unread-text));
   }
 
   .unread-messages-banner .ui-button:hover:not(:disabled):not([data-disabled]) {
     background: transparent;
-    color: var(--openbot-unread-text);
+    color: var(--aikingbot-unread-text);
   }
 
   .unread-messages-banner
     .unread-messages-mark-read:hover:not(:disabled):not([data-disabled])
     .unread-messages-mark-read-label {
-    background: color-mix(in srgb, var(--openbot-unread-text) 12%, transparent);
+    background: color-mix(in srgb, var(--aikingbot-unread-text) 12%, transparent);
   }
 }
 
 .unread-messages-banner button:focus-visible {
-  outline: 2px solid var(--openbot-unread-text);
+  outline: 2px solid var(--aikingbot-unread-text);
   outline-offset: 1px;
 }
 
@@ -314,9 +314,9 @@
   width: 100%;
   align-items: center;
   gap: 8px;
-  margin: var(--openbot-space-1) 0 var(--openbot-space-2);
-  color: var(--openbot-unread-surface);
-  font-size: var(--openbot-text-sm);
+  margin: var(--aikingbot-space-1) 0 var(--aikingbot-space-2);
+  color: var(--aikingbot-unread-surface);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 720;
   letter-spacing: 0.08em;
   line-height: 12px;
@@ -327,7 +327,7 @@
   height: 1px;
   flex: 1;
   border: 0;
-  background: var(--openbot-unread-surface);
+  background: var(--aikingbot-unread-surface);
 }
 
 .unread-messages-divider span {
@@ -342,8 +342,8 @@
   height: 24px;
   margin: 0 auto;
   padding: 4px 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 16px;
   text-align: center;
 }

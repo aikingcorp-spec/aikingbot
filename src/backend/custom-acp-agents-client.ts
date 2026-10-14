@@ -17,10 +17,14 @@
 
 import { createHash } from "node:crypto";
 import { EventEmitter } from "node:events";
-import { CUSTOM_AGENT_DEFAULT_MODEL, customAgentIdOfModel } from "@openbot/contracts/agent-providers";
-import { type AgentSessionSettingsSnapshot, type AgentSessionSettingValue, isAgentModel } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { CUSTOM_AGENT_DEFAULT_MODEL, customAgentIdOfModel } from "@aikingbot/contracts/agent-providers";
+import {
+  type AgentSessionSettingsSnapshot,
+  type AgentSessionSettingValue,
+  isAgentModel,
+} from "@aikingbot/contracts/ipc";
+import type { DynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Exit } from "effect";
 import { assertAgentArgs, assertWindowsScriptArgs, resolveAgentCommand } from "./acp-agent-command";
 import type { AcpHistoryPersistence } from "./acp-client";

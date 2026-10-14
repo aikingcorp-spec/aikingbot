@@ -31,7 +31,7 @@ function statement(sql: string, mode: "read" | "write", provision = false) {
 }
 
 beforeEach(async () => {
-  databasePath = join(await mkdtemp(join(tmpdir(), "openbot-supervisor-")), "work.db");
+  databasePath = join(await mkdtemp(join(tmpdir(), "aikingbot-supervisor-")), "work.db");
   supervisor = new AgentDatabaseSupervisor({
     spawnHost: spawnNodeDatabaseHost,
     // Input, not a wait: the deadline is the thing under test, so it is set short rather than slept

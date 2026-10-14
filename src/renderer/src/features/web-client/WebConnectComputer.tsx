@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import { Button, buttonVariants, Download, ErrorReference, Heading, Link2, RefreshCw, Text } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { AppLogo } from "@aikingbot/brand";
+import { Button, buttonVariants, Download, ErrorReference, Heading, Link2, RefreshCw, Text } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 
 /** The first screen of the web client when the account has no computer to connect to. */
 export function WebConnectComputer(props: {

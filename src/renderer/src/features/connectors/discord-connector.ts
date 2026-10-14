@@ -1,7 +1,7 @@
-import type { MessagingOverview } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import type { SlackOrchestratorModels } from "@openbot/ui/features/settings/SlackIntegrationPanel";
-import { currentText } from "@openbot/ui/text";
+import type { MessagingOverview } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import type { SlackOrchestratorModels } from "@aikingbot/ui/features/settings/SlackIntegrationPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type DiscordConnectorPort, discordConnectorPort } from "./discord-connector-port";

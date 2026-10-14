@@ -19,7 +19,7 @@ import type {
   RoutineConversationEvent,
   RoutineRunConversationEvent,
   SkillConversationEvent,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 /**
  * `error` is a message the renderer wrote itself, not one the provider sent: an action of the

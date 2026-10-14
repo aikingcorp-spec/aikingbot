@@ -9,7 +9,7 @@ import { migratedDatabase, sqliteD1 } from "./sqlite-d1";
 
 const NOW = 1_780_000_000_000;
 const WEBHOOK_SECRET = "whsec_test_secret";
-const ORIGIN = "https://openbot.test";
+const ORIGIN = "https://aikingbot.test";
 const user = { id: "user-1" };
 const databases: DatabaseSync[] = [];
 
@@ -48,9 +48,9 @@ describe("Stripe webhook signature", () => {
 describe("billing service", () => {
   it("links a subscription to its account and server from the metadata, and names only an owned server", async () => {
     const fixture = setup();
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "openbot_standard_year", "host-1"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "aikingbot_standard_year", "host-1"));
     // A PLN plan on an EUR Price: the PLN amount is in `currency_options`.
-    const plnPlan = subscription("sub_2", "active", "openbot_pro_month", "host-other");
+    const plnPlan = subscription("sub_2", "active", "aikingbot_pro_month", "host-other");
     const [plnItem] = plnPlan.items.data;
     fixture.stripe.subscriptions.set("sub_2", {
       ...plnPlan,
@@ -98,7 +98,7 @@ describe("billing service", () => {
   it("skips a subscription that names no account, and never moves a known customer", async () => {
     const fixture = setup();
     fixture.stripe.subscriptions.set("sub_1", {
-      ...subscription("sub_1", "active", "openbot_starter_month"),
+      ...subscription("sub_1", "active", "aikingbot_starter_month"),
       metadata: {},
     });
     await fixture.deliver("evt_1", "customer.subscription.created", { id: "sub_1" });
@@ -108,11 +108,11 @@ describe("billing service", () => {
       servers: [],
     });
 
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "openbot_starter_month"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "aikingbot_starter_month"));
     await fixture.deliver("evt_2", "customer.subscription.updated", { id: "sub_1" });
     fixture.stripe.subscriptions.set("sub_1", {
-      ...subscription("sub_1", "active", "openbot_pro_month"),
-      metadata: { openbot_user_id: "user-2" },
+      ...subscription("sub_1", "active", "aikingbot_pro_month"),
+      metadata: { aikingbot_user_id: "user-2" },
     });
     await fixture.deliver("evt_3", "customer.subscription.updated", { id: "sub_1" });
     expect((await runApiEffect(fixture.service.getState(user.id))).servers).toMatchObject([
@@ -123,11 +123,11 @@ describe("billing service", () => {
 
   it("writes the latest Stripe state, ignores a repeated event, and applies a failed event on retry", async () => {
     const fixture = setup();
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "openbot_starter_month"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "aikingbot_starter_month"));
     await fixture.deliver("evt_1", "customer.subscription.created", { id: "sub_1" });
 
     // An old event that arrives late still writes the state that Stripe has now.
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "past_due", "openbot_starter_month"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "past_due", "aikingbot_starter_month"));
     await fixture.deliver("evt_0", "customer.subscription.updated", { id: "sub_1", status: "active" });
     expect((await runApiEffect(fixture.service.getState(user.id))).servers[0]?.status).toBe("past_due");
 
@@ -135,7 +135,7 @@ describe("billing service", () => {
     await fixture.deliver("evt_0", "customer.subscription.updated", { id: "sub_1" });
     expect(fixture.stripe.subscriptionReads).toBe(reads);
 
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "canceled", "openbot_starter_month"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "canceled", "aikingbot_starter_month"));
     fixture.stripe.failSubscriptionRead = true;
     await expect(fixture.deliver("evt_2", "customer.subscription.deleted", { id: "sub_1" })).rejects.toMatchObject({
       status: 502,
@@ -163,7 +163,7 @@ describe("billing service", () => {
     ).rejects.toMatchObject({
       status: 404,
     });
-    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "openbot_standard_month", "host-1"));
+    fixture.stripe.subscriptions.set("sub_1", subscription("sub_1", "active", "aikingbot_standard_month", "host-1"));
     await fixture.deliver("evt_1", "customer.subscription.created", { id: "sub_1" });
 
     await runApiEffect(fixture.service.createPortal(user.id, { flow: "manage" }, "desktop", ORIGIN));
@@ -280,7 +280,7 @@ function subscription(id: string, status: string, lookupKey: string, serverId?: 
     status,
     currency: "eur",
     cancel_at_period_end: false,
-    metadata: { openbot_user_id: user.id, ...(serverId ? { openbot_server_id: serverId } : {}) },
+    metadata: { aikingbot_user_id: user.id, ...(serverId ? { aikingbot_server_id: serverId } : {}) },
     items: {
       data: [
         {

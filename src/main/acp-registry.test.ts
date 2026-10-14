@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isCustomAgentResult } from "@openbot/contracts/ipc";
+import { isCustomAgentResult } from "@aikingbot/contracts/ipc";
 import { Deferred, Effect } from "effect";
 import { afterEach, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -19,7 +19,7 @@ afterEach(async () => {
   for (const folder of folders.splice(0)) await rm(folder, { recursive: true, force: true });
 });
 async function setup(name = "Example") {
-  const folder = await mkdtemp(join(tmpdir(), "openbot-registry-"));
+  const folder = await mkdtemp(join(tmpdir(), "aikingbot-registry-"));
   folders.push(folder);
   const store = new CustomAgentStore({
     path: join(folder, "agents.json"),

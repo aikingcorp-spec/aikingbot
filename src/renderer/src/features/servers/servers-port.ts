@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi, ServerSummary } from "@aikingbot/contracts/ipc";
 
 /**
  * What the servers domain reaches in main: the server list and selection, the account changes, the local host, the
@@ -7,7 +7,7 @@ import type { OpenBotDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
  */
 export interface ServersPort {
   agent: Pick<
-    OpenBotDesktopApi["agent"],
+    AIKINGBOTDesktopApi["agent"],
     | "getStatus"
     | "listAgents"
     | "listConversationReads"
@@ -29,22 +29,22 @@ export interface ServersPort {
     | "saveMcpSignInApp"
     | "removeMcpSignInApp"
   >;
-  events: OpenBotDesktopApi["events"];
-  auth: Pick<OpenBotDesktopApi["auth"], "onEvent">;
-  browser: Pick<OpenBotDesktopApi["browser"], "setVisible">;
-  hostAdmin: Pick<OpenBotDesktopApi["hostAdmin"], "getUpdateStatus" | "updateIdentity">;
-  hostedServers: Pick<OpenBotDesktopApi["hostedServers"], "list" | "restart" | "wake">;
+  events: AIKINGBOTDesktopApi["events"];
+  auth: Pick<AIKINGBOTDesktopApi["auth"], "onEvent">;
+  browser: Pick<AIKINGBOTDesktopApi["browser"], "setVisible">;
+  hostAdmin: Pick<AIKINGBOTDesktopApi["hostAdmin"], "getUpdateStatus" | "updateIdentity">;
+  hostedServers: Pick<AIKINGBOTDesktopApi["hostedServers"], "list" | "restart" | "wake">;
   host: Pick<
-    OpenBotDesktopApi["host"],
+    AIKINGBOTDesktopApi["host"],
     "configure" | "getStatus" | "onEvent" | "recheckScreenRecording" | "start" | "stop" | "updateIdentity"
   >;
-  notifications: Pick<OpenBotDesktopApi["notifications"], "onOpened">;
+  notifications: Pick<AIKINGBOTDesktopApi["notifications"], "onOpened">;
   remoteDesktop: Pick<
-    OpenBotDesktopApi["remoteDesktop"],
+    AIKINGBOTDesktopApi["remoteDesktop"],
     "checkSetup" | "connect" | "disconnect" | "list" | "openSetup" | "test"
   >;
   servers: Pick<
-    OpenBotDesktopApi["servers"],
+    AIKINGBOTDesktopApi["servers"],
     | "getPresence"
     | "join"
     | "list"
@@ -60,9 +60,9 @@ export interface ServersPort {
   >;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function serversPort(): ServersPort {
-  return window.openbot;
+  return window.aikingbot;
 }
 
 /**
@@ -70,26 +70,26 @@ export function serversPort(): ServersPort {
  * through `host`; a remote server answers them through `servers`, addressed by its id.
  */
 export type ServerAdminPort = Pick<
-  OpenBotDesktopApi["host"],
+  AIKINGBOTDesktopApi["host"],
   "getPresence" | "listMembers" | "listInvites" | "createInvite" | "updateMember" | "removeMember" | "revokeInvite"
 >;
 
 export function serverAdminPort(server: Pick<ServerSummary, "id" | "kind">): ServerAdminPort {
-  if (server.kind === "local") return window.openbot.host;
+  if (server.kind === "local") return window.aikingbot.host;
   const serverId = server.id;
   return {
-    getPresence: () => window.openbot.servers.getPresenceFor(serverId),
-    listMembers: () => window.openbot.servers.listMembers(serverId),
-    listInvites: () => window.openbot.servers.listInvites(serverId),
-    createInvite: (input) => window.openbot.servers.createInvite(input, serverId),
-    updateMember: (input) => window.openbot.servers.updateMember(input, serverId),
-    removeMember: (memberId) => window.openbot.servers.removeMember(memberId, serverId),
-    revokeInvite: (inviteId) => window.openbot.servers.revokeInvite(inviteId, serverId),
+    getPresence: () => window.aikingbot.servers.getPresenceFor(serverId),
+    listMembers: () => window.aikingbot.servers.listMembers(serverId),
+    listInvites: () => window.aikingbot.servers.listInvites(serverId),
+    createInvite: (input) => window.aikingbot.servers.createInvite(input, serverId),
+    updateMember: (input) => window.aikingbot.servers.updateMember(input, serverId),
+    removeMember: (memberId) => window.aikingbot.servers.removeMember(memberId, serverId),
+    revokeInvite: (inviteId) => window.aikingbot.servers.revokeInvite(inviteId, serverId),
   };
 }
 
 /** The server main marks active. A test teardown can remove the bridge while a join is pending. */
 export async function activeServerId(): Promise<string> {
-  if (!window.openbot) return "local";
-  return (await window.openbot.servers.list()).find((item) => item.active)?.id ?? "local";
+  if (!window.aikingbot) return "local";
+  return (await window.aikingbot.servers.list()).find((item) => item.active)?.id ?? "local";
 }

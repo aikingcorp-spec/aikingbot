@@ -46,10 +46,10 @@ export interface BootRecoveryOptions {
  *   provider what really happened to each orphaned delivery instead of
  *   assuming, and conservatively keeps `interrupted` on any doubt — never
  *   repeats uncertain side effects. A delivery is orphaned when the process
- *   that ran it is gone: the previous OpenBot run, or a provider CLI that
+ *   that ran it is gone: the previous AIKINGBOT run, or a provider CLI that
  *   exited. Any other unsettled delivery is a live turn of this run.
  * - `backfillProviderHistory` merges provider-side turns that happened while
- *   OpenBot was down into the persisted conversation.
+ *   AIKINGBOT was down into the persisted conversation.
  *
  * Reads the store/mailbox/provider and writes the database plus in-memory
  * snapshots; delivery to the renderer goes through `mailboxSync` and
@@ -139,7 +139,7 @@ export class BootRecovery {
       if (!this.#orphanedDeliveryIds.delete(delivery.id)) continue;
       const interrupted = {
         terminal: "interrupted" as const,
-        reason: "OpenBot restarted before this delivery reached a confirmed terminal state.",
+        reason: "AIKINGBOT restarted before this delivery reached a confirmed terminal state.",
       };
       const { terminal, reason } = yield* Effect.gen({ self: this }, function* () {
         const { agent, client, session } = yield* recoveryStep(() => {

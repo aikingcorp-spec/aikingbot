@@ -83,7 +83,7 @@ stay off so they cannot freeze changed profile or memory text.
 
 Codex and Muse complete explicit compaction through turn events. Pi completes it through the request
 response. Claude manages compaction natively. ACP and custom ACP expose no explicit compaction
-operation to the OpenBot scheduler. Unsupported or native-managed clients cannot reserve its queue
+operation to the AIKINGBOT scheduler. Unsupported or native-managed clients cannot reserve its queue
 for a no-op request. Request completion clears the hold and keeps the minimum-growth guard.
 
 Codex retains the 80% threshold based on its last reported token usage and context-window size.
@@ -91,7 +91,7 @@ Cumulative account usage is not context occupancy. A missing report is not zero 
 200,000-token context window, per-turn model summary, or new automatic model call is added.
 
 The design uses Hermes's on-demand discovery, stable instruction ordering, and bounded local
-history recall as references. OpenBot retains each native provider's session and compaction rules.
+history recall as references. AIKINGBOT retains each native provider's session and compaction rules.
 
 ## Provider CLI updates
 
@@ -106,12 +106,12 @@ Codex and npm `dist.integrity` for Claude, OpenCode and Cline. x.ai and the ACP 
 so a Grok, Gemini or Cursor release is trusted on TLS alone. A Gemini release must stay on
 `dl.google.com/agy-extensions/releases` and keep the pinned command name. A Cursor release must use
 the pinned `downloads.cursor.com/lab` path for its target, with a build that starts with the
-registry date, and keep the pinned command. An upstream install writes `openbot-install.json` with the SHA-256 of each
+registry date, and keep the pinned command. An upstream install writes `aikingbot-install.json` with the SHA-256 of each
 file it installed, and every start verifies that record and the binary's `--version` before the
 install is used. The newest version in the store that verifies is the one that runs.
 
 `provider-runtime-blocklist.json` on `main` names versions no installation may offer. It stops a
-broken upstream release without an OpenBot release. It suppresses an offer only: it does not remove
+broken upstream release without an AIKINGBOT release. It suppresses an offer only: it does not remove
 a version a user already installed. A list that cannot be read blocks nothing.
 
 The provider runtime holds new turns while it installs and activates that managed executable. It
@@ -119,12 +119,12 @@ keeps the previous client until the candidate is ready; activation failure remov
 artifact and preserves the old runtime, so a release that does not start leaves the last working CLI
 in use. Download status stays `finishing` until activation succeeds.
 
-CLI resolution prefers an explicit `OPENBOT_*_PATH`, then the installed managed copy, then an
+CLI resolution prefers an explicit `AIKINGBOT_*_PATH`, then the installed managed copy, then an
 automatically discovered system CLI. Updates never run the system CLI's updater. An explicit path
 suppresses managed update offers. Startup uses the same selection and reads the executable's version.
 
-Installed runtimes live in one store per computer, `appData/OpenBot/provider-runtimes`, which is the
-path the packaged app always used: its `userData` is `appData/OpenBot`. Development profiles differ
+Installed runtimes live in one store per computer, `appData/AIKINGBOT/provider-runtimes`, which is the
+path the packaged app always used: its `userData` is `appData/AIKINGBOT`. Development profiles differ
 per renderer port and per worktree, so a store inside `userData` started empty in each
 one, fell back to the user's own CLI, and offered and downloaded the managed copy again. An explicit
 `--user-data-dir` still keeps its own store, so automation and packaged smoke checks stay
@@ -204,15 +204,15 @@ it compares a managed installation. The row and the notification therefore use t
 the one Update button, and one entry point in the runtime store, `startProviderUpdate`. One path
 runs behind it, whoever owns the CLI: the download installs the managed copy and
 `updateProviderCli` activates it, and CLI resolution then prefers that copy to the system install,
-which is left where it is. OpenBot never runs the CLI's own updater, so no version it offers depends
-on another release channel. An explicit `OPENBOT_*_PATH` suppresses the offer, because that path
+which is left where it is. AIKINGBOT never runs the CLI's own updater, so no version it offers depends
+on another release channel. An explicit `AIKINGBOT_*_PATH` suppresses the offer, because that path
 names the binary to run and the managed copy is not it. The owner comes from the last resolution of
 the binary, not from the client that runs it, so a provider that is signed out still reports its own
 install rather than reading as the managed copy. A failure keeps the reason the CLI gave, redacted,
 in one error that goes to the provider row and to the caller - and on, through the Team API, to the
 team's connected clients.
 
-Every runtime the store reaches is on this computer: `window.openbot.providerRuntimes` addresses no
+Every runtime the store reaches is on this computer: `window.aikingbot.providerRuntimes` addresses no
 other one, while the agent status beside it describes whichever server is open. The store therefore
 takes `isLocalServer`, and a workspace on another computer announces no offer and starts no update -
 the same rule the provider row and the picker already follow. A server switch rebuilds that store,
@@ -240,10 +240,10 @@ failure as well as after a success.
 `src/backend/acp-connection.ts` owns ACP process transport. `acp-configuration.ts` owns
 configuration and model discovery. `src/backend/acp-client.ts` owns session start/load,
 streamed messages, permissions, tool bridging, and cancellation. `grok-client.ts` supplies xAI
-login and billing hooks. The OpenCode driver starts `opencode acp` on the runtime OpenBot pins and
+login and billing hooks. The OpenCode driver starts `opencode acp` on the runtime AIKINGBOT pins and
 downloads, or on a CLI the user installed. Profile clients deny tool permissions.
 
-OpenCode has no login step OpenBot can drive, because the account is one environment variable: a
+OpenCode has no login step AIKINGBOT can drive, because the account is one environment variable: a
 spawn without `OPENCODE_API_KEY` lists the free OpenCode Go models, and a spawn with one lists the
 paid catalog. So `AcpAgentClient` derives `#signedIn` from the models `session/new` returns, not
 from a credential, and a keyless OpenCode reports `available`. `AcpProviderOptions.extraEnv` is read
@@ -259,9 +259,9 @@ the provider's serialized connection command. It refuses a provider that is runn
 deliveries while it writes, and reports success only after a new process runs with the new key.
 
 That one variable turns on two products: OpenCode reports OpenCode Zen and OpenCode Go as a single
-catalog, on the separate endpoints `opencode.ai/zen/v1` and `opencode.ai/zen/go/v1`, and OpenBot
+catalog, on the separate endpoints `opencode.ai/zen/v1` and `opencode.ai/zen/go/v1`, and AIKINGBOT
 supports only Go. So `isOpencodeModelUnusableWithStoredKey` in `src/backend/agent/model-catalog.ts`
-drops the paid Zen models from `ModelCatalog.refresh` while OpenBot is the one supplying the key;
+drops the paid Zen models from `ModelCatalog.refresh` while AIKINGBOT is the one supplying the key;
 with no key stored those models can only come from the user's own OpenCode sign-in, which does
 buy them. Neither `/models` endpoint authenticates, so entitlement cannot be read back and the
 split is a product rule rather than a check.
@@ -269,7 +269,7 @@ split is a product rule rather than a check.
 `PREFERRED_MODEL_ORDER` in the same pass reorders that catalog, because a provider with no
 `defaultProviderModel` runs the first model of its list and OpenCode reports the third-party
 services the user signed in to before its own — so the fallback used to pick a model behind a token
-OpenBot can neither see nor refresh. `opencodeModelRank` sorts free models first with Muse ahead of
+AIKINGBOT can neither see nor refresh. `opencodeModelRank` sorts free models first with Muse ahead of
 the rest, then OpenCode's own paid models, then everything behind a separate sign-in. The sort is
 stable, so the CLI's order survives inside one tier.
 
@@ -291,17 +291,17 @@ The Gemini provider (id `antigravity`) starts Google's Antigravity ACP server
 downloads the zip on the user's computer. `extractZipFiles` in `src/main/provider-runtime-archive.ts`
 accepts only the server and `localharness_external`, which the server starts from its own folder.
 The server has no `--version`, so staging writes `antigravity-package.json` and
-`verifyInstalledRuntime` reads the version from that file (`versionFile`). OpenBot never searches
+`verifyInstalledRuntime` reads the version from that file (`versionFile`). AIKINGBOT never searches
 `PATH`, because the Antigravity editor installs an `antigravity` command that is not this server.
 
 Sign in is an ACP `authenticate` call with `oauth-personal`, in a separate process
-(`src/backend/acp-sign-in.ts`). On Linux, OpenBot reads the Google sign-in link from the
+(`src/backend/acp-sign-in.ts`). On Linux, AIKINGBOT reads the Google sign-in link from the
 server and opens it with the desktop browser. The server browser launch is disabled for this
 process so the page opens once. A failed browser launch gives an actionable error; the OAuth
 link and browser error details are not logged. Other platforms let the server open the browser.
 A status probe must never call `authenticate`. The serving client does not call it.
-OpenBot checks authentication through model discovery (`session/new`), not the auth methods
-advertised by `initialize`. The runtime can answer "Authentication required", which OpenBot
+AIKINGBOT checks authentication through model discovery (`session/new`), not the auth methods
+advertised by `initialize`. The runtime can answer "Authentication required", which AIKINGBOT
 reports as sign-in required. In runtime 1.3.0, a saved OAuth method with no valid token can also
 start interactive authentication during `session/new`; this can leave the probe waiting until
 its existing deadline. Runtime installation alone does not confirm authentication.
@@ -318,7 +318,7 @@ from the CLI in a private tab of its browser. The client polls `status`, shows t
 the live view (`browser-view`), and closes the dialog on the `result`. The Google callback goes to
 `127.0.0.1` on the host, so the host's browser completes it. No route carries the link or a
 credential, and every route requires an owner or admin. A host on another platform does not
-advertise the capability; open OpenBot in the host's desktop session to connect it there. A runtime status of "Runtime installed" means only that the files are
+advertise the capability; open AIKINGBOT in the host's desktop session to connect it there. A runtime status of "Runtime installed" means only that the files are
 available; "Connected" requires a successful provider check. A known authentication or launch
 error takes priority over runtime readiness.
 
@@ -327,7 +327,7 @@ error takes priority over runtime readiness.
 Issue #1776 reports an HTTP 404 for the official 1.3.0 Linux archive from an OVH IPv6 pool,
 and HTTP 200 over IPv4. This cause is not confirmed: checks from another host on 2026-10-10
 returned HTTP 200 over both families. An HTTP failure occurs before archive extraction or
-ACP startup; it is separate from browser sign-in and missing runtime files. OpenBot keeps
+ACP startup; it is separate from browser sign-in and missing runtime files. AIKINGBOT keeps
 the download error and Retry action and does not change the host's network settings.
 
 For an affected host, an operator can compare bounded requests to the exact failing URL
@@ -341,18 +341,18 @@ confirmed in the ACP Python source; a native harness requirement remains unverif
 An external installation must preserve this layout (1.3.0 is an example):
 
 ```text
-/var/lib/openbot/antigravity-acp-1.3.0/
+/var/lib/aikingbot/antigravity-acp-1.3.0/
   antigravity-package.json    {"version":"1.3.0"}
   bin/
     agy_acp_server.par
     localharness_external
 ```
 
-Both programs must be executable by the OpenBot host user. Set
-`OPENBOT_ANTIGRAVITY_PATH=/var/lib/openbot/antigravity-acp-1.3.0/bin/agy_acp_server.par`
-in that process's environment and restart OpenBot. The variable names the executable, not
-the directory. OpenBot requires the version manifest two levels above it; extraction alone
-does not create that manifest. An invalid override remains an error: OpenBot does not replace
+Both programs must be executable by the AIKINGBOT host user. Set
+`AIKINGBOT_ANTIGRAVITY_PATH=/var/lib/aikingbot/antigravity-acp-1.3.0/bin/agy_acp_server.par`
+in that process's environment and restart AIKINGBOT. The variable names the executable, not
+the directory. AIKINGBOT requires the version manifest two levels above it; extraction alone
+does not create that manifest. An invalid override remains an error: AIKINGBOT does not replace
 it with the managed runtime. Managed updates do not change the explicit override.
 
 The server runs confined; `antigravityStatePaths` gives it `~/.gemini/antigravity-acp` and
@@ -396,7 +396,7 @@ never `cursor`, which starts the Cursor editor.
 
 Sign in is an ACP `authenticate` call with `cursor_login`, in a separate process, as for Gemini.
 `CURSOR_API_KEY` in the environment also signs the CLI in. A confined Cursor process gets
-`CURSOR_CONFIG_DIR=~/.cursor/openbot-confined` (`cursorConfinedEnv`): the CLI writes
+`CURSOR_CONFIG_DIR=~/.cursor/aikingbot-confined` (`cursorConfinedEnv`): the CLI writes
 `cli-config.json` when a session starts and fails when it cannot, and that file also holds the
 user's permissions. `cursorStatePaths` lets it write `~/.cursor` and protects the user's settings,
 hooks, rules, MCP and permission files there and in the CLI config folder, and the
@@ -420,7 +420,7 @@ npm packages have no license file, so staging downloads `LICENSE` from the `cli-
 checks the pinned hash. `resolveClineCli` refuses a CLI older than 3.0.68.
 
 By default the CLI runs its sessions in a hub process that it detaches and that other Cline
-processes share. That process outlives OpenBot and is outside a Workspace only sandbox, so every
+processes share. That process outlives AIKINGBOT and is outside a Workspace only sandbox, so every
 Cline process, the sign-in included, gets `CLINE_SESSION_BACKEND_MODE=local` and
 `CLINE_NO_AUTO_UPDATE=1` (`CLINE_ENV` in `provider-drivers.ts`). Sign in is an ACP `authenticate`
 call with `cline`, as for Gemini. `CLINE_API_KEY` in the environment also signs the CLI in.
@@ -498,7 +498,7 @@ saved, and a joined host gets no detection and no Edit.
 ### Local provider switches
 
 The Providers section can turn each built-in provider off on this computer.
-`ProviderUseSettingsStore` saves the choices in `openbot-provider-use-v1.json`.
+`ProviderUseSettingsStore` saves the choices in `aikingbot-provider-use-v1.json`.
 A missing file leaves all providers on. An unreadable or newer file stays unchanged.
 
 `ProviderRuntime` filters off providers before CLI checks and model discovery. It also
@@ -516,7 +516,7 @@ clients receive the host's filtered model list.
 `AgentClient` remains the provider boundary. ACP session ownership, history replay, and turn
 completion stay together. Boolean and select settings can include grouped choices. The client
 processes configuration notifications while idle. Model and reasoning continue to use their
-existing fields. Permission, access, and approval settings remain under OpenBot controls.
+existing fields. Permission, access, and approval settings remain under AIKINGBOT controls.
 
 Additional overrides are stored in validated agent JSON, by provider identity. A custom ACP
 identity includes its custom agent ID. Saved overrides are separate from the current descriptors
@@ -538,11 +538,11 @@ Pi uses its native `--mode rpc` interface. It does not use an ACP wrapper. Reque
 `agent_settled` completes a turn. A successful `prompt` response only accepts the prompt. Cancellation
 clears queued work before abort. Session paths and the active conversation branch are preserved.
 Models come from the running CLI. A small extension uses Pi's `registerMcpServer` interface to
-register configured MCP servers and OpenBot tools. Secrets are supplied through process state,
+register configured MCP servers and AIKINGBOT tools. Secrets are supplied through process state,
 not copied into the extension source.
 
 Managed Pi archives come from official GitHub releases and use the published SHA-256 digest.
-Sign-in opens Pi in a host terminal. Close Pi after sign-in to refresh models in OpenBot.
+Sign-in opens Pi in a host terminal. Close Pi after sign-in to refresh models in AIKINGBOT.
 Remote clients must complete sign-in on the host. There is no separate Pi account screen.
 
 ## Muse
@@ -551,17 +551,17 @@ Muse uses the official `@muse-code/sdk` to run `muse serve` over MSP. The SDK is
 newer SDK versions must meet the three-day dependency rule before adoption. The native integration
 supplies `sessionMcp`, preserves native session identity, and reads durable items to recover missed
 events before completion. A cached model list does not prove authentication. Setup can run CLI
-login; an explicit Meta API key uses OpenBot's encrypted credential store.
+login; an explicit Meta API key uses AIKINGBOT's encrypted credential store.
 
 Muse profile generation fails before the CLI starts. The pinned native host still starts inherited
 MCP servers with `--disable-shell`, `--disable-write`, empty hooks, and session `mcpServers: {}`.
 It cannot meet the tool-free profile requirement. Generate the profile with another provider,
 then select Muse for the agent. The local echo test and synthetic MCP marker record this limit in
-`.openbot-build/muse-check/profile-mcp.mjs` and `profile-mcp-report.json`; this is not a live model
+`.aikingbot-build/muse-check/profile-mcp.mjs` and `profile-mcp-report.json`; this is not a live model
 authentication test.
 
 Managed Muse downloads use the official stable-channel manifest and artifact SHA-256 values.
-The CLI remains an optional download, outside the OpenBot package. OpenBot does not overwrite
+The CLI remains an optional download, outside the AIKINGBOT package. AIKINGBOT does not overwrite
 provider account files or run upstream self-updaters against managed installations. Both Pi and
 Muse use the existing process confinement boundary. Workspace-only mode fails closed on hosts
 without confinement support.

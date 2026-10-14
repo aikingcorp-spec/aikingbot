@@ -1,16 +1,16 @@
 // Switches a running dev app through the selected languages in Settings, and checks that the
 // window shows no catalog keys or placeholders, and that a host error reads in the new language.
-// Restores the saved language at the end. Writes .openbot-build/i18n-e2e/report.json and one
+// Restores the saved language at the end. Writes .aikingbot-build/i18n-e2e/report.json and one
 // screenshot per language. Needs `--allow-mutations`, because it changes the language setting.
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { isAppLanguage } from "@openbot/contracts/app-language";
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { en, type TranslatedLocale, translateFor } from "@openbot/i18n";
-import { type AppLanguage, appLanguageOption } from "@openbot/i18n/languages";
-import { createOpenBotLogger } from "@openbot/logging";
-import { userErrorMessage } from "@openbot/user-errors";
+import { isAppLanguage } from "@aikingbot/contracts/app-language";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
+import { en, type TranslatedLocale, translateFor } from "@aikingbot/i18n";
+import { type AppLanguage, appLanguageOption } from "@aikingbot/i18n/languages";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
+import { userErrorMessage } from "@aikingbot/user-errors";
 import type { Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";
@@ -18,11 +18,11 @@ import { readDevInstanceRecords } from "./dev-automation/instance-registry";
 // The page functions below run in the app window, where the preload bridge sets this.
 declare global {
   interface Window {
-    openbot: OpenBotDesktopApi;
+    aikingbot: AIKINGBOTDesktopApi;
   }
 }
 
-const OUT = resolve(import.meta.dirname, "../.openbot-build/i18n-e2e");
+const OUT = resolve(import.meta.dirname, "../.aikingbot-build/i18n-e2e");
 const LOCALES = ["ja", "fr", "es", "de"] as const satisfies readonly TranslatedLocale[];
 const KEYS = new Set(Object.keys(en));
 const PLACEHOLDER = /\{[a-zA-Z]\w*\}/g;
@@ -39,13 +39,13 @@ assertMutationAllowed({
   instanceNamed: true,
   target: instance.instanceId,
 });
-const logger = createOpenBotLogger("i18n-e2e");
+const logger = createAIKINGBOTLogger("i18n-e2e");
 const session = await connectToDevApp(instance.remoteDebuggingPort, logger, {
   expectedRendererPort: instance.rendererPort,
 });
 
 async function savedLanguage(page: Page): Promise<AppLanguage> {
-  const preference = await page.evaluate(() => window.openbot.getAppLanguagePreference());
+  const preference = await page.evaluate(() => window.aikingbot.getAppLanguagePreference());
   assert.ok(isAppLanguage(preference.language));
   return preference.language;
 }
@@ -87,7 +87,7 @@ async function leftovers(page: Page) {
 async function hostError(page: Page): Promise<string> {
   const message = await page.evaluate(async () => {
     try {
-      await window.openbot.skills.setEnabled({ agentId: "i18n-e2e-missing-agent", skillId: "none", enabled: true });
+      await window.aikingbot.skills.setEnabled({ agentId: "i18n-e2e-missing-agent", skillId: "none", enabled: true });
       return null;
     } catch (error) {
       return error instanceof Error ? error.message : String(error);
@@ -104,7 +104,7 @@ const results = [];
 let shown: TranslatedLocale = "en";
 try {
   // Start from English, so the first Settings lookup knows the names it looks for.
-  if (original !== "en") await page.evaluate(() => window.openbot.setAppLanguagePreference({ language: "en" }));
+  if (original !== "en") await page.evaluate(() => window.aikingbot.setAppLanguagePreference({ language: "en" }));
   await page.waitForFunction(() => document.documentElement.lang === "en");
   for (const locale of LOCALES) {
     await chooseLanguage(page, shown, locale);
@@ -126,7 +126,7 @@ try {
     assert.equal(errorShown, t("error.skill.chooseLocalAgent"), `The host error is not translated to ${locale}.`);
   }
 } finally {
-  await page.evaluate((language) => window.openbot.setAppLanguagePreference({ language }), original);
+  await page.evaluate((language) => window.aikingbot.setAppLanguagePreference({ language }), original);
   writeFileSync(resolve(OUT, "report.json"), `${JSON.stringify({ original, results }, null, 2)}\n`);
   await session.close();
 }

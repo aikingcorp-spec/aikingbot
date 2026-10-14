@@ -1,5 +1,5 @@
-import type { MobileTextKey, MobileTranslate } from "@openbot/i18n/mobile";
-import { type RemoteConnectionFailure, type RemoteRecoveryStatus, remoteRecoveryMessage } from "@openbot/team-client";
+import type { MobileTextKey, MobileTranslate } from "@aikingbot/i18n/mobile";
+import { type RemoteConnectionFailure, type RemoteRecoveryStatus, remoteRecoveryMessage } from "@aikingbot/team-client";
 import type { MobileServer, MobileServerState } from "./workspace-types";
 
 const LABELS = {

@@ -490,8 +490,8 @@ describe("hosted site conversation events", () => {
   const publishedSite = {
     siteId: "site-1",
     title: "Launch page",
-    hostname: "launch-page-23456789ab.openbot.site",
-    url: "https://launch-page-23456789ab.openbot.site",
+    hostname: "launch-page-23456789ab.aikingbot-sites.aikingx.com",
+    url: "https://launch-page-23456789ab.aikingbot-sites.aikingx.com",
   } as const;
 
   it.each(["running", "succeeded", "failed", "interrupted", "cancelled"] as const)(
@@ -544,7 +544,7 @@ describe("hosted site conversation events", () => {
   });
 
   it("accepts a matching local development URL for a canonical hosted-site hostname", () => {
-    const localUrl = "http://launch-page-23456789ab.openbot.localhost:3100/";
+    const localUrl = "http://launch-page-23456789ab.aikingbot.localhost:3100/";
     const details = { ...publishedSite, url: localUrl };
     const message = {
       id: "local-site-publish",
@@ -560,12 +560,12 @@ describe("hosted site conversation events", () => {
     expect(isHostedSiteConversationEventUrl(localUrl, publishedSite.hostname)).toBe(true);
     expect(
       isHostedSiteConversationEventUrl(
-        "http://different-page-23456789ab.openbot.localhost:3100/",
+        "http://different-page-23456789ab.aikingbot.localhost:3100/",
         publishedSite.hostname,
       ),
     ).toBe(false);
     expect(
-      isHostedSiteConversationEventUrl("http://launch-page-23456789ab.openbot.localhost/", publishedSite.hostname),
+      isHostedSiteConversationEventUrl("http://launch-page-23456789ab.aikingbot.localhost/", publishedSite.hostname),
     ).toBe(false);
   });
 
@@ -688,7 +688,7 @@ describe("renderer-to-main boundary guards", () => {
     model: "gpt-5-codex",
     reasoningEffort: "high",
     threadId: null,
-    workspacePath: "/Users/pilot/OpenBot/Agents/bot-1",
+    workspacePath: "/Users/pilot/AIKINGBOT/Agents/bot-1",
     preview: "Done",
     updatedAt: "2026-08-29T10:00:00.000Z",
     avatarSeed: "chief-1",
@@ -867,7 +867,7 @@ describe("renderer-to-main boundary guards", () => {
     expect(isAgentModelOption({ ...model, supportedReasoningEfforts: ["low", "extreme"] })).toBe(false);
   });
 
-  // The same argument one field over. Every model id is minted by a provider CLI, not by OpenBot, and
+  // The same argument one field over. Every model id is minted by a provider CLI, not by AIKINGBOT, and
   // the Claude CLI reports its 1M-context Fable variant as `claude-fable-5-1[1m]`. Both list decoders
   // read this guard, so a charset without square brackets did not just hide that one model — it
   // emptied the local picker and took a remote server offline for every route.

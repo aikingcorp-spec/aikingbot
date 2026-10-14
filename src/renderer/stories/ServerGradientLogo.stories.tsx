@@ -1,4 +1,4 @@
-import { Heading, ServerGradientLogo, serverGradientLogoProfile, Text } from "@openbot/ui";
+import { Heading, ServerGradientLogo, serverGradientLogoProfile, Text } from "@aikingbot/ui";
 import { For } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -28,7 +28,7 @@ export const Gallery: Story = {
   render: () => (
     <main
       class="min-h-screen p-8"
-      style={{ background: "var(--openbot-bg-canvas)", color: "var(--openbot-text-primary)" }}
+      style={{ background: "var(--aikingbot-bg-canvas)", color: "var(--aikingbot-text-primary)" }}
     >
       <div class="mx-auto grid max-w-5xl gap-6">
         <header class="grid gap-2">
@@ -44,8 +44,8 @@ export const Gallery: Story = {
               <article
                 class="grid justify-items-center gap-4 rounded-2xl p-5"
                 style={{
-                  background: "var(--openbot-bg-surface)",
-                  "box-shadow": "0 0 0 1px var(--openbot-border)",
+                  background: "var(--aikingbot-bg-surface)",
+                  "box-shadow": "0 0 0 1px var(--aikingbot-border)",
                 }}
               >
                 <ServerGradientLogo

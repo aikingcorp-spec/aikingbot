@@ -1,5 +1,5 @@
-import type { CreateAgentInput } from "@openbot/contracts/ipc";
-import type { FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
+import type { CreateAgentInput } from "@aikingbot/contracts/ipc";
+import type { FirstAgentDraft } from "@aikingbot/ui/features/agents/FirstAgentSetup";
 import { createAgentInitialMessage } from "./agent-initial-message";
 
 /** A new agent asked for from a short draft, such as the routine canvas's card. */

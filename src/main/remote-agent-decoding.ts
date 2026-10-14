@@ -5,7 +5,7 @@ import {
   decodeInstalledSkills,
   isAgentHostSettings,
   isAgentSessionSettings,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 // Agent-shaped wire payloads: summaries, status, models, skills, memories, routines, queue.
 // See `remote-host-decoding.ts` for why the `FromHost` suffix exists and must not be merged away.
 
@@ -21,7 +21,7 @@ import type {
   QueuedMessageReceipt,
   QueueSnapshot,
   SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   isAccountUsage,
   isAgentMemory,
@@ -36,9 +36,9 @@ import {
   isRoutineFlowLink,
   isRoutineRun,
   isSidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, guardedDecoder, guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import { isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { decodeRecord, guardedDecoder, guardedListDecoder } from "@aikingbot/contracts/ipc-decoding";
+import { isNumber, isString } from "@aikingbot/contracts/runtime-values";
 
 export const decodeAgentHostSettingsFromHost = guardedDecoder(isAgentHostSettings, "agent host settings response");
 

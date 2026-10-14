@@ -1,11 +1,11 @@
 import type { LandingIconName } from "../../components/landing/LandingIcon";
-import type { ComparisonQuestion, ComparisonSource, OpenBotPlan } from "../compare/comparison";
+import type { AIKINGBOTPlan, ComparisonQuestion, ComparisonSource } from "../compare/comparison";
 
-// One provider page, as data: what OpenBot does with one coding agent it runs. The
+// One provider page, as data: what AIKINGBOT does with one coding agent it runs. The
 // page draws every part from it, and the FAQ structured data is built from the same
 // questions, so the two can not disagree.
 
-/** One thing that OpenBot adds to the provider's own agent. */
+/** One thing that AIKINGBOT adds to the provider's own agent. */
 export interface ProviderAdd {
   icon: LandingIconName;
   title: string;
@@ -22,14 +22,14 @@ interface ProviderOfficialApp {
 
 export interface ProviderPage {
   /** The logo of the plan card to light, and of the hero. `custom` is a model server of your own. */
-  provider: OpenBotPlan["provider"];
+  provider: AIKINGBOTPlan["provider"];
   /** The product's own spelling, as the page names it. */
   name: string;
   /** The one-sentence answer under the title. */
   answer: string;
-  /** How OpenBot connects to the provider: the second setup step. */
+  /** How AIKINGBOT connects to the provider: the second setup step. */
   connect: string;
-  /** What OpenBot adds for this provider in particular, shown before `OPENBOT_ADDS`. */
+  /** What AIKINGBOT adds for this provider in particular, shown before `AIKINGBOT_ADDS`. */
   adds: readonly ProviderAdd[];
   /** The company that makes the provider, as in "{vendor}'s own apps". */
   vendor: string;
@@ -43,10 +43,10 @@ export interface ProviderPage {
 }
 
 /**
- * What OpenBot adds to every provider. The claims are the same as on the compare
+ * What AIKINGBOT adds to every provider. The claims are the same as on the compare
  * pages (`content/compare/claude-cowork.ts`), and come from the repository.
  */
-export const OPENBOT_ADDS: readonly ProviderAdd[] = [
+export const AIKINGBOT_ADDS: readonly ProviderAdd[] = [
   {
     icon: "users",
     title: "A team, not one chat",
@@ -55,7 +55,7 @@ export const OPENBOT_ADDS: readonly ProviderAdd[] = [
   {
     icon: "phone",
     title: "Your agents on your phone",
-    text: "The OpenBot apps for iPhone and Android connect to the computer that runs your agents, over an encrypted connection, with no VPN. Remote access needs an OpenBot account.",
+    text: "The AIKINGBOT apps for iPhone and Android connect to the computer that runs your agents, over an encrypted connection, with no VPN. Remote access needs an AIKINGBOT account.",
   },
   {
     icon: "blocks",
@@ -65,11 +65,11 @@ export const OPENBOT_ADDS: readonly ProviderAdd[] = [
   {
     icon: "lock",
     title: "Your data on your computer",
-    text: "Workspaces, chats and files stay on the computer that runs OpenBot. The provider you choose gets the requests you send.",
+    text: "Workspaces, chats and files stay on the computer that runs AIKINGBOT. The provider you choose gets the requests you send.",
   },
   {
     icon: "tag",
     title: "Use your AI plans",
-    text: "OpenBot is free for noncommercial use. Your agents use the plans you already pay for.",
+    text: "AIKINGBOT is free for noncommercial use. Your agents use the plans you already pay for.",
   },
 ];

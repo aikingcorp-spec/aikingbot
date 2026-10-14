@@ -1,6 +1,6 @@
-import { Button, ChevronRight, Dialog, ErrorReference, IconButton, X } from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { useText } from "@openbot/ui/text";
+import { Button, ChevronRight, Dialog, ErrorReference, IconButton, X } from "@aikingbot/ui";
+import { createScrollFades } from "@aikingbot/ui/components/createScrollFades";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, For, Match, onCleanup, Show, Switch } from "solid-js";
 import { MarketplaceAgentPage } from "./MarketplaceAgentPage";
 import { MarketplaceAppPage } from "./MarketplaceAppPage";

@@ -5,14 +5,14 @@ import { Effect } from "effect";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ChannelRoutine, ChannelRoutineRun, ChannelTask } from "@openbot/contracts/ipc";
+import type { ChannelRoutine, ChannelRoutineRun, ChannelTask } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores } from "./agent-service-test-harness";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { ChannelRoutineScheduler, channelRunStatusForTasks } from "./channel-routine-scheduler";
 import { ChannelRoutineStore } from "./channel-routine-store";
 import { ChannelService } from "./channel-service";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
 
 let root: string;
 let data: ReturnType<typeof stores>;
@@ -35,7 +35,7 @@ beforeEach(async () => {
   busy = false;
   generate.mockReset();
   generate.mockImplementation(() => Effect.succeed(JSON.stringify({ agentId: "agent-a" })));
-  root = await mkdtemp(join(tmpdir(), "openbot-channel-routines-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-channel-routines-"));
   data = stores(root);
   await runCauseEffect(data.store.initialize());
   await runCauseEffect(data.mailbox.initialize());
@@ -431,7 +431,7 @@ describe("ChannelRoutineScheduler", () => {
     await runCauseEffect(service.stop());
     data.store.database.close();
 
-    const reopened = new OpenBotDatabase(userDataPath);
+    const reopened = new AIKINGBOTDatabase(userDataPath);
     await runCauseEffect(reopened.initialize());
     const restarted = new ChannelService(reopened, data.mailbox, {
       agents: () => [],

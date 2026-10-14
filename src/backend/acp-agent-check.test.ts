@@ -44,7 +44,7 @@ let executable = "";
 let pidFile = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-acp-check-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-acp-check-"));
   executable = join(root, "fake-agent");
   pidFile = join(root, "pid");
   await writeFile(executable, FAKE_AGENT);

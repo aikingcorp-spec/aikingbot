@@ -5,25 +5,25 @@ import { Effect } from "effect";
 import { access, mkdir, mkdtemp, open, readdir, readFile, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_RUNTIME_TEXT_LIMIT,
   AGENT_RUNTIME_WORKING_ITEMS_LIMIT,
   isAttachmentSummary,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { AttachmentFiles } from "./attachment-files";
 import { runCauseEffect } from "./effect-boundary";
 import { MailboxStore } from "./mailbox-store";
-import { OpenBotDatabase } from "./openbot-database";
 
 let root: string;
 let store: MailboxStore;
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-mailbox-test-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-mailbox-test-"));
   store = new MailboxStore(join(root, "user-data"), join(root, "Shared"));
   await runCauseEffect(store.initialize());
 });
@@ -116,7 +116,7 @@ describe("MailboxStore", () => {
   it.each(["cancel-edit", "delete-message"] as const)(
     "preserves released backup bytes after %s, rollback, and restart",
     async (action) => {
-      const database = new OpenBotDatabase(join(root, "user-data"));
+      const database = new AIKINGBOTDatabase(join(root, "user-data"));
       const mailbox = new MailboxStore(join(root, "user-data"), join(root, "Shared"), database);
       await runCauseEffect(mailbox.initialize());
       const file = join(root, "backup.txt");
@@ -173,7 +173,7 @@ describe("MailboxStore", () => {
   );
 
   it("rolls back failed hold, save and release writes without changing the message", async () => {
-    const database = new OpenBotDatabase(join(root, "user-data"));
+    const database = new AIKINGBOTDatabase(join(root, "user-data"));
     const mailbox = new MailboxStore(join(root, "user-data"), join(root, "Shared"), database);
     await runCauseEffect(mailbox.initialize());
     const receipt = await runCauseEffect(
@@ -582,7 +582,7 @@ describe("MailboxStore", () => {
     await expect(access(first?.managedAttachments[0]?.path ?? "missing")).resolves.toBeUndefined();
 
     const manifest = JSON.parse(
-      await readFile(join(root, "Shared", "Transfers", receipt.messageId, ".openbot-transfer.json"), "utf8"),
+      await readFile(join(root, "Shared", "Transfers", receipt.messageId, ".aikingbot-transfer.json"), "utf8"),
     );
     expect(manifest).toMatchObject({
       version: 2,
@@ -1205,7 +1205,7 @@ describe("MailboxStore", () => {
       kind: "image",
       mimeType: "image/png",
       previewKind: "image",
-      previewUrl: `openbot-attachment://file/${attachment.id}`,
+      previewUrl: `aikingbot-attachment://file/${attachment.id}`,
     });
     await expect(runCauseEffect(store.resolveAttachment(attachment.id))).resolves.toMatchObject({
       mimeType: "image/png",
@@ -1445,7 +1445,7 @@ describe("MailboxStore", () => {
     await runCauseEffect(
       store.enqueue({ sender: { kind: "user" }, recipientAgentIds: ["chief"], text: "Sent meanwhile" }),
     );
-    vi.spyOn(OpenBotDatabase.prototype, "replaceMailboxState").mockImplementationOnce(() => {
+    vi.spyOn(AIKINGBOTDatabase.prototype, "replaceMailboxState").mockImplementationOnce(() => {
       throw new Error("The disk is full.");
     });
     release();
@@ -1756,7 +1756,7 @@ describe("MailboxStore", () => {
   });
 
   it("writes only changed rows and keeps every delivery and idempotency key across a restart", async () => {
-    const database = new OpenBotDatabase(join(root, "user-data"));
+    const database = new AIKINGBOTDatabase(join(root, "user-data"));
     const mailbox = new MailboxStore(join(root, "user-data"), join(root, "Shared"), database);
     await runCauseEffect(mailbox.initialize());
     const send = (recipient: string, text: string, idempotencyKey?: string) =>

@@ -1,8 +1,8 @@
-import type { BitwardenConnectorStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import type { BitwardenConnectorPanelProps } from "@openbot/ui/features/settings/BitwardenConnectorPanel";
-import { currentText } from "@openbot/ui/text";
+import type { BitwardenConnectorStatus } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import type { BitwardenConnectorPanelProps } from "@aikingbot/ui/features/settings/BitwardenConnectorPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createStore, onSettled } from "solid-js";
 import { bitwardenConnectorPort } from "./bitwarden-connector-port";
 

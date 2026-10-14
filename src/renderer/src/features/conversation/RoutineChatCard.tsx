@@ -1,16 +1,16 @@
-import type { RoutineFields, RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineFields, RoutineSchedule } from "@aikingbot/contracts/ipc";
 import {
   RoutineScheduleCard,
   type RoutineScheduleCardState,
-} from "@openbot/ui/features/conversation/RoutineScheduleCard";
-import type { RoutineScheduleDraft } from "@openbot/ui/features/conversation/routine-schedule-draft";
+} from "@aikingbot/ui/features/conversation/RoutineScheduleCard";
+import type { RoutineScheduleDraft } from "@aikingbot/ui/features/conversation/routine-schedule-draft";
 import {
   ROUTINE_SAVED_DRAFT_KINDS,
   routineDraftProblem,
   routineScheduleFromDraft,
   routineScheduleToDraft,
-} from "@openbot/ui/features/conversation/routine-schedule-saved";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/routine-schedule-saved";
+import { type TextValue, useText } from "@aikingbot/ui/text";
 import { createEffect, createSignal } from "solid-js";
 import { agentRoutinesPort } from "./routines-port";
 

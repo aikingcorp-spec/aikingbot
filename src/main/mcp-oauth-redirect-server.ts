@@ -2,12 +2,12 @@
  * Where an MCP authorization server sends its grant back: a listener on this machine's loopback
  * address, and nothing that leaves it.
  *
- * `openbot://mcp-auth` was the address before this. It is the shorter path - the operating system
+ * `aikingbot://mcp-auth` was the address before this. It is the shorter path - the operating system
  * hands the link straight to the running app - but it is not an address every authorization server
  * accepts. Canva registers a custom scheme without complaint and then refuses it at `/authorize`
  * with `Invalid redirect URI.`, which leaves the user on an error page with nothing to act on. The
  * loopback address is the redirect RFC 8252 tells a native app to use, it is what that server
- * wants, and it is accepted by every other signed-in listing OpenBot ships.
+ * wants, and it is accepted by every other signed-in listing AIKINGBOT ships.
  *
  * So the deep link stays as the fallback for the rare machine where no loopback port can be bound,
  * and this is what a sign-in registers and sends when it is running. The port is

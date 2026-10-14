@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/user-errors",
+  "name": "@aikingbot/user-errors",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,9 +11,9 @@
     "typecheck": "bun ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@openbot/contracts": "workspace:*",
-    "@openbot/i18n": "workspace:*",
-    "@openbot/logging": "workspace:*"
+    "@aikingbot/contracts": "workspace:*",
+    "@aikingbot/i18n": "workspace:*",
+    "@aikingbot/logging": "workspace:*"
   },
   "devDependencies": {
     "typescript": "catalog:",

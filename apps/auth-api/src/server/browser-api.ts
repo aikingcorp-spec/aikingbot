@@ -1,8 +1,8 @@
-import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
-import { parseBillingPortalRequest } from "@openbot/contracts/billing";
-import { parseHostedServerLifecycleInput } from "@openbot/contracts/hosted-servers";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { isAvatarMimeType } from "@aikingbot/contracts/avatar-images";
+import { parseBillingPortalRequest } from "@aikingbot/contracts/billing";
+import { parseHostedServerLifecycleInput } from "@aikingbot/contracts/hosted-servers";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Cause, Effect } from "effect";
 import { type AuthService, AuthServiceError } from "./auth-service";
 import { AvatarUploadError, readAvatarUpload, removeAccountAvatar, storeAccountAvatar } from "./avatar-storage";
@@ -18,7 +18,7 @@ import { type RemoteControlPlane, RemoteControlPlaneError } from "./remote-contr
 import { sendTeamInviteEmail } from "./team-invite-email";
 import type { AuthUser, TeamInviteEmailDelivery } from "./types";
 
-const COOKIE = "__Host-openbot-web";
+const COOKIE = "__Host-aikingbot-web";
 const PREFIX = "/api/browser/";
 const COOKIE_ATTRIBUTES = "Path=/; Secure; HttpOnly; SameSite=Lax";
 
@@ -120,7 +120,7 @@ const AVATAR_PATH = "v1/me/avatar";
 
 /**
  * Every write sends JSON, except an avatar upload, which sends the image bytes as the bearer route
- * does. The `X-OpenBot-Browser` header and the same-origin check still apply to it: a cross-site
+ * does. The `X-AIKINGBOT-Browser` header and the same-origin check still apply to it: a cross-site
  * page cannot send that header without a CORS preflight, which this API never answers.
  */
 function browserWriteContentTypeAllowed(request: Request, path: string): boolean {
@@ -143,7 +143,7 @@ export function handleBrowserApi(request: Request, services: BrowserApiServices)
   if (
     request.method !== "GET" &&
     (request.headers.get("Origin") !== new URL(request.url).origin ||
-      request.headers.get("X-OpenBot-Browser") !== "1" ||
+      request.headers.get("X-AIKINGBOT-Browser") !== "1" ||
       !browserWriteContentTypeAllowed(request, path))
   )
     return Promise.resolve(failure(403, "browser_request_refused", "The browser request was refused."));

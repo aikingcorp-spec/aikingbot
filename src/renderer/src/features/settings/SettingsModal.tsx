@@ -10,20 +10,20 @@ import type {
   MobileConnectLink,
   MobileConnectTicket,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { Tabs } from "@openbot/ui";
-import { BillingPanel } from "@openbot/ui/features/billing/BillingPanel";
-import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import { ProfileNameSaveBar } from "@openbot/ui/features/settings/ProfileNameSaveBar";
-import { SettingsDialogShell } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { SettingsMobileConnectTab } from "@openbot/ui/features/settings/SettingsMobileConnectTab";
-import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
-import { SettingsUpdatesTab } from "@openbot/ui/features/settings/SettingsUpdatesTab";
-import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
-import { createSettingsMobileConnectStore } from "@openbot/ui/features/settings/stores/mobile-connect-store";
-import { createSettingsProfileStore } from "@openbot/ui/features/settings/stores/profile-store";
-import { createSettingsUpdatesStore } from "@openbot/ui/features/settings/stores/updates-store";
+} from "@aikingbot/contracts/ipc";
+import { Tabs } from "@aikingbot/ui";
+import { BillingPanel } from "@aikingbot/ui/features/billing/BillingPanel";
+import { createBillingStore } from "@aikingbot/ui/features/billing/billing-store";
+import type { GeneralSettingsValue } from "@aikingbot/ui/features/settings/app-settings";
+import { ProfileNameSaveBar } from "@aikingbot/ui/features/settings/ProfileNameSaveBar";
+import { SettingsDialogShell } from "@aikingbot/ui/features/settings/SettingsDialogShell";
+import { SettingsMobileConnectTab } from "@aikingbot/ui/features/settings/SettingsMobileConnectTab";
+import { SettingsProfileTab } from "@aikingbot/ui/features/settings/SettingsProfileTab";
+import { SettingsUpdatesTab } from "@aikingbot/ui/features/settings/SettingsUpdatesTab";
+import { createSettingsHostedServersStore } from "@aikingbot/ui/features/settings/stores/hosted-servers-store";
+import { createSettingsMobileConnectStore } from "@aikingbot/ui/features/settings/stores/mobile-connect-store";
+import { createSettingsProfileStore } from "@aikingbot/ui/features/settings/stores/profile-store";
+import { createSettingsUpdatesStore } from "@aikingbot/ui/features/settings/stores/updates-store";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { ComputerUseSetup } from "../computer-use/ComputerUseSetup";

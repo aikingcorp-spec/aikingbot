@@ -1,15 +1,15 @@
 // The model list request and the detection settings. The list request can carry a key, so no
 // message here quotes the input.
 
-import type { DiscoverModelsInput, ProviderDetectionSettings } from "@openbot/contracts/ipc";
+import type { DiscoverModelsInput, ProviderDetectionSettings } from "@aikingbot/contracts/ipc";
 import {
   customProviderEndpointKey,
   isCustomProviderId,
   isDetectionFolder,
   PROVIDER_DETECTION_LIMITS,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { isBoolean, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { parseApiKey, parseBaseUrl, parseHeaders } from "./custom-provider-inputs";
 import { isObject } from "./validation";
 

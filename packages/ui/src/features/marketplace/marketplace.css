@@ -5,31 +5,31 @@
 .skills-marketplace-backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--openbot-layer-dialog-host);
+  z-index: var(--aikingbot-layer-dialog-host);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-4);
+  padding: var(--aikingbot-space-4);
 }
 
 .skills-marketplace {
   /* One inset for the whole window: the top bar title and the body start on it. */
-  --marketplace-inset: var(--openbot-space-6);
+  --marketplace-inset: var(--aikingbot-space-6);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   width: min(1040px, calc(100vw - 32px));
   height: min(704px, calc(100vh - 32px));
   overflow: hidden;
-  border: 1px solid var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-sidebar);
-  color: var(--openbot-text-primary);
+  border: 1px solid var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-sidebar);
+  color: var(--aikingbot-text-primary);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .skills-marketplace {
     transition:
-      opacity var(--openbot-duration-normal) cubic-bezier(0.23, 1, 0.32, 1),
-      transform var(--openbot-duration-normal) cubic-bezier(0.23, 1, 0.32, 1);
+      opacity var(--aikingbot-duration-normal) cubic-bezier(0.23, 1, 0.32, 1),
+      transform var(--aikingbot-duration-normal) cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .skills-marketplace[data-closed] {
@@ -40,28 +40,28 @@
 
 /* Menus and the connect and confirm dialogs open over the window. */
 .marketplace-menu {
-  z-index: calc(var(--openbot-layer-dialog-host) + 1);
+  z-index: calc(var(--aikingbot-layer-dialog-host) + 1);
 }
 
 body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wizard-dialog) {
-  z-index: calc(var(--openbot-layer-dialog-host) + 1);
+  z-index: calc(var(--aikingbot-layer-dialog-host) + 1);
 }
 
 .skills-marketplace-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   min-height: 48px;
-  padding: var(--openbot-space-2) var(--openbot-space-2) var(--openbot-space-2) var(--marketplace-inset);
-  border-bottom: 1px solid var(--openbot-border);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-2) var(--aikingbot-space-2) var(--marketplace-inset);
+  border-bottom: 1px solid var(--aikingbot-border);
 }
 
 .skills-marketplace-topbar-actions {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .skills-marketplace-body {
@@ -72,24 +72,24 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 
 /* The body uses the window inset, so the page lines up with the top bar title. */
 .marketplace-frame {
-  padding: var(--openbot-space-6) var(--marketplace-inset) var(--openbot-space-8);
+  padding: var(--aikingbot-space-6) var(--marketplace-inset) var(--aikingbot-space-8);
 }
 
 .skills-marketplace-error {
   position: sticky;
-  bottom: var(--openbot-space-4);
+  bottom: var(--aikingbot-space-4);
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   width: fit-content;
   max-width: calc(100% - 32px);
-  margin: 0 auto var(--openbot-space-4);
-  padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-3);
-  border: 1px solid var(--openbot-danger);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-danger);
-  box-shadow: 0 12px 32px var(--openbot-shadow-dialog);
+  margin: 0 auto var(--aikingbot-space-4);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-1) var(--aikingbot-space-3);
+  border: 1px solid var(--aikingbot-danger);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-danger);
+  box-shadow: 0 12px 32px var(--aikingbot-shadow-dialog);
 }
 
 .marketplace-visually-hidden {
@@ -107,7 +107,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   display: flex;
   flex: 1;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   min-width: 0;
 }
 
@@ -115,10 +115,10 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-lg);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -131,34 +131,34 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   flex: 0 1 auto;
   min-width: 0;
   height: auto;
-  margin-block: calc(-1 * var(--openbot-space-1));
-  margin-inline: calc(-1 * var(--openbot-space-2) - 1px);
-  padding: var(--openbot-space-1) var(--openbot-space-2);
+  margin-block: calc(-1 * var(--aikingbot-space-1));
+  margin-inline: calc(-1 * var(--aikingbot-space-2) - 1px);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-2);
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-lg);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .skills-marketplace .marketplace-crumb-parent:hover:not(:disabled) {
-    border-color: var(--openbot-border-strong);
-    background: var(--openbot-bg-control-hover);
-    color: var(--openbot-text-primary);
+    border-color: var(--aikingbot-border-strong);
+    background: var(--aikingbot-bg-control-hover);
+    color: var(--aikingbot-text-primary);
   }
 }
 
 .marketplace-crumb-separator {
   flex: 0 0 auto;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  color: var(--aikingbot-text-muted);
 }
 
 /* A title takes focus when its view opens. The focus is for screen readers, not a control. */
@@ -173,14 +173,14 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-stack {
   display: grid;
   align-content: start;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   min-width: 0;
 }
 
 .marketplace-head {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
 }
 
 .marketplace-head-actions {
@@ -189,13 +189,13 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   align-items: center;
   min-width: 0;
   max-width: 50%;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .marketplace-head-copy {
   display: grid;
   flex: 1;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   min-width: 0;
 }
 
@@ -206,16 +206,16 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 
 .marketplace-command {
   overflow-wrap: anywhere;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-sm);
 }
 
 /* Tabs, search and the filter share one row. */
 .marketplace-toolbar {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .marketplace-search {
@@ -226,8 +226,8 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 }
 
 .marketplace-count {
-  margin-left: var(--openbot-space-1-5);
-  color: var(--openbot-text-muted);
+  margin-left: var(--aikingbot-space-1-5);
+  color: var(--aikingbot-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -253,24 +253,24 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 }
 
 .marketplace-tab-slot {
-  padding-top: var(--openbot-space-4);
+  padding-top: var(--aikingbot-space-4);
 }
 
 .marketplace-block {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .marketplace-block-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .marketplace-block-copy {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   min-width: 0;
 }
 
@@ -315,21 +315,21 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   width: 20px;
   height: 20px;
   overflow: hidden;
-  border-radius: var(--openbot-radius-xs);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-muted);
+  border-radius: var(--aikingbot-radius-xs);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-muted);
 }
 
 .marketplace-skill-mark[data-size="row"] {
   width: 36px;
   height: 36px;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .marketplace-skill-mark[data-size="md"] {
   width: 40px;
   height: 40px;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 /* A plugin icon in a row. `PluginIcon` also draws the icon of the MCP connect dialog. */
@@ -340,10 +340,10 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   width: 42px;
   height: 42px;
   overflow: hidden;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-accent-text);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-accent-text);
 }
 
 .skills-marketplace-icon:has(img) {
@@ -385,7 +385,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .marketplace-card {
@@ -393,22 +393,22 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   display: grid;
   min-width: 0;
   grid-template-rows: auto 1fr auto;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-4);
-  border: 1px solid var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-grouped);
-  transition: background var(--openbot-duration-fast) var(--openbot-ease-out);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-4);
+  border: 1px solid var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-grouped);
+  transition: background var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .marketplace-card:hover:not(.marketplace-card-skeleton) {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .marketplace-card-head {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   min-width: 0;
 }
 
@@ -426,7 +426,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   display: inline-flex;
   flex: 0 1 auto;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   min-width: 0;
   max-width: 60%;
 }
@@ -435,7 +435,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -444,7 +444,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-card-foot {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   min-height: 16px;
   font-variant-numeric: tabular-nums;
 }
@@ -471,7 +471,7 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-skeleton-mark {
   width: 40px;
   height: 40px;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .marketplace-skeleton-line {
@@ -486,9 +486,9 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-done {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1);
-  color: var(--openbot-success-text);
-  font-size: var(--openbot-text-sm);
+  gap: var(--aikingbot-space-1);
+  color: var(--aikingbot-success-text);
+  font-size: var(--aikingbot-text-sm);
   white-space: nowrap;
 }
 
@@ -509,16 +509,16 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-row {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   min-height: 52px;
-  padding: var(--openbot-space-1-5) var(--openbot-space-2);
-  border-radius: var(--openbot-radius-md);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .marketplace-row-copy {
   display: grid;
   flex: 1;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -528,26 +528,26 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-page {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 220px;
-  gap: var(--openbot-space-8);
+  gap: var(--aikingbot-space-8);
   align-items: start;
 }
 
 .marketplace-side {
   position: sticky;
-  top: var(--openbot-space-6);
-  padding-left: var(--openbot-space-6);
-  border-left: 1px solid var(--openbot-border);
+  top: var(--aikingbot-space-6);
+  padding-left: var(--aikingbot-space-6);
+  border-left: 1px solid var(--aikingbot-border);
 }
 
 /* `dt` and `dd` are direct children of the list, so each fact is one pair of grid rows. */
 .marketplace-props {
   display: grid;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   margin: 0;
 }
 
 .marketplace-props > dd {
-  margin: 0 0 var(--openbot-space-3);
+  margin: 0 0 var(--aikingbot-space-3);
 }
 
 .marketplace-props > dd:last-child {
@@ -557,8 +557,8 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 /* The Information list of an app page: the label and the value side by side. */
 .marketplace-info {
   grid-template-columns: minmax(120px, max-content) minmax(0, 1fr);
-  column-gap: var(--openbot-space-6);
-  row-gap: var(--openbot-space-2);
+  column-gap: var(--aikingbot-space-6);
+  row-gap: var(--aikingbot-space-2);
 }
 
 .marketplace-info > dd {
@@ -573,21 +573,21 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 /* The skill-preview card, with room for more than one request. */
 .marketplace-try {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .skill-preview-card.marketplace-try-card {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* Every text line is as tall as the chip, so the chip and the text share one line. */
 .marketplace-try-card .skill-preview-request {
   width: min(100%, 560px);
-  line-height: var(--openbot-space-6);
+  line-height: var(--aikingbot-space-6);
 }
 
 .marketplace-try-card .skill-preview-chip {
-  margin-inline-end: var(--openbot-space-0-5);
+  margin-inline-end: var(--aikingbot-space-0-5);
   vertical-align: top;
 }
 
@@ -599,10 +599,10 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 /* The skill's SKILL.md, as the agent reads it. */
 .marketplace-doc {
   min-width: 0;
-  padding: var(--openbot-space-4) var(--openbot-space-6);
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-card);
-  font-size: var(--openbot-text-sm);
+  padding: var(--aikingbot-space-4) var(--aikingbot-space-6);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-card);
+  font-size: var(--aikingbot-text-sm);
   overflow-wrap: anywhere;
 }
 
@@ -625,10 +625,10 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 .marketplace-empty {
   display: grid;
   justify-items: center;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-8) var(--openbot-space-6);
-  border: 1px dashed var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-card);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-8) var(--aikingbot-space-6);
+  border: 1px dashed var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-card);
   text-align: center;
 }
 
@@ -638,21 +638,21 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 }
 
 .marketplace-empty > .ui-button {
-  margin-top: var(--openbot-space-2);
+  margin-top: var(--aikingbot-space-2);
 }
 
 .marketplace-empty-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* ---------------------------------------------------------------- narrow */
 
 @media (max-width: 860px) {
   .skills-marketplace {
-    --marketplace-inset: var(--openbot-space-4);
+    --marketplace-inset: var(--aikingbot-space-4);
   }
 
   .marketplace-page {
@@ -661,8 +661,8 @@ body:has(.skills-marketplace) :is(.integration-dialog-backdrop, .integration-wiz
 
   .marketplace-side {
     position: static;
-    padding: var(--openbot-space-4) 0 0;
-    border-top: 1px solid var(--openbot-border);
+    padding: var(--aikingbot-space-4) 0 0;
+    border-top: 1px solid var(--aikingbot-border);
     border-left: 0;
   }
 

@@ -1,9 +1,9 @@
 {
-  "name": "OpenBotGit",
-  "url": "https://github.com/nightly-labs/openbot",
-  "description": "Gives OpenBot agents your repositories, issues and pull requests, through the GitHub MCP server, gh and git. The sign-in stays on the computer that runs OpenBot.",
+  "name": "AIKINGBOTGit",
+  "url": "https://github.com/aikingcorp-spec/aikingx_bot",
+  "description": "Gives AIKINGBOT agents your repositories, issues and pull requests, through the GitHub MCP server, gh and git. The sign-in stays on the computer that runs AIKINGBOT.",
   "public": true,
-  "hook_attributes": { "url": "https://github.com/nightly-labs/openbot", "active": false },
+  "hook_attributes": { "url": "https://github.com/aikingcorp-spec/aikingx_bot", "active": false },
   "request_oauth_on_install": false,
   "setup_on_update": false,
   "default_permissions": {

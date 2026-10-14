@@ -1,5 +1,5 @@
 import { type ParseArgsOptionsConfig, parseArgs } from "node:util";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 
 // One strict parser for the dev scripts that change or read developer state. A
 // script that ignored a flag it did not know used to run anyway, so a mistyped

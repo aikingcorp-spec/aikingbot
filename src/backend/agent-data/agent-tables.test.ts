@@ -12,7 +12,7 @@ let sharedRoot: string;
 let tables: AgentTables;
 
 beforeEach(async () => {
-  sharedRoot = await mkdtemp(join(tmpdir(), "openbot-shared-"));
+  sharedRoot = await mkdtemp(join(tmpdir(), "aikingbot-shared-"));
   tables = new AgentTables({
     sharedRoot,
     supervisor: new AgentDatabaseSupervisor({ spawnHost: spawnNodeDatabaseHost }),
@@ -87,8 +87,8 @@ describe("AgentTables", () => {
       "SELECT load_extension('/tmp/x.so')",
       "CREATE VIRTUAL TABLE stats USING dbstat",
       "INSERT INTO people (name) VALUES ('a'); DROP TABLE people",
-      "UPDATE openbot_metadata SET owner_agent_id = 'research'",
-      "DROP TABLE openbot_metadata",
+      "UPDATE aikingbot_metadata SET owner_agent_id = 'research'",
+      "DROP TABLE aikingbot_metadata",
     ]) {
       const result = await Effect.runPromise(tables.execute("chief", sql, []));
       expect(result.ok && sql).toBe(false);

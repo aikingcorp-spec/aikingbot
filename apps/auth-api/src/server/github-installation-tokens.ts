@@ -2,10 +2,10 @@ import { Effect, Result, Schema } from "effect";
 import { importPKCS8, SignJWT } from "jose";
 
 /**
- * Installation tokens of the OpenBot GitHub App for one signed-in GitHub user.
+ * Installation tokens of the AIKINGBOT GitHub App for one signed-in GitHub user.
  *
- * A user token (`ghu_`) makes GitHub show "user with OpenBotGit". An installation token (`ghs_`)
- * makes GitHub show `openbotgit[bot]`, but it needs the app's private key, which only this Worker
+ * A user token (`ghu_`) makes GitHub show "user with AIKINGBOTGit". An installation token (`ghs_`)
+ * makes GitHub show `aikingbotgit[bot]`, but it needs the app's private key, which only this Worker
  * holds. An installation token can do everything that the installation allows, so this service
  * gives one only for the repositories where the user of the token can push. The desktop keeps the
  * user token for every other repository.
@@ -185,7 +185,7 @@ export class GitHubInstallationTokens {
         new GitHubInstallationTokensError(
           503,
           "github_app_unavailable",
-          "The OpenBot GitHub App key is not a PKCS #8 key.",
+          "The AIKINGBOT GitHub App key is not a PKCS #8 key.",
         ),
     });
     const key = this.#key;
@@ -202,7 +202,7 @@ export class GitHubInstallationTokens {
         new GitHubInstallationTokensError(
           503,
           "github_app_unavailable",
-          "The OpenBot GitHub App could not sign a request.",
+          "The AIKINGBOT GitHub App could not sign a request.",
         ),
     });
   });
@@ -247,7 +247,7 @@ export class GitHubInstallationTokens {
             ...init.headers,
             Accept: "application/vnd.github+json",
             Authorization: authorization,
-            "User-Agent": "OpenBot",
+            "User-Agent": "AIKINGBOT",
             "X-GitHub-Api-Version": "2022-11-28",
           },
           signal: AbortSignal.any([signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS)]),
@@ -260,7 +260,7 @@ export class GitHubInstallationTokens {
         : new GitHubInstallationTokensError(
             503,
             "github_app_unavailable",
-            "GitHub refused the OpenBot GitHub App key.",
+            "GitHub refused the AIKINGBOT GitHub App key.",
           );
     }
     if (!response.ok)

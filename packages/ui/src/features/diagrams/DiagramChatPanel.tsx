@@ -6,7 +6,7 @@
  * hidden one is inert. The user drags the chat by the button or the panel header, inside the canvas.
  */
 
-import { ArrowUp, Bubble, BubbleContent, Button, Check, Minimize2, Spinner } from "@openbot/ui";
+import { ArrowUp, Bubble, BubbleContent, Button, Check, Minimize2, Spinner } from "@aikingbot/ui";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import type { AvatarMood } from "../../bloub-avatar";
 import type { AgentProfile } from "../../data";

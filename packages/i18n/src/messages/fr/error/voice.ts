@@ -9,8 +9,8 @@ export const messages = {
   "error.voice.modelUnavailable": "Le modèle vocal est indisponible.",
   "error.voice.transcriptionTimedOut": "La transcription vocale a expiré.",
   "error.voice.prepareRequired":
-    "La transcription vocale locale est indisponible. Exécutez `bun run voice:prepare` et redémarrez OpenBot.",
-  "error.voice.transcriptionFailed": "OpenBot n’a pas pu transcrire cet enregistrement.",
+    "La transcription vocale locale est indisponible. Exécutez `bun run voice:prepare` et redémarrez AIKINGBOT.",
+  "error.voice.transcriptionFailed": "AIKINGBOT n’a pas pu transcrire cet enregistrement.",
   "error.voice.cloud.keyRequired": "Ajoutez votre clé API ElevenLabs dans Réglages → Voix.",
   "error.voice.cloud.keyRejected": "ElevenLabs n’a pas accepté la clé API. Vérifiez la clé dans Réglages → Voix.",
   "error.voice.cloud.quotaExceeded": "Votre quota ElevenLabs est épuisé.",

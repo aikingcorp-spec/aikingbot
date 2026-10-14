@@ -18,8 +18,8 @@ import {
   IPC_ENDPOINTS,
   LOCAL_SERVER_ID,
   type MacPermissionId,
-} from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTranslate } from "@aikingbot/i18n";
 import { app, BrowserWindow, clipboard, type Display, Menu, type Point, type Rectangle, screen } from "electron";
 import type { AgentService } from "../backend/agent-service";
 import type { BrowserHost } from "../backend/browser-host";
@@ -159,7 +159,7 @@ export function createMainWindowController({
     });
 
     window.once("ready-to-show", () => {
-      performance.mark("openbot:window-ready");
+      performance.mark("aikingbot:window-ready");
       if (
         shouldShowDevelopmentWindow({
           remoteRole: developmentRemoteRole,
@@ -289,7 +289,7 @@ export function createMainWindowController({
   function loadRenderer(window: BrowserWindow): Promise<void> {
     onRendererLoadStarted();
     const developmentUrl = process.env.ELECTRON_RENDERER_URL;
-    return developmentUrl ? window.loadURL(developmentUrl) : window.loadURL("openbot-app://app/index.html");
+    return developmentUrl ? window.loadURL(developmentUrl) : window.loadURL("aikingbot-app://app/index.html");
   }
 
   async function ensureMainWindow(): Promise<BrowserWindow> {
@@ -406,7 +406,7 @@ export function createComputerUseHighlightWindow(bounds: Rectangle): BrowserWind
   // application's full screen. One overlay on every Space is what lets the rim follow it there
   // without a second window and without pulling the user out of the Space they are on. The
   // overlays are built again after each idle period, and without `skipTransformProcessType` each
-  // build would hide the Dock icon and every OpenBot window for a moment.
+  // build would hide the Dock icon and every AIKINGBOT window for a moment.
   window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
   // Nothing on this surface may be pressed, and it covers another application's whole window, so
   // every event is handed straight on to the window below it.
@@ -423,7 +423,7 @@ export function createComputerUseHighlightWindow(bounds: Rectangle): BrowserWind
 /**
  * The small window that stands beside the System Settings pane a permission is granted in.
  *
- * System Settings opens in front of everything and covers OpenBot, so the panel that asked for the
+ * System Settings opens in front of everything and covers AIKINGBOT, so the panel that asked for the
  * grant is no longer on screen at the moment the user has to act. This window carries the steps
  * there: it floats, it is small enough to leave the pane readable, and it reports the grant landing
  * so the user knows they are done without going back to look.
@@ -478,7 +478,7 @@ export function createComputerUsePermissionHelpWindow(translate: AppTranslate): 
 
 /** The entry for the helper windows. It does not load `App`, so each window uses less memory. */
 function helperRendererUrl(developmentUrl: string | undefined): URL {
-  return developmentUrl ? new URL("helper.html", `${developmentUrl}/`) : new URL("openbot-app://app/helper.html");
+  return developmentUrl ? new URL("helper.html", `${developmentUrl}/`) : new URL("aikingbot-app://app/helper.html");
 }
 
 export function loadComputerUsePermissionHelpRenderer(
@@ -525,7 +525,7 @@ export function computerUseDesktopRect(rect: Rectangle): Rectangle {
 }
 
 /**
- * The driver ids of OpenBot's windows that cover the rim, such as the conversation.
+ * The driver ids of AIKINGBOT's windows that cover the rim, such as the conversation.
  *
  * The overlays - the rim's own and the dynamic island - can never take focus, and every window the
  * user reads can. The id in a media source id is the one the driver lists a window by: the

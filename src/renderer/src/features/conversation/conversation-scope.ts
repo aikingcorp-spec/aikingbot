@@ -1,6 +1,6 @@
-import type { McpSignInRelayPage, UpdateAgentInput } from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+import type { McpSignInRelayPage, UpdateAgentInput } from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
+import { errorReference } from "@aikingbot/user-errors";
 import {
   createContext,
   createEffect,

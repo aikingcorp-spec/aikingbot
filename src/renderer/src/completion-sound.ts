@@ -1,6 +1,6 @@
-import type { AgentEvent, AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentEvent, AgentSummary } from "@aikingbot/contracts/ipc";
 
-const COMPLETION_SOUND_STORAGE_KEY = "openbot:completion-sound-enabled";
+const COMPLETION_SOUND_STORAGE_KEY = "aikingbot:completion-sound-enabled";
 const COMPLETION_SOUND_DURATION_SECONDS = 0.22;
 
 let completionAudioContext: AudioContext | undefined;

@@ -1,4 +1,4 @@
-import type { FilePreview, WorkspaceDirectory, WorkspaceDirectoryEntry } from "@openbot/contracts/ipc";
+import type { FilePreview, WorkspaceDirectory, WorkspaceDirectoryEntry } from "@aikingbot/contracts/ipc";
 import {
   ArrowLeft,
   Button,
@@ -11,14 +11,14 @@ import {
   FolderOpen,
   WrapText,
   X,
-} from "@openbot/ui";
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import type { AgentProfile } from "@openbot/ui/data";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
-import { type CodeToken, fileCodeLanguage, highlightedCodeLines } from "@openbot/ui/features/conversation/CodeBlock";
-import { MarkdownFilePreview } from "@openbot/ui/features/conversation/MarkdownFilePreview";
-import { SpreadsheetFilePreview } from "@openbot/ui/features/conversation/SpreadsheetFilePreview";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { PanelResizer } from "@aikingbot/ui/components/PanelResizer";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { ChatVisual } from "@aikingbot/ui/features/conversation/ChatVisual";
+import { type CodeToken, fileCodeLanguage, highlightedCodeLines } from "@aikingbot/ui/features/conversation/CodeBlock";
+import { MarkdownFilePreview } from "@aikingbot/ui/features/conversation/MarkdownFilePreview";
+import { SpreadsheetFilePreview } from "@aikingbot/ui/features/conversation/SpreadsheetFilePreview";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, For, onCleanup, Show, untrack } from "solid-js";
 
 import { MediaFilePreview } from "./MediaFilePreview";

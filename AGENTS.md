@@ -25,7 +25,7 @@ and state which default you set aside. Do not argue by citing this file.
 
 ## Non-negotiable
 
-- **Migrations are irreversible.** No backup of `openbot.db` is made before an upgrade. Preserve all
+- **Migrations are irreversible.** No backup of `aikingbot.db` is made before an upgrade. Preserve all
   user data and support every shipped source schema. Never assume a backup exists.
 - **Released Team API adapters are permanent.** Do not change a shipped wire protocol's meaning.
 - **Keep the renderer-to-main trust boundary:** Electron sandboxing, context isolation, navigation
@@ -40,7 +40,7 @@ adding a module or moving ownership between workspaces.
 ## Product constraints
 
 - Workspaces, conversations, attachments, browser data, and team data stay on the computer that
-  runs OpenBot. Providers, visited pages, and plugins can use the network.
+  runs AIKINGBOT. Providers, visited pages, and plugins can use the network.
 - Cloudflare holds accounts, avatars, host configuration, memberships, invitations, and logical
   sessions; it does not hold chats, files, or commands.
 - The user's SQLite database is the source of truth, not a remote cache.
@@ -74,13 +74,13 @@ adding a module or moving ownership between workspaces.
 
 ## Shared UI
 
-`packages/ui` (`@openbot/ui`) owns shared SolidJS controls and feature components used by
+`packages/ui` (`@aikingbot/ui`) owns shared SolidJS controls and feature components used by
 desktop, public web, and Storybook. Reuse these components before adding UI. Import primitives
-from `@openbot/ui` and feature components from explicit subpaths such as
-`@openbot/ui/features/sidebar/Sidebar`. Do not copy them back into an app.
+from `@aikingbot/ui` and feature components from explicit subpaths such as
+`@aikingbot/ui/features/sidebar/Sidebar`. Do not copy them back into an app.
 
 Keep shared components independent of application contexts, desktop storage, host connections,
-and `window.openbot`. Pass data and actions through typed props. Platform adapters and the main
+and `window.aikingbot`. Pass data and actions through typed props. Platform adapters and the main
 conversation controller stay in the renderer. Component extraction must preserve the existing
 UI, styles, and behavior unless the user requests a design change. Native mobile shares brand
 tokens and contracts; it does not render SolidJS DOM components.
@@ -89,7 +89,7 @@ Read [packages/ui/AGENTS.md](packages/ui/AGENTS.md) before changing shared UI.
 
 ## Interface text
 
-Text that a user reads comes from `@openbot/i18n` catalog keys, on desktop, web and mobile. Do not
+Text that a user reads comes from `@aikingbot/i18n` catalog keys, on desktop, web and mobile. Do not
 write a literal. Errors that the main process, backend or team client send use `sourceText(key)`.
 Read [docs/i18n.md](docs/i18n.md) before adding a key or a language.
 
@@ -132,7 +132,7 @@ State which surfaces a change touches. Check all affected consumers and reverse 
 - Desktop renderer (`src/renderer`), mobile (`apps/mobile`), public web (`apps/auth-api`; no separate
   landing app), hosted-site routing (`apps/site-router`), and Signal (`remote/api`).
 - IPC contracts (`packages/contracts`) and their preview implementation
-  (`src/renderer/src/preview/mock-openbot.ts`).
+  (`src/renderer/src/preview/mock-aikingbot.ts`).
 - Reverse actions: snooze/unsnooze, pause/resume, revoke/reconnect, mute/unmute.
 - Migrations and the separate latest schema for new databases.
 - Documentation: `README.md` commands, `docs/architecture/`, and `PRIVACY.md` when outbound data
@@ -149,7 +149,7 @@ State which surfaces a change touches. Check all affected consumers and reverse 
 - Use the development loader. It reads the development key from the shell; without the key,
   local development must work with generated defaults. Commands that need external secrets must
   stop before remote changes when those secrets are missing. An invalid key must fail safely.
-- Keep generated identity and saved local overrides in ignored `.openbot/dev-state.json`.
+- Keep generated identity and saved local overrides in ignored `.aikingbot/dev-state.json`.
   New manual overrides use shell variables. Do not add `.env.local` or `.env.generated`.
 - `.env.keys` stores decryption keys, not service settings. Keep it ignored. Preserve existing
   production key handling and CI/GitHub secrets unless the developer requests a change.
@@ -169,7 +169,7 @@ See [account service setup](apps/auth-api/README.md) for loading and deployment 
   when it cannot confirm a PID's identity; resolve the process, then `bun run dev:forget`. Dead
   records do not reserve ports.
 - Reuse a running dev instance. `bun run dev` opens a profile tied to this worktree; `--shared`
-  opens the shared `OpenBot Dev` profile. Use the ports the stack reports rather than a fixed port.
+  opens the shared `AIKINGBOT Dev` profile. Use the ports the stack reports rather than a fixed port.
 
 See [README.md — Commands](README.md#commands) for the flags these commands take, and
 [docs/architecture/change-rules.md](docs/architecture/change-rules.md#change-rules) for why the registry works this way, when a dev command
@@ -178,7 +178,7 @@ does not behave as expected.
 ## Terms
 
 - **bot** is not for new product code. Released names stay: Team API v1-v3 `bot`/`botId`,
-  `bots.json`, `legacy-import:bots:v1`, and `~/OpenBot/Bots` path prefixes.
+  `bots.json`, `legacy-import:bots:v1`, and `~/AIKINGBOT/Bots` path prefixes.
 - **teammate** and **group** are prompt and UI words, never types.
 
 Use [docs/glossary.md](docs/glossary.md) when naming a new type, table, IPC channel or product
@@ -222,7 +222,7 @@ risks since the last release.
   lists.
 - Highly prefer E2E tests as the sole testing mechanism. Use them to verify complex features work.
   At the end of E2E tests, produce a verifiable and repeatable artifact, such as a JSON report or a
-  screenshot under `.openbot-build/`.
+  screenshot under `.aikingbot-build/`.
 - If you must test a system in isolation, first write down all the ways it could fail, then write
   the code. Put the list in the PR body under "Failure modes": one line per failure, with the test
   that covers it.

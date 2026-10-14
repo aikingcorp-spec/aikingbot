@@ -3,7 +3,7 @@
 //
 // Sunshine links Homebrew's miniupnpc and OpenSSL. Their `/opt/homebrew` paths exist on the build
 // runner and on a developer's Mac, and nowhere else -- an installed app on a Mac without those
-// formulae fails to start its streamer with a dyld error no OpenBot surface ever shows, so the
+// formulae fails to start its streamer with a dyld error no AIKINGBOT surface ever shows, so the
 // member's session sits at "connecting" forever. Nothing in the build or the checks noticed,
 // because presence and checksums say the file is the approved one; only its load commands say
 // whether it can run.
@@ -19,7 +19,7 @@ const SYSTEM_LIBRARY_PREFIXES = ["/usr/lib/", "/System/"];
 /**
  * Every non-system library allowed into the shipped runtime, and the licence its redistribution
  * requires. Bundling is what creates that obligation: until the runtime carried its own copies these
- * libraries stayed on the machine that linked them and OpenBot redistributed nothing. miniupnpc is
+ * libraries stayed on the machine that linked them and AIKINGBOT redistributed nothing. miniupnpc is
  * BSD-3-Clause and OpenSSL 3 is Apache-2.0, and both ask for the notice to travel with the binary.
  *
  * Keyed by the name before the version, because a Homebrew bump moves `libssl.3.dylib` to a new

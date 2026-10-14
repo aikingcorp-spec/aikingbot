@@ -12,12 +12,12 @@
   --app-loading-play: running;
   --app-loading-at: 0s;
   position: absolute;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   inset: 0;
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
   -webkit-app-region: drag;
 }
 
@@ -49,8 +49,8 @@
   left: 50%;
   width: 70%;
   height: 8px;
-  border-radius: var(--openbot-radius-pill);
-  background: color-mix(in srgb, var(--openbot-text-muted) 24%, transparent);
+  border-radius: var(--aikingbot-radius-pill);
+  background: color-mix(in srgb, var(--aikingbot-text-muted) 24%, transparent);
   content: "";
   transform: translateX(-50%);
 }
@@ -77,7 +77,7 @@
   position: absolute;
   top: 13px;
   left: 37px;
-  transition: opacity var(--openbot-duration-normal) var(--openbot-ease-out);
+  transition: opacity var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 .app-loading:not([data-phase="loading"]) .app-loading-snore {
@@ -101,7 +101,7 @@
   height: 100%;
   overflow: visible;
   fill: none;
-  stroke: var(--openbot-text-muted);
+  stroke: var(--aikingbot-text-muted);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2px;
@@ -110,8 +110,8 @@
 .app-loading-status {
   min-height: 20px;
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
 }
 
 .app-loading-line {
@@ -122,8 +122,8 @@
 .app-loading:not([data-phase="loading"]) {
   pointer-events: none;
   -webkit-app-region: no-drag;
-  animation: app-loading-exit var(--openbot-duration-overlay) var(--openbot-ease-in-out) var(--app-loading-exit-delay)
-    forwards;
+  animation: app-loading-exit var(--aikingbot-duration-overlay) var(--aikingbot-ease-in-out)
+    var(--app-loading-exit-delay) forwards;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -135,25 +135,25 @@
   /* Loading. The stage waits before it shows, so a fast load does not flash the crew. */
 
   .app-loading-stage {
-    animation: app-loading-enter var(--openbot-duration-overlay) var(--openbot-ease-out)
+    animation: app-loading-enter var(--aikingbot-duration-overlay) var(--aikingbot-ease-out)
       calc(250ms - var(--app-loading-at)) both var(--app-loading-play);
   }
 
   .app-loading-agent:not([data-sleeper]) .app-loading-body {
-    animation: app-loading-hop var(--app-loading-wave) var(--openbot-ease-in-out)
+    animation: app-loading-hop var(--app-loading-wave) var(--aikingbot-ease-in-out)
       calc(var(--app-loading-index) * var(--app-loading-stagger) - var(--app-loading-at)) infinite
       var(--app-loading-play);
   }
 
   .app-loading-agent:not([data-sleeper])::after {
-    animation: app-loading-shadow var(--app-loading-wave) var(--openbot-ease-in-out)
+    animation: app-loading-shadow var(--app-loading-wave) var(--aikingbot-ease-in-out)
       calc(var(--app-loading-index) * var(--app-loading-stagger) - var(--app-loading-at)) infinite
       var(--app-loading-play);
   }
 
   /* One breath every 3.6s: in for 1.8s, out for 1.8s. */
   .app-loading-agent[data-sleeper] .app-loading-body {
-    animation: app-loading-breathe 1.8s var(--openbot-ease-in-out) calc(0s - var(--app-loading-at)) infinite alternate
+    animation: app-loading-breathe 1.8s var(--aikingbot-ease-in-out) calc(0s - var(--app-loading-at)) infinite alternate
       var(--app-loading-play);
   }
 
@@ -169,12 +169,12 @@
   }
 
   .app-loading-z-mark {
-    animation: app-loading-z-sway 0.9s var(--openbot-ease-in-out) var(--app-loading-z-delay) infinite alternate
+    animation: app-loading-z-sway 0.9s var(--aikingbot-ease-in-out) var(--app-loading-z-delay) infinite alternate
       var(--app-loading-play);
   }
 
   .app-loading-line {
-    animation: app-loading-line-in 280ms var(--openbot-ease-out);
+    animation: app-loading-line-in 280ms var(--aikingbot-ease-out);
   }
 
   .app-loading[data-scrub] .app-loading-line {
@@ -184,19 +184,19 @@
   /* Exit: the sleeper leaves last. The "fade" phase keeps the loading animations. */
 
   .app-loading[data-phase="exit"] .app-loading-body {
-    animation: app-loading-leap 640ms var(--openbot-ease-in-out) calc(var(--app-loading-index, 0) * 70ms) forwards;
+    animation: app-loading-leap 640ms var(--aikingbot-ease-in-out) calc(var(--app-loading-index, 0) * 70ms) forwards;
   }
 
   /* The sleeper keeps breathing and floats up. `translate` adds to the breath's `transform`, so the
    * body does not jump when the exit starts. */
   .app-loading[data-phase="exit"] [data-sleeper] .app-loading-body {
     animation:
-      app-loading-breathe 1.8s var(--openbot-ease-in-out) calc(0s - var(--app-loading-at)) infinite alternate,
+      app-loading-breathe 1.8s var(--aikingbot-ease-in-out) calc(0s - var(--app-loading-at)) infinite alternate,
       app-loading-drift 720ms cubic-bezier(0.5, 0, 0.9, 0.5) 200ms forwards;
   }
 
   .app-loading[data-phase="exit"] .app-loading-agent::after {
-    animation: app-loading-shadow-out 320ms var(--openbot-ease-out) calc(var(--app-loading-index, 0) * 70ms + 120ms)
+    animation: app-loading-shadow-out 320ms var(--aikingbot-ease-out) calc(var(--app-loading-index, 0) * 70ms + 120ms)
       forwards;
   }
 
@@ -205,7 +205,7 @@
   }
 
   .app-loading:not([data-phase="loading"]) .app-loading-status {
-    animation: app-loading-fade 200ms var(--openbot-ease-out) forwards;
+    animation: app-loading-fade 200ms var(--aikingbot-ease-out) forwards;
   }
 }
 
@@ -357,22 +357,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-3);
-  background: var(--openbot-bg-canvas);
-  border-bottom: 1px solid var(--openbot-border);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-3);
+  background: var(--aikingbot-bg-canvas);
+  border-bottom: 1px solid var(--aikingbot-border);
 }
 .server-connection-notice p {
   margin: 0;
 }
 .server-connection-detail {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   font-variant-numeric: tabular-nums;
   text-wrap: pretty;
 }
 .server-connection-actions {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   -webkit-app-region: no-drag;
 }
 .server-connection-content {

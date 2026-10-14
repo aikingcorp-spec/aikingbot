@@ -1,5 +1,5 @@
-import type { UpdateFailureCode, UpdateStatus } from "@openbot/contracts/ipc";
-import { presentUpdateStatus } from "@openbot/ui/features/updates/update-status";
+import type { UpdateFailureCode, UpdateStatus } from "@aikingbot/contracts/ipc";
+import { presentUpdateStatus } from "@aikingbot/ui/features/updates/update-status";
 import { describe, expect, it } from "vitest";
 
 function status(patch: Partial<UpdateStatus> = {}): UpdateStatus {

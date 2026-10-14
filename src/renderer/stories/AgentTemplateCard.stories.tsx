@@ -1,11 +1,11 @@
-import type { AgentTemplatePreview, AvatarImageInput } from "@openbot/contracts/ipc";
+import type { AgentTemplatePreview, AvatarImageInput } from "@aikingbot/contracts/ipc";
 import { createSignal, onSettled, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { renderAgentTemplateCard } from "../src/features/agent-templates/agent-template-card";
 import { storyAgentTemplatePreview } from "../src/preview/agent-template-fixtures";
 
 /**
- * The PNG a publish uploads as the link preview of `openbot.run/agents/<id>`. The story draws it with
+ * The PNG a publish uploads as the link preview of `aikingbot.aikingx.com/agents/<id>`. The story draws it with
  * the same function the publish dialog uses and shows the result at its real size.
  */
 function CardPreview(props: { preview: () => Promise<AgentTemplatePreview> }) {
@@ -26,10 +26,10 @@ function CardPreview(props: { preview: () => Promise<AgentTemplatePreview> }) {
     };
   });
   return (
-    <div style={{ padding: "24px", background: "var(--openbot-bg-notch)", "min-height": "100vh" }}>
+    <div style={{ padding: "24px", background: "var(--aikingbot-bg-notch)", "min-height": "100vh" }}>
       <Show
         when={url()}
-        fallback={<p style={{ color: "var(--openbot-text-primary)" }}>{error() ?? "Drawing the card…"}</p>}
+        fallback={<p style={{ color: "var(--aikingbot-text-primary)" }}>{error() ?? "Drawing the card…"}</p>}
       >
         {(src) => <img src={src()} alt="Agent share card" width={1200} height={630} style={{ display: "block" }} />}
       </Show>

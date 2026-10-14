@@ -2,7 +2,7 @@ import {
   type LiveActivityAction,
   type LiveActivityLink,
   readLiveActivityLink,
-} from "@openbot/team-client/live-activity-props";
+} from "@aikingbot/team-client/live-activity-props";
 
 /** An action from a signed button link. `command` is the command that Approve runs, shown again first. */
 export interface LiveActivityRequest {
@@ -59,7 +59,7 @@ export function setLiveActivityNavigator(open: (agentId: string | null) => void)
 export function isLiveActivityLink(path: string): boolean {
   try {
     const url = new URL(path);
-    return url.protocol === "openbot:" && url.host === "live-activity";
+    return url.protocol === "aikingbot:" && url.host === "live-activity";
   } catch {
     return false;
   }
@@ -67,7 +67,7 @@ export function isLiveActivityLink(path: string): boolean {
 
 /**
  * Starts the action of a Live Activity link and returns the route to open. Any app can open an
- * `openbot://` link, so only a link with a valid signature starts an action, and an other link opens
+ * `aikingbot://` link, so only a link with a valid signature starts an action, and an other link opens
  * a chat or the chat list only.
  *
  * While the app runs, a returned route pushes a new screen, so a chat that is open already mounts

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { sortConversationMessages } from "@aikingbot/contracts/conversation-order";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentApproval,
   AgentApprovalPermissions,
@@ -11,14 +11,14 @@ import type {
   HostedSiteList,
   HostedSiteSummary,
   PublishHostedSiteInput,
-} from "@openbot/contracts/ipc";
-import { hostedSiteConversationEventItemType, hostedSiteConversationEventText } from "@openbot/contracts/ipc";
-import { isBoolean } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { hostedSiteConversationEventItemType, hostedSiteConversationEventText } from "@aikingbot/contracts/ipc";
+import { isBoolean } from "@aikingbot/contracts/runtime-values";
 import { Effect, Result, Schema } from "effect";
 import type { AgentClient } from "../agent-client";
 import type { AgentStore } from "../agent-store";
+import type { PendingHostedSiteTerminalEvent } from "../aikingbot-database";
 import { causeHelpers } from "../effect-boundary";
-import type { PendingHostedSiteTerminalEvent } from "../openbot-database";
 import { type AppServerRequest, type DynamicToolCallParams, isRecord, type RequestId } from "../protocol";
 import type { ConversationRuntime } from "./conversation-runtime";
 import {
@@ -29,9 +29,9 @@ import {
   hostedSiteEventMessageId,
   hostedSiteTool,
 } from "./hosted-site-events";
-import { type OpenBotToolResponse, openBotToolResult, siteToolString } from "./routine-tools";
+import { type AIKINGBOTToolResponse, aikingBotToolResult, siteToolString } from "./routine-tools";
 
-/** The openbot.site host, injected so the backend never depends on the account Worker directly. */
+/** The aikingbot-sites.aikingx.com host, injected so the backend never depends on the account Worker directly. */
 export interface AgentHostedSites {
   list(): Effect.Effect<HostedSiteList, HostedSiteOperationFailed>;
   publish(
@@ -80,14 +80,14 @@ interface HostedSiteApprovalDetails {
 }
 
 interface HostedSiteMutationResult {
-  response: OpenBotToolResponse;
+  response: AIKINGBOTToolResponse;
   eventDetails: HostedSiteConversationEventDetails;
 }
 
-export const HOSTED_SITE_APPROVAL_METHOD = "openbot/hosted-site-mutation";
+export const HOSTED_SITE_APPROVAL_METHOD = "aikingbot/hosted-site-mutation";
 
 /**
- * Owns publishing to openbot.site: the approval a mutation needs, the mutation itself, and the
+ * Owns publishing to aikingbot-sites.aikingx.com: the approval a mutation needs, the mutation itself, and the
  * conversation markers that record it.
  *
  * The markers are the reason this is a class rather than a set of functions. A terminal marker
@@ -136,7 +136,7 @@ export class HostedSiteCoordinator {
     if (!turnId || !agentId) {
       client.respondError(request.id, {
         code: -32602,
-        message: "OpenBot could not identify this hosted site request.",
+        message: "AIKINGBOT could not identify this hosted site request.",
       });
       return null;
     }
@@ -233,7 +233,7 @@ export class HostedSiteCoordinator {
   }
 
   #requireHostedSites(): AgentHostedSites {
-    if (!this.#hostedSites) throw new Error("OpenBot site hosting is unavailable.");
+    if (!this.#hostedSites) throw new Error("AIKINGBOT site hosting is unavailable.");
     return this.#hostedSites;
   }
 
@@ -251,7 +251,7 @@ export class HostedSiteCoordinator {
       const siteId = yield* siteStep(() => siteToolString(args.siteId, "siteId", INPUT_LIMITS.identifier));
       const site = yield* this.#ownedSiteEffect(siteId);
       return {
-        reason: `Delete ${site.hostname} from openbot.site.`,
+        reason: `Delete ${site.hostname} from aikingbot-sites.aikingx.com.`,
         permissions: { fileSystem: { read: [], write: [] }, network: true },
         eventDetails: hostedSiteEventDetails(site, siteId),
       };
@@ -266,7 +266,7 @@ export class HostedSiteCoordinator {
     const permissions = { fileSystem: { read: [sourcePath], write: [] }, network: true };
     if (tool === "publish_site") {
       return {
-        reason: `Publish ${JSON.stringify(title)} as a public site on openbot.site.`,
+        reason: `Publish ${JSON.stringify(title)} as a public site on aikingbot-sites.aikingx.com.`,
         permissions,
         eventDetails: { siteId: null, title, hostname: null, url: null },
       };
@@ -304,7 +304,7 @@ export class HostedSiteCoordinator {
       const siteId = yield* siteStep(() => siteToolString(args.siteId, "siteId", INPUT_LIMITS.identifier));
       const host = yield* siteStep(() => this.#requireHostedSites());
       yield* host.delete(siteId);
-      return { response: openBotToolResult({ deleted: true, siteId }), eventDetails: context.eventDetails };
+      return { response: aikingBotToolResult({ deleted: true, siteId }), eventDetails: context.eventDetails };
     }
 
     const sourcePath = yield* siteStep(() => siteToolString(args.sourcePath, "sourcePath", INPUT_LIMITS.path));
@@ -327,7 +327,7 @@ export class HostedSiteCoordinator {
         : yield* siteStep(() => siteToolString(args.siteId, "siteId", INPUT_LIMITS.identifier));
     const host = yield* siteStep(() => this.#requireHostedSites());
     const site = siteId ? yield* host.replace({ ...input, siteId }, roots) : yield* host.publish(input, roots);
-    return { response: openBotToolResult(site), eventDetails: hostedSiteEventDetails(site, siteId) };
+    return { response: aikingBotToolResult(site), eventDetails: hostedSiteEventDetails(site, siteId) };
   });
 
   #recordEvent(
@@ -411,7 +411,7 @@ export class HostedSiteCoordinator {
           threadId: event.threadId,
           turnId: event.turnId,
           callId: event.operationId,
-          namespace: "openbot",
+          namespace: "aikingbot",
           tool: hostedSiteTool(event.action),
           arguments: {},
         },
@@ -511,7 +511,7 @@ export class HostedSiteCoordinator {
           threadId,
           turnId: turnId ?? `hosted-site-${event.operationId}`,
           callId: event.operationId,
-          namespace: "openbot",
+          namespace: "aikingbot",
           tool: hostedSiteTool(event.action),
           arguments: {},
         },

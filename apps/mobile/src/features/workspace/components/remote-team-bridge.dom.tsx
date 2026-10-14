@@ -1,14 +1,14 @@
 "use dom";
 
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import {
   createRemoteTeamPeer,
   type RemoteTeamCommand,
   type RemoteTeamCommandResult,
   type RemoteTeamPeerActions,
-} from "@openbot/team-client/remote-peer";
-import { createTeamRequestId } from "@openbot/team-client/request-id";
+} from "@aikingbot/team-client/remote-peer";
+import { createTeamRequestId } from "@aikingbot/team-client/request-id";
 import { type DOMImperativeFactory, useDOMImperativeHandle } from "expo/dom";
 import { type Ref, useEffect, useRef } from "react";
 import { type BrowserViewBridgeEvent, createBrowserViewBridge } from "@/features/browser/model/browser-view-bridge";

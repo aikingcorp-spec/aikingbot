@@ -1,4 +1,4 @@
-import type { AccountSession, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AccountSession, CentralAuthUser } from "@aikingbot/contracts/ipc";
 import {
   Badge,
   Button,
@@ -14,7 +14,7 @@ import {
   SettingsSection,
   Text,
   UserAvatar,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import type { SettingsProfileStore } from "./stores/profile-store";

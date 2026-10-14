@@ -1,4 +1,4 @@
-// The OpenBot mark as plain data, so that a canvas can draw the same mark that
+// The AIKINGBOT mark as plain data, so that a canvas can draw the same mark that
 // `AppLogo` draws as SVG: the social cards in apps/auth-api do.
 
 /** The mark is a square of this side, in its own units. */

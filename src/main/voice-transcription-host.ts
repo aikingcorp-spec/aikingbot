@@ -27,7 +27,7 @@ const WHISPER_MAXIMUM_SAMPLES = 28 * SAMPLE_RATE;
 const WHISPER_SPLIT_SEARCH_SAMPLES = 4 * SAMPLE_RATE;
 const SPLIT_WINDOW_SAMPLES = SAMPLE_RATE / 50;
 
-/** The part of the sherpa-onnx offline recognizer configuration that OpenBot sets. */
+/** The part of the sherpa-onnx offline recognizer configuration that AIKINGBOT sets. */
 interface RecognizerConfig {
   featConfig: { sampleRate: number; featureDim: number };
   modelConfig: {

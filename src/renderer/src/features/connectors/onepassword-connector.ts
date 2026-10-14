@@ -1,8 +1,8 @@
-import { DISCONNECTED_ONEPASSWORD_CONNECTOR, type OnePasswordConnectorStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import type { OnePasswordConnectorPanelProps } from "@openbot/ui/features/settings/OnePasswordConnectorPanel";
-import { currentText } from "@openbot/ui/text";
+import { DISCONNECTED_ONEPASSWORD_CONNECTOR, type OnePasswordConnectorStatus } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import type { OnePasswordConnectorPanelProps } from "@aikingbot/ui/features/settings/OnePasswordConnectorPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup, onSettled } from "solid-js";
 import { type OnePasswordConnectorPort, onePasswordConnectorPort } from "./onepassword-connector-port";
 

@@ -1,10 +1,10 @@
-import { parseUpdateAgentAdminSettingsInput, parseUpdateAgentHostSettingsInput } from "@openbot/contracts/ipc";
-import { AGENT_ADMIN_CAPABILITY, AGENT_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/agent-admin-v1";
+import { parseUpdateAgentAdminSettingsInput, parseUpdateAgentHostSettingsInput } from "@aikingbot/contracts/ipc";
+import { AGENT_ADMIN_CAPABILITY, AGENT_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
 import {
   AGENT_HOST_SETTINGS_CAPABILITY,
   AGENT_HOST_SETTINGS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { AgentNotFoundError } from "../agent-admin-settings";
 import type { TeamApiAdmin } from "./dependencies";

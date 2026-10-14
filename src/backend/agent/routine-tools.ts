@@ -1,7 +1,7 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isRoutineSchedule, ROUTINE_MINIMUM_INTERVAL_MINUTES, type RoutineSchedule } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isRoutineSchedule, ROUTINE_MINIMUM_INTERVAL_MINUTES, type RoutineSchedule } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { RoutineInputError } from "@aikingbot/team-client/routine-schedule";
 import { isRecord } from "../protocol";
 
 export function routineToolArguments(value: unknown, allowedKeys: readonly string[]): DynamicRecord {
@@ -63,13 +63,13 @@ export function localTimezone(): string {
   }
 }
 
-/** The shape every `openbot` namespace dynamic tool answers with. */
-export interface OpenBotToolResponse {
+/** The shape every `aikingbot` namespace dynamic tool answers with. */
+export interface AIKINGBOTToolResponse {
   success: boolean;
   contentItems: Array<{ type: "inputText"; text: string }>;
 }
 
-export function openBotToolResult(value: unknown): OpenBotToolResponse {
+export function aikingBotToolResult(value: unknown): AIKINGBOTToolResponse {
   return {
     success: true,
     contentItems: [{ type: "inputText", text: JSON.stringify(value) }],
@@ -83,7 +83,7 @@ export function openBotToolResult(value: unknown): OpenBotToolResponse {
  * give up on. `claude-client.ts` maps `success: false` onto `isError: true`, so both provider paths
  * show this as a failed tool call with the reason attached.
  */
-export function openBotToolFailure(message: string): OpenBotToolResponse {
+export function aikingBotToolFailure(message: string): AIKINGBOTToolResponse {
   return {
     success: false,
     contentItems: [{ type: "inputText", text: JSON.stringify({ error: message }) }],

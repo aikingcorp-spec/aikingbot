@@ -1,5 +1,5 @@
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import { HOSTED_SERVER_CONTACT_URL } from "@openbot/contracts/hosted-servers";
+import type { AppLanguage } from "@aikingbot/contracts/app-language";
+import { HOSTED_SERVER_CONTACT_URL } from "@aikingbot/contracts/hosted-servers";
 import {
   type AddedAgent,
   type AgentApproval,
@@ -12,19 +12,19 @@ import {
   decodeAgentHostSettings,
   type ServerConnectionState,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { AGENT_HOST_SETTINGS_ROUTES } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { AGENT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-import-v1";
-import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
-import { CONTEXT_RESET_CAPABILITY } from "@openbot/contracts/team-protocol/context-reset-v1";
-import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
-import { HOST_RELEASE_CAPABILITY } from "@openbot/contracts/team-protocol/host-release-v1";
-import { HOSTED_SITES_CAPABILITY } from "@openbot/contracts/team-protocol/hosted-sites-v1";
-import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@aikingbot/contracts/ipc";
+import { AGENT_HOST_SETTINGS_ROUTES } from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
+import { AGENT_IMPORT_CAPABILITY } from "@aikingbot/contracts/team-protocol/agent-import-v1";
+import { CONNECTORS_CAPABILITY } from "@aikingbot/contracts/team-protocol/connectors-v1";
+import { CONTEXT_RESET_CAPABILITY } from "@aikingbot/contracts/team-protocol/context-reset-v1";
+import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
+import { EVENTS_CAPABILITY } from "@aikingbot/contracts/team-protocol/events-v1";
+import { HOST_RELEASE_CAPABILITY } from "@aikingbot/contracts/team-protocol/host-release-v1";
+import { HOSTED_SITES_CAPABILITY } from "@aikingbot/contracts/team-protocol/hosted-sites-v1";
+import { MCP_SIGN_IN_CAPABILITY } from "@aikingbot/contracts/team-protocol/mcp-sign-in-v1";
+import { ROUTINE_FLOWS_CAPABILITY } from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { SIGN_IN_RELAY_CAPABILITY } from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   cancelHostUpdate,
   checkHostForUpdate,
@@ -40,29 +40,29 @@ import {
   setHostUpdateSettings,
   startHostUpdate,
   updateAgentAdminSettings,
-} from "@openbot/team-client/team-admin-requests";
-import { clearAgentContext, type TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { classifyFailure } from "@openbot/telemetry";
-import { hasVisibleToasts, toast } from "@openbot/ui";
-import { AccountDock } from "@openbot/ui/features/account/AccountDock";
-import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
-import { createFirstAgentDraft, type FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
-import { BillingDialog } from "@openbot/ui/features/billing/BillingDialog";
-import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
-import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import type { DiagramModelChoice } from "@openbot/ui/features/diagrams/DiagramNewAgentCard";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
-import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
+} from "@aikingbot/team-client/team-admin-requests";
+import { clearAgentContext, type TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { hasVisibleToasts, toast } from "@aikingbot/ui";
+import { AccountDock } from "@aikingbot/ui/features/account/AccountDock";
+import { computeAgentAvatarMoods } from "@aikingbot/ui/features/agents/agent-avatar-mood";
+import { createFirstAgentDraft, type FirstAgentDraft } from "@aikingbot/ui/features/agents/FirstAgentSetup";
+import { BillingDialog } from "@aikingbot/ui/features/billing/BillingDialog";
+import { createBillingStore } from "@aikingbot/ui/features/billing/billing-store";
+import { unloadedHistory } from "@aikingbot/ui/features/conversation/ChatScrollRail";
+import type { DiagramModelChoice } from "@aikingbot/ui/features/diagrams/DiagramNewAgentCard";
+import { LeaveServerDialog } from "@aikingbot/ui/features/servers/LeaveServerDialog";
+import { RestartServerDialog } from "@aikingbot/ui/features/servers/RestartServerDialog";
 import {
   ConversationLoadNotice,
   ServerConnectionNotice,
   ServerPanelLoadNotice,
-} from "@openbot/ui/features/servers/ServerConnectionNotice";
-import { ServerRail } from "@openbot/ui/features/servers/ServerRail";
-import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { computeSidebarAgentStates } from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/servers/ServerConnectionNotice";
+import { ServerRail } from "@aikingbot/ui/features/servers/ServerRail";
+import { createSettingsHostedServersStore } from "@aikingbot/ui/features/settings/stores/hosted-servers-store";
+import { Sidebar } from "@aikingbot/ui/features/sidebar/Sidebar";
+import { computeSidebarAgentStates } from "@aikingbot/ui/features/sidebar/sidebar-agent-states";
+import { useText } from "@aikingbot/ui/text";
 import { Effect } from "effect";
 import { createEffect, createMemo, createSignal, Loading, lazy, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
@@ -148,11 +148,11 @@ const CONNECTING_STATUS: AgentStatus = {
  * What the web client reports as its build. The browser has no main process to ask, and the web frame
  * uses the macOS geometry: the account dock beside the rail is the hybrid one.
  */
-const WEB_APP_INFO: AppInfo = { name: "OpenBot", version: "web", platform: "darwin", variant: "production" };
+const WEB_APP_INFO: AppInfo = { name: "AIKINGBOT", version: "web", platform: "darwin", variant: "production" };
 /** Below this width the web shows one pane at a time; see `web-client.css`. */
 const PHONE_QUERY = "(max-width: 720px)";
 /** The account whose queue edit the browser may hold under `QUEUE_EDIT_STORAGE_KEY`. */
-const QUEUE_EDIT_ACCOUNT_KEY = "openbot.web.queue-edit-account";
+const QUEUE_EDIT_ACCOUNT_KEY = "aikingbot.web.queue-edit-account";
 
 function newAgentAvatar(): Pick<FirstAgentDraft, "avatarSeed" | "avatarHue"> {
   const { avatarSeed, avatarHue } = createFirstAgentDraft();
@@ -724,7 +724,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const storageCalls: FilesPort = {
     agent: { listAgents: () => workspace.runtime.listAgents() },
     storage: {
-      // The host names previews with the desktop `openbot-attachment:` scheme, as it does in chat.
+      // The host names previews with the desktop `aikingbot-attachment:` scheme, as it does in chat.
       getUsage: async (input, serverId) => {
         const usage = await runTeamEffect(
           getStorageUsage(hostRequest(serverId), input).pipe(Effect.mapError((error) => error.cause)),
@@ -899,7 +899,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   };
   /**
    * A server with no agents shows the provider step before the first-agent form, for an account that
-   * can sign its host in. OpenBot includes no AI subscription, so an agent made first could not
+   * can sign its host in. AIKINGBOT includes no AI subscription, so an agent made first could not
    * answer. A member and an older host open the form as before.
    */
   const serverOnboarding = () =>
@@ -1257,7 +1257,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       }
                     : undefined
                 }
-                serverName={workspace.state.host?.name ?? "OpenBot"}
+                serverName={workspace.state.host?.name ?? "AIKINGBOT"}
                 serverMenu={{
                   servers: servers(),
                   view: layout.serverView(),

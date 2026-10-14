@@ -4,19 +4,19 @@ import {
   type ConversationSnapshot,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type RoutineRun,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { bridgedToolName, getString, type ThreadItem } from "../protocol";
 
 /**
  * The whole answer of a quiet routine run that has nothing to report. The user asks for it in
- * the routine task; OpenBot does not add it to the prompt. A fixed token, not a phrase: the model
+ * the routine task; AIKINGBOT does not add it to the prompt. A fixed token, not a phrase: the model
  * answers in the user's language, and a phrase match in every language is a guess. The brackets make
  * it unlikely as the start or the whole of a real report.
  */
 export const ROUTINE_NO_UPDATE_MARKER = "[[no-update]]";
 
 /**
- * The OpenBot tool that a quiet routine run calls when it has nothing to report. A model often
+ * The AIKINGBOT tool that a quiet routine run calls when it has nothing to report. A model often
  * writes a short sentence instead of the exact marker; a tool call does not depend on the wording or
  * the language. It has no arguments, so the provider history shows the decision by the tool name.
  */
@@ -24,12 +24,12 @@ export const ROUTINE_NO_UPDATE_TOOL = "routine_no_update";
 
 /**
  * A call to the no-update tool in provider history: a Codex, Pi or Muse tool item names the tool,
- * and a Claude item names it `mcp__openbot__<tool>`. A call through the `tool_call` bridge names it
+ * and a Claude item names it `mcp__aikingbot__<tool>`. A call through the `tool_call` bridge names it
  * in its arguments.
  */
 export function isNoUpdateToolCall(item: ThreadItem): boolean {
-  if (bridgedToolName(item) === `openbot.${ROUTINE_NO_UPDATE_TOOL}`) return true;
-  if (item.type === "toolCall") return getString(item, "name") === `mcp__openbot__${ROUTINE_NO_UPDATE_TOOL}`;
+  if (bridgedToolName(item) === `aikingbot.${ROUTINE_NO_UPDATE_TOOL}`) return true;
+  if (item.type === "toolCall") return getString(item, "name") === `mcp__aikingbot__${ROUTINE_NO_UPDATE_TOOL}`;
   return (
     (item.type === "dynamicToolCall" || item.type === "mcpToolCall") &&
     getString(item, "tool") === ROUTINE_NO_UPDATE_TOOL

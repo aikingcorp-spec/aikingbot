@@ -1,12 +1,12 @@
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import { type McpOperationError, mcpCall, mcpFailure, mcpSync } from "./mcp-effects";
 /**
- * The OAuth client OpenBot is, for an http MCP server that asks its users to sign in.
+ * The OAuth client AIKINGBOT is, for an http MCP server that asks its users to sign in.
  *
  * Every one of the six sign-in listings used to reach its server through `npx -y mcp-remote`, a
- * third-party program that kept the refresh token in a file of its own. A token OpenBot cannot see
+ * third-party program that kept the refresh token in a file of its own. A token AIKINGBOT cannot see
  * is a token it cannot redact, and redaction is not optional here - so the grant, the registration
- * and the token set move into OpenBot's own encrypted store, and the bridge goes away.
+ * and the token set move into AIKINGBOT's own encrypted store, and the bridge goes away.
  *
  * Almost none of the protocol is written here. `@modelcontextprotocol/sdk` already does RFC 9728
  * discovery, RFC 7591 registration, PKCE and the refresh; what it asks for is one object that says
@@ -19,6 +19,8 @@ import { type McpOperationError, mcpCall, mcpFailure, mcpSync } from "./mcp-effe
  */
 
 import { randomUUID } from "node:crypto";
+import { MCP_SIGN_IN_TIMEOUT_MS } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { auth, type OAuthClientProvider, type OAuthDiscoveryState } from "@modelcontextprotocol/sdk/client/auth.js";
 import {
   type OAuthClientInformationFull,
@@ -28,8 +30,6 @@ import {
   OAuthTokensSchema,
 } from "@modelcontextprotocol/sdk/shared/auth.js";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { MCP_SIGN_IN_TIMEOUT_MS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
 import { z } from "zod";
 import { runCauseEffect } from "./effect-boundary";
 import { withTimeout } from "./with-timeout";
@@ -38,7 +38,7 @@ import { withTimeout } from "./with-timeout";
 export const mcpOAuthRecordSchema = z.object({
   /**
    * An OAuth app the administrator registered with the authorization server themselves, for a
-   * server that does not offer RFC 7591 registration. When it is set, OpenBot never registers.
+   * server that does not offer RFC 7591 registration. When it is set, AIKINGBOT never registers.
    * The secret is optional: a public client has none.
    */
   app: z
@@ -112,7 +112,7 @@ export interface McpOAuthOptions {
   /**
    * Where the authorization server sends the grant back. One address serves every server.
    *
-   * A loopback http address while this app is listening on one, and the `openbot://mcp-auth` deep
+   * A loopback http address while this app is listening on one, and the `aikingbot://mcp-auth` deep
    * link when it could not bind a port. `describeUnusableRedirectUrl` refuses anything else.
    */
   redirectUrl: string;
@@ -201,7 +201,7 @@ export class McpOAuth implements McpOAuthAuthority {
    *
    * `state` is the only thing the return leg carries that names the attempt, and an attempt that is
    * not in here is one this run did not start - which is what makes a forged or replayed
-   * `openbot://mcp-auth` link do nothing.
+   * `aikingbot://mcp-auth` link do nothing.
    */
   readonly #waiting = new Map<string, (code: string) => void>();
   /** The waiting sign-ins whose page an opener of their own showed, not the user's browser. */
@@ -624,19 +624,19 @@ class McpOAuthClientProvider implements OAuthClientProvider {
   }
 
   /**
-   * What OpenBot registers itself as. `redirect_uris` holds the one address this run receives on,
+   * What AIKINGBOT registers itself as. `redirect_uris` holds the one address this run receives on,
    * so an authorization server will not send a grant anywhere else.
    *
    * No `token_endpoint_auth_method`, and no `scope` unless a sign-in app names one: the SDK takes
    * the scope the server's own protected-resource metadata asks for, and picks an authentication
-   * method the server said it supports. Naming either here would be OpenBot guessing in front of
+   * method the server said it supports. Naming either here would be AIKINGBOT guessing in front of
    * an answer it already has.
    */
   get clientMetadata(): OAuthClientMetadata {
     const scope = this.#record().app?.scope;
     return {
-      client_name: "OpenBot",
-      client_uri: "https://openbot.run",
+      client_name: "AIKINGBOT",
+      client_uri: "https://aikingbot.aikingx.com",
       redirect_uris: [this.#options.redirectUrl],
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],
@@ -654,7 +654,7 @@ class McpOAuthClientProvider implements OAuthClientProvider {
    * The registration this installation already has with that authorization server - unless it
    * names an address the grant can no longer come back to, and the attempt in hand needs one.
    *
-   * The redirect address is not fixed for all time. A build that sent `openbot://mcp-auth` and one
+   * The redirect address is not fixed for all time. A build that sent `aikingbot://mcp-auth` and one
    * that listens on a loopback port register different `redirect_uris`, and the port changes on
    * each start - so a stored registration often names another address. An authorization request
    * made against it earns an `Invalid redirect URI.` on the authorization page, where the user can
@@ -768,7 +768,7 @@ class McpOAuthClientProvider implements OAuthClientProvider {
   /**
    * The user's own browser, not a window of this app.
    *
-   * An embedded window would be OpenBot standing between the user and their password manager, their
+   * An embedded window would be AIKINGBOT standing between the user and their password manager, their
    * existing session and the address bar that proves which site is asking - which is the whole
    * reason RFC 8252 says a native app must not do it. The one other opener is a sign-in an
    * administrator started from another computer: nobody is at this one, and only a browser here
@@ -979,10 +979,10 @@ export function isLoopback(hostname: string): boolean {
  * Checked where the address is configured rather than where it is spent, because the failure it
  * prevents is otherwise invisible from here: the authorization server refuses the address on its
  * own page, in its own words, after the browser has already left. Canva answers `Invalid redirect
- * URI.` there and OpenBot never learns of it.
+ * URI.` there and AIKINGBOT never learns of it.
  *
  * Two kinds are allowed, and they are the two RFC 8252 gives a native application: loopback http,
- * which is what this app listens on, and a private-use scheme such as `openbot://mcp-auth`, which
+ * which is what this app listens on, and a private-use scheme such as `aikingbot://mcp-auth`, which
  * the operating system routes. An `https` address belongs to a web site, and a plain-text address
  * anywhere but loopback would put the grant on the wire.
  */

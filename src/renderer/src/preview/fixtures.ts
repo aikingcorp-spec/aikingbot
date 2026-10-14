@@ -32,10 +32,10 @@ import type {
   TeamPresenceSnapshot,
   TeamSessionSummary,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { CONVERSATION_PLAN_ITEM_TYPE, conversationPlanText } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+} from "@aikingbot/contracts/ipc";
+import { CONVERSATION_PLAN_ITEM_TYPE, conversationPlanText } from "@aikingbot/contracts/ipc";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import type { MarketplacePluginDetail } from "@aikingbot/ui/features/settings/marketplace-plugins";
 import type { McpServerConfig } from "../features/servers/mcp-servers";
 
 const STORY_NOW = "2026-08-19T10:00:00.000Z";
@@ -52,7 +52,7 @@ export const STORY_AGENT_SUMMARIES: AgentSummary[] = [
     reasoningEffort: "medium",
     access: "full",
     threadId: "thread-chief",
-    workspacePath: "/mock/OpenBot/Agents/chief",
+    workspacePath: "/mock/AIKINGBOT/Agents/chief",
     preview: "I pulled together the latest project notes and next steps.",
     updatedAt: STORY_NOW,
     avatarSeed: "chief",
@@ -70,7 +70,7 @@ export const STORY_AGENT_SUMMARIES: AgentSummary[] = [
     reasoningEffort: "high",
     access: "full",
     threadId: "thread-research",
-    workspacePath: "/mock/OpenBot/Agents/research",
+    workspacePath: "/mock/AIKINGBOT/Agents/research",
     preview: "Three useful sources are ready for your review.",
     updatedAt: "2026-08-18T16:32:00.000Z",
     avatarSeed: "research",
@@ -88,7 +88,7 @@ export const STORY_AGENT_SUMMARIES: AgentSummary[] = [
     reasoningEffort: "medium",
     access: "workspace",
     threadId: "thread-sales",
-    workspacePath: "/mock/OpenBot/Agents/sales",
+    workspacePath: "/mock/AIKINGBOT/Agents/sales",
     preview: "The follow-up draft is ready to send.",
     updatedAt: "2026-08-17T09:20:00.000Z",
     avatarSeed: "sales-outbound",
@@ -325,7 +325,7 @@ export const STORY_CONVERSATION_MESSAGES: ConversationMessage[] = [
     id: "message-agent-1",
     author: "assistant",
     source: "assistant",
-    text: "Absolutely. I’ll structure the plan around the launch milestones and ask @Research to verify the supporting sources.\n\nThe first draft is ready here: https://openbot.run/docs",
+    text: "Absolutely. I’ll structure the plan around the launch milestones and ask @Research to verify the supporting sources.\n\nThe first draft is ready here: https://aikingbot.aikingx.com/docs",
     createdAt: "2026-08-19T09:43:00.000Z",
     status: "completed",
     attachments: STORY_ATTACHMENTS,
@@ -565,7 +565,7 @@ export const STORY_SERVERS: ServerSummary[] = [
   },
   {
     id: "team",
-    name: "OpenBot team",
+    name: "AIKINGBOT team",
     logoUrl: null,
     notificationsMuted: false,
     notificationsMutedUntil: null,
@@ -599,8 +599,8 @@ export const STORY_SERVERS: ServerSummary[] = [
 export const STORY_BROWSER_TABS: BrowserTab[] = [
   {
     id: "browser-tab-docs",
-    title: "OpenBot documentation",
-    url: "https://openbot.run/docs",
+    title: "AIKINGBOT documentation",
+    url: "https://aikingbot.aikingx.com/docs",
     loading: false,
     ownerThreadId: "thread-chief",
     ownerAgentId: "chief",
@@ -640,7 +640,7 @@ export const STORY_HOST_STATUS: HostStatus = {
   configured: true,
   enabledOnLaunch: true,
   serverId: "team",
-  serverName: "OpenBot team",
+  serverName: "AIKINGBOT team",
   logoUrl: null,
   apiUrl: "https://team.example.com",
   apiOnline: true,
@@ -710,7 +710,7 @@ export const STORY_UPDATE_STATUS: UpdateStatus = {
 };
 
 export const STORY_APP_INFO = {
-  name: "OpenBot",
+  name: "AIKINGBOT",
   version: "0.1.11",
   platform: "darwin" as const,
   variant: "production" as const,
@@ -718,7 +718,7 @@ export const STORY_APP_INFO = {
 
 /**
  * The marketplace surfaces. Storybook and the preview both reach the modal through
- * `mock-openbot.ts`, so an empty list here reads as "the marketplace is empty" rather than "the
+ * `mock-aikingbot.ts`, so an empty list here reads as "the marketplace is empty" rather than "the
  * preview never wired this up" — which is what the three stubs it replaced looked like.
  */
 // Self-contained sample artwork keeps preview icons available without network requests.
@@ -735,7 +735,7 @@ export const STORY_MARKETPLACE_SKILLS: MarketplaceSkillSummary[] = [
     name: "Release notes",
     description: "Turns a range of commits into a changelog a reader outside the team can follow.",
     category: "documents",
-    creatorName: "OpenBot",
+    creatorName: "AIKINGBOT",
     version: 4,
     installs: 1_284,
     featured: true,
@@ -787,7 +787,7 @@ export const STORY_MARKETPLACE_SKILLS: MarketplaceSkillSummary[] = [
     name: "Source check",
     description: "Follows every citation in a draft and flags the ones that do not say what is claimed.",
     category: "research",
-    creatorName: "OpenBot",
+    creatorName: "AIKINGBOT",
     version: 3,
     installs: 209,
     featured: false,
@@ -849,10 +849,10 @@ export const STORY_MARKETPLACE_SKILL_DETAILS: Record<string, MarketplaceSkillDet
 export const STORY_INSTALLED_SKILLS: Record<string, InstalledSkill[]> = {
   chief: [
     {
-      skillId: "openbot-skill-creator",
-      slug: "openbot-skill-creator",
-      name: "openbot-skill-creator",
-      description: "Create or revise a reusable local OpenBot skill.",
+      skillId: "aikingbot-skill-creator",
+      slug: "aikingbot-skill-creator",
+      name: "aikingbot-skill-creator",
+      description: "Create or revise a reusable local AIKINGBOT skill.",
       installedVersion: 1,
       availableVersion: 1,
       state: "installed",
@@ -860,9 +860,9 @@ export const STORY_INSTALLED_SKILLS: Record<string, InstalledSkill[]> = {
       origin: "managed",
     },
     {
-      skillId: "openbot-site-hosting",
-      slug: "openbot-site-hosting",
-      name: "openbot-site-hosting",
+      skillId: "aikingbot-site-hosting",
+      slug: "aikingbot-site-hosting",
+      name: "aikingbot-site-hosting",
       installedVersion: 1,
       availableVersion: 1,
       state: "installed",
@@ -923,7 +923,7 @@ export const STORY_MCP_SERVERS: McpServerConfig[] = [
     transport: "stdio",
     enabled: true,
     command: "openai-dev-mcp",
-    args: ["serve-sqlite", "--database", "./openbot.db"],
+    args: ["serve-sqlite", "--database", "./aikingbot.db"],
     env: [{ key: "SQLITE_READONLY", value: "1" }],
     envPassthrough: ["HOME"],
     workingDirectory: "~/code",
@@ -1029,7 +1029,7 @@ export const STORY_MARKETPLACE_AGENTS: MarketplaceAgentSummary[] = [
     name: "Release Manager",
     title: "Ships the release",
     description: "Cuts the tag, writes the notes, and watches the rollout until it is green.",
-    creatorName: "OpenBot",
+    creatorName: "AIKINGBOT",
     version: 6,
     installs: 731,
     featured: true,
@@ -1227,7 +1227,7 @@ export const STORY_MARKETPLACE_AGENTS: MarketplaceAgentSummary[] = [
     name: "Contract Reader",
     title: "Finds the clause that matters",
     description: "Reads a long agreement and reports the dates, the duties, and the ways out.",
-    creatorName: "OpenBot",
+    creatorName: "AIKINGBOT",
     version: 3,
     installs: 245,
     featured: false,
@@ -1468,7 +1468,7 @@ const STORY_MARKETPLACE_PLUGIN_AAVE: MarketplacePluginDetail = {
   installs: 2_410,
   featured: true,
   updatedAt: "2026-09-02T11:30:00.000Z",
-  shareUrl: "https://openbot.run/plugins/aave",
+  shareUrl: "https://aikingbot.aikingx.com/plugins/aave",
   prompts: [
     { id: "prompt-stablecoin-yield", text: "Where can I earn the most on stablecoins across Aave right now?" },
     { id: "prompt-usdc-rates", text: "Which pays more for USDC right now, Aave V3 or V4 on Ethereum?" },
@@ -1551,7 +1551,7 @@ export const STORY_MARKETPLACE_PLUGINS: MarketplacePluginDetail[] = [
     installs: 5_180,
     featured: true,
     updatedAt: "2026-08-28T09:10:00.000Z",
-    shareUrl: "https://openbot.run/plugins/linear",
+    shareUrl: "https://aikingbot.aikingx.com/plugins/linear",
     prompts: [
       { id: "prompt-linear-cycle", text: "What is still open in the current cycle, and who is it on?" },
       { id: "prompt-linear-file", text: "File a bug for the crash I just described, on the Desktop team." },
@@ -1624,7 +1624,7 @@ export const STORY_MARKETPLACE_PLUGINS: MarketplacePluginDetail[] = [
     installs: 3_060,
     featured: false,
     updatedAt: "2026-09-08T16:45:00.000Z",
-    shareUrl: "https://openbot.run/plugins/figma",
+    shareUrl: "https://aikingbot.aikingx.com/plugins/figma",
     prompts: [
       { id: "prompt-figma-frames", text: "What frames are on the Settings page of this file?" },
       { id: "prompt-figma-tokens", text: "Which colour variables does the button component bind to?" },
@@ -1688,7 +1688,7 @@ export const STORY_MARKETPLACE_PLUGINS: MarketplacePluginDetail[] = [
     installs: 640,
     featured: false,
     updatedAt: "2026-07-19T08:00:00.000Z",
-    shareUrl: "https://openbot.run/plugins/changelog-writer",
+    shareUrl: "https://aikingbot.aikingx.com/plugins/changelog-writer",
     prompts: [{ id: "prompt-changelog", text: "Write the release notes for everything merged since the last tag." }],
     apps: [],
     skills: [
@@ -1751,8 +1751,8 @@ export const STORY_AGENT_SUBMISSIONS: AgentSubmission[] = [
 export const STORY_HOSTED_SITES: HostedSiteSummary[] = [
   {
     id: "site-launch-notes",
-    hostname: "launch-notes.openbot.site",
-    url: "https://launch-notes.openbot.site",
+    hostname: "launch-notes.aikingbot-sites.aikingx.com",
+    url: "https://launch-notes.aikingbot-sites.aikingx.com",
     title: "Launch notes",
     description: "The public changelog for the 0.2 release.",
     framework: "astro",
@@ -1765,8 +1765,8 @@ export const STORY_HOSTED_SITES: HostedSiteSummary[] = [
   },
   {
     id: "site-design-review",
-    hostname: "design-review.openbot.site",
-    url: "https://design-review.openbot.site",
+    hostname: "design-review.aikingbot-sites.aikingx.com",
+    url: "https://design-review.aikingbot-sites.aikingx.com",
     title: "Design review",
     description: "A one-page mockup shared with the design studio.",
     framework: "vanilla",

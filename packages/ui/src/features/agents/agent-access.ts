@@ -1,4 +1,4 @@
-import type { AppTranslate } from "@openbot/i18n";
+import type { AppTranslate } from "@aikingbot/i18n";
 import type { AgentProfile } from "../../data";
 
 /** What the lock after an agent's name says. Empty for an agent with full access. */

@@ -1,4 +1,4 @@
-import { parseSpreadsheet, SpreadsheetFilePreview } from "@openbot/ui/features/conversation/SpreadsheetFilePreview";
+import { parseSpreadsheet, SpreadsheetFilePreview } from "@aikingbot/ui/features/conversation/SpreadsheetFilePreview";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { strToU8, zipSync } from "fflate";
 import { describe, expect, it } from "vitest";

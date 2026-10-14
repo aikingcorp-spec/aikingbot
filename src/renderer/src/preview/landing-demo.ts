@@ -1,4 +1,4 @@
-import type { ConversationMessage, DirectMessage, QueueDelivery } from "@openbot/contracts/ipc";
+import type { ConversationMessage, DirectMessage, QueueDelivery } from "@aikingbot/contracts/ipc";
 import {
   LANDING_DEMO_SCRIPTS,
   LANDING_DIRECT_DEMO_SCRIPTS,
@@ -7,7 +7,7 @@ import {
   type LandingDemoScript,
   type LandingDirectDemoScript,
 } from "./landing-demo-scripts";
-import type { MockOpenBotControls } from "./mock-openbot";
+import type { MockAIKINGBOTControls } from "./mock-aikingbot";
 
 interface LandingDemoControllerOptions {
   reducedMotion?: boolean;
@@ -52,7 +52,7 @@ function splitIntoChunks(value: string, size = 24): string[] {
 }
 
 export function createLandingDemoController(
-  mock: MockOpenBotControls,
+  mock: MockAIKINGBOTControls,
   options: LandingDemoControllerOptions = {},
 ): { activate: () => void; dispose: () => void } {
   const scripts = options.scripts ?? LANDING_DEMO_SCRIPTS;

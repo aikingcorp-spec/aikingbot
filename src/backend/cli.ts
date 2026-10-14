@@ -4,9 +4,9 @@ import { access, readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, extname, join, posix, resolve, win32 } from "node:path";
 import { promisify } from "node:util";
-import { type AgentProviderId, agentProviderName } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { type AgentProviderId, agentProviderName } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result } from "effect";
 import { type ProviderClientOperationError, providerCall, providerFailure } from "./provider-client-effects";
 
@@ -16,7 +16,7 @@ const execFileAsync = promisify(execFile);
 const MINIMUM_CODEX_VERSION = [0, 156, 0] as const;
 const MINIMUM_CLAUDE_VERSION = [2, 1, 232] as const;
 const MINIMUM_GROK_VERSION = [1, 0, 5] as const;
-// The first Cline CLI that OpenBot was checked with: its sessions run in-process and it answers a lost
+// The first Cline CLI that AIKINGBOT was checked with: its sessions run in-process and it answers a lost
 // session with the ACP resource-not-found error.
 const MINIMUM_CLINE_VERSION = [3, 0, 68] as const;
 
@@ -82,7 +82,7 @@ export class CodexCliError extends Error {
 }
 
 /**
- * The managed CLI OpenBot downloaded for each provider, keyed by provider id. `null` means OpenBot
+ * The managed CLI AIKINGBOT downloaded for each provider, keyed by provider id. `null` means AIKINGBOT
  * has no managed copy and only the user's own installation is used. A missing key means the same as
  * an unset option: the resolver looks for the copy shipped inside the application itself.
  */
@@ -246,7 +246,7 @@ export const resolveGrokCli: (input?: {
 );
 
 /**
- * There is deliberately no minimum version here. OpenBot downloads and pins OpenCode now, but a
+ * There is deliberately no minimum version here. AIKINGBOT downloads and pins OpenCode now, but a
  * user who already has the CLI keeps it, and a floor would newly lock out an install that works.
  */
 export const resolveOpencodeCli: (input?: {
@@ -295,8 +295,8 @@ export function antigravityHarnessName(target: string): "localharness_external" 
 
 /**
  * The Antigravity server is never looked for on `PATH`: the Antigravity IDE installs an
- * `antigravity` command that is an editor, not this server. Only the copy OpenBot downloaded, or the
- * path in `OPENBOT_ANTIGRAVITY_PATH`, is used. The server takes no `--version`, so the version comes
+ * `antigravity` command that is an editor, not this server. Only the copy AIKINGBOT downloaded, or the
+ * path in `AIKINGBOT_ANTIGRAVITY_PATH`, is used. The server takes no `--version`, so the version comes
  * from the manifest two levels above the program, which a managed install writes.
  *
  * A path the user set is the only candidate: when it cannot start, the error says so, and the
@@ -627,7 +627,7 @@ function cliCommandName(provider: AgentProviderId): string {
 
 /** An explicit path remains under the user's control, including during managed updates. */
 export function configuredCliPath(provider: AgentProviderId): string | null {
-  return process.env[`OPENBOT_${provider.toUpperCase()}_PATH`]?.trim() || null;
+  return process.env[`AIKINGBOT_${provider.toUpperCase()}_PATH`]?.trim() || null;
 }
 
 const cliCandidates = Effect.fn("Cli.candidates")(function* (
@@ -755,7 +755,7 @@ const LOGIN_SHELL_MAX_OUTPUT_BYTES = 64 * 1024;
  *
  * The shell starts in a session of its own, with no controlling terminal. An interactive bash that
  * finds the terminal held by another process group sends SIGTTIN to its own group, and without a
- * session of its own that group is OpenBot's. An OpenBot started from a terminal then stopped as soon
+ * session of its own that group is AIKINGBOT's. An AIKINGBOT started from a terminal then stopped as soon
  * as two lookups overlapped, and only SIGKILL could end it (#766). With no terminal, the shell turns
  * job control off instead. `execFile` cannot do this: it does not pass `detached` on to `spawn`.
  *
@@ -859,7 +859,7 @@ function batchArgument(argument: string): string {
  * processor runs, so it is called through `cmd.exe` with the same verbatim quoting as
  * `readCliVersion`. Every other executable starts with no shell. That keeps a path that holds a
  * space runnable: a managed CLI lives under `userData`, which holds a space for a user such as
- * `C:\Users\Jane Doe` and for the `OpenBot Dev` profile, and `cmd.exe` would split it there.
+ * `C:\Users\Jane Doe` and for the `AIKINGBOT Dev` profile, and `cmd.exe` would split it there.
  */
 export function cliSpawnTarget(
   executable: string,

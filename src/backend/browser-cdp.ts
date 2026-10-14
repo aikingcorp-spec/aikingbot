@@ -6,8 +6,14 @@ import type {
   BrowserJsonValue,
   BrowserSnapshot,
   BrowserTarget,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import {
+  type DynamicRecord,
+  isBoolean,
+  isDynamicRecord,
+  isNumber,
+  isString,
+} from "@aikingbot/contracts/runtime-values";
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import type { NativeImage, WebContents } from "electron";
 import {
@@ -55,7 +61,7 @@ import { createFramePacer } from "./browser-screencast-pacing";
 const ACTION_TIMEOUT_MS = 10_000;
 const WAIT_TIMEOUT_MS = 30_000;
 const MAX_RESULT_BYTES = 64 * 1024;
-const DOCUMENT_ID_PROPERTY = "__openbot_browser_document_id__";
+const DOCUMENT_ID_PROPERTY = "__aikingbot_browser_document_id__";
 const MAX_SNAPSHOT_FRAMES = 12;
 const DOM_QUIET_MS = 250;
 

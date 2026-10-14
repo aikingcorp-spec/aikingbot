@@ -1,14 +1,14 @@
-// The files of the OpenBot Telegram bot, over HTTPS to Signal: Signal holds the bot token, so it
+// The files of the AIKINGBOT Telegram bot, over HTTPS to Signal: Signal holds the bot token, so it
 // fetches a file from Telegram, and posts a document to Telegram, for a token it signed. Nothing here
 // logs a token or a file.
 
 import { open, readFile, rm } from "node:fs/promises";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 import {
   TELEGRAM_FILE_BYTES_LIMIT,
   TELEGRAM_FILES_PATH,
   TELEGRAM_UPLOADS_PATH,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { Effect } from "effect";
 import { MessagingAdapterError, TelegramCallError } from "../backend/messaging/messaging-types";
 
@@ -25,7 +25,7 @@ function failure(errorCode: number, description: string): MessagingAdapterError 
   return new MessagingAdapterError({ cause: new TelegramCallError(errorCode, description, null) });
 }
 
-/** The HTTPS origin of a Signal socket URL: `wss://signal.openbot.run/v1/signal` gives `https://signal.openbot.run`. */
+/** The HTTPS origin of a Signal socket URL: `wss://signal.aikingbot.aikingx.com/v1/signal` gives `https://signal.aikingbot.aikingx.com`. */
 export function signalHttpOrigin(signalUrl: string): string {
   const url = new URL(signalUrl);
   url.protocol = url.protocol === "ws:" ? "http:" : "https:";

@@ -1,6 +1,6 @@
 /**
  * The type mark of a file that a message names: a short badge such as "JSON", and the colour
- * family (`--openbot-file-*`) of its name. Desktop and mobile draw file references with it, so a
+ * family (`--aikingbot-file-*`) of its name. Desktop and mobile draw file references with it, so a
  * file reads the same on both.
  */
 const CODE_BADGES = new Set([

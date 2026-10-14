@@ -6,9 +6,9 @@ import {
   isLocalOnlyProvider,
   type ProviderApiKeyStatus,
   type ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
-import type { ProviderPickerOption } from "@openbot/ui/components/ProviderPicker";
-import { providerDiagnosticsText } from "@openbot/ui/features/provider-diagnostics/provider-diagnostics";
+} from "@aikingbot/contracts/ipc";
+import type { ProviderPickerOption } from "@aikingbot/ui/components/ProviderPicker";
+import { providerDiagnosticsText } from "@aikingbot/ui/features/provider-diagnostics/provider-diagnostics";
 import { createMemo, createSignal } from "solid-js";
 import { useI18n } from "../../../i18n-context";
 
@@ -26,7 +26,7 @@ interface GeneralStoreProps {
   openCodeKeyStatus?: () => ProviderApiKeyStatus | undefined;
   /** The joined server whose host runs these providers. Absent when this computer runs them. */
   providerHostName?: string | undefined;
-  /** The providers that the user turned off in OpenBot. */
+  /** The providers that the user turned off in AIKINGBOT. */
   offProviders?: readonly AgentProviderId[] | undefined;
   /** The names of the agents that use each provider. */
   providerUsers?: Partial<Record<AgentProviderId, readonly string[]>> | undefined;

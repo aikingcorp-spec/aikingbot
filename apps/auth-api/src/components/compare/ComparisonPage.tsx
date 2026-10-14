@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/solid-router";
 import { For } from "solid-js";
-import { type Comparison, comparisonScore, OPENBOT_PLANS } from "../../content/compare/comparison";
+import { AIKINGBOT_PLANS, type Comparison, comparisonScore } from "../../content/compare/comparison";
 import { type CollectionArticle, type ContentCollection, formatArticleDate } from "../../lib/content-collection";
 import { ArticleGradient } from "../content/ArticleGradient";
 import { DataArticleFrame } from "../content/DataArticleFrame";
@@ -35,9 +35,9 @@ export interface ComparisonPageProps {
 // in words as well as with a mark, and the summary over the table counts it.
 export function ComparisonPage(props: ComparisonPageProps) {
   const rival = () => props.comparison.rival;
-  const openbot: SideProps = { side: "openbot", name: "OpenBot" };
+  const aikingbot: SideProps = { side: "aikingbot", name: "AIKINGBOT" };
   const rivalSide = (): SideProps => ({ side: "rival", name: rival().name, mark: rival().mark });
-  const score = () => comparisonScore(props.comparison.rows, ["openbot", "rival"]);
+  const score = () => comparisonScore(props.comparison.rows, ["aikingbot", "rival"]);
   const topics = () => props.comparison.rows.length;
 
   return (
@@ -64,14 +64,14 @@ export function ComparisonPage(props: ComparisonPageProps) {
             mode="live"
             class="compare-stage-art"
           />
-          <CompareMarks sides={[openbot, rivalSide()]} />
+          <CompareMarks sides={[aikingbot, rivalSide()]} />
         </div>
       </header>
 
       <RevealSection class="compare-answer" titleId="compare-answer-title" title="The short answer">
         <p class="compare-answer-text">{props.comparison.answer}</p>
         <div class="compare-pair">
-          <ChoiceCard {...openbot} points={props.comparison.chooseOpenBot} recommended />
+          <ChoiceCard {...aikingbot} points={props.comparison.chooseAIKINGBOT} recommended />
           <ChoiceCard {...rivalSide()} points={props.comparison.chooseRival} />
         </div>
       </RevealSection>
@@ -79,11 +79,11 @@ export function ComparisonPage(props: ComparisonPageProps) {
       {/* The first reason to switch: the plans people already pay for. */}
       <RevealSection class="compare-plans" titleId="compare-plans-title" title="Use the plans you already pay for">
         <p class="compare-plans-lead">
-          OpenBot sells you no model. Sign in to the AI plans you already have, or connect your own model, and give each
-          agent the one that fits its job.
+          AIKINGBOT sells you no model. Sign in to the AI plans you already have, or connect your own model, and give
+          each agent the one that fits its job.
         </p>
         <ul class="compare-plans-grid">
-          <For each={OPENBOT_PLANS}>{(plan, index) => <PlanCard plan={plan} index={index()} />}</For>
+          <For each={AIKINGBOT_PLANS}>{(plan, index) => <PlanCard plan={plan} index={index()} />}</For>
         </ul>
         <p class="compare-plans-rival">
           <RivalMark name={rival().mark} class="compare-plans-rival-logo compare-mark-rival" />
@@ -95,19 +95,19 @@ export function ComparisonPage(props: ComparisonPageProps) {
 
       <RevealSection class="compare-glance" titleId="compare-glance-title" title="At a glance">
         <p class="compare-glance-summary">
-          OpenBot is better on {score()[0]} of {topics()} topics, and {rival().name} on {score()[1]}.
+          AIKINGBOT is better on {score()[0]} of {topics()} topics, and {rival().name} on {score()[1]}.
         </p>
         <div class="compare-table-frame">
           <table class="compare-table">
             <caption class="landing-visually-hidden">
-              OpenBot and {rival().name} compared, as checked on {formatArticleDate(props.comparison.checkedAt)}
+              AIKINGBOT and {rival().name} compared, as checked on {formatArticleDate(props.comparison.checkedAt)}
             </caption>
             <thead>
               <tr>
                 <th scope="col">
                   <span class="landing-visually-hidden">Topic</span>
                 </th>
-                <For each={[openbot, rivalSide()]}>
+                <For each={[aikingbot, rivalSide()]}>
                   {(side) => (
                     <th scope="col" data-side={side.side}>
                       <span class="compare-table-brand">
@@ -129,7 +129,7 @@ export function ComparisonPage(props: ComparisonPageProps) {
                         {row.topic}
                       </span>
                     </th>
-                    <ValueCell side="openbot" better={row.better} text={row.openbot} />
+                    <ValueCell side="aikingbot" better={row.better} text={row.aikingbot} />
                     <ValueCell side="rival" better={row.better} text={row.rival} />
                   </tr>
                 )}
@@ -145,7 +145,7 @@ export function ComparisonPage(props: ComparisonPageProps) {
         {(section, index) => (
           <RevealSection class="compare-depth" titleId={`compare-depth-${index()}`} title={section.title}>
             <div class="compare-pair">
-              <SideCard {...openbot} text={section.openbot} better={section.better} />
+              <SideCard {...aikingbot} text={section.aikingbot} better={section.better} />
               <SideCard {...rivalSide()} text={section.rival} better={section.better} />
             </div>
           </RevealSection>

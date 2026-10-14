@@ -9,16 +9,16 @@ import {
   isAgentSummary,
   type RoutineFlowCanvas,
   type RoutineFlowLink,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   ROUTINE_FLOW_STEP_TEXT_LIMIT,
   ROUTINE_FLOWS_CAPABILITY,
   ROUTINE_FLOWS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { TEAM_PROTOCOL_VERSION_HEADER } from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@aikingbot/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V7 } from "@aikingbot/contracts/team-protocol/v7";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import opencodeFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
@@ -118,7 +118,7 @@ async function startHost(flows: TeamApiRoutineFlows | null = routineFlows(), eve
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "OpenBot-Capabilities": capabilities,
+        "AIKINGBOT-Capabilities": capabilities,
       },
       body: JSON.stringify(body),
     });
@@ -307,8 +307,8 @@ describe("Team API routine-flows-v1", () => {
     const sockets: WebSocket[] = [];
     for (const supported of [true, false]) {
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-team-v1",
-        `openbot-token.${ownerToken}`,
+        "aikingbot-team-v1",
+        `aikingbot-token.${ownerToken}`,
       ]);
       const presence = nextJsonEvent(socket);
       await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));

@@ -1,4 +1,4 @@
-import { mobileTranslateFor } from "@openbot/i18n/mobile";
+import { mobileTranslateFor } from "@aikingbot/i18n/mobile";
 import { describe, expect, it } from "vitest";
 import {
   applyDictationResult,

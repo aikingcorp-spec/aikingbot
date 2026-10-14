@@ -16,7 +16,7 @@ afterEach(async () => {
 });
 
 async function fixtureDirectory(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-voice-model-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-voice-model-"));
   roots.push(root);
   const directory = join(root, "runtimes", "parakeet");
   await mkdir(directory, { recursive: true });

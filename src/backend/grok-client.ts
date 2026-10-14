@@ -1,7 +1,7 @@
 import type { ClientSideConnection, InitializeResponse } from "@agentclientprotocol/sdk";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type DynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { type DynamicRecord, isNumber } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { AcpAgentClient, type AcpHistoryPersistence } from "./acp-client";
 import type { GrokCliInfo } from "./cli";
@@ -43,7 +43,7 @@ export class GrokAgentClient extends AcpAgentClient {
         "agent",
         "stdio",
       ],
-      env: { GROK_OAUTH2_REFERRER: "openbot" },
+      env: { GROK_OAUTH2_REFERRER: "aikingbot" },
       ...(agentEnvironment ? { extraEnv: () => ({ ...agentEnvironment() }) } : {}),
       history,
       signInMessage: sourceText("error.provider.grokSignIn"),

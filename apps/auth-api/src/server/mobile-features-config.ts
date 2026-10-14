@@ -1,4 +1,4 @@
-import type { MobileFeatureConfig } from "@openbot/contracts/mobile-features";
+import type { MobileFeatureConfig } from "@aikingbot/contracts/mobile-features";
 
 /**
  * The last app version of each platform that has each mobile feature, such as "1.2.0". Versions up

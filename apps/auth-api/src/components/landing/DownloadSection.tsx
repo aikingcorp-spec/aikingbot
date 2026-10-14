@@ -1,4 +1,4 @@
-import { type MobilePlatformLogoVariant, PlatformLogo, type PlatformLogoVariant } from "@openbot/brand";
+import { type MobilePlatformLogoVariant, PlatformLogo, type PlatformLogoVariant } from "@aikingbot/brand";
 import { Link } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 import { DOWNLOAD_PLATFORM_ORDER, DOWNLOAD_PLATFORMS } from "../../lib/download-platforms";
@@ -48,7 +48,7 @@ export function DownloadSection() {
     <section ref={sectionRef} id="download" class="landing-download" aria-labelledby="download-title">
       <div class="landing-download-inner">
         <header class="landing-download-heading" data-revealed={revealState()}>
-          <h2 id="download-title">Download OpenBot</h2>
+          <h2 id="download-title">Download AIKINGBOT</h2>
           <p>
             Choose your platform. Run Codex, Claude, Gemini, Grok, OpenCode or your own model from one desktop app, and
             talk to your agents from your phone.

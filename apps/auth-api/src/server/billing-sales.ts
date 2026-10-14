@@ -6,8 +6,8 @@ import {
   type BillingInterval,
   type BillingPlanId,
   isBillingAmount,
-} from "@openbot/contracts/billing";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/billing";
+import { isOneOf } from "@aikingbot/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import { BillingUsd, BillingUsdError } from "./billing-usd";
 import { SalesAnalyticsDelivery, SalesAnalyticsDeliveryError } from "./sales-analytics-delivery";
@@ -319,8 +319,8 @@ export class BillingSales {
         .first<CheckoutRow>(),
     );
     const metadata = recordValue(object.metadata);
-    const userId = row?.user_id ?? safeId(metadata?.openbot_user_id);
-    const serverId = row?.server_id ?? safeId(metadata?.openbot_server_id);
+    const userId = row?.user_id ?? safeId(metadata?.aikingbot_user_id);
+    const serverId = row?.server_id ?? safeId(metadata?.aikingbot_server_id);
     if (row) {
       yield* d1(this.#database, () =>
         this.#database
@@ -377,8 +377,8 @@ export class BillingSales {
         .first<CheckoutRow>(),
     );
     const metadata = recordValue(object.metadata);
-    const userId = row?.user_id ?? safeId(metadata?.openbot_user_id);
-    const serverId = row?.server_id ?? safeId(metadata?.openbot_server_id);
+    const userId = row?.user_id ?? safeId(metadata?.aikingbot_user_id);
+    const serverId = row?.server_id ?? safeId(metadata?.aikingbot_server_id);
     if (row) {
       yield* d1(this.#database, () =>
         this.#database
@@ -445,8 +445,8 @@ export class BillingSales {
         )
       : null;
     const metadata = recordValue(object.metadata);
-    const userId = synced?.userId ?? stored?.user_id ?? safeId(metadata?.openbot_user_id);
-    const serverId = stored?.server_id ?? safeId(metadata?.openbot_server_id);
+    const userId = synced?.userId ?? stored?.user_id ?? safeId(metadata?.aikingbot_user_id);
+    const serverId = stored?.server_id ?? safeId(metadata?.aikingbot_server_id);
     const plan = synced?.plan ?? stored?.plan;
     const interval = synced?.interval ?? stored?.interval;
     const currency = billingCurrency(stringValue(object.currency)) ?? synced?.currency ?? stored?.currency;
@@ -697,7 +697,7 @@ function validCheckout(input: BillingSalesCheckout): boolean {
 function validReturnUrl(value: string): boolean {
   if (!value || value.length > 1024 || hasControlCharacter(value)) return false;
   if (!value.startsWith("/")) return false;
-  const parsed = new URL(value, "https://openbot.invalid");
+  const parsed = new URL(value, "https://aikingbot.invalid");
   return (parsed.pathname === "/app" || parsed.pathname === "/billing/return") && !parsed.username && !parsed.password;
 }
 

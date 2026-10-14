@@ -2,13 +2,13 @@ import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { z } from "zod";
 import { type AgentRuntimeLock, loadAgentRuntimeLock } from "./agent-runtime-lock";
 import { rejectNonRegularFiles, sha256 } from "./remote-desktop-runtime-release";
 import { escapeRegExp, installValidatedTree, isCurrentInstallation, safeArchivePathParts } from "./runtime-install";
 
-const logger = createOpenBotLogger("install-codex-runtime");
+const logger = createAIKINGBOTLogger("install-codex-runtime");
 
 export type CodexRuntimeTarget = "darwin-arm64" | "darwin-x64" | "linux-x64" | "linux-arm64" | "win32-x64";
 
@@ -53,7 +53,7 @@ export async function installCodexRuntime(
 
   const response = await fetchImpl(
     `${lock.codex.repository}/releases/download/${encodeURIComponent(lock.codex.tag)}/${artifact.asset}`,
-    { headers: { "User-Agent": "OpenBot-runtime-installer" }, redirect: "follow" },
+    { headers: { "User-Agent": "AIKINGBOT-runtime-installer" }, redirect: "follow" },
   );
   if (!response.ok) throw new Error(`Codex runtime download failed with HTTP ${response.status}.`);
   const archiveBytes = Buffer.from(await response.arrayBuffer());
@@ -61,7 +61,7 @@ export async function installCodexRuntime(
     throw new Error(`The ${target} Codex runtime archive checksum is invalid.`);
   }
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-codex-install-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-codex-install-"));
   try {
     const archive = join(temporaryRoot, artifact.asset);
     const extracted = join(temporaryRoot, "extracted");
@@ -82,7 +82,7 @@ export async function installCodexRuntime(
   return "installed";
 }
 
-/** The `target` the Codex package manifest carries for each runtime target OpenBot ships. */
+/** The `target` the Codex package manifest carries for each runtime target AIKINGBOT ships. */
 const CODEX_MANIFEST_TARGETS = {
   "darwin-arm64": "aarch64-apple-darwin",
   "darwin-x64": "x86_64-apple-darwin",
@@ -171,7 +171,7 @@ async function writeMetadata(root: string, lock: AgentRuntimeLock, fetchImpl: ty
   }
   if (currentLicense !== lock.codex.licenseSha256) {
     const response = await fetchImpl(`${lock.codex.repository}/raw/${encodeURIComponent(lock.codex.tag)}/LICENSE`, {
-      headers: { "User-Agent": "OpenBot-runtime-installer" },
+      headers: { "User-Agent": "AIKINGBOT-runtime-installer" },
       redirect: "follow",
     });
     if (!response.ok) throw new Error(`Codex license download failed with HTTP ${response.status}.`);

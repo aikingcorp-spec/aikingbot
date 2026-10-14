@@ -13,17 +13,17 @@ import {
   type InstalledSkill,
   parseUpdateAgentAdminSettingsInput,
   parseUpdateAgentHostSettingsInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_ADMIN_CAPABILITY, AGENT_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/agent-admin-v1";
+} from "@aikingbot/contracts/ipc";
+import { AGENT_ADMIN_CAPABILITY, AGENT_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
 import {
   AGENT_HOST_SETTINGS_CAPABILITY,
   AGENT_HOST_SETTINGS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { AGENT_INSTALL_CAPABILITY, AGENT_INSTALL_ROUTES } from "@openbot/contracts/team-protocol/agent-install-v1";
-import { AGENT_UPDATE_CAPABILITY, AGENT_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/agent-update-v1";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/agent-host-settings-v1";
+import { AGENT_INSTALL_CAPABILITY, AGENT_INSTALL_ROUTES } from "@aikingbot/contracts/team-protocol/agent-install-v1";
+import { AGENT_UPDATE_CAPABILITY, AGENT_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/agent-update-v1";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/skills-admin-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { AgentAdminSettingsService } from "../agent-admin-settings";
 import type { AgentHostSettingsService } from "../agent-host-settings";

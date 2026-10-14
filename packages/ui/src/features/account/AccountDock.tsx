@@ -6,7 +6,7 @@ import type {
   CentralAuthUser,
   ExternalDestination,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   Badge,
   Button,
@@ -25,7 +25,7 @@ import {
   Tooltip,
   UserAvatar,
   UserRound,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createEffect, createMemo, createSignal, For, onCleanup, Show, untrack } from "solid-js";
 import { TypingDots } from "../../components/TypingDots";
 import { useText } from "../../text";
@@ -64,7 +64,7 @@ interface AccountDockProps {
   shelf?: boolean;
 }
 
-const PRODUCT_NAME = "OpenBot";
+const PRODUCT_NAME = "AIKINGBOT";
 
 const USAGE_REFRESH_TIMEOUT_MS = 12_000;
 /** How old a reading may get while it is on screen before it is fetched again. */

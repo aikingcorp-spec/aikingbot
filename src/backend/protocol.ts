@@ -1,5 +1,11 @@
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { decodeRecord, requiredString } from "@aikingbot/contracts/ipc-decoding";
+import {
+  type DynamicRecord,
+  isBoolean,
+  isDynamicRecord,
+  isNumber,
+  isString,
+} from "@aikingbot/contracts/runtime-values";
 
 export type RequestId = string | number;
 
@@ -223,7 +229,7 @@ export function decodeAccountLoginStartResult(value: unknown): AccountLoginStart
 export function decodeAccountDeviceCodeLoginStartResult(value: unknown): AccountDeviceCodeLoginStartResult {
   const record = decodeRecord(value, "account device login response");
   if (requiredString(record, "type") !== "chatgptDeviceCode") throw new Error("Unexpected Codex login type.");
-  // Held to the same rule as the browser login's URL: this is the address OpenBot shows the user
+  // Held to the same rule as the browser login's URL: this is the address AIKINGBOT shows the user
   // and offers to open, so a downgrade to plain HTTP is refused before it reaches the screen.
   const url = new URL(requiredString(record, "verificationUrl"));
   if (url.protocol !== "https:") throw new Error("Codex returned an unsafe login URL.");
@@ -409,7 +415,7 @@ export function getRecord(record: unknown, key: string): DynamicRecord | null {
 /** The qualified name that a `tool_call` bridge item asks for. The model writes it, so check it before use. */
 export function bridgedToolName(item: ThreadItem): string | null {
   const tool = getString(item, "tool") ?? getString(item, "name");
-  if (tool !== "tool_call" && tool !== "mcp__openbot__tool_call") return null;
+  if (tool !== "tool_call" && tool !== "mcp__aikingbot__tool_call") return null;
   return getString(getRecord(item, "arguments"), "name");
 }
 

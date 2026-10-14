@@ -11,9 +11,9 @@ import {
   LOCAL_SERVER_ID,
   type McpServerConfig,
   type McpTestResult,
-} from "@openbot/contracts/ipc";
-import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
+} from "@aikingbot/contracts/ipc";
+import { MCP_SIGN_IN_CAPABILITY } from "@aikingbot/contracts/team-protocol/mcp-sign-in-v1";
+import { SIGN_IN_RELAY_CAPABILITY } from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
 import { describe, expect, it, vi } from "vitest";
 import { NO_MCP_TOOL_RUNTIMES } from "../../backend/mcp-provider-shapes";
 import { ProviderRuntimeFailure } from "../provider-runtime-effects";
@@ -35,7 +35,7 @@ vi.mock("electron", () => ({
   },
 }));
 
-const TRUSTED_EVENT = { senderFrame: { url: "openbot-app://app/index.html" } };
+const TRUSTED_EVENT = { senderFrame: { url: "aikingbot-app://app/index.html" } };
 
 function stdioConfig(overrides: Partial<McpServerConfig> = {}): McpServerConfig {
   return {
@@ -43,7 +43,7 @@ function stdioConfig(overrides: Partial<McpServerConfig> = {}): McpServerConfig 
     name: "Tool",
     transport: "stdio",
     enabled: true,
-    command: "openbot-no-such-command",
+    command: "aikingbot-no-such-command",
     args: [],
     env: [],
     envPassthrough: [],
@@ -178,7 +178,7 @@ describe("mcpServerIpcHandlers test", () => {
     const { remoteCalls, signInRemote } = setup({ signIn: false });
 
     await expect(signInRemote(httpConfig())).rejects.toThrow(
-      "Sign-in to an MCP server works only in OpenBot on the host computer.",
+      "Sign-in to an MCP server works only in AIKINGBOT on the host computer.",
     );
     expect(remoteCalls).toHaveLength(0);
   });

@@ -1,11 +1,11 @@
-import type { TelegramOverview } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
+import type { TelegramOverview } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
 import type {
   TelegramChatPlace,
   TelegramOrchestratorChoice,
   TelegramOrchestratorModels,
-} from "@openbot/ui/features/settings/TelegramIntegrationPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/settings/TelegramIntegrationPanel";
+import { currentText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type TelegramConnectorPort, telegramConnectorPort } from "./telegram-connector-port";

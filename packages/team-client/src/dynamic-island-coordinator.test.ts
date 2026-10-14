@@ -1,4 +1,4 @@
-import type { AgentEvent, AgentRuntimeSnapshot, AgentSummary, QueueDelivery } from "@openbot/contracts/ipc";
+import type { AgentEvent, AgentRuntimeSnapshot, AgentSummary, QueueDelivery } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { DynamicIslandCoordinator, reconcileQueuesWithRuntimeWork } from "./dynamic-island-coordinator";
 import type { DynamicIslandPresentationInput, DynamicIslandText } from "./dynamic-island-presentation";
@@ -7,7 +7,7 @@ import type { DynamicIslandPresentationInput, DynamicIslandText } from "./dynami
 const text: DynamicIslandText = {
   taskWorking: "Working on your request",
   questionHeader: "Question from your agent",
-  questionText: "Open OpenBot to answer this question.",
+  questionText: "Open AIKINGBOT to answer this question.",
   optionFallback: (number) => `Option ${number}`,
   takeoverTitle: "Browser step needs you",
   takeoverDetail: "Complete the sign-in, verification, or consent in the browser.",

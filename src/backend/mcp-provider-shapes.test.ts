@@ -1,7 +1,7 @@
 import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   acpMcpServers,
@@ -151,7 +151,7 @@ describe("claudeMcpServers and acpMcpServers", () => {
     expect(handoff.dropped).toEqual([]);
   });
 
-  it("all three add the sign-in OpenBot holds as a bearer header", () => {
+  it("all three add the sign-in AIKINGBOT holds as a bearer header", () => {
     const signedIn = usable({ headers: [] }, "access-token-abc");
     expect(codexMcpServers([signedIn]).servers).toMatchObject({
       posthog: { http_headers: { Authorization: "Bearer access-token-abc" } },
@@ -165,7 +165,7 @@ describe("claudeMcpServers and acpMcpServers", () => {
   });
 
   /* The user typed that header into the panel, so it is the account they meant to use. A token
-     OpenBot minted for the same address must not replace it without saying anything. */
+     AIKINGBOT minted for the same address must not replace it without saying anything. */
   it("leaves a header the user wrote alone", () => {
     const signedIn = usable({ headers: [{ key: "authorization", value: "Bearer typed-by-hand" }] }, "access-token-abc");
     expect(claudeMcpServers([signedIn]).servers).toMatchObject({
@@ -241,7 +241,7 @@ describe("needsManagedRuntime", () => {
   it("waits for a command nothing names", async () => {
     const missing = config({
       transport: "stdio",
-      command: "openbot-no-such-command",
+      command: "aikingbot-no-such-command",
       url: "",
       headers: [],
     });
@@ -251,11 +251,11 @@ describe("needsManagedRuntime", () => {
   it("skips the wait once the managed store names the command", async () => {
     const missing = config({
       transport: "stdio",
-      command: "openbot-no-such-command",
+      command: "aikingbot-no-such-command",
       url: "",
       headers: [],
     });
-    const tools = { binDirectories: [], commandAliases: { "openbot-no-such-command": "/managed/bin/tool" } };
+    const tools = { binDirectories: [], commandAliases: { "aikingbot-no-such-command": "/managed/bin/tool" } };
     await expect(runMcp(needsManagedRuntime(missing, tools))).resolves.toBe(false);
   });
 });
@@ -301,36 +301,36 @@ describe("resolveMcpCommand", () => {
   });
 
   it.runIf(process.platform !== "win32")("resolves a command once and reuses the answer", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-mcp-command-"));
-    const executable = join(directory, "openbot-fake-server");
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-mcp-command-"));
+    const executable = join(directory, "aikingbot-fake-server");
     try {
       await writeFile(executable, "#!/bin/sh\nexit 0\n");
       await chmod(executable, 0o755);
-      expect(await runMcp(resolveMcpCommand("openbot-fake-server", directory))).toBe(executable);
+      expect(await runMcp(resolveMcpCommand("aikingbot-fake-server", directory))).toBe(executable);
 
       // The login shell is what costs the time, so the second answer has to come from memory. A
       // deleted file proves it did: a fresh lookup would find nothing.
       await rm(executable);
-      expect(await runMcp(resolveMcpCommand("openbot-fake-server", directory))).toBe(executable);
+      expect(await runMcp(resolveMcpCommand("aikingbot-fake-server", directory))).toBe(executable);
 
       clearMcpCommandCache();
-      expect(await runMcp(resolveMcpCommand("openbot-fake-server", directory))).toBeNull();
+      expect(await runMcp(resolveMcpCommand("aikingbot-fake-server", directory))).toBeNull();
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
   });
 
   it.runIf(process.platform !== "win32")("does not remember that a command was missing", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-mcp-command-"));
-    const executable = join(directory, "openbot-late-server");
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-mcp-command-"));
+    const executable = join(directory, "aikingbot-late-server");
     try {
-      expect(await runMcp(resolveMcpCommand("openbot-late-server", directory))).toBeNull();
+      expect(await runMcp(resolveMcpCommand("aikingbot-late-server", directory))).toBeNull();
 
       // Installing the missing tool has to be enough. Remembering the miss would make a restart
       // the only way to be believed.
       await writeFile(executable, "#!/bin/sh\nexit 0\n");
       await chmod(executable, 0o755);
-      expect(await runMcp(resolveMcpCommand("openbot-late-server", directory))).toBe(executable);
+      expect(await runMcp(resolveMcpCommand("aikingbot-late-server", directory))).toBe(executable);
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
@@ -363,28 +363,28 @@ describe("usableMcpServer with a managed tool runtime", () => {
   });
 
   it.runIf(process.platform !== "win32")("lends a program only where the machine has none", async () => {
-    const own = await mkdtemp(join(tmpdir(), "openbot-mcp-own-"));
-    const managed = await mkdtemp(join(tmpdir(), "openbot-mcp-managed-"));
+    const own = await mkdtemp(join(tmpdir(), "aikingbot-mcp-own-"));
+    const managed = await mkdtemp(join(tmpdir(), "aikingbot-mcp-managed-"));
     try {
       for (const directory of [own, managed]) {
-        await writeFile(join(directory, "openbot-fake-npx"), "#!/bin/sh\nexit 0\n");
-        await chmod(join(directory, "openbot-fake-npx"), 0o755);
+        await writeFile(join(directory, "aikingbot-fake-npx"), "#!/bin/sh\nexit 0\n");
+        await chmod(join(directory, "aikingbot-fake-npx"), 0o755);
       }
       const tools = {
         binDirectories: [managed],
-        commandAliases: { "openbot-absent-npx": join(managed, "bunx") },
+        commandAliases: { "aikingbot-absent-npx": join(managed, "bunx") },
       };
       const stdio = (command: string) =>
         config({ transport: "stdio", command, url: "", headers: [], env: [{ key: "PATH", value: own }] });
 
       // Last on `PATH`, so the build the user installed is the one that starts. This is the whole
       // mitigation for shipping a runtime: no machine that works today starts a different program.
-      const installed = await runMcp(usableMcpServer(stdio("openbot-fake-npx"), tools));
-      expect(installed.command).toBe(join(own, "openbot-fake-npx"));
+      const installed = await runMcp(usableMcpServer(stdio("aikingbot-fake-npx"), tools));
+      expect(installed.command).toBe(join(own, "aikingbot-fake-npx"));
       expect(installed.path).toBe(`${own}${delimiter}${managed}`);
 
       // And an alias is read only after that whole list found nothing, which is the clean machine.
-      const lent = await runMcp(usableMcpServer(stdio("openbot-absent-npx"), tools));
+      const lent = await runMcp(usableMcpServer(stdio("aikingbot-absent-npx"), tools));
       expect(lent.command).toBe(join(managed, "bunx"));
     } finally {
       await rm(own, { recursive: true, force: true });

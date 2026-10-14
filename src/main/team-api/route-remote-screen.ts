@@ -7,8 +7,8 @@ import { parseRemoteDesktopTest } from "../ipc/server-inputs";
 // exist on every host, and answering 404 would tell a client the host is too old instead of
 // telling it remote control is switched off.
 
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { sourceText } from "@openbot/i18n/source";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { RemoteScreenError } from "../remote-screen-gateway";
 import type { TeamStore } from "../team-store";

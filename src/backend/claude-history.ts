@@ -167,7 +167,7 @@ async function scanClaudeHistory(
   );
   if (!transcript) return;
   const indexRoot = options.indexDirectory ?? tmpdir();
-  const indexDirectory = join(indexRoot, "openbot-claude-history");
+  const indexDirectory = join(indexRoot, "aikingbot-claude-history");
   await mkdir(indexDirectory, { recursive: true });
   const indexPath = join(indexDirectory, `${sanitizeProjectPath(request.threadId)}.sqlite`);
   for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -956,7 +956,7 @@ function messageText(message: unknown): string {
       (block) =>
         block.type === "text" &&
         typeof block.text === "string" &&
-        // OpenBot's memory block is not text that the user wrote.
+        // AIKINGBOT's memory block is not text that the user wrote.
         !(message.role === "user" && isMemoryContextBlock(block.text)),
     )
     .map((block) => String(block.text))

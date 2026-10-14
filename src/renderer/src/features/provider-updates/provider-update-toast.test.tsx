@@ -3,9 +3,9 @@ import type {
   ProviderRuntimeSnapshot,
   ProviderRuntimeStatus,
   ProviderRuntimesDesktopApi,
-} from "@openbot/contracts/ipc";
-import { Toaster } from "@openbot/ui";
-import type { ProviderUpdate } from "@openbot/ui/features/provider-updates/provider-update";
+} from "@aikingbot/contracts/ipc";
+import { Toaster } from "@aikingbot/ui";
+import type { ProviderUpdate } from "@aikingbot/ui/features/provider-updates/provider-update";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vitest";
 import { HostProviderSettingsPanel } from "../settings/ProviderSettingsSection";

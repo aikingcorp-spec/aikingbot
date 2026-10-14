@@ -5,7 +5,7 @@ import {
   CUSTOM_PROVIDER_LIMITS,
   type CustomProviderRestart,
   type SaveCustomProviderInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import type { AcpAgentCheck, CustomAcpAgentDraft } from "./custom-acp-agent-form";
 import type { CustomProviderDraft, CustomProviderEndpoint, DiscoveredModel } from "./custom-provider-form";
 

@@ -13,16 +13,16 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { basename, dirname, extname, isAbsolute, join, relative } from "node:path";
-import { assertSupportedAttachmentName, attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { assertSupportedAttachmentName, attachmentMimeTypeForName } from "@aikingbot/contracts/attachment-files";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AttachmentDataInput,
   AttachmentKind,
   AttachmentPreviewKind,
   AttachmentSummary,
   QueueDelivery,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { type AttachmentOperationError, attachmentCall, attachmentFailure, attachmentSync } from "./attachment-effects";
 import { sha256File } from "./file-hash";
@@ -31,7 +31,7 @@ import { isWithin } from "./workspace-paths";
 const MAX_ATTACHMENTS = INPUT_LIMITS.attachments;
 const MAX_FILE_BYTES = ATTACHMENT_LIMITS.fileBytes;
 const MAX_TOTAL_BYTES = ATTACHMENT_LIMITS.totalBytes;
-const TRANSFER_MANIFEST_FILE = ".openbot-transfer.json";
+const TRANSFER_MANIFEST_FILE = ".aikingbot-transfer.json";
 
 export interface StoredAttachment extends AttachmentSummary {
   path: string;
@@ -694,7 +694,7 @@ function attachmentMetadata(
 }
 
 function attachmentPreviewUrl(id: string): string {
-  return `openbot-attachment://file/${id}`;
+  return `aikingbot-attachment://file/${id}`;
 }
 
 export function toAttachmentSummary(attachment: StoredAttachment): AttachmentSummary {

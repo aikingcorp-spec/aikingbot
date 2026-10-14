@@ -3,10 +3,10 @@ import { Effect } from "effect";
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V4 } from "@openbot/contracts/team-protocol/v4";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { TEAM_CURRENT_CAPABILITIES } from "@aikingbot/contracts/team-protocol/current";
+import { TEAM_CAPABILITIES_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V4 } from "@aikingbot/contracts/team-protocol/v4";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentService } from "../backend/agent-service";
 import {
@@ -27,7 +27,7 @@ const BUDGETS = {
   teamConversationPageBytes: 2_100,
 };
 
-const REPORT_PATH = resolve(import.meta.dirname, "../../.openbot-build/transfer-budget/team-api.json");
+const REPORT_PATH = resolve(import.meta.dirname, "../../.aikingbot-build/transfer-budget/team-api.json");
 
 let root: string;
 let service: AgentService | null = null;

@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, readlink, realpath, rename, symlink, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import type { HookCallbackMatcher, Options, SdkPluginConfig } from "@anthropic-ai/claude-agent-sdk";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { Effect, Result } from "effect";
 import { workspaceTemporaryPaths } from "./agent/workspace-sandbox";
 import { runCauseEffect } from "./effect-boundary";
@@ -39,7 +39,7 @@ export function claudeWorkspaceSandbox(roots: readonly string[]): NonNullable<Op
 }
 
 /**
- * Only the hooks of managed settings run, and OpenBot gives none. The SDK hook of
+ * Only the hooks of managed settings run, and AIKINGBOT gives none. The SDK hook of
  * `claudeWorkspaceHooks` still runs. A hook in the frontmatter of a workspace skill does not.
  */
 export const CLAUDE_WORKSPACE_MANAGED_SETTINGS: NonNullable<Options["managedSettings"]> = {
@@ -47,8 +47,8 @@ export const CLAUDE_WORKSPACE_MANAGED_SETTINGS: NonNullable<Options["managedSett
 };
 
 /**
- * A plugin named `openbot` whose `skills` links to `.claude/skills` of the workspace, because Claude
- * reads that folder only with the project settings. Claude lists each skill as `openbot:<name>` and
+ * A plugin named `aikingbot` whose `skills` links to `.claude/skills` of the workspace, because Claude
+ * reads that folder only with the project settings. Claude lists each skill as `aikingbot:<name>` and
  * `/<name>` still works. The plugin folder is in `stateDirectory`, outside every root the agent can
  * write: a plugin can also start hooks and language servers, which run outside the sandbox.
  */
@@ -59,7 +59,7 @@ export const claudeWorkspaceSkillPlugin = Effect.fn("ClaudeWorkspace.skillPlugin
   const directory = join(stateDirectory, "claude-skill-plugins", createHash("sha256").update(cwd).digest("hex"));
   yield* providerCall(() => mkdir(join(directory, ".claude-plugin"), { recursive: true, mode: 0o700 }));
   yield* providerCall(() =>
-    writeFile(join(directory, ".claude-plugin", "plugin.json"), `${JSON.stringify({ name: "openbot" })}\n`),
+    writeFile(join(directory, ".claude-plugin", "plugin.json"), `${JSON.stringify({ name: "aikingbot" })}\n`),
   );
   const link = join(directory, "skills");
   const target = join(cwd, ".claude", "skills");

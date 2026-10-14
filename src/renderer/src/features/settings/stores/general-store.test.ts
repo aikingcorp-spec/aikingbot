@@ -3,7 +3,7 @@ import type {
   AgentStatus,
   ProviderApiKeyStatus,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { createRoot } from "solid-js";
 import { describe, expect, it } from "vitest";
 import { createSettingsGeneralStore } from "./general-store";
@@ -11,7 +11,7 @@ import { createSettingsGeneralStore } from "./general-store";
 /*
  * Whose CLI the General tab believes is in use.
  *
- * OpenBot downloads a managed OpenCode now, so an empty managed directory is the normal state for
+ * AIKINGBOT downloads a managed OpenCode now, so an empty managed directory is the normal state for
  * everyone who installed the CLI themselves. If the row read that empty directory it would offer a
  * ~46 MB download to a user whose provider already answers, so this file holds the row to what the
  * agent reports instead.
@@ -55,7 +55,7 @@ describe("settings general store", () => {
     expect(option.runtimeStatus?.version).toBe("1.18.27");
   });
 
-  // The user's own CLI keeps answering while OpenBot installs the managed one over it, so the
+  // The user's own CLI keeps answering while AIKINGBOT installs the managed one over it, so the
   // agent reports the provider as available for the whole update. The row still has to report it.
   it("reports the update a user's own CLI is downloading rather than reading it as ready", () => {
     const option = opencodeOption(

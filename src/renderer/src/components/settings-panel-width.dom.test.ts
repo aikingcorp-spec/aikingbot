@@ -2,7 +2,7 @@ import { createRoot } from "solid-js";
 import { afterEach, expect, it } from "vitest";
 import { createSettingsPanelWidth, saveSettingsPanelWidth } from "./settings-panel-width";
 
-const key = "openbot:settings-panel-width";
+const key = "aikingbot:settings-panel-width";
 afterEach(() => localStorage.removeItem(key));
 
 it("restores the existing panel preference and saves a resized width under the same key", () => {

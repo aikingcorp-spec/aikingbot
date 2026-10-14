@@ -84,7 +84,7 @@ export const messages = {
   "sidebar.delete.pending": "Suppression…",
   "sidebar.delete.title": "Supprimer {name} ?",
   "sidebar.delete.agentDescription":
-    "Cette action retire l’agent et sa conversation OpenBot de l’application. Sa file d’attente, ses souvenirs, ses routines et son espace de travail sont supprimés. L’historique conservé séparément par le fournisseur CLI connecté n’est pas supprimé.",
+    "Cette action retire l’agent et sa conversation AIKINGBOT de l’application. Sa file d’attente, ses souvenirs, ses routines et son espace de travail sont supprimés. L’historique conservé séparément par le fournisseur CLI connecté n’est pas supprimé.",
   "sidebar.delete.channelDescription":
     "Cette action arrête le canal. Son historique reste dans Canaux supprimés, en aperçu uniquement. Vous ne pouvez pas le restaurer. Les agents membres sont conservés.",
   "sidebar.delete.sectionDescription":
@@ -98,7 +98,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Discussion épinglée déplacée en position {position} sur {total}.",
   "sidebar.announce.personFallback": "personne",
   "sidebar.announce.chatFallback": "discussion",
-  "sidebar.mobileApp.title": "OpenBot sur mobile",
+  "sidebar.mobileApp.title": "AIKINGBOT sur mobile",
   "sidebar.mobileApp.body": "L'app est maintenant disponible sur iPhone et Android.",
   "sidebar.mobileApp.howToInstall": "Comment l'installer",
   "sidebar.mobileApp.dismiss": "Masquer l'annonce de l'app mobile",

@@ -52,7 +52,7 @@ export const mobileAnalytics = new MobileAnalytics(() => {
   )
     return null;
   const client = new OpenPanel({
-    apiUrl: "https://analytics.openbot.run/api",
+    apiUrl: "https://analytics.aikingbot.aikingx.com/api",
     clientId,
     clientSecret,
     filter: filterMobilePayload,

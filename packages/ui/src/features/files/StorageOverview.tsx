@@ -1,6 +1,6 @@
-import { CLEARABLE_STORAGE_CATEGORIES, type ClearableStorageCategory } from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
+import { CLEARABLE_STORAGE_CATEGORIES, type ClearableStorageCategory } from "@aikingbot/contracts/ipc";
+import { isOneOf } from "@aikingbot/contracts/runtime-values";
+import type { AppFormat, AppTextKey, AppTranslate } from "@aikingbot/i18n";
 import {
   Button,
   ChevronRight,
@@ -10,10 +10,10 @@ import {
   RefreshCw,
   Skeleton,
   TriangleAlert,
-} from "@openbot/ui";
-import { SettingsBackIcon } from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { SettingsBackIcon } from "@aikingbot/ui/components/SettingsPanel";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { AgentAvatar } from "../agents/AgentAvatar";
 import { FileList } from "./FileList";
@@ -45,7 +45,7 @@ export interface StorageOverviewProps {
   /** ISO time of the last completed scan. */
   scannedAt?: string | null;
   breakdown: readonly StorageBreakdown[];
-  /** Free space on the disk that holds the OpenBot folder. */
+  /** Free space on the disk that holds the AIKINGBOT folder. */
   freeBytes?: number | null;
   agents: readonly AgentProfile[];
   agentUsage: readonly AgentStorageRow[];
@@ -65,7 +65,7 @@ export interface StorageOverviewProps {
 const LARGEST_CHATS = 5;
 
 /**
- * The Storage page: how much space OpenBot takes on one computer, which agents and chats take it,
+ * The Storage page: how much space AIKINGBOT takes on one computer, which agents and chats take it,
  * every file in one list, and what can go without losing work. Chats and workspaces are never
  * cleared from here; the user deletes them where they live.
  */
@@ -134,7 +134,7 @@ export function StorageOverview(props: StorageOverviewProps) {
           <div class="storage-summary-heading">
             <div>
               <h3 id={`${headingId}-summary`} class="storage-summary-label">
-                {t("files.storage.openBotOn", { host: props.hostName })}
+                {t("files.storage.aikingBotOn", { host: props.hostName })}
               </h3>
               <Show
                 when={props.state !== "scanning" || total() > 0}

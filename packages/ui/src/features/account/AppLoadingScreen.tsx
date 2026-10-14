@@ -1,6 +1,6 @@
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import { type Block, BloubBot, type BloubBotRef, type StateId } from "@norbert_bodziony/bloub";
-import type { AvatarHue } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, onSettled, untrack } from "solid-js";
 import { bloubAvatarProfile } from "../../bloub-avatar";

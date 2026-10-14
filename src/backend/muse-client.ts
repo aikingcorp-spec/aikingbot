@@ -1,14 +1,14 @@
 import { EventEmitter } from "node:events";
 import { readFile } from "node:fs/promises";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import {
   type Connection,
   type SendUserTurnOptions,
   type SpawnedMspConnection,
   spawnMspConnection,
 } from "@muse-code/sdk";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
 import { Effect, Exit, Schema, Scope } from "effect";
 import { secretElicitationField } from "./agent/prompts";
 import { type AgentClient, type AgentProvider, type DiagnosticOrigin, RequestTimeoutError } from "./agent-client";
@@ -106,7 +106,7 @@ interface MuseThread {
   replayed: Set<string>;
 }
 
-/** Owns one native MSP process, session MCP bridges, and the live view-to-OpenBot event adapter. */
+/** Owns one native MSP process, session MCP bridges, and the live view-to-AIKINGBOT event adapter. */
 export class MuseAgentClient extends EventEmitter<ClientEvents> implements AgentClient {
   readonly contextCompaction = "events";
   readonly provider: AgentProvider = "muse";
@@ -360,7 +360,7 @@ export class MuseAgentClient extends EventEmitter<ClientEvents> implements Agent
     try {
       const host = await Promise.race([
         handshake.initialize({
-          clientInfo: { name: "openbot", version: "1" },
+          clientInfo: { name: "aikingbot", version: "1" },
           capabilities: { requestedCapabilities: ["sessionMcp"] },
         }),
         new Promise<never>((_, reject) => {
@@ -814,7 +814,7 @@ export class MuseAgentClient extends EventEmitter<ClientEvents> implements Agent
     }
     if (method === "session/tokenUsage") {
       const usage = yield* this.#decode(MuseUsage, params);
-      this.#emit("openbot/usage", {
+      this.#emit("aikingbot/usage", {
         threadId: thread.id,
         turnId: usage.turnId,
         usage: {

@@ -15,7 +15,7 @@ export class CentralAuthTransport extends Context.Service<
   {
     fetch(input: string | URL | Request, init?: RequestInit): Effect.Effect<Response, CentralAuthOperationError>;
   }
->()("openbot/main/CentralAuthTransport") {
+>()("aikingbot/main/CentralAuthTransport") {
   static layer(fetcher: (input: string | URL | Request, init?: RequestInit) => Promise<Response>) {
     return Layer.succeed(
       CentralAuthTransport,

@@ -1,5 +1,5 @@
-import { buttonVariants, DropdownMenu, SlidersHorizontal } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { buttonVariants, DropdownMenu, SlidersHorizontal } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { For, Show } from "solid-js";
 import { MenuCheck } from "./MarketplaceParts";
 

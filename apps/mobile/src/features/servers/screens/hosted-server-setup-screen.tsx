@@ -1,5 +1,5 @@
-import type { HostedServerSummary } from "@openbot/contracts/hosted-servers";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { HostedServerSummary } from "@aikingbot/contracts/hosted-servers";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
@@ -67,7 +67,7 @@ type StepState = "done" | "active" | "pending" | "failed";
 /**
  * A server of the account in setup: the payment, then the setup until the server shows in the server
  * list of this phone. The phone does not take the payment: app store rules do not allow a purchase
- * outside the store, so the user pays in OpenBot on the computer. The account server goes on with
+ * outside the store, so the user pays in AIKINGBOT on the computer. The account server goes on with
  * the setup when this sheet closes.
  */
 export function HostedServerSetupScreen() {

@@ -4,12 +4,12 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { ConversationSnapshot } from "@openbot/contracts/ipc";
+import type { ConversationSnapshot } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
+import { migrateAIKINGBOTDatabase } from "./aikingbot-database-schema";
 import { ConversationReadStore } from "./conversation-read-store";
 import { runCauseEffect } from "./effect-boundary";
-import { OpenBotDatabase } from "./openbot-database";
-import { migrateOpenBotDatabase } from "./openbot-database-schema";
 import { directThreadId, TeamChatStore } from "./team-chat-store";
 
 const roots: string[] = [];
@@ -20,9 +20,9 @@ afterEach(async () => {
 
 describe("ConversationReadStore", () => {
   it("keeps durable monotonic read boundaries per team member", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-conversation-read-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-conversation-read-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     database.connection
       .prepare(
@@ -66,7 +66,7 @@ describe("ConversationReadStore", () => {
     expect(reads.readState("member-b", third).unreadCount).toBe(3);
     database.close();
 
-    const restoredDatabase = new OpenBotDatabase(root);
+    const restoredDatabase = new AIKINGBOTDatabase(root);
     await runCauseEffect(restoredDatabase.initialize());
     const restored = new ConversationReadStore(restoredDatabase);
     expect(restored.readState("member-a", third).throughMessageId).toBe("message-2");
@@ -80,7 +80,7 @@ describe("ConversationReadStore", () => {
     restored.markUnread("member-a", third);
     expect(restored.readState("member-owner", third).throughMessageId).toBe("message-2");
     restoredDatabase.close();
-    const reopenedDatabase = new OpenBotDatabase(root);
+    const reopenedDatabase = new AIKINGBOTDatabase(root);
     await runCauseEffect(reopenedDatabase.initialize());
     expect(new ConversationReadStore(reopenedDatabase).readState("member-a", third)).toMatchObject({
       unreadCount: 3,
@@ -90,9 +90,9 @@ describe("ConversationReadStore", () => {
   });
 
   it("rebases a filtered marker cursor to the preceding supported message", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-conversation-read-filter-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-conversation-read-filter-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     database.connection
       .prepare(
@@ -147,9 +147,9 @@ describe("ConversationReadStore", () => {
   });
 
   it("marks an older paged boundary without loading the full thread", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-conversation-read-paged-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-conversation-read-paged-"));
     roots.push(root);
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     database.connection
       .prepare(
@@ -182,9 +182,9 @@ describe("ConversationReadStore", () => {
   });
 
   it("baselines agent history that existed before the read-state migration", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-conversation-read-migration-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-conversation-read-migration-"));
     roots.push(root);
-    const legacy = legacyDatabase(join(root, "openbot.db"));
+    const legacy = legacyDatabase(join(root, "aikingbot.db"));
     legacy
       .prepare(
         `INSERT INTO projection_threads (
@@ -247,12 +247,12 @@ describe("ConversationReadStore", () => {
         legacyDirectMessage.createdAt,
         JSON.stringify(legacyDirectMessage),
       );
-    migrateOpenBotDatabase(legacy, {
+    migrateAIKINGBOTDatabase(legacy, {
       appliedAt: "2026-08-19T10:00:00.000Z",
     });
     legacy.close();
 
-    const database = new OpenBotDatabase(root);
+    const database = new AIKINGBOTDatabase(root);
     await runCauseEffect(database.initialize());
     const reads = new ConversationReadStore(database);
     const legacySnapshot = snapshot([message("legacy-answer", "assistant")]);

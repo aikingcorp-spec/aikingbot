@@ -2,13 +2,13 @@ import { createHash } from "node:crypto";
 import { mkdtemp, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
   encodeTeamProtocolV2FileChunk,
   encodeTeamProtocolV2Frame,
-} from "@openbot/contracts/team-protocol/v2";
+} from "@aikingbot/contracts/team-protocol/v2";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { restartActivityGeneration } from "../backend/restart-activity";
@@ -449,7 +449,7 @@ function chunk(transferId: string, offset: number, bytes: Uint8Array): ArrayBuff
 }
 
 async function temporaryDirectory(): Promise<string> {
-  const path = await mkdtemp(join(tmpdir(), "openbot-webrtc-files-"));
+  const path = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-files-"));
   directories.push(path);
   return path;
 }

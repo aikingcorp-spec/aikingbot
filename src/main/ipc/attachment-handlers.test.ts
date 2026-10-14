@@ -2,8 +2,8 @@
 import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
-import { translateFor } from "@openbot/i18n";
+import { ATTACHMENT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { translateFor } from "@aikingbot/i18n";
 import { Effect } from "effect";
 import { strFromU8, unzipSync } from "fflate";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -140,7 +140,7 @@ describe("ZIP attachment IPC", () => {
     await writeFile(sourcePath, "local file");
     saveDialog.mockResolvedValue({ canceled: false, filePath: path });
     const invoke = register(sourcePath);
-    await invoke({ senderFrame: { url: "openbot-app://app/index.html" } }, { serverId, payload: input });
+    await invoke({ senderFrame: { url: "aikingbot-app://app/index.html" } }, { serverId, payload: input });
     const files = unzipSync(await readFile(path));
     expect(Object.values(files).map((bytes) => strFromU8(bytes))).toEqual(
       input.attachments.map((item) => (serverId === "local" ? "local file" : `${serverId}:${item.id}`)),
@@ -195,7 +195,7 @@ describe("single attachment download", () => {
     saveDialog.mockResolvedValue({ canceled: false, filePath: targetPath });
     const invoke = registerSingle({ path: sourcePath, mimeType: "text/markdown", name: "launch-brief.md" });
     await invoke(
-      { senderFrame: { url: "openbot-app://app/index.html" } },
+      { senderFrame: { url: "aikingbot-app://app/index.html" } },
       { serverId: "local", payload: { attachmentId: "some-id", action: "download" } },
     );
     expect(saveDialog).toHaveBeenCalledOnce();
@@ -213,7 +213,7 @@ describe("single attachment download", () => {
     );
     try {
       await invoke(
-        { senderFrame: { url: "openbot-app://app/index.html" } },
+        { senderFrame: { url: "aikingbot-app://app/index.html" } },
         { serverId: "remote-host", payload: { attachmentId: "../../escaped", action: "open" } },
       );
     } finally {
@@ -271,7 +271,7 @@ describe("workspace file links", () => {
     showItemInFolder.mockClear();
     const invoke = registerOpen(insideWorkspace);
     await invoke(
-      { senderFrame: { url: "openbot-app://app/index.html" } },
+      { senderFrame: { url: "aikingbot-app://app/index.html" } },
       { serverId: "local", payload: { agentId: "agent-1", path: "/Users/me/project/run.sh" } },
     );
     expect(called).toHaveBeenCalledExactlyOnceWith("/resolved/Users/me/project/run.sh");

@@ -1,4 +1,4 @@
-// Installs the 1Password CLI into a folder that OpenBot owns, so Connect works without Homebrew,
+// Installs the 1Password CLI into a folder that AIKINGBOT owns, so Connect works without Homebrew,
 // an installer package or administrator rights.
 
 import { createHash, randomBytes } from "node:crypto";
@@ -6,7 +6,7 @@ import { createWriteStream } from "node:fs";
 import { chmod, mkdir, rename, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { pipeline } from "node:stream/promises";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { OnePasswordOperationError, onePasswordCall, toOnePasswordOperationError } from "./onepassword-effects";
 import { extractZipFiles } from "./provider-runtime-archive";

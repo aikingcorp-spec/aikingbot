@@ -1,11 +1,11 @@
-import type { AgentEvent, ConversationMessage, MessagingPlatform } from "@openbot/contracts/ipc";
-import { CONVERSATION_PLAN_ITEM_TYPE, MESSAGING_LIMITS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentEvent, ConversationMessage, MessagingPlatform } from "@aikingbot/contracts/ipc";
+import { CONVERSATION_PLAN_ITEM_TYPE, MESSAGING_LIMITS } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Result, Schema, type Scope } from "effect";
-import { type OpenBotToolResponse, openBotToolFailure, openBotToolResult } from "../agent/routine-tools";
+import { type AIKINGBOTToolResponse, aikingBotToolFailure, aikingBotToolResult } from "../agent/routine-tools";
+import type { AIKINGBOTDatabase } from "../aikingbot-database";
 import { causeHelpers } from "../effect-boundary";
 import type { DeliveryContext, MailboxStore, MessagingOrigin } from "../mailbox-store";
-import type { OpenBotDatabase } from "../openbot-database";
 import { MessagingMemoryStore } from "./messaging-memory-store";
 import { type MessagingContextMessage, messagingPromptText } from "./messaging-prompt";
 import type { MessagingOperationFailed } from "./messaging-service";
@@ -124,7 +124,7 @@ export class MessagingThreads {
   readonly store: MessagingStore;
   /** The facts of each connection, which every prompt of its conversations shows. */
   readonly memories: MessagingMemoryStore;
-  readonly #database: OpenBotDatabase;
+  readonly #database: AIKINGBOTDatabase;
   readonly #mailbox: MailboxStore;
   readonly #hooks: MessagingThreadsHooks;
   readonly #listeners = new Set<(activity: MessagingActivity) => void>();
@@ -146,7 +146,7 @@ export class MessagingThreads {
     | null = null;
   #outbound: MessagingOutbound | null = null;
 
-  constructor(database: OpenBotDatabase, mailbox: MailboxStore, hooks: MessagingThreadsHooks) {
+  constructor(database: AIKINGBOTDatabase, mailbox: MailboxStore, hooks: MessagingThreadsHooks) {
     this.store = new MessagingStore(database);
     this.memories = new MessagingMemoryStore(database);
     this.#database = database;
@@ -195,12 +195,12 @@ export class MessagingThreads {
     this: MessagingThreads,
     tool: string,
     args: unknown,
-  ): Effect.fn.Return<OpenBotToolResponse> {
+  ): Effect.fn.Return<AIKINGBOTToolResponse> {
     const call = parseMessagingOutboundTool(tool, args);
-    if ("error" in call) return openBotToolFailure(call.error);
+    if ("error" in call) return aikingBotToolFailure(call.error);
     const enabled = this.store.connections().filter((record) => record.enabled);
     if (call.tool === "messaging_list_places" && !call.connection)
-      return openBotToolResult({
+      return aikingBotToolResult({
         connections: enabled.map((record) => ({
           connection: record.connectionId,
           platform: PLATFORM_NAMES[record.platform],
@@ -209,9 +209,11 @@ export class MessagingThreads {
       });
     const record = enabled.find((candidate) => candidate.connectionId === call.connection);
     if (!record)
-      return openBotToolFailure("No enabled connection has that id. Call openbot.messaging_list_places for the ids.");
+      return aikingBotToolFailure(
+        "No enabled connection has that id. Call aikingbot.messaging_list_places for the ids.",
+      );
     const outbound = this.#outbound;
-    if (!outbound) return openBotToolFailure(MESSAGING_NOT_RUNNING);
+    if (!outbound) return aikingBotToolFailure(MESSAGING_NOT_RUNNING);
     // No deadline on a post: one that ended late could be sent again by the agent.
     const answer =
       call.tool === "messaging_list_places"
@@ -224,7 +226,7 @@ export class MessagingThreads {
             { platformChannelId: call.place, replyThreadId: call.replyTo },
             call.text,
           );
-    return "error" in answer ? openBotToolFailure(answer.error) : openBotToolResult(answer);
+    return "error" in answer ? aikingBotToolFailure(answer.error) : aikingBotToolResult(answer);
   });
 
   /**
@@ -238,13 +240,13 @@ export class MessagingThreads {
     callId: string,
     tool: string,
     args: unknown,
-  ): Effect.fn.Return<OpenBotToolResponse> {
+  ): Effect.fn.Return<AIKINGBOTToolResponse> {
     const call = parseMessagingTool(tool, args);
-    if ("error" in call) return openBotToolFailure(call.error);
+    if ("error" in call) return aikingBotToolFailure(call.error);
     switch (call.tool) {
       case "messaging_remember": {
         if (link.isDirect)
-          return openBotToolFailure(
+          return aikingBotToolFailure(
             "A direct message is private. Facts from it are not saved for the whole workspace.",
           );
         const saved = Result.try(() =>
@@ -256,8 +258,8 @@ export class MessagingThreads {
           }),
         );
         if (Result.isFailure(saved))
-          return openBotToolFailure(saved.failure instanceof Error ? saved.failure.message : String(saved.failure));
-        return openBotToolResult({
+          return aikingBotToolFailure(saved.failure instanceof Error ? saved.failure.message : String(saved.failure));
+        return aikingBotToolResult({
           accepted: true,
           memoryId: saved.success.id,
           count: this.memories.count(link.connectionId),
@@ -266,8 +268,8 @@ export class MessagingThreads {
       }
       case "messaging_forget_memory":
         return this.memories.delete(link.connectionId, call.memoryId)
-          ? openBotToolResult({ accepted: true })
-          : openBotToolResult({ accepted: false, reason: "No saved fact of this workspace has that memoryId." });
+          ? aikingBotToolResult({ accepted: true })
+          : aikingBotToolResult({ accepted: false, reason: "No saved fact of this workspace has that memoryId." });
       case "messaging_history": {
         const source = this.#historySource;
         const history = source
@@ -278,9 +280,9 @@ export class MessagingThreads {
             )
           : null;
         if (!history)
-          return openBotToolFailure("The platform did not answer, or it limits reads now. Try again in a minute.");
-        if (!history.value) return openBotToolFailure(MESSAGING_NOT_RUNNING);
-        return openBotToolResult({
+          return aikingBotToolFailure("The platform did not answer, or it limits reads now. Try again in a minute.");
+        if (!history.value) return aikingBotToolFailure(MESSAGING_NOT_RUNNING);
+        return aikingBotToolResult({
           place: history.value.place,
           scope: call.scope,
           messages: boundedHistory(history.value.messages),

@@ -5,13 +5,13 @@ import {
   type DynamicIslandGeometry,
   type DynamicIslandNotchSize,
   IDLE_DYNAMIC_ISLAND_PRESENTATION,
-} from "@openbot/contracts/ipc";
-import { Button, ItemGroup, SettingsSection, SliderField, SwitchField } from "@openbot/ui";
+} from "@aikingbot/contracts/ipc";
+import { Button, ItemGroup, SettingsSection, SliderField, SwitchField } from "@aikingbot/ui";
 import {
-  OpenBotDynamicIsland,
-  openBotIdleCompactWidth,
-} from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
+  AIKINGBOTDynamicIsland,
+  aikingBotIdleCompactWidth,
+} from "@aikingbot/ui/features/dynamic-island/AIKINGBOTDynamicIsland";
+import type { GeneralSettingsValue } from "@aikingbot/ui/features/settings/app-settings";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onSettled } from "solid-js";
 import { useI18n } from "../../i18n-context";
@@ -45,8 +45,12 @@ export function SettingsDynamicIslandTab(props: SettingsDynamicIslandTabProps) {
   const widthPercent = () => props.value.macBookNotchWidthPercent;
   const heightPercent = () => props.value.macBookNotchHeightPercent;
   const widestBuiltInWidth = () =>
-    openBotIdleCompactWidth("notch", builtInNotchSize(), DYNAMIC_ISLAND_SIZE_LIMITS.widthPercent.max);
-  const widestExternalWidth = openBotIdleCompactWidth("island", undefined, DYNAMIC_ISLAND_SIZE_LIMITS.widthPercent.max);
+    aikingBotIdleCompactWidth("notch", builtInNotchSize(), DYNAMIC_ISLAND_SIZE_LIMITS.widthPercent.max);
+  const widestExternalWidth = aikingBotIdleCompactWidth(
+    "island",
+    undefined,
+    DYNAMIC_ISLAND_SIZE_LIMITS.widthPercent.max,
+  );
   const builtInNotchSize = (): DynamicIslandNotchSize | undefined =>
     props.builtInDisplayGeometry === null ? undefined : (props.builtInDisplayGeometry ?? PREVIEW_NOTCH_SIZE);
   const isDefaultSize = () =>
@@ -113,7 +117,7 @@ export function SettingsDynamicIslandTab(props: SettingsDynamicIslandTabProps) {
           <div class="settings-dynamic-island-preview">
             <figure class="settings-dynamic-island-preview-display">
               <PreviewFit widestWidth={widestBuiltInWidth()}>
-                <OpenBotDynamicIsland
+                <AIKINGBOTDynamicIsland
                   presentation={IDLE_DYNAMIC_ISLAND_PRESENTATION}
                   state="compact"
                   displayMode="notch"
@@ -131,7 +135,7 @@ export function SettingsDynamicIslandTab(props: SettingsDynamicIslandTabProps) {
             </figure>
             <figure class="settings-dynamic-island-preview-display">
               <PreviewFit widestWidth={widestExternalWidth}>
-                <OpenBotDynamicIsland
+                <AIKINGBOTDynamicIsland
                   presentation={IDLE_DYNAMIC_ISLAND_PRESENTATION}
                   state="compact"
                   displayMode="island"

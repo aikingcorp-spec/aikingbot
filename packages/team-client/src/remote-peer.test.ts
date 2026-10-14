@@ -1,6 +1,9 @@
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { SIGNAL_TURN_REFRESH_INTERVAL_MS, type SignalClientMessage } from "@openbot/contracts/signal-protocol/messages";
+import type { AgentEvent, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import {
+  SIGNAL_TURN_REFRESH_INTERVAL_MS,
+  type SignalClientMessage,
+} from "@aikingbot/contracts/signal-protocol/messages";
 import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
@@ -9,10 +12,10 @@ import {
   TEAM_PROTOCOL_V2_CHANNELS,
   type TeamProtocolV2Json,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol";
+import { CHANNEL_ROUTES } from "@aikingbot/contracts/team-protocol/channels-v1";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
+import { type SourceMessages, sourceText } from "@aikingbot/i18n/source";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createEd25519Identity, signEd25519 } from "./ed25519";
 import { runTeamEffect } from "./effect-boundary";
@@ -80,7 +83,7 @@ describe("browser remote peer recovery", () => {
     const network = await setupNetwork({ onHostStreamData });
     await expect(network.runtime.sendHostStreamData("frame")).rejects.toThrow("offline");
     await network.connect();
-    const channel = network.connection().channel("openbot.remote-desktop.signal.v1");
+    const channel = network.connection().channel("aikingbot.remote-desktop.signal.v1");
     const bytes = new Uint8Array([1, 2, 3]).buffer;
     for (const frame of encodeTeamWebRtcPayload(bytes, 64 * 1024)) channel.receive(frame);
     await received.promise;

@@ -11,20 +11,20 @@ import {
   type ProviderDetectionSettings,
   type SaveCustomProviderInput,
   type UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { checkResult } from "@openbot/ui/features/custom-providers/CustomAgentSettings";
+} from "@aikingbot/contracts/ipc";
+import { checkResult } from "@aikingbot/ui/features/custom-providers/CustomAgentSettings";
 import {
   customAgentCheckInput,
   customAgentInput,
   formatAgentArgs,
-} from "@openbot/ui/features/custom-providers/custom-acp-agent-form";
+} from "@aikingbot/ui/features/custom-providers/custom-acp-agent-form";
 import type {
   DetectedProvider,
   DetectedProviderApi,
   ProviderDetection,
-} from "@openbot/ui/features/custom-providers/detected-providers";
-import type { ProviderDetectionSettingsValue } from "@openbot/ui/features/custom-providers/ProviderDetectionSettings";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/custom-providers/detected-providers";
+import type { ProviderDetectionSettingsValue } from "@aikingbot/ui/features/custom-providers/ProviderDetectionSettings";
+import { currentText } from "@aikingbot/ui/text";
 import { createStore } from "solid-js";
 import type { createCustomAgentsStore } from "../../custom-agents/stores/custom-agents-store";
 import type { createCustomProvidersStore } from "./custom-providers-store";

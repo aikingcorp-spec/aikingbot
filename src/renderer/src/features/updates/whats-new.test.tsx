@@ -1,8 +1,8 @@
-import { Button } from "@openbot/ui";
-import type { WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import { Button } from "@aikingbot/ui";
+import type { WhatsNewRelease } from "@aikingbot/ui/features/updates/whats-new";
 import { cleanup, fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installOpenbotStub } from "../../app-test-harness";
+import { installAIKINGBOTStub } from "../../app-test-harness";
 import { PlatformProvider } from "../../platform";
 import { WhatsNewOverlay } from "./WhatsNewOverlay";
 import { useWhatsNew, WhatsNewProvider } from "./whats-new-context";
@@ -34,9 +34,9 @@ function mount(loadReleases: () => Promise<readonly WhatsNewRelease[]> = async (
 
 beforeEach(() => {
   localStorage.clear();
-  installOpenbotStub();
-  vi.mocked(window.openbot.getAppInfo).mockResolvedValue({
-    name: "OpenBot",
+  installAIKINGBOTStub();
+  vi.mocked(window.aikingbot.getAppInfo).mockResolvedValue({
+    name: "AIKINGBOT",
     version: "0.34.1",
     platform: "darwin",
     variant: "dev",
@@ -50,16 +50,16 @@ describe("post-update notes", () => {
     await waitFor(() => expect(localStorage.getItem(WHATS_NEW_VERSION_KEY)).toBe("0.34.1"));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open release notes" }));
-    expect(await screen.findByRole("dialog", { name: "What’s new in OpenBot" })).toBeInTheDocument();
+    expect(await screen.findByRole("dialog", { name: "What’s new in AIKINGBOT" })).toBeInTheDocument();
     expect(await screen.findByText("The message box stays at the bottom of the chat again.")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Full changelog" }));
-    expect(window.openbot.openUrl).toHaveBeenCalledWith("https://openbot.run/changelog");
+    expect(window.aikingbot.openUrl).toHaveBeenCalledWith("https://aikingbot.aikingx.com/changelog");
     fireEvent.click(screen.getByRole("button", { name: "Got it" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
   it("merges skipped releases and persists once per version across remounts and downgrades", async () => {
-    localStorage.setItem("openbot:analytics-app-version", "0.33.0");
+    localStorage.setItem("aikingbot:analytics-app-version", "0.33.0");
     const view = mount();
     expect(await screen.findByText("See your routines on a canvas.")).toBeInTheDocument();
     expect(screen.getByText("The message box stays at the bottom of the chat again.")).toBeInTheDocument();
@@ -71,8 +71,8 @@ describe("post-update notes", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(load).not.toHaveBeenCalled();
     current.unmount();
-    vi.mocked(window.openbot.getAppInfo).mockResolvedValue({
-      name: "OpenBot",
+    vi.mocked(window.aikingbot.getAppInfo).mockResolvedValue({
+      name: "AIKINGBOT",
       version: "0.34.0",
       platform: "darwin",
       variant: "dev",
@@ -131,7 +131,7 @@ describe("post-update notes", () => {
     mount(() => pending.promise);
     await waitFor(() => expect(localStorage.getItem(WHATS_NEW_VERSION_KEY)).toBe("0.34.1"));
     fireEvent.click(screen.getByRole("button", { name: "Open release notes" }));
-    await screen.findByRole("dialog", { name: "What’s new in OpenBot" });
+    await screen.findByRole("dialog", { name: "What’s new in AIKINGBOT" });
     expect(screen.getAllByText("Loading the release notes…").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "Got it" }));
     pending.resolve(whatsNewReleases);

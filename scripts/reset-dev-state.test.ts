@@ -31,7 +31,7 @@ describe("reset dev state", () => {
     const appDataRoot = await makeTemporaryDirectory();
     const [appPath, testClientPath, legacyHostPath] = developmentStatePaths(appDataRoot);
     assert(appPath && testClientPath && legacyHostPath);
-    const productionPath = join(appDataRoot, "OpenBot");
+    const productionPath = join(appDataRoot, "AIKINGBOT");
 
     await Promise.all([
       mkdir(appPath, { recursive: true }),
@@ -40,19 +40,19 @@ describe("reset dev state", () => {
       mkdir(productionPath, { recursive: true }),
     ]);
     await Promise.all([
-      writeFile(join(appPath, "openbot.db"), "database"),
-      writeFile(join(appPath, "openbot.db-wal"), "wal"),
-      writeFile(join(appPath, "openbot.db-shm"), "shm"),
-      writeFile(join(testClientPath, "openbot.db"), "test-client database"),
-      writeFile(join(legacyHostPath, "openbot.db"), "legacy host database"),
-      writeFile(join(productionPath, "openbot.db"), "production database"),
+      writeFile(join(appPath, "aikingbot.db"), "database"),
+      writeFile(join(appPath, "aikingbot.db-wal"), "wal"),
+      writeFile(join(appPath, "aikingbot.db-shm"), "shm"),
+      writeFile(join(testClientPath, "aikingbot.db"), "test-client database"),
+      writeFile(join(legacyHostPath, "aikingbot.db"), "legacy host database"),
+      writeFile(join(productionPath, "aikingbot.db"), "production database"),
     ]);
 
     await expect(resetDevelopmentState(appDataRoot)).resolves.toEqual([appPath, testClientPath, legacyHostPath]);
     await expect(stat(appPath)).rejects.toMatchObject({ code: "ENOENT" });
     await expect(stat(testClientPath)).rejects.toMatchObject({ code: "ENOENT" });
     await expect(stat(legacyHostPath)).rejects.toMatchObject({ code: "ENOENT" });
-    await expect(stat(join(productionPath, "openbot.db"))).resolves.toBeDefined();
+    await expect(stat(join(productionPath, "aikingbot.db"))).resolves.toBeDefined();
   });
 
   it("is idempotent when no development data exists", async () => {
@@ -67,9 +67,9 @@ describe("reset dev state", () => {
     const homeDirectory = join(root, "home");
     const [appPath] = developmentStatePaths(appDataRoot);
     assert(appPath);
-    const generatedRoot = join(homeDirectory, "OpenBot", "Shared", "Transfers", "generated");
+    const generatedRoot = join(homeDirectory, "AIKINGBOT", "Shared", "Transfers", "generated");
     const seedDirectory = join(generatedRoot, "de305d54-75b4-431b-adb2-eb6b9e546014");
-    const sharedFile = join(homeDirectory, "OpenBot", "Shared", "keep.txt");
+    const sharedFile = join(homeDirectory, "AIKINGBOT", "Shared", "keep.txt");
     await Promise.all([mkdir(seedDirectory, { recursive: true }), mkdir(appPath, { recursive: true })]);
     await Promise.all([
       writeFile(join(seedDirectory, "seed.txt"), "seed"),
@@ -96,14 +96,14 @@ describe("reset dev state", () => {
     assert(appPath && testClientPath);
     await Promise.all([mkdir(appPath, { recursive: true }), mkdir(testClientPath, { recursive: true })]);
     await Promise.all([
-      writeFile(join(appPath, "openbot.db"), "database"),
-      writeFile(join(testClientPath, "openbot.db"), "test-client database"),
+      writeFile(join(appPath, "aikingbot.db"), "database"),
+      writeFile(join(testClientPath, "aikingbot.db"), "test-client database"),
       writeFile(join(testClientPath, "SingletonLock"), ""),
     ]);
 
-    await expect(resetDevelopmentState(appDataRoot)).rejects.toThrow("Quit the OpenBot dev app");
-    await expect(stat(join(appPath, "openbot.db"))).resolves.toBeDefined();
-    await expect(stat(join(testClientPath, "openbot.db"))).resolves.toBeDefined();
+    await expect(resetDevelopmentState(appDataRoot)).rejects.toThrow("Quit the AIKINGBOT dev app");
+    await expect(stat(join(appPath, "aikingbot.db"))).resolves.toBeDefined();
+    await expect(stat(join(testClientPath, "aikingbot.db"))).resolves.toBeDefined();
   });
 
   // A script that ignored an unknown flag used to run anyway, so `dev:reset --help` deleted the profiles.
@@ -118,7 +118,7 @@ describe("reset dev state", () => {
     const [appPath] = developmentStatePaths(resolveDevelopmentAppDataRoot(process.platform, environment, home));
     assert(appPath);
     await mkdir(appPath, { recursive: true });
-    await writeFile(join(appPath, "openbot.db"), "database");
+    await writeFile(join(appPath, "aikingbot.db"), "database");
 
     const result = spawnSync("bun", [join(dirname(fileURLToPath(import.meta.url)), script), ...args], {
       env: environment,
@@ -127,7 +127,7 @@ describe("reset dev state", () => {
 
     expect(result.status).toBe(status);
     expect(status === 0 ? result.stdout : result.stderr).toContain("Usage: bun run dev:");
-    await expect(stat(join(appPath, "openbot.db"))).resolves.toBeDefined();
+    await expect(stat(join(appPath, "aikingbot.db"))).resolves.toBeDefined();
   });
 
   it("rejects a filesystem root", () => {
@@ -136,7 +136,7 @@ describe("reset dev state", () => {
 });
 
 async function makeTemporaryDirectory(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-dev-reset-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-dev-reset-"));
   temporaryDirectories.push(directory);
   return directory;
 }

@@ -1,5 +1,5 @@
-import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@openbot/contracts/ipc";
-import { Bot, File, Folder, Plug, type Puzzle, ShieldCheck, Store } from "@openbot/ui";
+import type { DraftAttachment, InstalledSkill, McpServerConfig } from "@aikingbot/contracts/ipc";
+import { Bot, File, Folder, Plug, type Puzzle, ShieldCheck, Store } from "@aikingbot/ui";
 import type { AgentProfile } from "../../data";
 import type { TextValue } from "../../text";
 

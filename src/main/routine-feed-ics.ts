@@ -2,9 +2,9 @@
 //
 // Each run is a single event at a UTC time. The routine calendar already places each run with the
 // schedule code that fires it, daylight saving time included, so the file needs no time zone rules
-// and a calendar app cannot place a run at a time where OpenBot does not fire it.
+// and a calendar app cannot place a run at a time where AIKINGBOT does not fire it.
 
-import type { RoutineCalendar } from "@openbot/contracts/ipc";
+import type { RoutineCalendar } from "@aikingbot/contracts/ipc";
 
 /** A run has no end; the event is long enough for a calendar to show it. */
 const EVENT_DURATION = "PT15M";
@@ -24,7 +24,7 @@ export function routineFeedIcs(calendar: RoutineCalendar, text: RoutineFeedText,
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//OpenBot//Routines//EN",
+    "PRODID:-//AIKINGBOT//Routines//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `NAME:${icsText(text.calendarName)}`,
@@ -39,7 +39,7 @@ export function routineFeedIcs(calendar: RoutineCalendar, text: RoutineFeedText,
     lines.push(
       "BEGIN:VEVENT",
       // The same run keeps its id across reads, so a calendar app moves it rather than adding another.
-      `UID:${icsText(`${run.routineId}-${start}@routines.openbot.run`)}`,
+      `UID:${icsText(`${run.routineId}-${start}@routines.aikingbot.aikingx.com`)}`,
       `DTSTAMP:${stamp}`,
       `DTSTART:${start}`,
       `DURATION:${EVENT_DURATION}`,

@@ -1,16 +1,16 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type ChannelDraft,
   type ChannelMessage,
   type ChannelTask,
   channelRoutingConversationEvent,
   channelRoutingConversationEventItemType,
-} from "@openbot/contracts/ipc";
-import { validateProfileName } from "@openbot/contracts/validation";
+} from "@aikingbot/contracts/ipc";
+import { validateProfileName } from "@aikingbot/contracts/validation";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores } from "./agent-service-test-harness";
@@ -37,7 +37,7 @@ const generate = vi.fn<ChannelTextModel>(() => Effect.succeed(JSON.stringify({ a
 let count = 0;
 const operationId = () => `command-${++count}`;
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-channels-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-channels-"));
   data = stores(root);
   await runChannel(data.store.initialize());
   await runChannel(data.mailbox.initialize());

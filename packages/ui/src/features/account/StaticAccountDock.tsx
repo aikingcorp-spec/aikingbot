@@ -1,5 +1,5 @@
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
-import { Gauge, UserAvatar } from "@openbot/ui";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
+import { Gauge, UserAvatar } from "@aikingbot/ui";
 import { createMemo, Show } from "solid-js";
 import { TypingDots } from "../../components/TypingDots";
 

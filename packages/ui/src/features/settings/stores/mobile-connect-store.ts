@@ -1,4 +1,4 @@
-import type { MobileConnectedDevice, MobileConnectLink, MobileConnectTicket } from "@openbot/contracts/ipc";
+import type { MobileConnectedDevice, MobileConnectLink, MobileConnectTicket } from "@aikingbot/contracts/ipc";
 import { createEffect, createMemo, createSignal, createStore, onCleanup, untrack } from "solid-js";
 import { currentText } from "../../../text";
 

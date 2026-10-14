@@ -1,6 +1,6 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, Globe2, MessageCircle, Workflow } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, Globe2, MessageCircle, Workflow } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { Dynamic } from "@solidjs/web";
 import { For } from "solid-js";
 

@@ -1,5 +1,5 @@
-import { BILLING_CURRENCIES, BILLING_METADATA, type BillingCurrency } from "@openbot/contracts/billing";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+import { BILLING_CURRENCIES, BILLING_METADATA, type BillingCurrency } from "@aikingbot/contracts/billing";
+import { isOneOf } from "@aikingbot/contracts/runtime-values";
 import { Effect, Option, Result, Schema } from "effect";
 import { constantTimeEqual, hexToBytes, importHmacSha256Key } from "./crypto";
 

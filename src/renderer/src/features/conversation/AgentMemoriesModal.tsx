@@ -1,9 +1,9 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentMemorySelectionState, MemoryEntry, SetAgentMemoryInclusionInput } from "@openbot/contracts/ipc";
-import type { AppFormat, AppMessages, AppTextKey } from "@openbot/i18n";
-import { Button, ConfirmDialog, Dialog, IconButton, Plus, Textarea, Trash2, X } from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { useText } from "@openbot/ui/text";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentMemorySelectionState, MemoryEntry, SetAgentMemoryInclusionInput } from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppMessages, AppTextKey } from "@aikingbot/i18n";
+import { Button, ConfirmDialog, Dialog, IconButton, Plus, Textarea, Trash2, X } from "@aikingbot/ui";
+import { createScrollFades } from "@aikingbot/ui/components/createScrollFades";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import type { MemoriesPort } from "./memories-port";

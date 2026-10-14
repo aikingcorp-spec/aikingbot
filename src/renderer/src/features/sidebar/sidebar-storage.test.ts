@@ -1,4 +1,4 @@
-import { normalizeSidebarPinnedItems, reownSidebarPinnedItems } from "@openbot/ui/features/sidebar/sidebar-pins";
+import { normalizeSidebarPinnedItems, reownSidebarPinnedItems } from "@aikingbot/ui/features/sidebar/sidebar-pins";
 import { describe, expect, it, vi } from "vitest";
 import {
   normalizeSidebarPeopleOrder,

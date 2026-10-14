@@ -1,6 +1,6 @@
+import type { AvatarMood } from "@aikingbot/brand/bloub-avatar-motion";
+import type { AvatarHue } from "@aikingbot/contracts/ipc";
 import { BotEngine } from "@norbert_bodziony/bloub";
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import type { AvatarHue } from "@openbot/contracts/ipc";
 import { memo, useId, useMemo } from "react";
 import Animated, {
   type DerivedValue,

@@ -1,17 +1,17 @@
-import { type ComputerUseState, LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
+import { type ComputerUseState, LOCAL_SERVER_ID } from "@aikingbot/contracts/ipc";
 import { fireEvent, render, waitFor, within } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { ComputerUsePermissionHelp } from "./ComputerUsePermissionHelp";
 import { ComputerUseSetup } from "./ComputerUseSetup";
 
-let mock: MockOpenBotControls | undefined;
-const previousApi = window.openbot;
+let mock: MockAIKINGBOTControls | undefined;
+const previousApi = window.aikingbot;
 
 afterEach(() => {
   mock?.dispose();
   mock = undefined;
-  window.openbot = previousApi;
+  window.aikingbot = previousApi;
   vi.useRealTimers();
   vi.restoreAllMocks();
 });
@@ -30,8 +30,8 @@ function state(overrides: Partial<ComputerUseState>): ComputerUseState {
 
 describe("ComputerUseSetup", () => {
   it("opens the pane for the permission whose button was pressed", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     const openPane = vi.spyOn(mock.api.computerUse, "openPermissionPane");
     const view = render(() => <ComputerUseSetup variant="settings" />);
 
@@ -44,7 +44,7 @@ describe("ComputerUseSetup", () => {
   });
 
   it("keeps the way back to System Settings on a permission already granted", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     mock.api.computerUse.getState = vi.fn().mockResolvedValue(
       state({
         permissions: [
@@ -53,7 +53,7 @@ describe("ComputerUseSetup", () => {
         ],
       }),
     );
-    window.openbot = mock.api;
+    window.aikingbot = mock.api;
     const view = render(() => <ComputerUseSetup variant="compact" />);
 
     expect(await view.findByText("Granted")).toBeInTheDocument();
@@ -66,13 +66,13 @@ describe("ComputerUseSetup", () => {
   // A grant is given in System Settings, outside this window. The driver reports only what it sees
   // when it is asked, so a panel that never asks again keeps a row the user has already granted.
   it("offers Check again, and asks the driver again when the window comes back", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     const read = vi
       .fn()
       .mockResolvedValueOnce(state({}))
       .mockResolvedValue(state({ status: "ready", permissions: [{ id: "screen-recording", granted: true }] }));
     mock.api.computerUse.getState = read;
-    window.openbot = mock.api;
+    window.aikingbot = mock.api;
     const view = render(() => <ComputerUseSetup variant="compact" />);
 
     await view.findByRole("button", { name: "Check again" });
@@ -87,27 +87,27 @@ describe("ComputerUseSetup", () => {
   // Every release carries the driver, so a build without one is a broken build and not a thing the
   // user installs by hand. The panel must name no command, on any desktop.
   it("reports a build with no driver as a fault, and offers no command to run", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     mock.api.computerUse.getState = vi
       .fn()
       .mockResolvedValue(
-        state({ status: "driver-missing", message: "This build of OpenBot carries no Computer Use driver." }),
+        state({ status: "driver-missing", message: "This build of AIKINGBOT carries no Computer Use driver." }),
       );
-    window.openbot = mock.api;
+    window.aikingbot = mock.api;
     const view = render(() => <ComputerUseSetup variant="compact" />);
 
     expect(await view.findByText("Computer Use isn’t available yet")).toBeInTheDocument();
-    expect(view.getByText("This build of OpenBot carries no Computer Use driver.")).toBeInTheDocument();
+    expect(view.getByText("This build of AIKINGBOT carries no Computer Use driver.")).toBeInTheDocument();
     expect(view.queryByText(/cua\.ai\/driver\/install/)).not.toBeInTheDocument();
     expect(view.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
-  // Windows and Linux put no permission between OpenBot and the desktop. An empty list must read as
+  // Windows and Linux put no permission between AIKINGBOT and the desktop. An empty list must read as
   // ready, and must draw no row naming a macOS setting the user cannot find.
   it("reports ready without permission rows where the system grants none", async () => {
-    mock = createMockOpenBot();
+    mock = createMockAIKINGBOT();
     mock.api.computerUse.getState = vi.fn().mockResolvedValue(state({ status: "ready", permissions: [] }));
-    window.openbot = mock.api;
+    window.aikingbot = mock.api;
     const view = render(() => <ComputerUseSetup variant="settings" />);
 
     expect(await view.findByText("Computer Use is ready")).toBeInTheDocument();
@@ -118,8 +118,8 @@ describe("ComputerUseSetup", () => {
 
 describe("Sunshine permission help", () => {
   it("reads Sunshine permissions and shows its bundle instead of the Computer Use application", async () => {
-    mock = createMockOpenBot();
-    window.openbot = mock.api;
+    mock = createMockAIKINGBOT();
+    window.aikingbot = mock.api;
     mock.api.computerUse.getPermissionApp = async () => ({ name: "Sunshine", iconDataUrl: null });
     const readSunshine = vi.spyOn(mock.api.remoteDesktop, "checkSetup");
     const readComputerUse = vi.spyOn(mock.api.computerUse, "getState");

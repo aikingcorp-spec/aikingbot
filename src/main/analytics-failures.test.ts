@@ -1,5 +1,5 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { type Report, ReportQueue } from "@openbot/telemetry";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
+import { type Report, ReportQueue } from "@aikingbot/telemetry";
 import { Effect } from "effect";
 import { expect, it, vi } from "vitest";
 import { HostAnalytics } from "./analytics";

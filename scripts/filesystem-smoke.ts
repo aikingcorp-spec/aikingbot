@@ -1,7 +1,7 @@
 import { access, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { AcpAgentClient } from "../src/backend/acp-client";
 import { codexSandboxConfig, codexSandboxMode, codexSandboxPolicy } from "../src/backend/agent/workspace-sandbox";
 import type { AgentClient, AgentProvider } from "../src/backend/agent-client";
@@ -26,13 +26,13 @@ import {
   type RequestId,
 } from "../src/backend/protocol";
 
-const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-filesystem-smoke-"));
+const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-filesystem-smoke-"));
 const sharedRoot = join(temporaryRoot, "shared");
 const useImagegen = process.argv.includes("--imagegen");
 const workspaceOnly = process.argv.includes("--workspace-only");
 // Codex lets a sandboxed command write in the temporary folders, so the folder that an agent must
 // not write to is here, outside them. The reports stay here too.
-const reportRoot = resolve(".openbot-build/workspace-only-smoke");
+const reportRoot = resolve(".aikingbot-build/workspace-only-smoke");
 const providers = requestedProviders();
 
 try {
@@ -46,7 +46,7 @@ try {
     await mkdir(reportRoot, { recursive: true });
     for (const provider of providers) await runWorkspaceOnlySmoke(provider);
   } else {
-    await writeFile(join(sharedRoot, "shared-seed.txt"), "OPENBOT_SHARED_SEED\n");
+    await writeFile(join(sharedRoot, "shared-seed.txt"), "AIKINGBOT_SHARED_SEED\n");
     const completedProviders: AgentProvider[] = [];
     for (const provider of providers) {
       await runFilesystemSmoke(provider, completedProviders);
@@ -66,7 +66,7 @@ async function runFilesystemSmoke(provider: AgentProvider, completedProviders: A
   const persistenceResultPath = join(workspaceRoot, "persistence-result.txt");
   const sharedResultPath = join(sharedRoot, `${provider}-shared-result.txt`);
   await mkdir(workspaceRoot, { recursive: true });
-  await writeFile(workspaceSeedPath, `OPENBOT_${provider.toUpperCase()}_WORKSPACE_SEED\n`);
+  await writeFile(workspaceSeedPath, `AIKINGBOT_${provider.toUpperCase()}_WORKSPACE_SEED\n`);
   await writeFile(deletePath, "DELETE_ME\n");
   await writeFile(temporaryPath, "RENAME_ME\n");
 
@@ -91,7 +91,7 @@ async function runFilesystemSmoke(provider: AgentProvider, completedProviders: A
           sandbox: "danger-full-access",
           ephemeral: provider === "codex",
           persistSession: false,
-          serviceName: "openbot_filesystem_smoke",
+          serviceName: "aikingbot_filesystem_smoke",
           developerInstructions: [
             "This is an isolated local filesystem smoke test.",
             `Your persistent workspace is ${workspaceRoot}.`,
@@ -121,15 +121,15 @@ async function runFilesystemSmoke(provider: AgentProvider, completedProviders: A
               text: [
                 "Use local system commands for every step.",
                 `Run pwd and verify it prints ${workspaceRoot}.`,
-                `Run ls and grep to verify ${workspaceSeedPath} contains OPENBOT_${provider.toUpperCase()}_WORKSPACE_SEED.`,
-                `Run grep to verify ${join(sharedRoot, "shared-seed.txt")} contains OPENBOT_SHARED_SEED.`,
+                `Run ls and grep to verify ${workspaceSeedPath} contains AIKINGBOT_${provider.toUpperCase()}_WORKSPACE_SEED.`,
+                `Run grep to verify ${join(sharedRoot, "shared-seed.txt")} contains AIKINGBOT_SHARED_SEED.`,
                 ...completedProviders.map(
                   (completedProvider) =>
-                    `Run grep to verify ${join(sharedRoot, `${completedProvider}-shared-result.txt`)} contains OPENBOT_${completedProvider.toUpperCase()}_SHARED_OK.`,
+                    `Run grep to verify ${join(sharedRoot, `${completedProvider}-shared-result.txt`)} contains AIKINGBOT_${completedProvider.toUpperCase()}_SHARED_OK.`,
                 ),
-                `Replace ${temporaryPath} with ${workspaceResultPath} using mv, then write exactly OPENBOT_${provider.toUpperCase()}_WORKSPACE_OK followed by one newline to it.`,
+                `Replace ${temporaryPath} with ${workspaceResultPath} using mv, then write exactly AIKINGBOT_${provider.toUpperCase()}_WORKSPACE_OK followed by one newline to it.`,
                 `Delete ${deletePath} using rm.`,
-                `Write exactly OPENBOT_${provider.toUpperCase()}_SHARED_OK followed by one newline to ${sharedResultPath}.`,
+                `Write exactly AIKINGBOT_${provider.toUpperCase()}_SHARED_OK followed by one newline to ${sharedResultPath}.`,
                 "Verify the results with local commands, then finish with a short confirmation.",
               ].join("\n"),
             },
@@ -156,9 +156,9 @@ async function runFilesystemSmoke(provider: AgentProvider, completedProviders: A
             {
               type: "text",
               text: [
-                `In this new turn, run grep to confirm ${workspaceResultPath} still contains OPENBOT_${provider.toUpperCase()}_WORKSPACE_OK.`,
-                `Run grep to confirm ${sharedResultPath} still contains OPENBOT_${provider.toUpperCase()}_SHARED_OK.`,
-                `Write exactly OPENBOT_${provider.toUpperCase()}_PERSISTENCE_OK followed by one newline to ${persistenceResultPath}.`,
+                `In this new turn, run grep to confirm ${workspaceResultPath} still contains AIKINGBOT_${provider.toUpperCase()}_WORKSPACE_OK.`,
+                `Run grep to confirm ${sharedResultPath} still contains AIKINGBOT_${provider.toUpperCase()}_SHARED_OK.`,
+                `Write exactly AIKINGBOT_${provider.toUpperCase()}_PERSISTENCE_OK followed by one newline to ${persistenceResultPath}.`,
                 "Finish with a short confirmation.",
               ].join("\n"),
             },
@@ -170,15 +170,15 @@ async function runFilesystemSmoke(provider: AgentProvider, completedProviders: A
     await persistenceCompletion;
 
     const workspaceResult = await readFile(workspaceResultPath, "utf8");
-    if (workspaceResult !== `OPENBOT_${provider.toUpperCase()}_WORKSPACE_OK\n`) {
+    if (workspaceResult !== `AIKINGBOT_${provider.toUpperCase()}_WORKSPACE_OK\n`) {
       throw new Error(`${provider} wrote unexpected workspace contents.`);
     }
     const sharedResult = await readFile(sharedResultPath, "utf8");
-    if (sharedResult !== `OPENBOT_${provider.toUpperCase()}_SHARED_OK\n`) {
+    if (sharedResult !== `AIKINGBOT_${provider.toUpperCase()}_SHARED_OK\n`) {
       throw new Error(`${provider} wrote unexpected shared contents.`);
     }
     const persistenceResult = await readFile(persistenceResultPath, "utf8");
-    if (persistenceResult !== `OPENBOT_${provider.toUpperCase()}_PERSISTENCE_OK\n`) {
+    if (persistenceResult !== `AIKINGBOT_${provider.toUpperCase()}_PERSISTENCE_OK\n`) {
       throw new Error(`${provider} did not retain its workspace across turns.`);
     }
     await expectMissing(deletePath, `${provider} did not delete the requested workspace file.`);
@@ -295,7 +295,7 @@ async function runWorkspaceOnlySmoke(provider: AgentProvider): Promise<void> {
           ...(Object.keys(codexConfig).length > 0 ? { config: codexConfig } : {}),
           ephemeral: provider === "codex",
           persistSession: false,
-          serviceName: "openbot_filesystem_smoke",
+          serviceName: "aikingbot_filesystem_smoke",
           developerInstructions: [
             "This is an isolated sandbox smoke test. The user wants every step tried, also the ones that fail.",
             `Your workspace is ${workspaceRoot}. The shared directory is ${sharedRoot}.`,
@@ -323,8 +323,8 @@ async function runWorkspaceOnlySmoke(provider: AgentProvider): Promise<void> {
               type: "text",
               text: [
                 "Do these steps in order. Do each step once, and do not retry a step that fails.",
-                `1. Run a shell command that writes exactly OPENBOT_${token}_INSIDE_OK followed by one newline to ${paths.workspace}.`,
-                `2. Run a shell command that writes exactly OPENBOT_${token}_SHARED_OK followed by one newline to ${paths.shared}.`,
+                `1. Run a shell command that writes exactly AIKINGBOT_${token}_INSIDE_OK followed by one newline to ${paths.workspace}.`,
+                `2. Run a shell command that writes exactly AIKINGBOT_${token}_SHARED_OK followed by one newline to ${paths.shared}.`,
                 `3. Run: curl -sS -o /dev/null -w '%{http_code}' https://example.com > ${paths.network}`,
                 `4. Run exactly this one shell command, which is expected to fail and records its exit status: printf 'OUTSIDE\\n' > ${paths.commandOutside}; echo $? > ${paths.commandStatus}`,
                 `5. Use your file edit or file write tool, not a shell command, to create ${paths.editOutside} with the text OUTSIDE. This step is expected to fail.`,
@@ -373,8 +373,10 @@ async function runWorkspaceOnlySmoke(provider: AgentProvider): Promise<void> {
       finalMessage,
     };
     const failures = [
-      report.workspaceWrite === `OPENBOT_${token}_INSIDE_OK\n` ? null : "The agent could not write in its workspace.",
-      report.sharedWrite === `OPENBOT_${token}_SHARED_OK\n` ? null : "The agent could not write in the shared folder.",
+      report.workspaceWrite === `AIKINGBOT_${token}_INSIDE_OK\n` ? null : "The agent could not write in its workspace.",
+      report.sharedWrite === `AIKINGBOT_${token}_SHARED_OK\n`
+        ? null
+        : "The agent could not write in the shared folder.",
       report.networkStatus?.trim() === "200" ? null : "The agent could not reach the network.",
       report.commandOutsideWritten ? "A command wrote outside the workspace." : null,
       report.editOutsideWritten ? "A file edit wrote outside the workspace." : null,
@@ -417,7 +419,7 @@ async function runImagegenSmoke(): Promise<void> {
           approvalPolicy: "never",
           sandbox: "danger-full-access",
           ephemeral: true,
-          serviceName: "openbot_filesystem_smoke",
+          serviceName: "aikingbot_filesystem_smoke",
           developerInstructions: [
             "This is an isolated local image-generation smoke test.",
             `Only create files inside ${workspaceRoot}.`,
@@ -486,7 +488,7 @@ async function runImagegenSmoke(): Promise<void> {
 
 /**
  * The smoke's client. `confinement` is for the Workspace only smoke: Codex and Claude take the sandbox
- * with each session, and Grok and OpenCode start in the process sandbox that OpenBot gives them. A
+ * with each session, and Grok and OpenCode start in the process sandbox that AIKINGBOT gives them. A
  * null model means the first one the provider lists, or `--model`. `stateDirectory` is where a
  * Workspace only Claude query keeps its skill plugin.
  */
@@ -538,8 +540,8 @@ async function initialize(client: AgentClient): Promise<void> {
       "initialize",
       {
         clientInfo: {
-          name: "openbot_filesystem_smoke",
-          title: "OpenBot Filesystem Smoke",
+          name: "aikingbot_filesystem_smoke",
+          title: "AIKINGBOT Filesystem Smoke",
           version: "0.1.0",
         },
         capabilities: { experimentalApi: true },

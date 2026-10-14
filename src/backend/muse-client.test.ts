@@ -101,7 +101,7 @@ afterEach(async () => {
 });
 
 async function fixture(options: Partial<MuseProviderOptions> = {}, environment: NodeJS.ProcessEnv = {}) {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-muse-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-muse-"));
   directories.push(directory);
   const statePath = join(directory, "session.json");
   const spawns: Array<{ command: string; args: readonly string[] | undefined; key: string | undefined }> = [];
@@ -256,7 +256,7 @@ describe("Muse native MSP adapter", () => {
       expect(text).toContain("suffix");
       for (const secret of [apiKey, mcpKey]) expect(text).not.toContain(secret);
     }
-    expect(notifications.find((event) => event.method === "openbot/usage")?.params).toMatchObject({
+    expect(notifications.find((event) => event.method === "aikingbot/usage")?.params).toMatchObject({
       threadId: opened.thread.id,
       usage: { inputTokens: 123, outputTokens: 7, cachedReadTokens: 2, cachedWriteTokens: 3 },
     });
@@ -342,7 +342,7 @@ describe("Muse native MSP adapter", () => {
     expect(spawns[0]).toMatchObject({ command: "/test/sandbox", key: "fixture-explicit-key" });
     expect(spawns[0]?.args?.[0]).toBe("/test/muse");
     const state = decodeRecordResponse(JSON.parse(await readFile(statePath, "utf8")));
-    expect(state.mcp).toMatchObject({ openbot: { transport: "streamableHttp" } });
+    expect(state.mcp).toMatchObject({ aikingbot: { transport: "streamableHttp" } });
     const account = await runCauseEffect(client.request("account/read", {}, decodeAccountReadResult));
     expect(account.account).toBeNull();
   });

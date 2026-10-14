@@ -44,8 +44,8 @@ export interface AgentProviderStatus {
   checkError?: string | null;
   /**
    * Who owns the CLI binary in use. `system` is an install the user made and can update themselves,
-   * with the CLI's own updater; `managed` is the pinned copy OpenBot downloaded, which only an
-   * OpenBot release moves. The two have different update stories, so the picker has to tell them
+   * with the CLI's own updater; `managed` is the pinned copy AIKINGBOT downloaded, which only an
+   * AIKINGBOT release moves. The two have different update stories, so the picker has to tell them
    * apart, and only the provider that resolved a CLI reports one at all.
    */
   cliSource?: "system" | "managed";
@@ -184,7 +184,7 @@ export interface SubmitProviderCodeLoginInput {
 }
 
 /**
- * Whether a key is stored. `unreadable` is a key file OpenBot could not decrypt or parse: the
+ * Whether a key is stored. `unreadable` is a key file AIKINGBOT could not decrypt or parse: the
  * provider then runs with no key, and the file stays on disk until the user replaces or removes it.
  */
 export type ProviderApiKeyStatus = "missing" | "saved" | "unreadable";
@@ -212,12 +212,12 @@ export type ProviderCodeLoginStart =
       verificationUrl: string;
       /** The same page with the code filled in, when the provider gives one. The dialog's QR code opens it. */
       verificationUrlComplete?: string;
-      /** Epoch milliseconds. When OpenBot gives up on this code, which is what the dialog counts down to. */
+      /** Epoch milliseconds. When AIKINGBOT gives up on this code, which is what the dialog counts down to. */
       expiresAt: number;
     }
   | {
       /**
-       * The user signs in on the page, which then shows a code for them to copy back. OpenBot types
+       * The user signs in on the page, which then shows a code for them to copy back. AIKINGBOT types
        * it into the provider's CLI with `submitProviderCodeLogin`.
        */
       kind: "paste";

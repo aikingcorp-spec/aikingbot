@@ -1,6 +1,6 @@
-import { isAgentSummary, type RespondToApprovalInput } from "@openbot/contracts/ipc";
-import { QueueEditRejectedError } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { isAgentSummary, type RespondToApprovalInput } from "@aikingbot/contracts/ipc";
+import { QueueEditRejectedError } from "@aikingbot/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import opencodeFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
 import { InactiveAttentionRequest } from "../backend/agent/inactive-attention-request";
@@ -12,15 +12,15 @@ import { StoredStateFailure } from "../backend/stored-state-effects";
 // memories, routines, conversation and queue modules it dispatches to.
 
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentMemory, AgentSummary, ListRoutineRunsInput, Routine, RoutineRun } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { AgentMemory, AgentSummary, ListRoutineRunsInput, Routine, RoutineRun } from "@aikingbot/contracts/ipc";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { encodeTeamProtocolV4WebRtcHttpRequest } from "@openbot/contracts/team-protocol/v4-webrtc-adapter";
+} from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { encodeTeamProtocolV4WebRtcHttpRequest } from "@aikingbot/contracts/team-protocol/v4-webrtc-adapter";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentStore } from "../backend/agent-store";
 import { SidebarLayoutStore } from "../backend/sidebar-layout-store";
@@ -223,7 +223,7 @@ describe("TeamApiServer agents", () => {
     }).toEqual({
       downloads: images.map((bytes) => ({
         uploadStatus: 200,
-        protocol: "openbot-remote-avatar:",
+        protocol: "aikingbot-remote-avatar:",
         body: {},
         status: 200,
         mimeType: "image/png",

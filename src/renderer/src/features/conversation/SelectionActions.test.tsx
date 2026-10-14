@@ -2,7 +2,7 @@ import {
   MessageSelectionActions,
   parseSelectionInstruction,
   serializeSelectionInstruction,
-} from "@openbot/ui/features/conversation/SelectionActions";
+} from "@aikingbot/ui/features/conversation/SelectionActions";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { JoinPage } from "../src/components/landing/JoinPage";
 
 const INVITE_URL =
-  "https://openbot.run/join?api=https%3A%2F%2Fstudio-mac-k7m4q2pz-host.openbot.run%2F&server=00000000-0000-4000-8000-000000000000&fingerprint=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&invite=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+  "https://aikingbot.aikingx.com/join?api=https%3A%2F%2Fstudio-mac-k7m4q2pz-host.aikingbot.aikingx.com%2F&server=00000000-0000-4000-8000-000000000000&fingerprint=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&invite=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 
 const platformDescriptor = Object.getOwnPropertyDescriptor(navigator, "platform");
 const touchDescriptor = Object.getOwnPropertyDescriptor(navigator, "maxTouchPoints");
@@ -22,28 +22,28 @@ describe("invitation landing page", () => {
     window.history.replaceState({}, "", INVITE_URL);
     render(() => <JoinPage />);
 
-    const openButton = await screen.findByRole("link", { name: "Open OpenBot" });
-    await waitFor(() => expect(openButton).toHaveAttribute("href", expect.stringMatching(/^openbot:\/\/join\?/u)));
-    expect(screen.getByRole("link", { name: "Download OpenBot" })).toBeInTheDocument();
+    const openButton = await screen.findByRole("link", { name: "Open AIKINGBOT" });
+    await waitFor(() => expect(openButton).toHaveAttribute("href", expect.stringMatching(/^aikingbot:\/\/join\?/u)));
+    expect(screen.getByRole("link", { name: "Download AIKINGBOT" })).toBeInTheDocument();
     expect(document.body).not.toHaveTextContent("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
   });
 
-  it("shows what to do when OpenBot does not open", async () => {
+  it("shows what to do when AIKINGBOT does not open", async () => {
     window.history.replaceState({}, "", INVITE_URL);
     render(() => <JoinPage />);
-    const openButton = await screen.findByRole("link", { name: "Open OpenBot" });
+    const openButton = await screen.findByRole("link", { name: "Open AIKINGBOT" });
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
 
     openButton.addEventListener("click", (event) => event.preventDefault());
     fireEvent.click(openButton);
 
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/If OpenBot did not open/u));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/If AIKINGBOT did not open/u));
   });
 
   it("does not promise that every invitation is single-use or expires in 24 hours", async () => {
     window.history.replaceState({}, "", INVITE_URL);
     render(() => <JoinPage />);
-    await screen.findByRole("link", { name: "Open OpenBot" });
+    await screen.findByRole("link", { name: "Open AIKINGBOT" });
     expect(document.body).not.toHaveTextContent(/one-time|only once|24 hours/u);
   });
 
@@ -58,12 +58,12 @@ describe("invitation landing page", () => {
     window.history.replaceState({}, "", INVITE_URL);
     render(() => <JoinPage />);
     await waitFor(() =>
-      expect(screen.getByRole("link", { name: "Open OpenBot" })).toHaveAttribute(
+      expect(screen.getByRole("link", { name: "Open AIKINGBOT" })).toHaveAttribute(
         "href",
-        expect.stringMatching(/^openbot:\/\/join\?/u),
+        expect.stringMatching(/^aikingbot:\/\/join\?/u),
       ),
     );
-    expect(screen.queryByRole("link", { name: "Download OpenBot" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Download AIKINGBOT" })).not.toBeInTheDocument();
   });
 
   it("does not create an app link for an invalid invitation", async () => {
@@ -73,6 +73,6 @@ describe("invitation landing page", () => {
     expect(
       await screen.findByText("This invitation link is invalid or incomplete. Ask the host for a new invitation."),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Open OpenBot" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Open AIKINGBOT" })).not.toBeInTheDocument();
   });
 });

@@ -5,11 +5,11 @@
 // An error names the host only. The path and the query of a base URL can hold a token, and the key
 // and the header values are credentials, so no message and no log line contains them.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { CustomProviderHeader, DetectedModel } from "@openbot/contracts/ipc";
-import { PROVIDER_DETECTION_LIMITS } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { CustomProviderHeader, DetectedModel } from "@aikingbot/contracts/ipc";
+import { PROVIDER_DETECTION_LIMITS } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Effect, Layer, Schema } from "effect";
 
 /** A model list is a small JSON object. A larger body is not a model list. */
@@ -127,7 +127,7 @@ export class ModelServerProbe extends Context.Service<
   {
     probe(target: ModelServerTarget, timeoutMs: number): Effect.Effect<DetectedModel[], ProbeError>;
   }
->()("openbot/main/ModelServerProbe") {
+>()("aikingbot/main/ModelServerProbe") {
   static readonly layer = Layer.succeed(ModelServerProbe, { probe: probeModels });
 }
 

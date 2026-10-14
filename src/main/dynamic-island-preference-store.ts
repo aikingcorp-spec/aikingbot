@@ -3,8 +3,8 @@ import {
   DYNAMIC_ISLAND_SIZE_LIMITS,
   type DynamicIslandPreference,
   isDynamicIslandSizePercent,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

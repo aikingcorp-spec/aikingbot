@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { Button, Input } from "@openbot/ui";
-import { clamp } from "@openbot/ui/utils";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { Button, Input } from "@aikingbot/ui";
+import { clamp } from "@aikingbot/ui/utils";
 import { Portal } from "@solidjs/web";
 import type { Element as SolidElement } from "solid-js";
 import { createEffect, createMemo, createSignal, For, onSettled, Show } from "solid-js";
@@ -9,7 +9,7 @@ import { useText } from "../../text";
 const MESSAGE_TEXT_SELECTOR = ".message-copy[data-selection-message-id]";
 const INTERACTIVE_SELECTOR =
   'a, button, input, textarea, select, [contenteditable="true"], [role="button"], .message-citation';
-const HIGHLIGHT_NAME = "openbot-message-selection";
+const HIGHLIGHT_NAME = "aikingbot-message-selection";
 const VIEWPORT_MARGIN = 12;
 const TOOLBAR_GAP = 8;
 

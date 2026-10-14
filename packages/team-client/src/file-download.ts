@@ -1,10 +1,10 @@
-import { sha256 } from "@noble/hashes/sha2.js";
 import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
   encodeTeamProtocolV2Frame,
-} from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
+import { sha256 } from "@noble/hashes/sha2.js";
 import { Effect } from "effect";
 import { FileTransferError, fileTransferError, MOBILE_ATTACHMENT_BYTES } from "./file-upload";
 

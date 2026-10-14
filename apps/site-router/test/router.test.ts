@@ -31,12 +31,12 @@ const activeRoute = {
 describe("site router", () => {
   it("serves an active HTML file without cookies or caching", async () => {
     const bucket = fakeBucket({
-      "routes/example-project-page-long-name-23456789ab.openbot.site.json": JSON.stringify(activeRoute),
+      "routes/example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com.json": JSON.stringify(activeRoute),
       "sites/site-1/deployments/deployment-1/index.html": "Hello, world!",
     });
     const response = await Effect.runPromise(
       routeRequest(
-        new Request("https://example-project-page-long-name-23456789ab.openbot.site/", {
+        new Request("https://example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com/", {
           headers: { Cookie: "unsafe=true", "If-None-Match": '"etag"' },
         }),
         { SITES: bucket, SITE_SERVE_ENABLED: "true" },
@@ -54,11 +54,11 @@ describe("site router", () => {
 
   it("returns 410 for expired and deleted routes", async () => {
     const expired = fakeBucket({
-      "routes/example-project-page-long-name-23456789ab.openbot.site.json": JSON.stringify(activeRoute),
+      "routes/example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com.json": JSON.stringify(activeRoute),
     });
     const expiredResponse = await Effect.runPromise(
       routeRequest(
-        new Request("https://example-project-page-long-name-23456789ab.openbot.site/"),
+        new Request("https://example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com/"),
         { SITES: expired, SITE_SERVE_ENABLED: "true" },
         3_000,
       ),
@@ -68,7 +68,7 @@ describe("site router", () => {
   });
 
   it("blocks service workers from an SVG document", async () => {
-    const hostname = "example-project-page-long-name-23456789ab.openbot.site";
+    const hostname = "example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com";
     const response = await Effect.runPromise(
       routeRequest(
         new Request(`https://${hostname}/graphic.svg`),
@@ -88,7 +88,7 @@ describe("site router", () => {
   });
 
   it("fails closed when a block marker exists before the route is updated", async () => {
-    const hostname = "example-project-page-long-name-23456789ab.openbot.site";
+    const hostname = "example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com";
     const bucket = fakeBucket({
       [`blocks/${hostname}`]: "blocked",
       [`routes/${hostname}.json`]: JSON.stringify(activeRoute),
@@ -104,7 +104,7 @@ describe("site router", () => {
   it("keeps unknown hostnames separate from tombstones", async () => {
     const response = await Effect.runPromise(
       routeRequest(
-        new Request("https://unknown-project-page-long-name-23456789ab.openbot.site/"),
+        new Request("https://unknown-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com/"),
         { SITES: fakeBucket({}), SITE_SERVE_ENABLED: "true" },
         1_000,
       ),
@@ -113,7 +113,7 @@ describe("site router", () => {
   });
 
   it("disables serving by default and revalidates mutable asset URLs", async () => {
-    const hostname = "example-project-page-long-name-23456789ab.openbot.site";
+    const hostname = "example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com";
     const bucket = fakeBucket({
       [`routes/${hostname}.json`]: JSON.stringify(activeRoute),
       "sites/site-1/deployments/deployment-1/app.js": "console.log('ok')",
@@ -143,7 +143,7 @@ describe("site router", () => {
   });
 
   it("caches immutable assets after checking the live block and route state", async () => {
-    const hostname = "example-project-page-long-name-23456789ab.openbot.site";
+    const hostname = "example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com";
     const getCounts = new Map<string, number>();
     const objects: Record<string, string> = {
       [`routes/${hostname}.json`]: JSON.stringify(activeRoute),
@@ -214,7 +214,9 @@ describe("site router", () => {
       (
         await Effect.runPromise(
           routeRequest(
-            new Request("https://example-project-page-long-name-23456789ab.openbot.site/", { method: "POST" }),
+            new Request("https://example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com/", {
+              method: "POST",
+            }),
             env,
             1_000,
           ),
@@ -225,7 +227,7 @@ describe("site router", () => {
       (
         await Effect.runPromise(
           routeRequest(
-            new Request("https://example-project-page-long-name-23456789ab.openbot.site/%2e%2e/secret"),
+            new Request("https://example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com/%2e%2e/secret"),
             env,
             1_000,
           ),

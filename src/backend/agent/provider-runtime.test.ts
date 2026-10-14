@@ -2,8 +2,8 @@
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { join } from "node:path";
-import type { AgentEvent } from "@openbot/contracts/ipc";
-import { teeLogLines } from "@openbot/logging";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
+import { teeLogLines } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentProcessExitError, type AgentProvider } from "../agent-client";
@@ -69,7 +69,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("reconnects OpenCode without a browser and refuses to replace an active client", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     const clients: FakeAgentClient[] = [];
     service = createTestService({
@@ -103,7 +103,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("keeps another provider's live delivery running when OpenCode reconnects", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { service: agentService } = await startService(root, {
       client: (provider) => new FakeAgentClient(provider, "", false),
       preferredProvider: "codex",
@@ -119,7 +119,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it.each([false, true])("holds queued OpenCode turns during reconnect and resumes them (failure=%s)", async (fail) => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     let release: (() => void) | undefined;
     const gate = new Promise<void>((resolve) => {
@@ -182,8 +182,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("checks providers concurrently and publishes each completed row", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const { store, mailbox } = stores(root);
     const delays: Record<AgentProvider, number> = {
       codex: 60,
@@ -263,7 +263,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     ]);
   });
   async function opencodeModelIds(storedKey: string | null, catalog?: string[]): Promise<string[]> {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { store, mailbox } = stores(root);
     service = createTestService({
       store,
@@ -271,7 +271,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       preferredProvider: "opencode",
       clientFactory: (provider) => {
         const client = new FakeAgentClient(provider);
-        // Zen and Go reach OpenBot as one catalog, and the stored key is a Go key: the Go models
+        // Zen and Go reach AIKINGBOT as one catalog, and the stored key is a Go key: the Go models
         // stay while the Zen ones the key does not buy leave, which is what makes the split a
         // decision this app has to make rather than one it can read off the response.
         if (provider === "opencode") {
@@ -324,7 +324,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     // An agent that has chosen no model runs whatever comes first, and OpenCode reports the
     // services the user signed in to before its own. So the order carries four claims: Muse leads,
     // no billed model outranks a free one, OpenCode's own paid models outrank a third-party
-    // sign-in OpenBot cannot refresh, and the newest version leads inside one tier.
+    // sign-in AIKINGBOT cannot refresh, and the newest version leads inside one tier.
     expect(
       await opencodeModelIds(null, [
         "openai/gpt-5.3-codex-spark",
@@ -343,7 +343,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("does not report an unverified Muse account as connected", async () => {
-    process.env.OPENBOT_MUSE_PATH = await fakeCodexCli();
+    process.env.AIKINGBOT_MUSE_PATH = await fakeCodexCli();
     let muse: FakeAgentClient | undefined;
     const result = await startService(root, {
       preferredProvider: "muse",
@@ -374,7 +374,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("keeps the CLI version with sign-in-required and no models when OpenCode reports no account", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const { service: agentService } = await startService(root, {
       client: (provider) => new FakeAgentClient(provider, "DONE", false, provider !== "opencode"),
       preferredProvider: "opencode",
@@ -394,7 +394,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("discovers OpenCode models when a reconnect signs in after sign-in-required", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     let opencodeClients = 0;
     const { service: agentService } = await startService(root, {
       client: (provider) => {
@@ -422,7 +422,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   it.each(["throws", "returns empty"] as const)(
     "offers the OpenCode free tier when discovery %s after the preferred provider fails to sign in",
     async (discoveryFailure) => {
-      process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+      process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
       const { service: agentService, clientFor } = await startService(root, {
         preferredProvider: "codex",
         client: (provider) => {
@@ -460,7 +460,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   );
 
   it("stops the process on a removed key when no account is left", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     let storedKey: string | null = "go-key";
     const clients: FakeAgentClient[] = [];
     const { store, mailbox } = stores(root);
@@ -510,7 +510,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("restarts OpenCode on a changed key before it reports the change", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     let storedKey: string | null = null;
     const clients: FakeAgentClient[] = [];
     const { store, mailbox } = stores(root);
@@ -568,7 +568,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("uses startup fallbacks when provider discovery is unavailable", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { store, mailbox } = stores(root);
     service = createTestService({
       store,
@@ -593,8 +593,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   it.each(["codex", "claude", "grok"] as const)(
     "discovers and refreshes %s models without losing the catalog on failure",
     async (provider) => {
-      process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
-      process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+      process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
+      process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
       const { store, mailbox } = stores(root);
       const client = new FakeAgentClient(provider);
       const id = provider === "codex" ? "gpt-6-astra" : `${provider}-future-model`;
@@ -700,7 +700,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("names a Claude model by the model, not by the pick Claude Code calls it", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { store, mailbox } = stores(root);
     const client = new FakeAgentClient("claude");
     client.modelList = () => ({
@@ -831,8 +831,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it.each([
-    { target: "claude", pathVariable: "OPENBOT_CLAUDE_PATH", createCli: () => fakeClaudeCli() },
-    { target: "grok", pathVariable: "OPENBOT_GROK_PATH", createCli: fakeGrokCli },
+    { target: "claude", pathVariable: "AIKINGBOT_CLAUDE_PATH", createCli: () => fakeClaudeCli() },
+    { target: "grok", pathVariable: "AIKINGBOT_GROK_PATH", createCli: fakeGrokCli },
   ] as const)("connects $target through the bundled CLI login command", async ({ target, pathVariable, createCli }) => {
     process.env[pathVariable] = await createCli();
     const { store, mailbox } = stores(root);
@@ -1042,8 +1042,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
 
   it("runs provider logins independently and Refresh cancels both generations", async () => {
     const claudeLoginLog = join(root, "claude-login.log");
-    process.env.OPENBOT_FAKE_CLAUDE_LOGIN_LOG = claudeLoginLog;
-    process.env.OPENBOT_CLAUDE_PATH = await pendingFakeClaudeCli();
+    process.env.AIKINGBOT_FAKE_CLAUDE_LOGIN_LOG = claudeLoginLog;
+    process.env.AIKINGBOT_CLAUDE_PATH = await pendingFakeClaudeCli();
     const { store, mailbox } = stores(root);
     const codexClients: FakeAgentClient[] = [];
     service = createTestService({
@@ -1167,8 +1167,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     async (target) => {
       const managed = target === "codex" ? await fakeCodexCli() : await fakeClaudeCli();
       if (target === "claude") {
-        process.env.OPENBOT_FAKE_CLAUDE_LOGIN_LOG = join(root, "pending-claude-login.log");
-        process.env.OPENBOT_CLAUDE_PATH = await pendingFakeClaudeCli();
+        process.env.AIKINGBOT_FAKE_CLAUDE_LOGIN_LOG = join(root, "pending-claude-login.log");
+        process.env.AIKINGBOT_CLAUDE_PATH = await pendingFakeClaudeCli();
       }
       const { service: agentService } = await startService(root, {
         client: (provider) => new FakeAgentClient(provider),
@@ -1193,7 +1193,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
 
       const other = target === "codex" ? "claude" : "codex";
       const otherCli = other === "codex" ? await fakeCodexCli() : await fakeClaudeCli();
-      process.env[`OPENBOT_${other.toUpperCase()}_PATH`] = join(root, "missing-other-override");
+      process.env[`AIKINGBOT_${other.toUpperCase()}_PATH`] = join(root, "missing-other-override");
       const otherUpdated = await runCauseEffect(
         service.updateProviderCli(other, () =>
           Effect.try({
@@ -1207,7 +1207,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       );
 
       await runCauseEffect(service.refreshProviders());
-      process.env[`OPENBOT_${target.toUpperCase()}_PATH`] = join(root, "missing-override");
+      process.env[`AIKINGBOT_${target.toUpperCase()}_PATH`] = join(root, "missing-override");
       const updated = await runCauseEffect(service.updateProviderCli(target, install));
       expect(updated.providers).toContainEqual(
         expect.objectContaining({ id: target, state: "available", cliSource: "managed" }),
@@ -1217,7 +1217,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
 
   it("activates the downloaded managed CLI instead of running the user's updater", async () => {
     const system = await createUpdatableFakeClaude(root, "2.1.250");
-    process.env.OPENBOT_CLAUDE_PATH = system.executable;
+    process.env.AIKINGBOT_CLAUDE_PATH = system.executable;
     const { store, mailbox } = stores(root);
     const clients: FakeAgentClient[] = [];
     service = createTestService({
@@ -1233,7 +1233,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     await runCauseEffect(service.initialize());
     const managed = await fakeClaudeCli("2.1.263");
     // Remove the test's explicit override to model automatic system discovery at startup.
-    process.env.OPENBOT_CLAUDE_PATH = join(root, "missing-claude");
+    process.env.AIKINGBOT_CLAUDE_PATH = join(root, "missing-claude");
     const status = await runCauseEffect(
       service.updateProviderCli("claude", () =>
         Effect.try({
@@ -1252,7 +1252,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
 
   it("keeps the updated CLI's client when an account refresh hears back from the replaced one", async () => {
     const system = await createUpdatableFakeClaude(root, "2.1.250");
-    process.env.OPENBOT_CLAUDE_PATH = system.executable;
+    process.env.AIKINGBOT_CLAUDE_PATH = system.executable;
     const { store, mailbox } = stores(root);
     const clients: FakeAgentClient[] = [];
     let heldClient: FakeAgentClient | null = null;
@@ -1281,7 +1281,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     await waitFor(() => replaced.requests.filter((request) => request.method === "account/read").length > readsBefore);
 
     const managed = await fakeClaudeCli("2.1.263");
-    process.env.OPENBOT_CLAUDE_PATH = join(root, "missing-claude");
+    process.env.AIKINGBOT_CLAUDE_PATH = join(root, "missing-claude");
     await runCauseEffect(
       service.updateProviderCli("claude", () =>
         Effect.try({
@@ -1351,7 +1351,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     await runCauseEffect(service.initialize());
 
     const message =
-      "OpenBot could not update the Claude CLI. Claude stopped before it answered (exit code 3). Error: bad config";
+      "AIKINGBOT could not update the Claude CLI. Claude stopped before it answered (exit code 3). Error: bad config";
     await expect(
       runCauseEffect(
         service.updateProviderCli("claude", () =>
@@ -1405,7 +1405,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       headers: [],
     });
 
-    const message = `OpenBot could not update the Claude CLI. Claude stopped before it answered (exit code 3). ${"x".repeat(285)} rejected •••`;
+    const message = `AIKINGBOT could not update the Claude CLI. Claude stopped before it answered (exit code 3). ${"x".repeat(285)} rejected •••`;
     await expect(
       runCauseEffect(
         service.updateProviderCli("claude", () =>
@@ -1484,7 +1484,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       credentials: {
         apiKey: () => null,
         customProviders: () => [],
-        // A server OpenBot configured. The user asked for this one here, so its failure is theirs
+        // A server AIKINGBOT configured. The user asked for this one here, so its failure is theirs
         // to fix and must stay visible.
         mcpServers: () => [
           {
@@ -1510,8 +1510,8 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     if (!client) throw new Error("The fake provider did not start.");
 
     // Verbatim, because these two lines are what the user met: a per-session MCP server that lost a
-    // race with the short session OpenBot opens to read the model list, and an MCP client's own
-    // transport giving up. Neither stops the turn and neither is OpenBot's to configure.
+    // race with the short session AIKINGBOT opens to read the model list, and an MCP client's own
+    // transport giving up. Neither stops the turn and neither is AIKINGBOT's to configure.
     client.emit(
       "diagnostic",
       "Failed to spawn MCP server 'chrome-devtools': session is closing (process scope already reclaimed); MCP server not started",
@@ -1728,7 +1728,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("keeps Grok's telemetry export failure out of the chat it was switched into", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const { store, mailbox } = stores(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
     service = createTestService({
@@ -1809,7 +1809,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
         method: "item/tool/call",
         signal: alreadyCancelled.signal,
         params: {
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool,
           arguments: {},
           threadId,
@@ -1823,7 +1823,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
         id: "cancel-browser",
         method: "item/tool/call",
         signal: controller.signal,
-        params: { namespace: "openbot_browser", tool, arguments: {}, threadId, turnId, callId: "cancel-browser" },
+        params: { namespace: "aikingbot_browser", tool, arguments: {}, threadId, turnId, callId: "cancel-browser" },
       });
       await waitFor(() => started);
       controller.abort();
@@ -1842,7 +1842,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
         method: "item/tool/call",
         signal: new AbortController().signal,
         params: {
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool,
           arguments: {},
           threadId,
@@ -1912,7 +1912,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("keeps failed tool calls out of the provider error toast", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const { store, mailbox } = stores(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
     service = createTestService({
@@ -1937,7 +1937,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     // as the tool's result and can retry.
     client.emit(
       "diagnostic",
-      "tool_error: tool_output_error tool_name='use_tool' effective_tool_name='openbot_browser__click' model_id='grok-4.7' error_kind='tool_output_error'",
+      "tool_error: tool_output_error tool_name='use_tool' effective_tool_name='aikingbot_browser__click' model_id='grok-4.7' error_kind='tool_output_error'",
     );
     // The Antigravity harness reports a failed MCP call with an inner error record.
     client.emit(
@@ -1951,7 +1951,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     );
     client.emit(
       "diagnostic",
-      'I1007 19:46:31.115287 9984 local_connection.py:579] harness stderr: ERROR: logging before google.Init: E1007 19:46:31.015978 629 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: MCP tool call to server "openbot_browser" timed out after 3m0s: context deadline exceeded',
+      'I1007 19:46:31.115287 9984 local_connection.py:579] harness stderr: ERROR: logging before google.Init: E1007 19:46:31.015978 629 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: MCP tool call to server "aikingbot_browser" timed out after 3m0s: context deadline exceeded',
     );
     client.emit(
       "diagnostic",
@@ -1959,7 +1959,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
     );
     client.emit(
       "diagnostic",
-      'E1007 18:11:18.606862 917 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: failed to connect to server "openbot_browser": connection refused',
+      'E1007 18:11:18.606862 917 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: failed to connect to server "aikingbot_browser": connection refused',
     );
     client.emit("diagnostic", "ERROR grok: the model endpoint could not be reached");
 
@@ -1971,7 +1971,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       }),
       expect.objectContaining({
         message:
-          'E1007 18:11:18.606862 917 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: failed to connect to server "openbot_browser": connection refused',
+          'E1007 18:11:18.606862 917 errorreport.go:224] error executing cascade step: CORTEX_STEP_TYPE_MCP_TOOL: failed to connect to server "aikingbot_browser": connection refused',
       }),
       expect.objectContaining({ message: "ERROR grok: the model endpoint could not be reached" }),
     ]);
@@ -2044,7 +2044,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   });
 
   it("replaces Grok's repeated exhausted-balance errors with one usage refresh", async () => {
-    process.env.OPENBOT_GROK_PATH = await fakeGrokCli();
+    process.env.AIKINGBOT_GROK_PATH = await fakeGrokCli();
     const { store, mailbox } = stores(root);
     const clients = new Map<AgentProvider, FakeAgentClient>();
     service = createTestService({
@@ -2404,7 +2404,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       failInstall = reject;
     });
     const claude = await createUpdatableFakeClaude(root, "2.1.250");
-    process.env.OPENBOT_CLAUDE_PATH = claude.executable;
+    process.env.AIKINGBOT_CLAUDE_PATH = claude.executable;
     const { store, mailbox } = stores(root);
     service = createTestService({
       store,
@@ -2457,7 +2457,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
       claudeSignedIn ? "is replaced" : "with no client is connected again"
     }`, async () => {
       const claude = await createUpdatableFakeClaude(root, "2.1.250");
-      process.env.OPENBOT_CLAUDE_PATH = claude.executable;
+      process.env.AIKINGBOT_CLAUDE_PATH = claude.executable;
       const { store, mailbox } = stores(root);
       service = createTestService({
         store,
@@ -2475,7 +2475,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
 
       // Claude is idle, so its CLI is replaced. Restart recovery would settle every unresolved
       // delivery, and this one belongs to a turn Codex is still running.
-      process.env.OPENBOT_CLAUDE_PATH = join(root, "missing-claude");
+      process.env.AIKINGBOT_CLAUDE_PATH = join(root, "missing-claude");
       await runCauseEffect(
         service.updateProviderCli("claude", () =>
           Effect.try({
@@ -2491,7 +2491,7 @@ describe.sequential("ProviderRuntime: account checks and login", () => {
   }
 
   it("keeps the owner of a CLI whose provider is signed out", async () => {
-    process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+    process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
     const { service: agentService } = await startService(root, {
       client: (provider) => new FakeAgentClient(provider, undefined, true, provider !== "claude"),
       preferredProvider: "codex",
@@ -2575,7 +2575,7 @@ describe.sequential("ProviderRuntime: custom provider reload", () => {
   // rather than reconfigured. `connectProvider` cannot do it: it returns early for a provider that is
   // already connected.
   it("replaces the OpenCode process, refreshes its models and keeps the thread", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const endpoints: CustomProviderConfig[] = [];
     const clients: FakeAgentClient[] = [];
     const fixture = startWithEndpoints(endpoints, clients);
@@ -2614,7 +2614,7 @@ describe.sequential("ProviderRuntime: custom provider reload", () => {
   // A save is never refused for a busy provider - the endpoint is already stored - so the honest
   // answer is that the models arrive later. Killing the CLI here would end the user's turn.
   it("leaves a running turn alone and reports skipped-busy", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const clients: FakeAgentClient[] = [];
     const fixture = startWithEndpoints([STUDIO_LOCAL], clients, { autoComplete: false });
     service = fixture.service;
@@ -2636,7 +2636,7 @@ describe.sequential("ProviderRuntime: custom provider reload", () => {
   // for a missing account, so the default advice would send the user to `opencode auth login` for a
   // typo in their own endpoint.
   it("names the endpoint when OpenCode will not start a session, and has nothing to restart", async () => {
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const clients: FakeAgentClient[] = [];
     service = startWithEndpoints([STUDIO_LOCAL], clients, { preferred: "codex", openCodeSignedIn: false }).service;
     const running = service;
@@ -2691,7 +2691,7 @@ describe.sequential("ProviderRuntime: idle release", () => {
 
   it("stops a provider no agent is set to well before one an agent uses", async () => {
     vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
-    process.env.OPENBOT_OPENCODE_PATH = await fakeOpencodeCli();
+    process.env.AIKINGBOT_OPENCODE_PATH = await fakeOpencodeCli();
     const started = await startService(root, { provider: "codex", output: "DONE" });
     service = started.service;
     expect((await runCauseEffect(started.store.getOrCreate("chief"))).provider).toBe("codex");

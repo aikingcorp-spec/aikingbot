@@ -1,10 +1,10 @@
-import { classifyFailure } from "@openbot/telemetry";
-import { ConversationHeader as SharedConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { ConversationHeader as SharedConversationHeader } from "@aikingbot/ui/features/conversation/ConversationHeader";
 import { useConversationViewScope } from "./conversation-scope";
 
 const loadAgentSettingsPanel = () => import("./AgentSettingsPanel");
 
-import { useText } from "@openbot/ui/text";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { serverHasStorage } from "../files/storage-usage";

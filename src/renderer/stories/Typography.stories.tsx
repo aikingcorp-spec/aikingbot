@@ -1,4 +1,4 @@
-import { Heading, Text } from "@openbot/ui";
+import { Heading, Text } from "@aikingbot/ui";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 const meta = {

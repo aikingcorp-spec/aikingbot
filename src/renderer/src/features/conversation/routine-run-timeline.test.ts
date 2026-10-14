@@ -1,4 +1,4 @@
-import type { AgentMessage, ChatActionMarkerModel } from "@openbot/ui/data";
+import type { AgentMessage, ChatActionMarkerModel } from "@aikingbot/ui/data";
 import { describe, expect, it } from "vitest";
 import { summarizeRoutineRunMessages } from "./routine-run-timeline";
 

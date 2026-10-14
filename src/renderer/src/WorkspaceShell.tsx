@@ -1,10 +1,10 @@
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
 import {
   ConversationLoadNotice,
   ServerConnectionNotice,
   ServerPanelLoadNotice,
-} from "@openbot/ui/features/servers/ServerConnectionNotice";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/servers/ServerConnectionNotice";
+import { useText } from "@aikingbot/ui/text";
 import { createMemo, Loading, Show } from "solid-js";
 import { WorkspaceAccountDock } from "./features/account/WorkspaceAccountDock";
 import { useAgents } from "./features/agents/agents-context";

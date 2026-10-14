@@ -1,10 +1,10 @@
-import type { ProviderRuntimeStatus } from "@openbot/contracts/ipc";
+import type { ProviderRuntimeStatus } from "@aikingbot/contracts/ipc";
 import {
   type ProviderUpdate,
   presentProviderUpdate,
   providerUpdatesToAnnounce,
   providerVersionLabel,
-} from "@openbot/ui/features/provider-updates/provider-update";
+} from "@aikingbot/ui/features/provider-updates/provider-update";
 import { describe, expect, it } from "vitest";
 
 function runtime(patch: Partial<ProviderRuntimeStatus> = {}): ProviderRuntimeStatus {
@@ -51,7 +51,7 @@ describe("presentProviderUpdate", () => {
       update({ runtime: runtime({ phase: "download-error", message: "ENOSPC: write '/private/provider.zip'" }) }),
     );
     expect(failed.detail).toBe(
-      "There is not enough storage space. Free some space on the computer running OpenBot, then try again.",
+      "There is not enough storage space. Free some space on the computer running AIKINGBOT, then try again.",
     );
   });
 

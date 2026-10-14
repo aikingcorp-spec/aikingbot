@@ -1,5 +1,5 @@
+import type { SidebarLayoutSnapshot } from "@aikingbot/contracts/ipc";
 import { type MenuAction, MenuView } from "@expo/ui/community/menu";
-import type { SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
 import { type Href, router, Stack } from "expo-router";
 import { HeaderHeightContext } from "expo-router/react-navigation";
 import { Button, Typography } from "heroui-native";

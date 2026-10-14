@@ -1,17 +1,17 @@
 import type {
   AccountSession,
+  AIKINGBOTDesktopApi,
   CentralAuthState,
   CentralAuthUser,
   MobileConnectLink,
-  OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { clone, type Listener, type MockRuntime } from "./mock-support";
 
 export interface MockAuthOptions {
   authState?: CentralAuthState;
 }
 
-/** The OpenBot account: its sign-in state and the sessions signed in to it. */
+/** The AIKINGBOT account: its sign-in state and the sessions signed in to it. */
 export function createMockAuth(options: MockAuthOptions, { emit }: MockRuntime) {
   const defaultAuthState: CentralAuthState = {
     status: "signed_in",
@@ -65,7 +65,7 @@ export function createMockAuth(options: MockAuthOptions, { emit }: MockRuntime) 
     emit(authListeners, state);
   }
 
-  const auth: OpenBotDesktopApi["auth"] = {
+  const auth: AIKINGBOTDesktopApi["auth"] = {
     getState: async () => clone(authState),
     retry: async () => clone(authState),
     requestEmailCode: async (email) => {
@@ -107,14 +107,14 @@ export function createMockAuth(options: MockAuthOptions, { emit }: MockRuntime) 
     },
     createMobileConnect: async () => ({
       qrData:
-        "openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=preview-mobile-ticket_1234567890abcdef",
+        "aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=preview-mobile-ticket_1234567890abcdef",
       expiresAt: Date.now() + 120_000,
     }),
     cancelMobileConnect: async () => undefined,
     getMobileConnectLink: async () => clone(mobileConnectLink),
     createMobileConnectLink: async () => {
       mobileConnectLink = {
-        url: `openbot://mobile-connect?api=https%3A%2F%2Fapi.openbot.run&ticket=preview-mobile-link_${crypto.randomUUID().replaceAll("-", "")}`,
+        url: `aikingbot://mobile-connect?api=https%3A%2F%2Fapi.aikingbot.aikingx.com&ticket=preview-mobile-link_${crypto.randomUUID().replaceAll("-", "")}`,
         createdAt: Date.now(),
       };
       return clone(mobileConnectLink);

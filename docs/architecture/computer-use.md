@@ -2,15 +2,15 @@
 
 ## Computer Use
 
-Computer Use is `cua-driver`, a third-party MIT binary, and OpenBot owns how it runs.
+Computer Use is `cua-driver`, a third-party MIT binary, and AIKINGBOT owns how it runs.
 `cua-driver-runtime.ts` in the main process starts one long-lived `serve` daemon and holds it; each
 provider CLI spawns its own short-lived `cua-driver mcp --socket` proxy against that daemon. All
 screen capture, accessibility reads, and input posting happen inside the daemon, so the proxy's own
 identity does not matter.
 
 The daemon is spawned directly, and never through `open(1)` or `NSWorkspace`. macOS finds the
-responsible process by walking up the launch chain, so a direct spawn puts OpenBot at the top of it
-and the user grants Screen Recording and Accessibility to OpenBot rather than to somebody else's
+responsible process by walking up the launch chain, so a direct spawn puts AIKINGBOT at the top of it
+and the user grants Screen Recording and Accessibility to AIKINGBOT rather than to somebody else's
 helper. `CUA_DRIVER_EMBEDDED=1` tells the driver to stay on that path instead of relaunching itself
 as its own application. Anything that launches the daemon another way breaks the attribution, which
 is the reason the earlier Codex helper was replaced.
@@ -43,7 +43,7 @@ vanish for two providers with no error. Codex staleness needs no separate signal
 session. `onMcpServerChanged` is what refreshes the agent runtimes, which deactivates every
 stored provider session: the next turn starts a new one, which keeps the public thread and loses
 what the provider held privately. So it reports two moments only — the entry appearing on a start a
-user asked for, and the daemon dying under OpenBot. It is quiet for a grant given while the daemon
+user asked for, and the daemon dying under AIKINGBOT. It is quiet for a grant given while the daemon
 serves, which changes the state and not the tool set; for the startup warm-up, which settles the
 entry the stored sessions already had; and for the stop at teardown, which happens at order 55,
 before the agent service at 110, and would otherwise deactivate on every quit the sessions the next
@@ -58,16 +58,16 @@ the other native runtimes rather than managed like a provider CLI. The pinned fi
 allowlist: `scripts/install-cua-driver.ts` copies only the named paths and checks each digest, so an
 upstream layout change fails the build instead of shipping a surprise file. Each installer carries
 only its own target. On macOS `mac.signIgnore` keeps the vendor's Developer ID signature, because
-re-signing under OpenBot's inherited entitlements would drop the Automation entitlement the driver
+re-signing under AIKINGBOT's inherited entitlements would drop the Automation entitlement the driver
 needs. A packaged build reads the copy under `resources/cua-driver` and nothing else, because the release
 is pinned and signed against that build and an environment variable must not decide which program
 drives the user's desktop; a release without the binary reports no driver. In a checkout
 `resolveCuaDriver` also reads an override, an install directory and `PATH`, so a developer can point
-`OPENBOT_CUA_DRIVER_PATH` at another build.
+`AIKINGBOT_CUA_DRIVER_PATH` at another build.
 
-OpenBot draws the agent cursor in its own per-display overlays for every display layout. The
+AIKINGBOT draws the agent cursor in its own per-display overlays for every display layout. The
 runtime starts `serve` with `--no-overlay`. The driver's overlay covers only the main display and
-cannot follow a display connected after startup. Keeping cursor ownership in OpenBot lets the
+cannot follow a display connected after startup. Keeping cursor ownership in AIKINGBOT lets the
 highlight controller add, resize, and remove display overlays without restarting the daemon or
 changing provider sessions.
 
@@ -76,9 +76,9 @@ Because the driver draws no cursor, its motion styles do not apply. The renderer
 min-jerk glide, or a wide swoop for a move over 900 points. The tap does not delay a request, so the
 cursor shows where an action went, from 180 ms to about 1.1 s after the driver acts.
 
-Every copy OpenBot starts gets `CUA_DRIVER_RS_TELEMETRY_ENABLED=0` and
-`CUA_DRIVER_RS_UPDATE_CHECK=0`. OpenBot ships the driver, so its vendor analytics are not something
-a user chose, and OpenBot pins the version, so a release check could only offer an update OpenBot
+Every copy AIKINGBOT starts gets `CUA_DRIVER_RS_TELEMETRY_ENABLED=0` and
+`CUA_DRIVER_RS_UPDATE_CHECK=0`. AIKINGBOT ships the driver, so its vendor analytics are not something
+a user chose, and AIKINGBOT pins the version, so a release check could only offer an update AIKINGBOT
 would refuse.
 
 ## Remote desktop permission checks and live tests
@@ -101,9 +101,9 @@ A local video-only test can run without native diagnostics. Its viewer iframe is
 
 A paste in the viewer puts the member's text on the host's clipboard, and then presses the host's
 paste keys. Moonlight sends Cmd+V or Ctrl+V as keys and cancels them, so the browser fires no paste
-event and the host pastes its own clipboard. The gateway adds `openbot-paste.js` to Moonlight's
+event and the host pastes its own clipboard. The gateway adds `aikingbot-paste.js` to Moonlight's
 `stream.html`. The script keeps the member's paste key from Moonlight, reads the paste event, and
-posts the text to `moonlight/openbot-clipboard`. Both routes are under `moonlight/` because the
+posts the text to `moonlight/aikingbot-clipboard`. Both routes are under `moonlight/` because the
 released Team API adapters forward only that family of viewer routes. The same viewer cookie or
 WebRTC session check protects them, and the clipboard route refuses a request from another site.
 At the paste event, the script presses the host's paste modifier, Cmd for a macOS host or Ctrl for
@@ -122,10 +122,10 @@ capability. Linux has no permission checks: an X11 session is ready.
 
 Codex saves an “Always allow” tool decision only when the MCP server is in a file-backed
 configuration layer. A thread configuration alone does not satisfy this check. Before starting or
-resuming a thread with Computer Use, OpenBot registers `computer_use` in the Codex user
+resuming a thread with Computer Use, AIKINGBOT registers `computer_use` in the Codex user
 configuration through `config/value/write`. The new entry contains only the driver command and
 `enabled = false`. The write uses the user layer's version, and an existing entry is left unchanged.
-OpenBot does not save the driver socket, environment, or credentials in that entry.
+AIKINGBOT does not save the driver socket, environment, or credentials in that entry.
 
 The thread configuration enables the running driver and supplies its current command, arguments,
 and environment. It also carries the saved per-tool settings, including `set_value.approval_mode`.

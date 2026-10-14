@@ -1,7 +1,7 @@
-import { inviteUseCount, isPermanentInvite } from "@openbot/contracts/invite-links";
-import type { CentralAuthUser, MobileConnectedDevice } from "@openbot/contracts/ipc";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { inviteUseCount, isPermanentInvite } from "@aikingbot/contracts/invite-links";
+import type { CentralAuthUser, MobileConnectedDevice } from "@aikingbot/contracts/ipc";
+import { decodeRecord, requiredString } from "@aikingbot/contracts/ipc-decoding";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 
 /** The account API's answers, and the decoders that `CentralAuthManager` checks them with. */
 

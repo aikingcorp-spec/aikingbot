@@ -1,8 +1,8 @@
-import { ArrowUp, Button, Plus, X } from "@openbot/ui";
-import { ChannelStoppedTasks } from "@openbot/ui/features/channels/ChannelStoppedTasks";
-import { AwaitingReplies, type AwaitingReplyItem } from "@openbot/ui/features/conversation/AwaitingReplies";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import { ArrowUp, Button, Plus, X } from "@aikingbot/ui";
+import { ChannelStoppedTasks } from "@aikingbot/ui/features/channels/ChannelStoppedTasks";
+import { AwaitingReplies, type AwaitingReplyItem } from "@aikingbot/ui/features/conversation/AwaitingReplies";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
 import { createStore, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -18,7 +18,7 @@ import { requireFixture, STORY_AGENTS } from "./fixtures";
  *
  * The rows are written out here rather than mounted from `ChannelConversation`, because that
  * component reads the channels context, which needs the account, server, turns and browser contexts
- * and a channel-aware `window.openbot` behind it. What is under test here is what the reader sees:
+ * and a channel-aware `window.aikingbot` behind it. What is under test here is what the reader sees:
  * the coloured author name above the bubble and the face beside its bottom edge, the run of messages that names its author once,
  * the day separator, the reader's own message on the right with neither face nor name, and one
  * activity row for every agent the channel waits on.

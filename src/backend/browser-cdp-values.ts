@@ -1,8 +1,14 @@
-import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import {
+  type DynamicRecord,
+  isBoolean,
+  isDynamicRecord,
+  isNumber,
+  isString,
+} from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { type BrowserOperationError, browserFailure } from "./browser-effects";
 
-const AUTOMATION_WORLD_NAME = "openbot-browser-automation";
+const AUTOMATION_WORLD_NAME = "aikingbot-browser-automation";
 
 export type CdpResult = DynamicRecord;
 

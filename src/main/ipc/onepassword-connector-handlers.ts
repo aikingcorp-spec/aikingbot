@@ -1,8 +1,8 @@
 // The one 1Password connection of this computer: connect through the 1Password CLI or with a pasted
 // service account token, cancel, and disconnect.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { OnePasswordConnectInput } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { OnePasswordConnectInput } from "@aikingbot/contracts/ipc";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { OnePasswordConnectorService } from "../onepassword-connector-service";
 import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";

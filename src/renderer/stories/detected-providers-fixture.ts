@@ -3,7 +3,7 @@ import type {
   DetectedProviderApi,
   DetectedProviderValue,
   ProviderDetection,
-} from "@openbot/ui/features/custom-providers/detected-providers";
+} from "@aikingbot/ui/features/custom-providers/detected-providers";
 import { createSignal, onCleanup } from "solid-js";
 
 /** What a scan could find on a developer's computer. The paths, versions and models are examples only. */

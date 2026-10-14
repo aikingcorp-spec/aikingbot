@@ -1,4 +1,4 @@
-// The queue key of this host (`@openbot/contracts/signal-protocol/ingress-queue`). Signal seals the
+// The queue key of this host (`@aikingbot/contracts/signal-protocol/ingress-queue`). Signal seals the
 // Slack, Discord and Telegram events that arrive while a hosted server sleeps to its public half, so
 // the private half must stay the same across restarts. It is encrypted at rest by the operating
 // system and registered for redaction.
@@ -8,14 +8,14 @@ import {
   createIngressQueueKeyPair,
   importIngressQueuePrivateKey,
   isIngressQueueKey,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+} from "@aikingbot/contracts/signal-protocol/ingress-queue";
+import { createAIKINGBOTLogger, registerSecretValue } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";
 import type { SecretCipher } from "./provider-credential-store";
 
-const logger = createOpenBotLogger("ingress-queue-key");
+const logger = createAIKINGBOTLogger("ingress-queue-key");
 
 const fileSchema = z.object({ version: z.literal(1), publicKey: z.string(), privateKey: z.string() });
 

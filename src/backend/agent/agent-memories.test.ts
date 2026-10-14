@@ -1,14 +1,14 @@
 // @vitest-environment node
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentProvider } from "../agent-client";
 import type { AgentService } from "../agent-service";
 import {
-  callOpenBotTool,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   createTestService,
   FakeAgentClient,
   notification,
-  openBotToolPayload,
   paramsRecord,
   startAgentTestFixture,
   stopAgentTestFixture,
@@ -60,7 +60,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     const turnId = events.find((event) => event.type === "turn-started")?.turnId;
     if (!threadId || !turnId) throw new Error("The memory merge turn did not start.");
-    const merged = await callOpenBotTool(
+    const merged = await callAIKINGBOTTool(
       client,
       threadId,
       "remember",
@@ -71,20 +71,20 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
       },
       turnId,
     );
-    expect(openBotToolPayload(merged.result)).toMatchObject({
+    expect(aikingBotToolPayload(merged.result)).toMatchObject({
       status: "staged",
       inclusion: outcome === "essential-merge" ? "essential" : "searchable",
     });
     const replacementText = `Replacement ${"界".repeat(470)}`;
     if (outcome !== "essential-merge") {
-      const replacement = await callOpenBotTool(
+      const replacement = await callAIKINGBOTTool(
         client,
         threadId,
         "remember",
         { text: replacementText, inclusion: "essential" },
         turnId,
       );
-      expect(openBotToolPayload(replacement.result)).toMatchObject({ status: "staged", inclusion: "essential" });
+      expect(aikingBotToolPayload(replacement.result)).toMatchObject({ status: "staged", inclusion: "essential" });
     }
     if (outcome === "target-edited")
       active.updateMemory({ agentId: "chief", memoryId: target.id, text: `${target.text} new` });
@@ -146,7 +146,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
       const threadId = store.activeProviderSession("chief")?.externalSessionId;
       const turnId = events.find((event) => event.type === "turn-started")?.turnId;
       if (!threadId || !turnId) throw new Error("The planned duplicate turn did not start.");
-      await callOpenBotTool(
+      await callAIKINGBOTTool(
         client,
         threadId,
         "remember",
@@ -155,7 +155,13 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
           : { text: "Original fact.", inclusion: "essential" },
         turnId,
       );
-      await callOpenBotTool(client, threadId, "remember", { text: "Original fact.", inclusion: "searchable" }, turnId);
+      await callAIKINGBOTTool(
+        client,
+        threadId,
+        "remember",
+        { text: "Original fact.", inclusion: "searchable" },
+        turnId,
+      );
       client.emit(
         "notification",
         notification("turn/completed", { threadId, turn: { id: turnId, status: "completed" } }),
@@ -191,7 +197,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
     const threadId = store.activeProviderSession("chief")?.externalSessionId;
     const turnId = events.find((event) => event.type === "turn-started")?.turnId;
     if (!threadId || !turnId) throw new Error("The user-controlled duplicate turn did not start.");
-    const duplicate = await callOpenBotTool(
+    const duplicate = await callAIKINGBOTTool(
       client,
       threadId,
       "remember",
@@ -236,23 +242,23 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
       const threadId = store.activeProviderSession("chief")?.externalSessionId;
       const turnId = events.find((event) => event.type === "turn-started")?.turnId;
       if (!threadId || !turnId) throw new Error("The duplicate selection turn did not start.");
-      const duplicate = await callOpenBotTool(
+      const duplicate = await callAIKINGBOTTool(
         client,
         threadId,
         "remember",
         { text: original.text, inclusion: "searchable" },
         turnId,
       );
-      expect(openBotToolPayload(duplicate.result)).toMatchObject({ status: "staged", inclusion: "searchable" });
+      expect(aikingBotToolPayload(duplicate.result)).toMatchObject({ status: "staged", inclusion: "searchable" });
       const replacementText = `Replacement ${"界".repeat(470)}`;
-      const replacement = await callOpenBotTool(
+      const replacement = await callAIKINGBOTTool(
         client,
         threadId,
         "remember",
         { text: replacementText, inclusion: "essential" },
         turnId,
       );
-      expect(openBotToolPayload(replacement.result)).toMatchObject({ status: "staged", inclusion: "essential" });
+      expect(aikingBotToolPayload(replacement.result)).toMatchObject({ status: "staged", inclusion: "essential" });
       expect(active.listMemories("chief")).toHaveLength(5);
       expect(active.getMemorySelection("chief").selections.every((entry) => entry.inclusion === "essential")).toBe(
         true,
@@ -309,16 +315,22 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
     expect(JSON.stringify(client.requests.find((request) => request.method === "thread/start")?.params)).not.toContain(
       own.text,
     );
-    const recalled = await callOpenBotTool(client, threadId, "search_memories", { query: "telescope" }, turnId);
-    expect(openBotToolPayload(recalled.result).memories).toEqual([
+    const recalled = await callAIKINGBOTTool(client, threadId, "search_memories", { query: "telescope" }, turnId);
+    expect(aikingBotToolPayload(recalled.result).memories).toEqual([
       expect.objectContaining({ id: own.id, text: own.text, inclusion: "searchable" }),
     ]);
-    await callOpenBotTool(client, threadId, "remember", { text: "The lighthouse project uses green labels." }, turnId);
-    const pending = await callOpenBotTool(client, threadId, "search_memories", { query: "lighthouse" }, turnId);
-    expect(openBotToolPayload(pending.result).memories).toEqual([]);
+    await callAIKINGBOTTool(
+      client,
+      threadId,
+      "remember",
+      { text: "The lighthouse project uses green labels." },
+      turnId,
+    );
+    const pending = await callAIKINGBOTTool(client, threadId, "search_memories", { query: "lighthouse" }, turnId);
+    expect(aikingBotToolPayload(pending.result).memories).toEqual([]);
     const revision = active.getMemorySelection("chief").selections[0]?.revision;
     if (revision === undefined) throw new Error("The selection is missing.");
-    await callOpenBotTool(
+    await callAIKINGBOTTool(
       client,
       threadId,
       "set_memory_inclusion",
@@ -326,7 +338,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
       turnId,
     );
     const corrected = "The telescope project uses orange labels.";
-    await callOpenBotTool(client, threadId, "remember", { memoryId: own.id, text: corrected }, turnId);
+    await callAIKINGBOTTool(client, threadId, "remember", { memoryId: own.id, text: corrected }, turnId);
     expect(active.getMemorySelection("chief").selections[0]?.inclusion).toBe("searchable");
     client.emit(
       "notification",
@@ -367,17 +379,17 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         inclusion: "essential",
         expectedRevision: selection.revision,
       }));
-      const staged = await callOpenBotTool(client, threadId, "set_memory_inclusion", { changes }, turnId);
-      expect(openBotToolPayload(staged.result).status).toBe("staged");
-      const stagedForget = await callOpenBotTool(client, threadId, "forget_memory", { memoryId: second.id }, turnId);
-      expect(openBotToolPayload(stagedForget.result).status).toBe("staged");
+      const staged = await callAIKINGBOTTool(client, threadId, "set_memory_inclusion", { changes }, turnId);
+      expect(aikingBotToolPayload(staged.result).status).toBe("staged");
+      const stagedForget = await callAIKINGBOTTool(client, threadId, "forget_memory", { memoryId: second.id }, turnId);
+      expect(aikingBotToolPayload(stagedForget.result).status).toBe("staged");
       const secondRevision = selections.find((selection) => selection.memoryId === second.id)?.revision;
       if (secondRevision === undefined) throw new Error("The second selection is missing.");
       active.setMemoryInclusion({
         agentId: "chief",
         changes: [{ memoryId: second.id, inclusion: "searchable", expectedRevision: secondRevision }],
       });
-      const refusedForget = await callOpenBotTool(client, threadId, "forget_memory", { memoryId: second.id }, turnId);
+      const refusedForget = await callAIKINGBOTTool(client, threadId, "forget_memory", { memoryId: second.id }, turnId);
       expect(refusedForget.result).toMatchObject({ success: false });
       client.emit("notification", notification("turn/completed", { threadId, turn: { id: turnId, status } }));
       await waitFor(() => events.some((event) => event.type === "turn-completed"));
@@ -430,7 +442,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId,
         callId: "remember-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { text: "The user prefers concise status updates.", inclusion: "essential" },
       },
@@ -486,7 +498,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId,
         callId: "foreign-memory-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { memoryId: otherMemory.id, text: "Changed by another agent." },
       },
@@ -509,7 +521,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId,
         callId: "update-memory-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { memoryId: manual.id, text: "Use npm for scripts." },
       },
@@ -534,7 +546,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId: failedTurnId,
         callId: "failed-memory-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { text: "This must not persist." },
       },
@@ -558,7 +570,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId: interruptedTurnId,
         callId: "interrupted-memory-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { text: "This interrupted value must not persist." },
       },
@@ -582,7 +594,7 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
         threadId,
         turnId: clearedTurnId,
         callId: "cleared-memory-call",
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "remember",
         arguments: { text: "This staged value must not return after clear." },
       },
@@ -632,29 +644,29 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
     expect(JSON.stringify(startRequest?.params)).toContain(
       "You have 2 saved memories; 2 additional entries are available through search. The storage limit is 3.",
     );
-    const owner = await callOpenBotTool(client, threadId, "remember", { text: "Builder owns the rollback." }, turnId);
-    expect(openBotToolPayload(owner.result).status).toBe("staged");
+    const owner = await callAIKINGBOTTool(client, threadId, "remember", { text: "Builder owns the rollback." }, turnId);
+    expect(aikingBotToolPayload(owner.result).status).toBe("staged");
 
     // Repeated edits must release the old text in the projected count, as they do at commit.
-    await callOpenBotTool(
+    await callAIKINGBOTTool(
       client,
       threadId,
       "remember",
       { memoryId: kept.id, text: "Use Bun for all scripts." },
       turnId,
     );
-    await callOpenBotTool(
+    await callAIKINGBOTTool(
       client,
       threadId,
       "remember",
       { memoryId: kept.id, text: "Use Bun for project scripts." },
       turnId,
     );
-    const oldText = await callOpenBotTool(client, threadId, "remember", { text: "Use Bun for all scripts." }, turnId);
+    const oldText = await callAIKINGBOTTool(client, threadId, "remember", { text: "Use Bun for all scripts." }, turnId);
     expect(paramsRecord(oldText.result)?.success).toBe(false);
 
     // Another turn of the same agent, such as a channel turn, commits apart. Its memory counts too.
-    const otherTurn = await callOpenBotTool(
+    const otherTurn = await callAIKINGBOTTool(
       client,
       threadId,
       "remember",
@@ -663,16 +675,22 @@ describe.sequential("AgentMemories: staging, epochs and turn commitment", () => 
     );
     expect(paramsRecord(otherTurn.result)?.success).toBe(false);
     // Its forget can commit after this turn, or never, so it frees no place here.
-    await callOpenBotTool(client, threadId, "forget_memory", { memoryId: kept.id }, "channel-turn");
-    const refused = await callOpenBotTool(client, threadId, "remember", { text: "The release is on Monday." }, turnId);
+    await callAIKINGBOTTool(client, threadId, "forget_memory", { memoryId: kept.id }, "channel-turn");
+    const refused = await callAIKINGBOTTool(
+      client,
+      threadId,
+      "remember",
+      { text: "The release is on Monday." },
+      turnId,
+    );
     expect(paramsRecord(refused.result)?.success).toBe(false);
-    expect(openBotToolPayload(refused.result).error).toBe(
+    expect(aikingBotToolPayload(refused.result).error).toBe(
       "You have 3 of 3 memories. To make room, update one memory by memoryId with the combined text of two related memories, then forget the other one, or forget a memory that is no longer true. Then try again.",
     );
 
-    await callOpenBotTool(client, threadId, "forget_memory", { memoryId: stale.id }, turnId);
-    const staged = await callOpenBotTool(client, threadId, "remember", { text: "The release is on Monday." }, turnId);
-    expect(openBotToolPayload(staged.result).status).toBe("staged");
+    await callAIKINGBOTTool(client, threadId, "forget_memory", { memoryId: stale.id }, turnId);
+    const staged = await callAIKINGBOTTool(client, threadId, "remember", { text: "The release is on Monday." }, turnId);
+    expect(aikingBotToolPayload(staged.result).status).toBe("staged");
 
     client.emit(
       "notification",

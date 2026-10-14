@@ -1,5 +1,5 @@
-import type { AccountUsage, AvatarImageInput, CentralAuthState } from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+import type { AccountUsage, AvatarImageInput, CentralAuthState } from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
 import { createMemo, createSignal, createStore, flush, onCleanup, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { createSimpleContext } from "../../simple-context";

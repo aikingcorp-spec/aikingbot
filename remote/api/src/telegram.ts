@@ -1,4 +1,4 @@
-// The Bot API adapter. Only Signal has the bot tokens (`@openbot/contracts/signal-protocol/telegram-route`):
+// The Bot API adapter. Only Signal has the bot tokens (`@aikingbot/contracts/signal-protocol/telegram-route`):
 // a token goes only into the request URL here, and never into a frame, a log or an error message.
 // A host gets only the reduced result of a call (`TelegramCallResult`).
 
@@ -10,7 +10,7 @@ import {
   type TelegramCallParams,
   type TelegramCallResult,
   type TelegramUploadAnswer,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { Effect, Schema } from "effect";
 import { z } from "zod";
 import type { TelegramConfig } from "./config";
@@ -181,7 +181,9 @@ export class TelegramBotApi {
           allowed_updates: ALLOWED_UPDATES,
         });
         if (!answer.ok)
-          console.error(`OpenBot Remote API could not set the webhook of Telegram bot ${botId} (${answer.errorCode}).`);
+          console.error(
+            `AIKINGBOT Remote API could not set the webhook of Telegram bot ${botId} (${answer.errorCode}).`,
+          );
       }
     }),
   );

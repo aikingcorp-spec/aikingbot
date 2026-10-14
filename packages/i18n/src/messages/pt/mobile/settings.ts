@@ -16,7 +16,7 @@ export const messages = {
   "mobile.settings.about.privacy": "Política de privacidade",
   "mobile.settings.home.profile": "Perfil",
   "mobile.settings.home.preferences": "Preferências",
-  "mobile.settings.home.about": "Sobre o OpenBot",
+  "mobile.settings.home.about": "Sobre o AIKINGBOT",
   "mobile.settings.home.support": "Suporte",
   "mobile.settings.home.supportHint": "Obter ajuda e salvar um registro de suporte",
   "mobile.settings.support.help": "Obter ajuda",
@@ -31,7 +31,7 @@ export const messages = {
   "mobile.settings.support.clearTitle": "Limpar o registro de suporte?",
   "mobile.settings.support.clearBody": "Isso remove todos os eventos do registro neste celular.",
   "mobile.settings.support.logFooter":
-    "O registro fica neste celular e o OpenBot não o envia. Ele registra etapas de conexão, solicitações e erros. Ele não registra mensagens nem arquivos e oculta senhas e tokens. Leia o arquivo antes de compartilhá-lo.",
+    "O registro fica neste celular e o AIKINGBOT não o envia. Ele registra etapas de conexão, solicitações e erros. Ele não registra mensagens nem arquivos e oculta senhas e tokens. Leia o arquivo antes de compartilhá-lo.",
   "mobile.settings.support.saveFailed": "Não foi possível salvar o arquivo de registro. Tente novamente.",
   "mobile.settings.support.sharingUnavailable": "O compartilhamento não está disponível neste celular.",
   "mobile.settings.support.recent": "Eventos recentes",
@@ -91,28 +91,28 @@ export const messages = {
   "mobile.settings.feedback.retry": "Tentar salvar a configuração de resposta tátil novamente",
   "mobile.settings.liveActivities.title": "Atividades ao Vivo",
   "mobile.settings.liveActivities.footer":
-    "Mostra o trabalho dos agentes, mensagens, perguntas e aprovações na Tela Bloqueada e na Dynamic Island enquanto o OpenBot está em execução.",
+    "Mostra o trabalho dos agentes, mensagens, perguntas e aprovações na Tela Bloqueada e na Dynamic Island enquanto o AIKINGBOT está em execução.",
   "mobile.settings.liveActivities.toggle": "Mostrar atividade dos agentes",
   "mobile.settings.liveActivities.retry": "Tentar salvar a configuração de Atividades ao Vivo novamente",
   "mobile.settings.notifications.title": "Notificações",
   "mobile.settings.notifications.toggle": "Permitir notificações",
   "mobile.settings.notifications.footer":
-    "Os agentes avisam quando terminam, param com um erro ou precisam da sua resposta, de uma aprovação ou de uma etapa no navegador. Nada chega enquanto você usa o OpenBot. Enquanto você usa o app para computador, só chega o que precisa de você. Enquanto a Atividade ao Vivo aparece, ela mostra o evento no lugar.",
-  "mobile.settings.notifications.denied": "As notificações do OpenBot estão desativadas nos Ajustes do iOS.",
+    "Os agentes avisam quando terminam, param com um erro ou precisam da sua resposta, de uma aprovação ou de uma etapa no navegador. Nada chega enquanto você usa o AIKINGBOT. Enquanto você usa o app para computador, só chega o que precisa de você. Enquanto a Atividade ao Vivo aparece, ela mostra o evento no lugar.",
+  "mobile.settings.notifications.denied": "As notificações do AIKINGBOT estão desativadas nos Ajustes do iOS.",
   "mobile.settings.notifications.openSettings": "Abrir Ajustes do iOS",
   "mobile.settings.notifications.preview": "Mostrar prévia da resposta",
   "mobile.settings.notifications.previewFooter":
-    "Mostra o início de uma resposta, uma pergunta ou a ação a aprovar. A Apple e o serviço de contas do OpenBot não conseguem ler.",
+    "Mostra o início de uma resposta, uma pergunta ou a ação a aprovar. A Apple e o serviço de contas do AIKINGBOT não conseguem ler.",
   "mobile.settings.notifications.sound": "Som",
   "mobile.settings.notifications.playSound": "Tocar som",
-  "mobile.settings.notifications.sound.openbot": "OpenBot",
+  "mobile.settings.notifications.sound.aikingbot": "AIKINGBOT",
   "mobile.settings.notifications.sound.warm": "Acolhedor",
   "mobile.settings.notifications.sound.mech": "Mecânico",
   "mobile.settings.notifications.sound.bubble": "Borbulhante",
   "mobile.settings.notifications.sound.press": "Teclado",
   "mobile.settings.notifications.sound.default": "Padrão do iOS",
   "mobile.settings.notifications.soundFooter":
-    "As notificações e a Atividade ao Vivo tocam este som. A Atividade ao Vivo também acende a tela. O som do OpenBot é o som que o app para computador toca quando uma tarefa termina. Os quatro sons seguintes são os dos temas de som do app para computador.",
+    "As notificações e a Atividade ao Vivo tocam este som. A Atividade ao Vivo também acende a tela. O som do AIKINGBOT é o som que o app para computador toca quando uma tarefa termina. Os quatro sons seguintes são os dos temas de som do app para computador.",
   "mobile.settings.notifications.notifyAbout": "Notificar sobre",
   "mobile.settings.notifications.level.all": "Toda atividade",
   "mobile.settings.notifications.level.needsMe": "Só quando precisar de mim",
@@ -129,7 +129,7 @@ export const messages = {
   "mobile.settings.notifications.serverFooter":
     "Os eventos deste servidor que notificam este telefone. O app para computador tem os próprios ajustes.",
   "mobile.settings.notifications.serverUnsupported":
-    "Este servidor não pode enviar notificações. Atualize o OpenBot no computador que o executa.",
+    "Este servidor não pode enviar notificações. Atualize o AIKINGBOT no computador que o executa.",
   "mobile.settings.privacy.title": "Privacidade",
   "mobile.settings.privacy.footer":
     "Compartilhe o uso de recursos e os resultados de conexão deste celular. O conteúdo das mensagens e os arquivos não são enviados.",
@@ -152,6 +152,6 @@ export const messages = {
   "mobile.settings.profile.security": "Segurança",
   "mobile.settings.profile.accountSessions": "Sessões da conta",
   "mobile.settings.profile.signOutTitle": "Sair?",
-  "mobile.settings.profile.signOutBody": "Reconecte-se lendo um novo código do OpenBot no computador.",
+  "mobile.settings.profile.signOutBody": "Reconecte-se lendo um novo código do AIKINGBOT no computador.",
   "mobile.settings.profile.signOut": "Sair",
 } as const satisfies PartialTranslation<typeof source>;

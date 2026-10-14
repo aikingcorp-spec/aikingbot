@@ -1,4 +1,4 @@
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { type BitwardenCliRunner, BitwardenConnectorService, runBitwardenCli } from "./bitwarden-connector-service";
@@ -30,7 +30,7 @@ afterEach(async () => {
   vi.unstubAllEnvs();
 });
 function fixture() {
-  const data = { item: login(), folders: [{ id: "shared", name: "Shared with OpenBot" }] };
+  const data = { item: login(), folders: [{ id: "shared", name: "Shared with AIKINGBOT" }] };
   const run = vi.fn<BitwardenCliRunner>(async (_path, args) => {
     if (args[0] === "sync") return "Sync complete.";
     if (args[1] === "folders") return JSON.stringify(data.folders);
@@ -96,8 +96,8 @@ describe("Bitwarden browser credentials", () => {
     await expect(runCauseEffect(service.connect(KEY))).rejects.toThrow("Could not read Bitwarden");
     expect(service.connected()).toBe(false);
     data.folders = [
-      { id: "a", name: "Shared with OpenBot" },
-      { id: "b", name: "Shared with OpenBot" },
+      { id: "a", name: "Shared with AIKINGBOT" },
+      { id: "b", name: "Shared with AIKINGBOT" },
     ];
     await expect(runCauseEffect(service.connect(KEY))).rejects.toThrow("Could not read Bitwarden");
     expect(service.connected()).toBe(false);
@@ -188,7 +188,7 @@ describe("Bitwarden browser credentials", () => {
   });
 
   it("passes the key only in the clean child environment and hides child stderr", async () => {
-    vi.stubEnv("NODE_OPTIONS", "--invalid-openbot-fixture-option");
+    vi.stubEnv("NODE_OPTIONS", "--invalid-aikingbot-fixture-option");
     vi.stubEnv("OPENAI_API_KEY", "must-not-reach-child");
     const signal = new AbortController().signal;
     const output = await runBitwardenCli(

@@ -1,15 +1,15 @@
 import type { RemoteFailure } from "./remote-control-plane";
-// The OpenBot Discord app's OAuth install. One bot serves every Discord server (guild): a member who
-// can manage the server adds it once, and the server is linked to one OpenBot host, which answers all
+// The AIKINGBOT Discord app's OAuth install. One bot serves every Discord server (guild): a member who
+// can manage the server adds it once, and the server is linked to one AIKINGBOT host, which answers all
 // of its messages. The Worker exchanges the code because the client secret lives here, and records
 // only which host answers the server. The bot token stays in Signal: this Worker does not get it, and
 // it revokes the user token that the exchange gives. The sealed grant goes back to the desktop in the
 // URL fragment of `/discord/connect`.
 
-import { DISCORD_BOT_PERMISSIONS } from "@openbot/contracts/discord-app";
-import { sealDiscordGuildGrant } from "@openbot/contracts/discord-guild-grant";
-import { isRawP256PublicKey } from "@openbot/contracts/host-grant";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { DISCORD_BOT_PERMISSIONS } from "@aikingbot/contracts/discord-app";
+import { sealDiscordGuildGrant } from "@aikingbot/contracts/discord-guild-grant";
+import { isRawP256PublicKey } from "@aikingbot/contracts/host-grant";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import { hmacSha256 } from "./crypto";
 import { authEventStatement } from "./remote-control-plane";
@@ -78,7 +78,7 @@ export class DiscordAppService {
     const clientSecret = bindings.DISCORD_CLIENT_SECRET?.trim();
     const stateSecret = bindings.DISCORD_STATE_SECRET?.trim();
     if (!clientId || !clientSecret || !stateSecret || new TextEncoder().encode(stateSecret).byteLength < 32) {
-      throw new DiscordAppError(503, "discord_not_configured", "The OpenBot Discord app is not configured.");
+      throw new DiscordAppError(503, "discord_not_configured", "The AIKINGBOT Discord app is not configured.");
     }
     this.#database = bindings.DB;
     this.#clientId = clientId;
@@ -159,7 +159,7 @@ export class DiscordAppService {
       }),
     );
     const body = yield* discordCall(() => response.json().catch(() => null));
-    // OpenBot does not use the user token. Revoke it at once; a failure does not stop the connect.
+    // AIKINGBOT does not use the user token. Revoke it at once; a failure does not stop the connect.
     if (isDynamicRecord(body) && isString(body.access_token)) yield* this.#revoke(body.access_token);
     if (!response.ok) {
       return yield* new DiscordAppError(502, "discord_exchange_failed", "Discord did not accept the install.");
@@ -197,7 +197,7 @@ export class DiscordAppService {
       return yield* new DiscordAppError(
         409,
         "discord_guild_taken",
-        "Another OpenBot server answers this Discord server. Disconnect it there first.",
+        "Another AIKINGBOT server answers this Discord server. Disconnect it there first.",
       );
     }
     return {

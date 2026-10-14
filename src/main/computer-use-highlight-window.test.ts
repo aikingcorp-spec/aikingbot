@@ -303,12 +303,12 @@ const window = (over: Partial<WindowPayload>): WindowPayload => ({
 });
 
 describe("frontmostTarget", () => {
-  it("takes the front window and leaves out OpenBot's own and the driver's overlay", () => {
+  it("takes the front window and leaves out AIKINGBOT's own and the driver's overlay", () => {
     // The driver counts back to front, so the largest z index is the window in front.
     const payload = {
       windows: [
         window({ window_id: 1, z_index: 5 }),
-        window({ window_id: 2, z_index: 1, pid: 99, app_name: "OpenBot" }),
+        window({ window_id: 2, z_index: 1, pid: 99, app_name: "AIKINGBOT" }),
         window({ window_id: 3, z_index: 2, app_name: "cua-driver", title: "" }),
         window({ window_id: 4, z_index: 9, app_name: "Terminal", title: "zsh" }),
       ],
@@ -408,7 +408,7 @@ describe("liveSession", () => {
     expect(liveSession("No live sessions.")).toBeNull();
   });
 
-  it("does not count OpenBot's own read, which takes a lease of its own", () => {
+  it("does not count AIKINGBOT's own read, which takes a lease of its own", () => {
     // The name is what the daemon keeps: it reports every client of its socket as `direct`, so a
     // rim that went by the kind alone would read its own read as an agent and stay up for ever.
     expect(

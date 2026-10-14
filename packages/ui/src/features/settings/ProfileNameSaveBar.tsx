@@ -1,4 +1,4 @@
-import { Button, Text } from "@openbot/ui";
+import { Button, Text } from "@aikingbot/ui";
 import { useText } from "../../text";
 import { SaveBarDock } from "./SettingsDialogShell";
 import type { SettingsProfileStore } from "./stores/profile-store";

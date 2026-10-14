@@ -1,1 +1,1 @@
-export const preload = globalThis["openbot"]; // flag
+export const preload = globalThis["aikingbot"]; // flag

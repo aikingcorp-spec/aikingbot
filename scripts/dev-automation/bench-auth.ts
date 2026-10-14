@@ -1,6 +1,6 @@
 // The app shows the workspace only to a signed-in account, and the account
 // service is the Auth API. A bench against a missing API measures the
-// "Connecting to OpenBot" screen, so `dev:bench` signs its profile in to the
+// "Connecting to AIKINGBOT" screen, so `dev:bench` signs its profile in to the
 // local development API: this worktree's running `dev:api`, or one the bench
 // starts and stops itself.
 //
@@ -12,7 +12,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { Logger } from "@openbot/logging";
+import type { Logger } from "@aikingbot/logging";
 import type { Page } from "playwright-core";
 import { withoutElectronRuntimeFlags } from "../electron-spawn-env";
 import { isSameWorktree, readDevStackRecords } from "./stack-registry";
@@ -20,7 +20,7 @@ import { isSameWorktree, readDevStackRecords } from "./stack-registry";
 const API_READY_TIMEOUT_MS = 180_000;
 const API_STOP_TIMEOUT_MS = 20_000;
 // A reserved domain: nothing is ever delivered to it.
-export const BENCH_ACCOUNT_EMAIL = "openbot-bench@example.com";
+export const BENCH_ACCOUNT_EMAIL = "aikingbot-bench@example.com";
 
 export interface BenchAuthApi {
   url: string;
@@ -119,7 +119,7 @@ interface SignInResult {
 
 // Runs in the app window, through the same preload API as the sign-in screen.
 const SIGN_IN_EXPRESSION = `(async () => {
-  const auth = window.openbot.auth;
+  const auth = window.aikingbot.auth;
   const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   let state = await auth.getState();
   for (let tries = 0; tries < 240 && (state.status === "loading" || state.status === "signing_in"); tries += 1) {

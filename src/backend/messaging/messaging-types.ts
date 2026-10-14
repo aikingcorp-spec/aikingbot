@@ -1,20 +1,20 @@
 // The seam between the platform-agnostic messaging core and one chat platform. A platform is one
-// `MessagingDriver`: an adapter for its API and a transport for its inbound events. The OpenBot
+// `MessagingDriver`: an adapter for its API and a transport for its inbound events. The AIKINGBOT
 // Slack app uses the Events API: Slack posts to Signal, Signal checks Slack's signature, and passes
 // each request of a workspace linked to this host over the `MessagingIngress` socket, which the host
-// opens. The OpenBot Discord app's Gateway connection is in Signal, which holds the bot token: Signal
-// passes each guild's events over the same socket and makes the host's Discord calls. The OpenBot
+// opens. The AIKINGBOT Discord app's Gateway connection is in Signal, which holds the bot token: Signal
+// passes each guild's events over the same socket and makes the host's Discord calls. The AIKINGBOT
 // Telegram bot works the same way: Telegram posts each update to Signal, which passes it over the same
 // socket, and the host calls the Bot API through Signal, which holds the bot token. No transport needs
 // a public endpoint on the host.
 
-import type { MessagingConnectionState, MessagingPlatform } from "@openbot/contracts/ipc";
-import type { DiscordApiRequest, DiscordDelivery } from "@openbot/contracts/signal-protocol/discord-api";
+import type { MessagingConnectionState, MessagingPlatform } from "@aikingbot/contracts/ipc";
+import type { DiscordApiRequest, DiscordDelivery } from "@aikingbot/contracts/signal-protocol/discord-api";
 import type {
   TelegramCallMethod,
   TelegramCallParams,
   TelegramCallResult,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { type Effect, Schema } from "effect";
 import type { MessagingOperationFailed } from "./messaging-service";
 import type { MessagingAnswerFile } from "./messaging-threads";
@@ -25,7 +25,7 @@ export interface MessageTarget {
   replyThreadId: string | null;
 }
 
-/** A channel, thread or chat that OpenBot can post in, for the agent's `messaging_list_places` tool. */
+/** A channel, thread or chat that AIKINGBOT can post in, for the agent's `messaging_list_places` tool. */
 export interface MessagingPlace {
   id: string;
   name: string;
@@ -40,7 +40,7 @@ export interface InboundFile {
   url: string;
 }
 
-/** One message that addresses OpenBot, in the same shape for every platform. */
+/** One message that addresses AIKINGBOT, in the same shape for every platform. */
 export interface InboundMessage {
   /** Stable for one message across redeliveries. */
   dedupKey: string;
@@ -50,12 +50,12 @@ export interface InboundMessage {
   target: MessageTarget;
   platformMessageId: string;
   isDirect: boolean;
-  /** True for a reply that does not name OpenBot: it counts only in a conversation that already has an agent. */
+  /** True for a reply that does not name AIKINGBOT: it counts only in a conversation that already has an agent. */
   requiresLink: boolean;
   authorId: string;
   /** Text with each user mention as `@<user id>`; `mentionedUserIds` lists those ids. */
   text: string;
-  /** The users the text mentions, without OpenBot, so the service can name them. */
+  /** The users the text mentions, without AIKINGBOT, so the service can name them. */
   mentionedUserIds: string[];
   files: InboundFile[];
 }
@@ -164,10 +164,10 @@ export interface MessagingAdapter {
   download(file: InboundFile, destination: string, maxBytes: number): Effect.Effect<void, MessagingAdapterError>;
   authorName(userId: string): Effect.Effect<string, MessagingAdapterError>;
   placeName(platformChannelId: string): Effect.Effect<string, MessagingAdapterError>;
-  /** The places of this connection that OpenBot can post in now. */
+  /** The places of this connection that AIKINGBOT can post in now. */
   places(): Effect.Effect<MessagingPlace[], MessagingAdapterError>;
   mention(userId: string): string;
-  /** Joins every public place the platform lets OpenBot join without an invitation. */
+  /** Joins every public place the platform lets AIKINGBOT join without an invitation. */
   joinPublicPlaces?(): Effect.Effect<void, MessagingAdapterError>;
   /** Joins one public place, such as a channel that was just created. */
   joinPlace?(platformChannelId: string): Effect.Effect<void, MessagingAdapterError>;
@@ -177,7 +177,7 @@ export interface TransportSink {
   state(state: MessagingConnectionState, detail?: { retryAt?: string }): void;
   message(message: InboundMessage): void;
   action(action: InboundAction): void;
-  /** A public place was created that OpenBot can join. */
+  /** A public place was created that AIKINGBOT can join. */
   placeCreated?(platformChannelId: string): void;
   /** The workspace, such as a Telegram chat, has a new name. */
   renamed?(workspaceName: string): void;
@@ -229,7 +229,7 @@ export type IngressHandler = (
 ) => Effect.Effect<IngressAnswer, MessagingOperationFailed>;
 
 /**
- * The Bot API of the OpenBot Telegram bot, through Signal, which holds the token. Signal accepts a
+ * The Bot API of the AIKINGBOT Telegram bot, through Signal, which holds the token. Signal accepts a
  * call only for a chat routed to this host.
  */
 export interface TelegramGateway {

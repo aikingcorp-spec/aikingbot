@@ -1,6 +1,6 @@
 "use dom";
 
-import { CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl, sizedMermaidSvg } from "@openbot/contracts/chat-preview";
+import { CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl, sizedMermaidSvg } from "@aikingbot/contracts/chat-preview";
 import mermaid from "mermaid";
 import { useEffect, useRef } from "react";
 import type { MermaidJob, MermaidResult } from "../model/mermaid-diagrams";
@@ -58,7 +58,7 @@ async function draw(job: MermaidJob): Promise<MermaidResult> {
       htmlLabels: false,
       suppressErrorRendering: true,
     });
-    const { svg } = await mermaid.render(`openbot-mermaid-${job.id}`, job.source);
+    const { svg } = await mermaid.render(`aikingbot-mermaid-${job.id}`, job.source);
     const sized = sizedMermaidSvg(svg);
     const width = Number(/<svg\b[^>]*\bwidth="([\d.]+)"/u.exec(sized)?.[1] ?? 0);
     const height = Number(/<svg\b[^>]*\bheight="([\d.]+)"/u.exec(sized)?.[1] ?? 0);

@@ -10,8 +10,8 @@ import {
   decodeDiscordHistory,
   decodeDiscordMessageId,
   decodeDiscordName,
-} from "@openbot/contracts/signal-protocol/discord-api";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/signal-protocol/discord-api";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Result } from "effect";
 import { causeHelpers } from "../../effect-boundary";
 import { chunkMarkdown } from "../messaging-chunks";
@@ -88,7 +88,7 @@ class DiscordAdapter implements MessagingAdapter {
 
   /**
    * The guild that the account service linked to this host. Signal checks each call against the
-   * link, and tells this host when OpenBot leaves the guild, so this asks Discord nothing.
+   * link, and tells this host when AIKINGBOT leaves the guild, so this asks Discord nothing.
    */
   identify(): Effect.Effect<ConnectionIdentity, MessagingAdapterError> {
     return Effect.succeed({
@@ -232,9 +232,9 @@ class DiscordAdapter implements MessagingAdapter {
   /**
    * The messages of the reply chain that `threadKey` starts, after `afterId` and before `beforeId`.
    * Discord has no thread of replies, so this reads the channel from the first message on and keeps
-   * the first message, the replies to it and the replies to OpenBot's posts, which all reply to it.
+   * the first message, the replies to it and the replies to AIKINGBOT's posts, which all reply to it.
    * Without the Message Content intent, Discord gives the text only of a message that mentions
-   * OpenBot, so a message without text is left out.
+   * AIKINGBOT, so a message without text is left out.
    */
   readonly history = Effect.fnUntraced(function* (
     this: DiscordAdapter,
@@ -254,7 +254,7 @@ class DiscordAdapter implements MessagingAdapter {
   });
 
   /**
-   * The newest messages of a reply chain or of the channel, OpenBot's posts included, for the agent's
+   * The newest messages of a reply chain or of the channel, AIKINGBOT's posts included, for the agent's
    * history tool. Discord lists a channel only forward from an id, so the channel is read from a
    * time: the last hour first, and a longer time when that has too few messages. A message without
    * text is left out, as in `history`.
@@ -299,7 +299,7 @@ class DiscordAdapter implements MessagingAdapter {
   /**
    * The messages of the reply chain that `threadKey` starts, before `before`, oldest first. Discord
    * has no thread of replies, so this reads the channel from the first message on and keeps the first
-   * message, the replies to it, OpenBot's posts that reply to it, and the replies to those posts.
+   * message, the replies to it, AIKINGBOT's posts that reply to it, and the replies to those posts.
    */
   readonly #chain = Effect.fnUntraced(function* (
     this: DiscordAdapter,
@@ -440,7 +440,7 @@ class DiscordAdapter implements MessagingAdapter {
   }
 }
 
-/** Each guild installed the OpenBot app. Its events come through the ingress relay, and its calls go through Signal. */
+/** Each guild installed the AIKINGBOT app. Its events come through the ingress relay, and its calls go through Signal. */
 export function discordDriver(options: { ingress?: MessagingIngress } = {}): MessagingDriver {
   return {
     platform: "discord",
@@ -479,7 +479,7 @@ function compareSnowflakes(left: string, right: string): number {
   return difference < 0n ? -1 : difference > 0n ? 1 : 0;
 }
 
-/** The answer of a call that returns nothing OpenBot reads. */
+/** The answer of a call that returns nothing AIKINGBOT reads. */
 function ignoreAnswer(): void {}
 
 function trustedCdnUrl(value: string): boolean {

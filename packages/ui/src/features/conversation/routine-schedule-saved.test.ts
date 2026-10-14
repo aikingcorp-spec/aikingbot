@@ -1,4 +1,4 @@
-import { isRoutineSchedule, type RoutineSchedule } from "@openbot/contracts/ipc";
+import { isRoutineSchedule, type RoutineSchedule } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   type RoutineScheduleDraft,

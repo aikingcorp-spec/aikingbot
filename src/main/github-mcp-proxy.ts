@@ -6,6 +6,8 @@ import { GitHubOperationError, githubCall, toGitHubOperationError } from "./gith
 
 import { timingSafeEqual } from "node:crypto";
 import { createServer, type Server as HttpServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport, StreamableHTTPError } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -20,12 +22,10 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { readJsonBody } from "../backend/local-mcp-bridge";
 
-const logger = createOpenBotLogger("github-mcp-proxy");
+const logger = createAIKINGBOTLogger("github-mcp-proxy");
 
 /** A GitHub call rarely takes long. The limit only stops a call that GitHub never answers. */
 const UPSTREAM_TIMEOUT_MS = 5 * 60_000;
@@ -276,7 +276,7 @@ export class GitHubMcpProxy {
   ): Effect.fn.Return<Client, GitHubOperationError> {
     let upstream = this.#upstreams.get(token);
     if (!upstream) {
-      const client = new Client({ name: "openbot-github-proxy", version: "1.0.0" }, { capabilities: {} });
+      const client = new Client({ name: "aikingbot-github-proxy", version: "1.0.0" }, { capabilities: {} });
       const transport = new StreamableHTTPClientTransport(new URL(this.#options.upstreamUrl), {
         requestInit: { headers: { Authorization: `Bearer ${token}` } },
       });

@@ -12,9 +12,9 @@ import type {
   MessagingPlatform,
   MessagingWorkspaceInput,
   SetMessagingEnabledInput,
-} from "@openbot/contracts/ipc";
-import { isAgentModel, isAgentProvider, isReasoningEffort, MESSAGING_PLATFORMS } from "@openbot/contracts/ipc";
-import { isBoolean, isOneOf } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc";
+import { isAgentModel, isAgentProvider, isReasoningEffort, MESSAGING_PLATFORMS } from "@aikingbot/contracts/ipc";
+import { isBoolean, isOneOf } from "@aikingbot/contracts/runtime-values";
 import { isObject, requireString } from "./validation";
 
 export function parseMessagingWorkspaceInput(value: unknown): MessagingWorkspaceInput {

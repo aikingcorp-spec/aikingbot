@@ -1,4 +1,4 @@
-import { createInviteUrl, PERMANENT_INVITE_EXPIRES_AT_MS } from "@openbot/contracts/invite-links";
+import { createInviteUrl, PERMANENT_INVITE_EXPIRES_AT_MS } from "@aikingbot/contracts/invite-links";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runTeamEffect } from "./effect-boundary";
@@ -10,7 +10,7 @@ import {
   watchRemoteDirectory,
 } from "./remote-directory";
 
-const API_URL = "https://api.openbot.run";
+const API_URL = "https://api.aikingbot.aikingx.com";
 const HOST_ID = "11111111-1111-4111-8111-111111111111";
 const HOST_KEY = "desktop-public-key";
 const HOST_FINGERPRINT = "AqBeU6SSjNMMzQkof9ad85KzSTI7kiNWQtfzR-sbXsU";
@@ -34,44 +34,44 @@ describe("RemoteTeamDirectoryClient", () => {
   it("uses same-origin browser cookies and CSRF headers without a bearer token", async () => {
     const fetch = vi.fn().mockResolvedValue(Response.json({ hosts: [] }));
     const client = new RemoteTeamDirectoryClient({
-      apiUrl: "https://openbot.run",
+      apiUrl: "https://aikingbot.aikingx.com",
       authentication: { kind: "browser" },
       fetch,
     });
     await runTeamEffect(client.listHosts());
     expect(fetch).toHaveBeenLastCalledWith(
-      new URL("https://openbot.run/api/browser/v2/remote/hosts/"),
+      new URL("https://aikingbot.aikingx.com/api/browser/v2/remote/hosts/"),
       expect.objectContaining({
         credentials: "same-origin",
-        headers: { "X-OpenBot-Browser": "1", "Content-Type": "application/json" },
+        headers: { "X-AIKINGBOT-Browser": "1", "Content-Type": "application/json" },
       }),
     );
     fetch.mockResolvedValue(Response.json({ ended: true }));
     await runTeamEffect(client.endSession("session"));
     expect(fetch).toHaveBeenLastCalledWith(
-      new URL("https://openbot.run/api/browser/v2/remote/sessions/session/end"),
+      new URL("https://aikingbot.aikingx.com/api/browser/v2/remote/sessions/session/end"),
       expect.objectContaining({ method: "POST", body: "{}" }),
     );
   });
   it("accepts production account invitations on the public web origin without sending credentials to the API origin", async () => {
     const fetch = vi.fn().mockResolvedValue(Response.json(PREVIEW));
     const client = new RemoteTeamDirectoryClient({
-      apiUrl: "https://openbot.run",
+      apiUrl: "https://aikingbot.aikingx.com",
       authentication: { kind: "browser" },
       fetch,
     });
     await expect(runTeamEffect(client.previewInvite(INVITE))).resolves.toMatchObject({ hostId: HOST_ID });
     expect(fetch).toHaveBeenCalledWith(
-      new URL("https://openbot.run/api/browser/v2/remote/invites/preview"),
+      new URL("https://aikingbot.aikingx.com/api/browser/v2/remote/invites/preview"),
       expect.objectContaining({ credentials: "same-origin" }),
     );
     const foreign = createInviteUrl({
-      apiUrl: "https://studio-mac-k7m4q2pz-host.openbot.run/",
+      apiUrl: "https://studio-mac-k7m4q2pz-host.aikingbot.aikingx.com/",
       serverId: HOST_ID,
       fingerprint: HOST_FINGERPRINT,
       token: "t".repeat(32),
     });
-    await expect(runTeamEffect(client.previewInvite(foreign))).rejects.toThrow("another OpenBot service");
+    await expect(runTeamEffect(client.previewInvite(foreign))).rejects.toThrow("another AIKINGBOT service");
     expect(fetch).toHaveBeenCalledOnce();
   });
   it("removes a revoked paired desktop while keeping the other memberships available", async () => {
@@ -210,7 +210,7 @@ describe("RemoteTeamDirectoryClient", () => {
       },
     ]);
     expect(requests).toEqual([
-      { authorization: "Bearer mobile-session", url: "https://api.openbot.run/v2/remote/hosts/" },
+      { authorization: "Bearer mobile-session", url: "https://api.aikingbot.aikingx.com/v2/remote/hosts/" },
     ]);
   });
 
@@ -414,7 +414,7 @@ describe("RemoteTeamDirectoryClient", () => {
       devicePublicKey: HOST_KEY,
     });
     await expect(runTeamEffect(client.listHosts())).rejects.toThrow(
-      "OpenBot could not reach the OpenBot service. Check your connection.",
+      "AIKINGBOT could not reach the AIKINGBOT service. Check your connection.",
     );
     directoryOffline = false;
     await expect(runTeamEffect(client.listHosts())).resolves.toMatchObject([{ devicePublicKey: HOST_KEY }]);

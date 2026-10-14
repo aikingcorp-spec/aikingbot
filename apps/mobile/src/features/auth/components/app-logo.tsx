@@ -27,8 +27,8 @@ function resolveColor(value: string | number | undefined, fallback: string): str
 
 export function AppLogo({ animation = "none", interactive = false, size = VIEWBOX_SIZE }: AppLogoProps) {
   const { t } = useText();
-  const backgroundColor = resolveColor(useCSSVariable("--openbot-logo-production"), "#d6adf2");
-  const eyeColor = resolveColor(useCSSVariable("--openbot-logo-eye"), "#040007");
+  const backgroundColor = resolveColor(useCSSVariable("--aikingbot-logo-production"), "#d6adf2");
+  const eyeColor = resolveColor(useCSSVariable("--aikingbot-logo-eye"), "#040007");
   const { handlePressIn, leftEyeAnimatedStyle, rightEyeAnimatedStyle } = useAppLogoMotion({ animation, size });
   const eyeLayerStyle = {
     height: size,

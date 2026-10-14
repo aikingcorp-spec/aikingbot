@@ -3,7 +3,7 @@ import type { RemoteWorkflowError } from "./remote-service-effects";
 
 // Remote attachments that this computer already downloaded, held in memory for a short time.
 //
-// A chat image reaches the renderer through `openbot-remote-attachment`, which answers `no-store`,
+// A chat image reaches the renderer through `aikingbot-remote-attachment`, which answers `no-store`,
 // so each render downloaded the file from the host again. An attachment id names bytes that do not
 // change, so a copy is safe to use again. The copy stays in memory only, within a byte budget and a
 // time limit: the host can delete a file, and a removed server must not leave its files behind.

@@ -1,20 +1,20 @@
 // @vitest-environment node
 
-// End to end on the host half of the OpenBot Slack app: the real `SignalIngress` socket, the messaging
+// End to end on the host half of the AIKINGBOT Slack app: the real `SignalIngress` socket, the messaging
 // core with its Events API transport, and `AgentService` with its SQLite database. Signal and Slack
 // are local fakes: Signal is a WebSocket server that speaks the `ingress` frames, and Slack is one
 // HTTP server. Signal's own route, with the signature check, is tested in
 // `remote/api/test/app.test.ts`, and the Worker's install in `apps/auth-api/test/slack-app.test.ts`.
 // Only the provider is faked, as in every agent service test. Writes
-// .openbot-build/slack-workspace-e2e/report.json.
+// .aikingbot-build/slack-workspace-e2e/report.json.
 
 import { randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { join, resolve } from "node:path";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { SLACK_BOT_SCOPES } from "@openbot/contracts/slack-app";
-import { sealSlackWorkspaceGrant } from "@openbot/contracts/slack-workspace-grant";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { SLACK_BOT_SCOPES } from "@aikingbot/contracts/slack-app";
+import { sealSlackWorkspaceGrant } from "@aikingbot/contracts/slack-workspace-grant";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { type WebSocket, WebSocketServer } from "ws";
@@ -30,8 +30,8 @@ import { type MessagingCredentials, MessagingService } from "../backend/messagin
 import { slackDriver } from "../backend/messaging/slack/slack-driver";
 import { SignalIngress } from "./signal-ingress";
 
-const REPORT_DIR = resolve(import.meta.dirname, "../../.openbot-build/slack-workspace-e2e");
-const BOT_TOKEN = "xoxb-9999-8888-openbotbottoken";
+const REPORT_DIR = resolve(import.meta.dirname, "../../.aikingbot-build/slack-workspace-e2e");
+const BOT_TOKEN = "xoxb-9999-8888-aikingbotbottoken";
 
 interface Answer {
   status: number;
@@ -104,7 +104,7 @@ class FakeSignal {
   }
 }
 
-/** Slack's Web API for the bot of the OpenBot app in one workspace. */
+/** Slack's Web API for the bot of the AIKINGBOT app in one workspace. */
 class FakeSlack {
   readonly calls: Array<{ method: string; token: string | undefined; params: Record<string, string> }> = [];
   #server: Server | null = null;
@@ -137,7 +137,7 @@ class FakeSlack {
           return reply({ user: { name: "alice", profile: { display_name: "Alice" } } });
         case "conversations.info":
           return reply({ channel: { name: "general" } });
-        // Two pages of public channels; OpenBot is already in C2.
+        // Two pages of public channels; AIKINGBOT is already in C2.
         case "conversations.list":
           return params.cursor
             ? reply({ channels: [{ id: "C3", is_member: false }], response_metadata: { next_cursor: "" } })
@@ -233,7 +233,7 @@ afterEach(async () => {
   service = null;
 });
 
-describe.sequential("OpenBot Slack app end to end", () => {
+describe.sequential("AIKINGBOT Slack app end to end", () => {
   it("connects a workspace, receives its events through Signal, and disconnects it", async () => {
     const started = await startService(root, { provider: "codex", autoComplete: true });
     service = started.service;
@@ -270,7 +270,7 @@ describe.sequential("OpenBot Slack app end to end", () => {
         authorize: (input) =>
           Effect.sync(() => {
             authorizations.push(input);
-            return "https://slack.com/oauth/v2/authorize?client_id=openbot";
+            return "https://slack.com/oauth/v2/authorize?client_id=aikingbot";
           }),
         unlink: (workspaceId) =>
           Effect.sync(() => {
@@ -317,7 +317,7 @@ describe.sequential("OpenBot Slack app end to end", () => {
     const [link] = started.service.messaging.store.links(orchestratorId);
     if (!link) throw new Error("The mention has no conversation.");
 
-    // OpenBot is in every public channel without an invitation, and in each new one.
+    // AIKINGBOT is in every public channel without an invitation, and in each new one.
     const joined = () => slack.of("conversations.join").map((call) => call.params.channel);
     await waitFor(() => joined().includes("C3"));
     expect(joined()).toEqual(expect.arrayContaining(["C1", "C3"]));
@@ -327,7 +327,7 @@ describe.sequential("OpenBot Slack app end to end", () => {
     ).toEqual({ status: 200 });
     await waitFor(() => joined().includes("C4"));
 
-    // Slack uninstalled OpenBot: the connection stops, and Signal stops routing the workspace here.
+    // Slack uninstalled AIKINGBOT: the connection stops, and Signal stops routing the workspace here.
     expect(await signal.deliver("T1", { event_id: "Ev3", event: { type: "app_uninstalled" } })).toEqual({
       status: 200,
     });

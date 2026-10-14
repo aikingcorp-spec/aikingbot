@@ -1,18 +1,18 @@
-import type { BillingInterval } from "@openbot/contracts/billing";
-import type { HostedServerList, HostedServerSummary } from "@openbot/contracts/hosted-servers";
-import type { HostedServersDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
+import type { BillingInterval } from "@aikingbot/contracts/billing";
+import type { HostedServerList, HostedServerSummary } from "@aikingbot/contracts/hosted-servers";
+import type { HostedServersDesktopApi, ServerSummary } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
 import type {
   CreatedHostedServer,
   CreateHostedServerInput,
   HostedServerSetupStatus,
-} from "@openbot/ui/features/servers/AddServerDialog";
+} from "@aikingbot/ui/features/servers/AddServerDialog";
 import {
   HOSTED_BILLING_CURRENCY,
   type HostedServerPlan,
   hostedServerPlansFromCatalog,
-} from "@openbot/ui/features/servers/HostedServerPricing";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/servers/HostedServerPricing";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createStore, Loading, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { AddServerDialog } from "../../lazy-views";

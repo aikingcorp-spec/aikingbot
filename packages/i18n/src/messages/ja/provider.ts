@@ -31,7 +31,7 @@ export const messages = {
   "provider.status.checking": "確認中",
   "provider.status.off": "オフ",
   "provider.gemini.hostSignIn":
-    "Gemini を接続するには、ホストで OpenBot を開き、「設定」>「プロバイダー」で「接続」を選択してください。Google へのサインインには、そのホストのブラウザーが必要です。リモートでのサインインには対応していません。",
+    "Gemini を接続するには、ホストで AIKINGBOT を開き、「設定」>「プロバイダー」で「接続」を選択してください。Google へのサインインには、そのホストのブラウザーが必要です。リモートでのサインインには対応していません。",
 
   "provider.key.free": "無料",
 
@@ -59,18 +59,18 @@ export const messages = {
   "provider.aria.apiKey": "{name} の API キー",
   "provider.connecting.browserHint": "ブラウザのページが開いたら、サインインを完了してください。",
   "provider.connecting.cancelFailed":
-    "OpenBot は {name} のサインインをキャンセルできませんでした。もう一度お試しください。",
+    "AIKINGBOT は {name} のサインインをキャンセルできませんでした。もう一度お試しください。",
   "provider.aria.install": "{name} をインストール",
   "provider.aria.signIn": "{name} にサインイン",
   "provider.aria.codeFallback": "コードで {name} にログイン",
   "provider.aria.moreActions": "{name} のその他の操作",
-  "provider.aria.use": "OpenBot で {name} を使用",
+  "provider.aria.use": "AIKINGBOT で {name} を使用",
   "provider.use.inUse": {
     other: "{agents} が {name} を使用しています。エージェントのモデルを変更してから、{name} をオフにしてください。",
   },
 
   "provider.codeLogin.title": "コードで {name} にログイン",
-  "provider.codeLogin.description": "スマートフォンか別のブラウザで完了してください。OpenBot はここで待機します。",
+  "provider.codeLogin.description": "スマートフォンか別のブラウザで完了してください。AIKINGBOT はここで待機します。",
   "provider.codeLogin.starting": "{name} からコードを取得しています…",
   "provider.codeLogin.qrLabel": "{name} のログインページの QR コード",
   "provider.codeLogin.open": "開く",
@@ -92,10 +92,10 @@ export const messages = {
     "このページは {host} のブラウザーで開いています。ここでサインインしてください。",
   "provider.codeLogin.relayStarting": "{host} で {name} のサインインを開始しています…",
   "provider.codeLogin.pageOpening": "{host} で {name} のサインインページを開いています…",
-  "provider.codeLogin.linkStep": "{name} にログインします。OpenBot は自動で続行します。",
-  "provider.useApp.title": "OpenBot アプリで {name} に接続",
+  "provider.codeLogin.linkStep": "{name} にログインします。AIKINGBOT は自動で続行します。",
+  "provider.useApp.title": "AIKINGBOT アプリで {name} に接続",
   "provider.useApp.description":
-    "{name} のサインインは開始したコンピューターに戻るため、ブラウザーのタブでは受け取れません。OpenBot アプリで {name} に接続してください。アプリがサインインを自動で完了します。",
+    "{name} のサインインは開始したコンピューターに戻るため、ブラウザーのタブでは受け取れません。AIKINGBOT アプリで {name} に接続してください。アプリがサインインを自動で完了します。",
   "provider.useApp.download": "アプリを入手",
 
   "provider.picker.noEndpoints": "エンドポイントはまだありません",

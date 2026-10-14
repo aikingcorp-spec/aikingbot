@@ -3,31 +3,31 @@
 
 @import "heroui-native/styles";
 
-@import "@openbot/brand/tokens.css";
-@import "@openbot/brand/tokens-native.css";
+@import "@aikingbot/brand/tokens.css";
+@import "@aikingbot/brand/tokens-native.css";
 
 @theme inline {
-  --color-sheet: var(--openbot-bg-sheet);
-  --color-grouped: var(--openbot-bg-grouped);
-  --color-grouped-secondary: var(--openbot-text-grouped-secondary);
-  --color-grouped-border: var(--openbot-border-grouped);
-  --radius-grouped: var(--openbot-radius-grouped);
-  --color-canvas: var(--openbot-bg-native-canvas);
-  --color-sidebar: var(--openbot-bg-native-sidebar);
-  --color-control: var(--openbot-bg-control);
-  --color-control-active: var(--openbot-bg-control-active);
-  --color-raised: var(--openbot-bg-surface-raised);
-  --color-text-secondary: var(--openbot-text-secondary);
-  --color-text-dim: var(--openbot-text-dim);
-  --color-accent-text: var(--openbot-accent-text);
-  --color-success-text: var(--openbot-success-text);
-  --color-warning-text: var(--openbot-warning-text);
-  --color-danger-text: var(--openbot-danger-text);
-  --color-brand-logo: var(--openbot-logo-production);
-  --color-action: var(--openbot-action);
-  --color-action-foreground: var(--openbot-action-foreground);
-  --color-drawer-scrim: var(--openbot-drawer-scrim);
-  --color-scroll-edge-overlay: var(--openbot-scroll-edge-overlay);
+  --color-sheet: var(--aikingbot-bg-sheet);
+  --color-grouped: var(--aikingbot-bg-grouped);
+  --color-grouped-secondary: var(--aikingbot-text-grouped-secondary);
+  --color-grouped-border: var(--aikingbot-border-grouped);
+  --radius-grouped: var(--aikingbot-radius-grouped);
+  --color-canvas: var(--aikingbot-bg-native-canvas);
+  --color-sidebar: var(--aikingbot-bg-native-sidebar);
+  --color-control: var(--aikingbot-bg-control);
+  --color-control-active: var(--aikingbot-bg-control-active);
+  --color-raised: var(--aikingbot-bg-surface-raised);
+  --color-text-secondary: var(--aikingbot-text-secondary);
+  --color-text-dim: var(--aikingbot-text-dim);
+  --color-accent-text: var(--aikingbot-accent-text);
+  --color-success-text: var(--aikingbot-success-text);
+  --color-warning-text: var(--aikingbot-warning-text);
+  --color-danger-text: var(--aikingbot-danger-text);
+  --color-brand-logo: var(--aikingbot-logo-production);
+  --color-action: var(--aikingbot-action);
+  --color-action-foreground: var(--aikingbot-action-foreground);
+  --color-drawer-scrim: var(--aikingbot-drawer-scrim);
+  --color-scroll-edge-overlay: var(--aikingbot-scroll-edge-overlay);
 
   --text-display: 2rem;
   --text-display--line-height: 2.375rem;
@@ -42,8 +42,8 @@
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
 
-  --tracking-openbot-tight: var(--openbot-tracking-tight);
-  --tracking-openbot-wide: var(--openbot-tracking-wide);
+  --tracking-aikingbot-tight: var(--aikingbot-tracking-tight);
+  --tracking-aikingbot-wide: var(--aikingbot-tracking-wide);
 }
 
 @layer theme {
@@ -53,45 +53,45 @@
     /* uniwind reads theme values only from @variant blocks, so a plain :root alias
      * loses to HeroUI's own near-black dark --background. */
     @variant dark {
-      --background: var(--openbot-bg-native-canvas);
+      --background: var(--aikingbot-bg-native-canvas);
     }
 
-    /* HeroUI consumes these aliases; OpenBot tokens remain the source of truth. */
-    --foreground: var(--openbot-text-primary);
-    --surface: var(--openbot-bg-surface);
-    --surface-foreground: var(--openbot-text-primary);
-    --surface-secondary: var(--openbot-bg-control);
-    --surface-secondary-foreground: var(--openbot-text-primary);
-    --surface-tertiary: var(--openbot-bg-surface-raised);
-    --surface-tertiary-foreground: var(--openbot-text-primary);
-    --overlay: var(--openbot-bg-surface-raised);
-    --overlay-foreground: var(--openbot-text-primary);
-    --backdrop: var(--openbot-bg-overlay);
-    --muted: var(--openbot-text-muted);
-    --default: var(--openbot-bg-control);
-    --default-foreground: var(--openbot-text-primary);
-    --accent: var(--openbot-accent);
-    --accent-foreground: var(--openbot-text-on-accent);
-    --success: var(--openbot-success);
-    --success-foreground: var(--openbot-text-on-status);
-    --warning: var(--openbot-warning);
-    --warning-foreground: var(--openbot-text-on-status);
-    --danger: var(--openbot-danger);
-    --danger-foreground: var(--openbot-text-on-accent);
-    --border: var(--openbot-border);
-    --separator: var(--openbot-border-strong);
-    --focus: var(--openbot-accent);
-    --link: var(--openbot-accent-text);
-    --field-background: var(--openbot-bg-control);
-    --field-foreground: var(--openbot-text-primary);
-    --field-placeholder: var(--openbot-text-muted);
-    --field-border: var(--openbot-border-strong);
+    /* HeroUI consumes these aliases; AIKINGBOT tokens remain the source of truth. */
+    --foreground: var(--aikingbot-text-primary);
+    --surface: var(--aikingbot-bg-surface);
+    --surface-foreground: var(--aikingbot-text-primary);
+    --surface-secondary: var(--aikingbot-bg-control);
+    --surface-secondary-foreground: var(--aikingbot-text-primary);
+    --surface-tertiary: var(--aikingbot-bg-surface-raised);
+    --surface-tertiary-foreground: var(--aikingbot-text-primary);
+    --overlay: var(--aikingbot-bg-surface-raised);
+    --overlay-foreground: var(--aikingbot-text-primary);
+    --backdrop: var(--aikingbot-bg-overlay);
+    --muted: var(--aikingbot-text-muted);
+    --default: var(--aikingbot-bg-control);
+    --default-foreground: var(--aikingbot-text-primary);
+    --accent: var(--aikingbot-accent);
+    --accent-foreground: var(--aikingbot-text-on-accent);
+    --success: var(--aikingbot-success);
+    --success-foreground: var(--aikingbot-text-on-status);
+    --warning: var(--aikingbot-warning);
+    --warning-foreground: var(--aikingbot-text-on-status);
+    --danger: var(--aikingbot-danger);
+    --danger-foreground: var(--aikingbot-text-on-accent);
+    --border: var(--aikingbot-border);
+    --separator: var(--aikingbot-border-strong);
+    --focus: var(--aikingbot-accent);
+    --link: var(--aikingbot-accent-text);
+    --field-background: var(--aikingbot-bg-control);
+    --field-foreground: var(--aikingbot-text-primary);
+    --field-placeholder: var(--aikingbot-text-muted);
+    --field-border: var(--aikingbot-border-strong);
 
     /* A 4 pt base produces the 8 / 12 / 16 px radius family used on desktop. */
     --radius: 0.25rem;
     --field-radius: 0.75rem;
-    --surface-shadow: var(--openbot-shadow-card);
-    --overlay-shadow: var(--openbot-shadow-overlay);
+    --surface-shadow: var(--aikingbot-shadow-card);
+    --overlay-shadow: var(--aikingbot-shadow-overlay);
     --field-shadow: 0 0 0 0 transparent inset;
   }
 }

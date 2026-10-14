@@ -10,7 +10,7 @@ import { runCauseEffect } from "./effect-boundary";
 let root = "";
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-acp-command-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-acp-command-"));
 });
 
 afterEach(async () => {

@@ -1,4 +1,4 @@
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@aikingbot/contracts/chat-visual";
 
 /**
  * The address of a visual reply page. The page comes from its own scheme, which serves only HTML
@@ -6,10 +6,10 @@ import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts
  */
 export function chatVisualPageUrl(previewUrl: string | null | undefined): string | undefined {
   if (!previewUrl) return undefined;
-  const local = /^openbot-attachment:\/\/file\/([^/?#]+)$/.exec(previewUrl);
-  if (local) return `openbot-visual://file/${local[1]}`;
-  const remote = /^openbot-remote-attachment:\/\/([^/?#]+)\/([^/?#]+)$/.exec(previewUrl);
-  if (remote) return `openbot-remote-visual://${remote[1]}/${remote[2]}`;
+  const local = /^aikingbot-attachment:\/\/file\/([^/?#]+)$/.exec(previewUrl);
+  if (local) return `aikingbot-visual://file/${local[1]}`;
+  const remote = /^aikingbot-remote-attachment:\/\/([^/?#]+)\/([^/?#]+)$/.exec(previewUrl);
+  if (remote) return `aikingbot-remote-visual://${remote[1]}/${remote[2]}`;
   return undefined;
 }
 

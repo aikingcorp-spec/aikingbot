@@ -1,5 +1,5 @@
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { chatTagReferences, expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
+import { expandAttachmentReferences } from "@aikingbot/contracts/attachment-references";
+import { chatTagReferences, expandChatTagReferences } from "@aikingbot/contracts/chat-tag-references";
 import {
   type AgentApproval,
   type AttachmentSummary,
@@ -7,52 +7,52 @@ import {
   type BrowserTakeoverRequest,
   canPreviewAttachment,
   type FilePreview,
-} from "@openbot/contracts/ipc";
-import { ArrowUp, Button, ErrorReference, Plus, X } from "@openbot/ui";
-import { QuestionPromptBubble } from "@openbot/ui/components/QuestionPromptBubble";
+} from "@aikingbot/contracts/ipc";
+import { ArrowUp, Button, ErrorReference, Plus, X } from "@aikingbot/ui";
+import { QuestionPromptBubble } from "@aikingbot/ui/components/QuestionPromptBubble";
 import {
   SettingsPanel,
   SettingsPanelContent,
   SettingsPanelHeader,
   settingsPanelMaxWidth,
-} from "@openbot/ui/components/SettingsPanel";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChannelActivityIndicator, type ChannelWorker } from "@openbot/ui/features/channels/ChannelActivityIndicator";
-import { ChannelAvatar } from "@openbot/ui/features/channels/ChannelAvatar";
-import { ChannelStoppedTasks } from "@openbot/ui/features/channels/ChannelStoppedTasks";
-import { AwaitingReplies } from "@openbot/ui/features/conversation/AwaitingReplies";
-import { ChatActionMarker } from "@openbot/ui/features/conversation/ChatActionMarker";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ChatRowBoundary } from "@openbot/ui/features/conversation/ChatRowBoundary";
+} from "@aikingbot/ui/components/SettingsPanel";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { ChannelActivityIndicator, type ChannelWorker } from "@aikingbot/ui/features/channels/ChannelActivityIndicator";
+import { ChannelAvatar } from "@aikingbot/ui/features/channels/ChannelAvatar";
+import { ChannelStoppedTasks } from "@aikingbot/ui/features/channels/ChannelStoppedTasks";
+import { AwaitingReplies } from "@aikingbot/ui/features/conversation/AwaitingReplies";
+import { ChatActionMarker } from "@aikingbot/ui/features/conversation/ChatActionMarker";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ChatRowBoundary } from "@aikingbot/ui/features/conversation/ChatRowBoundary";
 import {
   ChatScrollRail,
   createChatScrollRail,
   unloadedHistory,
-} from "@openbot/ui/features/conversation/ChatScrollRail";
-import { ComposerEditor, expandComposerMentions } from "@openbot/ui/features/conversation/ComposerEditor";
-import { StopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { ApprovalCard, BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
+} from "@aikingbot/ui/features/conversation/ChatScrollRail";
+import { ComposerEditor, expandComposerMentions } from "@aikingbot/ui/features/conversation/ComposerEditor";
+import { StopIcon } from "@aikingbot/ui/features/conversation/ConversationIcons";
+import { ApprovalCard, BrowserTakeoverCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
 import {
   calculateChatScrollMargin,
   createChatVirtualizer,
-} from "@openbot/ui/features/conversation/createChatVirtualizer";
-import { ScrollToLatestButton, scrollToLatestMessage } from "@openbot/ui/features/conversation/MessageNavigation";
-import { MessageActions } from "@openbot/ui/features/conversation/MessageRendering";
+} from "@aikingbot/ui/features/conversation/createChatVirtualizer";
+import { ScrollToLatestButton, scrollToLatestMessage } from "@aikingbot/ui/features/conversation/MessageNavigation";
+import { MessageActions } from "@aikingbot/ui/features/conversation/MessageRendering";
 import {
   anchorNewMessages,
   countableTimelineMessage,
   type NewMessageTally,
   tallyNewMessages,
-} from "@openbot/ui/features/conversation/new-message-tally";
-import { TaskList } from "@openbot/ui/features/conversation/TaskList";
+} from "@aikingbot/ui/features/conversation/new-message-tally";
+import { TaskList } from "@aikingbot/ui/features/conversation/TaskList";
 import {
   scrollToUnreadBoundary,
   UnreadMessagesBanner,
   UnreadMessagesDivider,
   unreadMessagesDividerIsVisible,
-} from "@openbot/ui/features/conversation/UnreadMessages";
-import { useText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/ui/features/conversation/UnreadMessages";
+import { useText } from "@aikingbot/ui/text";
+import { errorReference, type UserErrorDetails } from "@aikingbot/user-errors";
 import type { VirtualItem } from "@tanstack/virtual-core";
 import {
   createEffect,

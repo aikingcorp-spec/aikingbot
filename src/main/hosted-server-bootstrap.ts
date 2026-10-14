@@ -1,6 +1,6 @@
 /**
  * The first start of a hosted server: a VM that the account server created for one account. It runs
- * only in a packaged Linux build that the server template starts with `OPENBOT_HOSTED_SERVER=1`.
+ * only in a packaged Linux build that the server template starts with `AIKINGBOT_HOSTED_SERVER=1`.
  *
  * The VM gets a host ID and a single-use claim. The claim becomes the owner's account session, and
  * the host is configured with the ID that the account server reserved for that owner. It then
@@ -11,8 +11,8 @@
  * built, at the same position as `applyDevelopmentRemoteAccount`.
  */
 
-import { parseHostedServerList } from "@openbot/contracts/hosted-servers";
-import type { CentralAuthState, CentralAuthUser } from "@openbot/contracts/ipc";
+import { parseHostedServerList } from "@aikingbot/contracts/hosted-servers";
+import type { CentralAuthState, CentralAuthUser } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import type { CentralAuthManager } from "./central-auth-manager";
 import { RemoteWorkflowError, toRemoteWorkflowError } from "./remote-service-effects";
@@ -35,10 +35,10 @@ export function takeHostedServerEnvironment(
   isPackaged: boolean,
   platform: NodeJS.Platform,
 ): HostedServerEnvironment | null {
-  const claim = environment.OPENBOT_HOSTED_CLAIM?.trim() || null;
-  delete environment.OPENBOT_HOSTED_CLAIM;
-  if (!isPackaged || platform !== "linux" || environment.OPENBOT_HOSTED_SERVER !== "1") return null;
-  const hostId = environment.OPENBOT_HOSTED_HOST_ID?.trim().toLowerCase() ?? "";
+  const claim = environment.AIKINGBOT_HOSTED_CLAIM?.trim() || null;
+  delete environment.AIKINGBOT_HOSTED_CLAIM;
+  if (!isPackaged || platform !== "linux" || environment.AIKINGBOT_HOSTED_SERVER !== "1") return null;
+  const hostId = environment.AIKINGBOT_HOSTED_HOST_ID?.trim().toLowerCase() ?? "";
   if (!HOST_ID_PATTERN.test(hostId)) return null;
   return { hostId, claim };
 }

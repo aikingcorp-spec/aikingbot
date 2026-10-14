@@ -1,5 +1,5 @@
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
-import { sourceText } from "@openbot/i18n/source";
+import type { MobileConnectHostBinding } from "@aikingbot/contracts/mobile-connect";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import type { CentralAuthManager } from "./central-auth-manager";
 import { RemoteWorkflowError } from "./remote-service-effects";
@@ -41,7 +41,7 @@ export const createHostedMobileConnectLink = Effect.fn("MobileConnectHost.create
 const publishMobileConnectHost = Effect.fn("MobileConnectHost.publish")(function* (
   host: MobileConnectHostDependencies<never>["host"],
 ) {
-  if (!host.getStatus().configured) yield* host.configure({ serverName: "OpenBot" });
+  if (!host.getStatus().configured) yield* host.configure({ serverName: "AIKINGBOT" });
   const status = yield* host.start();
   if (!isPublishedHost(status)) {
     return yield* new RemoteWorkflowError({

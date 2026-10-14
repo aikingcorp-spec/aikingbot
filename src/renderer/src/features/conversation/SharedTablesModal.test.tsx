@@ -1,10 +1,10 @@
-import type { DeleteSharedTableInput, SharedTable } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
+import type { DeleteSharedTableInput, SharedTable } from "@aikingbot/contracts/ipc";
+import type { AgentProfile } from "@aikingbot/ui/data";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import type { Mock } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { STORY_AGENTS } from "../../preview/fixtures";
-import { createMockOpenBot, type MockOpenBotControls } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../../preview/mock-aikingbot";
 import { SharedTablesModal } from "./SharedTablesModal";
 
 const people: SharedTable = { name: "people", ownerAgentId: "chief", rowCount: 214 };
@@ -13,7 +13,7 @@ const orphaned: SharedTable = { name: "handled_mail", ownerAgentId: null, rowCou
 let tableState: SharedTable[];
 let listTables: Mock<() => Promise<SharedTable[]>>;
 let deleteTable: Mock<(input: DeleteSharedTableInput) => Promise<void>>;
-let activeMock: MockOpenBotControls | undefined;
+let activeMock: MockAIKINGBOTControls | undefined;
 const agents: AgentProfile[] = STORY_AGENTS;
 
 afterEach(() => {
@@ -27,10 +27,10 @@ beforeEach(() => {
   deleteTable = vi.fn(async (input: DeleteSharedTableInput) => {
     tableState = tableState.filter((table) => table.name !== input.name);
   });
-  activeMock = createMockOpenBot();
+  activeMock = createMockAIKINGBOT();
   activeMock.api.agent.listTables = listTables;
   activeMock.api.agent.deleteTable = deleteTable;
-  window.openbot = activeMock.api;
+  window.aikingbot = activeMock.api;
 });
 
 describe("SharedTablesModal", () => {
@@ -41,7 +41,7 @@ describe("SharedTablesModal", () => {
     expect(await screen.findByRole("dialog", { name: "Tables" })).toBeInTheDocument();
     expect(await screen.findByText("people")).toBeInTheDocument();
     expect(screen.getByText("214 records · Kept by Chief")).toBeInTheDocument();
-    expect(screen.getByText(/not counted · Made outside OpenBot/)).toBeInTheDocument();
+    expect(screen.getByText(/not counted · Made outside AIKINGBOT/)).toBeInTheDocument();
     await waitFor(() => expect(onCountChange).toHaveBeenLastCalledWith(2));
   });
 

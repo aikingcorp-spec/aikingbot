@@ -1,15 +1,19 @@
-import { AppLogo } from "@openbot/brand";
-import { createWebAppInvitePath, OPENBOT_INVITE_ORIGIN, toOpenBotInviteUrl } from "@openbot/contracts/invite-links";
+import { AppLogo } from "@aikingbot/brand";
+import {
+  AIKINGBOT_INVITE_ORIGIN,
+  createWebAppInvitePath,
+  toAIKINGBOTInviteUrl,
+} from "@aikingbot/contracts/invite-links";
 import { createSignal, onSettled, Show } from "solid-js";
 import { landingAnalytics } from "../../lib/analytics";
 import { detectDownloadPlatform } from "../../lib/download-platforms";
-import { OPENBOT_DOWNLOAD_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_DOWNLOAD_LINKS } from "../../lib/landing-links";
 import { Button } from "../ui/button";
 
 export function JoinPage() {
   const [openUrl, setOpenUrl] = createSignal("");
   const [browserUrl, setBrowserUrl] = createSignal("");
-  const [downloadUrl, setDownloadUrl] = createSignal<string>(OPENBOT_DOWNLOAD_LINKS.macos);
+  const [downloadUrl, setDownloadUrl] = createSignal<string>(AIKINGBOT_DOWNLOAD_LINKS.macos);
   const [mobile, setMobile] = createSignal(false);
   const [invalid, setInvalid] = createSignal(false);
   const [openAttempted, setOpenAttempted] = createSignal(false);
@@ -23,23 +27,23 @@ export function JoinPage() {
     let validInvite = true;
     try {
       const pageUrl = new URL(window.location.href);
-      const canonicalUrl = new URL(`${pageUrl.pathname}${pageUrl.search}`, OPENBOT_INVITE_ORIGIN);
-      setOpenUrl(toOpenBotInviteUrl(canonicalUrl.toString()));
+      const canonicalUrl = new URL(`${pageUrl.pathname}${pageUrl.search}`, AIKINGBOT_INVITE_ORIGIN);
+      setOpenUrl(toAIKINGBOTInviteUrl(canonicalUrl.toString()));
       setBrowserUrl(createWebAppInvitePath(canonicalUrl.toString()));
     } catch {
       validInvite = false;
       setInvalid(true);
     }
-    if (platform === "windows") setDownloadUrl(OPENBOT_DOWNLOAD_LINKS.windows);
+    if (platform === "windows") setDownloadUrl(AIKINGBOT_DOWNLOAD_LINKS.windows);
     const cleanup = landingAnalytics.startJoin(document, window.location.hostname, { validInvite, platform });
     return cleanup;
   });
 
   return (
     <main class="join-page">
-      <a class="landing-brand join-page-brand" href="/" aria-label="OpenBot home">
+      <a class="landing-brand join-page-brand" href="/" aria-label="AIKINGBOT home">
         <AppLogo variant="production" class="landing-brand-logo" />
-        <span>OpenBot</span>
+        <span>AIKINGBOT</span>
       </a>
 
       <section class="join-card" aria-labelledby="join-title">
@@ -50,9 +54,9 @@ export function JoinPage() {
         </div>
         <AppLogo variant="production" animation="blink" class="join-card-logo" />
         <p class="join-card-eyebrow">Private invitation</p>
-        <h1 id="join-title">Connect to an OpenBot host</h1>
+        <h1 id="join-title">Connect to an AIKINGBOT host</h1>
         <p class="join-card-copy">
-          Open this invitation in OpenBot. The app will verify the host and ask for confirmation before it connects.
+          Open this invitation in AIKINGBOT. The app will verify the host and ask for confirmation before it connects.
         </p>
 
         <Show
@@ -68,13 +72,13 @@ export function JoinPage() {
               when={openUrl()}
               fallback={
                 <span class="landing-button landing-button-primary landing-button-lg join-card-disabled">
-                  Open OpenBot
+                  Open AIKINGBOT
                 </span>
               }
             >
               {(href) => (
                 <Button href={href()} variant="primary" size="lg" icon="open" onClick={() => setOpenAttempted(true)}>
-                  Open OpenBot
+                  Open AIKINGBOT
                 </Button>
               )}
             </Show>
@@ -87,7 +91,7 @@ export function JoinPage() {
             </Show>
             <Show when={!mobile()}>
               <Button href={downloadUrl()} variant="secondary" size="lg" icon="download">
-                Download OpenBot
+                Download AIKINGBOT
               </Button>
             </Show>
           </div>
@@ -97,18 +101,18 @@ export function JoinPage() {
           {/* The live region exists before the click, so screen readers announce the text when it appears. */}
           <p class={openAttempted() ? "join-card-note" : "join-card-status-empty"} role="status">
             <Show when={openAttempted()}>
-              If OpenBot did not open, install it with Download OpenBot, or start OpenBot once so that it can open
+              If AIKINGBOT did not open, install it with Download AIKINGBOT, or start AIKINGBOT once so that it can open
               invitation links. You can also use Open in browser.
             </Show>
           </p>
         </Show>
         <Show when={mobile()}>
           <p class="join-card-note">
-            If OpenBot is installed, tap Open OpenBot. You can also paste this link into Add server in the app.
+            If AIKINGBOT is installed, tap Open AIKINGBOT. You can also paste this link into Add server in the app.
           </p>
         </Show>
         <p class="join-card-note">
-          This link grants access to a host. Share it only with people you want to invite. OpenBot shows its expiry
+          This link grants access to a host. Share it only with people you want to invite. AIKINGBOT shows its expiry
           before you join.
         </p>
       </section>

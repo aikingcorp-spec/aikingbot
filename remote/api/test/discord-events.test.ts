@@ -78,7 +78,7 @@ function ready(shard: [number, number], guilds: string[]): GatewayReadyDispatch 
     s: 1,
     d: {
       v: 10,
-      user: { id: BOT, username: "openbot", discriminator: "0", global_name: null, avatar: null },
+      user: { id: BOT, username: "aikingbot", discriminator: "0", global_name: null, avatar: null },
       guilds: guilds.map((id) => ({ id, unavailable: true })),
       session_id: "session",
       resume_gateway_url: "wss://gateway.discord.gg",

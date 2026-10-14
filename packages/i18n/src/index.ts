@@ -11,7 +11,7 @@ import { pt } from "./messages/pt/index";
 import { ru } from "./messages/ru/index";
 import { tr } from "./messages/tr/index";
 
-export { APP_LANGUAGES, type AppLanguage, DEFAULT_APP_LANGUAGE } from "@openbot/contracts/app-language";
+export { APP_LANGUAGES, type AppLanguage, DEFAULT_APP_LANGUAGE } from "@aikingbot/contracts/app-language";
 export { type AppFormat, createFormat } from "./format";
 export { formatLocale, resolveLocale, TRANSLATED_LOCALES, type TranslatedLocale } from "./locale";
 export {

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { type DatabaseCore, deleteOrphanReceipts } from "./database-core";
 import { databaseRow, databaseRows, requiredStringColumn } from "./database-rows";
 

@@ -1,4 +1,4 @@
-import type { HostedServerIssue } from "@openbot/contracts/ipc";
+import type { HostedServerIssue } from "@aikingbot/contracts/ipc";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 import { Button } from "../../button";
 import { ErrorReference } from "../../error-reference";

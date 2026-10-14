@@ -4,7 +4,7 @@ import {
   LIVE_ACTIVITY_SECRET_BYTES,
   liveActivityKeys,
   sealLiveActivity,
-} from "@openbot/team-client/live-activity-seal";
+} from "@aikingbot/team-client/live-activity-seal";
 import { describe, expect, it } from "vitest";
 import { openSealedLiveActivity } from "./live-activity-open";
 

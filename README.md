@@ -1,9 +1,9 @@
-# OpenBot
+# AIKINGBOT
 
-[![CI](https://github.com/nightly-labs/openbot/actions/workflows/ci.yml/badge.svg)](https://github.com/nightly-labs/openbot/actions/workflows/ci.yml)
+[![CI](https://github.com/aikingcorp-spec/aikingx_bot/actions/workflows/ci.yml/badge.svg)](https://github.com/aikingcorp-spec/aikingx_bot/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-PolyForm_Noncommercial_1.0.0-blue.svg)](LICENSE)
 
-OpenBot is a local-first desktop workspace for persistent AI teammates. It supports the local
+AIKINGBOT is a local-first desktop workspace for persistent AI teammates. It supports the local
 [Codex App Server](https://learn.chatgpt.com/docs/app-server) and
 [Claude Code](https://code.claude.com/docs/en/overview), plus [Grok CLI](https://docs.x.ai/build/overview),
 OpenCode, Gemini, [Cursor CLI](https://cursor.com/cli), and [Cline CLI](https://cline.bot/cli) through ACP. It gives every agent its own workspace and
@@ -11,7 +11,7 @@ conversation, and provides local queues, file transfers, an embedded browser, an
 messaging in one desktop app.
 
 > [!WARNING]
-> OpenBot is a development preview. Agents currently run with `danger-full-access` and
+> AIKINGBOT is a development preview. Agents currently run with `danger-full-access` and
 > `approvalPolicy: never`. They can read and modify files, run commands, use the network, and control
 > the embedded browser without per-action confirmations after the explicit first-launch consent.
 > Run only agents and tasks you trust, keep backups, and review [Security](#security) before use.
@@ -26,49 +26,49 @@ messaging in one desktop app.
 - Agent-to-agent messages, replies, reactions, images, and managed file transfers.
 - Shared desktop channel chats with one task owner, explicit delegation, shared history, and Stop, Resume, Reassign, Archive, and Restore controls.
 - A persistent embedded browser that agents can open, inspect, and control.
-- Optional Computer Use on macOS, Windows and Linux through the `cua-driver` binary in the release, which OpenBot starts as its own child process and gives to every provider.
+- Optional Computer Use on macOS, Windows and Linux through the `cua-driver` binary in the release, which AIKINGBOT starts as its own child process and gives to every provider.
 - Per-agent model, reasoning, profile, notification, browser, and panel state.
 - Local data and privacy-safe diagnostics exports from the account menu.
-- Optional OpenBot accounts through one-time email codes. The account API runs on Cloudflare Workers and D1.
+- Optional AIKINGBOT accounts through one-time email codes. The account API runs on Cloudflare Workers and D1.
 
-OpenBot is local-first, not offline-only. Codex connects to OpenAI, Claude connects to Anthropic,
+AIKINGBOT is local-first, not offline-only. Codex connects to OpenAI, Claude connects to Anthropic,
 Grok connects to xAI, Gemini connects to Google, Cursor connects to Cursor, Cline connects to Cline,
 visited pages use the network, and installed plugins may connect to their own services.
 
 ## Install
 
-OpenBot supports macOS 13 or newer on Apple silicon or Intel, Windows 10 or newer on x64 systems, and x64
+AIKINGBOT supports macOS 13 or newer on Apple silicon or Intel, Windows 10 or newer on x64 systems, and x64
 or arm64 Linux as an AppImage.
 
 ### macOS
 
-1. Download the latest `OpenBot-*-arm64.dmg` (or `OpenBot-*-x64.dmg` on an Intel Mac) from [GitHub Releases](https://github.com/nightly-labs/openbot/releases).
-2. Drag OpenBot to Applications and open it.
+1. Download the latest `AIKINGBOT-*-arm64.dmg` (or `AIKINGBOT-*-x64.dmg` on an Intel Mac) from [GitHub Releases](https://github.com/aikingcorp-spec/aikingx_bot/releases).
+2. Drag AIKINGBOT to Applications and open it.
 
 ### Windows
 
-1. Download the latest `OpenBot-*-x64.exe` from [GitHub Releases](https://github.com/nightly-labs/openbot/releases).
-2. Run the installer and open OpenBot.
+1. Download the latest `AIKINGBOT-*-x64.exe` from [GitHub Releases](https://github.com/aikingcorp-spec/aikingx_bot/releases).
+2. Run the installer and open AIKINGBOT.
 
 ### Linux
 
-1. Download the latest `OpenBot-*-x86_64.AppImage` (or `OpenBot-*-arm64.AppImage` on arm64) from [GitHub Releases](https://github.com/nightly-labs/openbot/releases).
-2. Make it executable with `chmod +x OpenBot-*.AppImage`, then run it.
+1. Download the latest `AIKINGBOT-*-x86_64.AppImage` (or `AIKINGBOT-*-arm64.AppImage` on arm64) from [GitHub Releases](https://github.com/aikingcorp-spec/aikingx_bot/releases).
+2. Make it executable with `chmod +x AIKINGBOT-*.AppImage`, then run it.
 
 On Ubuntu 23.10 or newer and on Debian 13, unprivileged user namespaces are restricted by AppArmor
-and OpenBot exits during launch until you install an AppArmor profile:
+and AIKINGBOT exits during launch until you install an AppArmor profile:
 
 ```bash
-sudo install -m 0644 build/linux/openbot.apparmor /etc/apparmor.d/openbot
+sudo install -m 0644 build/linux/aikingbot.apparmor /etc/apparmor.d/aikingbot
 sudo systemctl reload apparmor
 ```
 
-The same file ships inside the AppImage at `resources/linux/openbot.apparmor`. Edit the attachment
-path in the profile if you keep the AppImage outside the usual locations. Do not start OpenBot with
+The same file ships inside the AppImage at `resources/linux/aikingbot.apparmor`. Edit the attachment
+path in the profile if you keep the AppImage outside the usual locations. Do not start AIKINGBOT with
 `--no-sandbox`: that removes the boundary between a renderer and the rest of the computer.
 
-On the first start from an AppImage, OpenBot writes `~/.local/share/applications/openbot.desktop`
-and `~/.local/share/icons/openbot.png`, which is what lets an `openbot://` link - an invitation, or
+On the first start from an AppImage, AIKINGBOT writes `~/.local/share/applications/aikingbot.desktop`
+and `~/.local/share/icons/aikingbot.png`, which is what lets an `aikingbot://` link - an invitation, or
 a plugin listing - open the app and gives the launcher an icon that stays after the app exits. Delete the two files to undo it.
 
 Voice prompts are not available on Linux. Remote desktop works on Linux x64 in an X11 session,
@@ -81,16 +81,16 @@ desktop session on the same host or VM. Google sends the callback to that host t
 
 #### Linux server with no screen
 
-To run OpenBot as an always-on server of your account on a VPS or home server (Ubuntu 24.04 with
+To run AIKINGBOT as an always-on server of your account on a VPS or home server (Ubuntu 24.04 with
 systemd), install it from a terminal and sign in with an email code:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nightly-labs/openbot/main/scripts/install-server.sh | sudo bash
-sudo openbot login
+curl -fsSL https://raw.githubusercontent.com/aikingcorp-spec/aikingx_bot/main/scripts/install-server.sh | sudo bash
+sudo aikingbot login
 ```
 
-Then use it from the desktop app, the iPhone app or `openbot.run/app`. See
-[self-hosted servers](docs/self-hosted-server.md) for the options and the `openbot` commands.
+Then use it from the desktop app, the iPhone app or `aikingbot.aikingx.com/app`. See
+[self-hosted servers](docs/self-hosted-server.md) for the options and the `aikingbot` commands.
 
 #### Docker
 
@@ -98,12 +98,12 @@ The same server runs as a container (`linux/amd64` and `linux/arm64`). The secco
 Electron sandbox stay on:
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/nightly-labs/openbot/main/docker/seccomp.json
-docker run -d --name openbot --restart unless-stopped \
+curl -fsSLO https://raw.githubusercontent.com/aikingcorp-spec/aikingx_bot/main/docker/seccomp.json
+docker run -d --name aikingbot --restart unless-stopped \
   --security-opt seccomp=seccomp.json --security-opt no-new-privileges:true \
-  --shm-size 1g --stop-timeout 60 -v openbot-data:/data \
-  ghcr.io/nightly-labs/openbot:latest
-docker exec -it openbot openbot login
+  --shm-size 1g --stop-timeout 60 -v aikingbot-data:/data \
+  ghcr.io/aikingcorp-spec/aikingx_bot:latest
+docker exec -it aikingbot aikingbot login
 ```
 
 See [Docker](docs/docker.md) for Compose, the data volume, upgrades and the security limits. For Amazon ECS,
@@ -116,9 +116,9 @@ see [AWS ECS](docs/aws-ecs.md).
 
 ### Agent setup
 
-OpenBot can download a supported provider runtime when you select `Download` in onboarding,
-Settings, agent setup, or the model picker. OpenBot prefers its managed CLI. Explicit `OPENBOT_*_PATH` overrides take precedence; a compatible
-system CLI is used when no managed copy is available. OpenBot checks for a newer provider CLI
+AIKINGBOT can download a supported provider runtime when you select `Download` in onboarding,
+Settings, agent setup, or the model picker. AIKINGBOT prefers its managed CLI. Explicit `AIKINGBOT_*_PATH` overrides take precedence; a compatible
+system CLI is used when no managed copy is available. AIKINGBOT checks for a newer provider CLI
 release at startup and every hour, and `Check for updates` in a provider's actions menu checks at
 once. Updates install the latest upstream release without changing the user’s system CLI; the
 version in `native-runtime.lock.json` is only the first-install fallback.
@@ -138,59 +138,59 @@ curl -fsSL https://claude.ai/install.sh | bash
 ```
 
 Install Grok CLI following the [Grok Build documentation](https://docs.x.ai/build/overview), then
-authenticate with `grok login` or set `XAI_API_KEY` in the environment used to launch OpenBot.
+authenticate with `grok login` or set `XAI_API_KEY` in the environment used to launch AIKINGBOT.
 
-OpenBot downloads and pins the OpenCode CLI, like Codex, Claude, and Grok. OpenCode's free models
-need no account and no sign-in: select OpenCode, click Connect, and OpenBot reads the models that
+AIKINGBOT downloads and pins the OpenCode CLI, like Codex, Claude, and Grok. OpenCode's free models
+need no account and no sign-in: select OpenCode, click Connect, and AIKINGBOT reads the models that
 the CLI advertises. To use the paid OpenCode Go models, click Sign in on the OpenCode row and
-paste a Go key from [opencode.ai/auth](https://opencode.ai/auth). OpenBot encrypts the key on this
-computer and gives it only to the local CLI. OpenBot supports OpenCode Go only: the Zen models a
-Go key does not buy stay out of the picker. If you installed OpenCode yourself, OpenBot
-keeps that install and offers no download. Set `OPENBOT_OPENCODE_PATH` to select an executable
+paste a Go key from [opencode.ai/auth](https://opencode.ai/auth). AIKINGBOT encrypts the key on this
+computer and gives it only to the local CLI. AIKINGBOT supports OpenCode Go only: the Zen models a
+Go key does not buy stay out of the picker. If you installed OpenCode yourself, AIKINGBOT
+keeps that install and offers no download. Set `AIKINGBOT_OPENCODE_PATH` to select an executable
 outside your shell's search path. Remote OpenCode agents require Team API v4; older clients do not
 show these agents.
 
-Gemini uses a Google AI Pro or Ultra plan. OpenBot downloads Google's Antigravity ACP server on
+Gemini uses a Google AI Pro or Ultra plan. AIKINGBOT downloads Google's Antigravity ACP server on
 this computer when you select Download on the Gemini row, because Google's license does not let
-OpenBot include it. Sign in opens Google's sign-in page in your browser. OpenBot never uses an
+AIKINGBOT include it. Sign in opens Google's sign-in page in your browser. AIKINGBOT never uses an
 `antigravity` command on your search path, because the Antigravity editor installs a command with
-that name. Set `OPENBOT_ANTIGRAVITY_PATH` to select a server executable yourself. Put it in a
+that name. Set `AIKINGBOT_ANTIGRAVITY_PATH` to select a server executable yourself. Put it in a
 `bin/` folder, and put an `antigravity-package.json` file with its `version` in the folder above
-`bin/`. Keep `localharness_external` beside the server. When that path is set, OpenBot uses
+`bin/`. Keep `localharness_external` beside the server. When that path is set, AIKINGBOT uses
 only it. Connect remains available in the host's local Settings > Providers screen. Remote
 settings cannot perform Google sign-in; use a browser on the host. See
 [Gemini setup and download recovery](docs/architecture/providers.md#gemini) for the required
 layout, the reported IPv6 download failure, and checks that do not change host networking.
 
-Cursor uses a Cursor plan or a Cursor API key. OpenBot downloads and pins the Cursor CLI
+Cursor uses a Cursor plan or a Cursor API key. AIKINGBOT downloads and pins the Cursor CLI
 (`cursor-agent`) when you select Download on the Cursor row in More providers, and starts it with
 `cursor-agent acp`. Sign in opens Cursor's sign-in page in your browser. You can also set
-`CURSOR_API_KEY` in the environment used to launch OpenBot. If you installed `cursor-agent`
-yourself, OpenBot uses it until a download exists. OpenBot never uses the `cursor` command, which
-starts the Cursor editor. Set `OPENBOT_CURSOR_PATH` to select an executable yourself. Cursor
+`CURSOR_API_KEY` in the environment used to launch AIKINGBOT. If you installed `cursor-agent`
+yourself, AIKINGBOT uses it until a download exists. AIKINGBOT never uses the `cursor` command, which
+starts the Cursor editor. Set `AIKINGBOT_CURSOR_PATH` to select an executable yourself. Cursor
 agents stay on this computer: team members do not see them.
 
 Cline uses a Cline account, which has free models with limits for each model. The provider of a
-free model can use your prompts to train models. OpenBot downloads and pins the Cline CLI (`cline`) when you
+free model can use your prompts to train models. AIKINGBOT downloads and pins the Cline CLI (`cline`) when you
 select Download on the Cline row in More providers, and starts it with `cline --acp`. Sign in opens
 Cline's sign-in page in your browser. You can also set `CLINE_API_KEY` in the environment used to
-launch OpenBot. If you installed `cline` 3.0.68 or newer yourself, OpenBot uses it until a download
-exists. Set `OPENBOT_CLINE_PATH` to select an executable yourself. Cline agents stay on this
+launch AIKINGBOT. If you installed `cline` 3.0.68 or newer yourself, AIKINGBOT uses it until a download
+exists. Set `AIKINGBOT_CLINE_PATH` to select an executable yourself. Cline agents stay on this
 computer: team members do not see them.
 
 On Windows, install the native CLI and make sure `codex`, `claude`, or `grok` is available in PowerShell.
-Claude Code also requires Git for Windows. Then authenticate the installed CLI and restart OpenBot.
+Claude Code also requires Git for Windows. Then authenticate the installed CLI and restart AIKINGBOT.
 
 Bun and Node.js are not required when using an installed release. Optional Computer Use works on
 macOS, Windows and Linux, and the release carries the driver, so there is nothing to install. Only
 macOS asks for a permission for it: Screen Recording and Accessibility.
 
-OpenBot uses the existing local CLI login. It does not copy provider credentials. Grok's
+AIKINGBOT uses the existing local CLI login. It does not copy provider credentials. Grok's
 `XAI_API_KEY` and per-session MCP bearer tokens are never persisted or logged. Each provider's terms
 apply to your sign-in. See [provider terms](docs/provider-terms.md) for Claude subscriptions.
 
 For setup problems, data reset, and uninstall instructions, see
-[Troubleshooting](docs/TROUBLESHOOTING.md). OpenBot's data and network behavior is documented in
+[Troubleshooting](docs/TROUBLESHOOTING.md). AIKINGBOT's data and network behavior is documented in
 [Privacy](PRIVACY.md).
 
 ## Development
@@ -211,8 +211,8 @@ iex "& {$(irm https://bun.com/install.ps1)} -Version 1.4.2"
 ```
 
 ```bash
-git clone https://github.com/nightly-labs/openbot.git
-cd openbot
+git clone https://github.com/aikingcorp-spec/aikingx_bot.git
+cd aikingbot
 bun install --frozen-lockfile
 bun run codex:doctor
 bun run dev
@@ -228,13 +228,13 @@ and seeds the isolated profile. Set it as the worktree setup command of your age
 To reset only the local development state, quit the dev app and test client, then run
 `bun run dev:reset`.
 The command deletes the app and test-client development profiles plus the legacy host profile,
-including `openbot.db` and its WAL files. It prints each profile before it deletes it, and it
+including `aikingbot.db` and its WAL files. It prints each profile before it deletes it, and it
 deletes nothing while a dev app has one of them open. It does not change the production profile,
-the worktree profiles that `bun run dev` opens (`OpenBot Dev wt-<hash>`), agent workspaces,
+the worktree profiles that `bun run dev` opens (`AIKINGBOT Dev wt-<hash>`), agent workspaces,
 `~/.codex`, or `~/.claude`.
 
 `bun run dev` seeds a development profile it creates, so a first start already shows this data.
-`bun run dev:seed` replaces the shared `OpenBot Dev` profile. To use it, quit the dev app, then run:
+`bun run dev:seed` replaces the shared `AIKINGBOT Dev` profile. To use it, quit the dev app, then run:
 
 ```bash
 bun run dev:seed
@@ -257,7 +257,7 @@ Use `bun run dev:seed --dry-run` to inspect the target and fixture counts withou
 
 ### Marketplace launch catalog
 
-Seed the approved OpenBot team catalog locally with `bun run marketplace:seed:local`, then start or reuse `bun run dev`. Search **OpenBot** in Marketplace to review its Skills and Agents. This seed adds catalog records without resetting app data.
+Seed the approved AIKINGBOT team catalog locally with `bun run marketplace:seed:local`, then start or reuse `bun run dev`. Search **AIKINGBOT** in Marketplace to review its Skills and Agents. This seed adds catalog records without resetting app data.
 
 `bun run marketplace:build` creates the launch bundles. `bun run marketplace:publish:production` is a dry run; production writes require explicit flags and admin credentials. See the [catalog and publication guide](marketplace/production-catalog/README.md).
 
@@ -275,11 +275,11 @@ Ask an agent to create a skill from a reusable workflow. It prepares a folder wi
 
 Agents can use `list_local_skills`, `read_local_skill`, `revise_skill`, and `install_local_skill`. Revisions require the version read by the agent and retain previous versions. Updating a library skill does not update installed copies: use the Update chip or install an exact revision. Modified installed files are protected. To publish a local skill, submit its folder separately through the marketplace.
 
-Optional scripts, references, and assets follow the Codex skill folder structure. A PNG at `assets/icon.png` supplies the local preview logo. The built-in `openbot-skill-creator` guide explains the format and validation limits. Registration does not run scripts.
+Optional scripts, references, and assets follow the Codex skill folder structure. A PNG at `assets/icon.png` supplies the local preview logo. The built-in `aikingbot-skill-creator` guide explains the format and validation limits. Registration does not run scripts.
 
 ## Import agents from Grok Bot
 
-Open **Server settings → Import** on this computer, or on a joined server in the desktop app or the browser client. Every member of a server can import, not only an owner or admin. Add the [OpenBot export agent](https://x.ai/bot/gI0XdhhDYPJeyQaqQBC0O) to Grok Bot and say "Export my agents for OpenBot". It saves one `.zip` file to Downloads. Choose that file in OpenBot, select the agents, and import them.
+Open **Server settings → Import** on this computer, or on a joined server in the desktop app or the browser client. Every member of a server can import, not only an owner or admin. Add the [AIKINGBOT export agent](https://x.ai/bot/gI0XdhhDYPJeyQaqQBC0O) to Grok Bot and say "Export my agents for AIKINGBOT". It saves one `.zip` file to Downloads. Choose that file in AIKINGBOT, select the agents, and import them.
 
 The import adds each agent's name, instructions, avatar, skills, routines, and memories. Workspace files are copied to `imported/` in the agent's workspace if you included them. Chat history is not copied: the export agent keeps the important facts as memories. For this computer, the file is read here and is not uploaded. For a joined server, the file (at most 100 MB) goes to the computer that runs that server through the encrypted host connection. A member's import uses a skill that the server already has instead of changing it. The export skill and its format are in [`resources/agent-import/grok-bot/SKILL.md`](resources/agent-import/grok-bot/SKILL.md).
 
@@ -293,8 +293,8 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 
 | Command | Purpose |
 | --- | --- |
-| `bun run dev` | Start the local Auth API, Signal service, and Electron client with renderer HMR on its app profile. Ports are allocated through the dev registry, so a sibling worktree never takes one this stack won. It refuses a second stack in the same worktree unless you pass `--force`. Each worktree opens a profile of its own, keyed to its path; `--shared` opens the shared `OpenBot Dev` profile instead. `--isolated` is still accepted and changes nothing. A profile that you used before stays on disk unchanged. `--hosting=test` signs the app in to the `test` account Worker, on a profile that all worktrees share, so that a hosted server is a real VM; see [docs/hosted-servers.md](docs/hosted-servers.md#real-servers-from-a-development-build). A profile that does not exist yet is seeded with the showcase data of `bun run dev:seed` before the client starts, so a first start never opens an empty app; an existing profile is left as it is. An isolated profile still shares the computer's provider CLI store, so it does not download the pinned CLIs again. Before it starts, it runs `bun install --frozen-lockfile` and `bun run api:migrate:local` only when `bun.lock`, a workspace `package.json`, a patch, or a migration changed since their last successful run. The stamps are in `node_modules` and `apps/auth-api/.wrangler/state/v3/d1`, and each `bun install` writes the install stamp too; delete one to run its step again. |
-| `OPENBOT_SKIP_SKIA=1 bun install --frozen-lockfile` | Install without the ~700 MB copy of the React Native Skia native libraries that the root `postinstall` makes for mobile builds. Use it for desktop or API work. Before a native mobile build, run `bun run --cwd apps/mobile setup:skia`, or install again without the flag. |
+| `bun run dev` | Start the local Auth API, Signal service, and Electron client with renderer HMR on its app profile. Ports are allocated through the dev registry, so a sibling worktree never takes one this stack won. It refuses a second stack in the same worktree unless you pass `--force`. Each worktree opens a profile of its own, keyed to its path; `--shared` opens the shared `AIKINGBOT Dev` profile instead. `--isolated` is still accepted and changes nothing. A profile that you used before stays on disk unchanged. `--hosting=test` signs the app in to the `test` account Worker, on a profile that all worktrees share, so that a hosted server is a real VM; see [docs/hosted-servers.md](docs/hosted-servers.md#real-servers-from-a-development-build). A profile that does not exist yet is seeded with the showcase data of `bun run dev:seed` before the client starts, so a first start never opens an empty app; an existing profile is left as it is. An isolated profile still shares the computer's provider CLI store, so it does not download the pinned CLIs again. Before it starts, it runs `bun install --frozen-lockfile` and `bun run api:migrate:local` only when `bun.lock`, a workspace `package.json`, a patch, or a migration changed since their last successful run. The stamps are in `node_modules` and `apps/auth-api/.wrangler/state/v3/d1`, and each `bun install` writes the install stamp too; delete one to run its step again. |
+| `AIKINGBOT_SKIP_SKIA=1 bun install --frozen-lockfile` | Install without the ~700 MB copy of the React Native Skia native libraries that the root `postinstall` makes for mobile builds. Use it for desktop or API work. Before a native mobile build, run `bun run --cwd apps/mobile setup:skia`, or install again without the flag. |
 | `bun run preview` | Preview the built Electron client with the green preview icon. |
 | `bun run mobile:go` | Start the mobile app in Expo Go and clear the Metro cache. |
 | `bun mobile:ios` | Build and launch the iOS simulator app without RocketSim. |
@@ -302,7 +302,7 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 | `bun run mobile:ios:build:local` | Build a production iOS `.ipa` locally for upload with Transporter. See [TestFlight setup](apps/mobile/README.md#local-testflight-build). |
 | `bun run mobile:ios:release:testflight` | Start the GitHub Actions iOS build from `main` and upload to TestFlight. Requires authenticated GitHub CLI. See [iOS release setup](apps/mobile/README.md#github-actions-testflight-release). |
 | `bun mobile:ios:rocketsim` | Start RocketSim and build and launch the iOS simulator app with RocketSim Connect. See [mobile setup](apps/mobile/README.md#development). |
-| `bun run mobile:go:tunnel` | Start the mobile app in Expo Go through a Metro tunnel and clear the cache. The OpenBot API and Signal still need their own reachable addresses. |
+| `bun run mobile:go:tunnel` | Start the mobile app in Expo Go through a Metro tunnel and clear the cache. The AIKINGBOT API and Signal still need their own reachable addresses. |
 | `bun run dev:api` | Start the TanStack Start API and its local D1 database on `127.0.0.1:3100`. |
 | `bun run dev:apns-key -- <AuthKey_ID.p8> [KEY_ID]` | Save an Apple Push Notification service key in ignored development state, so the local Auth API sends iPhone Live Activity updates. The local server forwards them to Apple over HTTP/2. Restart `bun run dev` after it. |
 | `bun run api:start` | Build and preview the Cloudflare Worker locally. |
@@ -318,36 +318,36 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 | `bun run remote:check:compose` | Validate both Docker Compose configurations alone, without a running daemon. |
 | `bun run remote:update` | Update Signal, then drain and update the single coturn instance. |
 | `bun run dev:all` | Start the Auth API, Signal service, and single local Electron instance. |
-| `bun run dev:slack` | Start the same stack as `bun run dev`, with a `cloudflared` quick tunnel to Signal, so that Slack can send the development Slack app's events to the agents on this computer. It reads `OPENBOT_DEV_SLACK_SIGNING_SECRET` from the ignored `.env.slack-dev`, and needs `SLACK_ROUTE_PRIVATE_JWK` and `SLACK_ROUTE_KEY_ID` in the shell environment. Takes the same options as `bun run dev`, such as `--shared`. See [docs/messaging.md](docs/messaging.md#test-slack-locally). |
+| `bun run dev:slack` | Start the same stack as `bun run dev`, with a `cloudflared` quick tunnel to Signal, so that Slack can send the development Slack app's events to the agents on this computer. It reads `AIKINGBOT_DEV_SLACK_SIGNING_SECRET` from the ignored `.env.slack-dev`, and needs `SLACK_ROUTE_PRIVATE_JWK` and `SLACK_ROUTE_KEY_ID` in the shell environment. Takes the same options as `bun run dev`, such as `--shared`. See [docs/messaging.md](docs/messaging.md#test-slack-locally). |
 | `bun run dev:test-client` | Start the Auth API, Signal service, local instance, and an isolated second client for team testing. |
 | `bun run dev:seed` | Replace only the app development profile with durable showcase data. `--if-missing` keeps an existing profile, which is how `bun run dev` seeds a first start. `--scale=agents:N,messages:M,channels:C,channelMessages:K,attachments:A` adds generated agents, chat history, channel history and large images to the showcase data, for memory and CPU measurements. |
 | `bun run dev:reset` | Delete the local app, test-client, and legacy host development state. It refuses while a dev app has one of these profiles open. |
-| `bun run dev:status` | Print, as JSON, every dev stack and dev app instance live on this machine: services, ports, pids, which of them belong to this worktree, and which are orphaned - a supervisor that is gone with its children still holding the ports. Each recorded process carries the state a stop command acts on: `live`, `gone` with `groupLive` for a survivor of a dead leader, and `unverified` for a pid this machine cannot date. `registryDirectory` is the directory it read: `~/Library/Caches/OpenBot/dev` on macOS, `$XDG_RUNTIME_DIR/openbot-dev` (else `~/.cache/openbot/dev`) on Linux, `%LOCALAPPDATA%\OpenBot\openbot-dev-instances` on Windows, or `OPENBOT_DEV_REGISTRY_DIR` when set. It does not depend on `TMPDIR`. |
+| `bun run dev:status` | Print, as JSON, every dev stack and dev app instance live on this machine: services, ports, pids, which of them belong to this worktree, and which are orphaned - a supervisor that is gone with its children still holding the ports. Each recorded process carries the state a stop command acts on: `live`, `gone` with `groupLive` for a survivor of a dead leader, and `unverified` for a pid this machine cannot date. `registryDirectory` is the directory it read: `~/Library/Caches/AIKINGBOT/dev` on macOS, `$XDG_RUNTIME_DIR/aikingbot-dev` (else `~/.cache/aikingbot/dev`) on Linux, `%LOCALAPPDATA%\AIKINGBOT\aikingbot-dev-instances` on Windows, or `AIKINGBOT_DEV_REGISTRY_DIR` when set. It does not depend on `TMPDIR`. |
 | `bun run dev:verify` | Print a stable JSON verification plan for this worktree: `ready`/`reasons` for safe checks, setup state, changed files and affected surfaces, nearby tests, runtime state, `qa.required`/`qa.ready`/`qa.reasons`, the renderer QA loop, safe `runnableCommands`, and all suggested `commands`. Add `--run` to execute only the safe non-mutating checks in the plan. Renderer QA follows `snapshot → action with --wait-for → snapshot → screenshot` when appearance matters. |
 | `bun run dev:stop` | Stop this worktree's dev stack, children included, using the pids in the registry rather than a process-name pattern. It signals only a pid whose start time still matches the record, so a recycled pid is never sent SIGTERM; anything it cannot confirm is reported, left running and kept in the registry, and the command exits non-zero. `--pid=<supervisor pid>` stops one other stack, `--all` stops every stack on the machine. |
 | `bun run dev:forget` | Drop this worktree's stack record without signalling anything, for the one case `dev:stop` refuses to resolve on its own. It is also the only command that reads a dead record: nothing else deletes one, because a reader that removes what it judged can remove a record the supervisor rewrote in between. Takes the same `--pid=` and `--all`. |
-| `bun run storybook` | Start Storybook on a port allocated through the same registry, so two worktrees never announce one port. `OPENBOT_STORYBOOK_PORT` moves where the search starts; `--port` is refused. |
-| `bun run build-storybook` | Build static Storybook. CI sets `OPENBOT_STORYBOOK_CHECK=true` to skip automatic prop documentation during its build check. |
+| `bun run storybook` | Start Storybook on a port allocated through the same registry, so two worktrees never announce one port. `AIKINGBOT_STORYBOOK_PORT` moves where the search starts; `--port` is refused. |
+| `bun run build-storybook` | Build static Storybook. CI sets `AIKINGBOT_STORYBOOK_CHECK=true` to skip automatic prop documentation during its build check. |
 | `bun run dev:automation` | Drive the running dev app over CDP: `instances`, `pages`, `snapshot`, `screenshot`, `click`/`type` by accessible role. `--page=<target-id\|url-substring>` aims at any window, including embedded browser views; `--wait-for=<role>,<name>` settles on an accessible target instead of polling; mutations need `--allow-mutations` and a named instance (this worktree's record, `--instance=<id>` or `--port=`). |
-| `bun run dev:cpu` | Measure idle CPU on the running dev app, per process kind and per page. `--duration=<ms>` (default 60000), `--interval=<ms>` (default 5000), `--label=<name>`, `--out=<name>.json` (always under `.openbot-build/dev-automation/cpu/`, and refused if it would leave that directory or pass through a symbolic link) and `--compare=<file>` for a before/after delta. Read-only. Take a baseline before a change and a second run after it: only the difference between two runs on the same machine is a result, because a dev build carries the Vite server and the source maps as well. |
-| `bun run dev:memory` | Measure the running dev app's memory once: resident memory per process kind (main, renderer, GPU, provider CLIs and their MCP servers), with the dev tooling kept out of the app total, plus JS heap and DOM counters per page. `--label=<name>`, `--out=<name>.json` (always under `.openbot-build/dev-automation/memory/`) and `--heap-snapshot=<target-id\|url-substring>` to also write a V8 heap snapshot of one page to that directory. Read-only. |
-| `bun run dev:bench` | Run repeatable RAM and CPU scenarios on the built app (`bun run build` first). Each run seeds a bench profile of its own, starts the built app, samples the process tree every second (resident memory, macOS physical footprint and CPU per process kind, provider memory per CLI) with the main-process and page heaps, drives the scenario, and reads a settled state after garbage collection. `--scenario=<id\|prefix\|all>` (required; without it the command lists the scenarios), `--runs=<n>` (default 3; the report shows the median and range), `--label=<name>`, `--compare=<report.json>`, `--cpu-profile` (records the app window's JavaScript for 15 s after the first run settles, as a `.cpuprofile` for DevTools), `--frames` (counts frames slower than 17 ms and 50 ms while the scenario runs; the loop keeps the renderer drawing, so CPU readings rise) and `--call-counts` (V8 call counts per function while the scenario runs, top 25 in a `-call-counts.json` file; slows JavaScript). Every run also reports the startup marks (`startup.*`, ms) and the app window's layout and style recalculation counts, script and task time, and long tasks (`render.*`). Reports go to `.openbot-build/dev-automation/bench/`. Turn scenarios (`s5` to `s9`) use the real claude, opencode and grok CLIs and spend model quota. It never touches a dev instance or your own profile, and `bun run dev:stop` stops an app a failed run left behind. |
+| `bun run dev:cpu` | Measure idle CPU on the running dev app, per process kind and per page. `--duration=<ms>` (default 60000), `--interval=<ms>` (default 5000), `--label=<name>`, `--out=<name>.json` (always under `.aikingbot-build/dev-automation/cpu/`, and refused if it would leave that directory or pass through a symbolic link) and `--compare=<file>` for a before/after delta. Read-only. Take a baseline before a change and a second run after it: only the difference between two runs on the same machine is a result, because a dev build carries the Vite server and the source maps as well. |
+| `bun run dev:memory` | Measure the running dev app's memory once: resident memory per process kind (main, renderer, GPU, provider CLIs and their MCP servers), with the dev tooling kept out of the app total, plus JS heap and DOM counters per page. `--label=<name>`, `--out=<name>.json` (always under `.aikingbot-build/dev-automation/memory/`) and `--heap-snapshot=<target-id\|url-substring>` to also write a V8 heap snapshot of one page to that directory. Read-only. |
+| `bun run dev:bench` | Run repeatable RAM and CPU scenarios on the built app (`bun run build` first). Each run seeds a bench profile of its own, starts the built app, samples the process tree every second (resident memory, macOS physical footprint and CPU per process kind, provider memory per CLI) with the main-process and page heaps, drives the scenario, and reads a settled state after garbage collection. `--scenario=<id\|prefix\|all>` (required; without it the command lists the scenarios), `--runs=<n>` (default 3; the report shows the median and range), `--label=<name>`, `--compare=<report.json>`, `--cpu-profile` (records the app window's JavaScript for 15 s after the first run settles, as a `.cpuprofile` for DevTools), `--frames` (counts frames slower than 17 ms and 50 ms while the scenario runs; the loop keeps the renderer drawing, so CPU readings rise) and `--call-counts` (V8 call counts per function while the scenario runs, top 25 in a `-call-counts.json` file; slows JavaScript). Every run also reports the startup marks (`startup.*`, ms) and the app window's layout and style recalculation counts, script and task time, and long tasks (`render.*`). Reports go to `.aikingbot-build/dev-automation/bench/`. Turn scenarios (`s5` to `s9`) use the real claude, opencode and grok CLIs and spend model quota. It never touches a dev instance or your own profile, and `bun run dev:stop` stops an app a failed run left behind. |
 | `bun run check` | Run Biome, both typechecks, offline tests, the browser smoke test, and the production build. |
 | `bun run typecheck` | Check all 12 projects in parallel with a separate incremental cache for each project in this worktree. |
 | `bun run knip:check` | Find unused files, exports, and types, unused or unlisted dependencies, and unresolved imports in all workspaces. CI runs it. |
-| `bun run check:ui` | Check the renderer against the design system: shared primitives, Kobalte and Lucide confined to `@openbot/ui`, palette tokens instead of colour, size, radius and transition literals. Checks renderer and shared UI source. |
+| `bun run check:ui` | Check the renderer against the design system: shared primitives, Kobalte and Lucide confined to `@aikingbot/ui`, palette tokens instead of colour, size, radius and transition literals. Checks renderer and shared UI source. |
 | `bun run check:assets` | Fail when a tracked image or video file is outside the product asset directories. Pull request screenshots go in the pull request body. |
 | `bun run check:doc-links` | Fail when a link in a tracked Markdown file names a Markdown file that does not exist, or an anchor that the file does not have. |
 | `bun run verify:preload` | After `bun run build`, run the built preload with a fake Electron. Fail when it loads a module that a sandboxed preload cannot load, uses `import()`, or exposes a method that `IPC_ENDPOINTS` does not name. |
 | `bun run types:ratchet` | Hold each TypeScript option in `tools/typescript/type-baseline.json` to its error count per file in every project that extends `tsconfig.base.json`. A new error fails. Add `--write` after a fix to lower the baseline, or `--add=<option>` to start an option at its current counts. |
-| `bun run i18n:check` | Check the translation catalogs: key prefixes, placeholders, plural forms, ambiguous source text, and unused keys. `--fix` puts translated keys in the English order. `--json` writes `.openbot-build/i18n-report.json`. See [docs/i18n.md](docs/i18n.md). |
+| `bun run i18n:check` | Check the translation catalogs: key prefixes, placeholders, plural forms, ambiguous source text, and unused keys. `--fix` puts translated keys in the English order. `--json` writes `.aikingbot-build/i18n-report.json`. See [docs/i18n.md](docs/i18n.md). |
 | `bun run test:backend` | Run backend tests only. |
 | `bun run test:changed` | Run, on one worker, only the desktop and mobile test files that import a file changed since `origin/main`, including staged, unstaged and untracked files. It stops with an error when `origin/main` is missing. A change to a vitest config, a setup file or `package.json` selects no test. See [docs/development-checks.md](docs/development-checks.md#focused-tests). |
 | `bun run test:related -- <source>...` | Run, on one worker, only the test files that import the named source files. |
 | `bun run test:browser` | Run the complete local embedded-browser smoke test, including cross-process persistence. Use `--scenario=controls`, `--scenario=tool-boundary`, `--scenario=evaluation`, `--scenario=wait-deadlines`, or `--scenario=popups` for one isolated scenario. |
 | `bun run test:codex` | Probe the real CLI handshake and account without starting a paid turn. |
 | `bun run test:durations` | Re-record how long each desktop test file takes. CI splits its shards by this table, so run it when the two shards stop finishing together. |
-| `bun run cua-driver:doctor` | Print, as JSON, which `cua-driver` binary OpenBot would use for Computer Use, and the driver's own `doctor` report. Read-only, and it starts no daemon. `OPENBOT_CUA_DRIVER_PATH` selects a different binary in a checkout; an installed application runs only the driver it was released with. |
+| `bun run cua-driver:doctor` | Print, as JSON, which `cua-driver` binary AIKINGBOT would use for Computer Use, and the driver's own `doctor` report. Read-only, and it starts no daemon. `AIKINGBOT_CUA_DRIVER_PATH` selects a different binary in a checkout; an installed application runs only the driver it was released with. |
 | `bun run prepare:cua-driver` | Write the pinned Computer Use driver to `build/cua-driver/<platform>/<arch>`, verifying every SHA-256 in `native-runtime.lock.json`. Name another target with `bun scripts/install-cua-driver.ts <platform> <arch>`. Every packaging command runs this first. |
 | `bun run pin:cua-driver <version>` | Print a new `cuaDriver` block for `native-runtime.lock.json` from a published `cua-driver` release. Downloads all three targets and hashes each shipped file. |
 | `bun run package` | Build an unpacked local application for the architecture of this Mac. |
@@ -357,7 +357,7 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 | `bun run package:linux` | Build an unpacked local Linux x64 application on Linux. |
 | `bun run package:linux:arm64` | Build an unpacked local Linux arm64 application on arm64 Linux. |
 | `bun run package:linux:verify` | Build and verify the Linux x64 application on Linux. Run it under `xvfb-run -a` without a display. |
-| `bun scripts/create-github-app.ts [--org <org>]` | Create the OpenBot GitHub App from `scripts/github-app/manifest.json` with the manifest flow. Prints the Client ID for `src/main/github-connector-config.ts` and writes the app secrets to `~/.config/openbot/github-app-<slug>.json` (mode 0600). Enable Device Flow in the app settings after the run. |
+| `bun scripts/create-github-app.ts [--org <org>]` | Create the AIKINGBOT GitHub App from `scripts/github-app/manifest.json` with the manifest flow. Prints the Client ID for `src/main/github-connector-config.ts` and writes the app secrets to `~/.config/aikingbot/github-app-<slug>.json` (mode 0600). Enable Device Flow in the app settings after the run. |
 | `bun run release:preflight` | Verify version, Git state, and GitHub release secrets before tagging. |
 | `bun run dist:mac` | Build unsigned local DMG and ZIP update artifacts for this Mac. |
 | `bun run dist:win` | Build an unsigned Windows x64 NSIS installer on Windows. |
@@ -365,14 +365,14 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 | `bun run dist:linux:arm64` | Build an unsigned Linux arm64 AppImage on arm64 Linux. |
 | `bun run release:patch` | Create the next patch version commit and tag. |
 | `bun run mobile:release:patch` | Move the iPhone app notes from `apps/mobile/changelog.d` into `apps/mobile/CHANGELOG.md` and set the next patch version in `app.json`. Also `mobile:release:minor` and `mobile:release:major`. |
-| `bun run test:custom-agents` | Run two fake ACP agents through the agent store, Check agent and the `acp` provider router: equal session ids, restart and resume, switch, and delete. Offline; writes `.openbot-build/custom-acp-agent-e2e/report.json`. |
+| `bun run test:custom-agents` | Run two fake ACP agents through the agent store, Check agent and the `acp` provider router: equal session ids, restart and resume, switch, and delete. Offline; writes `.aikingbot-build/custom-acp-agent-e2e/report.json`. |
 | `bun run test:filesystem` | **Online/manual:** run real full-access Codex and Claude filesystem turns across private and shared workspaces. |
 | `bun run test:imagegen` | **Online/manual:** run a real full-access image-generation turn. |
-| `bun run test:workspace-only` | **Online/manual:** run real Workspace only Codex, Claude, Grok and OpenCode turns that try to write outside; writes a JSON report per provider to `.openbot-build/workspace-only-smoke/`. Add `--provider <id>` for one, and `--model <id>` to choose its model. |
-| `bun run test:provider-detection` | Run local detection, Load models and endpoint Edit against fake OpenAI-compatible servers on this computer: no key in a scan, no redirect, the stored key only to its own origin. Offline; writes `.openbot-build/provider-detection-e2e/report.json`. |
+| `bun run test:workspace-only` | **Online/manual:** run real Workspace only Codex, Claude, Grok and OpenCode turns that try to write outside; writes a JSON report per provider to `.aikingbot-build/workspace-only-smoke/`. Add `--provider <id>` for one, and `--model <id>` to choose its model. |
+| `bun run test:provider-detection` | Run local detection, Load models and endpoint Edit against fake OpenAI-compatible servers on this computer: no key in a scan, no redirect, the stored key only to its own origin. Offline; writes `.aikingbot-build/provider-detection-e2e/report.json`. |
 | `bun run test:storage-live` | **Online/manual:** verify isolated Codex and Claude turns in a temporary SQLite database. |
 
-Publishing never creates a second OpenBot instance. The host keeps its Team API on loopback. A hidden,
+Publishing never creates a second AIKINGBOT instance. The host keeps its Team API on loopback. A hidden,
 sandboxed Electron page connects it to invited clients through WebRTC. Signal carries only connection
 setup messages. Team data uses direct DataChannels when possible and the project coturn service when
 direct ICE fails. Cloudflare stores accounts, configuration, memberships, invitations, logical session
@@ -383,12 +383,12 @@ LAN interface. Restart the runner after changing networks so newly generated QR 
 current address.
 
 Production mobile analytics setup and required OpenPanel credentials are documented in
-[OpenBot Mobile](apps/mobile/README.md#openpanel-product-analytics).
+[AIKINGBOT Mobile](apps/mobile/README.md#openpanel-product-analytics).
 
 `mobile:go:tunnel` exposes only the Expo development server. It does not expose the local account
 API, Signal, or TURN. A phone on 5G cannot use the default LAN addresses. For a test across networks,
 use a VPN that connects both devices, or provide HTTPS and WSS endpoints that forward to this dev
-stack's account API and Signal ports. Set `OPENBOT_MOBILE_AUTH_API_URL` to the reachable account API
+stack's account API and Signal ports. Set `AIKINGBOT_MOBILE_AUTH_API_URL` to the reachable account API
 origin and `REMOTE_SIGNAL_URL` to the reachable Signal URL, including `/v1/signal`, before starting
 `bun run dev`. Use the ports reported by `bun run dev:status`; they can differ between worktrees.
 If direct WebRTC cannot connect, `TURN_HOST` must name a reachable coturn service and
@@ -401,24 +401,24 @@ only the credential in secure storage for revocation retries at startup, on retu
 and on the next connection attempt. Remote revocation completes when the account API is reachable.
 
 For manual team testing, `bun run dev:test-client` starts a complete two-client harness. The second
-client uses the `OpenBot Dev Test Client wt-<hash>` profile of this worktree (`OpenBot Dev Test Client`
+client uses the `AIKINGBOT Dev Test Client wt-<hash>` profile of this worktree (`AIKINGBOT Dev Test Client`
 with `--shared`) and renderer port 5174. `dev:reset` removes the shared one and the legacy
-`OpenBot Dev Host` profile. It does not remove the downloaded
+`AIKINGBOT Dev Host` profile. It does not remove the downloaded
 provider CLIs, which the whole computer shares. Press `Ctrl+C` in the runner terminal
 to stop only the processes started by that runner, or run `bun run dev:stop` from the worktree once
 that terminal is gone. Never stop a dev stack with `pkill -f electron` or `pkill -f bun`: on a
 machine running several worktrees those kill the other checkouts' work mid-write, which is what
 `dev:status` and `dev:stop` exist to make unnecessary.
 
-Set `OPENBOT_DEV_ICE_TRANSPORT_POLICY=relay` before this command to force Team API traffic through
+Set `AIKINGBOT_DEV_ICE_TRANSPORT_POLICY=relay` before this command to force Team API traffic through
 coturn. This test option works only with the development renderer. Production always starts with `all`.
 
 The normal `check` command is offline and uses a fake App Server. Manual smoke scripts may use the
 signed-in subscription and must not run in CI.
 
 Local agents run with the providers' unrestricted execution modes. Each agent starts in its own
-persistent `~/OpenBot/Agents/<agent-id>` workspace and also receives `~/OpenBot/Shared`; routine command
-and filesystem work in both locations runs without OpenBot adding another permission boundary.
+persistent `~/AIKINGBOT/Agents/<agent-id>` workspace and also receives `~/AIKINGBOT/Shared`; routine command
+and filesystem work in both locations runs without AIKINGBOT adding another permission boundary.
 Because these modes are intentionally unrestricted, they also permit host access outside those
 directories when the provider and operating system allow it.
 
@@ -434,7 +434,7 @@ After you publish a server on a Mac, an optional **Set up remote desktop** promp
 Use the permission buttons to open **System Settings → Privacy & Security** on the host. If Sunshine is
 missing from a list, select **Show Sunshine in Finder** and add the bundled `Sunshine.app` with the **+** button.
 macOS can attribute access to the application that starts Sunshine; enable the application named by the
-system prompt. Return to OpenBot to check again. If a restart is required, end remote sessions first.
+system prompt. Return to AIKINGBOT to check again. If a restart is required, end remote sessions first.
 A check never restarts an active session.
 
 Select **Test on this Mac** for a local test. If native checks are unavailable, it tests video only and disables viewer input. After the checks pass, it can test mouse and keyboard too. Select **Test remote desktop** from another computer for a remote test.
@@ -467,7 +467,7 @@ Cloudflare Workers
 
 - `src/main` owns the Electron lifecycle, window security, local protocol, and IPC registration.
 - `src/backend` owns provider adapters, persistence, message scheduling, transfers, and the browser host.
-- `src/preload` exposes only the typed `window.openbot` API.
+- `src/preload` exposes only the typed `window.aikingbot` API.
 - `src/renderer` contains the SolidJS interface.
 - `apps/auth-api` contains the TanStack Start account API, one-time email codes, rate limits, and D1 migrations. It also serves the public site: the landing page, `/news`, `/guides`, and the plugin pages at `/plugins` and `/plugins/<slug>`.
 - `packages/contracts` contains process-boundary contracts, shared limits, and pure validation.
@@ -479,7 +479,7 @@ rules for new modules.
 ## Chat attachments
 
 Attach MP3 audio and MOV video through the file picker or drag and drop. The limits are 100 MB per
-file, 250 MB per message, and 10 files per message. OpenBot gives the agent the original file; it does
+file, 250 MB per message, and 10 files per message. AIKINGBOT gives the agent the original file; it does
 not play, decode, transcribe, or validate the recording during import. Damaged recordings can be
 attached for inspection. Analysis depends on the tools available to the agent. For other audio or
 video formats, export as MP3 or MOV, or attach a text transcript. Remote hosts must advertise the
@@ -487,18 +487,18 @@ video formats, export as MP3 or MOV, or attach a text transcript. Remote hosts m
 
 ## Local data and network boundaries
 
-- `~/OpenBot/Agents/<agent-id>` — one working directory per agent. A profile written before the
-  bot-to-agent rename holds them under `~/OpenBot/Bots`; the app moves them on first launch, and a
+- `~/AIKINGBOT/Agents/<agent-id>` — one working directory per agent. A profile written before the
+  bot-to-agent rename holds them under `~/AIKINGBOT/Bots`; the app moves them on first launch, and a
   workspace whose move could not run stays readable where it is.
-- `~/OpenBot/Shared` — files intentionally shared between agents.
-- `~/OpenBot/Shared/Transfers` — managed message snapshots and generated files. Each transfer has
-  an `.openbot-transfer.json` manifest with ownership, recipients, size, and SHA-256 metadata.
-- `~/OpenBot/Downloads` — embedded-browser downloads.
-- Electron `userData/openbot.db` — the canonical OpenBot event log and projections for agents,
+- `~/AIKINGBOT/Shared` — files intentionally shared between agents.
+- `~/AIKINGBOT/Shared/Transfers` — managed message snapshots and generated files. Each transfer has
+  an `.aikingbot-transfer.json` manifest with ownership, recipients, size, and SHA-256 metadata.
+- `~/AIKINGBOT/Downloads` — embedded-browser downloads.
+- Electron `userData/aikingbot.db` — the canonical AIKINGBOT event log and projections for agents,
   conversations, provider session bindings, queues, reactions, and attachment indexes.
 - Electron `userData/legacy-backup-v1` — unchanged copies of imported `bots.json` and
   `mailbox.json` files, when these files existed before the SQLite migration.
-- `~/Library/Application Support/OpenBot/provider-runtimes` — the provider CLIs OpenBot downloads
+- `~/Library/Application Support/AIKINGBOT/provider-runtimes` — the provider CLIs AIKINGBOT downloads
   and pins. One store for the whole computer, outside any one profile, so every development profile
   and the packaged app read the same download. `--user-data-dir` keeps the store in that directory
   instead, so an explicitly named profile stays self-contained.
@@ -508,24 +508,24 @@ video formats, export as MP3 or MOV, or attach a text transcript. Remote hosts m
 - `~/.gemini` (or `$GEMINI_HOME`) — login and session history managed exclusively by the
   Antigravity ACP server that Gemini uses.
 - `~/.cursor` — login and session history managed exclusively by the Cursor CLI. A confined Cursor
-  process keeps its settings in `~/.cursor/openbot-confined`, so it never changes yours.
+  process keeps its settings in `~/.cursor/aikingbot-confined`, so it never changes yours.
 - `~/.cline` (or `$CLINE_DIR`) — login and session history managed exclusively by the Cline CLI.
 
 Deleting an agent removes its workspace, owned generated attachments, and deliveries addressed only
 to that agent. A transfer remains when another agent still uses the same message.
 
-OpenBot keeps one stable local conversation when an agent changes between Codex, Grok, and Claude. Native
+AIKINGBOT keeps one stable local conversation when an agent changes between Codex, Grok, and Claude. Native
 provider session identifiers stay private and are used only to resume provider runtime state.
 
 The Electron renderer is never exposed as a public website. It communicates with local CLI processes
-over stdio. When the owner publishes OpenBot, its authenticated Team API stays on localhost. WebRTC
+over stdio. When the owner publishes AIKINGBOT, its authenticated Team API stays on localhost. WebRTC
 protocol v3 carries RPC, events, and binary files to desktop and mobile clients. Expo Go hosts the
 mobile `RTCPeerConnection` in a hidden Expo DOM component, so mobile uses the same encrypted transport
 without a custom native development build. The account flow connects to
-the configured HTTPS Cloudflare API. The client stores only an encrypted OpenBot session token. One-time codes expire after
+the configured HTTPS Cloudflare API. The client stores only an encrypted AIKINGBOT session token. One-time codes expire after
 10 minutes and are stored only as hashes. A daily maintenance task removes expired or consumed
 authentication records from D1. The embedded browser uses a separate sandboxed Electron session and
-cannot access `window.openbot` or managed local attachments.
+cannot access `window.aikingbot` or managed local attachments.
 
 To run your own account service, Signal and TURN, see [Self-hosted remote access](docs/self-hosting.md).
 
@@ -548,7 +548,7 @@ Releases are tag-driven. `bun run release:patch`, `release:minor`, or `release:m
 version and changelog. After review, commit, preflight, and tag the release; pushing the tag builds a
 signed and notarized macOS ARM64 and x64 release, a signed Windows x64 release, and unsigned Linux x64
 and arm64 AppImages in GitHub Actions. After the release is published, the workflow pushes the Docker
-image to `ghcr.io/nightly-labs/openbot`.
+image to `ghcr.io/aikingcorp-spec/aikingx_bot`.
 Installed builds check GitHub Releases for updates and expose download/restart controls in the account
 popover. Release signing secrets and the complete procedure are documented in
 [docs/RELEASING.md](docs/RELEASING.md).
@@ -568,16 +568,16 @@ distribute the code for permitted noncommercial purposes. Commercial use require
 from the copyright owner. Versions up to and including 0.1.11 remain available under Apache-2.0.
 See [NOTICE](NOTICE) for attribution and third-party notices.
 
-OpenBot is an independent source-available project and is not affiliated with, endorsed by, or
+AIKINGBOT is an independent source-available project and is not affiliated with, endorsed by, or
 sponsored by OpenAI. OpenAI, ChatGPT, and Codex are used only to describe compatibility with their
 respective products and services.
 
 ### Shared macOS hosts
 
-For one native Standard user per tenant, install the normal OpenBot DMG and the optional
-`OpenBot-Host-<VERSION>-arm64.pkg` from the same release. The Host package provides
-`sudo openbot-host setup --create-user client-acme --create-user client-bravo` and
-`sudo openbot-host verify`. `sudo openbot-host status [--json]` and `sudo openbot-host watch`
+For one native Standard user per tenant, install the normal AIKINGBOT DMG and the optional
+`AIKINGBOT-Host-<VERSION>-arm64.pkg` from the same release. The Host package provides
+`sudo aikingbot-host setup --create-user client-acme --create-user client-bravo` and
+`sudo aikingbot-host verify`. `sudo aikingbot-host status [--json]` and `sudo aikingbot-host watch`
 show the update phase, the staged version, and each tenant's work state. No Git checkout, Bun,
 or compilation is required on the host.
 Normal desktop users need only the DMG. See the [host deployment guide](docs/multi-tenant-hosting.md)

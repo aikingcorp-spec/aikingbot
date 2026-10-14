@@ -24,7 +24,7 @@ import {
   isQueueSnapshot,
   type QueuedMessageReceipt,
   type QueueSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   decodeRecord,
   guardedListDecoder,
@@ -33,8 +33,8 @@ import {
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/ipc-decoding";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
 
 export function decodeFilePreview(value: unknown): FilePreview {
   const preview = decodeRecord(value, "file preview");

@@ -1,4 +1,4 @@
-import { type AgentSummary, decodeChannelPage, isAgentSummary } from "@openbot/contracts/ipc";
+import { type AgentSummary, decodeChannelPage, isAgentSummary } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import agentFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
@@ -35,11 +35,11 @@ describe("Team API channel access", () => {
     const token = await fixture.signIn();
     const headers = {
       Authorization: `Bearer ${token}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "channel-chats-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "channel-chats-v1",
       "Content-Type": "application/json",
     };
-    expect((await fetch(`${base}/v1/channels`, { headers: { ...headers, "OpenBot-Capabilities": "" } })).status).toBe(
+    expect((await fetch(`${base}/v1/channels`, { headers: { ...headers, "AIKINGBOT-Capabilities": "" } })).status).toBe(
       400,
     );
     expect(
@@ -93,7 +93,7 @@ describe("Team API channel access", () => {
       headers: {
         ...headers,
         Authorization: `Bearer ${member.sessionToken}`,
-        "OpenBot-Capabilities": "channel-chats-v1,channel-delete-v1",
+        "AIKINGBOT-Capabilities": "channel-chats-v1,channel-delete-v1",
       },
       body: deleteBody,
     });
@@ -102,7 +102,7 @@ describe("Team API channel access", () => {
       method: "POST",
       headers: {
         ...headers,
-        "OpenBot-Capabilities": "channel-chats-v1,channel-delete-v1",
+        "AIKINGBOT-Capabilities": "channel-chats-v1,channel-delete-v1",
       },
       body: deleteBody,
     });
@@ -169,8 +169,8 @@ describe("Team API channel access", () => {
       const { base } = await fixture.start({ channels, agents: createAgents({ listAgents: () => agents }) });
       const headers = {
         Authorization: `Bearer ${await fixture.signIn()}`,
-        "OpenBot-Protocol-Version": protocol,
-        "OpenBot-Capabilities": `${capabilities},channel-chats-v1`,
+        "AIKINGBOT-Protocol-Version": protocol,
+        "AIKINGBOT-Capabilities": `${capabilities},channel-chats-v1`,
         "Content-Type": "application/json",
       };
 
@@ -286,8 +286,8 @@ describe("Team API channel access", () => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${await fixture.signIn()}`,
-        "OpenBot-Protocol-Version": "4",
-        "OpenBot-Capabilities": "opencode,channel-chats-v1",
+        "AIKINGBOT-Protocol-Version": "4",
+        "AIKINGBOT-Capabilities": "opencode,channel-chats-v1",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

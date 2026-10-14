@@ -22,7 +22,7 @@ export const messages = {
   "marketplace.kinds": "Tipos de conteúdo da loja",
   "marketplace.tab.agents": "Agentes",
   "marketplace.tab.skills": "Habilidades",
-  "marketplace.plugins.missing": "Este plugin não está no catálogo do OpenBot.",
+  "marketplace.plugins.missing": "Este plugin não está no catálogo do AIKINGBOT.",
   "marketplace.agents.loadingDetail": "Carregando detalhes do agente…",
   "marketplace.agents.skills": "Habilidades",
   "marketplace.agents.routines": "Rotinas",
@@ -30,7 +30,7 @@ export const messages = {
   "marketplace.agents.routineInactive": "Inativa",
   "marketplace.skill.loading": "Carregando habilidade",
   "marketplace.skill.update": "Atualizar habilidade",
-  "marketplace.try.readFailed": "O OpenBot não conseguiu ler as habilidades deste agente. Tente novamente.",
+  "marketplace.try.readFailed": "O AIKINGBOT não conseguiu ler as habilidades deste agente. Tente novamente.",
   "marketplace.try.enable": "Ative esta habilidade nas configurações do agente para testá-la.",
   "marketplace.try.repair": "Repare esta habilidade nas configurações do agente para testá-la.",
   "marketplace.try.update": "Atualize esta habilidade para testar esta versão.",
@@ -148,7 +148,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "Extraia os ícones de marketing em 2x para o pacote do app.",
   "marketplace.plugin.paper.tagline": "Canvas de design construído em HTML e CSS",
   "marketplace.plugin.paper.description":
-    "O Paper permite que agentes leiam e escrevam o arquivo de design aberto no Paper Desktop: inspecionar artboards, seleções, estilos computados, JSX e tokens, e criar ou mudar frames, textos e estilos. Instale o Paper Desktop, abra-o uma vez e abra um arquivo antes de começar. O OpenBot inicia a CLI do Paper que faz a ponte.",
+    "O Paper permite que agentes leiam e escrevam o arquivo de design aberto no Paper Desktop: inspecionar artboards, seleções, estilos computados, JSX e tokens, e criar ou mudar frames, textos e estilos. Instale o Paper Desktop, abra-o uma vez e abra um arquivo antes de começar. O AIKINGBOT inicia a CLI do Paper que faz a ponte.",
   "marketplace.plugin.paper.app":
     "Lê e escreve o arquivo aberto do Paper Desktop, através do servidor MCP local que a CLI do Paper retransmite. Precisa do Paper Desktop com um arquivo aberto.",
   "marketplace.plugin.paper.prompt.implement":

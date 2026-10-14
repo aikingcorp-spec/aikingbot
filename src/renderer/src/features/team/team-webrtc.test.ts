@@ -1,6 +1,9 @@
-import { isString } from "@openbot/contracts/runtime-values";
-import { SIGNAL_TURN_REFRESH_INTERVAL_MS, type SignalServerMessage } from "@openbot/contracts/signal-protocol/messages";
-import { TEAM_PROTOCOL_V2_CHANNELS } from "@openbot/contracts/team-protocol/v2";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import {
+  SIGNAL_TURN_REFRESH_INTERVAL_MS,
+  type SignalServerMessage,
+} from "@aikingbot/contracts/signal-protocol/messages";
+import { TEAM_PROTOCOL_V2_CHANNELS } from "@aikingbot/contracts/team-protocol/v2";
 import { afterEach, describe, expect, it, type Mock, vi } from "vitest";
 import type { BridgeCommand } from "./team-webrtc";
 import { encodeTeamWebRtcPayload, TeamWebRtcPayloadDecoder } from "./team-webrtc-framing";
@@ -132,7 +135,7 @@ async function startBridge() {
   vi.stubGlobal("WebSocket", SignalSocket);
   vi.stubGlobal("RTCPeerConnection", PeerConnection);
   await import("./team-webrtc");
-  addEventListener.mock.calls[0]?.[1]({ source: testWindow, data: "openbot-team-webrtc-port", ports: [port] });
+  addEventListener.mock.calls[0]?.[1]({ source: testWindow, data: "aikingbot-team-webrtc-port", ports: [port] });
   const posted = (type: string) =>
     port.postMessage.mock.calls.map(([message]) => message).filter((message) => message.type === type);
   const command = async (data: Omit<BridgeCommand, "commandId">) => {
@@ -222,7 +225,7 @@ it("routes two phones independently and disconnects or resumes only the addresse
     "connection-2",
   ]);
   const channels = [rtc1, rtc2].map((rtc) =>
-    [...Object.values(TEAM_PROTOCOL_V2_CHANNELS), "openbot.remote-desktop.signal.v1"].map((label) => {
+    [...Object.values(TEAM_PROTOCOL_V2_CHANNELS), "aikingbot.remote-desktop.signal.v1"].map((label) => {
       const channel = new DataChannel(label);
       rtc.ondatachannel?.({ channel });
       return channel;

@@ -6,9 +6,9 @@
  * the stage behind it reports it - so the story shows the hand-off as well as the dialog.
  */
 
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { McpSignInDialog } from "@openbot/ui/features/settings/McpSignInDialog";
+import type { McpServerConfig, McpTestResult } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { McpSignInDialog } from "@aikingbot/ui/features/settings/McpSignInDialog";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import {
   CONNECT_GLOBALS,
@@ -86,5 +86,5 @@ export const Playground: Story = {};
 
 /** Catalog sign-in for a joined server: the host's browser shows the page here, and that host keeps the grant. */
 export const RemoteHost: Story = {
-  args: { hostName: "OpenBot team" },
+  args: { hostName: "AIKINGBOT team" },
 };

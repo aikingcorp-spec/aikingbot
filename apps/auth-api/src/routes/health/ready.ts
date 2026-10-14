@@ -16,7 +16,7 @@ export const Route = createFileRoute("/health/ready")({
             if (!requestAuthService().configured) {
               return apiError(503, "email_delivery_not_configured", "Email sign-in delivery is not configured.");
             }
-            return json({ service: "openbot-auth-api", status: "ready" });
+            return json({ service: "aikingbot-auth-api", status: "ready" });
           }),
           () => apiError(503, "service_not_ready", "The account service is not ready."),
         ),

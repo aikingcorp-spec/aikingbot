@@ -55,12 +55,12 @@ export const messages = {
   "error.agent.changedWhileDuplicating": "El agente cambió mientras se duplicaba. Inténtalo de nuevo.",
   "error.agent.duplicatedAgentGone": "El agente duplicado ya no existe.",
   "error.agent.stateCorrupt":
-    "El estado del agente está dañado o pertenece a una versión más reciente de OpenBot; no se sobrescribirá.",
+    "El estado del agente está dañado o pertenece a una versión más reciente de AIKINGBOT; no se sobrescribirá.",
   "error.agent.oldRoleField":
-    "Los perfiles de agente guardados usan el antiguo campo role; actualiza los datos antes de iniciar OpenBot.",
+    "Los perfiles de agente guardados usan el antiguo campo role; actualiza los datos antes de iniciar AIKINGBOT.",
   "error.agent.duplicateIds":
     "El estado del agente contiene identificadores de agente duplicados; no se sobrescribirá.",
-  "error.agent.copyNameFailed": "OpenBot no pudo crear un nombre único para la copia del agente.",
+  "error.agent.copyNameFailed": "AIKINGBOT no pudo crear un nombre único para la copia del agente.",
   "error.agent.endpointRemoved": "Se eliminó el endpoint que usaba este agente. Elige otro modelo para él.",
   "error.agent.selectedGone": "El agente seleccionado ya no existe.",
   "error.agent.profileEndpointsChanged":
@@ -82,9 +82,9 @@ export const messages = {
   "error.agent.saveOtherAgent": "Este guardado pertenece a otro agente.",
   "error.agent.savedGone": "El agente guardado ya no existe.",
   "error.agent.storedProfileUnreadable":
-    "Un perfil de agente guardado tiene un valor «{field}» ilegible; actualiza los datos antes de iniciar OpenBot.",
+    "Un perfil de agente guardado tiene un valor «{field}» ilegible; actualiza los datos antes de iniciar AIKINGBOT.",
   "error.agent.storedProfileUnreadableId":
-    "El perfil de agente guardado {id} tiene un valor «{field}» ilegible; actualiza los datos antes de iniciar OpenBot.",
+    "El perfil de agente guardado {id} tiene un valor «{field}» ilegible; actualiza los datos antes de iniciar AIKINGBOT.",
   "error.agent.queueEditRejected": "Edición de la cola rechazada: {reason}",
   "error.agent.computerUseLocalOnly": "El uso del equipo solo se puede cambiar en el equipo que ejecuta el agente.",
   "error.agent.automationLocalOnly": "Los scripts locales solo se pueden permitir en el equipo que ejecuta el agente.",
@@ -102,5 +102,5 @@ export const messages = {
   "error.agent.lowMemory":
     "Este servidor tiene poca memoria disponible. Tu mensaje espera en la cola y se iniciará cuando se libere memoria. Un plan superior proporciona más memoria al servidor.",
   "error.agent.workspaceOnlyToolMissing":
-    "Solo espacio de trabajo requiere {tool}, que OpenBot no encontró. Instálalo o elige Acceso completo en los ajustes del agente.",
+    "Solo espacio de trabajo requiere {tool}, que AIKINGBOT no encontró. Instálalo o elige Acceso completo en los ajustes del agente.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -117,8 +117,8 @@ export const ROUTINE_LIMIT_POLICIES = ["wait", "skip"] as const;
 export type RoutineLimitPolicy = (typeof ROUTINE_LIMIT_POLICIES)[number];
 
 /**
- * What a routine does with the occurrences that came due while OpenBot was closed: `skip` records
- * them and drops them, `run-once` runs the newest one when OpenBot opens and records the others.
+ * What a routine does with the occurrences that came due while AIKINGBOT was closed: `skip` records
+ * them and drops them, `run-once` runs the newest one when AIKINGBOT opens and records the others.
  */
 export const ROUTINE_MISSED_POLICIES = ["skip", "run-once"] as const;
 export type RoutineMissedPolicy = (typeof ROUTINE_MISSED_POLICIES)[number];
@@ -180,7 +180,7 @@ export type RoutineRunStatus =
 export const ROUTINE_MISSED_COUNT_LIMIT = 999;
 
 /**
- * The occurrences that one `cancelled` run stands for: they came due while OpenBot was closed, and
+ * The occurrences that one `cancelled` run stands for: they came due while AIKINGBOT was closed, and
  * none of them ran. `until` is the last of them, or null for one occurrence at `scheduledFor`.
  */
 export interface RoutineMissedRuns {

@@ -16,10 +16,10 @@ import {
   isBillingAmount,
   isOpenBillingStatus,
   parseBillingLookupKey,
-} from "@openbot/contracts/billing";
-import type { HostedServerCatalog, HostedServerCatalogPlan } from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/billing";
+import type { HostedServerCatalog, HostedServerCatalogPlan } from "@aikingbot/contracts/hosted-servers";
+import { isDynamicRecord, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Context, Effect, Layer, Schema } from "effect";
 import { type AccountAnalytics, type BillingAction, NO_ACCOUNT_ANALYTICS } from "./account-analytics";
 import type { BillingSales } from "./billing-sales";
@@ -248,7 +248,7 @@ export class BillingService {
       const created = yield* this.#stripeCall(() =>
         dependencies.stripe.createCustomer(
           { userId: user.id, email: user.email },
-          existing ? `openbot-customer-${user.id}-after-${existing}` : `openbot-customer-${user.id}`,
+          existing ? `aikingbot-customer-${user.id}-after-${existing}` : `aikingbot-customer-${user.id}`,
         ),
       );
       const now = dependencies.now();
@@ -743,10 +743,10 @@ export class BillingService {
     // A changed amount moves the lookup key to a new Price, and current subscriptions keep the old one.
     const key =
       parseBillingLookupKey(price?.lookup_key) ??
-      parseBillingLookupKey(`openbot_${price?.metadata.openbot_plan}_${price?.metadata.openbot_interval}`);
+      parseBillingLookupKey(`aikingbot_${price?.metadata.aikingbot_plan}_${price?.metadata.aikingbot_interval}`);
     const currency = subscription.currency.toLowerCase();
     if (!key || !isBillingCurrency(currency) || !isOneOf(BILLING_SUBSCRIPTION_STATUSES, subscription.status)) {
-      console.warn("billing: subscription is not an OpenBot plan", { subscriptionId });
+      console.warn("billing: subscription is not an AIKINGBOT plan", { subscriptionId });
       return null;
     }
     const ownerId = yield* this.#subscriptionOwner(subscription, customerId);
@@ -888,7 +888,7 @@ export class BillingService {
         )
       : null;
     if (!user) {
-      console.warn("billing: subscription names no OpenBot account", { subscriptionId: subscription.id });
+      console.warn("billing: subscription names no AIKINGBOT account", { subscriptionId: subscription.id });
       return null;
     }
     const now = dependencies.now();

@@ -1,4 +1,4 @@
-import type { SaveAgentProfileInput, SaveAgentProfileResult } from "@openbot/contracts/ipc";
+import type { SaveAgentProfileInput, SaveAgentProfileResult } from "@aikingbot/contracts/ipc";
 import { Effect, Schema } from "effect";
 
 class AgentProfileSaveFailure extends Schema.TaggedError<AgentProfileSaveFailure>()("AgentProfileSaveFailure", {

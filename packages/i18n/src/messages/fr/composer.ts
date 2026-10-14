@@ -48,10 +48,10 @@ export const messages = {
   "composer.voice.transcribing": "Transcription de la demande vocale",
   "composer.voice.start": "Créer une demande à la voix",
   "composer.voice.blocked":
-    "L’accès au microphone est bloqué. Autorisez OpenBot à utiliser le microphone dans les réglages du système.",
+    "L’accès au microphone est bloqué. Autorisez AIKINGBOT à utiliser le microphone dans les réglages du système.",
   "composer.voice.noMicrophone": "Aucun microphone n’est disponible.",
-  "composer.voice.startFailed": "OpenBot n’a pas pu démarrer l’enregistrement vocal.",
-  "composer.voice.transcribeFailed": "OpenBot n’a pas pu transcrire cet enregistrement.",
+  "composer.voice.startFailed": "AIKINGBOT n’a pas pu démarrer l’enregistrement vocal.",
+  "composer.voice.transcribeFailed": "AIKINGBOT n’a pas pu transcrire cet enregistrement.",
   "composer.reply.toYou": "Réponse à votre message",
   "composer.reply.toAgent": "Réponse à l’agent",
   "composer.reply.attachment": "Pièce jointe",

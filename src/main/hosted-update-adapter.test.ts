@@ -10,7 +10,7 @@ let root: string;
 let paths: HostedUpdatePaths;
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "openbot-hosted-adapter-"));
+  root = mkdtempSync(join(tmpdir(), "aikingbot-hosted-adapter-"));
   paths = { requests: join(root, "run"), state: join(root, "state"), stagedReady: join(root, "staged.ready") };
   mkdirSync(paths.requests);
 });
@@ -24,7 +24,7 @@ function adapter(latest: string) {
     paths,
     pollIntervalMs: 5,
     fetch: vi.fn<typeof fetch>(
-      async () => new Response(`version: ${latest}\nfiles:\n  - url: OpenBot-${latest}-x86_64.AppImage\n`),
+      async () => new Response(`version: ${latest}\nfiles:\n  - url: AIKINGBOT-${latest}-x86_64.AppImage\n`),
     ),
   });
   const progress = vi.fn();

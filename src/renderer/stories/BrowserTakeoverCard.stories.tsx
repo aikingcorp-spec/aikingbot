@@ -1,5 +1,5 @@
-import type { BrowserPreview, BrowserTab } from "@openbot/contracts/ipc";
-import { BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
+import type { BrowserPreview, BrowserTab } from "@aikingbot/contracts/ipc";
+import { BrowserTakeoverCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import browserTakeoverPreviewUrl from "./assets/browser-takeover-preview.svg";

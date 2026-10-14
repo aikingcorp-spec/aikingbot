@@ -1,26 +1,26 @@
-import { type AgentEvent, type AgentSummary, latestTurnAnswer } from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
+import { type AgentEvent, type AgentSummary, latestTurnAnswer } from "@aikingbot/contracts/ipc";
+import type { LiveActivityRelayPush } from "@aikingbot/contracts/live-activity-relay";
 import {
   NOTIFICATION_SEALED_LIMIT,
   type NotificationRelayPush,
   type NotificationSound,
-} from "@openbot/contracts/notification-relay";
-import type { PushNotificationRegistration } from "@openbot/contracts/team-protocol/push-notifications-v1";
-import { type AppTranslate, resolveLocale, translateFor } from "@openbot/i18n";
-import { redactText, toLogValue } from "@openbot/logging";
-import { type AgentNotificationContent, notificationForAgentEvent } from "@openbot/team-client/agent-notifications";
+} from "@aikingbot/contracts/notification-relay";
+import type { PushNotificationRegistration } from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import { type AppTranslate, resolveLocale, translateFor } from "@aikingbot/i18n";
+import { redactText, toLogValue } from "@aikingbot/logging";
+import { type AgentNotificationContent, notificationForAgentEvent } from "@aikingbot/team-client/agent-notifications";
 import {
   decodeLiveActivityBytes,
   LIVE_ACTIVITY_NONCE_BYTES,
   LIVE_ACTIVITY_SECRET_BYTES,
-} from "@openbot/team-client/live-activity-seal";
+} from "@aikingbot/team-client/live-activity-seal";
 import {
   type PushNotificationContent,
   type PushNotificationKeys,
   type PushNotificationKind,
   pushNotificationKeys,
   sealPushNotification,
-} from "@openbot/team-client/push-notification-seal";
+} from "@aikingbot/team-client/push-notification-seal";
 import { Effect, Exit, Fiber, Schema, Scope } from "effect";
 import { isNoUpdateAnswer } from "../backend/agent/routine-quiet-runs";
 import type { PushNotificationStore, StoredPushRegistration } from "./push-notification-store";

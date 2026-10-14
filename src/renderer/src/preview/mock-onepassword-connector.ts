@@ -3,7 +3,7 @@ import {
   type OnePasswordConnectorDesktopApi,
   type OnePasswordConnectorStatus,
   type OnePasswordSetup,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 /** How long the mock CLI takes to download, and to create the vault and the service account. */
 const MOCK_INSTALL_MS = 1_500;
@@ -15,7 +15,7 @@ const CONNECTED: OnePasswordConnectorStatus = {
   ...DISCONNECTED_ONEPASSWORD_CONNECTOR,
   state: "connected",
   setup: READY,
-  vaultNames: ["Shared with OpenBot"],
+  vaultNames: ["Shared with AIKINGBOT"],
   loginCount: 3,
 };
 

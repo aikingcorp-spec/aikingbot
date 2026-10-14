@@ -2,8 +2,8 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { connect, createServer, type Server, type Socket } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, type Logger } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, type Logger } from "@aikingbot/logging";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { CuaDriverActionTap, readRequest } from "./cua-driver-action-tap";
@@ -118,7 +118,7 @@ describe("CuaDriverActionTap", () => {
     const { client } = await taps(
       () => times.shift() ?? 7_500,
       '{"ok":true}\n',
-      createOpenBotLogger("tap", (line) => lines.push(line), "debug"),
+      createAIKINGBOTLogger("tap", (line) => lines.push(line), "debug"),
     );
 
     client.write('{"method":"call","name":"type_text","args":{"pid":41,"text":"hunter2-secret"}}\n');

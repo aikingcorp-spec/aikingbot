@@ -1,4 +1,4 @@
-import { WhatsNewDialog } from "@openbot/ui/features/updates/WhatsNewDialog";
+import { WhatsNewDialog } from "@aikingbot/ui/features/updates/WhatsNewDialog";
 import { createEffect, untrack } from "solid-js";
 import { appPort } from "../../app-port";
 import { useWhatsNew } from "./whats-new-context";
@@ -24,7 +24,7 @@ export function WhatsNewOverlay(props: { ready: boolean }) {
       onRetry={whatsNew.retry}
       onOpenChangelog={() => {
         void appPort()
-          .openUrl("https://openbot.run/changelog")
+          .openUrl("https://aikingbot.aikingx.com/changelog")
           .catch(() => undefined);
       }}
     />

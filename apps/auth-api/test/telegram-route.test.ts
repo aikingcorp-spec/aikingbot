@@ -1,12 +1,12 @@
 import { createHmac } from "node:crypto";
-import { isDynamicRecord, isFunction } from "@openbot/contracts/runtime-values";
-import { SLACK_ROUTE_AUDIENCE } from "@openbot/contracts/signal-protocol/slack-route";
+import { isDynamicRecord, isFunction } from "@aikingbot/contracts/runtime-values";
+import { SLACK_ROUTE_AUDIENCE } from "@aikingbot/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_LINK_CODE_PATTERN,
   TELEGRAM_LINK_CODE_TTL_SECONDS,
   TELEGRAM_ROUTE_AUDIENCE,
   TELEGRAM_ROUTE_CHATS_LIMIT,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@aikingbot/contracts/signal-protocol/telegram-route";
 import { createLocalJWKSet, decodeJwt, exportJWK, generateKeyPair, jwtVerify } from "jose";
 import { describe, expect, it, vi } from "vitest";
 import { sha256 } from "../src/server/crypto";
@@ -44,7 +44,7 @@ describe("Telegram chat routes", () => {
 
     const link = await runApiEffect(controlPlane.issueTelegramLinkCode("host-1", hosts["host-1"]));
     expect(link).toEqual({
-      botUsername: "openbot_bot",
+      botUsername: "aikingbot_bot",
       code: expect.stringMatching(TELEGRAM_LINK_CODE_PATTERN),
       expiresAt: clock.now + TELEGRAM_LINK_CODE_TTL_SECONDS * 1_000,
     });
@@ -301,7 +301,11 @@ describe("Telegram chat routes", () => {
     const post = (handlers: unknown, body: string, headers: Record<string, string>) => {
       if (!hasPostHandler(handlers)) throw new Error("The route has no POST handler.");
       return handlers.POST({
-        request: new Request("https://openbot.run/v2/remote/telegram-route", { method: "POST", body, headers }),
+        request: new Request("https://aikingbot.aikingx.com/v2/remote/telegram-route", {
+          method: "POST",
+          body,
+          headers,
+        }),
         params: {},
       });
     };
@@ -352,8 +356,8 @@ function hasPostHandler(
 function signature(body: string, secret: string): Record<string, string> {
   const timestamp = Math.floor(Date.now() / 1_000).toString();
   return {
-    "OpenBot-Timestamp": timestamp,
-    "OpenBot-Signature": createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("base64url"),
+    "AIKINGBOT-Timestamp": timestamp,
+    "AIKINGBOT-Signature": createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("base64url"),
   };
 }
 
@@ -394,7 +398,7 @@ async function setup(options: { telegram?: boolean; routeKey?: boolean } = {}) {
     REMOTE_AUTH_WEBHOOK_URL: "https://signal.example.test/internal/auth-events",
     REMOTE_AUTH_WEBHOOK_SECRET: WEBHOOK_SECRET,
     ...(options.routeKey === false ? {} : { SLACK_ROUTE_PRIVATE_JWK: privateJwk, SLACK_ROUTE_KEY_ID: "test-key" }),
-    ...(options.telegram === false ? {} : { TELEGRAM_BOT_ID: BOT_ID, TELEGRAM_BOT_USERNAME: "openbot_bot" }),
+    ...(options.telegram === false ? {} : { TELEGRAM_BOT_ID: BOT_ID, TELEGRAM_BOT_USERNAME: "aikingbot_bot" }),
   };
   const controlPlane = new RemoteControlPlane(bindings, {
     now: () => clock.now,

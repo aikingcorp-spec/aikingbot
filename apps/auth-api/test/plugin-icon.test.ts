@@ -23,7 +23,7 @@ function stubFetch(response: Response) {
 const png = () => new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "image/png" } });
 
 describe("plugin icon route", () => {
-  /* The whole reason the route exists: a reader of a plugin page asks openbot.run for the picture,
+  /* The whole reason the route exists: a reader of a plugin page asks aikingbot.aikingx.com for the picture,
      and the address of the developer's own server is read here, from the catalog. */
   it("fetches the address the catalog holds for the listing", async () => {
     const fetched = stubFetch(png());
@@ -47,7 +47,7 @@ describe("plugin icon route", () => {
     expect(fetched).toEqual([]);
   });
 
-  /* An SVG runs as the origin that serves it, and this route serves from openbot.run. A listing
+  /* An SVG runs as the origin that serves it, and this route serves from aikingbot.aikingx.com. A listing
      whose icon became one would otherwise be a way to run code on the site. */
   it("refuses to serve an icon that answers as SVG", async () => {
     stubFetch(new Response("<svg onload='alert(1)' />", { headers: { "Content-Type": "image/svg+xml" } }));

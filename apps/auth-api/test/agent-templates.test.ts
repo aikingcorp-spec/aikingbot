@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
-import { isAgentTemplateId } from "@openbot/contracts/agent-template-links";
-import type { AgentTemplateSnapshot } from "@openbot/contracts/ipc";
+import { isAgentTemplateId } from "@aikingbot/contracts/agent-template-links";
+import type { AgentTemplateSnapshot } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMarketplace } from "../src/server/agent-marketplace";
 import { AgentTemplates } from "../src/server/agent-templates";

@@ -1,8 +1,8 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isBrowserSecretRequest } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isBrowserSecretRequest } from "@aikingbot/contracts/ipc";
 import { Effect, Fiber } from "effect";
 import {
   BrowserWindow,
@@ -227,7 +227,7 @@ beforeEach(async () => {
   windowOpenHandlers.length = 0;
   menuTemplates.length = 0;
   clipboardWrites.length = 0;
-  directory = await mkdtemp(join(tmpdir(), "openbot-browser-limit-"));
+  directory = await mkdtemp(join(tmpdir(), "aikingbot-browser-limit-"));
   statePath = join(directory, "browser-tabs.json");
   browserWindow = new BrowserWindow();
   host = new BrowserHost(browserWindow, directory, statePath);
@@ -333,7 +333,7 @@ describe("browser address navigation", () => {
     );
     const pending = Effect.runFork(
       host.handleDynamicTool({
-        namespace: "openbot_browser",
+        namespace: "aikingbot_browser",
         tool,
         arguments:
           tool === "click"
@@ -379,7 +379,7 @@ describe("browser address navigation", () => {
     });
     const pending = Effect.runFork(
       host.handleDynamicTool({
-        namespace: "openbot_browser",
+        namespace: "aikingbot_browser",
         tool: "click",
         arguments: { tabId: tab.id, target: { kind: "point", x: 1, y: 1 } },
         threadId: "thread-a",
@@ -496,7 +496,7 @@ describe("browser address navigation", () => {
 describe("browser auth popups", () => {
   function listTabsFor(ownerAgentId: string, threadId: string) {
     return host.handleDynamicTool({
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool: "list_tabs",
       arguments: {},
       ownerAgentId,
@@ -556,7 +556,7 @@ describe("browser auth popups", () => {
 
   function prepareSecret(tabId: string) {
     return host.prepareSecret({
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool: "submit_secret",
       threadId: "thread-a",
       ownerAgentId: "agent-a",
@@ -788,15 +788,15 @@ describe("browser tab capacity", () => {
     const tabs = Array.from({ length: 26 }, (_, index) => ({
       id: `tab-${index}`,
       url: `https://example.com/${index}`,
-      ownerThreadId: `openbot-thread-bot-${uuid}`,
+      ownerThreadId: `aikingbot-thread-bot-${uuid}`,
       ownerBotId: `bot-${uuid}`,
     }));
     await writeFile(statePath, JSON.stringify({ version: 1, tabs, activeTabId: "tab-25" }));
-    await runCauseEffect(host.restore([{ id: `agent-${uuid}`, threadId: `openbot-thread-agent-${uuid}` }]));
+    await runCauseEffect(host.restore([{ id: `agent-${uuid}`, threadId: `aikingbot-thread-agent-${uuid}` }]));
     expect(host.listTabs()).toHaveLength(25);
     expect(host.activeTabId).toBe("tab-0");
     await expect(
-      runCauseEffect(host.open("https://www.google.com", `openbot-thread-agent-${uuid}`, `agent-${uuid}`)),
+      runCauseEffect(host.open("https://www.google.com", `aikingbot-thread-agent-${uuid}`, `agent-${uuid}`)),
     ).rejects.toThrow("25 open tabs");
   });
 
@@ -904,7 +904,7 @@ describe("agent tab cleanup", () => {
       turnId: "turn-1",
       callId: `call-${tool}`,
       ownerAgentId: agentId,
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool,
       arguments: args,
     };
@@ -1055,7 +1055,7 @@ describe("secure browser handoff", () => {
     const tab = await runCauseEffect(host.open("https://example.com/secure", "thread", "agent"));
     const prepared = await runCauseEffect(
       host.prepareSecret({
-        namespace: "openbot_browser",
+        namespace: "aikingbot_browser",
         tool: "submit_secret",
         threadId: "thread",
         ownerAgentId: "agent",
@@ -1083,7 +1083,7 @@ describe("secure browser handoff", () => {
 
     await runCauseEffect(
       host.handleDynamicTool({
-        namespace: "openbot_browser",
+        namespace: "aikingbot_browser",
         tool: "evaluate",
         arguments: { tabId: before.tab.id, expression: "document.title" },
         threadId: "thread",
@@ -1103,7 +1103,7 @@ describe("secure browser handoff", () => {
     const call = (tool: "navigate" | "evaluate", args: { url: string } | { expression: string }) =>
       runCauseEffect(
         host.handleDynamicTool({
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool,
           arguments: { tabId: tab.id, ...args },
           threadId: "thread",
@@ -1115,7 +1115,7 @@ describe("secure browser handoff", () => {
     const passwordCard = (tabId: string) =>
       runCauseEffect(
         host.prepareSecret({
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "submit_secret",
           threadId: "thread",
           ownerAgentId: "agent",
@@ -1213,7 +1213,7 @@ describe("secure browser handoff", () => {
     const evaluate = () =>
       runCauseEffect(
         host.handleDynamicTool({
-          namespace: "openbot_browser",
+          namespace: "aikingbot_browser",
           tool: "evaluate",
           arguments: { tabId: tab.id, expression: "document.title" },
           threadId: "thread",
@@ -1274,7 +1274,7 @@ it("does not resume an existing stream after a secure handoff", async () => {
   expect(receive).toHaveBeenCalledTimes(1);
   const prepared = await runCauseEffect(
     host.prepareSecret({
-      namespace: "openbot_browser",
+      namespace: "aikingbot_browser",
       tool: "submit_secret",
       threadId: "thread",
       ownerAgentId: "agent",

@@ -17,7 +17,7 @@ export const CHAT_VISUAL_MAX_HEIGHT = 2000;
 export const CHAT_VISUAL_DEFAULT_HEIGHT = 240;
 
 /** The prefix of the URL fragment that gives the page its theme before its first paint. */
-export const CHAT_VISUAL_THEME_FRAGMENT = "openbot-theme=";
+export const CHAT_VISUAL_THEME_FRAGMENT = "aikingbot-theme=";
 
 export const CHAT_VISUAL_SIZE_CHANGED = "ui/notifications/size-changed";
 export const CHAT_VISUAL_HOST_CONTEXT_CHANGED = "ui/notifications/host-context-changed";
@@ -68,7 +68,7 @@ export type ChatVisualTheme = Record<`--${string}`, string>;
 export type ChatVisualAppearance = "dark" | "light";
 
 /**
- * The app colours from `@openbot/brand` tokens, for a host that cannot read them from its own
+ * The app colours from `@aikingbot/brand` tokens, for a host that cannot read them from its own
  * styles. The background is the chat canvas.
  */
 const APP_THEMES: Record<ChatVisualAppearance, ChatVisualTheme> = {
@@ -260,8 +260,8 @@ function preamble(options: ChatVisualDocumentOptions): string {
   return [
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
-    `<style id="openbot-visual-base">${BASE_STYLE}${themeStyle(options)}</style>`,
-    `<script id="openbot-visual-bootstrap">${BOOTSTRAP}</script>`,
+    `<style id="aikingbot-visual-base">${BASE_STYLE}${themeStyle(options)}</style>`,
+    `<script id="aikingbot-visual-bootstrap">${BOOTSTRAP}</script>`,
   ].join("");
 }
 

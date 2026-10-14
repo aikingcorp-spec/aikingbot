@@ -3,12 +3,12 @@ import { runMcp } from "./mcp-test-runtime";
 // @vitest-environment node
 
 import { request } from "node:http";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { createSdkMcpServer, tool } from "@anthropic-ai/claude-agent-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { ToolSchema } from "@modelcontextprotocol/sdk/types.js";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import { VISIBLE_DYNAMIC_TOOLS, VISIBLE_TOOL_DEFINITIONS } from "./agent/tool-catalog";
 import { type DynamicToolNamespace, LOCAL_MCP_PROGRESS_INTERVAL_MS, LocalMcpBridge } from "./local-mcp-bridge";
@@ -26,8 +26,8 @@ const VISIBLE_MCP_TOOLS = VISIBLE_DYNAMIC_TOOLS.map((namespace) => ({
 const TOOLS: DynamicToolNamespace[] = [
   {
     type: "namespace" as const,
-    name: "openbot",
-    description: "OpenBot test tools",
+    name: "aikingbot",
+    description: "AIKINGBOT test tools",
     tools: [
       {
         type: "function" as const,
@@ -55,7 +55,7 @@ describe("LocalMcpBridge", () => {
   it("lists and validates the deferred envelope through the real Claude MCP SDK", async () => {
     const definitions = VISIBLE_TOOL_DEFINITIONS.filter((definition) => definition.name !== "ask_user");
     const server = createSdkMcpServer({
-      name: "openbot",
+      name: "aikingbot",
       version: "0.1.0",
       tools: definitions.map((definition) =>
         tool(definition.name, definition.description, definition.shape, async (args) => ({
@@ -71,7 +71,7 @@ describe("LocalMcpBridge", () => {
       expect((await client.listTools()).tools.map((entry) => entry.name)).toEqual(
         definitions.map((entry) => entry.name),
       );
-      const envelope = { name: "openbot.list_agents", arguments: { nested: [1, true, null, { text: "fixture" }] } };
+      const envelope = { name: "aikingbot.list_agents", arguments: { nested: [1, true, null, { text: "fixture" }] } };
       expect(await client.callTool({ name: "tool_call", arguments: envelope })).toMatchObject({
         content: [{ type: "text", text: JSON.stringify(envelope) }],
       });
@@ -110,7 +110,7 @@ describe("LocalMcpBridge", () => {
       VISIBLE_DYNAMIC_TOOLS.flatMap((namespace) => namespace.tools.map((tool) => tool.name)).toSorted(),
     );
     const arguments_ = {
-      name: "openbot_browser.screenshot",
+      name: "aikingbot_browser.screenshot",
       arguments: { tabId: "tab-1", nested: { values: [1, true, null, "literal"] } },
     };
     expect(await client.callTool({ name: "tool_call", arguments: arguments_ })).toMatchObject({
@@ -121,7 +121,7 @@ describe("LocalMcpBridge", () => {
         threadId: "thread-visible",
         turnId: "turn-visible",
         callId: expect.any(String),
-        namespace: "openbot",
+        namespace: "aikingbot",
         tool: "tool_call",
         arguments: arguments_,
       },
@@ -308,7 +308,7 @@ describe("LocalMcpBridge", () => {
     const client = await connect(server);
     const cancel = new AbortController();
     const cancelled = client.callTool(
-      { name: "tool_call", arguments: { name: "openbot_browser.screenshot", arguments: { tabId: "tab-1" } } },
+      { name: "tool_call", arguments: { name: "aikingbot_browser.screenshot", arguments: { tabId: "tab-1" } } },
       undefined,
       { signal: cancel.signal },
     );
@@ -334,7 +334,10 @@ describe("LocalMcpBridge", () => {
         jsonrpc: "2.0",
         id: 1,
         method: "tools/call",
-        params: { name: "tool_call", arguments: { name: "openbot_browser.screenshot", arguments: { tabId: "tab-1" } } },
+        params: {
+          name: "tool_call",
+          arguments: { name: "aikingbot_browser.screenshot", arguments: { tabId: "tab-1" } },
+        },
       }),
     );
     await vi.waitFor(() => expect(signals).toHaveLength(2));
@@ -344,7 +347,7 @@ describe("LocalMcpBridge", () => {
 });
 
 async function connect(server: { url: string; headers: Array<{ name: string; value: string }> }): Promise<Client> {
-  const client = new Client({ name: "openbot-test", version: "1" });
+  const client = new Client({ name: "aikingbot-test", version: "1" });
   clients.push(client);
   await client.connect(
     new StreamableHTTPClientTransport(new URL(server.url), {

@@ -3,8 +3,8 @@ import type {
   AgentSummary,
   ApprovalAutomationPreference,
   UpdatePreference,
-} from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
+} from "@aikingbot/contracts/ipc";
+import { toast } from "@aikingbot/ui";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { assert, expect, it, vi } from "vitest";
 import { App } from "./App";
@@ -15,21 +15,21 @@ import {
   emitAgentEvent,
   emitScopedAgentEvent,
   emitUpdateStatus,
-  installOpenbotStub,
+  installAIKINGBOTStub,
   testConversationPage,
   testServer,
   trackAnalytics,
 } from "./app-test-harness";
 import { SIDEBAR_PINS_STORAGE_KEY } from "./features/sidebar/sidebar-pins-storage";
 
-describe("OpenBot connected desktop shell", () => {
+describe("AIKINGBOT connected desktop shell", () => {
   it("opens the marketplace from skill settings and returns to skills", async () => {
     // Load the real lazy panels before measuring their visible behavior under CI load.
     await import("./features/conversation/AgentSettingsPanel");
     await import("./features/settings/MarketplaceModal");
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalled());
+    await waitFor(() => expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalled());
     await fireEvent.click(screen.getByRole("button", { name: "View agent settings" }));
     await fireEvent.click(await screen.findByRole("button", { name: /^Skills/ }));
     const [addFromMarketplace] = await screen.findAllByRole("button", { name: "Add from marketplace" });
@@ -43,27 +43,27 @@ describe("OpenBot connected desktop shell", () => {
     await waitFor(() => expect(screen.getAllByRole("button", { name: "Add from marketplace" })[0]).toBeEnabled());
   });
   beforeEach(() => {
-    installOpenbotStub();
+    installAIKINGBOTStub();
   });
   afterEach(() => toast.dismiss());
 
   it("reports a failed Turbo disable after Settings closes and restores its enabled state", async () => {
     const write = Promise.withResolvers<ApprovalAutomationPreference>();
-    vi.mocked(window.openbot.getApprovalAutomation).mockResolvedValue({
+    vi.mocked(window.aikingbot.getApprovalAutomation).mockResolvedValue({
       turbo: true,
       defaultAutoApprove: false,
       autoApproveOverrides: {},
     });
-    vi.mocked(window.openbot.setApprovalAutomation).mockReturnValueOnce(write.promise);
+    vi.mocked(window.aikingbot.setApprovalAutomation).mockReturnValueOnce(write.promise);
     render(() => <App />);
     await fireEvent.click(await screen.findByRole("button", { name: "Settings" }));
     const toggle = await screen.findByRole("switch", { name: "Turbo mode" });
     await waitFor(() => expect(toggle).toBeChecked());
     await fireEvent.click(toggle);
-    await waitFor(() => expect(window.openbot.setApprovalAutomation).toHaveBeenCalledWith({ turbo: false }));
+    await waitFor(() => expect(window.aikingbot.setApprovalAutomation).toHaveBeenCalledWith({ turbo: false }));
     expect(toggle).toBeDisabled();
     await fireEvent.click(toggle);
-    expect(window.openbot.setApprovalAutomation).toHaveBeenCalledOnce();
+    expect(window.aikingbot.setApprovalAutomation).toHaveBeenCalledOnce();
     await fireEvent.keyDown(screen.getByRole("dialog", { name: "General" }), { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "General" })).not.toBeInTheDocument());
     write.reject(new Error("Write failed"));
@@ -77,19 +77,19 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("shows the stored remote session choice and saves a change, and restores it when the save fails", async () => {
-    vi.mocked(window.openbot.getRemoteSessionReusePreference).mockResolvedValue({ keepBetweenRuns: false });
-    vi.mocked(window.openbot.setRemoteSessionReusePreference).mockRejectedValueOnce(new Error("Write failed"));
+    vi.mocked(window.aikingbot.getRemoteSessionReusePreference).mockResolvedValue({ keepBetweenRuns: false });
+    vi.mocked(window.aikingbot.setRemoteSessionReusePreference).mockRejectedValueOnce(new Error("Write failed"));
     render(() => <App />);
     await fireEvent.click(await screen.findByRole("button", { name: "Settings" }));
     const toggle = await screen.findByRole("switch", { name: "Fast connection to servers" });
     await waitFor(() => expect(toggle).not.toBeChecked());
     await fireEvent.click(toggle);
     await waitFor(() =>
-      expect(window.openbot.setRemoteSessionReusePreference).toHaveBeenCalledWith({ keepBetweenRuns: true }),
+      expect(window.aikingbot.setRemoteSessionReusePreference).toHaveBeenCalledWith({ keepBetweenRuns: true }),
     );
     await waitFor(() => expect(toggle).not.toBeChecked());
     await fireEvent.click(toggle);
-    await waitFor(() => expect(window.openbot.setRemoteSessionReusePreference).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.setRemoteSessionReusePreference).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(toggle).toBeChecked());
   });
 
@@ -99,7 +99,7 @@ describe("OpenBot connected desktop shell", () => {
     { defaultAutoApprove: true, autoApproveOverrides: { chief: false }, turbo: false, enabled: false },
     { defaultAutoApprove: true, autoApproveOverrides: { chief: false }, turbo: true, enabled: true },
   ])("shows the effective auto-approval choice: %j", async ({ enabled, ...preference }) => {
-    vi.mocked(window.openbot.getApprovalAutomation).mockResolvedValue(preference);
+    vi.mocked(window.aikingbot.getApprovalAutomation).mockResolvedValue(preference);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await fireEvent.click(screen.getByRole("button", { name: "Agent model: GPT-5.6 Luna · Medium" }));
@@ -111,12 +111,12 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("reports a failed model-picker revocation and keeps the grant available for retry", async () => {
-    vi.mocked(window.openbot.getApprovalAutomation).mockResolvedValue({
+    vi.mocked(window.aikingbot.getApprovalAutomation).mockResolvedValue({
       turbo: false,
       defaultAutoApprove: false,
       autoApproveOverrides: { chief: true },
     });
-    vi.mocked(window.openbot.setApprovalAutomation).mockRejectedValueOnce(new Error("Write failed"));
+    vi.mocked(window.aikingbot.setApprovalAutomation).mockRejectedValueOnce(new Error("Write failed"));
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await fireEvent.click(screen.getByRole("button", { name: "Agent model: GPT-5.6 Luna · Medium" }));
@@ -129,15 +129,15 @@ describe("OpenBot connected desktop shell", () => {
     expect(toggle).toBeChecked();
     await fireEvent.click(toggle);
     await waitFor(() => expect(toggle).not.toBeChecked());
-    expect(window.openbot.setApprovalAutomation).toHaveBeenCalledTimes(2);
+    expect(window.aikingbot.setApprovalAutomation).toHaveBeenCalledTimes(2);
   });
 
   it("answers the original approval after switching agents during a grant write", async () => {
-    vi.mocked(window.openbot.agent.listAgents).mockResolvedValue(
+    vi.mocked(window.aikingbot.agent.listAgents).mockResolvedValue(
       AGENTS.map((agent) => ({ ...agent, threadId: `thread-${agent.id}` })),
     );
     const write = Promise.withResolvers<ApprovalAutomationPreference>();
-    vi.mocked(window.openbot.setApprovalAutomation).mockReturnValueOnce(write.promise);
+    vi.mocked(window.aikingbot.setApprovalAutomation).mockReturnValueOnce(write.promise);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await confirmOnboardingModel();
@@ -163,15 +163,15 @@ describe("OpenBot connected desktop shell", () => {
     const dialog = await screen.findByRole("alertdialog");
     await fireEvent.click(within(dialog).getByRole("button", { name: "Always allow" }));
     await waitFor(() =>
-      expect(window.openbot.setApprovalAutomation).toHaveBeenCalledWith({ agentId: "chief", autoApprove: true }),
+      expect(window.aikingbot.setApprovalAutomation).toHaveBeenCalledWith({ agentId: "chief", autoApprove: true }),
     );
     await fireEvent.click(screen.getByRole("button", { name: /Sales Outbound, Outbound specialist/ }));
     await screen.findByRole("heading", { name: "Sales Outbound" });
     requestApproval("sales-outbound");
     await screen.findByRole("button", { name: "Deny" });
     write.resolve({ turbo: false, defaultAutoApprove: false, autoApproveOverrides: { chief: true } });
-    await waitFor(() => expect(window.openbot.agent.respondToApproval).toHaveBeenCalledOnce());
-    expect(window.openbot.agent.respondToApproval).toHaveBeenCalledWith({
+    await waitFor(() => expect(window.aikingbot.agent.respondToApproval).toHaveBeenCalledOnce());
+    expect(window.aikingbot.agent.respondToApproval).toHaveBeenCalledWith({
       requestId: "approval-chief",
       decision: "accept",
     });
@@ -179,7 +179,7 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("shows Turbo without per-agent approval controls in Settings", async () => {
-    vi.mocked(window.openbot.getApprovalAutomation).mockResolvedValue({
+    vi.mocked(window.aikingbot.getApprovalAutomation).mockResolvedValue({
       turbo: false,
       defaultAutoApprove: false,
       autoApproveOverrides: { chief: true, "sales-outbound": true },
@@ -190,16 +190,16 @@ describe("OpenBot connected desktop shell", () => {
     expect(await screen.findByRole("switch", { name: "Turbo mode" })).toBeEnabled();
     expect(screen.queryByRole("button", { name: /Revoke the standing approval/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Revoke all" })).not.toBeInTheDocument();
-    expect(window.openbot.setApprovalAutomation).not.toHaveBeenCalled();
+    expect(window.aikingbot.setApprovalAutomation).not.toHaveBeenCalled();
   });
 
   it("refreshes skill suggestions after settings closes", async () => {
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
-    await waitFor(() => expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalled());
+    await waitFor(() => expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalled());
     await fireEvent.click(screen.getByRole("button", { name: "View agent settings" }));
     await screen.findByRole("textbox", { name: "Agent name" });
-    vi.mocked(window.openbot.agent.listInstalledSkills).mockResolvedValue([
+    vi.mocked(window.aikingbot.agent.listInstalledSkills).mockResolvedValue([
       {
         skillId: "local-skill-smoke",
         slug: "smoke",
@@ -211,9 +211,9 @@ describe("OpenBot connected desktop shell", () => {
         state: "installed",
       },
     ]);
-    vi.mocked(window.openbot.agent.listInstalledSkills).mockClear();
+    vi.mocked(window.aikingbot.agent.listInstalledSkills).mockClear();
     await fireEvent.click(screen.getByRole("button", { name: "Close details" }));
-    await waitFor(() => expect(window.openbot.agent.listInstalledSkills).toHaveBeenCalledWith("chief"));
+    await waitFor(() => expect(window.aikingbot.agent.listInstalledSkills).toHaveBeenCalledWith("chief"));
     const editor = screen.getByRole("textbox", { name: "Message Chief" });
     editor.textContent = "$Smoke";
     const range = document.createRange();
@@ -229,8 +229,8 @@ describe("OpenBot connected desktop shell", () => {
 
   it("opens the dock surfaces and closes them from their own controls", async () => {
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1));
-    expect(vi.mocked(window.openbot.agent.getUsage).mock.calls[0]).toEqual([]);
+    await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(window.aikingbot.agent.getUsage).mock.calls[0]).toEqual([]);
 
     const usageButton = await screen.findByRole("button", { name: "Usage, ChatGPT 59% left" });
     await fireEvent.click(usageButton);
@@ -239,7 +239,7 @@ describe("OpenBot connected desktop shell", () => {
       within(usageDialog).getByRole("listitem", { name: /ChatGPT, 5-hour 72% left.*Weekly 59% left/ }),
     ).toBeInTheDocument();
     await fireEvent.click(within(usageDialog).getByRole("button", { name: "Refresh" }));
-    await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(2));
     await fireEvent.keyDown(usageDialog, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Usage" })).not.toBeInTheDocument());
 
@@ -253,16 +253,16 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(accountButton);
     const reopenedAccountDialog = await screen.findByRole("dialog", { name: "Account actions" });
     fireEvent.click(within(reopenedAccountDialog).getByRole("button", { name: "Send feedback" }));
-    await waitFor(() => expect(window.openbot.openExternal).toHaveBeenCalledWith("feedback"));
+    await waitFor(() => expect(window.aikingbot.openExternal).toHaveBeenCalledWith("feedback"));
 
     fireEvent.click(accountButton);
     fireEvent.click(screen.getByRole("button", { name: "Message" }));
-    await waitFor(() => expect(window.openbot.openExternal).toHaveBeenCalledWith("message"));
+    await waitFor(() => expect(window.aikingbot.openExternal).toHaveBeenCalledWith("message"));
 
     const settingsButton = screen.getByRole("button", { name: "Settings" });
     await fireEvent.click(settingsButton);
     const dialog = await screen.findByRole("dialog", { name: "General" });
-    const launchSwitch = within(dialog).getByRole("switch", { name: "Launch OpenBot at login" });
+    const launchSwitch = within(dialog).getByRole("switch", { name: "Launch AIKINGBOT at login" });
     await fireEvent.click(launchSwitch);
     expect(launchSwitch).not.toBeChecked();
 
@@ -274,21 +274,21 @@ describe("OpenBot connected desktop shell", () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     try {
       render(() => <App />);
-      await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1));
 
       await vi.advanceTimersByTimeAsync(4 * 60_000);
-      expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1);
+      expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1);
 
       await vi.advanceTimersByTimeAsync(90_000);
-      await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(2));
     } finally {
       vi.useRealTimers();
     }
   });
 
   it("loads usage lazily when the account menu hides it", async () => {
-    vi.mocked(window.openbot.getAppInfo).mockResolvedValue({
-      name: "OpenBot",
+    vi.mocked(window.aikingbot.getAppInfo).mockResolvedValue({
+      name: "AIKINGBOT",
       version: "0.1.0",
       platform: "win32",
       variant: "production",
@@ -298,10 +298,10 @@ describe("OpenBot connected desktop shell", () => {
     const accountButton = await screen.findByRole("button", { name: "Open account menu" });
     await Promise.resolve();
 
-    expect(window.openbot.agent.getUsage).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.getUsage).not.toHaveBeenCalled();
     await fireEvent.click(accountButton);
-    await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1));
-    expect(vi.mocked(window.openbot.agent.getUsage).mock.calls[0]).toEqual([]);
+    await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(window.aikingbot.agent.getUsage).mock.calls[0]).toEqual([]);
     const accountDialog = screen.getByRole("dialog", { name: "Account actions" });
     expect(within(accountDialog).getByRole("heading", { name: "Usage" })).toBeInTheDocument();
     expect(
@@ -310,7 +310,7 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("lists each connected provider in the usage popover", async () => {
-    vi.mocked(window.openbot.agent.getUsage).mockResolvedValue({
+    vi.mocked(window.aikingbot.agent.getUsage).mockResolvedValue({
       limits: [
         {
           id: "codex",
@@ -341,7 +341,7 @@ describe("OpenBot connected desktop shell", () => {
     const initialUsageRequest = new Promise<AccountUsage>((resolve) => {
       resolveInitialUsage = resolve;
     });
-    vi.mocked(window.openbot.agent.getUsage)
+    vi.mocked(window.aikingbot.agent.getUsage)
       .mockReturnValueOnce(initialUsageRequest)
       .mockResolvedValueOnce({
         limits: [
@@ -354,7 +354,7 @@ describe("OpenBot connected desktop shell", () => {
       });
 
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1));
 
     emitAgentEvent?.({
       type: "usage-changed",
@@ -369,7 +369,7 @@ describe("OpenBot connected desktop shell", () => {
       },
     });
     expect(await screen.findByRole("button", { name: "Usage, ChatGPT 18% left" })).toBeInTheDocument();
-    expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1);
 
     resolveInitialUsage({
       limits: [
@@ -391,7 +391,7 @@ describe("OpenBot connected desktop shell", () => {
     const initialUsageRequest = new Promise<AccountUsage>((resolve) => {
       resolveInitialUsage = resolve;
     });
-    vi.mocked(window.openbot.agent.getUsage)
+    vi.mocked(window.aikingbot.agent.getUsage)
       .mockReturnValueOnce(initialUsageRequest)
       .mockResolvedValueOnce({
         limits: [
@@ -404,7 +404,7 @@ describe("OpenBot connected desktop shell", () => {
       });
 
     render(() => <App />);
-    await waitFor(() => expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1));
 
     emitAgentEvent?.({
       type: "usage-changed",
@@ -419,7 +419,7 @@ describe("OpenBot connected desktop shell", () => {
       },
     });
     expect(await screen.findByRole("button", { name: "Usage, ChatGPT 28% left" })).toBeInTheDocument();
-    expect(window.openbot.agent.getUsage).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.agent.getUsage).toHaveBeenCalledTimes(1);
 
     resolveInitialUsage({
       limits: [
@@ -435,7 +435,7 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("persists every settings preference through its own IPC channel", async () => {
-    vi.mocked(window.openbot.update.getPreference).mockResolvedValue({
+    vi.mocked(window.aikingbot.update.getPreference).mockResolvedValue({
       autoDownload: false,
       allowRemoteUpdates: true,
       autoInstall: false,
@@ -444,14 +444,14 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Settings" }));
 
     await fireEvent.click(await screen.findByRole("switch", { name: "Share product analytics" }));
-    await waitFor(() => expect(window.openbot.setAnalyticsPreference).toHaveBeenCalledWith({ enabled: false }));
+    await waitFor(() => expect(window.aikingbot.setAnalyticsPreference).toHaveBeenCalledWith({ enabled: false }));
 
     await fireEvent.click(await screen.findByRole("tab", { name: "Dynamic Island" }));
     const notchSwitch = await screen.findByRole("switch", { name: "Show status in the MacBook notch" });
     expect(notchSwitch).toBeChecked();
     await fireEvent.click(notchSwitch);
     await waitFor(() =>
-      expect(window.openbot.dynamicIsland.setPreference).toHaveBeenCalledWith({
+      expect(window.aikingbot.dynamicIsland.setPreference).toHaveBeenCalledWith({
         enabled: false,
         hapticsEnabled: true,
         idleVisible: true,
@@ -466,7 +466,7 @@ describe("OpenBot connected desktop shell", () => {
     const autoDownload = await screen.findByRole("switch", { name: "Automatically download updates" });
     await waitFor(() => expect(autoDownload).not.toBeChecked());
     await fireEvent.click(autoDownload);
-    await waitFor(() => expect(window.openbot.update.setPreference).toHaveBeenCalledWith({ autoDownload: true }));
+    await waitFor(() => expect(window.aikingbot.update.setPreference).toHaveBeenCalledWith({ autoDownload: true }));
 
     // The language row lives in the General tab, which the Updates tab hides through CSS that jsdom
     // does not apply. Go back to it, so the test reaches the control the way a user does.
@@ -475,7 +475,7 @@ describe("OpenBot connected desktop shell", () => {
     // pointer down rather than on click, so a plain click never reaches the list.
     await fireEvent.pointerDown(screen.getByRole("button", { name: /^Language/ }), { pointerType: "mouse", button: 0 });
     await fireEvent.click(await screen.findByRole("option", { name: "Français" }));
-    await waitFor(() => expect(window.openbot.setAppLanguagePreference).toHaveBeenCalledWith({ language: "fr" }));
+    await waitFor(() => expect(window.aikingbot.setAppLanguagePreference).toHaveBeenCalledWith({ language: "fr" }));
     // The screen is written in the chosen language at once, with no restart: the tab the user is
     // looking at is the same tab, now named in French.
     await screen.findByRole("tab", { name: "Général" });
@@ -484,7 +484,7 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("does not open desktop analytics when the saved preference is disabled", async () => {
-    vi.mocked(window.openbot.getAnalyticsPreference).mockResolvedValueOnce({ enabled: false });
+    vi.mocked(window.aikingbot.getAnalyticsPreference).mockResolvedValueOnce({ enabled: false });
     const setTrackingEnabled = vi.spyOn(desktopAnalytics, "setTrackingEnabled");
     render(() => <App />);
 
@@ -499,14 +499,14 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Open account actions" }));
     await fireEvent.click(screen.getByRole("button", { name: "Sign out" }));
 
-    await waitFor(() => expect(window.openbot.auth.logout).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.auth.logout).toHaveBeenCalledOnce());
     expect(trackAnalytics).toHaveBeenCalledWith("account_sign_out", { result: "succeeded" });
-    expect(await screen.findByRole("heading", { name: "Sign in to OpenBot" })).toBeInTheDocument();
-    expect(window.openbot.agent.deleteAgent).not.toHaveBeenCalled();
+    expect(await screen.findByRole("heading", { name: "Sign in to AIKINGBOT" })).toBeInTheDocument();
+    expect(window.aikingbot.agent.deleteAgent).not.toHaveBeenCalled();
   });
 
   it("shows an available update, downloads it, and exposes restart to install", async () => {
-    vi.mocked(window.openbot.update.getStatus).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.update.getStatus).mockResolvedValueOnce({
       phase: "available",
       currentVersion: "0.1.0",
       availableVersion: "0.2.0",
@@ -520,7 +520,7 @@ describe("OpenBot connected desktop shell", () => {
     expect(await screen.findByText("New update available")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open account actions" }));
     fireEvent.click(await screen.findByRole("button", { name: /Download update/ }));
-    await waitFor(() => expect(window.openbot.update.download).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.update.download).toHaveBeenCalledOnce());
     expect(trackAnalytics).toHaveBeenCalledWith("update_action", {
       action: "download",
       result: "succeeded",
@@ -537,7 +537,7 @@ describe("OpenBot connected desktop shell", () => {
       errorCode: null,
     });
     fireEvent.click(await screen.findByRole("button", { name: /Restart to update/ }));
-    await waitFor(() => expect(window.openbot.update.install).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.update.install).toHaveBeenCalledOnce());
   });
 
   it.each([
@@ -549,14 +549,14 @@ describe("OpenBot connected desktop shell", () => {
     ],
     [
       "ENOSPC: write '/private/update.zip'",
-      "There is not enough storage space. Free some space on the computer running OpenBot, then try again.",
+      "There is not enough storage space. Free some space on the computer running AIKINGBOT, then try again.",
       "Error invoking remote method 'update:download': Error: ECONNREFUSED 127.0.0.1:1234",
       "Could not connect. Check your connection and try again.",
     ],
   ])(
     "reports update failures with recovery guidance: %s",
     async (statusError, statusMessage, rejectedError, rejectedMessage) => {
-      vi.mocked(window.openbot.update.getStatus).mockResolvedValueOnce({
+      vi.mocked(window.aikingbot.update.getStatus).mockResolvedValueOnce({
         phase: "available",
         currentVersion: "0.1.0",
         availableVersion: "0.2.0",
@@ -565,7 +565,7 @@ describe("OpenBot connected desktop shell", () => {
         message: null,
         errorCode: null,
       });
-      vi.mocked(window.openbot.update.download)
+      vi.mocked(window.aikingbot.update.download)
         .mockResolvedValueOnce({
           phase: "error",
           currentVersion: "0.1.0",
@@ -597,13 +597,13 @@ describe("OpenBot connected desktop shell", () => {
       fireEvent.click(retryAfterReturnedError);
 
       expect(await screen.findByRole("button", { name: `Retry update. ${rejectedMessage}` })).toBeEnabled();
-      await waitFor(() => expect(window.openbot.update.download).toHaveBeenCalledTimes(2));
-      expect(window.openbot.update.check).not.toHaveBeenCalled();
+      await waitFor(() => expect(window.aikingbot.update.download).toHaveBeenCalledTimes(2));
+      expect(window.aikingbot.update.check).not.toHaveBeenCalled();
     },
   );
 
   it("states why a check failed in the account menu and recovers when the retry succeeds", async () => {
-    vi.mocked(window.openbot.update.getStatus).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.update.getStatus).mockResolvedValueOnce({
       phase: "error",
       currentVersion: "0.9.0",
       availableVersion: null,
@@ -612,7 +612,7 @@ describe("OpenBot connected desktop shell", () => {
       message: "Could not reach the update service. Check your internet connection, then try again.",
       errorCode: "check_failed",
     });
-    vi.mocked(window.openbot.update.check).mockResolvedValueOnce({
+    vi.mocked(window.aikingbot.update.check).mockResolvedValueOnce({
       phase: "up-to-date",
       currentVersion: "0.9.0",
       availableVersion: null,
@@ -631,7 +631,7 @@ describe("OpenBot connected desktop shell", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: /Check for updates/ }));
 
-    await waitFor(() => expect(window.openbot.update.check).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.update.check).toHaveBeenCalledOnce());
     // A successful retry clears the failure instead of leaving it under a working updater.
     await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
     expect(await screen.findByRole("button", { name: /Check for updates/ })).toBeEnabled();
@@ -639,7 +639,7 @@ describe("OpenBot connected desktop shell", () => {
 
   it("keeps a toggle made before the stored preference finishes loading", async () => {
     let resolvePreference: ((value: UpdatePreference) => void) | undefined;
-    vi.mocked(window.openbot.update.getPreference).mockReturnValueOnce(
+    vi.mocked(window.aikingbot.update.getPreference).mockReturnValueOnce(
       new Promise((resolve) => {
         resolvePreference = resolve;
       }),
@@ -650,7 +650,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("tab", { name: "Updates" }));
     const toggle = await screen.findByRole("switch", { name: "Automatically download updates" });
     await fireEvent.click(toggle);
-    await waitFor(() => expect(window.openbot.update.setPreference).toHaveBeenCalledWith({ autoDownload: false }));
+    await waitFor(() => expect(window.aikingbot.update.setPreference).toHaveBeenCalledWith({ autoDownload: false }));
 
     // The stored read finally lands with the value the user has just replaced. Painting it back would
     // leave the switch disagreeing with both disk and the main process.
@@ -663,7 +663,7 @@ describe("OpenBot connected desktop shell", () => {
 
   it("confirms an installed app version on the next launch", async () => {
     const configureAnalytics = vi.spyOn(desktopAnalytics, "configure").mockReturnValue(true);
-    window.localStorage.setItem("openbot:analytics-app-version", "0.0.9");
+    window.localStorage.setItem("aikingbot:analytics-app-version", "0.0.9");
     render(() => <App />);
 
     await waitFor(() =>
@@ -672,7 +672,7 @@ describe("OpenBot connected desktop shell", () => {
         to_version: "0.1.0",
       }),
     );
-    expect(window.localStorage.getItem("openbot:analytics-app-version")).toBe("0.1.0");
+    expect(window.localStorage.getItem("aikingbot:analytics-app-version")).toBe("0.1.0");
     configureAnalytics.mockRestore();
   });
 
@@ -687,12 +687,12 @@ describe("OpenBot connected desktop shell", () => {
     expect(within(picker).getByRole("option", { name: "GPT-5.6 Luna" })).toHaveAttribute("aria-selected", "true");
 
     await fireEvent.click(within(picker).getByRole("tab", { name: /^Claude:/ }));
-    expect(window.openbot.agent.updateAgent).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.updateAgent).not.toHaveBeenCalled();
     expect(within(picker).getByText("2.1.231 (Claude Code)")).toBeInTheDocument();
     await fireEvent.click(within(picker).getByRole("option", { name: "Claude Opus 5" }));
 
     await waitFor(() =>
-      expect(window.openbot.agent.updateAgent).toHaveBeenCalledWith({
+      expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledWith({
         agentId: "chief",
         model: "claude-opus-5",
         provider: "claude",
@@ -710,7 +710,7 @@ describe("OpenBot connected desktop shell", () => {
     const chief = AGENTS.find((agent) => agent.id === "chief");
     if (!chief) throw new Error("Chief fixture is missing");
     let resolveModelUpdate!: (agent: AgentSummary) => void;
-    vi.mocked(window.openbot.agent.updateAgent)
+    vi.mocked(window.aikingbot.agent.updateAgent)
       .mockImplementationOnce(
         () =>
           new Promise((resolve) => {
@@ -733,7 +733,7 @@ describe("OpenBot connected desktop shell", () => {
     const effort = () => within(within(picker).getByRole("radiogroup", { name: "Agent reasoning effort" }));
     await fireEvent.click(effort().getByRole("radio", { name: "High" }));
 
-    expect(window.openbot.agent.updateAgent).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledTimes(1);
     expect(effort().getByRole("radio", { name: "High" })).toBeChecked();
     resolveModelUpdate({
       ...chief,
@@ -743,7 +743,7 @@ describe("OpenBot connected desktop shell", () => {
     });
 
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.agent.updateAgent).mock.calls).toEqual([
+      expect(vi.mocked(window.aikingbot.agent.updateAgent).mock.calls).toEqual([
         [
           {
             agentId: "chief",
@@ -760,7 +760,7 @@ describe("OpenBot connected desktop shell", () => {
         ],
       ]),
     );
-    expect(window.openbot.agent.updateAgent).toHaveBeenLastCalledWith({
+    expect(window.aikingbot.agent.updateAgent).toHaveBeenLastCalledWith({
       agentId: "chief",
       reasoningEffort: "high",
     });
@@ -773,12 +773,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolveModelUpdate!: (agent: AgentSummary) => void;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.agent.updateAgent).mockImplementationOnce(
+    vi.mocked(window.aikingbot.agent.updateAgent).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveModelUpdate = resolve;
@@ -792,7 +792,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(within(picker).getByRole("tab", { name: /^Claude:/ }));
     await fireEvent.click(within(picker).getByRole("option", { name: "Claude Opus 5" }));
     await fireEvent.click(within(picker).getByRole("option", { name: "Claude Sonnet 5" }));
-    expect(window.openbot.agent.updateAgent).toHaveBeenCalledOnce();
+    expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledOnce();
 
     await fireEvent.keyDown(picker, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Choose agent model" })).not.toBeInTheDocument());
@@ -808,14 +808,14 @@ describe("OpenBot connected desktop shell", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Local server" })).toHaveAttribute("aria-pressed", "true"),
     );
-    expect(vi.mocked(window.openbot.agent.updateAgent).mock.calls).toEqual([
+    expect(vi.mocked(window.aikingbot.agent.updateAgent).mock.calls).toEqual([
       [{ agentId: "chief", provider: "claude", model: "claude-opus-5", reasoningEffort: "medium" }],
     ]);
   });
 
   it("rolls back a queued effort when its model save fails", async () => {
     let rejectModelUpdate!: (error: Error) => void;
-    vi.mocked(window.openbot.agent.updateAgent).mockImplementationOnce(
+    vi.mocked(window.aikingbot.agent.updateAgent).mockImplementationOnce(
       () =>
         new Promise((_, reject) => {
           rejectModelUpdate = reject;
@@ -830,18 +830,18 @@ describe("OpenBot connected desktop shell", () => {
     const effort = () => within(within(picker).getByRole("radiogroup", { name: "Agent reasoning effort" }));
     await fireEvent.click(effort().getByRole("radio", { name: "Extra high" }));
 
-    expect(window.openbot.agent.updateAgent).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledTimes(1);
     rejectModelUpdate(new Error("Model failed"));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Could not change effort. Try again.");
-    expect(window.openbot.agent.updateAgent).toHaveBeenCalledTimes(1);
+    expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Agent model: GPT-5.6 Luna · Medium" })).toBeEnabled();
     expect(effort().getByRole("radio", { name: "Medium" })).toBeChecked();
     await fireEvent.click(screen.getByRole("button", { name: "Agent model: GPT-5.6 Luna · Medium" }));
   });
 
   it("rolls back a failed header model change and reports the error", async () => {
-    vi.mocked(window.openbot.agent.updateAgent).mockRejectedValueOnce(new Error("Provider failed"));
+    vi.mocked(window.aikingbot.agent.updateAgent).mockRejectedValueOnce(new Error("Provider failed"));
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     await screen.findByRole("button", { name: "Agent model: GPT-5.6 Luna · Medium" });
@@ -858,7 +858,7 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("permits approval revocation during active work while locking model and effort changes", async () => {
-    vi.mocked(window.openbot.getApprovalAutomation).mockResolvedValue({
+    vi.mocked(window.aikingbot.getApprovalAutomation).mockResolvedValue({
       turbo: false,
       defaultAutoApprove: false,
       autoApproveOverrides: { chief: true },
@@ -884,7 +884,7 @@ describe("OpenBot connected desktop shell", () => {
     expect(approval).toBeChecked();
     await fireEvent.click(approval);
     await waitFor(() => expect(approval).not.toBeChecked());
-    expect(window.openbot.setApprovalAutomation).toHaveBeenCalledWith({ agentId: "chief", autoApprove: false });
+    expect(window.aikingbot.setApprovalAutomation).toHaveBeenCalledWith({ agentId: "chief", autoApprove: false });
 
     emitAgentEvent?.({
       type: "turn-completed",
@@ -912,7 +912,7 @@ describe("OpenBot connected desktop shell", () => {
     emitAgentEvent?.(started);
     emitScopedAgentEvent?.({ serverId: "local", event: started });
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "working",
         working: [{ agent: { id: "chief", name: "Chief" } }],
       }),
@@ -924,13 +924,13 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.blur(name);
 
     await waitFor(() =>
-      expect(window.openbot.agent.updateAgent).toHaveBeenCalledWith({ agentId: "chief", name: "Coordinator" }),
+      expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledWith({ agentId: "chief", name: "Coordinator" }),
     );
     expect(await screen.findByRole("heading", { name: "Coordinator" })).toBeInTheDocument();
     expect(screen.getByLabelText("Message Coordinator")).toHaveAttribute("contenteditable", "true");
     expect(screen.getByRole("button", { name: /Coordinator, Chief of staff/ })).toBeInTheDocument();
     await waitFor(() =>
-      expect(vi.mocked(window.openbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
+      expect(vi.mocked(window.aikingbot.dynamicIsland.publishPresentation).mock.calls.at(-1)?.[0]).toMatchObject({
         mode: "working",
         working: [{ agent: { id: "chief", name: "Coordinator" } }],
       }),
@@ -942,8 +942,8 @@ describe("OpenBot connected desktop shell", () => {
   });
 
   it("removes a custom agent avatar and keeps its generated avatar settings", async () => {
-    vi.mocked(window.openbot.agent.listAgents).mockResolvedValueOnce([
-      { ...AGENTS[0], avatarUrl: "openbot-avatar://agent/chief?v=image-1" },
+    vi.mocked(window.aikingbot.agent.listAgents).mockResolvedValueOnce([
+      { ...AGENTS[0], avatarUrl: "aikingbot-avatar://agent/chief?v=image-1" },
     ]);
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
@@ -952,8 +952,10 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await within(settings).findByRole("button", { name: "Edit agent avatar" }));
     const editor = within(settings).getByRole("dialog", { name: "Avatar editor" });
     await fireEvent.click(within(editor).getByRole("button", { name: "Remove" }));
-    await waitFor(() => expect(window.openbot.agent.setAvatar).toHaveBeenCalledWith({ agentId: "chief", image: null }));
-    expect(window.openbot.agent.updateAgent).not.toHaveBeenCalledWith(
+    await waitFor(() =>
+      expect(window.aikingbot.agent.setAvatar).toHaveBeenCalledWith({ agentId: "chief", image: null }),
+    );
+    expect(window.aikingbot.agent.updateAgent).not.toHaveBeenCalledWith(
       expect.objectContaining({ avatarSeed: expect.any(String) }),
     );
   });
@@ -991,7 +993,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(within(picker).getByRole("tab", { name: /^Claude:/ }));
     await fireEvent.click(within(picker).getByRole("option", { name: "Claude Opus 5" }));
     await waitFor(() =>
-      expect(window.openbot.agent.updateAgent).toHaveBeenCalledWith({
+      expect(window.aikingbot.agent.updateAgent).toHaveBeenCalledWith({
         agentId: "sales-outbound",
         model: "claude-opus-5",
         provider: "claude",
@@ -1114,35 +1116,35 @@ describe("OpenBot connected desktop shell", () => {
     render(() => <App />);
     await screen.findByRole("heading", { name: "Chief" });
     expect(screen.queryByRole("dialog", { name: "General" })).not.toBeInTheDocument();
-    const listener = vi.mocked(window.openbot.onOpenSettings).mock.calls[0]?.[0];
+    const listener = vi.mocked(window.aikingbot.onOpenSettings).mock.calls[0]?.[0];
     if (!listener) throw new Error("Settings did not subscribe to the Preferences menu event.");
     listener();
     expect(await screen.findByRole("dialog", { name: "General" })).toBeInTheDocument();
   });
 
   it("follows another window's send shortcut change and keeps other settings", async () => {
-    window.localStorage.setItem("openbot:send-shortcut-mode", "enter");
+    window.localStorage.setItem("aikingbot:send-shortcut-mode", "enter");
     render(() => <App />);
     await fireEvent.click(await screen.findByRole("button", { name: "Settings" }));
     const shortcut = () => screen.getByRole("button", { name: /Send shortcut/ });
     await waitFor(() => expect(shortcut()).toHaveTextContent("Enter to send"));
-    expect(await screen.findByRole("switch", { name: "Launch OpenBot at login" })).toBeChecked();
+    expect(await screen.findByRole("switch", { name: "Launch AIKINGBOT at login" })).toBeChecked();
 
     await fireEvent.pointerDown(shortcut(), { pointerType: "mouse", button: 0 });
     await fireEvent.click(await screen.findByRole("option", { name: "⌘Enter to send" }));
-    await waitFor(() => expect(window.localStorage.getItem("openbot:send-shortcut-mode")).toBe("mod-enter"));
+    await waitFor(() => expect(window.localStorage.getItem("aikingbot:send-shortcut-mode")).toBe("mod-enter"));
     await waitFor(() => expect(shortcut()).toHaveTextContent("⌘Enter to send"));
 
     // Another window switches back; this display follows without touching other settings.
-    window.localStorage.setItem("openbot:send-shortcut-mode", "enter");
-    window.dispatchEvent(new StorageEvent("storage", { key: "openbot:send-shortcut-mode" }));
+    window.localStorage.setItem("aikingbot:send-shortcut-mode", "enter");
+    window.dispatchEvent(new StorageEvent("storage", { key: "aikingbot:send-shortcut-mode" }));
     await waitFor(() => expect(shortcut()).toHaveTextContent("Enter to send"));
-    expect(await screen.findByRole("switch", { name: "Launch OpenBot at login" })).toBeChecked();
+    expect(await screen.findByRole("switch", { name: "Launch AIKINGBOT at login" })).toBeChecked();
 
     // Reselecting through the settings path writes storage and refreshes the display.
     await fireEvent.pointerDown(shortcut(), { pointerType: "mouse", button: 0 });
     await fireEvent.click(await screen.findByRole("option", { name: "⌘Enter to send" }));
-    await waitFor(() => expect(window.localStorage.getItem("openbot:send-shortcut-mode")).toBe("mod-enter"));
+    await waitFor(() => expect(window.localStorage.getItem("aikingbot:send-shortcut-mode")).toBe("mod-enter"));
     await waitFor(() => expect(shortcut()).toHaveTextContent("⌘Enter to send"));
   });
 });

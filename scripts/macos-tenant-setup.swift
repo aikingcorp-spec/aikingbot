@@ -118,7 +118,7 @@ final class MacTenantAccountSetup: TenantAccountSetup {
     private let secrets: Int32
     private let lock: Int32
     private let quiet: Bool
-    let credentialFilename = "openbot-tenant-credentials-\(UUID().uuidString).json"
+    let credentialFilename = "aikingbot-tenant-credentials-\(UUID().uuidString).json"
 
     init(quiet: Bool = false) throws {
         self.quiet = quiet
@@ -127,7 +127,7 @@ final class MacTenantAccountSetup: TenantAccountSetup {
             let fd = try openPrivateSetupDirectory(path, owner: 0)
             close(fd)
         }
-        lock = open("/private/var/run/openbot-tenant-setup.lock", O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC, 0o600)
+        lock = open("/private/var/run/aikingbot-tenant-setup.lock", O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC, 0o600)
         var info = stat()
         guard lock >= 0, fstat(lock, &info) == 0, info.st_uid == 0,
               info.st_mode & S_IFMT == S_IFREG, info.st_mode & 0o077 == 0, info.st_nlink == 1,
@@ -237,7 +237,7 @@ enum TenantSetupCommand {
     static func main() {
         var names = Array(CommandLine.arguments.dropFirst())
         if names == ["--help"] {
-            print("Usage: sudo openbot-create-tenants <new-standard-user>...")
+            print("Usage: sudo aikingbot-create-tenants <new-standard-user>...")
             return
         }
         let json = names.first == "--json"
@@ -256,7 +256,7 @@ enum TenantSetupCommand {
                     credentialFile: "/private/var/root/\(setup.credentialFilename)"))
                 FileHandle.standardOutput.write(data)
             } else {
-                print("Account setup complete. Log each user into a GUI session, then enroll them with the host installer. In that account, open OpenBot → Server Settings → Remote desktop access. Grant Screen Recording and Accessibility, then select Check again. Use another computer to run Test remote desktop.")
+                print("Account setup complete. Log each user into a GUI session, then enroll them with the host installer. In that account, open AIKINGBOT → Server Settings → Remote desktop access. Grant Screen Recording and Accessibility, then select Check again. Use another computer to run Test remote desktop.")
             }
         } catch {
             // Directory-service errors can contain credential data. Never print the raw error.

@@ -5,13 +5,13 @@
  * shows it when a channel is open.
  */
 
-import { ArrowUp, Button } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChannelActivityIndicator, type ChannelWorker } from "@openbot/ui/features/channels/ChannelActivityIndicator";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
-import { MessageActions } from "@openbot/ui/features/conversation/MessageRendering";
-import { UnreadMessagesDivider } from "@openbot/ui/features/conversation/UnreadMessages";
+import { ArrowUp, Button } from "@aikingbot/ui";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { ChannelActivityIndicator, type ChannelWorker } from "@aikingbot/ui/features/channels/ChannelActivityIndicator";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
+import { MessageActions } from "@aikingbot/ui/features/conversation/MessageRendering";
+import { UnreadMessagesDivider } from "@aikingbot/ui/features/conversation/UnreadMessages";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { fn } from "storybook/test";

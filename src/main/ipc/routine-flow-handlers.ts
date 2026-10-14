@@ -1,8 +1,8 @@
 // Routine flows: the canvas of one agent's routines and the handoffs between its agents. This
 // computer's host answers from its own runtime; a joined server answers through `routine-flows-v1`.
 
-import { ROUTINE_FLOWS_CAPABILITY, ROUTINE_FLOWS_ROUTES } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { ROUTINE_FLOWS_CAPABILITY, ROUTINE_FLOWS_ROUTES } from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { RoutineFlowsHandle } from "../../backend/routine-flows/routine-flows";

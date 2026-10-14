@@ -5,23 +5,23 @@
  */
 
 .splash-screen {
-  --splash-accent: var(--openbot-logo-production);
+  --splash-accent: var(--aikingbot-logo-production);
   position: absolute;
   z-index: 100;
   inset: 0;
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
   -webkit-app-region: drag;
 }
 
 .splash-screen[data-variant="dev"] {
-  --splash-accent: var(--openbot-logo-dev);
+  --splash-accent: var(--aikingbot-logo-dev);
 }
 
 .splash-screen[data-variant="preview"] {
-  --splash-accent: var(--openbot-logo-preview);
+  --splash-accent: var(--aikingbot-logo-preview);
 }
 
 .splash-stage {
@@ -42,7 +42,7 @@
   position: absolute;
   z-index: -1;
   inset: -55%;
-  border-radius: var(--openbot-radius-pill);
+  border-radius: var(--aikingbot-radius-pill);
   background: radial-gradient(
     closest-side,
     color-mix(in srgb, var(--splash-accent) 34%, transparent),
@@ -67,11 +67,11 @@
 }
 
 .splash-wordmark {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-display);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-display);
   font-weight: 620;
   letter-spacing: -0.015em;
-  line-height: var(--openbot-leading-display);
+  line-height: var(--aikingbot-leading-display);
 }
 
 .splash-loader {
@@ -97,32 +97,32 @@
 
 .splash-label {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
 }
 
 /* These two only fade, so they also run with reduced motion. Their animationend events move the
  * splash from intro to idle and from exit to unmounted. */
 
 .splash-screen[data-phase="intro"] .splash-loader {
-  animation: splash-loader-in 360ms var(--openbot-ease-out) 1020ms backwards;
+  animation: splash-loader-in 360ms var(--aikingbot-ease-out) 1020ms backwards;
 }
 
 .splash-screen[data-phase="exit"] {
   pointer-events: none;
-  animation: splash-screen-exit 420ms var(--openbot-ease-in-out) 240ms forwards;
+  animation: splash-screen-exit 420ms var(--aikingbot-ease-in-out) 240ms forwards;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   /* Intro */
 
   .splash-screen[data-phase="intro"] .splash-logo {
-    animation: splash-tile-in 620ms var(--openbot-ease-out) both;
+    animation: splash-tile-in 620ms var(--aikingbot-ease-out) both;
   }
 
   .splash-screen[data-phase="intro"] .splash-logo .app-logo-eye {
     stroke-dasharray: var(--splash-eye-length) calc(var(--splash-eye-length) + 24px);
-    animation: splash-eye-draw 460ms var(--openbot-ease-in-out) 320ms backwards;
+    animation: splash-eye-draw 460ms var(--aikingbot-ease-in-out) 320ms backwards;
   }
 
   .splash-screen[data-phase="intro"] .splash-logo .app-logo-eye-right {
@@ -130,44 +130,44 @@
   }
 
   .splash-screen[data-phase="intro"] .splash-mark::before {
-    animation: splash-glow-in 900ms var(--openbot-ease-out) 240ms backwards;
+    animation: splash-glow-in 900ms var(--aikingbot-ease-out) 240ms backwards;
   }
 
   .splash-screen[data-phase="intro"] .splash-wordmark {
-    animation: splash-rise 520ms var(--openbot-ease-out) 780ms backwards;
+    animation: splash-rise 520ms var(--aikingbot-ease-out) 780ms backwards;
   }
 
   .splash-scribble-stroke {
     stroke-dasharray: 1 1.2;
-    animation: splash-scribble 1.8s var(--openbot-ease-in-out) infinite;
+    animation: splash-scribble 1.8s var(--aikingbot-ease-in-out) infinite;
   }
 
   /* Idle */
 
   .splash-screen[data-phase="idle"] .splash-mark {
-    animation: splash-float 3.2s var(--openbot-ease-in-out) infinite;
+    animation: splash-float 3.2s var(--aikingbot-ease-in-out) infinite;
   }
 
   .splash-screen[data-phase="idle"] .splash-mark::before {
-    animation: splash-breathe 3.2s var(--openbot-ease-in-out) infinite;
+    animation: splash-breathe 3.2s var(--aikingbot-ease-in-out) infinite;
   }
 
   /* Exit */
 
   .splash-screen[data-phase="exit"] .splash-logo {
-    animation: splash-tile-exit 620ms var(--openbot-ease-in-out) forwards;
+    animation: splash-tile-exit 620ms var(--aikingbot-ease-in-out) forwards;
   }
 
   .splash-screen[data-phase="exit"] .splash-logo .app-logo-eye {
-    animation: splash-eye-squint 240ms var(--openbot-ease-out) forwards;
+    animation: splash-eye-squint 240ms var(--aikingbot-ease-out) forwards;
   }
 
   .splash-screen[data-phase="exit"] .splash-mark::before {
-    animation: splash-glow-exit 620ms var(--openbot-ease-in-out) forwards;
+    animation: splash-glow-exit 620ms var(--aikingbot-ease-in-out) forwards;
   }
 
   .splash-screen[data-phase="exit"] :is(.splash-wordmark, .splash-loader) {
-    animation: splash-sink 260ms var(--openbot-ease-in-out) forwards;
+    animation: splash-sink 260ms var(--aikingbot-ease-in-out) forwards;
   }
 }
 

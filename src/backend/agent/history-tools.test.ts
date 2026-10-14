@@ -2,13 +2,13 @@
 import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { registerSecretValue } from "@openbot/logging";
+import { registerSecretValue } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { AgentService } from "../agent-service";
 import {
-  callOpenBotTool,
-  openBotToolPayload,
+  aikingBotToolPayload,
+  callAIKINGBOTTool,
   startAgentTestFixture,
   startService,
   stopAgentTestFixture,
@@ -64,13 +64,13 @@ describe.sequential("scoped history tools", () => {
     let offset = 0;
     let recovered = "";
     for (let calls = 0; calls < 20; calls += 1) {
-      const response = await callOpenBotTool(client, session.externalSessionId, "tool_call", {
-        name: "openbot.history_read",
+      const response = await callAIKINGBOTTool(client, session.externalSessionId, "tool_call", {
+        name: "aikingbot.history_read",
         arguments: { messageId: message.id, offset, includeWorkSteps: true },
       });
       expect(response.result).toMatchObject({ success: true });
       expect(JSON.stringify(response.result).length).toBeLessThanOrEqual(16000);
-      const row = getArray(openBotToolPayload(response.result), "messages")[0];
+      const row = getArray(aikingBotToolPayload(response.result), "messages")[0];
       recovered += getString(row, "text") ?? "";
       const next = isRecord(row) ? row.nextOffset : null;
       if (next === null) break;
@@ -103,8 +103,8 @@ describe.sequential("scoped history tools", () => {
       eventType: "test.history",
     });
     const search = async (query: string) =>
-      openBotToolPayload(
-        (await callOpenBotTool(client, session.externalSessionId, "history_search", { query })).result,
+      aikingBotToolPayload(
+        (await callAIKINGBOTTool(client, session.externalSessionId, "history_search", { query })).result,
       );
     expect(await search(secret.slice(0, 26))).toEqual(await search("absent-synthetic-text"));
     const visible = await search("visible-marker");
@@ -121,25 +121,25 @@ describe.sequential("scoped history tools", () => {
     await mkdir(directory, { recursive: true });
     const path = join(directory, createHash("sha256").update(session.id).digest("hex"));
     await writeFile(path, "{incomplete", { mode: 0o600 });
-    const missing = await callOpenBotTool(client, session.externalSessionId, "history_read", {
+    const missing = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", {
       messageId: row.message.id,
       includeWorkSteps: true,
     });
     expect(missing.result).toMatchObject({ success: true });
-    expect(JSON.stringify(openBotToolPayload(missing.result))).toContain("Captured work steps are unavailable");
+    expect(JSON.stringify(aikingBotToolPayload(missing.result))).toContain("Captured work steps are unavailable");
     const steps = `${"\u0000".repeat(3900)}END_OF_CAPTURE`;
     await writeFile(path, JSON.stringify({ [row.message.turnId]: steps }), { mode: 0o600 });
     let offset = 0;
     let recovered = "";
     for (let count = 0; count < 20; count += 1) {
-      const response = await callOpenBotTool(client, session.externalSessionId, "history_read", {
+      const response = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", {
         messageId: row.message.id,
         includeWorkSteps: true,
         workStepsOffset: offset,
       });
       expect(response.result).toMatchObject({ success: true });
       expect(JSON.stringify(response.result).length).toBeLessThanOrEqual(16000);
-      const entry = getArray(openBotToolPayload(response.result), "messages")[0];
+      const entry = getArray(aikingBotToolPayload(response.result), "messages")[0];
       recovered += getString(entry, "workSteps") ?? "";
       const next = isRecord(entry) ? entry.nextWorkStepsOffset : null;
       if (next === null) break;
@@ -151,7 +151,8 @@ describe.sequential("scoped history tools", () => {
       .prepare("DELETE FROM projection_thread_messages WHERE thread_id = ? AND message_id = ?")
       .run(session.threadId, row.message.id);
     expect(
-      (await callOpenBotTool(client, session.externalSessionId, "history_read", { messageId: row.message.id })).result,
+      (await callAIKINGBOTTool(client, session.externalSessionId, "history_read", { messageId: row.message.id }))
+        .result,
     ).toMatchObject({ success: false });
   });
 
@@ -181,12 +182,12 @@ describe.sequential("scoped history tools", () => {
     await writeFile(join(directory, "v2", createHash("sha256").update(other.id).digest("hex")), foreign, {
       mode: 0o600,
     });
-    const response = await callOpenBotTool(client, session.externalSessionId, "history_read", {
+    const response = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", {
       messageId: row.message.id,
       includeWorkSteps: true,
     });
     expect(response.result).toMatchObject({ success: true });
-    expect(JSON.stringify(openBotToolPayload(response.result))).toContain("Captured work steps are unavailable");
+    expect(JSON.stringify(aikingBotToolPayload(response.result))).toContain("Captured work steps are unavailable");
     expect(JSON.stringify(response.result)).not.toContain("PRIVATE_CAPTURE");
   });
 
@@ -202,11 +203,11 @@ describe.sequential("scoped history tools", () => {
       JSON.stringify({ [row.message.turnId]: "LEGACY_CAPTURE_STEPS" }),
       { mode: 0o600 },
     );
-    const response = await callOpenBotTool(client, session.externalSessionId, "history_read", {
+    const response = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", {
       messageId: row.message.id,
       includeWorkSteps: true,
     });
-    expect(JSON.stringify(openBotToolPayload(response.result))).toContain("LEGACY_CAPTURE_STEPS");
+    expect(JSON.stringify(aikingBotToolPayload(response.result))).toContain("LEGACY_CAPTURE_STEPS");
   });
 
   it("rejects a reset that occurs during a capture read", async () => {
@@ -248,8 +249,8 @@ describe.sequential("scoped history tools", () => {
 
   it("rejects cross-thread references and stale cursors after a reset", async () => {
     const { service, store, client, session } = await start();
-    const before = await callOpenBotTool(client, session.externalSessionId, "history_read", { limit: 1 });
-    const cursor = getString(openBotToolPayload(before.result), "nextCursor");
+    const before = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", { limit: 1 });
+    const cursor = getString(aikingBotToolPayload(before.result), "nextCursor");
     expect(cursor).toBeTruthy();
     const snapshot = await runCauseEffect(service.readConversation("chief"));
     const previousMessage = snapshot.messages[0];
@@ -267,7 +268,7 @@ describe.sequential("scoped history tools", () => {
       },
       "test.other",
     );
-    const forged = await callOpenBotTool(client, session.externalSessionId, "history_read", {
+    const forged = await callAIKINGBOTTool(client, session.externalSessionId, "history_read", {
       messageId: "other-message",
     });
     expect(forged.result).toMatchObject({ success: false });
@@ -278,7 +279,7 @@ describe.sequential("scoped history tools", () => {
       }),
     ).toString("base64url");
     expect(
-      (await callOpenBotTool(client, session.externalSessionId, "history_read", { before: forgedCursor })).result,
+      (await callAIKINGBOTTool(client, session.externalSessionId, "history_read", { before: forgedCursor })).result,
     ).toMatchObject({ success: false });
     await runCauseEffect(service.clearAgentContext("chief"));
     await runCauseEffect(service.sendMessage({ agentId: "chief", text: "New context" }));
@@ -286,23 +287,24 @@ describe.sequential("scoped history tools", () => {
     const next = store.activeProviderSession("chief");
     if (!next) throw new Error("Missing new session");
     expect(
-      (await callOpenBotTool(client, next.externalSessionId, "history_read", { before: cursor })).result,
+      (await callAIKINGBOTTool(client, next.externalSessionId, "history_read", { before: cursor })).result,
     ).toMatchObject({ success: false });
     expect(
-      (await callOpenBotTool(client, next.externalSessionId, "history_read", { messageId: previousMessage.id })).result,
+      (await callAIKINGBOTTool(client, next.externalSessionId, "history_read", { messageId: previousMessage.id }))
+        .result,
     ).toMatchObject({ success: false });
     expect(
       (
-        await callOpenBotTool(client, next.externalSessionId, "history_read", {
+        await callAIKINGBOTTool(client, next.externalSessionId, "history_read", {
           messageId: "other-message",
           before: cursor,
         })
       ).result,
     ).toMatchObject({ success: false });
-    const search = await callOpenBotTool(client, next.externalSessionId, "history_search", {
+    const search = await callAIKINGBOTTool(client, next.externalSessionId, "history_search", {
       query: "earlier decision",
     });
-    expect(getArray(openBotToolPayload(search.result), "messages")).toEqual([]);
+    expect(getArray(aikingBotToolPayload(search.result), "messages")).toEqual([]);
     expect(
       (await runCauseEffect(service.readConversation("chief"))).messages.some(
         (message) => message.id === previousMessage.id,

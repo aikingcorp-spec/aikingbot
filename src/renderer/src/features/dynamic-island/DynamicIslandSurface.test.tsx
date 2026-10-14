@@ -3,13 +3,13 @@ import type {
   DynamicIslandPreference,
   DynamicIslandPresentation,
   DynamicIslandQuestionItem,
-} from "@openbot/contracts/ipc";
-import type { DynamicIslandViewState } from "@openbot/ui";
-import { OpenBotDynamicIsland } from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
+} from "@aikingbot/contracts/ipc";
+import type { DynamicIslandViewState } from "@aikingbot/ui";
+import { AIKINGBOTDynamicIsland } from "@aikingbot/ui/features/dynamic-island/AIKINGBOTDynamicIsland";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal, flush } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMockOpenBot } from "../../preview/mock-openbot";
+import { createMockAIKINGBOT } from "../../preview/mock-aikingbot";
 import { DynamicIslandSurface } from "./DynamicIslandSurface";
 
 const RESEARCH = {
@@ -30,14 +30,14 @@ describe("DynamicIslandSurface", () => {
   it("cancels pending hover expansion when the main window takes focus and allows a new hover", async () => {
     const mock = createQuestionMock(questionPresentation("focus-question", [sourceQuestion()]));
     render(() => <DynamicIslandSurface />);
-    const island = await screen.findByRole("region", { name: "OpenBot question from AI" });
+    const island = await screen.findByRole("region", { name: "AIKINGBOT question from AI" });
     vi.useFakeTimers();
 
     await fireEvent.mouseEnter(island);
     await fireEvent(window, new Event("blur"));
     await vi.runAllTimersAsync();
 
-    expect(screen.getByRole("button", { name: "Expand OpenBot question from AI" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Expand AIKINGBOT question from AI" })).toHaveAttribute(
       "aria-expanded",
       "false",
     );
@@ -50,7 +50,7 @@ describe("DynamicIslandSurface", () => {
 
     await fireEvent(window, new Event("blur"));
     await vi.runAllTimersAsync();
-    expect(screen.getByRole("button", { name: "Expand OpenBot question from AI" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Expand AIKINGBOT question from AI" })).toBeVisible();
     await fireEvent.mouseEnter(island);
     await vi.runAllTimersAsync();
     expect(screen.getByRole("button", { name: "Official data. Use the public dataset" })).toBeVisible();
@@ -58,7 +58,7 @@ describe("DynamicIslandSurface", () => {
   });
 
   it("hides only the idle island when that preference changes", async () => {
-    const mock = createMockOpenBot();
+    const mock = createMockAIKINGBOT();
     let updatePreference: ((preference: DynamicIslandPreference) => void) | undefined;
     let publish: ((presentation: DynamicIslandPresentation) => void) | undefined;
     mock.api.dynamicIsland.onPreference = (listener) => {
@@ -73,10 +73,10 @@ describe("DynamicIslandSurface", () => {
         publish = undefined;
       };
     };
-    Object.defineProperty(window, "openbot", { configurable: true, value: mock.api });
+    Object.defineProperty(window, "aikingbot", { configurable: true, value: mock.api });
     render(() => <DynamicIslandSurface />);
 
-    expect(await screen.findByRole("button", { name: "Expand Open OpenBot" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Expand Open AIKINGBOT" })).toBeVisible();
     flush(() =>
       updatePreference?.({
         enabled: true,
@@ -87,10 +87,10 @@ describe("DynamicIslandSurface", () => {
         heightPercent: 100,
       }),
     );
-    expect(screen.queryByRole("button", { name: "Expand Open OpenBot" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Expand Open AIKINGBOT" })).not.toBeInTheDocument();
 
     flush(() => publish?.({ serverId: "local", mode: "working", working: [] }));
-    expect(screen.getByRole("button", { name: "Expand OpenBot working status" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Expand AIKINGBOT working status" })).toBeVisible();
     mock.dispose();
   });
 
@@ -108,7 +108,7 @@ describe("DynamicIslandSurface", () => {
     const mock = createQuestionMock(questionPresentation("research-questions", [sourceQuestion(), formatQuestion]));
     render(() => <DynamicIslandSurface />);
 
-    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "OpenBot question from AI" }));
+    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "AIKINGBOT question from AI" }));
     await fireEvent.click(await screen.findByRole("button", { name: "Official data. Use the public dataset" }));
     expect(await screen.findByText("How should I present the result?")).toBeVisible();
     expect(mock.performAction).not.toHaveBeenCalled();
@@ -126,7 +126,7 @@ describe("DynamicIslandSurface", () => {
     mock.dispose();
   });
 
-  it("keeps secret prompts in the full OpenBot flow", async () => {
+  it("keeps secret prompts in the full AIKINGBOT flow", async () => {
     const secretQuestion: DynamicIslandQuestionItem = {
       id: "token",
       header: "Enter a token",
@@ -143,11 +143,11 @@ describe("DynamicIslandSurface", () => {
     const mock = createQuestionMock(presentation);
     render(() => <DynamicIslandSurface />);
 
-    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "OpenBot question from AI" }));
-    await screen.findByRole("button", { name: "Answer in OpenBot" });
+    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "AIKINGBOT question from AI" }));
+    await screen.findByRole("button", { name: "Answer in AIKINGBOT" });
 
     expect(screen.queryByRole("button", { name: "Saved token. Use the stored credential" })).not.toBeInTheDocument();
-    await fireEvent.click(screen.getByRole("button", { name: "Answer in OpenBot" }));
+    await fireEvent.click(screen.getByRole("button", { name: "Answer in AIKINGBOT" }));
     await waitFor(() =>
       expect(mock.performAction).toHaveBeenCalledWith({
         type: "review-attention",
@@ -169,16 +169,16 @@ describe("DynamicIslandSurface", () => {
       };
     };
     render(() => <DynamicIslandSurface />);
-    await screen.findByRole("region", { name: "OpenBot question from AI" });
+    await screen.findByRole("region", { name: "AIKINGBOT question from AI" });
     const anchor = screen.getByRole("group", { name: "Dynamic Island interaction area" });
     await fireEvent.mouseOver(anchor);
 
     flush(() => publish?.(approvalPresentation("approval-queued")));
-    expect(screen.getByRole("region", { name: "OpenBot question from AI" })).toBeVisible();
-    expect(screen.queryByRole("region", { name: "OpenBot approval needed" })).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "AIKINGBOT question from AI" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "AIKINGBOT approval needed" })).not.toBeInTheDocument();
 
     await fireEvent.mouseOut(anchor);
-    expect(await screen.findByRole("region", { name: "OpenBot approval request" })).toBeVisible();
+    expect(await screen.findByRole("region", { name: "AIKINGBOT approval request" })).toBeVisible();
     mock.dispose();
   });
 
@@ -193,23 +193,23 @@ describe("DynamicIslandSurface", () => {
     };
     render(() => <DynamicIslandSurface />);
 
-    const expand = await screen.findByRole("button", { name: "Expand OpenBot question from AI" });
+    const expand = await screen.findByRole("button", { name: "Expand AIKINGBOT question from AI" });
     expand.focus();
     await fireEvent.click(expand, { detail: 0 });
-    expect(screen.getByRole("button", { name: "Collapse OpenBot question from AI" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Collapse AIKINGBOT question from AI" })).toHaveAttribute(
       "aria-expanded",
       "true",
     );
 
     flush(() => publish?.(approvalPresentation("approval-after-keyboard")));
-    expect(screen.getByRole("region", { name: "OpenBot question from AI" })).toBeVisible();
+    expect(screen.getByRole("region", { name: "AIKINGBOT question from AI" })).toBeVisible();
 
-    const collapse = screen.getByRole("button", { name: "Collapse OpenBot question from AI" });
+    const collapse = screen.getByRole("button", { name: "Collapse AIKINGBOT question from AI" });
     await fireEvent.click(collapse, { detail: 0 });
-    expect(screen.getByRole("region", { name: "OpenBot question from AI" })).toBeVisible();
+    expect(screen.getByRole("region", { name: "AIKINGBOT question from AI" })).toBeVisible();
 
     await fireEvent.focusOut(collapse, { relatedTarget: document.body });
-    expect(await screen.findByRole("region", { name: "OpenBot approval request" })).toBeVisible();
+    expect(await screen.findByRole("region", { name: "AIKINGBOT approval request" })).toBeVisible();
     mock.dispose();
   });
 
@@ -218,11 +218,11 @@ describe("DynamicIslandSurface", () => {
     mock.performAction.mockRejectedValueOnce(new Error("The request is no longer active."));
     render(() => <DynamicIslandSurface />);
 
-    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "OpenBot question from AI" }));
+    await fireEvent.mouseEnter(await screen.findByRole("region", { name: "AIKINGBOT question from AI" }));
     await fireEvent.click(await screen.findByRole("button", { name: "Official data. Use the public dataset" }));
 
     await waitFor(() => expect(mock.performAction).toHaveBeenCalledOnce());
-    expect(screen.getByRole("button", { name: "Collapse OpenBot question from AI" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Collapse AIKINGBOT question from AI" })).toHaveAttribute(
       "aria-expanded",
       "true",
     );
@@ -230,12 +230,12 @@ describe("DynamicIslandSurface", () => {
     mock.dispose();
   });
 
-  it("requires opening OpenBot before approving truncated requests", () => {
+  it("requires opening AIKINGBOT before approving truncated requests", () => {
     const presentation = truncatedApprovalPresentation();
     presentation.item.truncated = true;
     renderControlledIsland(presentation, "expanded", vi.fn());
 
-    expect(screen.getByRole("button", { name: "Review in OpenBot" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Review in AIKINGBOT" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Approve" })).not.toBeInTheDocument();
   });
 });
@@ -265,11 +265,11 @@ function questionPresentation(
 }
 
 function createQuestionMock(presentation: DynamicIslandPresentation) {
-  const mock = createMockOpenBot();
+  const mock = createMockAIKINGBOT();
   const performAction = vi.fn(async () => undefined);
   mock.api.dynamicIsland.getPresentation = async () => presentation;
   mock.api.dynamicIsland.performAction = performAction;
-  Object.defineProperty(window, "openbot", { configurable: true, value: mock.api });
+  Object.defineProperty(window, "aikingbot", { configurable: true, value: mock.api });
   return { ...mock, performAction };
 }
 
@@ -310,7 +310,7 @@ function truncatedApprovalPresentation(): Extract<DynamicIslandPresentation, { m
       approval: {
         kind: "command",
         command: "bun install --frozen-lockfile",
-        cwd: "~/Projects/openbot",
+        cwd: "~/Projects/aikingbot",
         reason: "Install the locked dependencies.",
         grantRoot: null,
         permissions: null,
@@ -329,7 +329,7 @@ function renderControlledIsland(
     const [presentation] = createSignal(initialPresentation);
     const [state, setState] = createSignal(initialState);
     return (
-      <OpenBotDynamicIsland
+      <AIKINGBOTDynamicIsland
         presentation={presentation()}
         state={state()}
         onStateChange={setState}

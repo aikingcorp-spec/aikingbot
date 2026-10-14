@@ -1,7 +1,7 @@
-import { Button } from "@openbot/ui";
-import { createDigitRoll } from "@openbot/ui/digit-roll";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { Button } from "@aikingbot/ui";
+import { createDigitRoll } from "@aikingbot/ui/digit-roll";
+import { useText } from "@aikingbot/ui/text";
+import { prefersReducedMotion } from "@aikingbot/ui/utils";
 import { createEffect, createMemo, createSignal, createStore, For, onSettled, Show } from "solid-js";
 import {
   type ChatDayRow,

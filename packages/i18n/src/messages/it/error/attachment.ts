@@ -8,8 +8,8 @@ export const messages = {
   "error.attachment.unavailable": "Questo file non è più disponibile.",
   "error.attachment.tooMany": "Scegli al massimo {limit} file.",
   "error.attachment.mediaUnsupported":
-    "Questo server non supporta gli allegati MP3 o MOV. Aggiorna OpenBot sull'host e riprova.",
+    "Questo server non supporta gli allegati MP3 o MOV. Aggiorna AIKINGBOT sull'host e riprova.",
   "error.attachment.emlUnsupported":
-    "Questo server non supporta gli allegati EML. Aggiorna OpenBot sull'host e riprova.",
+    "Questo server non supporta gli allegati EML. Aggiorna AIKINGBOT sull'host e riprova.",
   "error.attachment.previewTooLarge": "Il file supera il limite di 100 MB.",
 } as const satisfies PartialTranslation<typeof source>;

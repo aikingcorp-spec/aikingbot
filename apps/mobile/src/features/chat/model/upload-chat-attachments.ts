@@ -1,4 +1,4 @@
-import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
+import type { RemoteFileUpload } from "@aikingbot/team-client/remote-peer";
 import type { ChatMessage } from "./chat-messages";
 
 /** The user cancelled the upload. A caller that shows the error uses `mobile.chat.upload.cancelled`. */

@@ -1,5 +1,5 @@
-import type { CentralAuthState } from "@openbot/contracts/ipc";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
+import type { CentralAuthState } from "@aikingbot/contracts/ipc";
+import { AccountLogin } from "@aikingbot/ui/features/account/AccountLogin";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -140,7 +140,7 @@ export const ServiceUnavailable: Story = {
       status: "error",
       issue: {
         code: "auth_api_unavailable",
-        message: "OpenBot could not reach the account service. Check your connection and try again.",
+        message: "AIKINGBOT could not reach the account service. Check your connection and try again.",
       },
     },
   },

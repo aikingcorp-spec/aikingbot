@@ -2,7 +2,7 @@ import {
   DISCONNECTED_GITHUB_CONNECTOR,
   type GitHubConnectorDesktopApi,
   type GitHubConnectorStatus,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import type { GitHubConnectorPort } from "../features/connectors/github-connector-port";
 
 /** How long the mock waits for GitHub's code, and then for the user to type it on github.com. */

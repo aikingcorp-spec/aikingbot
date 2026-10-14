@@ -4,14 +4,14 @@ import type {
   ConversationMessageSender,
   SaveAgentProfileInput,
   SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   agentAutomationAllowed,
   agentComputerUseEnabled,
   decodeSaveAgentProfileResult,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Exit, Schema, Semaphore } from "effect";
 import type { AgentStore } from "../agent-store";
 import { causeHelpers } from "../effect-boundary";

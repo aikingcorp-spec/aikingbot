@@ -4,8 +4,8 @@ import {
   type InstallAgentTemplateInput,
   isAgentTemplateCardPng,
   type PublishAgentTemplateInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { AgentTemplateService } from "../agent-template-service";
 import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";

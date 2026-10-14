@@ -2,7 +2,7 @@ import {
   createIngressQueueKeyPair,
   importIngressQueuePrivateKey,
   openQueuedDelivery,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
+} from "@aikingbot/contracts/signal-protocol/ingress-queue";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import type { RemoteTicketClaims } from "../src/protocol";
@@ -210,7 +210,7 @@ describe("SignalService", () => {
     }
   });
 
-  it("answers Slack for a hosted server that sleeps, and keeps only a request that addresses OpenBot", async () => {
+  it("answers Slack for a hosted server that sleeps, and keeps only a request that addresses AIKINGBOT", async () => {
     const service = new SignalService(
       {
         ...fakeTokens(),
@@ -765,7 +765,7 @@ function fakeTokens() {
     sessionId = role === "host" ? "host-session" : "client-session",
     authEpoch = 1,
   ): RemoteTicketClaims => ({
-    aud: "openbot-remote",
+    aud: "aikingbot-remote",
     jti,
     sessionId,
     hostId: "host-1",

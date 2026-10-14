@@ -1,5 +1,5 @@
-import { type AppTextKey, type AppTranslate, translateFor } from "@openbot/i18n";
-import type { MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+import { type AppTextKey, type AppTranslate, translateFor } from "@aikingbot/i18n";
+import type { MarketplacePluginDetail } from "@aikingbot/ui/features/settings/marketplace-plugins";
 
 /** The keys of one catalog listing's text. Apps and prompts go by their catalog id. */
 interface PluginTextKeys {

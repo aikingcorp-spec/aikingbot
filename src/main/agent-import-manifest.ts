@@ -1,4 +1,4 @@
-// The `openbot-import.json` manifest at the root of an agent import archive.
+// The `aikingbot-import.json` manifest at the root of an agent import archive.
 //
 // The format is a product contract: the Grok Bot export skill in
 // `resources/agent-import/grok-bot/SKILL.md` writes it, and an export made by an older skill must
@@ -8,14 +8,19 @@
 // channel member or lead that cannot be kept is dropped with a warning, because the rest is still
 // worth importing. `channels` is optional: an export made before group chats has none.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { AGENT_IMPORT_LIMITS, isAgentImportKey, isRoutineSchedule, type RoutineSchedule } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import {
+  AGENT_IMPORT_LIMITS,
+  isAgentImportKey,
+  isRoutineSchedule,
+  type RoutineSchedule,
+} from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { isUnsafeArchivePath } from "./skill-package";
 
-export const AGENT_IMPORT_MANIFEST = "openbot-import.json";
-const FORMAT = "openbot-agent-import";
+export const AGENT_IMPORT_MANIFEST = "aikingbot-import.json";
+const FORMAT = "aikingbot-agent-import";
 const VERSION = 1;
 
 interface ImportRoutine {

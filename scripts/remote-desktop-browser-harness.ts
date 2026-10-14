@@ -2,14 +2,14 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { resolveRemoteDesktopRuntime } from "../src/main/remote-desktop-runtime-artifact";
 import { RemoteScreenGateway } from "../src/main/remote-screen-gateway";
 
-const logger = createOpenBotLogger("remote-desktop-browser-harness");
+const logger = createAIKINGBOTLogger("remote-desktop-browser-harness");
 
 const platform = process.platform === "darwin" || process.platform === "win32" ? process.platform : "linux";
 const runtimePaths = await Effect.runPromise(
@@ -28,19 +28,19 @@ const clientCount = z.coerce
   .int()
   .min(1)
   .max(4)
-  .parse(process.env.OPENBOT_REMOTE_E2E_CLIENTS ?? "1");
-const stateDirectory = await mkdtemp(join(tmpdir(), "openbot-remote-browser-e2e-"));
+  .parse(process.env.AIKINGBOT_REMOTE_E2E_CLIENTS ?? "1");
+const stateDirectory = await mkdtemp(join(tmpdir(), "aikingbot-remote-browser-e2e-"));
 const gateway = new RemoteScreenGateway({
   platform,
   unattended: false,
   runtimePaths,
   runtimeStateDirectory: stateDirectory,
-  getRuntimeCredentials: () => Effect.succeed({ username: "openbot-e2e", password: "openbot-local-e2e-only" }),
+  getRuntimeCredentials: () => Effect.succeed({ username: "aikingbot-e2e", password: "aikingbot-local-e2e-only" }),
   getDisplays: () => [{ id: "1", label: "Primary display", width: 1920, height: 1080, primary: true }],
   getIceServers: () => Effect.succeed([{ urls: "stun:127.0.0.1:3478" }]),
   audit: (event) => {
-    // Machine-readable: the E2E runner parses OPENBOT_REMOTE_E2E_AUDIT lines.
-    process.stdout.write(`OPENBOT_REMOTE_E2E_AUDIT=${JSON.stringify(event)}\n`);
+    // Machine-readable: the E2E runner parses AIKINGBOT_REMOTE_E2E_AUDIT lines.
+    process.stdout.write(`AIKINGBOT_REMOTE_E2E_AUDIT=${JSON.stringify(event)}\n`);
   },
   onDiagnostic: (source, message) => process.stdout.write(`[${source}] ${message}`),
 });
@@ -77,9 +77,9 @@ for (let index = 0; index < clientCount; index += 1) {
     }),
   );
   const viewerUrl = `${session.viewerUrl}#${session.viewerGrant}`;
-  // Machine-readable: the E2E runner parses OPENBOT_REMOTE_E2E_URL lines.
-  if (index === 0) process.stdout.write(`OPENBOT_REMOTE_E2E_URL=${viewerUrl}\n`);
-  process.stdout.write(`OPENBOT_REMOTE_E2E_URL_${index + 1}=${viewerUrl}\n`);
+  // Machine-readable: the E2E runner parses AIKINGBOT_REMOTE_E2E_URL lines.
+  if (index === 0) process.stdout.write(`AIKINGBOT_REMOTE_E2E_URL=${viewerUrl}\n`);
+  process.stdout.write(`AIKINGBOT_REMOTE_E2E_URL_${index + 1}=${viewerUrl}\n`);
 }
 
 let stopping = false;

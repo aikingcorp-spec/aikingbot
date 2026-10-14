@@ -2,32 +2,32 @@ import {
   agentProviderName,
   isManagedRuntimeProvider,
   type ManagedProviderId,
-} from "@openbot/contracts/agent-providers";
-import type { ProviderRuntimeSnapshot, ProviderRuntimeStatus } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { PROVIDERS_ADMIN_CAPABILITY, PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
+} from "@aikingbot/contracts/agent-providers";
+import type { ProviderRuntimeSnapshot, ProviderRuntimeStatus } from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@aikingbot/contracts/runtime-values";
+import { PROVIDERS_ADMIN_CAPABILITY, PROVIDERS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v1";
 import {
   PROVIDERS_RUNTIMES_V2_CAPABILITY,
   PROVIDERS_RUNTIMES_V2_ROUTES,
-} from "@openbot/contracts/team-protocol/providers-v2";
+} from "@aikingbot/contracts/team-protocol/providers-v2";
 import {
   PROVIDERS_SIGN_IN_V3_CAPABILITY,
   PROVIDERS_SIGN_IN_V3_PROVIDERS,
   PROVIDERS_SIGN_IN_V3_ROUTES,
-} from "@openbot/contracts/team-protocol/providers-v3";
+} from "@aikingbot/contracts/team-protocol/providers-v3";
 import {
   PROVIDERS_V4_CAPABILITY,
   PROVIDERS_V4_ROUTES,
   PROVIDERS_V4_RUNTIME_PROVIDERS,
   PROVIDERS_V4_SIGN_IN_PROVIDERS,
-} from "@openbot/contracts/team-protocol/providers-v4";
+} from "@aikingbot/contracts/team-protocol/providers-v4";
 import {
   PROVIDERS_V5_CAPABILITY,
   PROVIDERS_V5_ROUTES,
   PROVIDERS_V5_RUNTIME_PROVIDERS,
-} from "@openbot/contracts/team-protocol/providers-v5";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText, registerSecretValue } from "@openbot/logging";
+} from "@aikingbot/contracts/team-protocol/providers-v5";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText, registerSecretValue } from "@aikingbot/logging";
 import { Effect } from "effect";
 import { normalizePastedCode } from "../../backend/agent/cli-code-login";
 import { AgentLifecycleFailed } from "../../backend/agent-service";

@@ -2,7 +2,7 @@ import { appendFile, mkdir, rename, stat } from "node:fs/promises";
 import { join } from "node:path";
 import type { Readable } from "node:stream";
 import { StringDecoder } from "node:string_decoder";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 import { Deferred, Effect } from "effect";
 import { desktopCall, desktopFailure, type RemoteDesktopOperationError } from "./remote-desktop-effects";
 

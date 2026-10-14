@@ -1,4 +1,4 @@
-import { type OpenWaitItem, OpenWaits } from "@openbot/ui/features/conversation/OpenWaits";
+import { type OpenWaitItem, OpenWaits } from "@aikingbot/ui/features/conversation/OpenWaits";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -39,7 +39,7 @@ const meta = {
   title: "Conversation/Open waits",
   component: OpenWaits,
   render: (args) => (
-    <main style={{ width: "min(640px, 100vw)", padding: "var(--openbot-space-4)" }}>
+    <main style={{ width: "min(640px, 100vw)", padding: "var(--aikingbot-space-4)" }}>
       <OpenWaits {...args} />
     </main>
   ),

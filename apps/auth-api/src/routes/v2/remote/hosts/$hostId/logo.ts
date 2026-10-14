@@ -1,4 +1,4 @@
-import { isUuidV4 } from "@openbot/contracts/validation";
+import { isUuidV4 } from "@aikingbot/contracts/validation";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { AvatarUploadError, readAvatarUpload } from "../../../../../server/avatar-storage";
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/v2/remote/hosts/$hostId/logo")({
             if (!user) return apiError(401, "unauthorized", "Sign in is required.");
             yield* requestRemoteControlPlane().assertHostOwner(user.id, params.hostId);
             const upload = yield* readAvatarUpload(request);
-            const requestedVersion = request.headers.get("OpenBot-Logo-Version");
+            const requestedVersion = request.headers.get("AIKINGBOT-Logo-Version");
             const version = requestedVersion && isUuidV4(requestedVersion) ? requestedVersion : crypto.randomUUID();
             const currentVersion = (yield* requestRemoteControlPlane().hostAsset(user.id, params.hostId)).logoKey;
             const bucket = requestAvatarBucket();

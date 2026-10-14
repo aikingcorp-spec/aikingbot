@@ -10,7 +10,7 @@ import { installedManagedCli, installOnePasswordCli } from "./onepassword-cli-in
 let directory: string;
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), "openbot-onepassword-cli-"));
+  directory = await mkdtemp(join(tmpdir(), "aikingbot-onepassword-cli-"));
 });
 
 afterEach(async () => {
@@ -24,7 +24,7 @@ describe("installOnePasswordCli", () => {
 
     await expect(
       runCauseEffect(installOnePasswordCli({ directory, target: "darwin-arm64", fetch: async () => tampered })),
-    ).rejects.toThrow("OpenBot could not install the 1Password CLI");
+    ).rejects.toThrow("AIKINGBOT could not install the 1Password CLI");
 
     expect(await Effect.runPromise(installedManagedCli(directory, "darwin-arm64"))).toBeNull();
     expect(await readdir(directory)).toEqual([]);

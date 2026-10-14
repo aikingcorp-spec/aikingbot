@@ -4,14 +4,14 @@ import {
   WEB_MESSAGING_INSTALL_CHANNEL,
   type WebMessagingInstallPlatform,
   webMessagingInstallKey,
-} from "@openbot/contracts/web-messaging-install";
+} from "@aikingbot/contracts/web-messaging-install";
 
 /** How long the page waits for the client tab's answer. The tab answers before any network call. */
 const RECEIPT_TIMEOUT_MS = 3_000;
 
 /**
  * Gives a Slack or Discord install's sealed grant to the browser client tab that started it. Null when
- * no tab of this browser marked the nonce: the page then opens the `openbot://` link. Otherwise true
+ * no tab of this browser marked the nonce: the page then opens the `aikingbot://` link. Otherwise true
  * when the tab took the grant, and false when no tab answered, for example after a reload.
  */
 export function handOffToWebClient(

@@ -1,6 +1,6 @@
 .github-connector {
   display: grid;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 /* UserAvatar has no style of its own: the initials, or GitHub's picture when the account has one. */
@@ -11,11 +11,11 @@
   height: 32px;
   place-items: center;
   overflow: hidden;
-  border-radius: var(--openbot-radius-pill);
-  background: linear-gradient(135deg, var(--openbot-accent-strong), var(--openbot-onboarding-desktop-indigo));
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  border-radius: var(--aikingbot-radius-pill);
+  background: linear-gradient(135deg, var(--aikingbot-accent-strong), var(--aikingbot-onboarding-desktop-indigo));
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .github-connector-avatar > img {
@@ -25,33 +25,33 @@
 }
 
 .github-connector-line {
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 /* On the card fill, the danger tone needs its text step for contrast. */
 .github-connector-line[data-tone="danger"] {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }
 
 .github-connector-search {
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--openbot-space-3) var(--openbot-space-4) var(--openbot-space-2);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4) var(--aikingbot-space-2);
 }
 
 .github-connector-search > svg {
   position: absolute;
-  left: calc(var(--openbot-space-4) + var(--openbot-space-3));
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  color: var(--openbot-text-muted);
+  left: calc(var(--aikingbot-space-4) + var(--aikingbot-space-3));
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  color: var(--aikingbot-text-muted);
   pointer-events: none;
 }
 
 .github-connector-search input {
   width: 100%;
-  padding-left: calc(var(--openbot-space-3) * 2 + var(--openbot-icon-sm));
+  padding-left: calc(var(--aikingbot-space-3) * 2 + var(--aikingbot-icon-sm));
 }
 
 /* A long list scrolls inside the card, so Disconnect stays near the top of the tab. */
@@ -59,25 +59,25 @@
   display: grid;
   max-height: 260px;
   margin: 0;
-  padding: 0 var(--openbot-space-2) var(--openbot-space-2);
+  padding: 0 var(--aikingbot-space-2) var(--aikingbot-space-2);
   overflow-y: auto;
   list-style: none;
 }
 
 .github-connector-repository {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
   justify-content: space-between;
   /* The same height with and without the Private badge. */
   min-height: 36px;
-  padding: 0 var(--openbot-space-2);
-  border-radius: var(--openbot-radius-md);
-  transition: background-color var(--openbot-duration-fast) var(--openbot-ease-out);
+  padding: 0 var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-md);
+  transition: background-color var(--aikingbot-duration-fast) var(--aikingbot-ease-out);
 }
 
 .github-connector-repository:hover {
-  background: var(--openbot-hover);
+  background: var(--aikingbot-hover);
 }
 
 .github-connector-repository-name {
@@ -85,12 +85,12 @@
 }
 
 .github-connector-repository-owner {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .github-connector-private {
   flex: none;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /* ------------------------------------------------ connect dialog */
@@ -104,7 +104,7 @@
 /* The code is about to be typed on another screen, so each character has its own tile. */
 .github-connector-code {
   display: flex;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   justify-content: center;
 }
 
@@ -113,35 +113,35 @@
   width: 36px;
   height: 48px;
   place-items: center;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-xl);
-  font-weight: var(--openbot-weight-semibold);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-xl);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .github-connector-code-char[data-separator="true"] {
   width: 12px;
-  border-color: var(--openbot-transparent);
-  background: var(--openbot-transparent);
-  color: var(--openbot-text-muted);
+  border-color: var(--aikingbot-transparent);
+  background: var(--aikingbot-transparent);
+  color: var(--aikingbot-text-muted);
 }
 
 .github-connector-waiting {
   display: flex;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   align-items: center;
   justify-content: center;
 }
 
 .github-connector-done {
   display: flex;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   align-items: center;
-  padding: var(--openbot-space-3) var(--openbot-space-4);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-success-wash);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-success-wash);
 }
 
 .github-connector-done > div {
@@ -154,23 +154,23 @@
 .github-connector-effects {
   display: grid;
   margin: 0;
-  padding: var(--openbot-space-1);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  padding: var(--aikingbot-space-1);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
   list-style: none;
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .github-connector-effects li {
   display: flex;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
   align-items: center;
-  padding: var(--openbot-space-2);
+  padding: var(--aikingbot-space-2);
 }
 
 .github-connector-effects li + li {
-  border-top: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
 }
 
 .github-connector-effect-icon {
@@ -179,27 +179,27 @@
   width: 28px;
   height: 28px;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-muted);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-muted);
 }
 
 .github-connector-effect-icon > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .github-connector-effects li[data-tone="danger"] .github-connector-effect-icon {
-  background: var(--openbot-danger-soft);
-  color: var(--openbot-danger-text);
+  background: var(--aikingbot-danger-soft);
+  color: var(--aikingbot-danger-text);
 }
 
 .github-connector-effects li[data-tone="success"] .github-connector-effect-icon {
-  background: var(--openbot-success-soft);
-  color: var(--openbot-success);
+  background: var(--aikingbot-success-soft);
+  color: var(--aikingbot-success);
 }
 
 /* The label on the soft danger fill reads the text step, as the shared confirmation does for contrast. */
 .github-connector-confirm.ui-button-variant-destructive {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }

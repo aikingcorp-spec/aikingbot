@@ -73,7 +73,7 @@ export interface UpdateStatus {
   idleRestart?: IdleRestart;
 }
 
-/** `relaunch` starts OpenBot again; `update` installs the downloaded update. */
+/** `relaunch` starts AIKINGBOT again; `update` installs the downloaded update. */
 export const IDLE_RESTART_TARGETS = ["relaunch", "update"] as const;
 export type IdleRestartTarget = (typeof IDLE_RESTART_TARGETS)[number];
 
@@ -141,7 +141,7 @@ export type ProviderRuntimePhase = "not-downloaded" | "downloading" | "finishing
 export interface ProviderRuntimeStatus {
   /**
    * The newer version an update installs, when an older install exists: the latest upstream release
-   * the last check found, or the version this OpenBot release carries, whichever is newer.
+   * the last check found, or the version this AIKINGBOT release carries, whichever is newer.
    */
   availableVersion?: string | null;
   phase: ProviderRuntimePhase;
@@ -153,7 +153,7 @@ export interface ProviderRuntimeStatus {
 export interface ProviderRuntimeSnapshot {
   revision: number;
   /**
-   * Only the providers whose CLI OpenBot downloads and pins itself. A provider that ships without a
+   * Only the providers whose CLI AIKINGBOT downloads and pins itself. A provider that ships without a
    * managed runtime is absent from `ManagedProviderId`, so it needs no fake entry here, and every
    * provider that is in the tuple has a real status.
    */
@@ -276,7 +276,7 @@ export interface ComputerUseState {
  * macOS grants a permission to an application bundle, and the list in System Settings does not
  * always offer the one that asked. Dragging the bundle in is the way past that, so the window has
  * to show the user the same name and icon the list will show - which in a development build is
- * Electron, not OpenBot. `null` where there is no bundle to drag: every system that is not macOS,
+ * Electron, not AIKINGBOT. `null` where there is no bundle to drag: every system that is not macOS,
  * and a build that runs from a directory rather than an application.
  */
 export interface ComputerUsePermissionApp {
@@ -302,7 +302,7 @@ export interface ComputerUseHighlightPlacement {
   /** Which application window the agent works in, for the screen reader. Never logged. */
   windowTitle: string;
   /**
-   * Where OpenBot draws the agent cursor, or `null` when it draws none.
+   * Where AIKINGBOT draws the agent cursor, or `null` when it draws none.
    *
    * The driver draws a cursor of its own, and two cursors for one agent say two places. So this
    * carries a point only while the driver draws nothing, and only while the agent's last action is
@@ -341,10 +341,10 @@ export type ExternalDestination =
   | "claude-install"
   | "feedback"
   | "message"
-  // The x.ai marketplace listing of the Grok Bot agent that exports agents for OpenBot.
+  // The x.ai marketplace listing of the Grok Bot agent that exports agents for AIKINGBOT.
   | "grok-bot-export"
   // The email for a hosted server plan that the add server dialog does not have, such as a Mac.
   | "hosted-server-contact"
-  // Not a page: the macOS pane that grants OpenBot screen recording. It is here rather than behind
+  // Not a page: the macOS pane that grants AIKINGBOT screen recording. It is here rather than behind
   // its own endpoint because the destination is still a fixed address the renderer only names.
   | "mac-screen-recording";

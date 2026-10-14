@@ -1,5 +1,5 @@
 /**
- * What an `openbot://` or `https://openbot.run/...` link means.
+ * What an `aikingbot://` or `https://aikingbot.aikingx.com/...` link means.
  *
  * The scheme carries more than one kind of link now, so the decision of which kind a URL is has one
  * home rather than one `try` per entry point. `src/main/index.ts` has four ways a link arrives -
@@ -10,7 +10,7 @@
  * first is what stops a later kind ever claiming one of its links.
  *
  * Three kinds never reach a renderer. `mcp-auth` carries an OAuth grant for an MCP server,
- * `slack-workspace` the sealed bot token of a Slack workspace that installed the OpenBot app, and
+ * `slack-workspace` the sealed bot token of a Slack workspace that installed the AIKINGBOT app, and
  * `discord-guild` the sealed link of a Discord guild that installed it. Each is for the sign-in only, so `src/main/index.ts` hands it to the sign-in that is waiting for it and sends nothing on. They are classified here anyway, because the four entry
  * points must keep asking one question.
  *
@@ -19,9 +19,9 @@
  * front of a link kind it has never heard of.
  */
 
-import { parseAgentTemplateUrl } from "@openbot/contracts/agent-template-links";
-import { type InviteLinkOptions, parseInviteUrl } from "@openbot/contracts/invite-links";
-import { parsePluginUrl } from "@openbot/contracts/plugin-links";
+import { parseAgentTemplateUrl } from "@aikingbot/contracts/agent-template-links";
+import { type InviteLinkOptions, parseInviteUrl } from "@aikingbot/contracts/invite-links";
+import { parsePluginUrl } from "@aikingbot/contracts/plugin-links";
 
 export type DeepLink =
   | { kind: "invite"; url: string }
@@ -39,7 +39,7 @@ export type DeepLink =
  * after they accept it at registration. This stays as the fallback, and for the servers that take
  * it, it is the shorter path: the operating system hands the link straight to the running app.
  */
-export const MCP_OAUTH_REDIRECT_URL = "openbot://mcp-auth";
+export const MCP_OAUTH_REDIRECT_URL = "aikingbot://mcp-auth";
 
 const MCP_OAUTH_HOST = "mcp-auth";
 const SLACK_WORKSPACE_HOST = "slack-workspace";
@@ -70,8 +70,8 @@ export function parseDeepLink(value: string, options: InviteLinkOptions = {}): D
 
 /**
  * The return leg of the Slack install, from the page at `/slack/connect`:
- * `openbot://slack-workspace?nonce=…&grant=…`, and of the Discord install, from `/discord/connect`:
- * `openbot://discord-guild?nonce=…&grant=…`. As with `mcp-auth`, the waiting sign-in checks
+ * `aikingbot://slack-workspace?nonce=…&grant=…`, and of the Discord install, from `/discord/connect`:
+ * `aikingbot://discord-guild?nonce=…&grant=…`. As with `mcp-auth`, the waiting sign-in checks
  * `nonce`, so a link this run did not start does nothing.
  */
 function parseSlackUrl(value: string): DeepLink | null {
@@ -81,7 +81,7 @@ function parseSlackUrl(value: string): DeepLink | null {
   } catch {
     return null;
   }
-  if (url.protocol !== "openbot:") return null;
+  if (url.protocol !== "aikingbot:") return null;
   if (url.hostname === SLACK_WORKSPACE_HOST) {
     const nonce = url.searchParams.get("nonce");
     const grant = url.searchParams.get("grant");
@@ -96,7 +96,7 @@ function parseSlackUrl(value: string): DeepLink | null {
 }
 
 /**
- * The return leg of an MCP sign-in: `openbot://mcp-auth?code=…&state=…`.
+ * The return leg of an MCP sign-in: `aikingbot://mcp-auth?code=…&state=…`.
  *
  * Both halves are required and neither is inspected here. `state` is what the waiting sign-in is
  * keyed by, so a link this run did not start finds nothing and does nothing - which is the check
@@ -111,7 +111,7 @@ function parseMcpAuthUrl(value: string): DeepLink | null {
   } catch {
     return null;
   }
-  if (url.protocol !== "openbot:" || url.hostname !== MCP_OAUTH_HOST) return null;
+  if (url.protocol !== "aikingbot:" || url.hostname !== MCP_OAUTH_HOST) return null;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   if (!code || !state) return null;

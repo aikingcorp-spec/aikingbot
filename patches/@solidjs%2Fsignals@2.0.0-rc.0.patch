@@ -6,7 +6,7 @@ index 8caa96ee12d73dc68c5949836e0e9e2e0bace05e..bb2074fe74278b61b76a392198029fa4
    disposeChildren(node, true);
  }
  function disposeChildren(node, self = false, zombie) {
-+  // OpenBot patch: a full disposal must also dispose the zombie children and
++  // AIKINGBOT patch: a full disposal must also dispose the zombie children and
 +  // cleanups that a recompute in this flush parked for its commit. A disposed
 +  // node never commits, so they would stay queued in zombieQueue and keep
 +  // their DOM alive (keyed list rows removed in the flush their memos re-ran).
@@ -24,7 +24,7 @@ index 81dcaae8129503a096dbe7e8263231e95b6348de..a3065109586d74c7768a9ece463f2ffd
  }
  
  function disposeChildren(e, t = false, n) {
-+    // OpenBot patch: a full disposal must also dispose the zombie children and
++    // AIKINGBOT patch: a full disposal must also dispose the zombie children and
 +    // cleanups that a recompute in this flush parked for its commit. A disposed
 +    // node never commits, so they would stay queued in zombieQueue and keep
 +    // their DOM alive (keyed list rows removed in the flush their memos re-ran).
@@ -40,7 +40,7 @@ index 8a4f2fbc554e4e72f8f78a6b18e00b59d1421ed8..f775b2788ba19d6c7da725b7d244af41
  }
  
  function disposeChildren(e, n = false, t) {
-+    // OpenBot patch: a full disposal must also dispose the zombie children and
++    // AIKINGBOT patch: a full disposal must also dispose the zombie children and
 +    // cleanups that a recompute in this flush parked for its commit. A disposed
 +    // node never commits, so they would stay queued in zombieQueue and keep
 +    // their DOM alive (keyed list rows removed in the flush their memos re-ran).

@@ -51,7 +51,7 @@
 .otp-input-focus-ring {
   width: var(--otp-slot-size);
   height: var(--otp-slot-height);
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .otp-input-slot {
@@ -59,17 +59,17 @@
   display: grid;
   flex: 0 0 var(--otp-slot-size);
   place-items: center;
-  border: 1px solid var(--openbot-border-strong);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-xl);
-  font-weight: var(--openbot-weight-semibold);
+  border: 1px solid var(--aikingbot-border-strong);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-xl);
+  font-weight: var(--aikingbot-weight-semibold);
   line-height: 1;
   transition:
-    border-color var(--openbot-duration-hover) ease,
-    background-color var(--openbot-duration-hover) ease,
-    color var(--openbot-duration-hover) ease;
+    border-color var(--aikingbot-duration-hover) ease,
+    background-color var(--aikingbot-duration-hover) ease,
+    color var(--aikingbot-duration-hover) ease;
 }
 
 .otp-input-slot[data-group-start="true"] {
@@ -81,16 +81,16 @@
   z-index: 1;
   top: 0;
   left: 0;
-  border: 1px solid var(--openbot-border-focus);
-  box-shadow: var(--openbot-focus-ring);
+  border: 1px solid var(--aikingbot-border-focus);
+  box-shadow: var(--aikingbot-focus-ring);
   opacity: 0;
   pointer-events: none;
   transform: translateX(
     calc(var(--otp-active-index) * (var(--otp-slot-size) + var(--otp-slot-gap)) + var(--otp-group-offset))
   );
   transition:
-    transform var(--openbot-duration-hover) var(--openbot-ease-out),
-    opacity var(--openbot-duration-hover) ease;
+    transform var(--aikingbot-duration-hover) var(--aikingbot-ease-out),
+    opacity var(--aikingbot-duration-hover) ease;
 }
 
 .otp-input-focus-ring[data-visible="true"] {
@@ -100,7 +100,7 @@
 .otp-input-character {
   position: relative;
   z-index: 1;
-  animation: otp-character-enter var(--openbot-duration-overlay) var(--openbot-ease-out);
+  animation: otp-character-enter var(--aikingbot-duration-overlay) var(--aikingbot-ease-out);
 }
 
 .otp-input-caret {
@@ -110,7 +110,7 @@
   left: 50%;
   width: 1px;
   height: 24px;
-  background: var(--openbot-text-primary);
+  background: var(--aikingbot-text-primary);
   animation: otp-caret-blink 1s steps(1, end) infinite;
   transform: translateX(-50%);
 }
@@ -120,23 +120,23 @@
 }
 
 .otp-input[data-status="verifying"] .otp-input-slot {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .otp-input[data-status="error"] .otp-input-slot {
-  border-color: var(--openbot-danger);
-  background: var(--openbot-danger-soft);
+  border-color: var(--aikingbot-danger);
+  background: var(--aikingbot-danger-soft);
 }
 
 .otp-input[data-status="error"] .otp-input-focus-ring {
-  border-color: var(--openbot-danger);
-  box-shadow: 0 0 0 3px var(--openbot-danger-soft);
+  border-color: var(--aikingbot-danger);
+  box-shadow: 0 0 0 3px var(--aikingbot-danger-soft);
 }
 
 .otp-input[data-status="success"] .otp-input-slot {
-  border-color: var(--openbot-success);
-  background: var(--openbot-success-soft);
-  color: var(--openbot-success);
+  border-color: var(--aikingbot-success);
+  background: var(--aikingbot-success-soft);
+  color: var(--aikingbot-success);
 }
 
 .otp-input-success {
@@ -144,7 +144,7 @@
   height: 16px;
   flex: 0 0 auto;
   overflow: visible;
-  color: var(--openbot-success);
+  color: var(--aikingbot-success);
 }
 
 .otp-input-success path {
@@ -157,7 +157,7 @@
   /* Heavier than the shared glyph scale on purpose: this tick is drawn by animation and
    * reads as a confirmation, the same exception the badge tick takes. */
   stroke-width: 2;
-  animation: otp-check-draw 350ms var(--openbot-duration-fast) var(--openbot-ease-out) forwards;
+  animation: otp-check-draw 350ms var(--aikingbot-duration-fast) var(--aikingbot-ease-out) forwards;
 }
 
 .otp-input-message {
@@ -167,18 +167,18 @@
   justify-content: center;
   gap: 5px;
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   line-height: 17px;
   text-align: center;
 }
 
 .otp-input[data-status="error"] .otp-input-message {
-  color: var(--openbot-danger);
+  color: var(--aikingbot-danger);
 }
 
 .otp-input[data-status="success"] .otp-input-message {
-  color: var(--openbot-success);
+  color: var(--aikingbot-success);
 }
 
 @keyframes otp-character-enter {

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   RoutineFields,
   RoutineLimitPolicy,
@@ -8,17 +8,17 @@ import type {
   RoutineRunSource,
   RoutineRunStatus,
   RoutineSchedule,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   isRoutineSchedule,
   ROUTINE_LIMIT_POLICIES,
   ROUTINE_MISSED_COUNT_LIMIT,
   ROUTINE_MISSED_POLICIES,
   ROUTINE_RUN_SOURCES,
-} from "@openbot/contracts/ipc";
-import type { EventFilter, EventJsonValue, EventRoutineOwner } from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import type { EventFilter, EventJsonValue, EventRoutineOwner } from "@aikingbot/contracts/ipc-events";
+import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import {
   nextRoutineOccurrence,
   nextValidRoutineOccurrence,
@@ -26,14 +26,14 @@ import {
   RoutineInputError,
   validateRoutineSchedule,
   validateStoredRoutineSchedule,
-} from "@openbot/team-client/routine-schedule";
+} from "@aikingbot/team-client/routine-schedule";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import {
   databaseRows,
   optionalStringColumn,
   requiredNumberColumn,
   requiredStringColumn,
 } from "./database/database-rows";
-import type { OpenBotDatabase } from "./openbot-database";
 import { hasWebhookReceipt, insertWebhookReceipt, revokeRoutineWebhooks } from "./webhook-route-store";
 import { parseEventFilters, validateWebhookTrigger, webhookMismatch, webhookRunInstruction } from "./webhook-trigger";
 
@@ -166,7 +166,7 @@ export interface RoutineHoldWindow {
  */
 export class RoutineStore {
   constructor(
-    protected readonly database: OpenBotDatabase,
+    protected readonly database: AIKINGBOTDatabase,
     protected readonly tables: RoutineTables,
   ) {}
 
@@ -848,7 +848,7 @@ export class RoutineStore {
   }
 
   #insertRun(
-    db: OpenBotDatabase["connection"],
+    db: AIKINGBOTDatabase["connection"],
     runId: string,
     routine: RunSource,
     triggerId: string | null,
@@ -1048,7 +1048,7 @@ export class RoutineStore {
   #mutateRun(
     runId: string,
     eventType: string,
-    mutate: (db: OpenBotDatabase["connection"], sequence: number, now: string) => void,
+    mutate: (db: AIKINGBOTDatabase["connection"], sequence: number, now: string) => void,
   ): OwnedRoutineRun {
     const current = this.#requireRun(runId);
     return this.database.dispatch(
@@ -1062,7 +1062,7 @@ export class RoutineStore {
   }
 
   #insertTrigger(
-    db: OpenBotDatabase["connection"],
+    db: AIKINGBOTDatabase["connection"],
     routineId: string,
     timezone: string,
     schedule: RoutineSchedule,

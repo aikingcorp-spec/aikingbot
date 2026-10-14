@@ -1,6 +1,6 @@
-import type { ConnectTelegramChatInput, MessagingConnection } from "@openbot/contracts/ipc";
-import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@openbot/contracts/telegram-app";
-import type { AppTextKey } from "@openbot/i18n";
+import type { ConnectTelegramChatInput, MessagingConnection } from "@aikingbot/contracts/ipc";
+import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@aikingbot/contracts/telegram-app";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -22,7 +22,7 @@ import {
   Spinner,
   Text,
   TriangleAlert,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import { ProviderModelPicker } from "../../components/ProviderModelPicker";
 import { useText } from "../../text";
@@ -121,7 +121,7 @@ export function telegramIntegrationState(
 }
 
 /**
- * Server settings > Connectors > Telegram. Each chat adds the one OpenBot bot, and one Telegram
+ * Server settings > Connectors > Telegram. Each chat adds the one AIKINGBOT bot, and one Telegram
  * Orchestrator agent receives the messages of all chats, asks the team and answers. A chat links in
  * Telegram, so the chat list follows the connections that the caller reads again.
  */

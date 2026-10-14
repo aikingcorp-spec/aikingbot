@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "openbot-site-router",
+  "name": "aikingbot-site-router",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-18",
   "compatibility_flags": ["nodejs_compat"],
@@ -8,15 +8,15 @@
   "preview_urls": false,
   "routes": [
     {
-      "pattern": "*.openbot.site/*",
-      "zone_name": "openbot.site"
+      "pattern": "*.aikingbot-sites.aikingx.com/*",
+      "zone_name": "aikingbot-sites.aikingx.com"
     }
   ],
   "r2_buckets": [
     {
       "binding": "SITES",
-      "bucket_name": "openbot-sites",
-      "preview_bucket_name": "openbot-sites-test"
+      "bucket_name": "aikingbot-sites",
+      "preview_bucket_name": "aikingbot-sites-test"
     }
   ]
 }

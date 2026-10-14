@@ -5,21 +5,21 @@
 .settings-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-6);
-  animation: settings-modal-backdrop-in var(--openbot-duration-normal) var(--openbot-ease-out) both;
+  padding: var(--aikingbot-space-6);
+  animation: settings-modal-backdrop-in var(--aikingbot-duration-normal) var(--aikingbot-ease-out) both;
   will-change: opacity;
 }
 
 .settings-modal-backdrop[data-motion="closing"] {
-  animation: settings-modal-backdrop-out var(--openbot-duration-fast) var(--openbot-ease-in-out) both;
+  animation: settings-modal-backdrop-out var(--aikingbot-duration-fast) var(--aikingbot-ease-in-out) both;
 }
 
 .settings-modal {
-  --openbot-bg-surface: var(--openbot-bg-control);
-  --openbot-text-muted: var(--openbot-settings-text-muted);
+  --aikingbot-bg-surface: var(--aikingbot-bg-control);
+  --aikingbot-text-muted: var(--aikingbot-settings-text-muted);
   width: min(880px, calc(100vw - 48px));
   height: min(600px, calc(100dvh - 48px));
   min-width: 0;
@@ -28,64 +28,64 @@
   grid-template-columns: 220px minmax(0, 1fr);
   overflow: hidden;
   outline: none;
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
   transform-origin: center;
-  animation: settings-modal-in var(--openbot-duration-overlay) var(--openbot-ease-out) both;
+  animation: settings-modal-in var(--aikingbot-duration-overlay) var(--aikingbot-ease-out) both;
   will-change: transform, opacity;
 }
 
 .settings-modal[data-motion="closing"] {
   pointer-events: none;
-  animation: settings-modal-out var(--openbot-duration-fast) var(--openbot-ease-in-out) both;
+  animation: settings-modal-out var(--aikingbot-duration-fast) var(--aikingbot-ease-in-out) both;
 }
 
 .settings-modal-sidebar {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-3);
-  border-right: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-sidebar);
-  padding: var(--openbot-space-6) var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  border-right: 1px solid var(--aikingbot-border);
+  background: var(--aikingbot-bg-sidebar);
+  padding: var(--aikingbot-space-6) var(--aikingbot-space-4);
 }
 
 .settings-modal-nav {
   display: grid;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .settings-modal-nav-item {
   position: relative;
   width: 100%;
-  min-height: var(--openbot-control-md);
+  min-height: var(--aikingbot-control-md);
   display: grid;
-  grid-template-columns: var(--openbot-icon-md) minmax(0, 1fr) auto;
+  grid-template-columns: var(--aikingbot-icon-md) minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   border: 0;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
-  padding: 0 var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
+  padding: 0 var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
   font: inherit;
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
   text-align: left;
   transition:
-    background-color var(--openbot-duration-hover) ease,
-    color var(--openbot-duration-hover) ease;
+    background-color var(--aikingbot-duration-hover) ease,
+    color var(--aikingbot-duration-hover) ease;
 }
 
 .settings-modal-nav-item svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .settings-modal-nav-item[aria-current="page"] {
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  background: var(--aikingbot-bg-control-hover);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .settings-modal-nav-item {
@@ -94,13 +94,13 @@
 
 .settings-modal-nav-item:focus-visible {
   outline: 0;
-  box-shadow: var(--openbot-focus-ring);
+  box-shadow: var(--aikingbot-focus-ring);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .settings-modal-nav-item:not([aria-current="page"]):hover {
-    background: var(--openbot-hover);
-    color: var(--openbot-text-primary);
+    background: var(--aikingbot-hover);
+    color: var(--aikingbot-text-primary);
   }
 }
 
@@ -110,7 +110,7 @@
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 .settings-modal-footer {
@@ -121,16 +121,16 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--openbot-space-4);
-  padding: var(--openbot-space-6) var(--openbot-space-6) var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
+  padding: var(--aikingbot-space-6) var(--aikingbot-space-6) var(--aikingbot-space-4);
 }
 
 .settings-modal-title {
   margin: 0;
-  font-size: var(--openbot-text-2xl);
-  font-weight: var(--openbot-weight-semibold);
-  line-height: var(--openbot-leading-2xl);
-  letter-spacing: var(--openbot-tracking-tight);
+  font-size: var(--aikingbot-text-2xl);
+  font-weight: var(--aikingbot-weight-semibold);
+  line-height: var(--aikingbot-leading-2xl);
+  letter-spacing: var(--aikingbot-tracking-tight);
 }
 
 /*
@@ -141,7 +141,7 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /*
@@ -156,12 +156,12 @@
   height: auto;
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--aikingbot-radius-md);
   background: transparent;
-  color: var(--openbot-text-muted);
-  margin-block: calc(-1 * var(--openbot-space-1) - 1px);
-  margin-inline: calc(-1 * var(--openbot-space-2) - 1px);
-  padding: var(--openbot-space-1) var(--openbot-space-2);
+  color: var(--aikingbot-text-muted);
+  margin-block: calc(-1 * var(--aikingbot-space-1) - 1px);
+  margin-inline: calc(-1 * var(--aikingbot-space-2) - 1px);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-2);
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
@@ -174,15 +174,15 @@
   /* The shared ghost hover outweighs the base rule above, so this rule clears its fill. */
   .settings-modal .settings-modal-crumb-parent:hover:not(:disabled) {
     background: transparent;
-    color: var(--openbot-text-primary);
+    color: var(--aikingbot-text-primary);
   }
 }
 
 .settings-modal-crumb-separator {
   flex: 0 0 auto;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  color: var(--aikingbot-text-muted);
 }
 
 .settings-modal-crumb-current {
@@ -193,10 +193,10 @@
 }
 
 .settings-modal-description {
-  margin: var(--openbot-space-1) 0 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  margin: var(--aikingbot-space-1) 0 0;
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .settings-modal-scroll-frame {
@@ -208,13 +208,13 @@
 .settings-modal-scroll-frame::before,
 .settings-modal-scroll-frame::after {
   position: absolute;
-  right: var(--openbot-space-2);
+  right: var(--aikingbot-space-2);
   left: 0;
   z-index: 1;
-  height: var(--openbot-space-8);
+  height: var(--aikingbot-space-8);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--openbot-duration-normal) ease;
+  transition: opacity var(--aikingbot-duration-normal) ease;
   content: "";
 }
 
@@ -222,9 +222,9 @@
   top: 0;
   background: linear-gradient(
     to bottom,
-    var(--openbot-bg-canvas) 0%,
-    var(--openbot-bg-canvas) 28%,
-    var(--openbot-bg-canvas-clear) 100%
+    var(--aikingbot-bg-canvas) 0%,
+    var(--aikingbot-bg-canvas) 28%,
+    var(--aikingbot-bg-canvas-clear) 100%
   );
 }
 
@@ -232,9 +232,9 @@
   bottom: 0;
   background: linear-gradient(
     to top,
-    var(--openbot-bg-canvas) 0%,
-    var(--openbot-bg-canvas) 28%,
-    var(--openbot-bg-canvas-clear) 100%
+    var(--aikingbot-bg-canvas) 0%,
+    var(--aikingbot-bg-canvas) 28%,
+    var(--aikingbot-bg-canvas-clear) 100%
   );
 }
 
@@ -253,22 +253,22 @@
   min-height: 0;
   display: grid;
   align-content: start;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   overflow-y: auto;
   /*
    * The inline padding stays a plain token so the panel text keeps the same left edge as the header
    * title. A gutter subtracted from the padding only lines up when the platform draws a classic
    * scrollbar; with overlay scrollbars it moved the whole panel inward.
    */
-  padding: 0 var(--openbot-space-6) calc(var(--openbot-space-6) + var(--settings-modal-floating-space, 0px));
+  padding: 0 var(--aikingbot-space-6) calc(var(--aikingbot-space-6) + var(--settings-modal-floating-space, 0px));
   scrollbar-gutter: stable;
 }
 
 .settings-modal-tab-panel {
   display: grid;
   align-content: start;
-  gap: var(--openbot-space-6);
-  animation: settings-modal-tab-in var(--openbot-duration-fast) var(--openbot-ease-out) both;
+  gap: var(--aikingbot-space-6);
+  animation: settings-modal-tab-in var(--aikingbot-duration-fast) var(--aikingbot-ease-out) both;
   will-change: transform, opacity;
 }
 
@@ -278,7 +278,7 @@
 
 .settings-provider-section {
   display: grid;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-modal-card:is(.ui-card, .ui-item-group) {
@@ -286,32 +286,32 @@
   display: grid;
   overflow: hidden;
   border: 0;
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
   box-shadow: none;
 }
 
 .settings-modal-card.ui-card {
-  padding: 0 var(--openbot-space-4);
+  padding: 0 var(--aikingbot-space-4);
 }
 
 .settings-modal-card > .ui-switch-field,
 .settings-modal-card > .ui-item,
 .settings-dynamic-island-size > .ui-slider-field,
 .settings-dynamic-island-preview {
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 .settings-dynamic-island-preview {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .settings-dynamic-island-preview-display {
   min-width: 0;
   display: grid;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   margin: 0;
 }
 
@@ -322,9 +322,9 @@
   display: flex;
   justify-content: center;
   overflow: hidden;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-canvas);
-  box-shadow: inset 0 0 0 1px var(--openbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-canvas);
+  box-shadow: inset 0 0 0 1px var(--aikingbot-border);
 }
 
 .settings-dynamic-island-preview-fit {
@@ -335,13 +335,13 @@
   justify-content: center;
   transform-origin: top center;
   scale: var(--settings-dynamic-island-preview-scale, 1);
-  transition: scale var(--openbot-duration-slow) var(--openbot-ease-out);
+  transition: scale var(--aikingbot-duration-slow) var(--aikingbot-ease-out);
 }
 
 .settings-dynamic-island-preview-caption {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  line-height: var(--openbot-leading-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  line-height: var(--aikingbot-leading-sm);
   text-align: center;
 }
 
@@ -352,7 +352,7 @@
 .settings-modal-card > .ui-switch-field {
   width: 100%;
   justify-content: space-between;
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 .settings-modal-card > :not(:first-child) {
@@ -363,10 +363,10 @@
 .settings-modal-card > :not(:first-child)::before {
   position: absolute;
   top: 0;
-  right: var(--openbot-space-4);
-  left: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
+  left: var(--aikingbot-space-4);
   height: 1px;
-  background: var(--openbot-border);
+  background: var(--aikingbot-border);
   pointer-events: none;
   content: "";
 }
@@ -375,14 +375,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
 }
 
 .settings-voice-key {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  margin-top: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
+  margin-top: var(--aikingbot-space-2);
 }
 
 .settings-voice-key > .ui-input {
@@ -391,21 +391,21 @@
 }
 
 .settings-modal-row-title {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-lg);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .settings-modal :where(.ui-item-title, .ui-switch-label) {
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .settings-modal :where(.ui-item-description, .ui-switch-description),
 .settings-modal :where(.ui-text)[data-variant="caption"] {
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .settings-modal .ui-item-description {
@@ -415,44 +415,44 @@
 }
 
 .settings-modal :where(.ui-item-content, .ui-switch-copy) {
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
 }
 
 .settings-modal :where(.ui-button, .ui-input, .ui-textarea, .ui-native-select) {
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  font-size: var(--aikingbot-text-lg);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .settings-modal :where(.ui-button-variant-default) {
-  background: var(--openbot-accent);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-accent);
+  color: var(--aikingbot-text-primary);
 }
 
 .settings-modal :where(.ui-button-variant-outline, .ui-button-variant-secondary) {
-  background: var(--openbot-bg-surface-raised);
+  background: var(--aikingbot-bg-surface-raised);
 }
 
 .settings-modal :where(.ui-button-variant-destructive) {
-  background: var(--openbot-danger);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-danger);
+  color: var(--aikingbot-text-primary);
 }
 
 .settings-modal .ui-switch[data-checked] {
-  background: var(--openbot-accent);
+  background: var(--aikingbot-accent);
 }
 
 .settings-modal .ui-switch-thumb[data-checked] {
-  background: var(--openbot-text-primary);
+  background: var(--aikingbot-text-primary);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .settings-modal :where(.ui-button-variant-default):hover:not(:disabled):not([data-disabled]) {
-    background: var(--openbot-accent-hover);
+    background: var(--aikingbot-accent-hover);
   }
 
   .settings-modal :where(.ui-button-variant-destructive):hover:not(:disabled):not([data-disabled]) {
-    background: var(--openbot-danger-hover);
-    color: var(--openbot-text-primary);
+    background: var(--aikingbot-danger-hover);
+    color: var(--aikingbot-text-primary);
   }
 }
 
@@ -460,36 +460,36 @@
   width: min(920px, calc(100vw - 48px));
   height: min(640px, calc(100dvh - 48px));
   grid-template-columns: 196px minmax(0, 1fr);
-  border-radius: var(--openbot-radius-card);
+  border-radius: var(--aikingbot-radius-card);
   box-shadow:
-    var(--openbot-shadow-raised),
-    0 0 0 1px var(--openbot-dialog-ring);
+    var(--aikingbot-shadow-raised),
+    0 0 0 1px var(--aikingbot-dialog-ring);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-sidebar {
   gap: 0;
-  padding: var(--openbot-space-4) var(--openbot-space-3);
+  padding: var(--aikingbot-space-4) var(--aikingbot-space-3);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-nav {
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-nav-item {
-  min-height: var(--openbot-control-md);
-  padding-inline: var(--openbot-space-3);
-  font-size: var(--openbot-text-lg);
+  min-height: var(--aikingbot-control-md);
+  padding-inline: var(--aikingbot-space-3);
+  font-size: var(--aikingbot-text-lg);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-nav-item[data-selected] {
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  background: var(--aikingbot-bg-control-hover);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-header {
   align-items: center;
-  padding: var(--openbot-space-4) var(--openbot-space-4) var(--openbot-space-6) var(--openbot-space-8);
+  padding: var(--aikingbot-space-4) var(--aikingbot-space-4) var(--aikingbot-space-6) var(--aikingbot-space-8);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-description {
@@ -503,18 +503,18 @@
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-content {
-  gap: var(--openbot-space-6);
-  padding: 0 var(--openbot-space-8) calc(var(--openbot-space-8) + var(--settings-modal-floating-space, 0px));
+  gap: var(--aikingbot-space-6);
+  padding: 0 var(--aikingbot-space-8) calc(var(--aikingbot-space-8) + var(--settings-modal-floating-space, 0px));
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-tab-panel {
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   animation: none;
   will-change: auto;
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .ui-settings-section {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .ui-settings-section-header {
@@ -522,8 +522,8 @@
 }
 
 :is(.app-settings-modal-shell, .server-settings-modal-shell) .ui-settings-section-heading {
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .provider-picker-embedded {
@@ -533,8 +533,8 @@
 .provider-picker-embedded .provider-picker-list {
   overflow: hidden;
   border: 0;
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
 }
 
 .provider-picker-embedded .provider-picker-option {
@@ -542,18 +542,18 @@
   min-height: 64px;
   border: 0;
   background: transparent;
-  padding: 0 var(--openbot-space-4);
+  padding: 0 var(--aikingbot-space-4);
 }
 
 .provider-picker-embedded .provider-picker-option-selection {
   min-height: 64px;
-  padding: var(--openbot-space-3) 0;
+  padding: var(--aikingbot-space-3) 0;
 }
 
 /* The row has no inline padding of its own here, so the message moves left to stay under the name. */
 .provider-picker-embedded .provider-picker-check-error.provider-picker-used-by {
-  margin-top: calc(-1 * var(--openbot-space-4));
-  padding: 0 0 var(--openbot-space-3) 54px;
+  margin-top: calc(-1 * var(--aikingbot-space-4));
+  padding: 0 0 var(--aikingbot-space-3) 54px;
 }
 
 .provider-picker-embedded .provider-picker-option + .provider-picker-option,
@@ -565,10 +565,10 @@
 .provider-picker-embedded .provider-picker-option-custom::before {
   position: absolute;
   top: 0;
-  right: var(--openbot-space-4);
-  left: var(--openbot-space-4);
+  right: var(--aikingbot-space-4);
+  left: var(--aikingbot-space-4);
   height: 1px;
-  background: var(--openbot-border);
+  background: var(--aikingbot-border);
   pointer-events: none;
   content: "";
 }
@@ -576,7 +576,7 @@
 /* The row pads its own inline edges here, so the button margin goes and the gap between two
    actions has to come from the wrapper instead. */
 .provider-picker-embedded .provider-picker-actions {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .provider-picker-embedded .provider-picker-install,
@@ -587,8 +587,8 @@
 /* Row actions keep the onboarding colours: Download and Update stay light and only Connect takes
    the accent, so the modal's accent primary button does not repaint them. */
 .settings-modal .ui-button-variant-default.provider-picker-install:not(.provider-picker-connect) {
-  background: var(--openbot-surface-light);
-  color: var(--openbot-text-on-light);
+  background: var(--aikingbot-surface-light);
+  color: var(--aikingbot-text-on-light);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -596,25 +596,25 @@
     .ui-button-variant-default.provider-picker-install:not(.provider-picker-connect):hover:not(:disabled):not(
       [data-disabled]
     ) {
-    background: color-mix(in srgb, var(--openbot-surface-light) 82%, transparent);
+    background: color-mix(in srgb, var(--aikingbot-surface-light) 82%, transparent);
   }
 }
 
 .provider-picker-embedded .provider-picker-option:hover:not(.provider-picker-option-unavailable),
 .provider-picker-embedded .provider-picker-option:focus-within,
 .provider-picker-embedded .provider-picker-option-selected {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .settings-modal .provider-picker-name {
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-medium);
-  line-height: var(--openbot-leading-lg);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-medium);
+  line-height: var(--aikingbot-leading-lg);
 }
 
 .settings-modal :where(.provider-picker-email, .provider-picker-check-error) {
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
+  font-size: var(--aikingbot-text-md);
+  line-height: var(--aikingbot-leading-md);
 }
 
 .settings-modal .provider-picker-status {
@@ -626,8 +626,8 @@
 }
 
 .app-settings-modal-shell .settings-modal-select .ui-select-trigger {
-  background: var(--openbot-bg-surface-raised);
-  color: var(--openbot-text-secondary);
+  background: var(--aikingbot-bg-surface-raised);
+  color: var(--aikingbot-text-secondary);
 }
 
 .app-settings-modal-shell .settings-modal-update-track-select {
@@ -643,11 +643,11 @@
 }
 
 .app-settings-modal-shell .settings-modal-update-status-active {
-  color: var(--openbot-accent);
+  color: var(--aikingbot-accent);
 }
 
 .app-settings-modal-shell .settings-modal-error {
-  color: var(--openbot-danger);
+  color: var(--aikingbot-danger);
 }
 
 .settings-identity-name-row.ui-item,
@@ -659,12 +659,12 @@
   --settings-identity-error-duration: 280ms;
   position: relative;
   width: 220px;
-  height: var(--openbot-control-md);
+  height: var(--aikingbot-control-md);
 }
 
 .settings-identity-name-input.ui-input {
   width: 100%;
-  transition: border-color var(--openbot-duration-normal) ease-out;
+  transition: border-color var(--aikingbot-duration-normal) ease-out;
   will-change: transform;
 }
 
@@ -674,7 +674,7 @@
 
 .settings-identity-name-error {
   position: absolute;
-  top: calc(100% + var(--openbot-space-0-5));
+  top: calc(100% + var(--aikingbot-space-0-5));
   right: 0;
   left: 0;
   opacity: 0;
@@ -693,7 +693,7 @@
 }
 
 .settings-identity-image-control {
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .settings-identity-image-picker {
@@ -703,8 +703,8 @@
 
 .settings-identity-image-trigger {
   position: relative;
-  width: calc(var(--openbot-control-xl) + var(--openbot-space-2));
-  height: calc(var(--openbot-control-xl) + var(--openbot-space-2));
+  width: calc(var(--aikingbot-control-xl) + var(--aikingbot-space-2));
+  height: calc(var(--aikingbot-control-xl) + var(--aikingbot-space-2));
   overflow: hidden;
 }
 
@@ -713,30 +713,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-4);
-  border-top: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-surface);
-  padding: var(--openbot-space-3) var(--openbot-space-6);
+  gap: var(--aikingbot-space-4);
+  border-top: 1px solid var(--aikingbot-border);
+  background: var(--aikingbot-bg-surface);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-6);
 }
 
 .settings-modal-save-actions {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .settings-modal-readonly-value {
   min-width: 180px;
   max-width: 300px;
   overflow-wrap: anywhere;
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
   text-align: right;
   user-select: text;
 }
 
 .settings-modal-profile-photo-trigger {
-  border-radius: var(--openbot-radius-pill);
+  border-radius: var(--aikingbot-radius-pill);
 }
 
 .settings-modal-avatar {
@@ -745,11 +745,11 @@
   display: grid;
   place-items: center;
   border: 0;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-hover);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-hover);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .settings-modal-avatar > img {
@@ -757,7 +757,7 @@
   height: 100%;
   border-radius: inherit;
   object-fit: cover;
-  outline: 1px solid var(--openbot-image-outline);
+  outline: 1px solid var(--aikingbot-image-outline);
   outline-offset: -1px;
 }
 
@@ -838,7 +838,7 @@
 
 @media (max-width: 720px) {
   .settings-modal-backdrop {
-    padding: var(--openbot-space-3);
+    padding: var(--aikingbot-space-3);
   }
 
   .settings-modal {
@@ -849,10 +849,10 @@
   }
 
   .settings-modal-sidebar {
-    gap: var(--openbot-space-2);
+    gap: var(--aikingbot-space-2);
     border-right: 0;
-    border-bottom: 1px solid var(--openbot-border);
-    padding: var(--openbot-space-3);
+    border-bottom: 1px solid var(--aikingbot-border);
+    padding: var(--aikingbot-space-3);
   }
 
   .settings-modal-nav {
@@ -866,12 +866,12 @@
   }
 
   .settings-modal-header {
-    padding: var(--openbot-space-4);
+    padding: var(--aikingbot-space-4);
   }
 
   .settings-modal-content {
-    gap: var(--openbot-space-4);
-    padding: 0 var(--openbot-space-4) calc(var(--openbot-space-4) + var(--settings-modal-floating-space, 0px));
+    gap: var(--aikingbot-space-4);
+    padding: 0 var(--aikingbot-space-4) calc(var(--aikingbot-space-4) + var(--settings-modal-floating-space, 0px));
   }
 
   :is(.app-settings-modal-shell, .server-settings-modal-shell).settings-modal {
@@ -882,23 +882,23 @@
   }
 
   :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-sidebar {
-    gap: var(--openbot-space-2);
+    gap: var(--aikingbot-space-2);
     border-right: 0;
-    border-bottom: 1px solid var(--openbot-border);
-    padding: var(--openbot-space-3);
+    border-bottom: 1px solid var(--aikingbot-border);
+    padding: var(--aikingbot-space-3);
   }
 
   :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-header {
-    padding: var(--openbot-space-4);
+    padding: var(--aikingbot-space-4);
   }
 
   :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-content,
   :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-tab-panel {
-    gap: var(--openbot-space-6);
+    gap: var(--aikingbot-space-6);
   }
 
   :is(.app-settings-modal-shell, .server-settings-modal-shell) .settings-modal-content {
-    padding: 0 var(--openbot-space-4) var(--openbot-space-4);
+    padding: 0 var(--aikingbot-space-4) var(--aikingbot-space-4);
   }
 
   .settings-identity-name-row,
@@ -914,9 +914,9 @@
     height: auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: var(--openbot-control-md) var(--openbot-leading-sm);
+    grid-template-rows: var(--aikingbot-control-md) var(--aikingbot-leading-sm);
     align-items: stretch;
-    row-gap: var(--openbot-space-0-5);
+    row-gap: var(--aikingbot-space-0-5);
   }
 
   .settings-identity-name-error {
@@ -937,7 +937,7 @@
   }
 
   .settings-modal-save-bar {
-    padding-inline: var(--openbot-space-4);
+    padding-inline: var(--aikingbot-space-4);
   }
 }
 

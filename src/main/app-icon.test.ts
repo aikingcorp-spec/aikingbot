@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { APP_LOGO_COLORS } from "@openbot/contracts/ipc";
+import { APP_LOGO_COLORS } from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import { appIconFileName, readAppVariant, resolveAppIconPath, resolveLogoColorIconPath } from "./app-icon";
 
@@ -29,19 +29,19 @@ describe("app icon variant", () => {
         variant: "dev",
         platform: "win32",
         isPackaged: false,
-        resourcesPath: "/Applications/OpenBot.app/Contents/Resources",
-        sourceRoot: "/workspace/openbot",
+        resourcesPath: "/Applications/AIKINGBOT.app/Contents/Resources",
+        sourceRoot: "/workspace/aikingbot",
       }),
-    ).toBe("/workspace/openbot/build/icon-dev.png");
+    ).toBe("/workspace/aikingbot/build/icon-dev.png");
     expect(
       resolveAppIconPath({
         variant: "production",
         platform: "darwin",
         isPackaged: true,
-        resourcesPath: "/Applications/OpenBot.app/Contents/Resources",
-        sourceRoot: "/workspace/openbot",
+        resourcesPath: "/Applications/AIKINGBOT.app/Contents/Resources",
+        sourceRoot: "/workspace/aikingbot",
       }),
-    ).toBe("/Applications/OpenBot.app/Contents/Resources/icons/icon-production-macos-safe-area.png");
+    ).toBe("/Applications/AIKINGBOT.app/Contents/Resources/icons/icon-production-macos-safe-area.png");
   });
 
   it("finds an icon file for every logo color on every platform", () => {

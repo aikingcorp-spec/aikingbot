@@ -1,10 +1,10 @@
-import type { QueueDelivery, QueueDeliveryStatus, QueueSnapshot } from "@openbot/contracts/ipc";
-import { createFormat, translateFor } from "@openbot/i18n";
+import type { QueueDelivery, QueueDeliveryStatus, QueueSnapshot } from "@aikingbot/contracts/ipc";
+import { createFormat, translateFor } from "@aikingbot/i18n";
 import {
   computeSidebarAgentStates,
   type SidebarAgentStatesInput,
-} from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import { sidebarAgentStateLabel } from "@openbot/ui/features/sidebar/sidebar-filtering";
+} from "@aikingbot/ui/features/sidebar/sidebar-agent-states";
+import { sidebarAgentStateLabel } from "@aikingbot/ui/features/sidebar/sidebar-filtering";
 import { assert } from "vitest";
 
 function queue(agentId: string, ...statuses: QueueDeliveryStatus[]): QueueSnapshot {

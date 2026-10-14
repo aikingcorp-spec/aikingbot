@@ -1,13 +1,13 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { z } from "zod";
+import { AIKINGBOT_DYNAMIC_TOOLS, AIKINGBOT_TOOL_DEFINITIONS } from "../aikingbot-tools";
 import { BROWSER_DYNAMIC_TOOLS } from "../browser-tools";
-import { OPENBOT_DYNAMIC_TOOLS, OPENBOT_TOOL_DEFINITIONS } from "../openbot-tools";
 import type { DynamicToolCallParams } from "../protocol";
 import { toolGuidance } from "./tool-guidance";
 
 /** Discovery changes visibility only. Original definitions and execution owners stay authoritative. */
-export const BUILTIN_TOOL_CATALOG = [OPENBOT_DYNAMIC_TOOLS, ...BROWSER_DYNAMIC_TOOLS].flatMap((namespace) =>
+export const BUILTIN_TOOL_CATALOG = [AIKINGBOT_DYNAMIC_TOOLS, ...BROWSER_DYNAMIC_TOOLS].flatMap((namespace) =>
   namespace.tools.map((tool) => ({
     namespace: namespace.name,
     tool: tool.name,
@@ -45,7 +45,7 @@ const describeSchema = z.strictObject(describeShape);
 const callSchema = z.strictObject(callShape);
 
 export const VISIBLE_TOOL_DEFINITIONS = [
-  ...OPENBOT_TOOL_DEFINITIONS.filter((tool) => DIRECT_NAMES.has(tool.name)),
+  ...AIKINGBOT_TOOL_DEFINITIONS.filter((tool) => DIRECT_NAMES.has(tool.name)),
   {
     name: "tool_search",
     description: `Find built-in tools by keywords or qualified name. Returns names and short descriptions, default 5, maximum 10. Describe a result before first use. Catalog: ${INITIAL_TOOL_CATALOG}`,
@@ -67,8 +67,8 @@ export const VISIBLE_TOOL_DEFINITIONS = [
 export const VISIBLE_DYNAMIC_TOOLS = [
   {
     type: "namespace" as const,
-    name: "openbot",
-    description: "OpenBot tools. Search, describe, then call other built-in and browser capabilities.",
+    name: "aikingbot",
+    description: "AIKINGBOT tools. Search, describe, then call other built-in and browser capabilities.",
     tools: VISIBLE_TOOL_DEFINITIONS.map((definition) => ({
       type: "function" as const,
       name: definition.name,
@@ -79,11 +79,11 @@ export const VISIBLE_DYNAMIC_TOOLS = [
 ];
 
 /**
- * Claude names a bridge call `mcp__openbot__tool_call`. Readers of its items get the name of the tool it
+ * Claude names a bridge call `mcp__aikingbot__tool_call`. Readers of its items get the name of the tool it
  * calls, in the form Claude gives a direct tool. A name outside the catalog is model text and stays out.
  */
 export function claudeBridgedToolName(name: string, input: unknown): string {
-  if (name !== "mcp__openbot__tool_call" || typeof input !== "object" || input === null || !("name" in input))
+  if (name !== "mcp__aikingbot__tool_call" || typeof input !== "object" || input === null || !("name" in input))
     return name;
   const entry = BUILTIN_TOOL_CATALOG.find((tool) => tool.name === input.name);
   return entry ? `mcp__${entry.namespace}__${entry.tool}` : name;

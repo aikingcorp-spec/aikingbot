@@ -5,7 +5,7 @@ import { Dialog } from "./ui/complex";
 
 export function Panel() {
   return (
-    <section class="panel" role="group" style={{ color: "var(--openbot-text)", transition: "var(--openbot-transition)" }}>
+    <section class="panel" role="group" style={{ color: "var(--aikingbot-text)", transition: "var(--aikingbot-transition)" }}>
       <Dialog />
     </section>
   );

@@ -1,4 +1,4 @@
-import type { AgentModelId, AgentProviderId, AppSetupState } from "@openbot/contracts/ipc";
+import type { AgentModelId, AgentProviderId, AppSetupState } from "@aikingbot/contracts/ipc";
 import { createSignal, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { createSimpleContext } from "../../simple-context";

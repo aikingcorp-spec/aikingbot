@@ -1,4 +1,4 @@
-import { createDigitRoll } from "@openbot/ui/digit-roll";
+import { createDigitRoll } from "@aikingbot/ui/digit-roll";
 import { createRoot, createSignal, flush } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

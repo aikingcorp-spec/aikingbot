@@ -1,9 +1,9 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { set } from "@dotenvx/dotenvx";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
 
-const logger = createOpenBotLogger("set-auth-smtp-secret");
+const logger = createAIKINGBOTLogger("set-auth-smtp-secret");
 
 const scriptsRoot = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(scriptsRoot, "..");

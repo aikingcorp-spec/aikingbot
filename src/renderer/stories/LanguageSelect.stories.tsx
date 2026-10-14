@@ -1,4 +1,4 @@
-import type { AppLanguage } from "@openbot/i18n/languages";
+import type { AppLanguage } from "@aikingbot/i18n/languages";
 import {
   Heading,
   Item,
@@ -8,8 +8,8 @@ import {
   ItemGroup,
   ItemTitle,
   SettingsSection,
-} from "@openbot/ui";
-import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
+} from "@aikingbot/ui";
+import { LanguageSelect } from "@aikingbot/ui/features/settings/LanguageSelect";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -27,7 +27,7 @@ function LanguageRow(props: { initial?: AppLanguage; disabled?: boolean }) {
       <Item class="settings-modal-row">
         <ItemContent>
           <ItemTitle>Language</ItemTitle>
-          <ItemDescription>OpenBot shows menus, buttons and messages in this language.</ItemDescription>
+          <ItemDescription>AIKINGBOT shows menus, buttons and messages in this language.</ItemDescription>
         </ItemContent>
         <ItemActions>
           <LanguageSelect value={language()} onChange={setLanguage} disabled={props.disabled} />

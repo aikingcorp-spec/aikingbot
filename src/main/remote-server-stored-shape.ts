@@ -22,10 +22,10 @@
 //
 // Versions 1 and 2 differ from 3 only in fields this reader already treats as optional, so an upgrade
 // is a re-tag. A version this build does not know is refused outright: it was written by a newer
-// OpenBot, and guessing at it would replace a file that build can still read.
+// AIKINGBOT, and guessing at it would replace a file that build can still read.
 
-import type { ServerNotificationLevel, TeamRole } from "@openbot/contracts/ipc";
-import { LOCAL_SERVER_ID, SERVER_NOTIFICATION_LEVELS } from "@openbot/contracts/ipc";
+import type { ServerNotificationLevel, TeamRole } from "@aikingbot/contracts/ipc";
+import { LOCAL_SERVER_ID, SERVER_NOTIFICATION_LEVELS } from "@aikingbot/contracts/ipc";
 import {
   type DynamicRecord,
   isBoolean,
@@ -33,7 +33,7 @@ import {
   isNumber,
   isOneOf,
   isString,
-} from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/runtime-values";
 
 export interface StoredRemoteServer {
   id: string;

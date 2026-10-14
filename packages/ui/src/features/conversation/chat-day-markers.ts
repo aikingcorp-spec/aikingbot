@@ -4,8 +4,8 @@
  * separator appears is here, away from either timeline, and is a pure function of two timestamps.
  */
 
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
-import { currentText } from "@openbot/ui/text";
+import type { AppFormat, AppTranslate } from "@aikingbot/i18n";
+import { currentText } from "@aikingbot/ui/text";
 
 /** The clock a caller can replace, so a test does not depend on the day the test runs. */
 export interface DayMarkerOptions {

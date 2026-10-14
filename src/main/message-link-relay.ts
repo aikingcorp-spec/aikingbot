@@ -6,11 +6,11 @@ import {
   type McpSignInRelayPage,
   type McpTestResult,
   relayableSignInLink,
-} from "@openbot/contracts/ipc";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import type { TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 import { Cause, Effect, Fiber } from "effect";
 import { runCauseEffect } from "../backend/effect-boundary";
 import type { ResponseDecoder } from "./remote-host-decoding";
@@ -18,7 +18,7 @@ import type { RemoteRequestInit } from "./remote-server-client";
 import type { RemoteWorkflowError } from "./remote-service-effects";
 import { type SignInRelayClient, signInRelayRemote } from "./sign-in-relay-client";
 
-const logger = createOpenBotLogger("message-link-relay");
+const logger = createAIKINGBOTLogger("message-link-relay");
 
 /** Opens an http or https link in the user's browser. Any other scheme is refused. */
 export function openHttpLink(url: string, openExternal: (url: string) => Promise<void>): Promise<void> {

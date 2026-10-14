@@ -61,11 +61,11 @@ export const messages = {
   "error.agent.changedWhileDuplicating": "Der Agent wurde während des Duplizierens geändert. Versuche es erneut.",
   "error.agent.duplicatedAgentGone": "Der duplizierte Agent existiert nicht mehr.",
   "error.agent.stateCorrupt":
-    "Der Agentenzustand ist beschädigt oder stammt aus einer neueren OpenBot-Version. Er wird nicht überschrieben.",
+    "Der Agentenzustand ist beschädigt oder stammt aus einer neueren AIKINGBOT-Version. Er wird nicht überschrieben.",
   "error.agent.oldRoleField":
-    "Gespeicherte Agentenprofile verwenden das alte Feld role. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Gespeicherte Agentenprofile verwenden das alte Feld role. Aktualisiere die Daten, bevor du AIKINGBOT startest.",
   "error.agent.duplicateIds": "Der Agentenzustand enthält doppelte Agenten-IDs. Er wird nicht überschrieben.",
-  "error.agent.copyNameFailed": "OpenBot konnte keinen eindeutigen Namen für die Agentenkopie erstellen.",
+  "error.agent.copyNameFailed": "AIKINGBOT konnte keinen eindeutigen Namen für die Agentenkopie erstellen.",
   "error.agent.endpointRemoved":
     "Der von diesem Agenten verwendete Endpunkt wurde entfernt. Wähle ein anderes Modell für ihn.",
   "error.agent.selectedGone": "Der gewählte Agent existiert nicht mehr.",
@@ -93,9 +93,9 @@ export const messages = {
   "error.agent.saveOtherAgent": "Dieser Speichervorgang gehört zu einem anderen Agenten.",
   "error.agent.savedGone": "Der gespeicherte Agent existiert nicht mehr.",
   "error.agent.storedProfileUnreadable":
-    "Ein gespeichertes Agentenprofil hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Ein gespeichertes Agentenprofil hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du AIKINGBOT startest.",
   "error.agent.storedProfileUnreadableId":
-    "Das gespeicherte Agentenprofil {id} hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Das gespeicherte Agentenprofil {id} hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du AIKINGBOT startest.",
   "error.agent.queueEditRejected": "Änderung der Warteschlange abgelehnt: {reason}",
   "error.agent.computerUseLocalOnly":
     "Die Computersteuerung kann nur auf dem Computer geändert werden, auf dem der Agent läuft.",
@@ -115,5 +115,5 @@ export const messages = {
   "error.agent.lowMemory":
     "Dieser Server hat wenig freien Arbeitsspeicher. Deine Nachricht wartet in der Warteschlange und startet, wenn Speicher frei ist. Ein größerer Tarif gibt dem Server mehr Arbeitsspeicher.",
   "error.agent.workspaceOnlyToolMissing":
-    "Nur Arbeitsbereich benötigt {tool}, das OpenBot nicht gefunden hat. Installiere es oder wähle Vollzugriff in den Agenteneinstellungen.",
+    "Nur Arbeitsbereich benötigt {tool}, das AIKINGBOT nicht gefunden hat. Installiere es oder wähle Vollzugriff in den Agenteneinstellungen.",
 } as const satisfies PartialTranslation<typeof source>;

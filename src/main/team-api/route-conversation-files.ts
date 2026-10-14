@@ -1,10 +1,10 @@
-import { isNumber } from "@openbot/contracts/runtime-values";
+import { isNumber } from "@aikingbot/contracts/runtime-values";
 import {
   CONVERSATION_FILE_SEARCH_CAPABILITY,
   CONVERSATION_FILE_SEARCH_PAGE_LIMIT,
   CONVERSATION_FILE_SEARCH_ROUTES,
-} from "@openbot/contracts/team-protocol/conversation-file-search-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/conversation-file-search-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";

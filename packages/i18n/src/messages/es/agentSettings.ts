@@ -119,7 +119,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Una edición de archivo fuera te pedirá permiso primero, incluso si Aprobar automáticamente está activado. Un comando no puede escribir fuera.",
   "agentSettings.runtime.workspaceUnlimited":
-    "El uso del equipo y el navegador de OpenBot no están limitados; puedes desactivar uso del equipo a continuación.",
+    "El uso del equipo y el navegador de AIKINGBOT no están limitados; puedes desactivar uso del equipo a continuación.",
   "agentSettings.computerUse.title": "Uso del equipo",
   "agentSettings.computerUse.description": "Permitir que este agente controle apps en este equipo",
   "agentSettings.automation.title": "Scripts locales",

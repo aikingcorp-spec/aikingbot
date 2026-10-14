@@ -5,7 +5,7 @@ export interface TelegramConnectorPort {
   messaging: MessagingConnectorApi;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function telegramConnectorPort(): TelegramConnectorPort {
-  return { messaging: window.openbot.messaging };
+  return { messaging: window.aikingbot.messaging };
 }

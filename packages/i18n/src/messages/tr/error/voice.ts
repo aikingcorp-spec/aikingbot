@@ -10,8 +10,8 @@ export const messages = {
   "error.voice.modelUnavailable": "Ses modeli kullanılamıyor.",
   "error.voice.transcriptionTimedOut": "Ses dökümü zaman aşımına uğradı.",
   "error.voice.prepareRequired":
-    "Yerel ses dökümü kullanılamıyor. `bun run voice:prepare` komutunu çalıştırın ve OpenBot'u yeniden başlatın.",
-  "error.voice.transcriptionFailed": "OpenBot bu kaydın dökümünü çıkaramadı.",
+    "Yerel ses dökümü kullanılamıyor. `bun run voice:prepare` komutunu çalıştırın ve AIKINGBOT'u yeniden başlatın.",
+  "error.voice.transcriptionFailed": "AIKINGBOT bu kaydın dökümünü çıkaramadı.",
   "error.voice.cloud.keyRequired": "ElevenLabs API anahtarınızı Ayarlar → Ses bölümünde ekleyin.",
   "error.voice.cloud.keyRejected":
     "ElevenLabs API anahtarını kabul etmedi. Anahtarı Ayarlar → Ses bölümünde kontrol edin.",

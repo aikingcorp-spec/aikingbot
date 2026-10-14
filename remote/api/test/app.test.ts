@@ -55,7 +55,11 @@ describe("signed account notifications", () => {
       app.handle(
         new Request("http://localhost/internal/auth-events", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "OpenBot-Timestamp": timestamp, "OpenBot-Signature": signed },
+          headers: {
+            "Content-Type": "application/json",
+            "AIKINGBOT-Timestamp": timestamp,
+            "AIKINGBOT-Signature": signed,
+          },
           body: payload,
         }),
       );
@@ -88,8 +92,8 @@ describe("signed account notifications", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "OpenBot-Timestamp": timestamp,
-          "OpenBot-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
+          "AIKINGBOT-Timestamp": timestamp,
+          "AIKINGBOT-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
         },
         body,
       }),
@@ -616,7 +620,7 @@ async function discordRoute() {
   const route = (claims: { hid: string; guilds: string[] }, linkedAt = 1_000) =>
     new SignJWT({ hid: claims.hid, guilds: claims.guilds.map((id) => ({ id, linkedAt })) })
       .setProtectedHeader({ alg: "ES256", kid: "discord-route-1" })
-      .setAudience("openbot-discord-route")
+      .setAudience("aikingbot-discord-route")
       .setIssuedAt(now - 120)
       .setExpirationTime(now + 3_600)
       .sign(privateKey);
@@ -656,8 +660,8 @@ async function discordRoute() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "OpenBot-Timestamp": timestamp,
-          "OpenBot-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
+          "AIKINGBOT-Timestamp": timestamp,
+          "AIKINGBOT-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
         },
         body,
       }),
@@ -706,7 +710,7 @@ async function slackRoute(
   ) =>
     new SignJWT({ hid: claims.hid, teams: claims.teams.map((id) => ({ id, appId, linkedAt })) })
       .setProtectedHeader({ alg: "ES256", kid: "slack-route-1" })
-      .setAudience("openbot-slack-route")
+      .setAudience("aikingbot-slack-route")
       .setIssuedAt(now - 120)
       .setExpirationTime(now + lifetimeSeconds)
       .sign(privateKey);
@@ -720,8 +724,8 @@ async function slackRoute(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "OpenBot-Timestamp": timestamp,
-          "OpenBot-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
+          "AIKINGBOT-Timestamp": timestamp,
+          "AIKINGBOT-Signature": signServiceRequest(body, timestamp, config.authWebhookSecret),
         },
         body,
       }),
@@ -747,7 +751,7 @@ function testSocket(id: string): TestSocket {
 function hostTickets(): RemoteTokenProvider {
   const now = Math.floor(Date.now() / 1_000);
   const claims: RemoteTicketClaims = {
-    aud: "openbot-remote",
+    aud: "aikingbot-remote",
     jti: "host-jti",
     sessionId: "host-session",
     hostId: "host-1",

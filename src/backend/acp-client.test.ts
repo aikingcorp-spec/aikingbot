@@ -7,7 +7,7 @@ import type { McpAuthorizationSource } from "./mcp-provider-shapes";
  * The OpenCode driver's environment seam, through a real spawn.
  *
  * OpenCode's whole account is one variable: with `OPENCODE_API_KEY` the CLI lists the paid Go
- * catalog, without it the free one. Nothing else in OpenBot reads that variable, so this file spawns
+ * catalog, without it the free one. Nothing else in AIKINGBOT reads that variable, so this file spawns
  * a fake ACP agent that reports the environment it was given, and asserts what a user gets: free
  * models with no account, the paid list after a key is saved, and no forced sign-in in between.
  *
@@ -18,9 +18,9 @@ import type { McpAuthorizationSource } from "./mcp-provider-shapes";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { ACP_IDLE_SESSION_LIMIT, AcpAgentClient, type AcpHistoryPersistence } from "./acp-client";
 import { isMissingProviderSessionError } from "./agent/thread-items";
@@ -51,7 +51,7 @@ afterEach(async () => {
 const FAKE_AGENT = `#!/usr/bin/env node
 const fs = require("node:fs");
 const NL = String.fromCharCode(10);
-const envLog = process.env.OPENBOT_FAKE_ACP_ENV_LOG;
+const envLog = process.env.AIKINGBOT_FAKE_ACP_ENV_LOG;
 if (envLog) {
   fs.appendFileSync(
     envLog,
@@ -67,10 +67,10 @@ let buffer = "";
 // An agent of the second kind: no \`models\` in \`session/new\`, one \`model\` config option, and a
 // \`thought_level\` option that exists only while the session is on a model that reasons. OpenCode
 // works this way, and \`minimal\` next to \`low\` is its own naming.
-const FAILING_MODEL = process.env.OPENBOT_FAKE_ACP_CONFIG_FAIL ?? null;
-const HANGING_MODEL = process.env.OPENBOT_FAKE_ACP_CONFIG_HANG ?? null;
+const FAILING_MODEL = process.env.AIKINGBOT_FAKE_ACP_CONFIG_FAIL ?? null;
+const HANGING_MODEL = process.env.AIKINGBOT_FAKE_ACP_CONFIG_HANG ?? null;
 // OpenCode's MiniMax M3: thinking is on or off, and there is no other level.
-const SWITCH_MODEL = process.env.OPENBOT_FAKE_ACP_CONFIG_SWITCH ?? null;
+const SWITCH_MODEL = process.env.AIKINGBOT_FAKE_ACP_CONFIG_SWITCH ?? null;
 const CONFIG_MODELS = [
   ...(FAILING_MODEL ? [FAILING_MODEL] : []),
   "agent/thinker",
@@ -84,7 +84,7 @@ let sessionCount = 0;
 let discoveryCount = 0;
 let loadCount = 0;
 let compact = false;
-const additionalOptions = () => process.env.OPENBOT_FAKE_ACP_SETTINGS === "1" ? [
+const additionalOptions = () => process.env.AIKINGBOT_FAKE_ACP_SETTINGS === "1" ? [
   { id: "compact", name: "Compact replies", type: "boolean", currentValue: compact },
   { id: "tone", name: "Tone", category: "model_config", type: "select", currentValue: "short", options: [
     { group: "style", name: "Style", options: [{ value: "short", name: "Short" }, { value: "full", name: "Full" }] },
@@ -143,8 +143,8 @@ process.stdout.on("error", (error) => {
 process.stdin.setEncoding("utf8");
 process.stdin.on("data", (chunk) => {
   // A CLI that fails at start: it reads the request, says why on stderr, and exits unanswered.
-  if (process.env.OPENBOT_FAKE_ACP_CRASH) {
-    process.stderr.write("Error: " + process.env.OPENBOT_FAKE_ACP_CRASH + NL);
+  if (process.env.AIKINGBOT_FAKE_ACP_CRASH) {
+    process.stderr.write("Error: " + process.env.AIKINGBOT_FAKE_ACP_CRASH + NL);
     process.exit(3);
   }
   buffer += chunk;
@@ -159,13 +159,13 @@ process.stdin.on("data", (chunk) => {
 function handle(message) {
   if (typeof message.id === "undefined") return;
   if (message.method === "initialize") {
-    const agentCapabilities = process.env.OPENBOT_FAKE_ACP_RESUME
+    const agentCapabilities = process.env.AIKINGBOT_FAKE_ACP_RESUME
       ? { sessionCapabilities: { resume: {} } }
-      : process.env.OPENBOT_FAKE_ACP_CLOSE_LOG
+      : process.env.AIKINGBOT_FAKE_ACP_CLOSE_LOG
       ? { loadSession: true, sessionCapabilities: { close: {} } }
-      : process.env.OPENBOT_FAKE_ACP_LIST
+      : process.env.AIKINGBOT_FAKE_ACP_LIST
         ? { loadSession: true, sessionCapabilities: { list: {} } }
-        : process.env.OPENBOT_FAKE_ACP_LOAD_SESSION === "1"
+        : process.env.AIKINGBOT_FAKE_ACP_LOAD_SESSION === "1"
           ? { loadSession: true }
           : {};
     write({ jsonrpc: "2.0", id: message.id, result: { protocolVersion: 1, agentCapabilities } });
@@ -174,7 +174,7 @@ function handle(message) {
   // "fail" is an internal server that fails every call, as OpenCode reports it. "paged" holds
   // "ses_stored" on its second page.
   if (message.method === "session/list") {
-    const mode = process.env.OPENBOT_FAKE_ACP_LIST;
+    const mode = process.env.AIKINGBOT_FAKE_ACP_LIST;
     if (mode === "fail") {
       write({ jsonrpc: "2.0", id: message.id, error: SERVICE_FAILURE });
       return;
@@ -190,21 +190,21 @@ function handle(message) {
     return;
   }
   if (message.method === "session/load") {
-    const loadLog = process.env.OPENBOT_FAKE_ACP_LOAD_LOG;
+    const loadLog = process.env.AIKINGBOT_FAKE_ACP_LOAD_LOG;
     if (loadLog) fs.appendFileSync(loadLog, JSON.stringify(message.params) + NL);
-    if (process.env.OPENBOT_FAKE_ACP_LOAD_ERROR) {
-      write({ jsonrpc: "2.0", id: message.id, error: JSON.parse(process.env.OPENBOT_FAKE_ACP_LOAD_ERROR) });
+    if (process.env.AIKINGBOT_FAKE_ACP_LOAD_ERROR) {
+      write({ jsonrpc: "2.0", id: message.id, error: JSON.parse(process.env.AIKINGBOT_FAKE_ACP_LOAD_ERROR) });
       return;
     }
     // OpenCode's answer when its internal server fails the lookup, a session missing from its
     // store included.
     loadCount += 1;
-    if (loadCount <= Number(process.env.OPENBOT_FAKE_ACP_LOAD_FAIL ?? 0)) {
+    if (loadCount <= Number(process.env.AIKINGBOT_FAKE_ACP_LOAD_FAIL ?? 0)) {
       write({ jsonrpc: "2.0", id: message.id, error: SERVICE_FAILURE });
       return;
     }
-    if (process.env.OPENBOT_FAKE_ACP_REPLAY) {
-      const count = Number(process.env.OPENBOT_FAKE_ACP_REPLAY_COUNT ?? 1);
+    if (process.env.AIKINGBOT_FAKE_ACP_REPLAY) {
+      const count = Number(process.env.AIKINGBOT_FAKE_ACP_REPLAY_COUNT ?? 1);
       for (let index = 0; index < count; index += 1) {
         write({
           jsonrpc: "2.0",
@@ -219,8 +219,8 @@ function handle(message) {
           },
         });
       }
-      if (process.env.OPENBOT_FAKE_ACP_REPLAY_READY)
-        fs.writeFileSync(process.env.OPENBOT_FAKE_ACP_REPLAY_READY, "ready");
+      if (process.env.AIKINGBOT_FAKE_ACP_REPLAY_READY)
+        fs.writeFileSync(process.env.AIKINGBOT_FAKE_ACP_REPLAY_READY, "ready");
     }
     write({ jsonrpc: "2.0", id: message.id, result: {} });
     return;
@@ -236,15 +236,15 @@ function handle(message) {
     return;
   }
   if (message.method === "session/close") {
-    if (process.env.OPENBOT_FAKE_ACP_IGNORE_CLOSE === "1") return;
-    const closeLog = process.env.OPENBOT_FAKE_ACP_CLOSE_LOG;
+    if (process.env.AIKINGBOT_FAKE_ACP_IGNORE_CLOSE === "1") return;
+    const closeLog = process.env.AIKINGBOT_FAKE_ACP_CLOSE_LOG;
     if (closeLog) fs.appendFileSync(closeLog, JSON.stringify(message.params) + NL);
     write({ jsonrpc: "2.0", id: message.id, result: {} });
     return;
   }
-  if (message.method === "session/prompt" && process.env.OPENBOT_FAKE_ACP_PROMPT_LOG)
-    fs.appendFileSync(process.env.OPENBOT_FAKE_ACP_PROMPT_LOG, JSON.stringify(message.params) + NL);
-  const failureFile = process.env.OPENBOT_FAKE_ACP_FAILURE_FILE;
+  if (message.method === "session/prompt" && process.env.AIKINGBOT_FAKE_ACP_PROMPT_LOG)
+    fs.appendFileSync(process.env.AIKINGBOT_FAKE_ACP_PROMPT_LOG, JSON.stringify(message.params) + NL);
+  const failureFile = process.env.AIKINGBOT_FAKE_ACP_FAILURE_FILE;
   if (failureFile && fs.existsSync(failureFile)) {
     const failure = JSON.parse(fs.readFileSync(failureFile, "utf8"));
     if (message.method === failure.method) {
@@ -253,8 +253,8 @@ function handle(message) {
     }
   }
   if (message.method === "session/prompt") {
-    if (process.env.OPENBOT_FAKE_ACP_HOLD_PROMPT === "1") return;
-    if (process.env.OPENBOT_FAKE_ACP_PROMPT_TOOL) {
+    if (process.env.AIKINGBOT_FAKE_ACP_HOLD_PROMPT === "1") return;
+    if (process.env.AIKINGBOT_FAKE_ACP_PROMPT_TOOL) {
       write({
         jsonrpc: "2.0",
         method: "session/update",
@@ -281,13 +281,13 @@ function handle(message) {
             sessionUpdate: "tool_call_update",
             toolCallId: "tool-1",
             status: "completed",
-            rawOutput: { text: "OpenBot" },
+            rawOutput: { text: "AIKINGBOT" },
             locations: [{ path: "/private/tool-history/updated.md" }],
           },
         },
       });
     }
-    if (process.env.OPENBOT_FAKE_ACP_PROMPT_OUTPUT) {
+    if (process.env.AIKINGBOT_FAKE_ACP_PROMPT_OUTPUT) {
       write({
         jsonrpc: "2.0",
         method: "session/update",
@@ -305,7 +305,7 @@ function handle(message) {
     return;
   }
   if (message.method === "session/set_config_option") {
-    const configLog = process.env.OPENBOT_FAKE_ACP_CONFIG_LOG;
+    const configLog = process.env.AIKINGBOT_FAKE_ACP_CONFIG_LOG;
     if (configLog) fs.appendFileSync(configLog, JSON.stringify(message.params) + NL);
     // No answer at all, which is what a hung agent gives.
     if (message.params.value === HANGING_MODEL) return;
@@ -324,23 +324,23 @@ function handle(message) {
     return;
   }
   if (message.method === "session/new") {
-    const sessionLog = process.env.OPENBOT_FAKE_ACP_SESSION_LOG;
+    const sessionLog = process.env.AIKINGBOT_FAKE_ACP_SESSION_LOG;
     if (sessionLog) fs.appendFileSync(sessionLog, JSON.stringify(message.params) + NL);
     discoveryCount += 1;
-    if (process.env.OPENBOT_FAKE_ACP_FAIL_MODEL_REFRESH === "1" && discoveryCount > 1) {
+    if (process.env.AIKINGBOT_FAKE_ACP_FAIL_MODEL_REFRESH === "1" && discoveryCount > 1) {
       write({ jsonrpc: "2.0", id: message.id, error: { code: -32000, message: "Temporary discovery failure." } });
       return;
     }
-    if (process.env.OPENBOT_FAKE_ACP_REJECT_KEY === "1") {
+    if (process.env.AIKINGBOT_FAKE_ACP_REJECT_KEY === "1") {
       write({ jsonrpc: "2.0", id: message.id, error: { code: -32000, message: "Invalid api key." } });
       return;
     }
-    if (process.env.OPENBOT_FAKE_ACP_CONFIG_MODELS === "1") {
+    if (process.env.AIKINGBOT_FAKE_ACP_CONFIG_MODELS === "1") {
       selected = CONFIG_MODELS[0];
       write({ jsonrpc: "2.0", id: message.id, result: { sessionId: "session-1", configOptions: configOptions() } });
       return;
     }
-    if (process.env.OPENBOT_FAKE_ACP_EMPTY_MODELS === "1") {
+    if (process.env.AIKINGBOT_FAKE_ACP_EMPTY_MODELS === "1") {
       write({ jsonrpc: "2.0", id: message.id, result: { sessionId: "session-1" } });
       return;
     }
@@ -352,7 +352,7 @@ function handle(message) {
       id: message.id,
       result: {
         // An agent that closes sessions is asked for several, and each needs its own id.
-        sessionId: process.env.OPENBOT_FAKE_ACP_CLOSE_LOG ? "session-" + ++sessionCount : "session-1",
+        sessionId: process.env.AIKINGBOT_FAKE_ACP_CLOSE_LOG ? "session-" + ++sessionCount : "session-1",
         models: { availableModels: ids.map((modelId) => ({ modelId, name: modelId })), currentModelId: ids[0] },
       },
     });
@@ -397,7 +397,7 @@ afterAll(async () => {
 
 async function fakeAgentExecutable(): Promise<string> {
   fakeAgentDirectory ??= (async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-acp-opencode-cli-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-acp-opencode-cli-"));
     const executable = join(directory, FAKE_AGENT_NAME);
     if (process.platform === "win32") {
       const script = join(directory, "fake-opencode.js");
@@ -412,7 +412,7 @@ async function fakeAgentExecutable(): Promise<string> {
 }
 
 async function createFakeOpencodeAgent(source?: "system" | "managed"): Promise<FakeOpencode> {
-  const directory = await mkdtemp(join(tmpdir(), "openbot-acp-opencode-"));
+  const directory = await mkdtemp(join(tmpdir(), "aikingbot-acp-opencode-"));
   const executable = await fakeAgentExecutable();
   const envLog = join(directory, "spawn-env.ndjson");
   const promptLog = join(directory, "prompts.ndjson");
@@ -473,7 +473,7 @@ function startOpencode(
     history?: AcpHistoryPersistence;
   } = {},
 ): AgentClient {
-  vi.stubEnv("OPENBOT_FAKE_ACP_ENV_LOG", envLog);
+  vi.stubEnv("AIKINGBOT_FAKE_ACP_ENV_LOG", envLog);
   const driver = requireProviderDriver("opencode");
   const context = {
     apiKey,
@@ -524,7 +524,7 @@ describe("OpenCode ACP environment", () => {
 
   it("keeps the initialized model list when a later refresh fails", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_FAIL_MODEL_REFRESH", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_FAIL_MODEL_REFRESH", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     const models = await runCauseEffect(client.request("model/list", {}, decodeModelListResponse));
@@ -563,7 +563,7 @@ describe("OpenCode ACP environment", () => {
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
 
     // `verifyInstalledRuntime` compares the reported version with the pin for exact equality, so a
-    // CLI that self-updates would leave OpenBot re-downloading a runtime it already has.
+    // CLI that self-updates would leave AIKINGBOT re-downloading a runtime it already has.
     expect((await managed.readSpawnEnvironments())[0]?.disableAutoupdate).toBe("1");
   });
 
@@ -577,7 +577,7 @@ describe("OpenCode ACP environment", () => {
 
   it("reports no account when OpenCode rejects the key", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_REJECT_KEY", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_REJECT_KEY", "1");
     const client = startOpencode(fake.cli, () => "not-a-key", fake.envLog);
 
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
@@ -647,20 +647,20 @@ describe("OpenCode ACP environment", () => {
 
   it("refuses to start on an OpenCode that lists no model at all", async () => {
     const fake = await createFakeOpencodeAgent("managed");
-    vi.stubEnv("OPENBOT_FAKE_ACP_EMPTY_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_EMPTY_MODELS", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     // Not an authentication failure, so it is not softened into "sign in": an empty catalog is a CLI
-    // OpenBot cannot drive, and guessing a model id here would send every prompt to a model the CLI
+    // AIKINGBOT cannot drive, and guessing a model id here would send every prompt to a model the CLI
     // rejects. The provider row reports it as a failed connection.
     await expect(runCauseEffect(client.request("initialize", {}, decodeRecordResponse))).rejects.toThrow(
-      "ACP CLI did not advertise any ACP models. OpenBot will not guess a fallback model.",
+      "ACP CLI did not advertise any ACP models. AIKINGBOT will not guess a fallback model.",
     );
   });
 
   it("reports why OpenCode stopped instead of a closed connection", async () => {
     const fake = await createFakeOpencodeAgent("managed");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CRASH", "config key OPENCODE_API_KEY=sk-live-secret is invalid");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CRASH", "config key OPENCODE_API_KEY=sk-live-secret is invalid");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     // The SDK rejects with "ACP connection closed" as soon as stdout ends. That phrase was all a user
@@ -677,8 +677,8 @@ describe("OpenCode ACP environment", () => {
 
   it("rejects direct ACP steering without dispatching a second prompt or ending the active turn", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_HOLD_PROMPT", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_HOLD_PROMPT", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const completed = vi.fn();
     client.on("notification", (notification) => {
@@ -731,7 +731,7 @@ describe("OpenCode ACP environment", () => {
 
   it("refuses the prompt when the endpoint was removed while the turn was prepared", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
     // The endpoint is still saved while the thread is opened, and gone when the prompt would leave.
     let served = true;
     const client = startOpencode(fake.cli, () => null, fake.envLog, { servesModel: () => served });
@@ -762,10 +762,10 @@ describe("ACP session settings", () => {
   // Failure mode: a saved option removed by a provider update prevents all future prompts.
   it("applies only available saved settings without blocking the next prompt", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_SETTINGS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_SETTINGS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const { thread } = await runCauseEffect(
       client.request("thread/start", { cwd: fake.directory }, decodeThreadResponse),
@@ -792,9 +792,9 @@ describe("ACP session settings", () => {
   // option update is lost. This test uses the real ACP process and stream for all three paths.
   it("keeps permission controls private and accepts configuration updates while idle", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_SETTINGS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_SETTINGS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const { thread } = await runCauseEffect(
       client.request("thread/start", { cwd: fake.directory }, decodeThreadResponse),
@@ -839,7 +839,7 @@ describe("ACP session settings", () => {
     );
     const idleUpdate = new Promise<void>((resolve) => {
       const onNotification = (notification: import("./protocol").AppServerNotification) => {
-        if (notification.method !== "openbot/sessionSettings/updated") return;
+        if (notification.method !== "aikingbot/sessionSettings/updated") return;
         const params = notification.params;
         if (!isDynamicRecord(params) || !Array.isArray(params.options)) return;
         if (
@@ -873,9 +873,9 @@ describe("ACP session settings", () => {
 describe("OpenCode ACP reasoning efforts", () => {
   it("reports the efforts of each model, not the efforts of the model the session opened on", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_SWITCH", "agent/switch");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_SWITCH", "agent/switch");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     const models = await runCauseEffect(client.request("model/list", {}, decodeModelListResponse));
@@ -908,10 +908,10 @@ describe("OpenCode ACP reasoning efforts", () => {
 
   it("keeps reading the rest of the catalog when one model refuses to be selected", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
     // The session opens on this model, and the agent rejects every attempt to select it.
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_FAIL", "agent/broken");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_FAIL", "agent/broken");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     const models = await runCauseEffect(client.request("model/list", {}, decodeModelListResponse));
@@ -932,10 +932,10 @@ describe("OpenCode ACP reasoning efforts", () => {
 
   it("returns the catalog when a model's probe never answers", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
     // The agent accepts the selection of this model and then says nothing more about it.
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_HANG", "agent/silent");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_HANG", "agent/silent");
     const client = startOpencode(fake.cli, () => null, fake.envLog, { requestTimeoutMs: 4_000 });
 
     const models = await runCauseEffect(client.request("model/list", {}, decodeModelListResponse));
@@ -959,8 +959,8 @@ describe("OpenCode ACP reasoning efforts", () => {
 
   it("sends the agent's own low effort, not the lowest effort the model has", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_LOG", fake.configLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     await runCauseEffect(
@@ -983,8 +983,8 @@ describe("OpenCode ACP reasoning efforts", () => {
 describe("OpenCode ACP MCP servers", () => {
   it("sends the enabled servers as ACP name/value pairs", async () => {
     const fake = await createFakeOpencodeAgent("system");
-    const sessionLog = join(tmpdir(), `openbot-acp-session-${Date.now()}.ndjson`);
-    vi.stubEnv("OPENBOT_FAKE_ACP_SESSION_LOG", sessionLog);
+    const sessionLog = join(tmpdir(), `aikingbot-acp-session-${Date.now()}.ndjson`);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_SESSION_LOG", sessionLog);
     const configs: McpServerConfig[] = [
       {
         id: "mcp-1",
@@ -1048,19 +1048,19 @@ describe("OpenCode ACP MCP servers", () => {
       args: ["ready"],
       env: expect.arrayContaining([{ name: "TOKEN", value: "secret" }]),
     });
-    // A disabled server is not sent, and OpenBot's own bridge entries append after these, so a
+    // A disabled server is not sent, and AIKINGBOT's own bridge entries append after these, so a
     // user's server can never displace one. `Database` is not sent either: ACP carries no working
     // directory, and a server told to open `./data.db` somewhere else creates a second database
     // rather than reading the one the user named.
-    expect(params.mcpServers.map((server: { name: string }) => server.name)).toEqual(["Filesystem", "openbot"]);
+    expect(params.mcpServers.map((server: { name: string }) => server.name)).toEqual(["Filesystem", "aikingbot"]);
   });
 });
 
 describe("OpenCode MCP sign-in", () => {
-  it("gives the session the token OpenBot minted for an http server", async () => {
+  it("gives the session the token AIKINGBOT minted for an http server", async () => {
     const fake = await createFakeOpencodeAgent();
-    const sessionLog = join(tmpdir(), `openbot-acp-signin-${Date.now()}.ndjson`);
-    vi.stubEnv("OPENBOT_FAKE_ACP_SESSION_LOG", sessionLog);
+    const sessionLog = join(tmpdir(), `aikingbot-acp-signin-${Date.now()}.ndjson`);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_SESSION_LOG", sessionLog);
     const config: McpServerConfig = {
       id: "mcp-1",
       name: "Signed in",
@@ -1083,7 +1083,7 @@ describe("OpenCode MCP sign-in", () => {
       client.request("thread/start", { cwd: tmpdir(), runtimeWorkspaceRoots: [tmpdir()] }, decodeRecordResponse),
     );
 
-    // The row holds no credential: a native sign-in keeps the token in OpenBot's own store, so the
+    // The row holds no credential: a native sign-in keeps the token in AIKINGBOT's own store, so the
     // only way OpenCode can reach the server is the header written here, at the hand-off.
     const logged = (await readFile(sessionLog, "utf8")).split("\n").filter((line) => line.trim());
     const params = JSON.parse(logged.at(-1) ?? "{}");
@@ -1102,11 +1102,11 @@ describe("ACP missing session errors", () => {
   it("does not replay a failed prompt and reloads for the next input", async () => {
     const fake = await createFakeOpencodeAgent();
     const failureFile = join(fake.directory, "failure.json");
-    vi.stubEnv("OPENBOT_FAKE_ACP_FAILURE_FILE", failureFile);
-    vi.stubEnv("OPENBOT_FAKE_ACP_IGNORE_CLOSE", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_FAILURE_FILE", failureFile);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_IGNORE_CLOSE", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
     const client = new AcpAgentClient(fake.cli, 10_000, {
       provider: "acp",
       argv: [],
@@ -1159,12 +1159,12 @@ describe("ACP missing session errors", () => {
   ])("recovers only confirmed startup session failures: $data", async ({ code, data, missing }) => {
     const fake = await createFakeOpencodeAgent();
     const failureFile = join(fake.directory, "failure.json");
-    vi.stubEnv("OPENBOT_FAKE_ACP_FAILURE_FILE", failureFile);
-    vi.stubEnv("OPENBOT_FAKE_ACP_IGNORE_CLOSE", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CONFIG_MODELS", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_FAILURE_FILE", failureFile);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_IGNORE_CLOSE", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CONFIG_MODELS", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_LOG", fake.promptLog);
     const client = new AcpAgentClient(fake.cli, 10_000, {
       provider: "acp",
       argv: [],
@@ -1223,9 +1223,9 @@ describe("ACP missing session errors", () => {
     { provider: "cursor", code: -32002, data: { uri: "ses_stored" }, missing: true },
   ] as const)("classifies $provider load error $code with $data", async ({ provider, code, data, missing }) => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
     const responseError = { code, message: "Invalid params", data };
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_ERROR", JSON.stringify(responseError));
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_ERROR", JSON.stringify(responseError));
     const client = requireProviderDriver(provider).createClient(fake.cli, 10_000, {
       apiKey: () => null,
       customProviders: () => [],
@@ -1265,7 +1265,7 @@ describe("OpenCode ACP session loading", () => {
 
   it("resumes a session when ACP advertises resume without load", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_RESUME", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_RESUME", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
 
@@ -1284,8 +1284,8 @@ describe("OpenCode ACP session loading", () => {
 
   it("streams load replay through readHistory without publishing live updates", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_REPLAY", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_REPLAY", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const live: unknown[] = [];
     const fragments: string[] = [];
@@ -1306,11 +1306,11 @@ describe("OpenCode ACP session loading", () => {
 
   it("bounds replay work when the history consumer is slower than the provider", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_REPLAY", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_REPLAY_COUNT", "300");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_REPLAY", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_REPLAY_COUNT", "300");
     const replayReady = join(fake.directory, "replay-ready");
-    vi.stubEnv("OPENBOT_FAKE_ACP_REPLAY_READY", replayReady);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_REPLAY_READY", replayReady);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     await runCauseEffect(client.request("initialize", {}, decodeRecordResponse));
     if (!client.readHistory) throw new Error("ACP client has no history reader.");
@@ -1340,7 +1340,7 @@ describe("OpenCode ACP session loading", () => {
 
   it("reports a failed turn when durable history persistence fails", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_OUTPUT", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_OUTPUT", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog, {
       history: {
         append: () => Effect.fail(new ProviderClientOperationError({ cause: new Error("history write failed") })),
@@ -1367,7 +1367,7 @@ describe("OpenCode ACP session loading", () => {
 
   it("persists completed ACP tool items before releasing a turn", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_PROMPT_TOOL", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_PROMPT_TOOL", "1");
     const appended: Array<Parameters<NonNullable<AcpHistoryPersistence["append"]>>> = [];
     const client = startOpencode(fake.cli, () => null, fake.envLog, {
       history: {
@@ -1404,7 +1404,7 @@ describe("OpenCode ACP session loading", () => {
           name: "read_file",
           status: "completed",
           arguments: { path: "README.md" },
-          result: { text: "OpenBot" },
+          result: { text: "AIKINGBOT" },
         }),
       ],
     });
@@ -1412,8 +1412,8 @@ describe("OpenCode ACP session loading", () => {
 
   it("answers a read for a session this process does not hold by loading it", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     // What boot recovery sends after a restart: a session id from the database that no turn has
@@ -1432,8 +1432,8 @@ describe("OpenCode ACP session loading", () => {
 
   it("loads a session once when a read and a resume ask for it together", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     // The startup race: the history read and the first drain reach the same stored session id in
     // the same tick. Two loads would leave two threads and two MCP bridge sessions under one id.
@@ -1456,8 +1456,8 @@ describe("OpenCode ACP session loading", () => {
   it("closes the longest idle session over the limit and loads it again for its next turn", async () => {
     const fake = await createFakeOpencodeAgent();
     const closeLog = join(fake.directory, "closed-sessions.ndjson");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CLOSE_LOG", closeLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CLOSE_LOG", closeLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     let completed = 0;
     client.on("notification", (notification) => {
@@ -1506,8 +1506,8 @@ describe("OpenCode ACP session loading", () => {
   it("counts a session loaded only for a read toward the idle limit", async () => {
     const fake = await createFakeOpencodeAgent();
     const closeLog = join(fake.directory, "closed-sessions.ndjson");
-    vi.stubEnv("OPENBOT_FAKE_ACP_CLOSE_LOG", closeLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_CLOSE_LOG", closeLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const threadIds = Array.from({ length: ACP_IDLE_SESSION_LIMIT + 1 }, (_, index) => `ses_stored_${index}`);
     const closedSessions = async () =>
@@ -1530,7 +1530,7 @@ describe("OpenCode ACP session loading", () => {
 
   it("reports a session an agent cannot load as missing instead of asking for it", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     // An agent that does not advertise `loadSession` cannot give the session back. The read answers
@@ -1556,9 +1556,9 @@ describe("OpenCode ACP session loading", () => {
   // server. A missing session is replaced, and a server fault must not cost the agent its session.
   it("reports a session as missing when OpenCode's server answers, without a diagnostic", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LIST", "ok");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_FAIL", "2");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LIST", "ok");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_FAIL", "2");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
     const diagnostics: string[] = [];
     client.on("diagnostic", (message) => diagnostics.push(message));
@@ -1583,9 +1583,9 @@ describe("OpenCode ACP session loading", () => {
 
   it("loads the session again after one failure while OpenCode's server fails", async () => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LIST", "fail");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_FAIL", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LIST", "fail");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_LOG", fake.loadLog);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_FAIL", "1");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     await runCauseEffect(
@@ -1602,9 +1602,9 @@ describe("OpenCode ACP session loading", () => {
     ["it has no session list", ""],
   ])("keeps the session and explains the fault when OpenCode fails the load and %s", async (_, list) => {
     const fake = await createFakeOpencodeAgent();
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_SESSION", "1");
-    vi.stubEnv("OPENBOT_FAKE_ACP_LIST", list);
-    vi.stubEnv("OPENBOT_FAKE_ACP_LOAD_FAIL", "2");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_SESSION", "1");
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LIST", list);
+    vi.stubEnv("AIKINGBOT_FAKE_ACP_LOAD_FAIL", "2");
     const client = startOpencode(fake.cli, () => null, fake.envLog);
 
     const error = await runCauseEffect(

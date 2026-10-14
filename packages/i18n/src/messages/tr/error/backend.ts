@@ -13,8 +13,8 @@ export const messages = {
   "error.backend.browserViewLimit": "Bu ana makinede çok fazla tarayıcı görünümü açık.",
   "error.backend.browserViewEnded": "Bu sayfanın canlı görünümü sona erdi.",
   "error.backend.browserViewFailed": "Bu sayfanın canlı görünümü başarısız oldu.",
-  "error.backend.windowTemporarilyUnavailable": "OpenBot penceresi geçici olarak kullanılamıyor.",
-  "error.backend.windowUnavailable": "OpenBot penceresi kullanılamıyor.",
+  "error.backend.windowTemporarilyUnavailable": "AIKINGBOT penceresi geçici olarak kullanılamıyor.",
+  "error.backend.windowUnavailable": "AIKINGBOT penceresi kullanılamıyor.",
   "error.backend.sunshineApiHttp": "Sunshine API HTTP {status} ile başarısız oldu.",
   "error.backend.sunshinePortsUnavailable": "Uzak Masaüstü için boş bir Sunshine bağlantı noktası ailesi ayrılamadı.",
   "error.backend.moonlightPortsUnavailable":
@@ -30,7 +30,7 @@ export const messages = {
   "error.backend.moonlightRejectedPairing": "Moonlight Sunshine eşleştirmesini reddetti.",
   "error.backend.moonlightNoPin": "Moonlight bir eşleştirme PIN'i döndürmedi.",
   "error.backend.moonlightPairingIncomplete": "Moonlight eşleştirmesi tamamlanmadı.",
-  "error.backend.moonlightWebNotEmbedded": "Moonlight Web gömülü bir OpenBot derlemesi değil.",
+  "error.backend.moonlightWebNotEmbedded": "Moonlight Web gömülü bir AIKINGBOT derlemesi değil.",
   "error.backend.moonlightEmptyResponse": "Moonlight boş bir yanıt döndürdü.",
   "error.backend.remoteDesktopTimeout": "Uzak masaüstü isteği zaman aşımına uğradı.",
   "error.backend.moonlightApiHttp": "Moonlight API HTTP {status} ile başarısız oldu.",
@@ -48,7 +48,7 @@ export const messages = {
   "error.backend.sunshineNotReadyReason": "Sunshine hazır hale gelmedi. {reason}",
   "error.backend.channelLeadModelUnavailable": "Kanal lideri modeli kullanılamıyor.",
   "error.backend.sharedDataUnavailable": "Paylaşılan veriler kullanılamıyor.",
-  "error.backend.shuttingDown": "OpenBot kapanıyor.",
+  "error.backend.shuttingDown": "AIKINGBOT kapanıyor.",
   "error.backend.channelUnconfirmedStart":
     "Kanalda onaylanmamış bir görev başlangıcı var. Silmeden önce sonucunu kontrol edin.",
   "error.backend.channelNotFound": "Kanal bulunamadı.",
@@ -113,13 +113,13 @@ export const messages = {
   "error.backend.fileGone": "Dosya mevcut değil veya zaten silinmiş.",
   "error.backend.managedAttachmentChanged": "Yönetilen ek eksik veya değişti: {name}",
   "error.backend.mailboxStateCorrupt":
-    "Posta kutusu durumu bozuk veya daha yeni bir OpenBot sürümünden; üzerine yazılması reddedildi.",
+    "Posta kutusu durumu bozuk veya daha yeni bir AIKINGBOT sürümünden; üzerine yazılması reddedildi.",
   "error.backend.recipientDeleting": "Alıcı siliniyor. Silme işlemi tamamlandıktan sonra tekrar deneyin.",
   "error.backend.attachBetween": "1 ila {limit} dosya ekleyin.",
   "error.backend.attachmentNotFile": "Ek bir dosya değil: {path}",
   "error.backend.generatedImageTooLarge": "Oluşturulan görsel 100 MB sınırını aşıyor.",
   "error.backend.attachmentNotRegularFile": "Yalnızca normal dosyalar eklenebilir: {name}",
-  "error.backend.attachmentCopyFailed": "OpenBot {name} ögesini kopyalayamadı.",
+  "error.backend.attachmentCopyFailed": "AIKINGBOT {name} ögesini kopyalayamadı.",
   "error.backend.routineNameRequired": "Bir rutin adı gereklidir.",
   "error.backend.routineNameTooLong": "Rutin adı çok uzun.",
   "error.backend.routineInstructionRequired": "Bir rutin talimatı gereklidir.",
@@ -140,12 +140,13 @@ export const messages = {
   "error.backend.routineWaitForAgent": "Bir rutini çalıştırmadan önce ajan işleminin bitmesini bekleyin.",
   "error.backend.routineRunStarting": "Bu rutin çalıştırması hâlâ başlıyor. Tur başladıktan sonra tekrar deneyin.",
   "error.backend.routineRunNoSession":
-    "OpenBot sağlayıcı oturumu kullanılamadığı için etkin rutin çalıştırmasını kesemiyor.",
+    "AIKINGBOT sağlayıcı oturumu kullanılamadığı için etkin rutin çalıştırmasını kesemiyor.",
   "error.backend.interruptSelf": "Bir ajan kendi kendini kesintiye uğratamaz.",
   "error.backend.interruptOtherWork":
     "Bu ajan mesajınızın başlatmadığı bir görev üzerinde çalışıyor. Yalnızca kullanıcı veya o görevin göndereni görevi durdurabilir.",
   "error.backend.interruptStarting": "Bu ajan hâlâ bir tur başlatıyor. Tur başladıktan sonra tekrar deneyin.",
-  "error.backend.interruptNoSession": "OpenBot sağlayıcı oturumu kullanılamadığı için bu ajanı kesintiye uğratamıyor.",
+  "error.backend.interruptNoSession":
+    "AIKINGBOT sağlayıcı oturumu kullanılamadığı için bu ajanı kesintiye uğratamıyor.",
   "error.backend.memoryTextRequired": "Bellek metni gereklidir.",
   "error.backend.memoryTextTooLong": "Bellek metni çok uzun.",
   "error.backend.mcpServerGone": "Bu MCP sunucusu artık mevcut değil.",
@@ -157,7 +158,7 @@ export const messages = {
   "error.backend.routineFlowCycle": "Bu bağlantı bir döngü oluşturur.",
   "error.backend.routineFlowLinkLimit": "Bir rutinde en fazla {limit} bağlantı olabilir.",
   "error.backend.agentWaitLimit":
-    "Bu ajanın zaten {count} açık beklemesi var. Başka bir bekleme açmadan önce openbot.close_wait ile bir beklemeyi kapatın.",
+    "Bu ajanın zaten {count} açık beklemesi var. Başka bir bekleme açmadan önce aikingbot.close_wait ile bir beklemeyi kapatın.",
   "error.backend.agentWaitGone": "Bu bekleme açık değil. Ajan onu kapattı veya biri iptal etti.",
   "error.backend.agentWaitNoRequest": "Beklemenin devam etmesi için bir mesaj gerekir. Bu turda mesaj yok.",
   "error.backend.agentWaitOwnChatOnly":
@@ -165,16 +166,16 @@ export const messages = {
   "error.backend.agentWaitNoteRequired": "Beklemenin ne için olduğunu belirten kısa bir not yazın.",
   "error.backend.agentWaitRoutineGone": "Bu ajanın bu kimliğe sahip bir rutini yok.",
   "error.backend.agentWaitNoRoutine":
-    "Bir beklemeyi yalnızca rutinlerinizden birinin çalıştırılması uyandırır ve hiç rutininiz yok. openbot.create_routine ile bir rutin oluşturun, ardından beklemeyi açın.",
+    "Bir beklemeyi yalnızca rutinlerinizden birinin çalıştırılması uyandırır ve hiç rutininiz yok. aikingbot.create_routine ile bir rutin oluşturun, ardından beklemeyi açın.",
   "error.backend.agentWaitRemoteUnsupported": "Açık beklemeler yalnızca bu bilgisayardaki ajanlar için kullanılabilir.",
   "error.backend.routineFlowHandoffFailed": "Rutin işi bu ajana aktaramadı.",
-  "error.backend.mcpServerLimit": "OpenBot en fazla {limit} MCP sunucusu tutar.",
+  "error.backend.mcpServerLimit": "AIKINGBOT en fazla {limit} MCP sunucusu tutar.",
   "error.backend.mcpServerNameTaken": "{name} adında bir MCP sunucusu zaten mevcut.",
   "error.backend.mcpServerNoAnswer": "Sunucu {seconds} saniye içinde yanıt vermedi.",
   "error.backend.mcpSignInNotAccepted": "Sunucu bu oturum açmayı kabul etmedi.",
   "error.backend.mcpCommandNotFound": "Komut bulunamadı: {command}",
   "error.backend.mcpRegistrationRefused":
-    "Oturum açma sunucusu OpenBot'u henüz bir uygulama olarak kabul etmiyor. Hesabınız bunun nedeni değildir. Yerel bir MCP sunucusu gibi bağlanmanın başka bir yolunu kullanın.",
+    "Oturum açma sunucusu AIKINGBOT'u henüz bir uygulama olarak kabul etmiyor. Hesabınız bunun nedeni değildir. Yerel bir MCP sunucusu gibi bağlanmanın başka bir yolunu kullanın.",
   "error.backend.mcpSignInAbandonedGeneric": "Oturum açma iptal edildi.",
   "error.backend.mcpSignInForgotten": "MCP oturum açma işlemi çalışırken unutuldu.",
   "error.backend.mcpSignInAbandoned": "MCP oturum açma işlemi iptal edildi.",
@@ -182,15 +183,15 @@ export const messages = {
   "error.backend.mcpSignInNotWebPage": "Oturum açma adresi bir web sayfası değil.",
   "error.backend.mcpSignInRequired":
     "Bu sunucu oturum açmanızı istiyor. Tarayıcınızda devam etmek için Oturum aç'ı seçin.",
-  "error.backend.mcpSignInOnHost": "Bu sunucu oturum açılmasını istiyor. Ana bilgisayardaki OpenBot'ta oturum açın.",
+  "error.backend.mcpSignInOnHost": "Bu sunucu oturum açılmasını istiyor. Ana bilgisayardaki AIKINGBOT'ta oturum açın.",
   "error.backend.mcpSignInNeedsHttps":
-    "Bu sunucu oturum açılmasını istiyor ve OpenBot yalnızca https üzerinden oturum açar. URL'yi {url} olarak değiştirin.",
+    "Bu sunucu oturum açılmasını istiyor ve AIKINGBOT yalnızca https üzerinden oturum açar. URL'yi {url} olarak değiştirin.",
   "error.backend.mcpSignInCancelled": "Oturum açma iptal edildi.",
   "error.backend.mcpSignInTimedOut": "Oturum açma tarayıcıda tamamlanmadı.",
   "error.backend.mcpSignInResponseTimedOut": "Oturum açma yanıtı zamanında gelmedi.",
   "error.backend.mcpServerExited":
     "Sunucu yanıt vermeden durdu. Hatasını görmek için komutu bir terminalde çalıştırın.",
-  "error.backend.mcpServerUnreachable": "OpenBot sunucuya ulaşamadı. URL'yi ve ağınızı kontrol edin.",
+  "error.backend.mcpServerUnreachable": "AIKINGBOT sunucuya ulaşamadı. URL'yi ve ağınızı kontrol edin.",
   "error.backend.mcpLocalServerOff":
     "Bu bilgisayarda {address} adresinde yanıt veren bir sunucu yok. Sunucuyu başlatın veya onu çalıştıran uygulamada açın, ardından tekrar deneyin.",
   "error.backend.mcpServerBlocked":
@@ -198,7 +199,7 @@ export const messages = {
   "error.backend.mcpServerIncompatible":
     "Bu adreste bir şey yanıt verdi, ancak Streamable HTTP üzerinden bir MCP sunucusu olarak değil. URL'yi kontrol edin ve sunucuyu çalıştıran uygulamayı güncelleyin.",
   "error.backend.mcpRemoteBridge":
-    "{reason} Bu komut mcp-remote köprüsünü çalıştırır. Bunun yerine {url} URL'siyle Streamable HTTP'yi seçin; OpenBot oturumunuzu açar.",
+    "{reason} Bu komut mcp-remote köprüsünü çalıştırır. Bunun yerine {url} URL'siyle Streamable HTTP'yi seçin; AIKINGBOT oturumunuzu açar.",
   "error.backend.oauthNotHttps": "OAuth uç noktası {origin} https değil, bu nedenle kimlik bilgileri gönderilmedi.",
   "error.backend.oauthTooManyRedirects": "OAuth uç noktası çok fazla kez yönlendirdi.",
   "error.backend.oauthRedirectOrigin":
@@ -265,7 +266,7 @@ export const messages = {
   "error.backend.mcpSignInAppUrl": "Oturum açma uygulaması için geçerli bir sunucu URL'si gerekir.",
   "error.backend.mcpSignInAppClientId": "Oturum açma uygulamasının istemci kimliğini girin.",
   "error.backend.mcpSignInAppIssuerChanged":
-    "Bu MCP sunucusunun oturum açma sunucusu değişti, bu yüzden OpenBot oturum açma uygulamasını ona göndermedi. Değişiklik doğruysa oturum açma uygulamasını kaldırıp yeniden ekleyin.",
+    "Bu MCP sunucusunun oturum açma sunucusu değişti, bu yüzden AIKINGBOT oturum açma uygulamasını ona göndermedi. Değişiklik doğruysa oturum açma uygulamasını kaldırıp yeniden ekleyin.",
   "error.backend.mcpSignInAppNoServer":
     "Oturum açma uygulaması eklemeden önce bu MCP sunucusunu URL sunucusu olarak kaydedin.",
   "error.backend.mcpSignInAppUnavailable": "Bu bilgisayar oturum açma uygulaması saklayamaz.",

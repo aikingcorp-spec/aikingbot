@@ -8,11 +8,11 @@ import {
   mcpConfigErrors,
   normalizeMcpConfig,
   type SkillCategory,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 
-const logger = createOpenBotLogger("build-plugin-catalog");
+const logger = createAIKINGBOTLogger("build-plugin-catalog");
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptRoot, "..");
@@ -335,7 +335,7 @@ function parseFlow(slug: string, value: unknown, transport: unknown): PluginAuth
     throw new Error(`Plugin ${slug} has an invalid auth flow.`);
   }
   if (value.kind === "link") {
-    // OpenBot holds the OAuth client itself and adds the header at hand-off, which it can only do
+    // AIKINGBOT holds the OAuth client itself and adds the header at hand-off, which it can only do
     // for an http server. A stdio listing asking for a sign-in would be asking for a bridge program.
     if (transport !== "http") throw new Error(`Plugin ${slug} sign-in needs an http server.`);
     return { id: value.id, kind: "link", label: value.label };
@@ -591,7 +591,7 @@ function renderRendererModule(plugins: PluginDetail[]): string {
       installs: 0,
       featured: plugin.featured,
       updatedAt: plugin.updatedAt,
-      shareUrl: `https://openbot.run/plugins/${plugin.slug}`,
+      shareUrl: `https://aikingbot.aikingx.com/plugins/${plugin.slug}`,
     })};`;
   });
   const list = plugins.map((plugin) => constName(plugin.slug)).join(",\n  ");
@@ -603,8 +603,8 @@ function renderRendererModule(plugins: PluginDetail[]): string {
  * bun run marketplace:build:plugins -- --check to verify.
  */
 
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import type { MarketplacePluginApp, MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
+import type { MarketplacePluginApp, MarketplacePluginDetail } from "@aikingbot/ui/features/settings/marketplace-plugins";
 
 /**
  * The configuration an app installs as. The catalog states the name and how the server is reached -

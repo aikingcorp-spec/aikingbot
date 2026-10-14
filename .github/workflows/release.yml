@@ -91,16 +91,16 @@ jobs:
           join_status="$(curl --silent --show-error --retry 5 --retry-all-errors \
             --max-redirs 0 --dump-header "$verification_dir/join.headers" \
             --output "$verification_dir/join.html" --write-out '%{http_code}' \
-            https://openbot.run/join)"
+            https://aikingbot.aikingx.com/join)"
           test "$join_status" = "200"
           tr -d '\r' < "$verification_dir/join.headers" | grep -Eiq '^cache-control:.*no-store'
           association_status="$(curl --silent --show-error --retry 5 --retry-all-errors \
             --max-redirs 0 --dump-header "$verification_dir/association.headers" \
             --output "$verification_dir/association.json" --write-out '%{http_code}' \
-            https://openbot.run/.well-known/apple-app-site-association)"
+            https://aikingbot.aikingx.com/.well-known/apple-app-site-association)"
           test "$association_status" = "200"
           tr -d '\r' < "$verification_dir/association.headers" | grep -Eiq '^content-type: application/json'
-          jq -e '.applinks.details == [{"appID":"ZTRDTUL87R.app.openbot.desktop","paths":["/join"]},{"appID":"ZTRDTUL87R.run.openbot.mobile","paths":["/join","/agents/*"]}]' \
+          jq -e '.applinks.details == [{"appID":"ZTRDTUL87R.app.aikingbot.desktop","paths":["/join"]},{"appID":"ZTRDTUL87R.run.aikingbot.mobile","paths":["/join","/agents/*"]}]' \
             "$verification_dir/association.json" >/dev/null
 
   host-signing:
@@ -141,8 +141,8 @@ jobs:
           # place the comparison runs: it gets there with the package already built and notarized.
           probe="$host_signing_dir/pkg-probe"
           mkdir -p "$probe/root/usr/local/bin"
-          cp /usr/bin/true "$probe/root/usr/local/bin/openbot-signing-probe"
-          /usr/bin/pkgbuild --root "$probe/root" --identifier app.openbot.host.signing-probe \
+          cp /usr/bin/true "$probe/root/usr/local/bin/aikingbot-signing-probe"
+          /usr/bin/pkgbuild --root "$probe/root" --identifier app.aikingbot.host.signing-probe \
             --version 0.0.0 --install-location / --ownership recommended \
             --sign "$HOST_INSTALLER_IDENTITY" --keychain "$HOST_SIGNING_KEYCHAIN" "$probe/probe.pkg"
           HOST_PROBE_PKG="$probe/probe.pkg" bun -e '
@@ -208,7 +208,7 @@ jobs:
           [Console]::OutputEncoding = [Text.Encoding]::UTF8
           $options = bun -e 'const { parse } = require("yaml"); const config = parse(require("fs").readFileSync("electron-builder.windows-signing.yml", "utf8")); console.log(JSON.stringify(config.win.azureSignOptions))' | ConvertFrom-Json
           Install-Module -Name TrustedSigning -MinimumVersion 0.5.0 -Force -Repository PSGallery -Scope CurrentUser
-          $probe = Join-Path $env:RUNNER_TEMP "openbot-signing-probe"
+          $probe = Join-Path $env:RUNNER_TEMP "aikingbot-signing-probe"
           New-Item -ItemType Directory -Force -Path $probe | Out-Null
           Set-Content -LiteralPath "$probe/probe.cs" -Value "class Probe { static void Main() {} }"
           & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo "/out:$probe\probe.exe" "$probe\probe.cs"
@@ -328,10 +328,10 @@ jobs:
         env:
           MAC_PROVISIONING_PROFILE: ${{ secrets.MAC_PROVISIONING_PROFILE }}
         run: |
-          profile_path="$RUNNER_TEMP/OpenBot.provisionprofile"
+          profile_path="$RUNNER_TEMP/AIKINGBOT.provisionprofile"
           printf '%s' "$MAC_PROVISIONING_PROFILE" | /usr/bin/base64 -D > "$profile_path"
           security cms -D -i "$profile_path" >/dev/null
-          echo "OPENBOT_PROVISIONING_PROFILE=$profile_path" >> "$GITHUB_ENV"
+          echo "AIKINGBOT_PROVISIONING_PROFILE=$profile_path" >> "$GITHUB_ENV"
 
       - name: Build, sign, and notarize ${{ matrix.label }} update artifacts
         env:
@@ -350,7 +350,7 @@ jobs:
           log="$RUNNER_TEMP/electron-builder-mac.log"
           for attempt in 1 2 3; do
             if bun x electron-builder --mac --${{ matrix.arch }} --publish never \
-              --config.mac.provisioningProfile="$OPENBOT_PROVISIONING_PROFILE" 2>&1 | tee "$log"; then
+              --config.mac.provisioningProfile="$AIKINGBOT_PROVISIONING_PROFILE" 2>&1 | tee "$log"; then
               exit 0
             fi
             if ! grep -Eq 'hdiutil: create failed - (Device not configured|Resource busy)' "$log"; then
@@ -367,7 +367,7 @@ jobs:
       - name: Verify application signature and notarization
         shell: bash
         run: |
-          app_path="dist/${{ matrix.app_dir }}/OpenBot.app"
+          app_path="dist/${{ matrix.app_dir }}/AIKINGBOT.app"
           test -d "$app_path"
           codesign --verify --deep --strict --verbose=2 "$app_path"
           runtime_path="$app_path/Contents/Resources/remote-desktop-runtime/darwin/${{ matrix.arch }}"
@@ -384,15 +384,15 @@ jobs:
           verify_provider_signature build/claude/mac/${{ matrix.arch }}/bin/claude Q6L2SF6YDW
           verify_provider_signature build/grok/mac/${{ matrix.arch }}/bin/grok 5Y6N3AJ54S
           test -f "$app_path/Contents/embedded.provisionprofile"
-          codesign -d --entitlements :- "$app_path" > "$RUNNER_TEMP/openbot-entitlements.plist"
-          test -s "$RUNNER_TEMP/openbot-entitlements.plist"
-          plutil -lint "$RUNNER_TEMP/openbot-entitlements.plist"
+          codesign -d --entitlements :- "$app_path" > "$RUNNER_TEMP/aikingbot-entitlements.plist"
+          test -s "$RUNNER_TEMP/aikingbot-entitlements.plist"
+          plutil -lint "$RUNNER_TEMP/aikingbot-entitlements.plist"
           /usr/libexec/PlistBuddy -c 'Print :com.apple.developer.associated-domains:0' \
-            "$RUNNER_TEMP/openbot-entitlements.plist" | grep -Fx 'applinks:openbot.run'
+            "$RUNNER_TEMP/aikingbot-entitlements.plist" | grep -Fx 'applinks:aikingbot.aikingx.com'
           /usr/libexec/PlistBuddy -c 'Print :com.apple.developer.team-identifier' \
-            "$RUNNER_TEMP/openbot-entitlements.plist" | grep -Fx 'ZTRDTUL87R'
+            "$RUNNER_TEMP/aikingbot-entitlements.plist" | grep -Fx 'ZTRDTUL87R'
           /usr/libexec/PlistBuddy -c 'Print :com.apple.security.device.audio-input' \
-            "$RUNNER_TEMP/openbot-entitlements.plist" | grep -Fx 'true'
+            "$RUNNER_TEMP/aikingbot-entitlements.plist" | grep -Fx 'true'
           plutil -extract NSUserActivityTypes.0 raw "$app_path/Contents/Info.plist" \
             | grep -Fx 'NSUserActivityTypeBrowsingWeb'
           plutil -extract ElectronTeamID raw "$app_path/Contents/Info.plist" | grep -Fx 'ZTRDTUL87R'
@@ -423,10 +423,10 @@ jobs:
           fi
           # v0.1.21 shipped only an ARM64 ZIP, so only that one has a size to stay under.
           if [[ "${{ matrix.arch }}" != "arm64" ]]; then exit 0; fi
-          mkdir -p "$RUNNER_TEMP/openbot-0.1.21"
+          mkdir -p "$RUNNER_TEMP/aikingbot-0.1.21"
           gh release download v0.1.21 --repo "$GITHUB_REPOSITORY" --pattern '*.zip' \
-            --dir "$RUNNER_TEMP/openbot-0.1.21"
-          old_zips=("$RUNNER_TEMP/openbot-0.1.21"/*.zip)
+            --dir "$RUNNER_TEMP/aikingbot-0.1.21"
+          old_zips=("$RUNNER_TEMP/aikingbot-0.1.21"/*.zip)
           if (( ${#old_zips[@]} != 1 )); then
             echo "Expected one macOS ZIP in v0.1.21." >&2
             exit 1
@@ -440,8 +440,8 @@ jobs:
       - name: Test native tenant setup
         if: matrix.arch == 'arm64'
         run: |
-          xcrun swiftc -parse-as-library -D TENANT_SETUP_TESTS scripts/macos-tenant-setup.swift scripts/macos-tenant-setup-tests.swift -o "$RUNNER_TEMP/openbot-tenant-setup-tests"
-          "$RUNNER_TEMP/openbot-tenant-setup-tests"
+          xcrun swiftc -parse-as-library -D TENANT_SETUP_TESTS scripts/macos-tenant-setup.swift scripts/macos-tenant-setup-tests.swift -o "$RUNNER_TEMP/aikingbot-tenant-setup-tests"
+          "$RUNNER_TEMP/aikingbot-tenant-setup-tests"
 
       - name: Build, sign, notarize, and verify Host installer
         if: matrix.arch == 'arm64'
@@ -458,11 +458,11 @@ jobs:
           set -euo pipefail
           source scripts/host-signing-keychain.sh
           bun scripts/build-host-installer.ts
-          host_pkg="dist/OpenBot-Host-$RELEASE_VERSION-arm64.pkg"
-          xcrun notarytool store-credentials openbot-host-release --keychain "$HOST_SIGNING_KEYCHAIN" \
+          host_pkg="dist/AIKINGBOT-Host-$RELEASE_VERSION-arm64.pkg"
+          xcrun notarytool store-credentials aikingbot-host-release --keychain "$HOST_SIGNING_KEYCHAIN" \
             --apple-id "$APPLE_ID" --password "$APPLE_APP_SPECIFIC_PASSWORD" --team-id "$APPLE_TEAM_ID"
           xcrun notarytool submit "$host_pkg" --keychain "$HOST_SIGNING_KEYCHAIN" \
-            --keychain-profile openbot-host-release --wait --timeout 20m --output-format json > "$host_signing_dir/notarization.json"
+            --keychain-profile aikingbot-host-release --wait --timeout 20m --output-format json > "$host_signing_dir/notarization.json"
           jq -e '.status == "Accepted"' "$host_signing_dir/notarization.json" >/dev/null
           xcrun stapler staple "$host_pkg"
           bun scripts/verify-host-installer.ts "$host_pkg" "$RELEASE_VERSION"
@@ -474,17 +474,17 @@ jobs:
         run: |
           cd dist
           shopt -s nullglob
-          artifacts=("OpenBot-$RELEASE_VERSION-${{ matrix.arch }}.dmg" "OpenBot-$RELEASE_VERSION-${{ matrix.arch }}.zip")
-          if [[ "${{ matrix.arch }}" == "arm64" ]]; then artifacts+=("OpenBot-Host-$RELEASE_VERSION-arm64.pkg"); fi
+          artifacts=("AIKINGBOT-$RELEASE_VERSION-${{ matrix.arch }}.dmg" "AIKINGBOT-$RELEASE_VERSION-${{ matrix.arch }}.zip")
+          if [[ "${{ matrix.arch }}" == "arm64" ]]; then artifacts+=("AIKINGBOT-Host-$RELEASE_VERSION-arm64.pkg"); fi
           shasum -a 256 "${artifacts[@]}" > "SHA256SUMS-${{ matrix.suffix }}.txt"
 
       - name: Generate macOS release SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
-          path: dist/${{ matrix.app_dir }}/OpenBot.app
+          path: dist/${{ matrix.app_dir }}/AIKINGBOT.app
           format: spdx-json
-          output-file: dist/OpenBot-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}.spdx.json
-          artifact-name: OpenBot-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}-SBOM
+          output-file: dist/AIKINGBOT-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}.spdx.json
+          artifact-name: AIKINGBOT-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}-SBOM
           upload-artifact: false
           upload-release-assets: false
 
@@ -494,8 +494,8 @@ jobs:
         with:
           path: dist/host-sbom
           format: spdx-json
-          output-file: dist/OpenBot-Host-${{ env.RELEASE_VERSION }}-macos.spdx.json
-          artifact-name: OpenBot-Host-${{ env.RELEASE_VERSION }}-macOS-SBOM
+          output-file: dist/AIKINGBOT-Host-${{ env.RELEASE_VERSION }}-macos.spdx.json
+          artifact-name: AIKINGBOT-Host-${{ env.RELEASE_VERSION }}-macOS-SBOM
           upload-artifact: false
           upload-release-assets: false
 
@@ -508,7 +508,7 @@ jobs:
       - name: Include macOS provenance bundle
         env:
           BUNDLE_PATH: ${{ steps.macos-provenance.outputs.bundle-path }}
-        run: cp "$BUNDLE_PATH" "dist/OpenBot-$RELEASE_VERSION-${{ matrix.suffix }}.sigstore.json"
+        run: cp "$BUNDLE_PATH" "dist/AIKINGBOT-$RELEASE_VERSION-${{ matrix.suffix }}.sigstore.json"
 
       - name: Upload macOS release assets
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -517,7 +517,7 @@ jobs:
           path: |
             dist/*.dmg
             dist/*.zip
-            dist/OpenBot-Host-*-arm64.pkg
+            dist/AIKINGBOT-Host-*-arm64.pkg
             dist/latest-mac.yml
             dist/*.blockmap
             dist/*.spdx.json
@@ -567,7 +567,7 @@ jobs:
           bun scripts/install-claude-runtime.ts win32 x64
           bun scripts/install-grok-runtime.ts win32 x64
 
-      # Azure Artifact Signing: the `openbot-release-signing` app registration in the Synthetify
+      # Azure Artifact Signing: the `aikingbot-release-signing` app registration in the Synthetify
       # tenant holds the Signer role on the SYNTHETIFY certificate profile only. These IDs are not
       # secrets; the federated credential admits only this repository's `release` environment.
       - name: Log in to Azure Artifact Signing
@@ -617,11 +617,11 @@ jobs:
           if ($installers.Count -ne 1 -or -not (Test-Path dist/latest.yml)) {
             Write-Error "Expected one EXE installer and latest.yml."
           }
-          # The package verifier ties the signer of OpenBot.exe to the publisher in app-update.yml.
+          # The package verifier ties the signer of AIKINGBOT.exe to the publisher in app-update.yml.
           # A signed install verifies the next update's installer against that publisher.
           $signature = Get-AuthenticodeSignature -LiteralPath $installers[0].FullName
           if ($env:WINDOWS_SIGNED -eq "true") {
-            $applicationSigner = (Get-AuthenticodeSignature -LiteralPath dist/win-unpacked/OpenBot.exe).SignerCertificate.Subject
+            $applicationSigner = (Get-AuthenticodeSignature -LiteralPath dist/win-unpacked/AIKINGBOT.exe).SignerCertificate.Subject
             if ($signature.Status -ne "Valid" -or $signature.SignerCertificate.Subject -ne $applicationSigner) {
               Write-Error "The installer signer differs from the application signer: $($signature.Status) $($signature.SignerCertificate.Subject)."
             }
@@ -668,8 +668,8 @@ jobs:
         with:
           path: dist/win-unpacked
           format: spdx-json
-          output-file: dist/OpenBot-${{ env.RELEASE_VERSION }}-windows.spdx.json
-          artifact-name: OpenBot-${{ env.RELEASE_VERSION }}-Windows-SBOM
+          output-file: dist/AIKINGBOT-${{ env.RELEASE_VERSION }}-windows.spdx.json
+          artifact-name: AIKINGBOT-${{ env.RELEASE_VERSION }}-Windows-SBOM
           upload-artifact: false
           upload-release-assets: false
 
@@ -761,15 +761,15 @@ jobs:
           set -euo pipefail
           sudo chown root:root "dist/$SUFFIX-unpacked/chrome-sandbox"
           sudo chmod 4755 "dist/$SUFFIX-unpacked/chrome-sandbox"
-          sudo tee /etc/apparmor.d/openbot-verify >/dev/null <<PROFILE
+          sudo tee /etc/apparmor.d/aikingbot-verify >/dev/null <<PROFILE
           abi <abi/4.0>,
           include <tunables/global>
 
-          profile openbot-verify "$GITHUB_WORKSPACE/dist/$SUFFIX-unpacked/openbot" flags=(unconfined) {
+          profile aikingbot-verify "$GITHUB_WORKSPACE/dist/$SUFFIX-unpacked/aikingbot" flags=(unconfined) {
             userns,
           }
           PROFILE
-          sudo apparmor_parser -r /etc/apparmor.d/openbot-verify
+          sudo apparmor_parser -r /etc/apparmor.d/aikingbot-verify
         env:
           SUFFIX: ${{ matrix.suffix }}
 
@@ -810,8 +810,8 @@ jobs:
         with:
           path: dist/${{ matrix.suffix }}-unpacked
           format: spdx-json
-          output-file: dist/OpenBot-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}.spdx.json
-          artifact-name: OpenBot-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}-SBOM
+          output-file: dist/AIKINGBOT-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}.spdx.json
+          artifact-name: AIKINGBOT-${{ env.RELEASE_VERSION }}-${{ matrix.suffix }}-SBOM
           upload-artifact: false
           upload-release-assets: false
 
@@ -875,7 +875,7 @@ jobs:
           set -euo pipefail
           (cd release-assets && sha256sum --check --strict "SHA256SUMS-$SUFFIX.txt")
           mkdir image
-          mv release-assets/*.AppImage image/OpenBot.AppImage
+          mv release-assets/*.AppImage image/AIKINGBOT.AppImage
         env:
           SUFFIX: ${{ matrix.suffix }}
 
@@ -883,37 +883,37 @@ jobs:
         run: |
           docker build --file docker/Dockerfile --platform "$PLATFORM" \
             --build-arg "VERSION=$RELEASE_VERSION" --build-arg "REVISION=$GITHUB_SHA" \
-            --tag openbot:release image
+            --tag aikingbot:release image
         env:
           PLATFORM: ${{ matrix.platform }}
 
-      # The image starts with the sandbox on, its control socket answers, and a stop lets OpenBot
+      # The image starts with the sandbox on, its control socket answers, and a stop lets AIKINGBOT
       # exit by itself. A signed-out server needs no account.
       - name: Start and stop the image
         shell: bash
         run: |
           set -euo pipefail
-          trap 'docker logs openbot' ERR
-          docker run --detach --name openbot --shm-size 1g \
-            --security-opt seccomp=docker/seccomp.json --security-opt no-new-privileges:true openbot:release
+          trap 'docker logs aikingbot' ERR
+          docker run --detach --name aikingbot --shm-size 1g \
+            --security-opt seccomp=docker/seccomp.json --security-opt no-new-privileges:true aikingbot:release
           # The socket opens before the account state loads, so wait for that state too.
           status=
           for _ in $(seq 1 120); do
-            if docker exec openbot test -S /run/openbot/control.sock; then
-              status=$(docker exec openbot openbot status)
+            if docker exec aikingbot test -S /run/aikingbot/control.sock; then
+              status=$(docker exec aikingbot aikingbot status)
               grep -Fxq "Account: loading" <<<"$status" || break
             fi
             sleep 1
           done
           echo "$status"
-          grep -Fxq "OpenBot $RELEASE_VERSION" <<<"$status"
-          grep -Fxq "Account: signed out. Sign in with: openbot login" <<<"$status"
-          docker stop --time 60 openbot
-          test "$(docker inspect openbot --format '{{.State.ExitCode}}')" = 0
+          grep -Fxq "AIKINGBOT $RELEASE_VERSION" <<<"$status"
+          grep -Fxq "Account: signed out. Sign in with: aikingbot login" <<<"$status"
+          docker stop --time 60 aikingbot
+          test "$(docker inspect aikingbot --format '{{.State.ExitCode}}')" = 0
 
       - name: Save the image
         shell: bash
-        run: docker save openbot:release | gzip --fast > "openbot-image-$SUFFIX.tar.gz"
+        run: docker save aikingbot:release | gzip --fast > "aikingbot-image-$SUFFIX.tar.gz"
         env:
           SUFFIX: ${{ matrix.suffix }}
 
@@ -921,7 +921,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: docker-${{ matrix.suffix }}
-          path: openbot-image-${{ matrix.suffix }}.tar.gz
+          path: aikingbot-image-${{ matrix.suffix }}.tar.gz
           if-no-files-found: error
           retention-days: 7
           compression-level: 0
@@ -1015,7 +1015,7 @@ jobs:
               --generate-notes \
               --latest \
               --repo "$GITHUB_REPOSITORY" \
-              --title "OpenBot $RELEASE_TAG"
+              --title "AIKINGBOT $RELEASE_TAG"
           fi
 
   hosted-release:
@@ -1091,10 +1091,10 @@ jobs:
           printf '%s' "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
           for pair in linux:amd64 linux-arm64:arm64; do
             suffix=${pair%%:*} architecture=${pair#*:}
-            gunzip --stdout "images/openbot-image-$suffix.tar.gz" | docker load
-            docker tag openbot:release "$IMAGE:$RELEASE_VERSION-$architecture"
+            gunzip --stdout "images/aikingbot-image-$suffix.tar.gz" | docker load
+            docker tag aikingbot:release "$IMAGE:$RELEASE_VERSION-$architecture"
             docker push "$IMAGE:$RELEASE_VERSION-$architecture"
-            docker rmi openbot:release
+            docker rmi aikingbot:release
           done
           docker buildx imagetools create \
             --tag "$IMAGE:$RELEASE_VERSION" --tag "$IMAGE:v$RELEASE_VERSION" \

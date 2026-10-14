@@ -5,11 +5,11 @@
 // back to the newest message that survived the filter - otherwise the client would store a cursor
 // pointing at something it cannot render and never catch up.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isMessageReaction } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { isMessageReaction } from "@aikingbot/contracts/ipc";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_PROTOCOL_V3 } from "@aikingbot/contracts/team-protocol/v3";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

@@ -1,8 +1,8 @@
-import type { ConnectTelegramChatInput } from "@openbot/contracts/ipc";
+import type { ConnectTelegramChatInput } from "@aikingbot/contracts/ipc";
 import type { Effect } from "effect";
 import type { MessagingOperationFailed } from "../messaging-service";
 
-/** The account service half of the OpenBot Telegram bot. Signal holds the bot token. */
+/** The account service half of the AIKINGBOT Telegram bot. Signal holds the bot token. */
 export interface TelegramAppPort {
   /** A one-use code that links the next chat that adds the bot to this host. */
   createLink(): Effect.Effect<{ botUsername: string; code: string }, MessagingOperationFailed>;

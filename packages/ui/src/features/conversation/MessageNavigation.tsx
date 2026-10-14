@@ -1,5 +1,5 @@
-import type { AppTranslate } from "@openbot/i18n";
-import { Button, X } from "@openbot/ui";
+import type { AppTranslate } from "@aikingbot/i18n";
+import { Button, X } from "@aikingbot/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { prefersReducedMotion } from "../../utils";

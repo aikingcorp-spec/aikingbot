@@ -15,7 +15,7 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.about.privacy": "Privacy policy",
   "mobile.settings.home.profile": "Profile",
   "mobile.settings.home.preferences": "Preferences",
-  "mobile.settings.home.about": "About OpenBot",
+  "mobile.settings.home.about": "About AIKINGBOT",
   "mobile.settings.home.support": "Support",
   "mobile.settings.home.supportHint": "Get help and save a support log",
   "mobile.settings.support.help": "Get help",
@@ -30,7 +30,7 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.support.clearTitle": "Clear the support log?",
   "mobile.settings.support.clearBody": "This removes all events from the log on this phone.",
   "mobile.settings.support.logFooter":
-    "The log stays on this phone, and OpenBot does not send it. It records connection steps, requests and errors. It does not record messages or files, and it masks passwords and tokens. Read the file before you share it.",
+    "The log stays on this phone, and AIKINGBOT does not send it. It records connection steps, requests and errors. It does not record messages or files, and it masks passwords and tokens. Read the file before you share it.",
   "mobile.settings.support.saveFailed": "Could not save the log file. Try again.",
   "mobile.settings.support.sharingUnavailable": "Sharing is not available on this phone.",
   "mobile.settings.support.recent": "Recent events",
@@ -89,28 +89,28 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.feedback.retry": "Retry saving haptics setting",
   "mobile.settings.liveActivities.title": "Live Activities",
   "mobile.settings.liveActivities.footer":
-    "Shows agent work, messages, questions, and approvals on the Lock Screen and in the Dynamic Island while OpenBot runs.",
+    "Shows agent work, messages, questions, and approvals on the Lock Screen and in the Dynamic Island while AIKINGBOT runs.",
   "mobile.settings.liveActivities.toggle": "Show agent activity",
   "mobile.settings.liveActivities.retry": "Retry saving Live Activities setting",
   "mobile.settings.notifications.title": "Notifications",
   "mobile.settings.notifications.toggle": "Allow notifications",
   "mobile.settings.notifications.footer":
-    "Agents tell you when they finish, stop with an error, or need your input, an approval, or a step in the browser. Nothing comes while OpenBot is in use. While the desktop app is in use, only the events that need you come. While the Live Activity shows, it shows the event instead.",
-  "mobile.settings.notifications.denied": "Notifications for OpenBot are off in iOS Settings.",
+    "Agents tell you when they finish, stop with an error, or need your input, an approval, or a step in the browser. Nothing comes while AIKINGBOT is in use. While the desktop app is in use, only the events that need you come. While the Live Activity shows, it shows the event instead.",
+  "mobile.settings.notifications.denied": "Notifications for AIKINGBOT are off in iOS Settings.",
   "mobile.settings.notifications.openSettings": "Open iOS Settings",
   "mobile.settings.notifications.preview": "Show reply preview",
   "mobile.settings.notifications.previewFooter":
-    "Shows the start of a reply, a question, or the action to approve. Apple and the OpenBot account service cannot read it.",
+    "Shows the start of a reply, a question, or the action to approve. Apple and the AIKINGBOT account service cannot read it.",
   "mobile.settings.notifications.sound": "Sound",
   "mobile.settings.notifications.playSound": "Play sound",
-  "mobile.settings.notifications.sound.openbot": "OpenBot",
+  "mobile.settings.notifications.sound.aikingbot": "AIKINGBOT",
   "mobile.settings.notifications.sound.warm": "Warm",
   "mobile.settings.notifications.sound.mech": "Mechanical",
   "mobile.settings.notifications.sound.bubble": "Bubbly",
   "mobile.settings.notifications.sound.press": "Clicky",
   "mobile.settings.notifications.sound.default": "iOS default",
   "mobile.settings.notifications.soundFooter":
-    "Notifications and the Live Activity play this sound. The Live Activity also lights up the screen. The OpenBot sound is the sound that the desktop app plays when a task finishes. The four sounds after it are the sounds of the desktop sound themes.",
+    "Notifications and the Live Activity play this sound. The Live Activity also lights up the screen. The AIKINGBOT sound is the sound that the desktop app plays when a task finishes. The four sounds after it are the sounds of the desktop sound themes.",
   "mobile.settings.notifications.notifyAbout": "Notify me about",
   "mobile.settings.notifications.level.all": "All activity",
   "mobile.settings.notifications.level.needsMe": "Only when it needs me",
@@ -127,7 +127,7 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.notifications.serverFooter":
     "The events of this server that notify this phone. The desktop app has its own settings.",
   "mobile.settings.notifications.serverUnsupported":
-    "This server cannot send notifications. Update OpenBot on the computer that runs it.",
+    "This server cannot send notifications. Update AIKINGBOT on the computer that runs it.",
   "mobile.settings.privacy.title": "Privacy",
   "mobile.settings.privacy.footer":
     "Share feature use and connection results from this phone. Message contents and files are not sent.",
@@ -150,6 +150,6 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.profile.security": "Security",
   "mobile.settings.profile.accountSessions": "Account sessions",
   "mobile.settings.profile.signOutTitle": "Sign out?",
-  "mobile.settings.profile.signOutBody": "Reconnect by scanning a new code from OpenBot on your desktop.",
+  "mobile.settings.profile.signOutBody": "Reconnect by scanning a new code from AIKINGBOT on your desktop.",
   "mobile.settings.profile.signOut": "Sign out",
 });

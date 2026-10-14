@@ -1,5 +1,5 @@
-import { AGENT_MEMORY_LIMITS, type AgentMemoryLimit, type AppVariant } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { AGENT_MEMORY_LIMITS, type AgentMemoryLimit, type AppVariant } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   ConfirmDialog,
   Item,
@@ -15,16 +15,16 @@ import {
   SelectValue,
   SettingsSection,
   SwitchField,
-} from "@openbot/ui";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
-import { LogoColorPicker } from "@openbot/ui/features/settings/LogoColorPicker";
-import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
+} from "@aikingbot/ui";
+import type { GeneralSettingsValue } from "@aikingbot/ui/features/settings/app-settings";
+import { LanguageSelect } from "@aikingbot/ui/features/settings/LanguageSelect";
+import { LogoColorPicker } from "@aikingbot/ui/features/settings/LogoColorPicker";
+import { SendShortcutSelect } from "@aikingbot/ui/features/settings/SendShortcutSelect";
 import { createSignal, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { useLogoColorChoice } from "../../logo-color";
 
-const linkTargetOptions: GeneralSettingsValue["externalLinkTarget"][] = ["Default browser", "OpenBot"];
+const linkTargetOptions: GeneralSettingsValue["externalLinkTarget"][] = ["Default browser", "AIKINGBOT"];
 
 /**
  * The saved value is the English name, because it is what `app-settings.ts` persists and what the
@@ -32,7 +32,7 @@ const linkTargetOptions: GeneralSettingsValue["externalLinkTarget"][] = ["Defaul
  */
 const LINK_TARGET_KEYS = {
   "Default browser": "settings.externalLinks.defaultBrowser",
-  OpenBot: "settings.externalLinks.openbot",
+  AIKINGBOT: "settings.externalLinks.aikingbot",
 } as const satisfies Record<GeneralSettingsValue["externalLinkTarget"], AppTextKey>;
 
 interface SettingsGeneralTabProps {

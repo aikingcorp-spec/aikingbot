@@ -2,7 +2,7 @@
 // form, and the scan looks for these command names only: it never starts a file to learn what it is.
 //
 // Unverified: each flag comes from the agent's own documentation as of September 2026, not from a
-// run in OpenBot. "Check agent" is the test, and a changed flag is one edit in the form.
+// run in AIKINGBOT. "Check agent" is the test, and a changed flag is one edit in the form.
 
 export interface AcpAgentPreset {
   /** The custom agent id to suggest. */

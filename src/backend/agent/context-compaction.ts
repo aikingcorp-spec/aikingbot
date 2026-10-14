@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentContextState } from "@openbot/contracts/ipc";
+import type { AgentContextState } from "@aikingbot/contracts/ipc";
 import { Effect, Schema } from "effect";
 import type { AgentStore } from "../agent-store";
 import { causeHelpers } from "../effect-boundary";

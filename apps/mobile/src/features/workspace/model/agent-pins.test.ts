@@ -1,4 +1,4 @@
-import { createWorkspacePreferences } from "@openbot/team-client";
+import { createWorkspacePreferences } from "@aikingbot/team-client";
 import { describe, expect, it } from "vitest";
 import { canToggleAgentPin, reconcileAgentPins } from "./agent-pins";
 

@@ -1,14 +1,14 @@
-import { ArrowUp, Button, Mic, Plus } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import { ArrowUp, Button, Mic, Plus } from "@aikingbot/ui";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { ChatMessageRow } from "@aikingbot/ui/features/conversation/ChatMessageRow";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
 import {
   ComposerCompactionNotice,
   ContextCompactionMarker,
   type ContextCompactionView,
   ContextUsageMeter,
   type ContextUsageView,
-} from "@openbot/ui/features/conversation/ContextUsage";
+} from "@aikingbot/ui/features/conversation/ContextUsage";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { fn } from "storybook/test";
@@ -18,7 +18,7 @@ import { STORY_AGENT, STORY_AGENTS } from "./fixtures";
 /*
  * Context usage for an agent's provider thread. The data differs by provider:
  *
- * - Codex reports `tokenUsage.last.totalTokens` and `modelContextWindow`. OpenBot already asks Codex
+ * - Codex reports `tokenUsage.last.totalTokens` and `modelContextWindow`. AIKINGBOT already asks Codex
  *   to compact at 80% (`context-compaction.ts`) and holds the queue until it ends.
  * - Claude supplies local context estimates and native compaction events. Its compacted-message
  *   count excludes system/tools, so it cannot supply a full-context before/after comparison.
@@ -100,7 +100,9 @@ function Composer(props: { usage: ContextUsageView; notice?: JSX.Element; width?
 function Row(props: { label: string; children: JSX.Element }) {
   return (
     <section style={{ display: "grid", gap: "8px" }} aria-label={props.label}>
-      <span style={{ color: "var(--openbot-text-muted)", "font-size": "var(--openbot-text-sm)" }}>{props.label}</span>
+      <span style={{ color: "var(--aikingbot-text-muted)", "font-size": "var(--aikingbot-text-sm)" }}>
+        {props.label}
+      </span>
       {props.children}
     </section>
   );
@@ -150,7 +152,7 @@ export const ClaudeEstimate: Story = {
   render: (args) => <Composer usage={args.usage} />,
 };
 
-/** Codex reports one total. OpenBot compacts at 80% and remembers the last result. */
+/** Codex reports one total. AIKINGBOT compacts at 80% and remembers the last result. */
 export const CodexTotal: Story = {
   args: { usage: { ...CODEX, usedTokens: 206_700 } },
   render: (args) => <Composer usage={args.usage} />,

@@ -1,4 +1,4 @@
-name: openbot-remote-dev
+name: aikingbot-remote-dev
 
 services:
   remote-api:

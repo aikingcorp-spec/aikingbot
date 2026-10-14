@@ -3,12 +3,12 @@ import type {
   DynamicIslandAction,
   DynamicIslandPreference,
   DynamicIslandPresentation,
-} from "@openbot/contracts/ipc";
-import { DEFAULT_DYNAMIC_ISLAND_PREFERENCE, IDLE_DYNAMIC_ISLAND_PRESENTATION } from "@openbot/contracts/ipc";
-import type { DynamicIslandNotchSize, DynamicIslandStateChangeReason, DynamicIslandViewState } from "@openbot/ui";
-import { OpenBotDynamicIsland } from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
-import { useText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@aikingbot/contracts/ipc";
+import { DEFAULT_DYNAMIC_ISLAND_PREFERENCE, IDLE_DYNAMIC_ISLAND_PRESENTATION } from "@aikingbot/contracts/ipc";
+import type { DynamicIslandNotchSize, DynamicIslandStateChangeReason, DynamicIslandViewState } from "@aikingbot/ui";
+import { AIKINGBOTDynamicIsland } from "@aikingbot/ui/features/dynamic-island/AIKINGBOTDynamicIsland";
+import { useText } from "@aikingbot/ui/text";
+import { errorReference, type UserErrorDetails } from "@aikingbot/user-errors";
 import { createSignal, onSettled, Show } from "solid-js";
 import { dynamicIslandPort } from "./dynamic-island-port";
 
@@ -237,7 +237,7 @@ export function DynamicIslandSurface() {
           onFocusOut={leaveFocusInteraction}
           onPointerDown={(event) => void requestKeyboard(event)}
         >
-          <OpenBotDynamicIsland
+          <AIKINGBOTDynamicIsland
             presentation={presentation()}
             state={viewState()}
             displayMode={displayMode}

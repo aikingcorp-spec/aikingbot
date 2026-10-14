@@ -16,7 +16,7 @@ export const messages = {
   "mobile.settings.about.privacy": "Gizlilik politikası",
   "mobile.settings.home.profile": "Profil",
   "mobile.settings.home.preferences": "Tercihler",
-  "mobile.settings.home.about": "OpenBot Hakkında",
+  "mobile.settings.home.about": "AIKINGBOT Hakkında",
   "mobile.settings.home.support": "Destek",
   "mobile.settings.home.supportHint": "Yardım alın ve destek günlüğünü kaydedin",
   "mobile.settings.support.help": "Yardım alın",
@@ -31,7 +31,7 @@ export const messages = {
   "mobile.settings.support.clearTitle": "Destek günlüğü temizlensin mi?",
   "mobile.settings.support.clearBody": "Bu işlem, bu telefondaki günlükten tüm olayları kaldırır.",
   "mobile.settings.support.logFooter":
-    "Günlük bu telefonda kalır ve OpenBot onu göndermez. Bağlantı adımlarını, istekleri ve hataları kaydeder. Mesajları ve dosyaları kaydetmez; parolaları ve belirteçleri gizler. Paylaşmadan önce dosyayı okuyun.",
+    "Günlük bu telefonda kalır ve AIKINGBOT onu göndermez. Bağlantı adımlarını, istekleri ve hataları kaydeder. Mesajları ve dosyaları kaydetmez; parolaları ve belirteçleri gizler. Paylaşmadan önce dosyayı okuyun.",
   "mobile.settings.support.saveFailed": "Günlük dosyası kaydedilemedi. Tekrar deneyin.",
   "mobile.settings.support.sharingUnavailable": "Bu telefonda paylaşım kullanılamıyor.",
   "mobile.settings.support.recent": "Son olaylar",
@@ -90,28 +90,28 @@ export const messages = {
   "mobile.settings.feedback.retry": "Dokunsal ayarını kaydetmeyi tekrar dene",
   "mobile.settings.liveActivities.title": "Canlı Etkinlikler",
   "mobile.settings.liveActivities.footer":
-    "OpenBot çalışırken Kilit Ekranında ve Dinamik Adada ajan çalışmasını, mesajları, soruları ve onayları gösterir.",
+    "AIKINGBOT çalışırken Kilit Ekranında ve Dinamik Adada ajan çalışmasını, mesajları, soruları ve onayları gösterir.",
   "mobile.settings.liveActivities.toggle": "Ajan etkinliğini göster",
   "mobile.settings.liveActivities.retry": "Canlı Etkinlikler ayarını kaydetmeyi tekrar dene",
   "mobile.settings.notifications.title": "Bildirimler",
   "mobile.settings.notifications.toggle": "Bildirimlere izin ver",
   "mobile.settings.notifications.footer":
-    "Ajanlar işi bitirdiğinde, bir hatayla durduğunda veya girdine, bir onaya ya da tarayıcıda bir adıma ihtiyaç duyduğunda sana haber verir. OpenBot’u kullanırken bildirim gelmez. Masaüstü uygulamasını kullanırken yalnızca sana ihtiyaç duyanlar gelir. Canlı Etkinlik gösterilirken olayı o gösterir.",
-  "mobile.settings.notifications.denied": "OpenBot bildirimleri iOS Ayarlar’da kapalı.",
+    "Ajanlar işi bitirdiğinde, bir hatayla durduğunda veya girdine, bir onaya ya da tarayıcıda bir adıma ihtiyaç duyduğunda sana haber verir. AIKINGBOT’u kullanırken bildirim gelmez. Masaüstü uygulamasını kullanırken yalnızca sana ihtiyaç duyanlar gelir. Canlı Etkinlik gösterilirken olayı o gösterir.",
+  "mobile.settings.notifications.denied": "AIKINGBOT bildirimleri iOS Ayarlar’da kapalı.",
   "mobile.settings.notifications.openSettings": "iOS Ayarlar’ı aç",
   "mobile.settings.notifications.preview": "Yanıt önizlemesini göster",
   "mobile.settings.notifications.previewFooter":
-    "Bir yanıtın başını, bir soruyu veya onaylanacak işlemi gösterir. Apple ve OpenBot hesap hizmeti bunu okuyamaz.",
+    "Bir yanıtın başını, bir soruyu veya onaylanacak işlemi gösterir. Apple ve AIKINGBOT hesap hizmeti bunu okuyamaz.",
   "mobile.settings.notifications.sound": "Ses",
   "mobile.settings.notifications.playSound": "Ses çal",
-  "mobile.settings.notifications.sound.openbot": "OpenBot",
+  "mobile.settings.notifications.sound.aikingbot": "AIKINGBOT",
   "mobile.settings.notifications.sound.warm": "Sıcak",
   "mobile.settings.notifications.sound.mech": "Mekanik",
   "mobile.settings.notifications.sound.bubble": "Köpüklü",
   "mobile.settings.notifications.sound.press": "Tuşlu",
   "mobile.settings.notifications.sound.default": "iOS varsayılanı",
   "mobile.settings.notifications.soundFooter":
-    "Bildirimler ve Canlı Etkinlik bu sesi çalar. Canlı Etkinlik ekranı da açar. OpenBot sesi, masaüstü uygulamasının bir görev bittiğinde çaldığı sestir. Sonraki dört ses, masaüstü uygulamasının ses temalarının sesleridir.",
+    "Bildirimler ve Canlı Etkinlik bu sesi çalar. Canlı Etkinlik ekranı da açar. AIKINGBOT sesi, masaüstü uygulamasının bir görev bittiğinde çaldığı sestir. Sonraki dört ses, masaüstü uygulamasının ses temalarının sesleridir.",
   "mobile.settings.notifications.notifyAbout": "Şunun hakkında bildir",
   "mobile.settings.notifications.level.all": "Tüm etkinlikler",
   "mobile.settings.notifications.level.needsMe": "Yalnızca bana ihtiyaç duyduğunda",
@@ -128,7 +128,7 @@ export const messages = {
   "mobile.settings.notifications.serverFooter":
     "Bu sunucunun bu telefona bildirdiği olaylar. Masaüstü uygulamasının kendi ayarları vardır.",
   "mobile.settings.notifications.serverUnsupported":
-    "Bu sunucu bildirim gönderemez. OpenBot’u sunucuyu çalıştıran bilgisayarda güncelle.",
+    "Bu sunucu bildirim gönderemez. AIKINGBOT’u sunucuyu çalıştıran bilgisayarda güncelle.",
   "mobile.settings.privacy.title": "Gizlilik",
   "mobile.settings.privacy.footer":
     "Bu telefondan özellik kullanımını ve bağlantı sonuçlarını paylaşın. Mesaj içerikleri ve dosyalar gönderilmez.",
@@ -151,6 +151,6 @@ export const messages = {
   "mobile.settings.profile.security": "Güvenlik",
   "mobile.settings.profile.accountSessions": "Hesap oturumları",
   "mobile.settings.profile.signOutTitle": "Oturum kapatılsın mı?",
-  "mobile.settings.profile.signOutBody": "Masaüstünüzdeki OpenBot'tan yeni bir kod tarayarak yeniden bağlanın.",
+  "mobile.settings.profile.signOutBody": "Masaüstünüzdeki AIKINGBOT'tan yeni bir kod tarayarak yeniden bağlanın.",
   "mobile.settings.profile.signOut": "Oturumu kapat",
 } as const satisfies PartialTranslation<typeof source>;

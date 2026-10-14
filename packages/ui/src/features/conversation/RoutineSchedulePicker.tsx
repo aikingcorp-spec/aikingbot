@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { AlarmClock, Input } from "@openbot/ui";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { AlarmClock, Input } from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, Match, onSettled, Show, Switch } from "solid-js";
 import { useText } from "../../text";

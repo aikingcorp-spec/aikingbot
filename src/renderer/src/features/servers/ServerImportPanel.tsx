@@ -1,16 +1,16 @@
-import type { AgentImportPreview, AgentImportResult, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
+import type { AgentImportPreview, AgentImportResult, AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
 import {
   type AgentImportPhase,
   type AgentImportSetup,
   AgentImportView,
-} from "@openbot/ui/features/import/AgentImportView";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/import/AgentImportView";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, createStore, onSettled } from "solid-js";
 import { actionToast } from "../../action-toast";
 
 /** The way into Grok Bot this viewer chose last, so a user who set up the skill starts there. */
-const SETUP_STORAGE_KEY = "openbot.agent-import.setup";
+const SETUP_STORAGE_KEY = "aikingbot.agent-import.setup";
 
 function readSetup(): AgentImportSetup {
   try {
@@ -20,7 +20,7 @@ function readSetup(): AgentImportSetup {
   }
 }
 
-export type AgentImportCalls = OpenBotDesktopApi["agentImport"] & {
+export type AgentImportCalls = AIKINGBOTDesktopApi["agentImport"] & {
   /** Opens the ready export agent's Grok Bot page. */
   openExportAgent(): void;
 };
@@ -29,13 +29,13 @@ export interface ServerImportOptions {
   onOpenAgent: (agentId: string) => void;
   /** Closes the settings the panel is in. */
   onClose: () => void;
-  /** The calls of a client with no `window.openbot`, such as the web client. */
+  /** The calls of a client with no `window.aikingbot`, such as the web client. */
   calls?: AgentImportCalls;
 }
 
 const desktopCalls = (): AgentImportCalls => ({
-  ...window.openbot.agentImport,
-  openExportAgent: () => void window.openbot.openExternal("grok-bot-export"),
+  ...window.aikingbot.agentImport,
+  openExportAgent: () => void window.aikingbot.openExternal("grok-bot-export"),
 });
 
 interface ImportState {

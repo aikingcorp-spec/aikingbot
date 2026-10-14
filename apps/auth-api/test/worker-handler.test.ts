@@ -9,13 +9,13 @@ describe("worker handler", () => {
     const fetchHandler = () => new Response("ok");
     const handler = createWorkerHandler(fetchHandler);
 
-    const response = await handler.fetch(new Request("https://openbot.run/health/live"), fakeBindings());
+    const response = await handler.fetch(new Request("https://aikingbot.aikingx.com/health/live"), fakeBindings());
 
     expect(await response.text()).toBe("ok");
   });
 
   it("serves locally published sites from the Auth API R2 binding", async () => {
-    const hostname = "example-project-page-long-name-23456789ab.openbot.site";
+    const hostname = "example-project-page-long-name-23456789ab.aikingbot-sites.aikingx.com";
     const route = {
       version: 1,
       status: "active",
@@ -36,7 +36,7 @@ describe("worker handler", () => {
     });
     const bindings = {
       ...fakeBindings(),
-      SITE_LOCAL_ORIGIN: "http://openbot.localhost:3100",
+      SITE_LOCAL_ORIGIN: "http://aikingbot.localhost:3100",
       SITES: fakeSiteBucket({
         [`routes/${hostname}.json`]: JSON.stringify(route),
         "sites/site-1/deployments/deployment-1/index.html": "<h1>Local site</h1>",
@@ -44,7 +44,7 @@ describe("worker handler", () => {
     };
 
     const response = await handler.fetch(
-      new Request("http://example-project-page-long-name-23456789ab.openbot.localhost:3100/"),
+      new Request("http://example-project-page-long-name-23456789ab.aikingbot.localhost:3100/"),
       bindings,
     );
 
@@ -66,7 +66,7 @@ describe("worker handler", () => {
     const handler = createWorkerHandler(fetchHandler);
 
     const responsePromise = handler.fetch(
-      new Request("https://openbot.run/v1/auth/email/start", { method: "POST" }),
+      new Request("https://aikingbot.aikingx.com/v1/auth/email/start", { method: "POST" }),
       fakeBindings(),
       { waitUntil },
     );
@@ -86,7 +86,7 @@ describe("worker handler", () => {
     const handler = createWorkerHandler(fetchHandler);
     const denied: RateLimit = { limit: async () => ({ success: false }) };
 
-    const response = await handler.fetch(new Request("https://openbot.run/v1/skills/"), {
+    const response = await handler.fetch(new Request("https://aikingbot.aikingx.com/v1/skills/"), {
       MARKETPLACE_INGRESS_RATE_LIMITER: denied,
     });
 

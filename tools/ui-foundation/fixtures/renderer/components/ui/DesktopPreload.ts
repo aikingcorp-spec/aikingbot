@@ -1,6 +1,6 @@
-export const direct = window.openbot; // flag
-export const indexed = window["openbot"]; // flag
-export const optionalIndexed = window?.["openbot"]; // flag
-export const globalDirect = globalThis.openbot; // flag
-export const globalOptional = globalThis?.openbot; // flag
-export const globalOptionalIndexed = globalThis?.["openbot"]; // flag
+export const direct = window.aikingbot; // flag
+export const indexed = window["aikingbot"]; // flag
+export const optionalIndexed = window?.["aikingbot"]; // flag
+export const globalDirect = globalThis.aikingbot; // flag
+export const globalOptional = globalThis?.aikingbot; // flag
+export const globalOptionalIndexed = globalThis?.["aikingbot"]; // flag

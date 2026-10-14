@@ -1,12 +1,12 @@
 import type {
   AgentSessionSettings,
+  AIKINGBOTDesktopApi,
   AttachmentSummary,
   FilePreview,
-  OpenBotDesktopApi,
   ResetAgentSessionSettingInput,
   SetAgentSessionSettingInput,
-} from "@openbot/contracts/ipc";
-import type { AttachmentMediaSource } from "@openbot/ui/features/conversation/AttachmentCards";
+} from "@aikingbot/contracts/ipc";
+import type { AttachmentMediaSource } from "@aikingbot/ui/features/conversation/AttachmentCards";
 import type { AgentSkillCalls } from "../../skills-port";
 import type { AgentTemplatePublishCalls } from "../agent-templates/agent-templates-port";
 import type { SharedTableCalls } from "./conversation-port";
@@ -15,7 +15,7 @@ import type { EventRoutinesApi } from "./routine-webhooks-api";
 
 export interface ConversationRuntime {
   agent: Pick<
-    OpenBotDesktopApi["agent"],
+    AIKINGBOTDesktopApi["agent"],
     | "discardDraftAttachment"
     | "downloadAttachments"
     | "editQueuedMessage"
@@ -32,9 +32,9 @@ export interface ConversationRuntime {
     | "setMessageReaction"
   > &
     // A joined server's sign-in link that the host relays. Absent, a link opens with `openUrl`.
-    Partial<Pick<OpenBotDesktopApi["agent"], "openMessageLink" | "pasteMessageLink" | "cancelMessageLink">>;
+    Partial<Pick<AIKINGBOTDesktopApi["agent"], "openMessageLink" | "pasteMessageLink" | "cancelMessageLink">>;
   browser: Pick<
-    OpenBotDesktopApi["browser"],
+    AIKINGBOTDesktopApi["browser"],
     | "capturePreview"
     | "closePictureInPicture"
     | "navigate"
@@ -45,7 +45,7 @@ export interface ConversationRuntime {
     | "setVisible"
   >;
   voice: Pick<
-    OpenBotDesktopApi["voice"],
+    AIKINGBOTDesktopApi["voice"],
     | "getSettings"
     | "onModelStatus"
     | "prepareModel"
@@ -56,7 +56,7 @@ export interface ConversationRuntime {
     | "cancelStream"
     | "onStreamTranscript"
   >;
-  openUrl: OpenBotDesktopApi["openUrl"];
+  openUrl: AIKINGBOTDesktopApi["openUrl"];
   previewAttachment?: (attachment: AttachmentSummary) => Promise<FilePreview>;
   /** Loads attachment images and media for a client that gets no `previewUrl`. */
   attachmentMedia?: AttachmentMediaSource;
@@ -87,5 +87,5 @@ export interface ConversationRuntime {
 }
 
 export function conversationRuntime(props: ConversationProps): ConversationRuntime {
-  return props.runtime ?? window.openbot;
+  return props.runtime ?? window.aikingbot;
 }

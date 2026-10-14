@@ -1,12 +1,12 @@
-import type { VoiceModelStatus } from "@openbot/contracts/ipc";
+import type { VoiceModelStatus } from "@aikingbot/contracts/ipc";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { expect, it, vi } from "vitest";
 import { App } from "./App";
-import { emitAgentEvent, installOpenbotStub, installVoiceRecordingMocks, testServer } from "./app-test-harness";
+import { emitAgentEvent, installAIKINGBOTStub, installVoiceRecordingMocks, testServer } from "./app-test-harness";
 
-describe("OpenBot connected desktop shell", () => {
+describe("AIKINGBOT connected desktop shell", () => {
   beforeEach(() => {
-    installOpenbotStub();
+    installAIKINGBOTStub();
   });
 
   it("explains blocked microphone access, then records and offers the send arrow", async () => {
@@ -19,7 +19,9 @@ describe("OpenBot connected desktop shell", () => {
       expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith({ audio: true, video: false }),
     );
     expect(
-      await screen.findByText("Microphone access is blocked. Allow OpenBot to use the microphone in system settings."),
+      await screen.findByText(
+        "Microphone access is blocked. Allow AIKINGBOT to use the microphone in system settings.",
+      ),
     ).toBeInTheDocument();
 
     installVoiceRecordingMocks();
@@ -47,13 +49,13 @@ describe("OpenBot connected desktop shell", () => {
   it("downloads the voice model before it requests microphone access", async () => {
     let resolvePreparation: ((status: VoiceModelStatus) => void) | undefined;
     let reportModelStatus: ((status: VoiceModelStatus) => void) | undefined;
-    vi.mocked(window.openbot.voice.prepareModel).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.prepareModel).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolvePreparation = resolve;
         }),
     );
-    vi.mocked(window.openbot.voice.onModelStatus).mockImplementationOnce((listener) => {
+    vi.mocked(window.aikingbot.voice.onModelStatus).mockImplementationOnce((listener) => {
       reportModelStatus = listener;
       return () => undefined;
     });
@@ -74,12 +76,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolvePreparation: ((status: VoiceModelStatus) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.voice.prepareModel).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.prepareModel).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolvePreparation = resolve;
@@ -88,7 +90,7 @@ describe("OpenBot connected desktop shell", () => {
     render(() => <App />);
 
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
-    await waitFor(() => expect(window.openbot.voice.prepareModel).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.prepareModel).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Studio Mac server" })).toHaveAttribute("aria-pressed", "true"),
@@ -110,12 +112,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolvePreparation: ((status: VoiceModelStatus) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.voice.prepareModel).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.prepareModel).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolvePreparation = resolve;
@@ -124,7 +126,7 @@ describe("OpenBot connected desktop shell", () => {
     render(() => <App />);
 
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
-    await waitFor(() => expect(window.openbot.voice.prepareModel).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.prepareModel).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Studio Mac server" })).toHaveAttribute("aria-pressed", "true"),
@@ -146,12 +148,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolveTranscription: ((result: { text: string }) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.voice.transcribe).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.transcribe).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveTranscription = resolve;
@@ -163,7 +165,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
     await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: "Local server" }));
 
     const composer = await screen.findByRole("textbox", { name: "Message Chief" });
@@ -176,7 +178,7 @@ describe("OpenBot connected desktop shell", () => {
 
   it("submits the accepted voice snapshot and preserves later draft changes", async () => {
     let resolveTranscription: ((result: { text: string }) => void) | undefined;
-    vi.mocked(window.openbot.voice.transcribe).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.transcribe).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveTranscription = resolve;
@@ -191,17 +193,17 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(screen.getByRole("button", { name: "Create prompt with voice" }));
     await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(screen.getByRole("button", { name: "Send voice message" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledOnce());
 
     expect(composer).toHaveAttribute("aria-disabled", "true");
     await fireEvent.keyDown(composer, { key: "Enter" });
-    expect(window.openbot.agent.sendMessage).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.sendMessage).not.toHaveBeenCalled();
     composer.textContent = "Later draft";
     await fireEvent.input(composer);
 
     resolveTranscription?.({ text: "Voice transcript" });
     await waitFor(() =>
-      expect(window.openbot.agent.sendMessage).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.sendMessage).toHaveBeenCalledWith(
         {
           agentId: "chief",
           text: "Existing draft Voice transcript",
@@ -211,14 +213,14 @@ describe("OpenBot connected desktop shell", () => {
         "local",
       ),
     );
-    expect(window.openbot.agent.sendMessage).toHaveBeenCalledOnce();
+    expect(window.aikingbot.agent.sendMessage).toHaveBeenCalledOnce();
     await waitFor(() => expect(composer).toHaveTextContent("Later draft"));
   });
 
   it("keeps a deferred transcript and its failure with the chat that started them", async () => {
     let resolveTranscription: ((result: { text: string }) => void) | undefined;
     let rejectTranscription: ((error: Error) => void) | undefined;
-    vi.mocked(window.openbot.voice.transcribe)
+    vi.mocked(window.aikingbot.voice.transcribe)
       .mockImplementationOnce(
         () =>
           new Promise((resolve) => {
@@ -237,12 +239,12 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
     const recording = await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(within(recording).getByRole("button", { name: "Stop voice recording" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: /Sales Outbound/ }));
 
     resolveTranscription?.({ text: "Draft for Chief" });
     await screen.findByRole("button", { name: "Create prompt with voice" });
-    expect(window.openbot.agent.sendMessage).not.toHaveBeenCalled();
+    expect(window.aikingbot.agent.sendMessage).not.toHaveBeenCalled();
     await fireEvent.click(screen.getByRole("button", { name: /Chief/ }));
     await waitFor(() =>
       expect(screen.getByRole("textbox", { name: "Message Chief" })).toHaveTextContent("Draft for Chief"),
@@ -251,7 +253,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(screen.getByRole("button", { name: "Create prompt with voice" }));
     await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(screen.getByRole("button", { name: "Send voice message" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledTimes(2));
     await fireEvent.click(screen.getByRole("button", { name: /Sales Outbound/ }));
 
     rejectTranscription?.(new Error("Transcription failed"));
@@ -267,12 +269,12 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolveTranscription: ((result: { text: string }) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.voice.transcribe).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.transcribe).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveTranscription = resolve;
@@ -284,7 +286,7 @@ describe("OpenBot connected desktop shell", () => {
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
     await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(screen.getByRole("button", { name: "Send voice message" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledOnce());
     await fireEvent.click(screen.getByRole("button", { name: "Studio Mac server" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Studio Mac server" })).toHaveAttribute("aria-pressed", "true"),
@@ -292,7 +294,7 @@ describe("OpenBot connected desktop shell", () => {
 
     resolveTranscription?.({ text: "Message for local Chief" });
     await waitFor(() =>
-      expect(window.openbot.agent.sendMessage).toHaveBeenCalledWith(
+      expect(window.aikingbot.agent.sendMessage).toHaveBeenCalledWith(
         {
           agentId: "chief",
           text: "Message for local Chief",
@@ -308,25 +310,25 @@ describe("OpenBot connected desktop shell", () => {
     const local = testServer("local", true);
     const remote = testServer("remote-1", false);
     let resolveTranscription: ((result: { text: string }) => void) | undefined;
-    vi.mocked(window.openbot.servers.list).mockResolvedValueOnce([local, remote]);
-    vi.mocked(window.openbot.servers.select).mockImplementation(async (serverId) => [
+    vi.mocked(window.aikingbot.servers.list).mockResolvedValueOnce([local, remote]);
+    vi.mocked(window.aikingbot.servers.select).mockImplementation(async (serverId) => [
       { ...local, active: serverId === "local" },
       { ...remote, active: serverId === "remote-1" },
     ]);
-    vi.mocked(window.openbot.voice.transcribe).mockImplementationOnce(
+    vi.mocked(window.aikingbot.voice.transcribe).mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveTranscription = resolve;
         }),
     );
-    vi.mocked(window.openbot.agent.sendMessage).mockRejectedValueOnce(new Error("Local send failed"));
+    vi.mocked(window.aikingbot.agent.sendMessage).mockRejectedValueOnce(new Error("Local send failed"));
     installVoiceRecordingMocks();
     render(() => <App />);
 
     await fireEvent.click(await screen.findByRole("button", { name: "Create prompt with voice" }));
     await screen.findByRole("group", { name: "Voice recording" });
     await fireEvent.click(screen.getByRole("button", { name: "Send voice message" }));
-    await waitFor(() => expect(window.openbot.voice.transcribe).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.voice.transcribe).toHaveBeenCalledOnce());
     const composer = screen.getByRole("textbox", { name: "Message Chief" });
     composer.textContent = "Later local draft";
     await fireEvent.input(composer);
@@ -336,7 +338,7 @@ describe("OpenBot connected desktop shell", () => {
     );
 
     resolveTranscription?.({ text: "Message for local Chief" });
-    await waitFor(() => expect(window.openbot.agent.sendMessage).toHaveBeenCalledOnce());
+    await waitFor(() => expect(window.aikingbot.agent.sendMessage).toHaveBeenCalledOnce());
     expect(screen.queryByText("Local send failed")).not.toBeInTheDocument();
     await fireEvent.click(screen.getByRole("button", { name: "Local server" }));
     // The failed message waits in the local chat with Retry; the later draft stays as it was typed.
@@ -348,8 +350,8 @@ describe("OpenBot connected desktop shell", () => {
   // The Linux package carries no voice runtime, so the composer must not offer a control that
   // always fails. Everything else about the window, the server rail included, stays the same.
   it("offers no microphone on Linux and still draws the server rail", async () => {
-    vi.mocked(window.openbot.getAppInfo).mockResolvedValue({
-      name: "OpenBot",
+    vi.mocked(window.aikingbot.getAppInfo).mockResolvedValue({
+      name: "AIKINGBOT",
       version: "0.1.0",
       platform: "linux",
       variant: "production",

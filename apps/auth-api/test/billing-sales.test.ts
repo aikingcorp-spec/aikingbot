@@ -129,7 +129,7 @@ describe("billing sales", () => {
         sales.webhook(
           event("checkout.session.expired", "evt_deleted_expired", 1_700_000_030, {
             id: "cs_deleted",
-            metadata: { openbot_user_id: "deleted-user" },
+            metadata: { aikingbot_user_id: "deleted-user" },
           }),
           null,
         ),
@@ -143,7 +143,7 @@ describe("billing sales", () => {
             subscription: "sub_deleted",
             amount_paid: 1200,
             currency: "eur",
-            metadata: { openbot_user_id: "deleted-user" },
+            metadata: { aikingbot_user_id: "deleted-user" },
           }),
           { userId: "deleted-user", plan: "standard", interval: "month", currency: "eur" },
         ),

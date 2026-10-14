@@ -2,7 +2,7 @@ import {
   LIVE_ACTIVITY_SEALED_LIMIT,
   LIVE_ACTIVITY_TOKEN_PATTERN,
   type LiveActivityRelayPush,
-} from "@openbot/contracts/live-activity-relay";
+} from "@aikingbot/contracts/live-activity-relay";
 import {
   NOTIFICATION_SEALED_LIMIT,
   NOTIFICATION_SOUND_FILES,
@@ -10,8 +10,8 @@ import {
   NOTIFICATION_TOKEN_PATTERN,
   type NotificationRelayPush,
   type NotificationSound,
-} from "@openbot/contracts/notification-relay";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@aikingbot/contracts/notification-relay";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import { importPKCS8, SignJWT } from "jose";
 
@@ -45,7 +45,7 @@ export type ApnsRelayResult = "sent" | "gone" | "rejected" | "unavailable";
 /** The Live Activity type of the app. It must equal the name the app gives `LiveActivityFactory`. */
 const ACTIVITY_NAME = "AgentActivity";
 /** The alert title until the app opens the seal. A brand name, so it is the same in every language. */
-const NOTIFICATION_TITLE = "OpenBot";
+const NOTIFICATION_TITLE = "AIKINGBOT";
 /**
  * The text of a Live Activity alert. iOS shows it on Apple Watch only: the iPhone shows the activity.
  * It is the app name, so Apple sees no agent and no event.

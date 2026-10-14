@@ -1,18 +1,18 @@
-# OpenBot Slack app
+# AIKINGBOT Slack app
 
-Slack CLI projects for the one OpenBot Slack app. A workspace installs it through
-`POST /v2/slack/authorize`, and the workspace is linked to the OpenBot server that connected it.
-People mention @OpenBot or send it a direct message, and the Slack Orchestrator agent on that server
+Slack CLI projects for the one AIKINGBOT Slack app. A workspace installs it through
+`POST /v2/slack/authorize`, and the workspace is linked to the AIKINGBOT server that connected it.
+People mention @AIKINGBOT or send it a direct message, and the Slack Orchestrator agent on that server
 asks the right agent and answers. No code runs here: each directory holds only the manifest.
 
 | Directory | App | App ID | Home team | Redirect URL |
 | --- | --- | --- | --- | --- |
-| `production` | `OpenBot` | `A0C5H5C95NH` | `openbotdev` (`T0C5B1XG542`) | `https://api.openbot.run/v2/slack/callback` |
-| `development` | `OpenBot (dev)` | `A0C5G5XGS83` | `openbotdev` (`T0C5B1XG542`) | Test Worker (`bun run deploy:test`) |
+| `production` | `AIKINGBOT` | `A0C5H5C95NH` | `aikingbotdev` (`T0C5B1XG542`) | `https://api.aikingbot.aikingx.com/v2/slack/callback` |
+| `development` | `AIKINGBOT (dev)` | `A0C5G5XGS83` | `aikingbotdev` (`T0C5B1XG542`) | Test Worker (`bun run deploy:test`) |
 
 `.slack/apps.json` links each directory to its app. Run the Slack CLI from inside a directory.
 
-Both apps send events and button presses to `https://signal.openbot.run/v1/slack/events`. For local
+Both apps send events and button presses to `https://signal.aikingbot.aikingx.com/v1/slack/events`. For local
 work, `bun run dev:slack` prints a tunnel address: set it as the development app's request URL while
 you test.
 
@@ -42,4 +42,4 @@ The manifest cannot set these. Use `slack app settings --app <id>`:
 - **Manage Distribution**: turn on distribution. When it is on, any workspace can install the app.
   See `LAUNCH.md` for when to do this.
 
-Do not install the app in its home team from the settings page. Workspaces install it through OpenBot.
+Do not install the app in its home team from the settings page. Workspaces install it through AIKINGBOT.

@@ -10,14 +10,14 @@ export const CLINE_PROVIDER: ProviderPage = {
   provider: "cline",
   name: "Cline",
   answer:
-    "OpenBot runs the Cline agent without an editor, on macOS, Windows or Linux, with your Cline account or a Cline API key. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs the Cline agent without an editor, on macOS, Windows or Linux, with your Cline account or a Cline API key. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose Cline, and OpenBot downloads and pins its own copy of the Cline CLI, or uses the one you installed, version 3.0.68 or later. Then sign in with Cline in the browser, or set `CLINE_API_KEY`.",
+    "Choose Cline, and AIKINGBOT downloads and pins its own copy of the Cline CLI, or uses the one you installed, version 3.0.68 or later. Then sign in with Cline in the browser, or set `CLINE_API_KEY`.",
   adds: [
     {
       icon: "laptop",
       title: "A window for the Cline CLI",
-      text: "The Cline CLI runs in the terminal. OpenBot gives it a desktop app with threads and files, and no editor is necessary.",
+      text: "The Cline CLI runs in the terminal. AIKINGBOT gives it a desktop app with threads and files, and no editor is necessary.",
     },
   ],
   vendor: "Cline",
@@ -43,19 +43,19 @@ export const CLINE_PROVIDER: ProviderPage = {
     {
       question: "Is there a Cline desktop app?",
       answer:
-        "Yes. Cline for Desktop is in beta. Its download page lists macOS, Windows and Linux, but the Cline documentation names only macOS and Windows. OpenBot is a different desktop app: it runs the Cline CLI as one agent of a team.",
+        "Yes. Cline for Desktop is in beta. Its download page lists macOS, Windows and Linux, but the Cline documentation names only macOS and Windows. AIKINGBOT is a different desktop app: it runs the Cline CLI as one agent of a team.",
     },
     {
-      question: "What does Cline cost in OpenBot?",
+      question: "What does Cline cost in AIKINGBOT?",
       answer:
-        "Cline is open source under the Apache 2.0 license, and has no subscription: you pay for AI use. ClinePass, at $9.99 a month, is optional. OpenBot uses your Cline account or a Cline API key.",
+        "Cline is open source under the Apache 2.0 license, and has no subscription: you pay for AI use. ClinePass, at $9.99 a month, is optional. AIKINGBOT uses your Cline account or a Cline API key.",
     },
     {
-      question: "Do I need VS Code to use Cline in OpenBot?",
-      answer: "No. OpenBot runs the Cline CLI, which needs no editor.",
+      question: "Do I need VS Code to use Cline in AIKINGBOT?",
+      answer: "No. AIKINGBOT runs the Cline CLI, which needs no editor.",
     },
     {
-      question: "Can Cline and Claude Code work together in OpenBot?",
+      question: "Can Cline and Claude Code work together in AIKINGBOT?",
       answer:
         "Yes. Each agent has its own provider. A Cline agent and a Claude Code agent can work in the same channel and give tasks to each other.",
     },

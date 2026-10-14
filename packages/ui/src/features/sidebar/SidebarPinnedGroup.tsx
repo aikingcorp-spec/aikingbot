@@ -8,7 +8,7 @@
  * kind they have.
  */
 
-import { Badge, buttonVariants, ContextMenu } from "@openbot/ui";
+import { Badge, buttonVariants, ContextMenu } from "@aikingbot/ui";
 import { For, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { ChannelAvatar } from "../channels/ChannelAvatar";

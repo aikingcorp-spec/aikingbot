@@ -1,7 +1,7 @@
 // The 1Password service account token of this computer, encrypted at rest by the operating system.
 
 import { readFile, rm } from "node:fs/promises";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result, Semaphore } from "effect";
 import { z } from "zod";
 import { writeJsonFileAtomically } from "../backend/atomic-json-file";
@@ -9,7 +9,7 @@ import { OnePasswordOperationError, onePasswordCall, onePasswordDecode } from ".
 import type { SecretCipher } from "./provider-credential-store";
 
 const onePasswordConnectorRecordSchema = z.object({
-  /** The service account token. It reads only the vaults that the user shared with OpenBot. */
+  /** The service account token. It reads only the vaults that the user shared with AIKINGBOT. */
   token: z.string().min(1),
   /** The account that the CLI created the service account in, or null for a pasted token. */
   accountId: z.string().min(1).nullable(),

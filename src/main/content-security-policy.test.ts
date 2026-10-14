@@ -6,7 +6,7 @@ describe("buildContentSecurityPolicy", () => {
     const policy = buildContentSecurityPolicy(true);
 
     expect(policy).toContain(
-      "connect-src 'self' openbot-attachment: openbot-remote-attachment: https://analytics.openbot.run ws://127.0.0.1:* wss://*.openbot.run",
+      "connect-src 'self' aikingbot-attachment: aikingbot-remote-attachment: https://analytics.aikingbot.aikingx.com ws://127.0.0.1:* wss://*.aikingbot.aikingx.com",
     );
     expect(policy.split("; ").find((directive) => directive.startsWith("connect-src "))).not.toContain("localhost");
   });
@@ -14,7 +14,7 @@ describe("buildContentSecurityPolicy", () => {
   it.each([true, false])("allows loopback viewer frames when packaged=%s", (packaged) => {
     const directives = buildContentSecurityPolicy(packaged).split("; ");
     expect(directives.find((directive) => directive.startsWith("frame-src "))).toBe(
-      "frame-src 'self' openbot-attachment: openbot-remote-attachment: openbot-visual: openbot-remote-visual: https://*.openbot.run http://127.0.0.1:* http://localhost:*",
+      "frame-src 'self' aikingbot-attachment: aikingbot-remote-attachment: aikingbot-visual: aikingbot-remote-visual: https://*.aikingbot.aikingx.com http://127.0.0.1:* http://localhost:*",
     );
     expect(directives.find((directive) => directive.startsWith("script-src "))).toBe("script-src 'self'");
   });
@@ -22,8 +22,8 @@ describe("buildContentSecurityPolicy", () => {
   it("lets the renderer play an attachment recording, but only from the attachment schemes", () => {
     const policy = buildContentSecurityPolicy(true);
 
-    expect(policy).toContain("media-src 'self' blob: openbot-attachment: openbot-remote-attachment:");
-    expect(policy).not.toContain("media-src 'self' blob: openbot-attachment: openbot-remote-attachment: https:");
+    expect(policy).toContain("media-src 'self' blob: aikingbot-attachment: aikingbot-remote-attachment:");
+    expect(policy).not.toContain("media-src 'self' blob: aikingbot-attachment: aikingbot-remote-attachment: https:");
   });
 
   it("keeps local development sources", () => {
@@ -55,7 +55,7 @@ describe("buildContentSecurityPolicy", () => {
   });
 
   it.each([
-    [undefined, "wss://signal.example.com/v1/signal", "OPENBOT_REMOTE_SIGNAL_URL needs OPENBOT_AUTH_API_URL."],
+    [undefined, "wss://signal.example.com/v1/signal", "AIKINGBOT_REMOTE_SIGNAL_URL needs AIKINGBOT_AUTH_API_URL."],
     ["https://api.example.com", "ws://signal.example.com/v1/signal", "must be a wss: URL"],
     ["https://api.example.com", "https://signal.example.com/v1/signal", "must be a wss: URL"],
     ["https://api.example.com", "wss://user:pass@signal.example.com/v1/signal", "must be a wss: URL"],

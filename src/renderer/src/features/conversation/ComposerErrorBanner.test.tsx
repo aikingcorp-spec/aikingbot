@@ -1,4 +1,4 @@
-import { ComposerErrorBanner } from "@openbot/ui/features/conversation/ComposerErrorBanner";
+import { ComposerErrorBanner } from "@aikingbot/ui/features/conversation/ComposerErrorBanner";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";

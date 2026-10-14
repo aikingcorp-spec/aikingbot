@@ -1,4 +1,4 @@
-import type { BrowserViewCursor } from "@openbot/contracts/team-protocol/browser-view-v1";
+import type { BrowserViewCursor } from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import {
   Ban,
   CircleHelp,

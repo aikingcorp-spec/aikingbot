@@ -1,0 +1,32 @@
+# AIKINGBOT on a hosted server. provision.sh replaces @SERVICE_USER@ and enables this unit. boat
+# stop and resume work like a reboot, so the unit starts again on each wake. boat starts the desktop
+# about 8 seconds before the enabled units, and AIKINGBOT starts with it.
+[Unit]
+Description=AIKINGBOT hosted server
+Wants=network-online.target aikingbot-update-apply.service
+After=network-online.target display-manager.service
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+RuntimeDirectory=aikingbot
+RuntimeDirectoryMode=0700
+Environment=XDG_RUNTIME_DIR=/run/aikingbot
+# As root (+), and AIKINGBOT starts when it fails (-). It installs the update request units when an
+# older release moved this one into place; aikingbot-hosted-update says why.
+ExecStartPre=-+/opt/AIKINGBOT/hosted/aikingbot-hosted-update trigger
+ExecStart=/opt/AIKINGBOT/hosted/aikingbot-hosted-server
+Restart=always
+RestartSec=10
+TimeoutStopSec=60
+# Memory guards. The machine is small, and this unit holds AIKINGBOT, its browser tabs and every agent
+# process. The OOM killer of the unit acts before the kernel's own, so the desktop, sshd and the boat
+# agent keep running. systemd sets -500 as root, before it changes the user; main then gives each
+# process it starts 500, so the OOM killer picks an agent process before main. One killed agent does
+# not stop the unit: the default policy "stop" would stop AIKINGBOT too.
+MemoryMax=90%
+OOMScoreAdjust=-500
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target lightdm.service

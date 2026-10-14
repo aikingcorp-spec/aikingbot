@@ -16,7 +16,7 @@ export const messages = {
   "customProvider.error.providerIdPattern":
     "Используйте строчные буквы, цифры, дефисы или подчёркивания; начинаться ID должен с буквы или цифры.",
   "customProvider.error.providerIdLength": "ID провайдера должен быть короче {max} символов.",
-  "customProvider.error.providerIdBuiltIn": "В OpenBot уже есть провайдер «{id}». Выберите другой ID.",
+  "customProvider.error.providerIdBuiltIn": "В AIKINGBOT уже есть провайдер «{id}». Выберите другой ID.",
   "customProvider.error.providerIdSaved": "Эндпоинт «{id}» уже сохранён. Сначала удалите его или выберите другой ID.",
   "customProvider.error.displayNameRequired": "Введите отображаемое имя.",
   "customProvider.error.displayNameLength": "Отображаемое имя должно быть короче {max} символов.",
@@ -38,16 +38,16 @@ export const messages = {
   "customProvider.error.baseUrlProtocol": "Используйте URL с http:// или https://.",
   "customProvider.error.baseUrlCredential": "Передавайте учётные данные в заголовке, а не в URL.",
 
-  "customProvider.saved.restarted": "Сохранено. OpenBot загружает модели.",
+  "customProvider.saved.restarted": "Сохранено. AIKINGBOT загружает модели.",
   "customProvider.saved.skippedBusy":
     "Сохранено. OpenCode прочитает список, когда завершится текущая задача. Затем нажмите «Подключить».",
   "customProvider.saved.notRunning": "Сохранено. OpenCode прочитает список при следующем запуске.",
-  "customProvider.removed.restarted": "Удалено. OpenBot загружает модели.",
+  "customProvider.removed.restarted": "Удалено. AIKINGBOT загружает модели.",
   "customProvider.removed.skippedBusy":
     "Удалено. OpenCode прочитает список, когда завершится текущая задача. Затем нажмите «Подключить».",
   "customProvider.removed.notRunning": "Удалено. OpenCode прочитает список при следующем запуске.",
-  "customProvider.saveFailed": "OpenBot не удалось сохранить этот эндпоинт.",
-  "customProvider.removeFailed": "OpenBot не удалось удалить «{name}».",
+  "customProvider.saveFailed": "AIKINGBOT не удалось сохранить этот эндпоинт.",
+  "customProvider.removeFailed": "AIKINGBOT не удалось удалить «{name}».",
   "customProvider.saveUnavailable": "Эта сборка не может сохранять эндпоинты.",
   "customProvider.removeUnavailable": "Эта сборка не может удалять эндпоинты.",
 
@@ -114,7 +114,7 @@ export const messages = {
   "customProvider.detected.title": "Найдено на этом компьютере",
   "customProvider.detected.scanning": "Ищем локальные модели и агентов.",
   "customProvider.detected.scanAgain": "Сканировать снова",
-  "customProvider.detected.empty": "OpenBot не нашёл ни локального сервера моделей, ни агента ACP.",
+  "customProvider.detected.empty": "AIKINGBOT не нашёл ни локального сервера моделей, ни агента ACP.",
   "customProvider.detected.add": "Добавить",
   "customProvider.detected.addLabel": "Добавить: {name}",
   "customProvider.detected.added": "Добавлено",
@@ -133,10 +133,10 @@ export const messages = {
 
   "customProvider.detection.title": "Локальное обнаружение",
   "customProvider.detection.saveFailed": "Не удалось сохранить настройки обнаружения.",
-  "customProvider.detection.description": "Где OpenBot ищет локальные серверы моделей и агентов ACP.",
+  "customProvider.detection.description": "Где AIKINGBOT ищет локальные серверы моделей и агентов ACP.",
   "customProvider.detection.enabled": "Искать локальные модели и агентов",
   "customProvider.detection.enabledDescription":
-    "OpenBot проверяет адреса Ollama и LM Studio по умолчанию и ищет известных агентов ACP в вашем PATH.",
+    "AIKINGBOT проверяет адреса Ollama и LM Studio по умолчанию и ищет известных агентов ACP в вашем PATH.",
   "customProvider.detection.addresses": "Другие адреса серверов моделей",
   "customProvider.detection.address.label": "Адрес {number}",
   "customProvider.detection.address.remove": "Удалить адрес {number}",
@@ -156,7 +156,7 @@ export const messages = {
   "customProvider.acp.agentId": "ID агента",
   "customProvider.acp.agentIdHint": "Строчные буквы, цифры или дефисы. Позже изменить его нельзя.",
   "customProvider.acp.command": "Команда",
-  "customProvider.acp.commandHint": "Программа для запуска. OpenBot ищет её в вашем PATH.",
+  "customProvider.acp.commandHint": "Программа для запуска. AIKINGBOT ищет её в вашем PATH.",
   "customProvider.acp.args": "Аргументы",
   "customProvider.acp.argsHint": "Разделяйте аргументы пробелами. Аргумент с пробелами возьмите в кавычки.",
   "customProvider.acp.env": "Переменные окружения",
@@ -166,7 +166,7 @@ export const messages = {
   "customProvider.acp.env.add": "Добавить переменную",
   "customProvider.acp.check": "Подключение",
   "customProvider.acp.checkRun": "Проверить агента",
-  "customProvider.acp.checkIdle": "OpenBot один раз запустит команду, чтобы убедиться, что она отвечает.",
+  "customProvider.acp.checkIdle": "AIKINGBOT один раз запустит команду, чтобы убедиться, что она отвечает.",
   "customProvider.acp.checking": "Запускаем {command}.",
   "customProvider.acp.checkOk": "{name} ответил",
   "customProvider.acp.checkOkVersion": "{name} {version} ответил",
@@ -174,7 +174,7 @@ export const messages = {
   "customProvider.acp.checkFailed": "Агент не ответил",
   "customProvider.acp.trustTitle": "Эта команда выполняется на вашем компьютере",
   "customProvider.acp.trustDescription":
-    "OpenBot запускает её от имени вашей учётной записи. Агент может читать и изменять файлы и выполнять команды. Добавляйте только того агента, которому доверяете.",
+    "AIKINGBOT запускает её от имени вашей учётной записи. Агент может читать и изменять файлы и выполнять команды. Добавляйте только того агента, которому доверяете.",
   "customProvider.acp.submit": "Добавить агента",
   "customProvider.acp.editTitle": "Изменить своего агента ACP",
   "customProvider.acp.submitEdit": "Сохранить агента",
@@ -190,7 +190,7 @@ export const messages = {
     "Используйте строчные буквы, цифры или дефисы; ID должен начинаться с буквы или цифры. Не более 40 символов.",
 
   "customProvider.agents.title": "Свои агенты",
-  "customProvider.agents.description": "Агенты ACP, которые OpenBot запускает на этом компьютере.",
+  "customProvider.agents.description": "Агенты ACP, которые AIKINGBOT запускает на этом компьютере.",
   "customProvider.agents.empty": "Своих агентов пока нет.",
   "customProvider.agents.add": "Добавить агента",
   "customProvider.agents.restart": "Перезапустить агентов",
@@ -207,11 +207,11 @@ export const messages = {
   "customProvider.agents.deleteLabel": "Удалить: {name}",
   "customProvider.agents.confirmDescription":
     "Сохранённые переменные будут удалены, а каждый агент, который его использует, перейдёт на модель по умолчанию.",
-  "customProvider.agents.saveFailed": "OpenBot не удалось сохранить этого агента.",
-  "customProvider.agents.saved.restarted": "Сохранено. OpenBot перезапустил своих агентов.",
+  "customProvider.agents.saveFailed": "AIKINGBOT не удалось сохранить этого агента.",
+  "customProvider.agents.saved.restarted": "Сохранено. AIKINGBOT перезапустил своих агентов.",
   "customProvider.agents.saved.skippedBusy": "Сохранено. Свои агенты перезапустятся, когда завершится текущая задача.",
   "customProvider.agents.saved.notRunning": "Сохранено. Свои агенты применят изменения при следующем запуске.",
-  "customProvider.agents.removed.restarted": "Удалено. OpenBot перезапустил своих агентов.",
+  "customProvider.agents.removed.restarted": "Удалено. AIKINGBOT перезапустил своих агентов.",
   "customProvider.agents.removed.skippedBusy": "Удалено. Свои агенты перезапустятся, когда завершится текущая задача.",
   "customProvider.agents.removed.notRunning": "Удалено. Свои агенты применят изменения при следующем запуске.",
 

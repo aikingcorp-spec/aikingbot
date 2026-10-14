@@ -4,8 +4,8 @@
 
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import type { Logger } from "@openbot/logging";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import type { Logger } from "@aikingbot/logging";
 import { type Browser, chromium, type Page } from "playwright-core";
 import { PROCESS_TABLE_PS_ARGS, parseProcessTable } from "./cpu-sampling";
 import { describeTarget, findMainPages } from "./page-url";
@@ -14,7 +14,7 @@ export const DEFAULT_DEV_AUTOMATION_PORT = 9_333;
 export const MIN_DEV_AUTOMATION_PORT = 1_024;
 export const MAX_DEV_AUTOMATION_PORT = 65_535;
 
-// Thrown when the port answers but the browser behind it is not OpenBot.
+// Thrown when the port answers but the browser behind it is not AIKINGBOT.
 // A class instead of a message prefix: the reconnect hint below must not
 // swallow this one, and matching on wording breaks the moment it is reworded.
 export class ForeignBrowserError extends Error {}
@@ -24,7 +24,7 @@ export interface ResolvedAutomationPort {
   explicit: boolean;
 }
 
-// An explicit `--port=` or `OPENBOT_DEV_REMOTE_DEBUGGING_PORT` names one
+// An explicit `--port=` or `AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT` names one
 // instance outright. A bare default is a guess: on a machine where several
 // worktrees run dev, 9333 belongs to whichever started first. The caller uses
 // `explicit` to keep such a guess read-only.
@@ -39,7 +39,7 @@ export function resolveAutomationPort(
   const port = Number(source);
   if (!Number.isInteger(port) || port < MIN_DEV_AUTOMATION_PORT || port > MAX_DEV_AUTOMATION_PORT) {
     throw new Error(
-      `OPENBOT_DEV_REMOTE_DEBUGGING_PORT must be an integer from ${MIN_DEV_AUTOMATION_PORT} to ${MAX_DEV_AUTOMATION_PORT}.`,
+      `AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT must be an integer from ${MIN_DEV_AUTOMATION_PORT} to ${MAX_DEV_AUTOMATION_PORT}.`,
     );
   }
   return { port, explicit: true };
@@ -74,7 +74,7 @@ export function assertMutationAllowed(gate: MutationGate): void {
       `${gate.command} changes the live dev app, and the instance was inferred${
         gate.target ? ` (${gate.target})` : ""
       }, not named. Run \`bun run dev:automation instances\` and re-run with ` +
-        "--instance=<id> or --port=<OPENBOT_DEV_REMOTE_DEBUGGING_PORT>.",
+        "--instance=<id> or --port=<AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT>.",
     );
   }
 }
@@ -188,7 +188,7 @@ export async function verifyBrowserOwnership(browser: BrowserOwnershipProbe, own
 // `BrowserHost.open` accepts any http(s) address, so a visited local
 // development server can present the same loopback origin and bare path. Only
 // the app window carries the preload bridge, which `contextBridge` exposes as
-// `window.openbot` and no visited page can fake, so the bridge is the identity
+// `window.aikingbot` and no visited page can fake, so the bridge is the identity
 // check a click or a keystroke is gated on.
 export interface RendererCandidate {
   url: () => string;
@@ -197,7 +197,7 @@ export interface RendererCandidate {
 
 // Evaluated inside the page, so it is a string rather than a closure: this
 // file is typechecked against Node's globals and knows nothing about `window`.
-const BRIDGE_PROBE = "typeof window.openbot";
+const BRIDGE_PROBE = "typeof window.aikingbot";
 
 export async function findRendererPages<T extends RendererCandidate>(
   pages: T[],
@@ -268,7 +268,7 @@ export async function readTargetId(page: Page): Promise<string> {
   const session = await page.context().newCDPSession(page);
   try {
     // Playwright types this reply against the CDP protocol, so the id needs no
-    // validation: it comes from the browser we already confirmed is OpenBot,
+    // validation: it comes from the browser we already confirmed is AIKINGBOT,
     // not from a file another account could write.
     const { targetInfo } = await session.send("Target.getTargetInfo");
     return targetInfo.targetId;
@@ -314,8 +314,8 @@ export async function matchPages<T extends { url: () => string }>(
 export interface OpenDevBrowserOptions {
   // The pid of the live registry record that owns the port, if any. An Electron
   // browser with an app window that has the preload bridge proves itself without
-  // further checks; a page in another Chromium can define `window.openbot`, but
-  // that browser does not report `Electron/`. The `OpenBot/` token cannot prove
+  // further checks; a page in another Chromium can define `window.aikingbot`, but
+  // that browser does not report `Electron/`. The `AIKINGBOT/` token cannot prove
   // it: the embedded browser removes both product tokens for site compatibility.
   // A browser without the Electron token must prove its process descends from
   // this pid, because liveness alone cannot tell a restarted instance from a
@@ -347,7 +347,7 @@ export async function openDevBrowser(
     if (ownerPid === null || !(await verifyBrowserOwnership(browser, ownerPid))) {
       await browser.close();
       throw new ForeignBrowserError(
-        `Port ${port} does not belong to OpenBot. Pass --port=<OPENBOT_DEV_REMOTE_DEBUGGING_PORT> of the instance you mean to drive.`,
+        `Port ${port} does not belong to AIKINGBOT. Pass --port=<AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT> of the instance you mean to drive.`,
       );
     }
     logger.info(`Port :${port} belongs to the recorded instance process.`);
@@ -383,7 +383,7 @@ export async function connectToDevApp(
       );
     }
     throw new Error(
-      `Connected over CDP but found no OpenBot main window on :${port}` +
+      `Connected over CDP but found no AIKINGBOT main window on :${port}` +
         (expectedRendererPort === null ? ". " : ` serving renderer :${expectedRendererPort}. `) +
         (expectedRendererPort === null
           ? "Open the app window, or aim at another target with --page=<target-id|url-substring> " +

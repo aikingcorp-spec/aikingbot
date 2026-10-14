@@ -1,7 +1,7 @@
 // The Discord route: how a Discord event finds the host that answers it, and how that host calls
 // Discord.
 //
-// The OpenBot Discord app is one bot for every guild that installs it. Only Signal holds its bot
+// The AIKINGBOT Discord app is one bot for every guild that installs it. Only Signal holds its bot
 // token: Signal keeps the bot's Gateway connection, and does each Discord API call for a host.
 // Signal passes an event of a guild to the `ingress` socket that holds a route ticket for that
 // guild, and accepts an API call only for a guild that is routed to the caller's socket.
@@ -10,7 +10,7 @@
 // token. It names only the guilds that the account service links to that host, and it expires: the
 // host asks for a new one each time its `ingress` socket connects.
 
-export const DISCORD_ROUTE_AUDIENCE = "openbot-discord-route";
+export const DISCORD_ROUTE_AUDIENCE = "aikingbot-discord-route";
 
 // The host calls Discord through this Signal path, with the `discord-session` token of its socket.
 export const DISCORD_API_PATH = "/v1/discord/api";

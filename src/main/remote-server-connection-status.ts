@@ -1,4 +1,4 @@
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
+import { TEAM_PROTOCOL_V7 } from "@aikingbot/contracts/team-protocol/v7";
 // What a failure means to the user, and what this build claims to support. Pure functions only --
 // nothing here reads or writes connection state, so the whole table can be checked with a value in
 // and a value out.
@@ -10,11 +10,11 @@ import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
 // They are siblings in this file now so that stays visible. Adding a third caller means adding a
 // classifier here, not another ladder somewhere else.
 
-import type { ServerCompatibility, ServerConnectionIssue, ServerSummary } from "@openbot/contracts/ipc";
-import { TEAM_PROTOCOL_V1, type TeamProtocolSupportV1 } from "@openbot/contracts/team-protocol/v1";
-import { TEAM_PROTOCOL_V3_CAPABILITIES } from "@openbot/contracts/team-protocol/v3";
-import { sourceText } from "@openbot/i18n/source";
-import { referenceFrom } from "@openbot/user-errors";
+import type { ServerCompatibility, ServerConnectionIssue, ServerSummary } from "@aikingbot/contracts/ipc";
+import { TEAM_PROTOCOL_V1, type TeamProtocolSupportV1 } from "@aikingbot/contracts/team-protocol/v1";
+import { TEAM_PROTOCOL_V3_CAPABILITIES } from "@aikingbot/contracts/team-protocol/v3";
+import { sourceText } from "@aikingbot/i18n/source";
+import { referenceFrom } from "@aikingbot/user-errors";
 import { RemoteProtocolError, RemoteRequestError } from "./remote-server-errors";
 
 // The protocol range this build speaks. Every compatibility record reports it as the local half.

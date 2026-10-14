@@ -1,12 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { normalizeEmailAddress } from "@aikingbot/contracts/validation";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
 
-const logger = createOpenBotLogger("backfill-openpanel-identities");
+const logger = createAIKINGBOTLogger("backfill-openpanel-identities");
 
-const DEFAULT_OPENPANEL_API_URL = "https://analytics.openbot.run/api";
+const DEFAULT_OPENPANEL_API_URL = "https://analytics.aikingbot.aikingx.com/api";
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY_MS = 250;
 const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
@@ -143,7 +143,7 @@ async function identifyProfile(
           "content-type": "application/json",
           "openpanel-client-id": clientId,
           "openpanel-client-secret": clientSecret,
-          "openpanel-sdk-name": "openbot-backfill",
+          "openpanel-sdk-name": "aikingbot-backfill",
         },
         body: JSON.stringify({ type: "identify", payload: identity }),
         redirect: "error",

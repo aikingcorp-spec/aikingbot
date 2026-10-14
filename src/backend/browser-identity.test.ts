@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { browserClientHints, browserRequestUserAgent, sessionBrowserUserAgent } from "./browser-identity";
 
-const rawAgent = "Mozilla/5.0 AppleWebKit/537.36 OpenBot/0.3.5 Chrome/152.0.7977.54 Electron/44.0.0 Safari/537.36";
+const rawAgent = "Mozilla/5.0 AppleWebKit/537.36 AIKINGBOT/0.3.5 Chrome/152.0.7977.54 Electron/44.0.0 Safari/537.36";
 const cleanAgent = "Mozilla/5.0 AppleWebKit/537.36 Chrome/152.0.7977.54 Safari/537.36";
 
 describe("sessionBrowserUserAgent", () => {

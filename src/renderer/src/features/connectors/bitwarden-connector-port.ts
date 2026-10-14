@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-export function bitwardenConnectorPort(): OpenBotDesktopApi["bitwardenConnector"] {
-  return window.openbot.bitwardenConnector;
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
+export function bitwardenConnectorPort(): AIKINGBOTDesktopApi["bitwardenConnector"] {
+  return window.aikingbot.bitwardenConnector;
 }

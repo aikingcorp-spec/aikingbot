@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { createServer, type Server as HttpServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
@@ -12,7 +13,6 @@ import {
   type RequestId,
   type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { isString } from "@openbot/contracts/runtime-values";
 import { Deferred, Effect, Exit } from "effect";
 import { runCauseEffect } from "./effect-boundary";
 import { type McpOperationError, mcpCall, mcpFailure, mcpResult, mcpSync } from "./mcp-effects";
@@ -95,9 +95,9 @@ export class LocalMcpBridge {
     call: BridgeRoute["call"],
   ): Effect.fn.Return<LocalMcpSession, McpOperationError> {
     const closes = this.#closes;
-    if (this.#closing) return yield* mcpFailure(new Error("The local OpenBot MCP bridge closed."));
+    if (this.#closing) return yield* mcpFailure(new Error("The local AIKINGBOT MCP bridge closed."));
     yield* this.#listen();
-    if (closes !== this.#closes) return yield* mcpFailure(new Error("The local OpenBot MCP bridge closed."));
+    if (closes !== this.#closes) return yield* mcpFailure(new Error("The local AIKINGBOT MCP bridge closed."));
     const tokens: string[] = [];
     const servers = namespaces.map((namespace) => {
       const token = randomBytes(32).toString("base64url");
@@ -187,7 +187,7 @@ export class LocalMcpBridge {
           ).pipe(Effect.uninterruptible);
           const address = server.address();
           if (!address || isString(address))
-            return yield* mcpFailure(new Error("Unable to bind the local OpenBot MCP bridge."));
+            return yield* mcpFailure(new Error("Unable to bind the local AIKINGBOT MCP bridge."));
           this.#server = server;
           this.#port = address.port;
           retained = true;

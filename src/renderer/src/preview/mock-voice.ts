@@ -1,13 +1,13 @@
 import {
+  type AIKINGBOTDesktopApi,
   DEFAULT_VOICE_SETTINGS,
   ELEVENLABS_VOICE_MODEL_ID,
-  type OpenBotDesktopApi,
   VOICE_MODEL_IDS,
   type VoiceModelId,
   type VoiceModelStatus,
   type VoiceSettings,
   type VoiceStreamTranscript,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { clone, type Listener, type MockRuntime } from "./mock-support";
 
 export interface MockVoiceOptions {
@@ -59,7 +59,7 @@ export function createMockVoice(options: MockVoiceOptions, { emit, schedule }: M
       schedule(() => advance(5), 200);
     });
 
-  const voice: OpenBotDesktopApi["voice"] = {
+  const voice: AIKINGBOTDesktopApi["voice"] = {
     getModelStatus: async () => status(settings.modelId),
     getModelStatuses: async () => VOICE_MODEL_IDS.map(status),
     prepareModel: () => download(settings.modelId),

@@ -4,15 +4,15 @@
 // method is matched, so a malformed id is a 400 and not a 404. That ordering is the released
 // behaviour and the status-contract test pins it.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AGENT_MEMORIES_CAPABILITY,
   AGENT_MEMORIES_PAGE_ROUTE,
   AGENT_MEMORIES_PAGE_SIZE,
   AGENT_MEMORY_INCLUSION_ROUTE,
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
-} from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/agent-memories-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { parseSetAgentMemoryInclusion } from "../ipc/agent-inputs";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

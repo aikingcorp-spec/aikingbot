@@ -1,12 +1,12 @@
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 
 export function YourWorkStaysOnYourComputer() {
   return (
     <>
       <p>
-        OpenBot keeps your workspaces, conversations, attachments, browser data and team data on the computer that runs
-        it. They go into a SQLite database in your own home directory. There is no copy on our side, because there is no
-        place on our side to put one.
+        AIKINGBOT keeps your workspaces, conversations, attachments, browser data and team data on the computer that
+        runs it. They go into a SQLite database in your own home directory. There is no copy on our side, because there
+        is no place on our side to put one.
       </p>
 
       <h2>What that rules out</h2>
@@ -26,9 +26,9 @@ export function YourWorkStaysOnYourComputer() {
         load from the internet. Plugins can still make requests.
       </p>
       <p>
-        The honest version of the promise is narrower than the slogan: OpenBot adds no hop of its own. We wrote down
+        The honest version of the promise is narrower than the slogan: AIKINGBOT adds no hop of its own. We wrote down
         exactly which data leaves your machine and why in the{" "}
-        <a href={OPENBOT_LINKS.privacy} target="_blank" rel={EXTERNAL_LINK_REL}>
+        <a href={AIKINGBOT_LINKS.privacy} target="_blank" rel={EXTERNAL_LINK_REL}>
           privacy notes
         </a>
         .

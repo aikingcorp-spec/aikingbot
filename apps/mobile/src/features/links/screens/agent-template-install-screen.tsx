@@ -1,5 +1,5 @@
-import type { AgentTemplateDetail, RoutineSchedule } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { AgentTemplateDetail, RoutineSchedule } from "@aikingbot/contracts/ipc";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { useQuery } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
@@ -318,7 +318,7 @@ function TemplatePreview({ detail, apiUrl }: { detail: AgentTemplateDetail; apiU
 function EmbeddedSkill({ name, markdown }: { name: string; markdown: string }) {
   const { t } = useText();
   const [open, setOpen] = useState(false);
-  const muted = String(useCSSVariable("--openbot-text-grouped-secondary"));
+  const muted = String(useCSSVariable("--aikingbot-text-grouped-secondary"));
   const Chevron = open ? ChevronDown : ChevronRight;
   return (
     <View>

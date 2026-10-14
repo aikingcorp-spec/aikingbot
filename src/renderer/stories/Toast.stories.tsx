@@ -1,4 +1,4 @@
-import { Button, Heading, Text, Toaster, toast } from "@openbot/ui";
+import { Button, Heading, Text, Toaster, toast } from "@aikingbot/ui";
 import { createSignal, onCleanup, type ParentProps } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

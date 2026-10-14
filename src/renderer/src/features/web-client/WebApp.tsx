@@ -1,15 +1,18 @@
-import { agentTemplateIdFromWebAppSearch, WEB_APP_AGENT_TEMPLATE_PARAM } from "@openbot/contracts/agent-template-links";
-import { inviteUrlFromWebAppSearch, WEB_APP_INVITE_FIELDS } from "@openbot/contracts/invite-links";
-import type { AppVariant, CentralAuthState, CentralAuthUser } from "@openbot/contracts/ipc";
-import { pluginSlugFromWebAppSearch, WEB_APP_PLUGIN_PARAM } from "@openbot/contracts/plugin-links";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { formatLocale, resolveLocale } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
-import { classifyFailure } from "@openbot/telemetry";
-import { NotificationObserver, Toaster, toast } from "@openbot/ui";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
-import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
-import { currentText } from "@openbot/ui/text";
+import {
+  agentTemplateIdFromWebAppSearch,
+  WEB_APP_AGENT_TEMPLATE_PARAM,
+} from "@aikingbot/contracts/agent-template-links";
+import { inviteUrlFromWebAppSearch, WEB_APP_INVITE_FIELDS } from "@aikingbot/contracts/invite-links";
+import type { AppVariant, CentralAuthState, CentralAuthUser } from "@aikingbot/contracts/ipc";
+import { pluginSlugFromWebAppSearch, WEB_APP_PLUGIN_PARAM } from "@aikingbot/contracts/plugin-links";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { formatLocale, resolveLocale } from "@aikingbot/i18n";
+import { sourceText } from "@aikingbot/i18n/source";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { NotificationObserver, Toaster, toast } from "@aikingbot/ui";
+import { AccountLogin } from "@aikingbot/ui/features/account/AccountLogin";
+import { AppLoadingScreen } from "@aikingbot/ui/features/account/AppLoadingScreen";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createSignal, createStore, onSettled, Show } from "solid-js";
 import { configureWebReports, reportNotification } from "../../error-reports";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
@@ -137,7 +140,7 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
       method: body ? "POST" : "GET",
       credentials: "same-origin",
       cache: "no-store",
-      headers: body ? { "Content-Type": "application/json", "X-OpenBot-Browser": "1" } : {},
+      headers: body ? { "Content-Type": "application/json", "X-AIKINGBOT-Browser": "1" } : {},
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
     const value = await response.json();
@@ -262,7 +265,7 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
     channel?.postMessage("session-changed");
   }
   onSettled(() => {
-    channel = new BroadcastChannel("openbot.web.session");
+    channel = new BroadcastChannel("aikingbot.web.session");
     channel.onmessage = () => {
       clearSession();
       void checkSession();

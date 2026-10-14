@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/app";
 
 export const messages = {
-  "app.loading": "Wczytywanie OpenBot",
+  "app.loading": "Wczytywanie AIKINGBOT",
   "app.leftPanel.resize": "Zmień rozmiar lewego paska bocznego",
   "app.host.thisMac": "Ten Mac",
   "app.host.thisComputer": "Ten komputer",
@@ -31,14 +31,14 @@ export const messages = {
   "app.provider.connectFailed": "Nie udało się połączyć: {name}",
   "app.provider.connectFailedRetry": "Nie udało się połączyć: {name}. Spróbuj ponownie.",
   "app.provider.restartFailed": "Nie udało się uruchomić ponownie: {name}",
-  "app.provider.included": "{name} jest dołączony do OpenBot.",
+  "app.provider.included": "{name} jest dołączony do AIKINGBOT.",
   "app.clipboard.copyFailed": "Nie udało się skopiować tekstu.",
   "app.voice.tooLong": "Nagrania głosowe są ograniczone do dwóch minut.",
   "app.avatar.type": "Wybierz obraz PNG, JPEG lub WebP.",
   "app.avatar.size": "Wybierz obraz mniejszy niż 10 MB.",
   "app.avatar.processingUnavailable": "Przetwarzanie obrazów jest niedostępne.",
-  "app.avatar.tooLarge": "OpenBot nie mógł wystarczająco zmniejszyć tego obrazu. Wybierz prostszy obraz.",
-  "app.avatar.processFailed": "OpenBot nie mógł przetworzyć tego obrazu.",
+  "app.avatar.tooLarge": "AIKINGBOT nie mógł wystarczająco zmniejszyć tego obrazu. Wybierz prostszy obraz.",
+  "app.avatar.processFailed": "AIKINGBOT nie mógł przetworzyć tego obrazu.",
   "app.chart.total": "Łącznie",
   "app.modelVariant.default": "Domyślny",
   "app.qrCode.label": "Kod QR",

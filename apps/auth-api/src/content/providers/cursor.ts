@@ -10,14 +10,14 @@ export const CURSOR_PROVIDER: ProviderPage = {
   provider: "cursor",
   name: "Cursor",
   answer:
-    "OpenBot runs the Cursor agent outside the Cursor editor, on macOS, Windows or Linux, with your Cursor plan or a Cursor API key. You get shared channels with agents on other providers, and an app on your phone.",
+    "AIKINGBOT runs the Cursor agent outside the Cursor editor, on macOS, Windows or Linux, with your Cursor plan or a Cursor API key. You get shared channels with agents on other providers, and an app on your phone.",
   connect:
-    "Choose Cursor, and OpenBot downloads and pins its own copy of the Cursor CLI, or uses the one you installed. Then sign in with Cursor in the browser, or set `CURSOR_API_KEY`.",
+    "Choose Cursor, and AIKINGBOT downloads and pins its own copy of the Cursor CLI, or uses the one you installed. Then sign in with Cursor in the browser, or set `CURSOR_API_KEY`.",
   adds: [
     {
       icon: "laptop",
       title: "The Cursor agent without the editor",
-      text: "The Cursor CLI runs in the terminal. OpenBot gives it a desktop app with threads and files, so you can use Cursor's models without the editor open.",
+      text: "The Cursor CLI runs in the terminal. AIKINGBOT gives it a desktop app with threads and files, so you can use Cursor's models without the editor open.",
     },
   ],
   vendor: "Cursor",
@@ -38,20 +38,20 @@ export const CURSOR_PROVIDER: ProviderPage = {
     {
       question: "Is there a GUI for the Cursor CLI?",
       answer:
-        "The Cursor editor is Cursor's own graphical app. The Cursor CLI also runs in editors that speak the Agent Client Protocol, such as Zed and JetBrains IDEs. OpenBot is a desktop app that runs it as one agent of a team.",
+        "The Cursor editor is Cursor's own graphical app. The Cursor CLI also runs in editors that speak the Agent Client Protocol, such as Zed and JetBrains IDEs. AIKINGBOT is a desktop app that runs it as one agent of a team.",
     },
     {
-      question: "Which Cursor plan does OpenBot need?",
+      question: "Which Cursor plan does AIKINGBOT need?",
       answer:
         "Your Cursor plan, or a Cursor API key from the Cursor dashboard. Hobby is free; Pro is $20 a month, Pro Plus $60 and Ultra $200. Use beyond the plan is billed at API prices.",
     },
     {
-      question: "Do I need the Cursor editor to use Cursor in OpenBot?",
+      question: "Do I need the Cursor editor to use Cursor in AIKINGBOT?",
       answer:
-        "No. OpenBot runs the Cursor CLI, which is a separate program. The editor does not have to be installed or open.",
+        "No. AIKINGBOT runs the Cursor CLI, which is a separate program. The editor does not have to be installed or open.",
     },
     {
-      question: "Can Cursor and Claude Code work together in OpenBot?",
+      question: "Can Cursor and Claude Code work together in AIKINGBOT?",
       answer:
         "Yes. Each agent has its own provider. A Cursor agent and a Claude Code agent can work in the same channel and give tasks to each other.",
     },

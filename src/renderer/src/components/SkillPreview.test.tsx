@@ -2,10 +2,10 @@ import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-lib
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import { AgentSkillsModal } from "../features/conversation/AgentSkillsModal";
 import { STORY_MARKETPLACE_SKILL_DETAILS } from "../preview/fixtures";
-import { createMockOpenBot, type MockOpenBotControls } from "../preview/mock-openbot";
+import { createMockAIKINGBOT, type MockAIKINGBOTControls } from "../preview/mock-aikingbot";
 import { SkillPreview } from "./SkillPreview";
 
-let mock: MockOpenBotControls | undefined;
+let mock: MockAIKINGBOTControls | undefined;
 afterEach(() => {
   mock?.dispose();
   mock = undefined;
@@ -14,8 +14,8 @@ const skill = STORY_MARKETPLACE_SKILL_DETAILS["skill-release-notes"];
 assert(skill);
 
 function installSkillMock(): void {
-  mock = createMockOpenBot();
-  window.openbot = mock.api;
+  mock = createMockAIKINGBOT();
+  window.aikingbot = mock.api;
 }
 
 describe("skill preview", () => {
@@ -37,7 +37,7 @@ describe("skill preview", () => {
   });
   it("renders Markdown without executing HTML or unsafe links", () => {
     installSkillMock();
-    const openUrl = vi.spyOn(window.openbot, "openUrl");
+    const openUrl = vi.spyOn(window.aikingbot, "openUrl");
     render(() => (
       <SkillPreview
         skill={{

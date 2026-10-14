@@ -1,13 +1,13 @@
-import type { AgentEvent, AgentSummary, ConversationMessage } from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
-import type { NotificationRelayPush } from "@openbot/contracts/notification-relay";
-import type { PushNotificationRegistration } from "@openbot/contracts/team-protocol/push-notifications-v1";
-import { decodeLiveActivityBytes } from "@openbot/team-client/live-activity-seal";
+import type { AgentEvent, AgentSummary, ConversationMessage } from "@aikingbot/contracts/ipc";
+import type { LiveActivityRelayPush } from "@aikingbot/contracts/live-activity-relay";
+import type { NotificationRelayPush } from "@aikingbot/contracts/notification-relay";
+import type { PushNotificationRegistration } from "@aikingbot/contracts/team-protocol/push-notifications-v1";
+import { decodeLiveActivityBytes } from "@aikingbot/team-client/live-activity-seal";
 import {
   type PushNotificationContent,
   pushNotificationKeys,
   sealPushNotification,
-} from "@openbot/team-client/push-notification-seal";
+} from "@aikingbot/team-client/push-notification-seal";
 import { Effect } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { StoredPushRegistration } from "./push-notification-store";
@@ -60,7 +60,7 @@ const registration: PushNotificationRegistration = {
   level: "all",
   mutedUntil: null,
   preview: true,
-  sound: "openbot",
+  sound: "aikingbot",
   liveActivityStartedAt: null,
 };
 
@@ -188,7 +188,7 @@ describe("PushNotificationService", () => {
         title: "Ada",
         body: "Here are this week's numbers.",
       }),
-      sound: "openbot",
+      sound: "aikingbot",
       timestamp: 1_790_000_000,
     });
     expect(JSON.stringify(sent)).not.toMatch(/Ada|numbers|hidden/iu);
@@ -284,7 +284,7 @@ describe("PushNotificationService", () => {
     liveActivity = true;
     listener?.(completed("ada", "turn-1", { origin: "user" }));
     await vi.waitFor(() =>
-      expect(liveActivityAlerts).toEqual([{ sessionId: "session-1", alert: { sound: "openbot" }, startedAt: null }]),
+      expect(liveActivityAlerts).toEqual([{ sessionId: "session-1", alert: { sound: "aikingbot" }, startedAt: null }]),
     );
     // With its sound off, the activity updates silently, and still no notification goes. The phone gives
     // the start of the activity, which a host restart does not know.
@@ -296,7 +296,7 @@ describe("PushNotificationService", () => {
     push.register("session-1", viewer, { ...registration, token: null });
     listener?.(completed("ada", "turn-1"));
     await vi.waitFor(() => expect(liveActivityAlerts).toHaveLength(3));
-    expect(liveActivityAlerts[2]).toEqual({ sessionId: "session-1", alert: { sound: "openbot" }, startedAt: null });
+    expect(liveActivityAlerts[2]).toEqual({ sessionId: "session-1", alert: { sound: "aikingbot" }, startedAt: null });
     liveActivity = false;
     listener?.(completed("ada", "turn-1"));
     expect(send).not.toHaveBeenCalled();

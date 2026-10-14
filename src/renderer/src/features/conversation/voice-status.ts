@@ -1,6 +1,6 @@
-import type { AppInfo } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { currentText } from "@openbot/ui/text";
+import type { AppInfo } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { currentText } from "@aikingbot/ui/text";
 export type VoicePhase = "idle" | "preparing" | "requesting" | "recording" | "transcribing";
 
 /** The catalog key of the voice button's accessible name. */

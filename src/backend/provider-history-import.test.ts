@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import { DatabaseSync } from "node:sqlite";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
+import type { ConversationMessage } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { ROUTINE_NO_UPDATE_MARKER } from "./agent/routine-quiet-runs";
@@ -33,7 +33,7 @@ class MemoryHistoryDatabase implements ProviderHistoryImportDatabase {
         "INSERT INTO projection_thread_messages(thread_id, message_id, turn_id, message_json) VALUES (?, ?, ?, ?)",
       )
       .run(
-        "openbot-thread",
+        "aikingbot-thread",
         "turn-1:assistant",
         "turn-1",
         JSON.stringify({
@@ -93,7 +93,7 @@ class MemoryHistoryDatabase implements ProviderHistoryImportDatabase {
       .prepare(
         "INSERT INTO projection_thread_messages(thread_id, message_id, turn_id, message_json) VALUES (?, ?, ?, ?)",
       )
-      .run("openbot-thread", message.id, message.turnId ?? null, JSON.stringify(message));
+      .run("aikingbot-thread", message.id, message.turnId ?? null, JSON.stringify(message));
   }
 
   close(): void {
@@ -120,7 +120,7 @@ describe("bounded provider history import", () => {
         provider: "claude",
         externalSessionId: "external-1",
         agentId: "chief",
-        publicThreadId: "openbot-thread",
+        publicThreadId: "aikingbot-thread",
         findDelivery: () => null,
         findMessageDelivery: () => null,
         quietRoutineDelivery: () => false,
@@ -182,7 +182,7 @@ describe("bounded provider history import", () => {
         provider: "claude",
         externalSessionId: "external-1",
         agentId: "chief",
-        publicThreadId: "openbot-thread",
+        publicThreadId: "aikingbot-thread",
         findDelivery: () => null,
         findMessageDelivery: () => null,
         quietRoutineDelivery: () => false,
@@ -241,7 +241,7 @@ describe("bounded provider history import", () => {
         provider: "claude",
         externalSessionId: "external-1",
         agentId: "chief",
-        publicThreadId: "openbot-thread",
+        publicThreadId: "aikingbot-thread",
         findDelivery: () => null,
         findMessageDelivery: () => null,
         quietRoutineDelivery: () => false,
@@ -296,7 +296,7 @@ describe("bounded provider history import", () => {
         provider: "claude",
         externalSessionId: "external-1",
         agentId: "chief",
-        publicThreadId: "openbot-thread",
+        publicThreadId: "aikingbot-thread",
         findDelivery: () => null,
         findMessageDelivery: () => null,
         quietRoutineDelivery: () => false,
@@ -340,7 +340,7 @@ describe("bounded provider history import", () => {
           provider: "codex",
           externalSessionId: "external-1",
           agentId: "chief",
-          publicThreadId: "openbot-thread",
+          publicThreadId: "aikingbot-thread",
           findDelivery: () => null,
           findMessageDelivery: () => null,
           quietRoutineDelivery: () => false,
@@ -357,7 +357,7 @@ describe("bounded provider history import", () => {
         provider: "codex",
         externalSessionId: "external-1",
         agentId: "chief",
-        publicThreadId: "openbot-thread",
+        publicThreadId: "aikingbot-thread",
         findDelivery: () => null,
         findMessageDelivery: () => null,
         quietRoutineDelivery: () => false,
@@ -394,7 +394,7 @@ describe("bounded provider history import", () => {
       provider: "acp" as const,
       externalSessionId: "provider-session",
       agentId: "chief",
-      publicThreadId: "openbot-thread",
+      publicThreadId: "aikingbot-thread",
       findDelivery: () => null,
       findMessageDelivery: () => null,
       quietRoutineDelivery: () => false,
@@ -431,7 +431,7 @@ describe("bounded provider history import", () => {
       provider: "codex" as const,
       externalSessionId: "codex-session",
       agentId: "chief",
-      publicThreadId: "openbot-thread",
+      publicThreadId: "aikingbot-thread",
       findDelivery: () => null,
       findMessageDelivery: () => null,
       quietRoutineDelivery: () => false,
@@ -499,7 +499,7 @@ describe("provider history import of routine runs", () => {
       provider,
       externalSessionId: "external-1",
       agentId: "chief",
-      publicThreadId: "openbot-thread",
+      publicThreadId: "aikingbot-thread",
       findDelivery: (id: string) =>
         id === "delivery-1" ? routineDelivery(id, kind === "user" ? "user" : "routine") : null,
       findMessageDelivery: () => null,

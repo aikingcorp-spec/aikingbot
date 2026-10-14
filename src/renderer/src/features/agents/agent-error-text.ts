@@ -1,4 +1,4 @@
-import { currentText } from "@openbot/ui/text";
+import { currentText } from "@aikingbot/ui/text";
 
 /** A provider quotes what it was given, so an error can carry a whole request body back. */
 const ERROR_DESCRIPTION_LIMIT = 300;

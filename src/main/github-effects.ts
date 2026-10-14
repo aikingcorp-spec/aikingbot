@@ -19,7 +19,7 @@ export class GitHubPlatform extends Context.Service<
     fetch(url: string, init: RequestInit): Effect.Effect<Response, GitHubOperationError>;
     openPage(url: string): Effect.Effect<void, GitHubOperationError>;
   }
->()("openbot/main/GitHubPlatform") {
+>()("aikingbot/main/GitHubPlatform") {
   static layer(
     fetcher: (url: string, init: RequestInit) => Promise<Response>,
     openPage: (url: string) => Promise<void>,

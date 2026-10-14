@@ -1,5 +1,5 @@
-import type { ConversationSnapshot } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { ConversationSnapshot } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runTeamEffect } from "./effect-boundary";
@@ -384,7 +384,7 @@ describe("remote connection recovery", () => {
     recovery.suspend(new Error("Signal returned an invalid message."));
     await vi.advanceTimersByTimeAsync(300_000);
     expect(attempts).toBe(1);
-    expect(messages.at(-1)).toBe("Update OpenBot Mobile or the desktop app before connecting.");
+    expect(messages.at(-1)).toBe("Update AIKINGBOT Mobile or the desktop app before connecting.");
 
     // The desktop the user left to update is the reason the frame was unreadable, so returning to
     // the app is the way out of this state.

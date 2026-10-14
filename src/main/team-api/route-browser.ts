@@ -4,10 +4,10 @@
 // a URL that is too long, a `focus` that is not a boolean - because whether a tab may be opened at
 // all is the browser host's decision, made the same way for a local caller.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type DynamicRecord, isBoolean } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import { type DynamicRecord, isBoolean } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { sourceText } from "@aikingbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiBrowser, TeamApiBrowserView } from "./dependencies";
 import { HttpError } from "./http-error";

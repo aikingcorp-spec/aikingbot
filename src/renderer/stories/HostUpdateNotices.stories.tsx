@@ -1,5 +1,5 @@
-import type { HostUpdateStatus } from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
+import type { HostUpdateStatus } from "@aikingbot/contracts/ipc";
+import { Toaster, toast } from "@aikingbot/ui";
 import { createSignal, onCleanup, onSettled } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { watchHostUpdate } from "../src/features/servers/host-update-toast";

@@ -1,4 +1,4 @@
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 import { createLandingReveal } from "../landing/createLandingReveal";
 import { Button, ButtonLink } from "../ui/button";
 
@@ -30,10 +30,10 @@ export function ContentCallToAction() {
       </p>
       <div class="post-cta-actions">
         <ButtonLink to="/" hash="download" variant="primary" size="lg" icon="download">
-          Download OpenBot
+          Download AIKINGBOT
         </ButtonLink>
         <Button
-          href={OPENBOT_LINKS.contact}
+          href={AIKINGBOT_LINKS.contact}
           target="_blank"
           rel={EXTERNAL_LINK_REL}
           variant="secondary"

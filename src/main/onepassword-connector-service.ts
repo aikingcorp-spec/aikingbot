@@ -1,5 +1,5 @@
 // The 1Password connection of this computer: a service account that reads the vault the user shares
-// with OpenBot. The embedded browser fills logins from it; agents see titles and usernames only.
+// with AIKINGBOT. The embedded browser fills logins from it; agents see titles and usernames only.
 
 import { execFile } from "node:child_process";
 import { constants } from "node:fs";
@@ -11,9 +11,9 @@ import {
   type OnePasswordConnectInput,
   type OnePasswordConnectorStatus,
   type OnePasswordSetup,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, redactText, registerSecretValue, toLogValue } from "@aikingbot/logging";
 import { Deferred, Effect, Exit, Scope } from "effect";
 import { z } from "zod";
 import {
@@ -29,10 +29,10 @@ import type { OnePasswordConnectorRecord, OnePasswordConnectorStore } from "./on
 import { OnePasswordOperationError, onePasswordCall, onePasswordDecode } from "./onepassword-effects";
 import type { RuntimeTarget } from "./provider-runtime-descriptors";
 
-const logger = createOpenBotLogger("onepassword-connector");
+const logger = createAIKINGBOTLogger("onepassword-connector");
 
-/** The vault that Connect creates. The user moves the logins that OpenBot may use into it. */
-const ONEPASSWORD_SHARED_VAULT = "Shared with OpenBot";
+/** The vault that Connect creates. The user moves the logins that AIKINGBOT may use into it. */
+const ONEPASSWORD_SHARED_VAULT = "Shared with AIKINGBOT";
 /** `op service-account create` needs this version. */
 const MIN_CLI_VERSION = [2, 18] as const;
 /** 1Password can wait for the user to approve the CLI in the desktop app. */
@@ -81,7 +81,7 @@ export interface OnePasswordConnectorServiceOptions {
   /** Names the service account, so the user can find it on 1Password.com. */
   hostName: string;
   appVersion: string;
-  /** Where Install puts the CLI, or null when OpenBot has no CLI build for this computer. */
+  /** Where Install puts the CLI, or null when AIKINGBOT has no CLI build for this computer. */
   cliInstall: { directory: string; target: RuntimeTarget } | null;
   openExternal: (url: string) => Promise<void>;
   /** The CLI executables to try, in order. A test passes a fake. */
@@ -144,7 +144,7 @@ function cliJson<T>(schema: z.ZodType<T>) {
 
 /**
  * The CLIs to try, in order: the user's own, where installers put it (a Finder launch has no shell
- * `PATH`), then the copy that Install put in OpenBot's folder.
+ * `PATH`), then the copy that Install put in AIKINGBOT's folder.
  */
 const findCliExecutables = Effect.fn("OnePasswordConnector.findCli")(function* (
   install: OnePasswordConnectorServiceOptions["cliInstall"],
@@ -193,7 +193,7 @@ const runOnePasswordCli: OnePasswordCliRunner = async (executable, args, signal)
 
 async function createSdkClient(token: string, appVersion: string): Promise<OnePasswordClient> {
   const sdk = await import("@1password/sdk");
-  const client = await sdk.createClient({ auth: token, integrationName: "OpenBot", integrationVersion: appVersion });
+  const client = await sdk.createClient({ auth: token, integrationName: "AIKINGBOT", integrationVersion: appVersion });
   return {
     vaults: { list: () => client.vaults.list() },
     items: {
@@ -207,8 +207,8 @@ async function createSdkClient(token: string, appVersion: string): Promise<OnePa
  * Owns the 1Password connection: Connect through the CLI, a pasted token, the stored token, and the
  * list of logins it reads. It never imports the agent service, which reads it as a `PasswordVault`.
  *
- * Connect uses the CLI only once, to create the vault "Shared with OpenBot" and a service account
- * that can only read it. The CLI session is the user's own; OpenBot keeps only the service account
+ * Connect uses the CLI only once, to create the vault "Shared with AIKINGBOT" and a service account
+ * that can only read it. The CLI session is the user's own; AIKINGBOT keeps only the service account
  * token. The token never leaves the main process except to 1Password, and it is registered for
  * redaction before it is used. Passwords and codes go to the browser only.
  */
@@ -217,7 +217,7 @@ export class OnePasswordConnectorService implements PasswordVault {
   readonly #hostName: string;
   readonly #findCli: () => Effect.Effect<string[]>;
   readonly #runCli: OnePasswordCliRunner;
-  /** Null when OpenBot has no CLI build for this computer. */
+  /** Null when AIKINGBOT has no CLI build for this computer. */
   readonly #installCli: ((signal: AbortSignal) => Effect.Effect<string, OnePasswordOperationError>) | null;
   readonly #openExternal: (url: string) => Promise<void>;
   readonly #createClient: (token: string) => Promise<OnePasswordClient>;
@@ -308,7 +308,7 @@ export class OnePasswordConnectorService implements PasswordVault {
     return this.status();
   }).bind(this);
 
-  /** Downloads OpenBot's copy of the CLI, then checks the setup again. */
+  /** Downloads AIKINGBOT's copy of the CLI, then checks the setup again. */
   readonly installCli = Effect.fn("OnePasswordConnector.installCli")(function* (
     this: OnePasswordConnectorService,
   ): Effect.fn.Return<OnePasswordConnectorStatus> {
@@ -620,7 +620,7 @@ export class OnePasswordConnectorService implements PasswordVault {
           "create",
           ONEPASSWORD_SHARED_VAULT,
           "--description",
-          "Logins that OpenBot agents may use to sign in to sites.",
+          "Logins that AIKINGBOT agents may use to sign in to sites.",
           ...scope,
           "--format",
           "json",
@@ -631,7 +631,7 @@ export class OnePasswordConnectorService implements PasswordVault {
       [
         "service-account",
         "create",
-        `OpenBot on ${this.#hostName}`,
+        `AIKINGBOT on ${this.#hostName}`,
         "--vault",
         `${vaultId}:read_items`,
         ...scope,

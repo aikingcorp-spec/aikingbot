@@ -3,12 +3,12 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
+import { AIKINGBOTDatabase } from "./aikingbot-database";
 import { runCauseEffect } from "./effect-boundary";
 import { McpServerStore } from "./mcp-server-store";
-import { OpenBotDatabase } from "./openbot-database";
 
 const roots: string[] = [];
 
@@ -21,7 +21,7 @@ describe("McpServerStore", () => {
     const { database, store } = await setup();
     const saved = store.save(
       stdioConfig({
-        args: ["--database", "./openbot.db", "--verbose"],
+        args: ["--database", "./aikingbot.db", "--verbose"],
         env: [
           { key: "SQLITE_READONLY", value: "1" },
           { key: "TOKEN", value: "secret-value" },
@@ -31,11 +31,11 @@ describe("McpServerStore", () => {
     );
     database.close();
 
-    const reopened = new OpenBotDatabase(database.userDataPath);
+    const reopened = new AIKINGBOTDatabase(database.userDataPath);
     await runCauseEffect(reopened.initialize());
     const [config] = new McpServerStore(reopened).list();
     expect(config).toEqual({ ...saved, id: saved.id });
-    expect(config?.args).toEqual(["--database", "./openbot.db", "--verbose"]);
+    expect(config?.args).toEqual(["--database", "./aikingbot.db", "--verbose"]);
     expect(config?.env).toEqual([
       { key: "SQLITE_READONLY", value: "1" },
       { key: "TOKEN", value: "secret-value" },
@@ -88,7 +88,7 @@ describe("McpServerStore", () => {
     expect(() => store.save(stdioConfig({ name: "Local SQLite" }))).toThrow(
       "An MCP server named Local SQLite already exists.",
     );
-    expect(() => store.save(stdioConfig({ name: "openbot" }))).toThrow("OpenBot already uses the name openbot.");
+    expect(() => store.save(stdioConfig({ name: "aikingbot" }))).toThrow("AIKINGBOT already uses the name aikingbot.");
   });
 
   it("omits a disabled server from the enabled list", async () => {
@@ -105,7 +105,7 @@ describe("McpServerStore", () => {
     for (let index = 0; index < INPUT_LIMITS.mcpServers; index += 1)
       store.save(stdioConfig({ name: `Server ${index}` }));
     expect(() => store.save(stdioConfig({ name: "One too many" }))).toThrow(
-      `OpenBot keeps up to ${INPUT_LIMITS.mcpServers} MCP servers.`,
+      `AIKINGBOT keeps up to ${INPUT_LIMITS.mcpServers} MCP servers.`,
     );
   });
 
@@ -178,7 +178,7 @@ function stdioConfig(overrides: Partial<McpServerConfig> = {}): McpServerConfig 
     name: "Local SQLite",
     transport: "stdio",
     enabled: true,
-    command: "openbot-dev-mcp",
+    command: "aikingbot-dev-mcp",
     args: [],
     env: [],
     envPassthrough: [],
@@ -189,10 +189,10 @@ function stdioConfig(overrides: Partial<McpServerConfig> = {}): McpServerConfig 
   };
 }
 
-async function setup(): Promise<{ database: OpenBotDatabase; store: McpServerStore }> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-mcp-store-"));
+async function setup(): Promise<{ database: AIKINGBOTDatabase; store: McpServerStore }> {
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-mcp-store-"));
   roots.push(root);
-  const database = new OpenBotDatabase(root);
+  const database = new AIKINGBOTDatabase(root);
   await runCauseEffect(database.initialize());
   return { database, store: new McpServerStore(database) };
 }

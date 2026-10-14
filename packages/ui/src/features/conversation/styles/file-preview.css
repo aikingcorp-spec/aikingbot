@@ -10,8 +10,8 @@
     transform var(--panel-close-dur) var(--panel-ease),
     opacity var(--panel-close-dur) var(--panel-ease),
     filter var(--panel-close-dur) var(--panel-ease),
-    border-color var(--openbot-duration-slow) ease,
-    box-shadow var(--openbot-duration-slow) ease;
+    border-color var(--aikingbot-duration-slow) ease,
+    box-shadow var(--aikingbot-duration-slow) ease;
 }
 
 .file-preview-panel.t-panel-slide[data-open="true"] {
@@ -19,8 +19,8 @@
     transform var(--panel-open-dur) var(--panel-ease),
     opacity var(--panel-open-dur) var(--panel-ease),
     filter var(--panel-open-dur) var(--panel-ease),
-    border-color var(--openbot-duration-slow) ease,
-    box-shadow var(--openbot-duration-slow) ease;
+    border-color var(--aikingbot-duration-slow) ease,
+    box-shadow var(--aikingbot-duration-slow) ease;
 }
 
 .file-preview-header {
@@ -29,7 +29,7 @@
   flex: 0 0 auto;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--openbot-border);
+  border-bottom: 1px solid var(--aikingbot-border);
   padding: 0 7px 0 11px;
 }
 
@@ -38,8 +38,8 @@
   flex: 1;
   overflow: hidden;
   margin: 0;
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-sm);
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -56,15 +56,15 @@
   width: 15px;
   height: 15px;
   flex: 0 0 auto;
-  color: var(--openbot-text-muted);
-  stroke-width: var(--openbot-icon-stroke);
+  color: var(--aikingbot-text-muted);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .file-preview-content {
   min-height: 0;
   flex: 1;
   overflow: auto;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 .markdown-file-preview {
@@ -75,25 +75,25 @@
   max-width: 760px;
   margin: 0 auto;
   padding: 24px 26px 48px;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   overflow-wrap: anywhere;
 }
 
 .file-preview-markdown > .message-markdown {
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
   line-height: 1.6;
 }
 
 .file-preview-markdown-status {
   min-width: 0;
   margin: 0;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface);
   padding: 18px 20px;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1.55;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -104,9 +104,9 @@
   min-height: 100%;
   margin: 0;
   padding: 18px 20px 48px;
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-mono);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-primary);
+  font-family: var(--aikingbot-font-mono);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1.55;
   tab-size: 2;
   white-space: pre;
@@ -137,7 +137,7 @@
   width: 100%;
   height: 100%;
   border: 0;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 .file-preview-audio {
@@ -150,7 +150,7 @@
   display: block;
   width: 100%;
   max-height: 100%;
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
   object-fit: contain;
 }
 
@@ -158,13 +158,13 @@
   min-width: 0;
   min-height: 100%;
   padding: 20px;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
 }
 
 .file-preview-spreadsheet-status {
   margin: 0;
-  color: var(--openbot-text-muted);
-  font-family: var(--openbot-font-mono);
+  color: var(--aikingbot-text-muted);
+  font-family: var(--aikingbot-font-mono);
   white-space: pre-wrap;
 }
 
@@ -176,53 +176,53 @@
 }
 
 .file-preview-spreadsheet-tabs button {
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-control);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-bg-control);
   padding: 6px 10px;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   white-space: nowrap;
 }
 
 .file-preview-spreadsheet-tabs button[aria-pressed="true"] {
-  border-color: var(--openbot-border-strong);
-  background: var(--openbot-bg-surface);
-  color: var(--openbot-text-primary);
+  border-color: var(--aikingbot-border-strong);
+  background: var(--aikingbot-bg-surface);
+  color: var(--aikingbot-text-primary);
 }
 
 .file-preview-spreadsheet-table-wrap {
   min-height: 0;
   overflow: auto;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-surface);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-surface);
 }
 
 .file-preview-spreadsheet-table {
   width: max-content;
   min-width: 100%;
   border-collapse: collapse;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .file-preview-spreadsheet-table caption {
   padding: 10px 12px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   text-align: left;
 }
 
 .file-preview-spreadsheet-table th,
 .file-preview-spreadsheet-table td {
-  border-top: 1px solid var(--openbot-border);
-  border-right: 1px solid var(--openbot-border);
+  border-top: 1px solid var(--aikingbot-border);
+  border-right: 1px solid var(--aikingbot-border);
   padding: 8px 12px;
   text-align: left;
   white-space: pre;
 }
 
 .file-preview-spreadsheet-table th {
-  background: var(--openbot-bg-control);
+  background: var(--aikingbot-bg-control);
   font-weight: 600;
 }
 
@@ -233,8 +233,8 @@
 
 .file-preview-spreadsheet-note {
   margin: 10px 0 0;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 .file-preview-unsupported {
   display: grid;
@@ -243,7 +243,7 @@
   justify-items: center;
   gap: 8px;
   padding: 24px;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   text-align: center;
 }
 
@@ -254,13 +254,13 @@
 }
 
 .file-preview-unsupported strong {
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
+  color: var(--aikingbot-text-primary);
+  font-size: var(--aikingbot-text-md);
 }
 
 .file-preview-unsupported span {
   max-width: 260px;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   line-height: 1.45;
 }
 
@@ -272,19 +272,19 @@
   position: sticky;
   bottom: 0;
   margin: 0;
-  border-top: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-control);
+  border-top: 1px solid var(--aikingbot-border);
+  background: var(--aikingbot-bg-control);
   padding: 7px 12px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   text-align: center;
 }
 .browser-pip-window {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--openbot-bg-canvas);
-  color: var(--openbot-text-primary);
+  background: var(--aikingbot-bg-canvas);
+  color: var(--aikingbot-text-primary);
 }
 
 .browser-pip-surface {
@@ -307,19 +307,19 @@
   gap: 10px;
   justify-content: stretch;
   padding: 6px 10px;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
   text-align: left;
 }
 
 .file-preview-folder-name {
   overflow: hidden;
-  color: var(--openbot-text-primary);
+  color: var(--aikingbot-text-primary);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .file-preview-folder-meta {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -327,7 +327,7 @@
 .file-preview-folder-empty {
   margin: 0;
   padding: 24px;
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
   text-align: center;
 }

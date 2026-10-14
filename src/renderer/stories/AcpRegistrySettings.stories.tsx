@@ -1,4 +1,4 @@
-import { AcpRegistrySettings } from "@openbot/ui/features/custom-providers/AcpRegistrySettings";
+import { AcpRegistrySettings } from "@aikingbot/ui/features/custom-providers/AcpRegistrySettings";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 const meta = {

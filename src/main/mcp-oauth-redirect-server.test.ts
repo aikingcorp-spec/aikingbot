@@ -1,5 +1,5 @@
 import { request as httpRequest } from "node:http";
-import { translateFor } from "@openbot/i18n";
+import { translateFor } from "@aikingbot/i18n";
 import { describe, expect, it } from "vitest";
 import { startMcpOAuthRedirectServer } from "./mcp-oauth-redirect-server";
 

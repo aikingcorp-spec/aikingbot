@@ -3,7 +3,7 @@ import { chmod, copyFile, mkdir, readFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { Effect, Result } from "effect";
-import { migrateOpenBotDatabase } from "../openbot-database-schema";
+import { migrateAIKINGBOTDatabase } from "../aikingbot-database-schema";
 import { storedIO, storedSync } from "../stored-state-effects";
 import { databaseRow, errorCode, requiredNumberColumn, requiredStringColumn } from "./database-rows";
 
@@ -24,13 +24,13 @@ interface ReceiptRow {
  * A SQL function that turns each run of whitespace into one space. Search uses it so that a query
  * with a space finds a message that a line break splits.
  */
-export const COLLAPSE_WHITESPACE_FUNCTION = "openbot_collapse_whitespace";
+export const COLLAPSE_WHITESPACE_FUNCTION = "aikingbot_collapse_whitespace";
 
 /**
  * A SQL function that lowercases text with the full Unicode rules. SQLite `LOWER` changes only
  * ASCII letters, so "État" would not match the query "état".
  */
-export const LOWERCASE_FUNCTION = "openbot_lowercase";
+export const LOWERCASE_FUNCTION = "aikingbot_lowercase";
 
 export interface DatabaseCoreOptions {
   userDataPath: string;
@@ -53,7 +53,7 @@ export class DatabaseCore {
   #db: DatabaseSync | null = null;
 
   constructor(options: DatabaseCoreOptions) {
-    this.path = join(options.userDataPath, "openbot.db");
+    this.path = join(options.userDataPath, "aikingbot.db");
     this.#legacyBackupRoot = join(options.userDataPath, "legacy-backup-v1");
   }
 
@@ -95,7 +95,7 @@ export class DatabaseCore {
   }
 
   get connection(): DatabaseSync {
-    if (!this.#db) throw new Error("OpenBot database is not initialized.");
+    if (!this.#db) throw new Error("AIKINGBOT database is not initialized.");
     return this.#db;
   }
 
@@ -199,7 +199,7 @@ export class DatabaseCore {
   }
 
   #migrate(): void {
-    migrateOpenBotDatabase(this.connection);
+    migrateAIKINGBOTDatabase(this.connection);
   }
 }
 

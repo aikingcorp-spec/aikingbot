@@ -5,7 +5,7 @@ import { z } from "zod";
 export const cuaDriverTargets = ["darwin-arm64", "darwin-x64", "linux-x64", "linux-arm64", "win32-x64"] as const;
 export type CuaDriverTarget = (typeof cuaDriverTargets)[number];
 
-/** One file OpenBot copies out of a release archive, and the mode it gets on disk. */
+/** One file AIKINGBOT copies out of a release archive, and the mode it gets on disk. */
 export interface CuaDriverShippedFile {
   /** The path inside the archive. The installed tree keeps the same relative path. */
   readonly path: string;
@@ -34,14 +34,14 @@ const LINUX_FILES = [
 
 /**
  * The `-binary` assets, whose entries sit at the archive root, rather than the directory assets the
- * upstream install script uses. OpenBot needs neither extra the directory asset carries:
+ * upstream install script uses. AIKINGBOT needs neither extra the directory asset carries:
  *
  * - `CuaDriver.app` only exists so `cua-driver mcp` can relaunch the daemon through
- *   `open -a CuaDriver` when it has to own its own TCC identity. OpenBot spawns `serve` itself with
- *   `CUA_DRIVER_EMBEDDED=1`, so that relaunch path never runs and OpenBot stays the responsible
+ *   `open -a CuaDriver` when it has to own its own TCC identity. AIKINGBOT spawns `serve` itself with
+ *   `CUA_DRIVER_EMBEDDED=1`, so that relaunch path never runs and AIKINGBOT stays the responsible
  *   process for both grants.
  * - `libcua_driver_sdk`, `cua_driver_node_runtime.node` and `cua_driver_abi.h` serve the native SDK
- *   bindings. OpenBot speaks MCP over stdio to the binary and links nothing.
+ *   bindings. AIKINGBOT speaks MCP over stdio to the binary and links nothing.
  *
  * `cua-driver-uia.exe` is skipped for the same reason: upstream describes it as reserved for a
  * future forwarding path that nothing launches today.
@@ -72,7 +72,7 @@ export const CUA_DRIVER_TARGETS = {
     archive: "tar.gz",
     executable: "cua-driver",
     // `wayland-helper` holds the GNOME shell extension that gives the driver window rectangles on
-    // Wayland. OpenBot does not install or enable it, but the user cannot get it separately.
+    // Wayland. AIKINGBOT does not install or enable it, but the user cannot get it separately.
     files: LINUX_FILES,
   },
   "linux-arm64": {
@@ -132,7 +132,7 @@ export async function loadCuaDriverLock(sourceRoot = process.cwd()): Promise<Cua
 
 /**
  * Parses the `cuaDriver` block and checks it against the target table above. A release that renamed
- * an asset, or dropped a file OpenBot ships, has to fail here rather than produce an installer that
+ * an asset, or dropped a file AIKINGBOT ships, has to fail here rather than produce an installer that
  * is missing a binary.
  */
 export function parseCuaDriverLock(value: unknown): CuaDriverLock {
@@ -150,7 +150,7 @@ export function parseCuaDriverLock(value: unknown): CuaDriverLock {
     const pinned = Object.keys(artifact.files).sort();
     const shipped = descriptor.files.map((file) => file.path).sort();
     if (pinned.length !== shipped.length || pinned.some((path, index) => path !== shipped[index])) {
-      throw new Error(`The ${target} cua-driver pin does not list the files OpenBot ships.`);
+      throw new Error(`The ${target} cua-driver pin does not list the files AIKINGBOT ships.`);
     }
   }
   return lock;

@@ -182,7 +182,7 @@ describe("hosted sites of a joined server", () => {
   it("never shows or deletes the owner's unlinked sites for a member", async () => {
     const requests: string[] = [];
     const auth = authClient(async (path, init) => {
-      requests.push(`${init.method} ${path} ${new Headers(init.headers).get("OpenBot-Host-Id") ?? "no-server"}`);
+      requests.push(`${init.method} ${path} ${new Headers(init.headers).get("AIKINGBOT-Host-Id") ?? "no-server"}`);
       if (init.method === "GET") return { sites: [{ ...hostedSite(), serverId: "host-1" }], limit: 3, used: 1 };
       return { deleted: true };
     });
@@ -224,7 +224,7 @@ describe("hosted sites of a joined server", () => {
 });
 
 async function fixture(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-site-test-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-site-test-"));
   roots.push(root);
   return root;
 }
@@ -254,8 +254,8 @@ function uploadSession(): { uploadId: string; expiresAt: string } {
 function hostedSite() {
   return {
     id: "site-1",
-    hostname: "recovery-page-for-upload-tests-23456789ab.openbot.site",
-    url: "https://recovery-page-for-upload-tests-23456789ab.openbot.site",
+    hostname: "recovery-page-for-upload-tests-23456789ab.aikingbot-sites.aikingx.com",
+    url: "https://recovery-page-for-upload-tests-23456789ab.aikingbot-sites.aikingx.com",
     title: "Recovery page",
     description: "Recover a publication response.",
     framework: "vanilla",

@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
-import type { MemoryEntry } from "@openbot/contracts/ipc";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@aikingbot/contracts/agent-memory-context";
+import type { MemoryEntry } from "@aikingbot/contracts/ipc";
 import { databaseRows, requiredStringColumn } from "./database/database-rows";
 
 /** Owns the agent-memory search index and selection schema, never the database facade. */

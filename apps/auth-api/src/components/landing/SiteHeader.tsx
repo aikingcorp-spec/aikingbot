@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@aikingbot/brand";
 import { Link } from "@tanstack/solid-router";
-import { EXTERNAL_LINK_REL, OPENBOT_LINKS } from "../../lib/landing-links";
+import { AIKINGBOT_LINKS, EXTERNAL_LINK_REL } from "../../lib/landing-links";
 import { Button, ButtonLink } from "../ui/button";
 import { SiteMobileMenu } from "./SiteMobileMenu";
 import { SiteNavigationMenu } from "./SiteNavigationMenu";
@@ -20,7 +20,7 @@ export function SiteHeader(props: SiteHeaderProps) {
   const actions = () => (
     <>
       <Button
-        href={OPENBOT_LINKS.contact}
+        href={AIKINGBOT_LINKS.contact}
         target="_blank"
         rel={EXTERNAL_LINK_REL}
         variant="secondary"
@@ -43,7 +43,7 @@ export function SiteHeader(props: SiteHeaderProps) {
         App
       </ButtonLink>
       {props.page === "landing" ? (
-        <Button href={OPENBOT_LINKS.download} variant="primary" size="sm" icon="download">
+        <Button href={AIKINGBOT_LINKS.download} variant="primary" size="sm" icon="download">
           Download
         </Button>
       ) : (
@@ -56,9 +56,9 @@ export function SiteHeader(props: SiteHeaderProps) {
 
   return (
     <header class="landing-header" data-enter="header">
-      <Link class="landing-brand" to="/" aria-label="OpenBot home">
+      <Link class="landing-brand" to="/" aria-label="AIKINGBOT home">
         <AppLogo variant="production" class="landing-brand-logo" />
-        <span>OpenBot</span>
+        <span>AIKINGBOT</span>
       </Link>
       <SiteNavigationMenu />
       <div class="site-header-actions">

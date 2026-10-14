@@ -3,7 +3,7 @@
  * renderer owns persistence and the device adapter, and passes the resolved shortcut down
  * through typed props.
  */
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@aikingbot/i18n";
 
 /** How the user sends a message: plain Enter, or the platform modifier with Enter. */
 export type SendShortcutMode = "enter" | "mod-enter";

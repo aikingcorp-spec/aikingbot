@@ -1,6 +1,6 @@
-import type { AgentModelId, AgentProviderId } from "@openbot/contracts/ipc";
-import { Button, ErrorReference, IconButton, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { AgentModelId, AgentProviderId } from "@aikingbot/contracts/ipc";
+import { Button, ErrorReference, IconButton, X } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, createUniqueId, onSettled, Show } from "solid-js";
 import { listenForEscape } from "./onboarding-escape";
 import { createSetupProviders, SetupProviderPicker, type SetupProviderProps } from "./SetupProviderPicker";
@@ -26,7 +26,7 @@ export interface ServerOnboardingProps {
 /**
  * The provider step of a joined server that has no agent yet, for its owner or admin.
  *
- * OpenBot includes no AI subscription, and a new host has no provider signed in, so an agent made
+ * AIKINGBOT includes no AI subscription, and a new host has no provider signed in, so an agent made
  * there first could not answer. The step signs the host in, and the agent form comes after it.
  * The choice stays in this window: the saved setup choice is of this computer, not of the server.
  * The step covers the window, as the first-run screen does: the rail and the sidebar of a server

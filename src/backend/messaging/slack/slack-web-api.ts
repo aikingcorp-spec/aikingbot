@@ -1,5 +1,5 @@
 import { open, rm } from "node:fs/promises";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import { causeHelpers } from "../../effect-boundary";
 import { MessagingAdapterError, MessagingConnectionError } from "../messaging-types";

@@ -1,8 +1,8 @@
-import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarMobileAppCard } from "@openbot/ui/features/sidebar/SidebarMobileAppCard";
-import { computeSidebarAgentStates } from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import { useText } from "@openbot/ui/text";
+import { computeAgentAvatarMoods } from "@aikingbot/ui/features/agents/agent-avatar-mood";
+import { Sidebar } from "@aikingbot/ui/features/sidebar/Sidebar";
+import { SidebarMobileAppCard } from "@aikingbot/ui/features/sidebar/SidebarMobileAppCard";
+import { computeSidebarAgentStates } from "@aikingbot/ui/features/sidebar/sidebar-agent-states";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { useLayout } from "../../layout";
 import { DirectConversation } from "../../lazy-views";
@@ -23,7 +23,7 @@ import { useSidebar } from "./sidebar-context";
 
 /** Dismissing the mobile app card is a choice of this computer, like the sidebar width. The key is
  * new with the Android release, so a computer that dismissed the iPhone-only card sees it once more. */
-const MOBILE_APP_DISMISSED_STORAGE_KEY = "openbot:mobile-app-card-dismissed";
+const MOBILE_APP_DISMISSED_STORAGE_KEY = "aikingbot:mobile-app-card-dismissed";
 
 /**
  * The list of Agents and people. It reads the most domains of any pane, and every
@@ -51,7 +51,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
     activeAgent,
     agentSetupDraft,
     duplicatingAgentIds,
-    openBotSetup,
+    aikingBotSetup,
   } = useAgents();
   const { editAgent, duplicateAgent, deleteAgent } = useAgentActions();
   const { activeTurns, queues, failedTurns, usageLimits, pendingPrompts, pendingApprovals } = useTurns();
@@ -194,7 +194,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
       onPreloadDirectConversation={props.peopleEnabled ? () => void DirectConversation.preload() : undefined}
       onCreateAgent={() => {
         channels.close();
-        openBotSetup();
+        aikingBotSetup();
       }}
       onEditAgent={editAgent}
       duplicateSupported={activeServerSupportsCapability("agent-duplication")}
@@ -225,7 +225,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
               avatarHue: agentSetupDraft().avatarHue,
               onSelect: () => {
                 channels.close();
-                openBotSetup();
+                aikingBotSetup();
               },
             }
           : undefined

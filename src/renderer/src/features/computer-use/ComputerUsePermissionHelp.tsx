@@ -1,7 +1,7 @@
-import { type ComputerUsePermissionApp, LOCAL_SERVER_ID, type MacPermissionId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, FolderOpen, GripVertical, Monitor, MousePointer2 } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { type ComputerUsePermissionApp, LOCAL_SERVER_ID, type MacPermissionId } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
+import { Button, FolderOpen, GripVertical, Monitor, MousePointer2 } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup, onSettled, Show } from "solid-js";
 import { computerUsePort } from "./computer-use-port";
 
@@ -11,7 +11,7 @@ import { computerUsePort } from "./computer-use-port";
  * The list in System Settings has no way to browse for an application, so the way in is the one
  * macOS gives everybody: drag the bundle onto the list. The window carries that bundle as a card,
  * and it carries the name of the bundle the system holds responsible - in a development build that
- * is Electron, and a card that said "OpenBot" would send the user looking for a row that never
+ * is Electron, and a card that said "AIKINGBOT" would send the user looking for a row that never
  * appears.
  */
 const PERMISSION_HELP: Record<MacPermissionId, { title: AppTextKey; pane: AppTextKey; icon: typeof Monitor }> = {
@@ -29,7 +29,7 @@ const PERMISSION_HELP: Record<MacPermissionId, { title: AppTextKey; pane: AppTex
 
 /** The names of the applications this window can point at. They are product names. */
 const SUNSHINE_APP_NAME = "Sunshine";
-const OPENBOT_APP_NAME = "OpenBot";
+const AIKINGBOT_APP_NAME = "AIKINGBOT";
 
 /** How often the driver is asked again while the user is in System Settings. */
 const POLL_INTERVAL_MS = 1_000;
@@ -174,7 +174,7 @@ export function ComputerUsePermissionHelp(props: { permission: MacPermissionId; 
           <Show
             when={app()}
             fallback={t("computerUse.help.findInList", {
-              name: props.sunshine ? SUNSHINE_APP_NAME : OPENBOT_APP_NAME,
+              name: props.sunshine ? SUNSHINE_APP_NAME : AIKINGBOT_APP_NAME,
             })}
           >
             {(bundle) => t("computerUse.help.dragIntoList", { name: bundle().name })}

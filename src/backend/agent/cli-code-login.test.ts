@@ -1,8 +1,8 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { Effect, Exit, Scope } from "effect";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../effect-boundary";
@@ -94,7 +94,7 @@ describe("startCliCodeLogin", () => {
   }
 
   beforeAll(async () => {
-    directory = await mkdtemp(join(tmpdir(), "openbot-code-login-"));
+    directory = await mkdtemp(join(tmpdir(), "aikingbot-code-login-"));
     fakeClaude = join(directory, "claude.js");
     // Like the real CLI: it prints the link and the prompt, then reads one line. It quotes a refused
     // code, so a leak through its output would show.

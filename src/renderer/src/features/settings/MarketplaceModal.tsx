@@ -1,16 +1,16 @@
-import { Marketplace } from "@openbot/ui/features/marketplace/Marketplace";
-import { createMarketplaceNavigation } from "@openbot/ui/features/marketplace/marketplace-view";
-import { McpKeyDialog } from "@openbot/ui/features/settings/McpKeyDialog";
-import { McpLocalDialog } from "@openbot/ui/features/settings/McpLocalDialog";
-import { McpSignInDialog } from "@openbot/ui/features/settings/McpSignInDialog";
-import { McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
-import { PluginUninstallDialog } from "@openbot/ui/features/settings/PluginUninstallDialog";
+import { Marketplace } from "@aikingbot/ui/features/marketplace/Marketplace";
+import { createMarketplaceNavigation } from "@aikingbot/ui/features/marketplace/marketplace-view";
+import { McpKeyDialog } from "@aikingbot/ui/features/settings/McpKeyDialog";
+import { McpLocalDialog } from "@aikingbot/ui/features/settings/McpLocalDialog";
+import { McpSignInDialog } from "@aikingbot/ui/features/settings/McpSignInDialog";
+import { McpSignInRelayDialog } from "@aikingbot/ui/features/settings/McpSignInPage";
+import { PluginUninstallDialog } from "@aikingbot/ui/features/settings/PluginUninstallDialog";
 import { createEffect, createSignal, Match, Show, Switch, untrack } from "solid-js";
 import { createMarketplaceController, type MarketplaceControllerProps } from "./marketplace-controller";
 
 export interface MarketplaceModalProps extends MarketplaceControllerProps {
   /**
-   * The listing an `openbot://plugins/<slug>` link or a chat suggestion asked for. It opens the app
+   * The listing an `aikingbot://plugins/<slug>` link or a chat suggestion asked for. It opens the app
    * page; a link never connects, so what a link can do is show a user a listing they then decide
    * about.
    */

@@ -1,4 +1,4 @@
-import type { AgentSummary, ConversationMessage, QueueDeliveryStatus } from "@openbot/contracts/ipc";
+import type { AgentSummary, ConversationMessage, QueueDeliveryStatus } from "@aikingbot/contracts/ipc";
 import {
   CONVERSATION_PLAN_ITEM_TYPE,
   hostedSiteConversationEvent,
@@ -8,19 +8,19 @@ import {
   routineConversationEvent,
   routineRunConversationEvent,
   skillConversationEvent,
-} from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
+} from "@aikingbot/contracts/ipc";
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
+import { cleanAgentMessageText } from "@aikingbot/team-client/agent-message-text";
 import type {
   AgentDeliveryMarkerStatus,
   AgentMessage,
   AgentMessagePlan,
   AgentProfile,
   ChatActionMarkerModel,
-} from "@openbot/ui/data";
-import { formatChatTimestamp } from "@openbot/ui/features/conversation/chat-timestamp";
-import type { TaskListItem } from "@openbot/ui/features/conversation/TaskList";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/ui/data";
+import { formatChatTimestamp } from "@aikingbot/ui/features/conversation/chat-timestamp";
+import type { TaskListItem } from "@aikingbot/ui/features/conversation/TaskList";
+import { currentText } from "@aikingbot/ui/text";
 import { isRoutineEventItem } from "./features/conversation/conversation-read-state";
 
 export function toAgentProfile(stored: AgentSummary): AgentProfile {

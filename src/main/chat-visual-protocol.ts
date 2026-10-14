@@ -1,8 +1,12 @@
-import { CHAT_VISUAL_FRAME_SANDBOX, CHAT_VISUAL_PAGE_LIMIT, chatVisualDocument } from "@openbot/contracts/chat-visual";
+import {
+  CHAT_VISUAL_FRAME_SANDBOX,
+  CHAT_VISUAL_PAGE_LIMIT,
+  chatVisualDocument,
+} from "@aikingbot/contracts/chat-visual";
 import { isTrustedRendererUrl } from "./trusted-renderer";
 
 /**
- * Responses for the `openbot-visual` and `openbot-remote-visual` schemes, which serve an HTML
+ * Responses for the `aikingbot-visual` and `aikingbot-remote-visual` schemes, which serve an HTML
  * attachment as a visual reply page, and the CORS headers of the attachment schemes.
  *
  * A visual reply page runs the agent's scripts. Its `sandbox` policy gives it an opaque origin, so

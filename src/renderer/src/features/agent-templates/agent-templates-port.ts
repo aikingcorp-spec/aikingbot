@@ -1,12 +1,12 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What the publish and install dialogs reach in main: the agent templates of this computer, and
  * adding a template's agent on a joined server.
  */
 export interface AgentTemplatesPort {
-  agent: Pick<OpenBotDesktopApi["agent"], "addTemplateAgent">;
-  agentTemplates: Pick<OpenBotDesktopApi["agentTemplates"], "get" | "install" | "preview" | "publish" | "unpublish">;
+  agent: Pick<AIKINGBOTDesktopApi["agent"], "addTemplateAgent">;
+  agentTemplates: Pick<AIKINGBOTDesktopApi["agentTemplates"], "get" | "install" | "preview" | "publish" | "unpublish">;
 }
 
 /** What the publish dialog reaches. The web client passes the host's. */
@@ -18,7 +18,7 @@ export interface AgentTemplateInstallCalls {
   agentTemplates: Pick<AgentTemplatesPort["agentTemplates"], "get" | "install">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function agentTemplatesPort(): AgentTemplatesPort {
-  return window.openbot;
+  return window.aikingbot;
 }

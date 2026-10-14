@@ -1,10 +1,10 @@
-import { Button, Folder, Lock } from "@openbot/ui";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { agentAccessLockLabel } from "@openbot/ui/features/agents/agent-access";
-import { ComputerIcon, RemoteDesktopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { useText } from "@openbot/ui/text";
+import { Button, Folder, Lock } from "@aikingbot/ui";
+import { ProviderModelPicker } from "@aikingbot/ui/components/ProviderModelPicker";
+import type { AgentProfile } from "@aikingbot/ui/data";
+import { AgentAvatar } from "@aikingbot/ui/features/agents/AgentAvatar";
+import { agentAccessLockLabel } from "@aikingbot/ui/features/agents/agent-access";
+import { ComputerIcon, RemoteDesktopIcon } from "@aikingbot/ui/features/conversation/ConversationIcons";
+import { useText } from "@aikingbot/ui/text";
 import type { ComponentProps } from "@solidjs/web";
 import { Show } from "solid-js";
 

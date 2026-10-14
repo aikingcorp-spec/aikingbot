@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { getArray, getString, isRecord, type ThreadItem } from "./protocol";
 import { providerCall, providerFailure } from "./provider-client-effects";

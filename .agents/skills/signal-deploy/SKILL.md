@@ -5,7 +5,7 @@ description: Check and deploy Signal (the `remote-api` service in `remote/`) to 
 
 # Signal deploy
 
-Signal runs on `sui-alexandria` in the Compose project `openbot-remote` (`/opt/openbot/remote`). It
+Signal runs on `sui-alexandria` in the Compose project `aikingbot-remote` (`/opt/aikingbot/remote`). It
 has no database: a restart closes the signalling WebSockets and empties the in-memory rooms, routes
 and resume-token cache. Active WebRTC data channels stay up. coturn is a separate container.
 
@@ -31,7 +31,7 @@ was older than #1520. It had no `/v1/webhooks` route and refused webhook-only in
   relay sessions. Change coturn only when the developer asks.
 - Never print, copy off the host, or log an environment value, `.env.keys`, a container environment,
   a token, a ticket or raw connection logs. Compare secrets by key name, or by a hash on the host.
-- The deploy reads the host files `/opt/openbot/remote/.env.production` and `.env.keys` through
+- The deploy reads the host files `/opt/aikingbot/remote/.env.production` and `.env.keys` through
   symlinks, not the `remote/.env.production` of the tag. The two files can differ.
 - Get explicit approval from the developer before each production change: the deploy, a change to the
   host environment file, and a change to the host Nginx configuration.
@@ -41,16 +41,16 @@ was older than #1520. It had no `/v1/webhooks` route and refused webhook-only in
 First read `commit` from the public health route:
 
 ```sh
-curl -fsS https://signal.openbot.run/health/live
+curl -fsS https://signal.aikingbot.aikingx.com/health/live
 ```
 
 If `commit` is missing (a build from before this field) or `unknown` (built without
-`OPENBOT_SOURCE_COMMIT`), find the commit by checksum:
+`AIKINGBOT_SOURCE_COMMIT`), find the commit by checksum:
 
 ```sh
-ssh sui-alexandria 'docker inspect openbot-remote-remote-api-1 --format "{{.Image}} {{.Created}} {{.State.Health.Status}}"'
-ssh sui-alexandria 'docker exec openbot-remote-remote-api-1 sh -c "cd /app/remote/api/src && sha256sum *.ts"'
-ssh sui-alexandria 'ls -t /opt/openbot/releases'
+ssh sui-alexandria 'docker inspect aikingbot-remote-remote-api-1 --format "{{.Image}} {{.Created}} {{.State.Health.Status}}"'
+ssh sui-alexandria 'docker exec aikingbot-remote-remote-api-1 sh -c "cd /app/remote/api/src && sha256sum *.ts"'
+ssh sui-alexandria 'ls -t /opt/aikingbot/releases'
 ```
 
 Each release directory has the full commit SHA as its name. Compare the container checksums with
@@ -74,12 +74,12 @@ changes that are live now.
   A new `hello` field or a new public route that released clients use needs this Signal before those
   clients ship.
 - **Account service.** A new Signal call to the Worker (for example `/v2/remote/<x>-route/...`) must
-  exist in the deployed Worker. An unauthenticated `POST https://api.openbot.run/<path>` gives 401
+  exist in the deployed Worker. An unauthenticated `POST https://api.aikingbot.aikingx.com/<path>` gives 401
   when the route exists and 404 when it does not.
 - **`remote/compose.yaml`.** A new variable with `:?` stops the start when the host file lacks it.
 - **`remote/api/Dockerfile`.** A new workspace package must be copied before `bun install`.
-- **`remote/nginx/signal.openbot.run.conf`.** The host uses its own copy at
-  `/etc/nginx/conf.d/openbot-remote.conf`. A new `location` in the repository needs the same change on
+- **`remote/nginx/signal.aikingbot.aikingx.com.conf`.** The host uses its own copy at
+  `/etc/nginx/conf.d/aikingbot-remote.conf`. A new `location` in the repository needs the same change on
   the host, after a backup, `nginx -t` and `systemctl reload nginx`. Without it, the request goes
   through `location /`, which has the default 1 MB body limit and writes the path to the access log.
 - **Tests.** In the tag worktree: `bun install --frozen-lockfile`, then
@@ -92,7 +92,7 @@ changes that are live now.
 
    ```sh
    git show <tag>:remote/.env.production | grep -vE '^#|^$' | cut -d= -f1 | sort
-   ssh sui-alexandria "grep -vE '^#|^$' /opt/openbot/remote/.env.production | cut -d= -f1 | sort"
+   ssh sui-alexandria "grep -vE '^#|^$' /opt/aikingbot/remote/.env.production | cut -d= -f1 | sort"
    ```
 
 2. Make sure that `DOTENV_PUBLIC_KEY_PRODUCTION` is the same in both files. Then the host
@@ -109,22 +109,22 @@ changes that are live now.
 Report the results of steps 1 to 3 and get approval. Then follow "Deployment procedure" in
 [docs/remote-session-deployment.md](../../../docs/remote-session-deployment.md) with these changes:
 
-- Use `git archive <tag>` and the release directory `/opt/openbot/releases/$(git rev-parse <tag>^{commit})`.
+- Use `git archive <tag>` and the release directory `/opt/aikingbot/releases/$(git rev-parse <tag>^{commit})`.
   If the directory exists, do not write into it again.
-- Tag the running image as `openbot-remote-api:before-<tag>` before the build.
+- Tag the running image as `aikingbot-remote-api:before-<tag>` before the build.
 - Build from the release directory. The document's build command passes its name, the tag commit,
-  as `--build-arg OPENBOT_SOURCE_COMMIT`, and stops when the name is not a full commit SHA.
-- Run the Compose commands with `-p openbot-remote`, and build and start only `remote-api`.
+  as `--build-arg AIKINGBOT_SOURCE_COMMIT`, and stops when the name is not a full commit SHA.
+- Run the Compose commands with `-p aikingbot-remote`, and build and start only `remote-api`.
 
 ## 5. Verify
 
-- `docker inspect openbot-remote-remote-api-1 --format '{{.Image}} {{.State.Health.Status}}'` shows
+- `docker inspect aikingbot-remote-remote-api-1 --format '{{.Image}} {{.State.Health.Status}}'` shows
   the new image and `healthy`.
-- `curl --fail https://signal.openbot.run/health/ready` succeeds.
-- `curl --fail https://signal.openbot.run/health/live` shows `commit` equal to the tag commit (tags
+- `curl --fail https://signal.aikingbot.aikingx.com/health/ready` succeeds.
+- `curl --fail https://signal.aikingbot.aikingx.com/health/live` shows `commit` equal to the tag commit (tags
   from before this field show no `commit`; use the checksums then).
 - The container `sha256sum` of `/app/remote/api/src/*.ts` matches the tag.
-- `docker logs --since <deploy time> openbot-remote-remote-api-1 2>&1 | grep -iE 'error|disabled|off|telegram|discord|slack'`
+- `docker logs --since <deploy time> aikingbot-remote-remote-api-1 2>&1 | grep -iE 'error|disabled|off|telegram|discord|slack'`
   shows no start errors, and shows each enabled feature. Do not print other log lines.
 - Unauthenticated probes of each public route that the diff adds give 401 or 403, not 404 or 502.
   For example, `POST /v1/webhooks/x` with `content-type: application/json` gives 401.

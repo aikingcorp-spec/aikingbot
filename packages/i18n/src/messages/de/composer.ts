@@ -48,10 +48,10 @@ export const messages = {
   "composer.voice.transcribing": "Sprachanweisung wird transkribiert",
   "composer.voice.start": "Anweisung per Sprache erstellen",
   "composer.voice.blocked":
-    "Der Mikrofonzugriff ist gesperrt. Erlaube OpenBot in den Systemeinstellungen den Zugriff auf das Mikrofon.",
+    "Der Mikrofonzugriff ist gesperrt. Erlaube AIKINGBOT in den Systemeinstellungen den Zugriff auf das Mikrofon.",
   "composer.voice.noMicrophone": "Kein Mikrofon verfügbar.",
-  "composer.voice.startFailed": "OpenBot konnte die Sprachaufnahme nicht starten.",
-  "composer.voice.transcribeFailed": "OpenBot konnte diese Aufnahme nicht transkribieren.",
+  "composer.voice.startFailed": "AIKINGBOT konnte die Sprachaufnahme nicht starten.",
+  "composer.voice.transcribeFailed": "AIKINGBOT konnte diese Aufnahme nicht transkribieren.",
   "composer.reply.toYou": "Antwort auf deine Nachricht",
   "composer.reply.toAgent": "Antwort an den Agenten",
   "composer.reply.attachment": "Anhang",

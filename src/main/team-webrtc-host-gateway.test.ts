@@ -7,12 +7,12 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import {
   TEAM_AGENT_ACTIVITY_CAPABILITY,
   TEAM_MODEL_SCOPED_USAGE_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { decodeTeamProtocolV1ClientEvent } from "@openbot/contracts/team-protocol/v1";
+} from "@aikingbot/contracts/team-protocol/current";
+import { decodeTeamProtocolV1ClientEvent } from "@aikingbot/contracts/team-protocol/v1";
 import {
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2EventFrame,
@@ -20,7 +20,7 @@ import {
   encodeTeamProtocolV2Frame,
   type TeamProtocolV2Json,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol/v2";
+} from "@aikingbot/contracts/team-protocol/v2";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { WebSocketServer } from "ws";
 import opencodeAgents from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
@@ -75,7 +75,7 @@ class FakeBridge extends TeamWebRtcBridge {
 
 describe("TeamWebRtcHostGateway", () => {
   it("isolates devices' RPCs, live subscriptions and revocation while preserving authenticated reconnects", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-host-gateway-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-host-gateway-"));
     directories.push(directory);
     const bridge = new FakeBridge();
     const store = new TeamStore(join(directory, "team.json"));
@@ -117,7 +117,7 @@ describe("TeamWebRtcHostGateway", () => {
     const localServer = createServer((request, response) => {
       localRequests.push({
         path: request.url ?? "",
-        protocol: String(request.headers["openbot-protocol-version"] ?? ""),
+        protocol: String(request.headers["aikingbot-protocol-version"] ?? ""),
       });
       if (request.url === "/v1/attachments/file-1") {
         response.writeHead(200, {
@@ -128,7 +128,7 @@ describe("TeamWebRtcHostGateway", () => {
         return;
       }
       if (request.url === "/v1/agents/bot-1/conversation/unread") {
-        const supported = request.headers["openbot-protocol-version"] === "3";
+        const supported = request.headers["aikingbot-protocol-version"] === "3";
         response.writeHead(supported ? 200 : 400, { "content-type": "application/json" });
         response.end(JSON.stringify(supported ? unreadState : { error: "Mark unread requires protocol 3." }));
         return;
@@ -607,7 +607,7 @@ describe("TeamWebRtcHostGateway", () => {
   });
 
   it("drops only the active WebRTC peer after a malformed known frame", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-host-protocol-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-host-protocol-"));
     directories.push(directory);
     const bridge = new FakeBridge();
     const store = new TeamStore(join(directory, "team.json"));
@@ -647,7 +647,7 @@ describe("TeamWebRtcHostGateway", () => {
   });
 
   it("reports a host Signal peer that closed for good unless a recovery owns it", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-host-closed-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-host-closed-"));
     directories.push(directory);
     const bridge = new FakeBridge();
     const store = new TeamStore(join(directory, "team.json"));
@@ -684,7 +684,7 @@ describe("TeamWebRtcHostGateway", () => {
   });
 
   it("keeps the event sequence that a released client accepts when a send fails or stalls", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "openbot-webrtc-host-events-"));
+    const directory = await mkdtemp(join(tmpdir(), "aikingbot-webrtc-host-events-"));
     directories.push(directory);
     const bridge = new FakeBridge();
     const store = new TeamStore(join(directory, "team.json"));

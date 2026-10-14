@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { Typography } from "heroui-native";

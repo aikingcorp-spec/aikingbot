@@ -1,7 +1,7 @@
 import { createServer } from "node:net";
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
+import type { McpServerConfig, McpTestResult } from "@aikingbot/contracts/ipc";
+import { translateFor } from "@aikingbot/i18n";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { SignInRelayClient, type SignInRelayRemote } from "./sign-in-relay-client";

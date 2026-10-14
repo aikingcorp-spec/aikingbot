@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync, StatementSync } from "node:sqlite";
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentService } from "./agent-service";
 import { startAgentTestFixture, startService, stopAgentTestFixture, waitFor } from "./agent-service-test-harness";
@@ -9,7 +9,7 @@ import { runCauseEffect } from "./effect-boundary";
 
 // Hard caps for one conversation, about 30% above the values measured when each cap was set. A red
 // test means a change made a turn or a read do more work. Make the change cheaper, or raise the cap
-// in the same pull request and say why. `.openbot-build/transfer-budget/` has the measured values.
+// in the same pull request and say why. `.aikingbot-build/transfer-budget/` has the measured values.
 const BUDGETS = {
   /** SQL statements from `sendMessage` to the completed delivery, for the first turn of a thread. */
   firstTurnStatements: 320,
@@ -23,7 +23,7 @@ const BUDGETS = {
   laterTurnEventBytes: 18_000,
 };
 
-const REPORT_PATH = resolve(import.meta.dirname, "../../.openbot-build/transfer-budget/conversation.json");
+const REPORT_PATH = resolve(import.meta.dirname, "../../.aikingbot-build/transfer-budget/conversation.json");
 
 let root: string;
 let service: AgentService | null = null;

@@ -1,5 +1,5 @@
-import { DEFAULT_REMOTE_SESSION_REUSE_PREFERENCE, type RemoteSessionReusePreference } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { DEFAULT_REMOTE_SESSION_REUSE_PREFERENCE, type RemoteSessionReusePreference } from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

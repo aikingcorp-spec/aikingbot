@@ -23,14 +23,14 @@ describe("development environment preparation", () => {
   });
 
   it.each(["1.4.2-canary.1", "1.4.0", "1.3.11"])("rejects unsupported Bun %s with upgrade instructions", (version) => {
-    expect(() => assertSupportedBunVersion(version)).toThrow("OpenBot development requires stable Bun 1.4.2");
+    expect(() => assertSupportedBunVersion(version)).toThrow("AIKINGBOT development requires stable Bun 1.4.2");
   });
 
   it("generates development state before running any command", () => {
     const root = createTemporaryRoot();
     const envFilePresent: boolean[] = [];
     const run: DevelopmentCommandRunner = () =>
-      envFilePresent.push(existsSync(join(root, ".openbot", "dev-state.json")));
+      envFilePresent.push(existsSync(join(root, ".aikingbot", "dev-state.json")));
 
     const outcome = prepareDevelopmentEnvironment({
       projectRoot: root,
@@ -100,7 +100,7 @@ describe("development environment preparation", () => {
     const root = createTemporaryRoot();
     const calls: Array<{ args: string[]; instanceId?: string }> = [];
     const run: DevelopmentCommandRunner = (_executable, args, options) =>
-      calls.push({ args, instanceId: options.env?.OPENBOT_DEV_INSTANCE_ID });
+      calls.push({ args, instanceId: options.env?.AIKINGBOT_DEV_INSTANCE_ID });
 
     prepareDevelopmentWorktree({
       projectRoot: root,
@@ -123,33 +123,33 @@ describe("development environment preparation", () => {
     const mainParent = createTemporaryRoot();
     const main = join(mainParent, "main");
     const worktree = join(createTemporaryRoot(), "worktree");
-    mkdirSync(join(main, ".openbot"), { recursive: true });
+    mkdirSync(join(main, ".aikingbot"), { recursive: true });
     mkdirSync(join(main, "remote"));
     mkdirSync(join(worktree, "apps", "auth-api"), { recursive: true });
     writeFileSync(
       join(worktree, ".worktreeinclude"),
-      "# State\n.openbot/dev-state.json\nremote/.env.keys\n../outside.keys\nremote/../../outside.keys\n/etc/hosts\n",
+      "# State\n.aikingbot/dev-state.json\nremote/.env.keys\n../outside.keys\nremote/../../outside.keys\n/etc/hosts\n",
     );
     writeFileSync(join(mainParent, "outside.keys"), "outside keys");
-    writeFileSync(join(main, ".openbot", "dev-state.json"), "main identity");
+    writeFileSync(join(main, ".aikingbot", "dev-state.json"), "main identity");
     writeFileSync(join(main, "remote", ".env.keys"), "remote keys");
     writeFileSync(join(worktree, "apps", "auth-api", ".env.dev"), "encrypted settings");
 
-    expect(copyWorktreeIncludes(worktree, main)).toEqual([".openbot/dev-state.json", "remote/.env.keys"]);
-    expect(readFileSync(join(worktree, ".openbot", "dev-state.json"), "utf8")).toBe("main identity");
+    expect(copyWorktreeIncludes(worktree, main)).toEqual([".aikingbot/dev-state.json", "remote/.env.keys"]);
+    expect(readFileSync(join(worktree, ".aikingbot", "dev-state.json"), "utf8")).toBe("main identity");
     expect(readFileSync(join(worktree, "remote", ".env.keys"), "utf8")).toBe("remote keys");
     expect(readFileSync(join(worktree, "apps", "auth-api", ".env.dev"), "utf8")).toBe("encrypted settings");
     expect(existsSync(join(worktree, "..", "outside.keys"))).toBe(false);
     expect(existsSync(join(worktree, ".env.keys"))).toBe(false);
-    writeFileSync(join(main, ".openbot", "dev-state.json"), "changed main identity");
+    writeFileSync(join(main, ".aikingbot", "dev-state.json"), "changed main identity");
     expect(copyWorktreeIncludes(worktree, main)).toEqual([]);
-    expect(readFileSync(join(worktree, ".openbot", "dev-state.json"), "utf8")).toBe("main identity");
+    expect(readFileSync(join(worktree, ".aikingbot", "dev-state.json"), "utf8")).toBe("main identity");
     expect(copyWorktreeIncludes(main, main)).toEqual([]);
   });
 });
 
 function createTemporaryRoot(): string {
-  const root = mkdtempSync(join(tmpdir(), "openbot-dev-prepare-"));
+  const root = mkdtempSync(join(tmpdir(), "aikingbot-dev-prepare-"));
   temporaryRoots.push(root);
   mkdirSync(join(root, "apps", "auth-api"), { recursive: true });
   return root;

@@ -5,10 +5,10 @@
 .custom-provider-backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--openbot-layer-dialog);
+  z-index: var(--aikingbot-layer-dialog);
   display: grid;
   place-items: center;
-  padding: var(--openbot-space-6);
+  padding: var(--aikingbot-space-6);
 }
 
 .custom-provider-dialog {
@@ -21,18 +21,18 @@
   /* The same radius the settings modal uses, so the two surfaces read as one family. It also nests
    * the close button: an 8px glyph target held 8px in from the corner asks for about 16px around it,
    * which 20px overshot. */
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-sidebar);
-  color: var(--openbot-text-primary);
+  border-radius: var(--aikingbot-radius-card);
+  background: var(--aikingbot-bg-sidebar);
+  color: var(--aikingbot-text-primary);
 }
 
 .custom-provider-header {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: var(--openbot-space-3);
-  border-bottom: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  border-bottom: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-4);
 }
 
 .custom-provider-mark {
@@ -41,9 +41,9 @@
   height: 28px;
   flex: 0 0 28px;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-accent-soft);
-  color: var(--openbot-accent-text);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-accent-soft);
+  color: var(--aikingbot-accent-text);
 }
 
 .custom-provider-title {
@@ -59,9 +59,9 @@
 .custom-provider-close {
   flex: 0 0 auto;
   align-self: flex-start;
-  margin-block-start: calc(var(--openbot-space-2) * -1);
-  margin-inline-end: calc(var(--openbot-space-2) * -1);
-  color: var(--openbot-text-muted);
+  margin-block-start: calc(var(--aikingbot-space-2) * -1);
+  margin-inline-end: calc(var(--aikingbot-space-2) * -1);
+  color: var(--aikingbot-text-muted);
 }
 
 /* The form is the layout box; the fields inside it are what scrolls, so the footer stays put and
@@ -76,9 +76,9 @@
   display: flex;
   min-height: 0;
   flex-direction: column;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
   overflow-y: auto;
-  padding: var(--openbot-space-4);
+  padding: var(--aikingbot-space-4);
 }
 
 /* The saved endpoints scroll on the same terms the form's fields do, so both dialogs keep their
@@ -87,33 +87,33 @@
   display: flex;
   min-height: 0;
   flex-direction: column;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
   overflow-y: auto;
-  padding: var(--openbot-space-4);
+  padding: var(--aikingbot-space-4);
 }
 
 .custom-provider-list-empty {
-  padding: var(--openbot-space-4) 0;
+  padding: var(--aikingbot-space-4) 0;
   text-align: center;
 }
 
 .custom-provider-rows {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .custom-provider-rows-heading {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .custom-provider-row {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 /* Two equal columns and a trash button: the model ID and its display name carry the same weight,
@@ -121,7 +121,7 @@
 .custom-provider-row-inputs {
   display: grid;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
 }
 
@@ -140,9 +140,9 @@
   flex-shrink: 0;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-2);
-  border-top: 1px solid var(--openbot-border);
-  padding: var(--openbot-space-4);
+  gap: var(--aikingbot-space-2);
+  border-top: 1px solid var(--aikingbot-border);
+  padding: var(--aikingbot-space-4);
 }
 
 .custom-provider-actions .ui-button-variant-default {
@@ -152,9 +152,9 @@
 /* Same reason as the picker heading: only the direct children here are the label-and-icon buttons.
  * The nested remove buttons are icon-only and already sized by .ui-icon-button. */
 .custom-provider-rows > .ui-button svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 /* The label sits first and a find control follows it; a section error keeps the far end. */
@@ -167,44 +167,44 @@
 }
 
 .custom-provider-rows-heading > .custom-provider-discover svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .custom-provider-discovery-status {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .custom-provider-discovered {
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: var(--openbot-space-1);
+  padding: var(--aikingbot-space-1);
   list-style: none;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
 }
 
 .custom-provider-discovered-row {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
-  padding: var(--openbot-space-1) var(--openbot-space-2);
-  border-radius: var(--openbot-radius-sm);
+  gap: var(--aikingbot-space-2);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-sm);
   cursor: pointer;
 }
 
 .custom-provider-discovered-row:hover {
-  background: var(--openbot-bg-control-hover);
+  background: var(--aikingbot-bg-control-hover);
 }
 
 .custom-provider-discovered-id {
   min-width: 0;
   overflow: hidden;
-  font-family: var(--openbot-font-mono);
+  font-family: var(--aikingbot-font-mono);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -213,13 +213,13 @@
 .custom-provider-preset-group {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .custom-provider-presets {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -231,8 +231,8 @@
   height: auto;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-2) var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-2) var(--aikingbot-space-3);
   text-align: start;
   white-space: normal;
 }
@@ -243,16 +243,16 @@
   height: 32px;
   flex: 0 0 32px;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-secondary);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control-hover);
+  color: var(--aikingbot-text-secondary);
 }
 
 .custom-provider-preset > .custom-provider-preset-icon svg,
 .custom-provider-preset-chevron {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .custom-provider-preset-copy {
@@ -264,26 +264,26 @@
 }
 
 .custom-provider-preset-title {
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .custom-provider-preset-description {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-regular);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-regular);
 }
 
 .custom-provider-preset-chevron {
   flex-shrink: 0;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 /* The custom ACP agent form. */
 .custom-acp-presets {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .custom-acp-code {
@@ -292,66 +292,66 @@
 
 .custom-acp-code input,
 input.custom-acp-code {
-  font-family: var(--openbot-font-mono);
+  font-family: var(--aikingbot-font-mono);
 }
 
 /* Local model servers and ACP agents that the host found, below the provider list. */
 .detected-providers {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-2);
-  margin-top: var(--openbot-space-4);
+  gap: var(--aikingbot-space-2);
+  margin-top: var(--aikingbot-space-4);
 }
 
 .detected-providers-heading {
   display: flex;
   min-height: 24px;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .detected-providers-scanning {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
 }
 
 .ui-button.detected-providers-scan {
-  gap: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1-5);
   margin-inline-start: auto;
-  margin-inline-end: calc(var(--openbot-space-2) * -1);
+  margin-inline-end: calc(var(--aikingbot-space-2) * -1);
 }
 
 .detected-providers-heading > .detected-providers-scan svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .detected-providers-icon {
-  color: var(--openbot-text-secondary);
+  color: var(--aikingbot-text-secondary);
 }
 
 .detected-providers .detected-providers-icon > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .ui-button.detected-providers-show-hidden {
   align-self: flex-start;
-  margin-inline-start: calc(var(--openbot-space-2) * -1);
+  margin-inline-start: calc(var(--aikingbot-space-2) * -1);
 }
 
 /* Under the last error it belongs to, at the start of the line like that text. */
 .ui-button.custom-agents-copy-diagnostics {
   justify-self: start;
-  margin-inline-start: calc(var(--openbot-space-2) * -1);
+  margin-inline-start: calc(var(--aikingbot-space-2) * -1);
 }
 
 /* The lists in the detection settings, below the switch card. */
 .detected-providers-settings {
   display: flex;
   flex-direction: column;
-  gap: var(--openbot-space-4);
-  margin-top: var(--openbot-space-3);
+  gap: var(--aikingbot-space-4);
+  margin-top: var(--aikingbot-space-3);
 }

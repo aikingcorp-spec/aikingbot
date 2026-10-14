@@ -1,4 +1,4 @@
-import type { BrowserTarget } from "@openbot/contracts/ipc";
+import type { BrowserTarget } from "@aikingbot/contracts/ipc";
 import { Deferred, Effect, Fiber } from "effect";
 import { type BrowserOperationError, browserFailure, browserSync } from "./browser-effects";
 import type { BrowserHostTab, KeepQueueBlocked } from "./browser-host-tab";

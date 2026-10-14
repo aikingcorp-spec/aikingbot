@@ -15,15 +15,15 @@
   min-width: 0;
   align-items: center;
   justify-content: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   overflow: hidden;
-  padding-inline: var(--openbot-space-1);
-  font-size: var(--openbot-text-sm);
+  padding-inline: var(--aikingbot-space-1);
+  font-size: var(--aikingbot-text-sm);
   white-space: nowrap;
 }
 
 .sidebar-view-tab svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: none;
 }

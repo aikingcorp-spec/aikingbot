@@ -1,17 +1,17 @@
-# @openbot/ui
+# @aikingbot/ui
 
-Internal SolidJS component library for OpenBot desktop, public web, and Storybook.
+Internal SolidJS component library for AIKINGBOT desktop, public web, and Storybook.
 The source files are moved from the desktop renderer; there is one implementation.
 
 ```tsx
-import { Button, Input } from "@openbot/ui";
-import { cx } from "@openbot/ui/utils";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import { Button, Input } from "@aikingbot/ui";
+import { cx } from "@aikingbot/ui/utils";
+import { Sidebar } from "@aikingbot/ui/features/sidebar/Sidebar";
+import { AccountLogin } from "@aikingbot/ui/features/account/AccountLogin";
+import { ComposerEditor } from "@aikingbot/ui/features/conversation/ComposerEditor";
 ```
 
-Load `@openbot/brand/tokens.css` and `@openbot/ui/styles.css` in the consumer stylesheet.
+Load `@aikingbot/brand/tokens.css` and `@aikingbot/ui/styles.css` in the consumer stylesheet.
 Tailwind consumers must scan `packages/ui/src`. Application styles still supply feature
 layouts and theme aliases. Use the repository's pinned Solid 2 runtime and patched Kobalte.
 

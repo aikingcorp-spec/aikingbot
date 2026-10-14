@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What Computer Use reaches in main: the driver state, the macOS permission panes and helper, and
@@ -6,11 +6,11 @@ import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
  * module.
  */
 export interface ComputerUsePort {
-  computerUse: OpenBotDesktopApi["computerUse"];
-  remoteDesktop: Pick<OpenBotDesktopApi["remoteDesktop"], "checkSetup">;
+  computerUse: AIKINGBOTDesktopApi["computerUse"];
+  remoteDesktop: Pick<AIKINGBOTDesktopApi["remoteDesktop"], "checkSetup">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function computerUsePort(): ComputerUsePort {
-  return window.openbot;
+  return window.aikingbot;
 }

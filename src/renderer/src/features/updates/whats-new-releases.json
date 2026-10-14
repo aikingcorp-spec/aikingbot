@@ -24,7 +24,7 @@
         "type": "fixed",
         "items": [
           "Gemini sign-in, quota and error messages are clearer, and a Gemini chat with a lost session starts a new one.",
-          "Open OpenBot on an invitation page now opens OpenBot on Windows.",
+          "Open AIKINGBOT on an invitation page now opens AIKINGBOT on Windows.",
           "Agents show in their sidebar sections when a server starts or reconnects.",
           "Opening or writing to a chat no longer shows \"Read state failed\" for a queued message."
         ]
@@ -35,7 +35,7 @@
     "version": "0.38.1",
     "date": "2026-10-13",
     "notices": [
-      "Put agents that work together in one sidebar section. Channels are no longer supported, and OpenBot archives and hides them. Your channel history stays on your computer for now. The next release removes channels and their data."
+      "Put agents that work together in one sidebar section. Channels are no longer supported, and AIKINGBOT archives and hides them. Your channel history stays on your computer for now. The next release removes channels and their data."
     ],
     "groups": [
       {
@@ -60,7 +60,7 @@
         "type": "fixed",
         "items": [
           "Claude background subagents keep running after the agent's turn ends, and the agent's answer after them shows in the chat.",
-          "OpenBot uses Electron 44.7.0, which can stop rare crashes while the app is idle on macOS.",
+          "AIKINGBOT uses Electron 44.7.0, which can stop rare crashes while the app is idle on macOS.",
           "Account sessions show a hosted server with its name, not as \"Desktop\"."
         ]
       }
@@ -103,9 +103,9 @@
         "type": "added",
         "items": [
           "Settings > Voice shows the dictation models. You can download Whisper large-v3 turbo and set a fixed dictation language, for example Hungarian.",
-          "A scheduled routine can skip a time that OpenBot missed while it was closed, or run once when OpenBot opens.",
+          "A scheduled routine can skip a time that AIKINGBOT missed while it was closed, or run once when AIKINGBOT opens.",
           "When a browser sign-in does not finish, you can log in with a code. Grok, Cursor, Cline and Muse also accept a code.",
-          "Run openbot mobile-connect on a self-hosted or Docker server to connect the phone app to it."
+          "Run aikingbot mobile-connect on a self-hosted or Docker server to connect the phone app to it."
         ]
       },
       {
@@ -133,8 +133,8 @@
       {
         "type": "added",
         "items": [
-          "OpenBot is now available in Polish. Choose Polski in Settings > General > Language.",
-          "With analytics on, OpenBot sends one daily summary of its memory and CPU use. It does not send process names, command lines or paths."
+          "AIKINGBOT is now available in Polish. Choose Polski in Settings > General > Language.",
+          "With analytics on, AIKINGBOT sends one daily summary of its memory and CPU use. It does not send process names, command lines or paths."
         ]
       },
       {
@@ -223,7 +223,7 @@
       {
         "type": "changed",
         "items": [
-          "The sidebar now shows \"OpenBot for mobile\". Open \"How to install\" for the iPhone and Android setup steps."
+          "The sidebar now shows \"AIKINGBOT for mobile\". Open \"How to install\" for the iPhone and Android setup steps."
         ]
       },
       {
@@ -243,7 +243,7 @@
           "See your routines on a canvas. Open an agent in Routines to see its next runs, past runs and results.",
           "Connect agents in a routine. Each agent can pass its answer to the next agent in the flow.",
           "Ask an agent to edit the routine canvas. Use the chat panel to add or change routines and their connections.",
-          "Use OpenBot in Russian, Spanish or German. Select the interface language in Settings."
+          "Use AIKINGBOT in Russian, Spanish or German. Select the interface language in Settings."
         ]
       },
       {

@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import { access, readdir, readFile } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { bundledLibraryLicense, isPortableLoadPath, readMachOLoadPaths } from "./mac-runtime-dylibs";
 import { createRemoteDesktopInputDigest, loadNativeRuntimeLock } from "./native-runtime-lock";
 import { runtimeTarget } from "./remote-desktop-runtime-release";
 
-const logger = createOpenBotLogger("verify-remote-desktop-runtime");
+const logger = createAIKINGBOTLogger("verify-remote-desktop-runtime");
 
 const platform = process.argv.includes("--windows") ? "win32" : process.argv.includes("--linux") ? "linux" : "darwin";
 const architecture = platform === "win32" ? "x64" : process.arch;
@@ -23,10 +23,10 @@ if (manifest.moonlightWeb?.commit !== lock.remoteDesktop.moonlightWeb.commit) {
   throw new Error("The Moonlight Web commit is not approved.");
 }
 if (manifest.sunshine?.patch?.sha256 !== lock.remoteDesktop.sunshine.patch.sha256) {
-  throw new Error("The Sunshine OpenBot patch is not approved.");
+  throw new Error("The Sunshine AIKINGBOT patch is not approved.");
 }
 if (manifest.moonlightWeb?.patch?.sha256 !== lock.remoteDesktop.moonlightWeb.patch.sha256) {
-  throw new Error("The Moonlight Web OpenBot patch is not approved.");
+  throw new Error("The Moonlight Web AIKINGBOT patch is not approved.");
 }
 
 const target = runtimeTarget(platform, architecture);
@@ -42,7 +42,7 @@ await Promise.all([
   access(resolve("build/remote-desktop-runtime/sources", sunshinePatch)),
   access(
     resolve(
-      `build/remote-desktop-runtime/sources/moonlight-web-stream-${lock.remoteDesktop.moonlightWeb.version}-openbot-source.tar.gz`,
+      `build/remote-desktop-runtime/sources/moonlight-web-stream-${lock.remoteDesktop.moonlightWeb.version}-aikingbot-source.tar.gz`,
     ),
   ),
   access(resolve("build/remote-desktop-runtime/sources", moonlightPatch)),
@@ -102,7 +102,7 @@ async function verifyMachOLoadPaths(libraries: string[]) {
 }
 
 /**
- * A bundled library is one OpenBot redistributes, and both of the ones that reach the runtime today
+ * A bundled library is one AIKINGBOT redistributes, and both of the ones that reach the runtime today
  * ask for their notice to travel with the binary. Presence in the tree is what creates the
  * obligation, so this reads the tree rather than a list: a library that starts being bundled arrives
  * here as a failure with its name in it, not as a release that quietly drops a licence.

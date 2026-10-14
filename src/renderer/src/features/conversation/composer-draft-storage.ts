@@ -1,11 +1,11 @@
-import { rewriteAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { rewriteAttachmentReferences } from "@aikingbot/contracts/attachment-references";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
 import { createEffect, onCleanup } from "solid-js";
 import { EMPTY_DRAFT } from "./composer-draft";
 import { composerDraftKey } from "./conversation-keys";
 import type { ComposerDraft } from "./conversation-types";
 
-const COMPOSER_DRAFTS_STORAGE_KEY = "openbot:composer-drafts";
+const COMPOSER_DRAFTS_STORAGE_KEY = "aikingbot:composer-drafts";
 const WRITE_DELAY_MS = 300;
 
 type Drafts = Record<string, ComposerDraft>;

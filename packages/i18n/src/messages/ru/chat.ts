@@ -336,7 +336,7 @@ export const messages = {
   "chat.suggestion.dismissed": "Предложение «{name}» скрыто.",
   "chat.suggestion.undo": "Отменить",
   "chat.suggestion.githubLocalOnly": "Подключите GitHub на компьютере, на котором работает этот сервер.",
-  "chat.suggestion.githubUnavailable": "Эта сборка OpenBot не может подключить GitHub.",
+  "chat.suggestion.githubUnavailable": "Эта сборка AIKINGBOT не может подключить GitHub.",
   "chat.compaction.running": "Сжатие контекста",
   "chat.compaction.completed": "Контекст сжат",
   "chat.compaction.failed": "Не удалось сжать контекст",

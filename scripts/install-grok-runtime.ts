@@ -2,13 +2,13 @@ import { execFileSync } from "node:child_process";
 import { chmod, copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { z } from "zod";
 import { type AgentRuntimeLock, loadAgentRuntimeLock } from "./agent-runtime-lock";
 import { sha256 } from "./remote-desktop-runtime-release";
 import { download, escapeRegExp, installValidatedTree, isCurrentInstallation } from "./runtime-install";
 
-const logger = createOpenBotLogger("install-grok-runtime");
+const logger = createAIKINGBOTLogger("install-grok-runtime");
 
 export type GrokRuntimeTarget = "darwin-arm64" | "darwin-x64" | "linux-x64" | "linux-arm64" | "win32-x64";
 
@@ -59,7 +59,7 @@ export async function installGrokRuntime(
   verifyChecksum(license, lock.grok.licenseSha256, "Grok license");
   verifyChecksum(notices, lock.grok.noticesSha256, "Grok third-party notices");
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "openbot-grok-install-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aikingbot-grok-install-"));
   try {
     const staged = join(temporaryRoot, "runtime");
     await mkdir(join(staged, "bin"), { recursive: true });

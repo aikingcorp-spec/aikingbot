@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Schema } from "effect";
 import { ProviderRuntimeFailure, runtimeIO } from "./provider-runtime-effects";
 

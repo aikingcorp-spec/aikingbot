@@ -10,21 +10,21 @@ const projectRoot = fileURLToPath(new URL("../apps/mobile", import.meta.url));
 
 describe("mobile RocketSim integration", () => {
   it.skipIf(process.platform !== "darwin")("runs without RocketSim by default and enables it only on request", () => {
-    const directory = mkdtempSync(join(tmpdir(), "openbot-mobile-ios-"));
+    const directory = mkdtempSync(join(tmpdir(), "aikingbot-mobile-ios-"));
     const launcher = fileURLToPath(new URL("./mobile-ios.ts", import.meta.url));
     const expo = createRequire(join(projectRoot, "package.json")).resolve("expo/bin/cli");
     const app = join(directory, "RocketSim.app");
     const framework = join(app, "Contents/Frameworks/RocketSimConnectLinker.nocache.framework");
     // Replace only the external commands. No prebuild, native build, or simulator runs in this test.
-    const command = '#!/bin/sh\nprintf "%s\\n" "$OPENBOT_ROCKETSIM_FRAMEWORK" "$@"\n';
+    const command = '#!/bin/sh\nprintf "%s\\n" "$AIKINGBOT_ROCKETSIM_FRAMEWORK" "$@"\n';
     writeFileSync(join(directory, "node"), command, { mode: 0o755 });
     writeFileSync(join(directory, "open"), command, { mode: 0o755 });
     const env = {
       ...process.env,
       PATH: `${directory}:${process.env.PATH}`,
       ROCKETSIM_APP_PATH: app,
-      OPENBOT_ROCKETSIM: "1",
-      OPENBOT_ROCKETSIM_FRAMEWORK: "stale-framework",
+      AIKINGBOT_ROCKETSIM: "1",
+      AIKINGBOT_ROCKETSIM_FRAMEWORK: "stale-framework",
     };
     const prebuild = [expo, "prebuild", "--platform", "ios", "--no-clean", "--no-install"];
     try {

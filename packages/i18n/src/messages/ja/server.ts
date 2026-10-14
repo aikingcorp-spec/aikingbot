@@ -22,8 +22,8 @@ export const messages = {
   "server.connection.retry": "再試行",
   "server.connection.manage": "設定を開く",
   "server.connection.restored": "{name} への接続が回復しました",
-  "server.compatibility.updateClientTitle": "この OpenBot アプリを更新してください",
-  "server.compatibility.updateHostTitle": "{name} の OpenBot を更新してください",
+  "server.compatibility.updateClientTitle": "この AIKINGBOT アプリを更新してください",
+  "server.compatibility.updateHostTitle": "{name} の AIKINGBOT を更新してください",
   "server.compatibility.unsafeDataTitle": "ホストが安全でないデータを返しました",
   "server.compatibility.cannotConnectTitle": "{name} に接続できません",
   "server.compatibility.updateClientDescription":
@@ -31,7 +31,7 @@ export const messages = {
   "server.compatibility.updateHostDescription":
     "ホストはこのアプリより古いプロトコルにのみ対応しています。ホストを更新してから、もう一度お試しください。",
   "server.compatibility.unsafeDataDescription":
-    "既知のペイロードが無効だったため、OpenBot はこの接続を停止しました。現在のワークスペースのデータは変更されていません。",
+    "既知のペイロードが無効だったため、AIKINGBOT はこの接続を停止しました。現在のワークスペースのデータは変更されていません。",
   "server.compatibility.clientVersion": "クライアントのバージョン",
   "server.compatibility.hostVersion": "ホストのバージョン",
   "server.compatibility.negotiatedProtocol": "ネゴシエートされたプロトコル",
@@ -58,9 +58,9 @@ export const messages = {
   "server.join.account": "アカウント",
   "server.join.emailBound": "この招待は、宛先のメールアドレスの受信者だけが使用できます。",
   "server.join.unknownDate": "不明",
-  "server.add.title": "外部サーバーで OpenBot を 24 時間 365 日実行",
+  "server.add.title": "外部サーバーで AIKINGBOT を 24 時間 365 日実行",
   "server.add.description":
-    "OpenBot サーバーは、コンピューターの電源が切れていてもエージェントとルーティンを動かし続けます。インフラと保守は私たちが担当するため、技術的な設定なしでサーバーをすぐに使えます。",
+    "AIKINGBOT サーバーは、コンピューターの電源が切れていてもエージェントとルーティンを動かし続けます。インフラと保守は私たちが担当するため、技術的な設定なしでサーバーをすぐに使えます。",
   "server.add.billing.label": "請求期間",
   "server.add.currency.label": "通貨",
   "server.add.billing.monthly": "月払い",
@@ -72,7 +72,7 @@ export const messages = {
   "server.add.regularPrice": "通常価格 {price}",
   "server.add.choosePlan": "{plan} を選ぶ",
   "server.add.custom.title": "Mac やカスタム構成が必要ですか？",
-  "server.add.custom.description": "専用の Mac mini で OpenBot を実行したり、会社向けのプランを作成したりできます。",
+  "server.add.custom.description": "専用の Mac mini で AIKINGBOT を実行したり、会社向けのプランを作成したりできます。",
   "server.add.custom.action": "お問い合わせ",
   "server.add.join.title": "招待をお持ちですか？",
   "server.add.join.action": "サーバーに参加",
@@ -91,14 +91,14 @@ export const messages = {
   "server.hosted.defaultName": "クラウドサーバー",
   "server.hosted.defaultNameNumbered": "クラウドサーバー {number}",
   "server.hosted.step.create": "マシンを作成",
-  "server.hosted.step.start": "OpenBot を起動",
+  "server.hosted.step.start": "AIKINGBOT を起動",
   "server.hosted.step.connect": "アカウントに接続",
   "server.hosted.detail.create.reserve": "専用のマシンを確保しています",
-  "server.hosted.detail.create.copy": "OpenBot をマシンにコピーしています",
+  "server.hosted.detail.create.copy": "AIKINGBOT をマシンにコピーしています",
   "server.hosted.detail.create.key": "一度だけ使えるサインインキーを追加しています",
   "server.hosted.detail.start.boot": "マシンの電源を入れています",
-  "server.hosted.detail.start.app": "OpenBot を起動しています",
-  "server.hosted.detail.start.wait": "OpenBot の応答を待っています",
+  "server.hosted.detail.start.app": "AIKINGBOT を起動しています",
+  "server.hosted.detail.start.wait": "AIKINGBOT の応答を待っています",
   "server.hosted.detail.connect.signIn": "あなたとしてサインインしています",
   "server.hosted.detail.connect.publish": "サーバーをアカウントに追加しています",
   "server.hosted.detail.connect.check": "接続を確認しています",
@@ -161,13 +161,13 @@ export const messages = {
   "server.settings.identityLocalOnly":
     "このサーバーの名前とロゴは、サーバーを実行しているコンピューターでのみ変更できます。",
   "server.settings.publicationLocalOnly": "公開設定はローカルサーバーでのみ変更できます。",
-  "server.compatibility.versionMismatchTitle": "{name} の OpenBot のバージョンが異なります",
+  "server.compatibility.versionMismatchTitle": "{name} の AIKINGBOT のバージョンが異なります",
   "server.compatibility.versionMismatchDescription":
     "この接続はプロトコル {protocol} を使用しています。一部の新しい機能は使用できない場合があります。クライアント {clientVersion}、ホスト {hostVersion}。",
   "server.compatibility.versionMismatchUpdateHostDescription":
-    "すべての機能を使うには、{name} の OpenBot を更新してください。この接続はプロトコル {protocol} を使用しています。クライアント {clientVersion}、ホスト {hostVersion}。",
+    "すべての機能を使うには、{name} の AIKINGBOT を更新してください。この接続はプロトコル {protocol} を使用しています。クライアント {clientVersion}、ホスト {hostVersion}。",
   "server.compatibility.versionMismatchUpdateClientDescription":
-    "すべての機能を使うには、この OpenBot アプリを更新してください。この接続はプロトコル {protocol} を使用しています。クライアント {clientVersion}、ホスト {hostVersion}。",
+    "すべての機能を使うには、この AIKINGBOT アプリを更新してください。この接続はプロトコル {protocol} を使用しています。クライアント {clientVersion}、ホスト {hostVersion}。",
   "server.connection.failedTitle": "接続に失敗しました",
   "server.connection.failedDescription":
     "このサーバーに接続できませんでした。ホストがオンラインであることを確認して、もう一度お試しください。",
@@ -188,9 +188,10 @@ export const messages = {
   "server.settings.mcpDescription": "MCP サーバーを接続し、このサーバーのエージェントが使用できるものを選択します。",
   "server.settings.storageTitle": "ストレージ",
   "server.settings.storageDescription":
-    "OpenBot がこのサーバーのディスクに保存しているものを確認し、空き容量を増やします。",
+    "AIKINGBOT がこのサーバーのディスクに保存しているものを確認し、空き容量を増やします。",
   "server.settings.hostedSitesTitle": "サイト",
-  "server.settings.hostedSitesDescription": "このサーバーのエージェントが openbot.site に公開した静的サイト。",
+  "server.settings.hostedSitesDescription":
+    "このサーバーのエージェントが aikingbot-sites.aikingx.com に公開した静的サイト。",
   "server.settings.importTitle": "インポート",
   "server.settings.importDescription": "Grok Bot からこのサーバーにエージェントを移動します。",
   "server.settings.connectorsTitle": "コネクター",
@@ -215,9 +216,9 @@ export const messages = {
   "server.settings.nameTooLong": "{limit} 文字以内で入力してください。",
   "server.settings.actionFailedTitle": "サーバーの操作に失敗しました",
   "server.settings.actionFailed": "サーバーの操作に失敗しました。",
-  "server.settings.imageReadFailed": "OpenBot はこの画像を読み込めませんでした。",
+  "server.settings.imageReadFailed": "AIKINGBOT はこの画像を読み込めませんでした。",
   "server.settings.copyFailedTitle": "コピーに失敗しました",
-  "server.settings.copyFailed": "OpenBot はこの値をコピーできませんでした。",
+  "server.settings.copyFailed": "AIKINGBOT はこの値をコピーできませんでした。",
   "server.settings.close": "サーバーの設定を閉じる",
   "server.settings.unavailableTitle": "サーバーの設定を利用できません",
   "server.settings.unsavedMcpChanges": "未保存の MCP の変更",
@@ -280,7 +281,7 @@ export const messages = {
   "server.settings.restartTitle": "再起動",
   "server.settings.restarting": "再起動中…",
   "server.settings.restartedTitle": "{name} を再起動しています",
-  "server.settings.restartHiddenDescription": "サーバーが戻ると、OpenBot は自動で再接続します。",
+  "server.settings.restartHiddenDescription": "サーバーが戻ると、AIKINGBOT は自動で再接続します。",
   "server.settings.restartHide": "隠す",
   "server.settings.restartProgressTitle": "{name} を再起動しています",
   "server.settings.restartProgressDescription": "{time} · 通常は約 1 分です。このウィンドウは隠せます。",
@@ -339,7 +340,7 @@ export const messages = {
   "server.invite.full":
     "このサーバーのメンバーは上限の {limit} 人です。新しい人を招待するには、メンバーを削除してください。",
   "server.invite.qrLabel": "招待の QR コード",
-  "server.invite.qrDescription": "OpenBot Mobile でこのコードをスキャンすると、このサーバーに参加できます。",
+  "server.invite.qrDescription": "AIKINGBOT Mobile でこのコードをスキャンすると、このサーバーに参加できます。",
   "server.invite.accepted": "招待が承諾されました",
   "server.invite.expired": "招待の期限が切れました",
   "server.invite.sent": "招待を送信しました",
@@ -347,7 +348,7 @@ export const messages = {
   "server.invite.acceptedDescription":
     "メンバーがこのサーバーに参加しました。別のユーザーを招待するには、新しいリンクを作成してください。",
   "server.invite.expiredDescription": "ユーザーを招待するには、新しいリンクを作成してください。",
-  "server.invite.linkReadyDescription": "リンクを共有するか、OpenBot Mobile で QR コードをスキャンしてください。",
+  "server.invite.linkReadyDescription": "リンクを共有するか、AIKINGBOT Mobile で QR コードをスキャンしてください。",
   "server.invite.pendingTitle": "保留中の招待",
   "server.invite.pendingCount": "保留中 {total} 件",
   "server.invite.noPending": "保留中の招待はありません。",
@@ -369,7 +370,7 @@ export const messages = {
   "server.desktop.connectionUnavailable": "接続を利用できません",
   "server.desktop.hostOffline": "ホストはオフラインです",
   "server.desktop.hostOfflineDescription": "デスクトップを開く前に、ホストに再接続してください。",
-  "server.desktop.hostUpdateDescription": "リモート操作を使用するには、ホストの OpenBot を更新してください。",
+  "server.desktop.hostUpdateDescription": "リモート操作を使用するには、ホストの AIKINGBOT を更新してください。",
   "server.desktop.serviceAvailable": "サービスを利用できます",
   "server.desktop.serviceAvailableDescription": "すべてのアクティブなメンバーが WebRTC による操作を使用できます。",
   "server.desktop.serviceNotReady": "サービスの準備ができていません",
@@ -382,9 +383,9 @@ export const messages = {
   "server.settings.providersSwitchNote": "AI プロバイダーを管理するには {name} に切り替えてください。",
   "server.settings.providersSwitch": "このサーバーに切り替える",
   "server.settings.updatesTitle": "アップデート",
-  "server.settings.updatesDescription": "このサーバーを実行しているコンピューターの OpenBot をアップデートします。",
-  "server.update.hostTitle": "{name} の OpenBot",
-  "server.update.version": "OpenBot {version}",
+  "server.settings.updatesDescription": "このサーバーを実行しているコンピューターの AIKINGBOT をアップデートします。",
+  "server.update.hostTitle": "{name} の AIKINGBOT",
+  "server.update.version": "AIKINGBOT {version}",
   "server.update.status.idle": "アップデートを確認して最新のリリースを見つけます。",
   "server.update.status.checking": "アップデートを確認しています…",
   "server.update.status.available": "{version} を利用できます。",
@@ -392,29 +393,29 @@ export const messages = {
   "server.update.status.downloadingUnknown": "{version} をダウンロードしています…",
   "server.update.status.ready": "{version} をダウンロードしました。",
   "server.update.status.installing": "{name} はアップデートをインストールするため再起動しています。",
-  "server.update.status.upToDate": "{name} の OpenBot は最新です。",
+  "server.update.status.upToDate": "{name} の AIKINGBOT は最新です。",
   "server.update.status.checkFailed": "{name} はアップデートを確認できませんでした。もう一度お試しください。",
   "server.update.status.downloadFailed":
     "{name} はアップデートをダウンロードできませんでした。もう一度お試しください。",
   "server.update.status.installFailed":
-    "{name} はアップデートをインストールできませんでした。そのコンピューターで他のユーザーが OpenBot を実行していないことを確認してから、もう一度お試しください。",
+    "{name} はアップデートをインストールできませんでした。そのコンピューターで他のユーザーが AIKINGBOT を実行していないことを確認してから、もう一度お試しください。",
   "server.update.releaseCheckFailed":
     "{name} はリリースフィードを読み取れませんでした。ホストのネットワーク接続を確認してから、もう一度お試しください。",
   "server.update.releaseUnavailable":
     "このビルドではリリースを確認できません。互換性のあるリリースを確認するよう、ホストの管理者に依頼してください。",
   "server.update.externalTitle": "インストールはホストが管理します",
   "server.update.path.hostManager":
-    "OpenBot Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
+    "AIKINGBOT Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
   "server.update.path.hosted":
     "ホスティングサービスはバックグラウンドでアップデートをダウンロードします。ダウンロードしたアップデートは、次にサーバーが起動したときに適用されます。サーバーを停止して再開する前に、実行中の作業が終わるのを待ってください。古いバージョンのままの場合は、ホストの管理者に連絡してください。",
   "server.update.path.system":
-    "ホストで sudo openbot update を実行して、最新のリリースをインストールしてください。このコマンドは OpenBot を停止します。先に実行中の作業が終わるのを待ってください。自動ダウンロードされたアップデートは次回の起動時にインストールされます。",
+    "ホストで sudo aikingbot update を実行して、最新のリリースをインストールしてください。このコマンドは AIKINGBOT を停止します。先に実行中の作業が終わるのを待ってください。自動ダウンロードされたアップデートは次回の起動時にインストールされます。",
   "server.update.path.container":
-    "Docker ホストで新しい OpenBot イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
+    "Docker ホストで新しい AIKINGBOT イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
   "server.update.path.manual":
-    "このインストールは自分自身を置き換えられません。github.com/nightly-labs/openbot/releases から互換性のあるリリースをインストールするよう、ホストの管理者に依頼してください。既存の OpenBot のデータは残してください。",
+    "このインストールは自分自身を置き換えられません。github.com/aikingcorp-spec/aikingx_bot/releases から互換性のあるリリースをインストールするよう、ホストの管理者に依頼してください。既存の AIKINGBOT のデータは残してください。",
   "server.update.path.unavailable":
-    "これは開発ビルドです。アップデートを確認するには、インストール済みの OpenBot リリースを使用してください。",
+    "これは開発ビルドです。アップデートを確認するには、インストール済みの AIKINGBOT リリースを使用してください。",
   "server.update.check": "アップデートを確認",
   "server.update.start": "アイドル時にアップデート",
   "server.update.restartNow": "今すぐ再起動",
@@ -424,30 +425,31 @@ export const messages = {
   "server.update.requestedBy": "{member} がこのアップデートを依頼しました。",
   "server.update.automatic": "{name} はアップデートを自動的にインストールします。",
   "server.update.autoDownloadTitle": "アップデートを自動的にダウンロードする",
-  "server.update.autoDownloadDescription": "{name} は OpenBot の新しいバージョンが公開されるたびにダウンロードします。",
+  "server.update.autoDownloadDescription":
+    "{name} は AIKINGBOT の新しいバージョンが公開されるたびにダウンロードします。",
   "server.update.autoInstallTitle": "アップデートを自動的にインストールする",
   "server.update.autoInstallDescription":
     "{name} は、エージェントがアイドル状態になると、ダウンロードしたアップデートを適用して再起動します。メンバーの接続は短時間切れ、自動的に再接続されます。",
   "server.update.waitingFor": "{reasons} を待っています。",
   "server.update.disabledTitle": "リモートアップデートはオフです",
   "server.update.disabledDescription":
-    "{name} のユーザーが、サーバーメンバーからのアップデートをオフにしました。OpenBot をアップデートするか、設定をオンにするよう依頼してください。",
+    "{name} のユーザーが、サーバーメンバーからのアップデートをオフにしました。AIKINGBOT をアップデートするか、設定をオンにするよう依頼してください。",
   "server.update.managedTitle": "アップデートは Host Manager が管理しています",
   "server.update.managedDescription":
-    "OpenBot Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
+    "AIKINGBOT Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
   "server.update.unsupportedTitle": "{name} は自身をアップデートできません",
   "server.update.unsupportedDescription":
-    "この OpenBot ビルドにはアップデーターがありません。{name} に新しいバージョンをインストールしてください。",
+    "この AIKINGBOT ビルドにはアップデーターがありません。{name} に新しいバージョンをインストールしてください。",
   "server.update.restartConfirmTitle": "{name} を今すぐ再起動しますか？",
   "server.update.restartConfirmDescription":
     "{name} で実行中のエージェントのターンやその他の作業は停止します。メンバーは再起動後に再接続します。",
   "server.update.restarting": "再起動しています…",
   "server.update.loadFailed": "{name} のアップデート状態を読み込めませんでした。",
   "server.update.hostAction": "ホストをアップデート",
-  "server.update.progressTitle": "{name} の OpenBot をアップデートしています",
+  "server.update.progressTitle": "{name} の AIKINGBOT をアップデートしています",
   "server.update.availableTitle": "{name} のアップデートがあります",
   "server.update.availableDescription":
-    "OpenBot {version} を利用できます。{name} では OpenBot {current} が実行されています。",
+    "AIKINGBOT {version} を利用できます。{name} では AIKINGBOT {current} が実行されています。",
   "server.update.reason.agentTurn": "エージェントのターン",
   "server.update.reason.queuedDelivery": "キュー内のメッセージ",
   "server.update.reason.drainTask": "エージェントのバックグラウンド作業",
@@ -459,13 +461,13 @@ export const messages = {
   "server.update.reason.fileTransfer": "ファイル転送",
   "server.update.reason.browserControl": "エージェントによるブラウザー操作",
   "server.update.reason.updateOperation": "別のアップデート手順",
-  "server.update.reason.initialization": "OpenBot の起動",
+  "server.update.reason.initialization": "AIKINGBOT の起動",
   "server.update.reason.other": "その他の作業",
   "server.restartNotice.waitingTitle": "{name} はアップデートをインストールするため再起動します",
-  "server.restartNotice.waitingVersionTitle": "{name} は OpenBot {version} をインストールするため再起動します",
+  "server.restartNotice.waitingVersionTitle": "{name} は AIKINGBOT {version} をインストールするため再起動します",
   "server.restartNotice.waitingDescription":
-    "再起動は、エージェントがアイドル状態になるまで待ちます。接続は短時間切れ、その後 OpenBot が自動的に再接続します。",
+    "再起動は、エージェントがアイドル状態になるまで待ちます。接続は短時間切れ、その後 AIKINGBOT が自動的に再接続します。",
   "server.restartNotice.restartingTitle": "{name} はアップデートをインストールするため再起動しています",
-  "server.restartNotice.restartingDescription": "{name} が復帰すると、OpenBot が自動的に再接続します。",
+  "server.restartNotice.restartingDescription": "{name} が復帰すると、AIKINGBOT が自動的に再接続します。",
   "server.restartNotice.backTitle": "{name} がオンラインに戻りました",
 } as const satisfies PartialTranslation<typeof source>;

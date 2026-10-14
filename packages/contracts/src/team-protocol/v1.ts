@@ -1,10 +1,10 @@
 import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "../runtime-values";
 
 export const TEAM_PROTOCOL_V1 = 1;
-export const TEAM_PROTOCOL_VERSION_HEADER = "OpenBot-Protocol-Version";
-export const TEAM_APP_VERSION_HEADER = "OpenBot-App-Version";
-export const TEAM_CAPABILITIES_HEADER = "OpenBot-Capabilities";
-export const TEAM_PROTOCOL_V1_WEBSOCKET = "openbot-team-v1";
+export const TEAM_PROTOCOL_VERSION_HEADER = "AIKINGBOT-Protocol-Version";
+export const TEAM_APP_VERSION_HEADER = "AIKINGBOT-App-Version";
+export const TEAM_CAPABILITIES_HEADER = "AIKINGBOT-Capabilities";
+export const TEAM_PROTOCOL_V1_WEBSOCKET = "aikingbot-team-v1";
 
 export const TEAM_PROTOCOL_V1_CAPABILITIES = [
   "agent-runtime-snapshots",
@@ -1903,7 +1903,7 @@ function projectV1RoutineSchedule(value: DynamicRecord): TeamProtocolV1JsonObjec
 // frozen list cannot name is a route no client can be answered on. Classification only: it reads the
 // list below and decides nothing, so exporting it leaves every released response meaning what it did.
 export function teamProtocolV1HttpRoute(method: string, path: string): TeamProtocolV1HttpRoute | null {
-  const pathname = new URL(path, "http://openbot.invalid").pathname;
+  const pathname = new URL(path, "http://aikingbot.invalid").pathname;
   const exact: Record<string, TeamProtocolV1HttpRoute> = {
     "GET /v1/compatibility": "GET compatibility",
     "GET /v1/identity": "GET identity",

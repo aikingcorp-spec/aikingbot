@@ -2,7 +2,7 @@ import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
   encodeTeamProtocolV2Frame,
-} from "@openbot/contracts/team-protocol/v2";
+} from "@aikingbot/contracts/team-protocol/v2";
 import { Effect } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { runTeamEffect } from "./effect-boundary";

@@ -2,28 +2,28 @@
 // so this opens two `cloudflared` quick tunnels: one to the local Signal, which takes the
 // development Slack app's events, and one to the local account API, which takes the install's
 // return. The dev app gets a loopback port for the end of the install, so the grant reaches it and
-// not an installed OpenBot that owns `openbot://`. The tunnels live as long as this process. Their
+// not an installed AIKINGBOT that owns `aikingbot://`. The tunnels live as long as this process. Their
 // addresses change at each start: the development app's request and redirect URLs must follow.
 //
 // `.env.slack-dev` in the worktree root holds the signing secret, and local development state holds
 // the development app's `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET` and `SLACK_STATE_SECRET`. Git ignores
 // both:
 //
-//   OPENBOT_DEV_SLACK_SIGNING_SECRET='…'   (the development app, api.slack.com/apps > Basic Information)
+//   AIKINGBOT_DEV_SLACK_SIGNING_SECRET='…'   (the development app, api.slack.com/apps > Basic Information)
 
 import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { join } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 
 import { developmentChildEnvironment } from "./development-environment";
 
-const logger = createOpenBotLogger("dev-slack");
+const logger = createAIKINGBOTLogger("dev-slack");
 
 const SLACK_FILE = ".env.slack-dev";
-const SLACK_KEYS = ["OPENBOT_DEV_SLACK_SIGNING_SECRET"] as const;
-/** `OpenBot (dev)`, the app that `apps/slack-app/development` describes. */
+const SLACK_KEYS = ["AIKINGBOT_DEV_SLACK_SIGNING_SECRET"] as const;
+/** `AIKINGBOT (dev)`, the app that `apps/slack-app/development` describes. */
 const DEVELOPMENT_SLACK_APP_ID = "A0C5G5XGS83";
 const TUNNEL_URL = /https:\/\/[a-z0-9-]+\.trycloudflare\.com/u;
 const TUNNEL_TIMEOUT_MS = 45_000;
@@ -60,11 +60,11 @@ export function readSlackDevelopmentValues(text: string, environment: NodeJS.Pro
 export async function attachSlackTunnels(specs: TunnelledSpec[], projectRoot: string): Promise<() => void> {
   const file = join(projectRoot, SLACK_FILE);
   const values = readSlackDevelopmentValues(existsSync(file) ? readFileSync(file, "utf8") : "", process.env);
-  if (!values.OPENBOT_DEV_SLACK_SIGNING_SECRET) {
-    throw new Error(`--slack needs OPENBOT_DEV_SLACK_SIGNING_SECRET in ${SLACK_FILE} or the shell.`);
+  if (!values.AIKINGBOT_DEV_SLACK_SIGNING_SECRET) {
+    throw new Error(`--slack needs AIKINGBOT_DEV_SLACK_SIGNING_SECRET in ${SLACK_FILE} or the shell.`);
   }
   const signalPort = specs.find((spec) => spec.name === "remote")?.env.REMOTE_SIGNAL_PORT;
-  const apiPort = specs.find((spec) => spec.name === "api")?.env.OPENBOT_API_PORT;
+  const apiPort = specs.find((spec) => spec.name === "api")?.env.AIKINGBOT_API_PORT;
   if (!signalPort || !apiPort || !specs.some((spec) => spec.name === "app"))
     throw new Error("--slack needs Signal, the account API and the app: use the app or all target.");
   const callbackPort = String(await freePort());
@@ -80,12 +80,12 @@ export async function attachSlackTunnels(specs: TunnelledSpec[], projectRoot: st
       REMOTE_SIGNAL_URL: `${signalUrl.replace("https://", "wss://")}/v1/signal`,
       // Signal binds each signing secret to its app.
       SLACK_DEV_PUBLIC_ORIGIN: apiUrl,
-      OPENBOT_DEV_SLACK_CALLBACK_PORT: callbackPort,
+      AIKINGBOT_DEV_SLACK_CALLBACK_PORT: callbackPort,
     };
     for (const spec of specs) {
       Object.assign(spec.env, tunnelled);
       if (spec.name === "remote")
-        spec.env.SLACK_SIGNING_SECRET = `${DEVELOPMENT_SLACK_APP_ID}:${values.OPENBOT_DEV_SLACK_SIGNING_SECRET}`;
+        spec.env.SLACK_SIGNING_SECRET = `${DEVELOPMENT_SLACK_APP_ID}:${values.AIKINGBOT_DEV_SLACK_SIGNING_SECRET}`;
     }
     logger.info(
       `Set the development Slack app's request URL to ${signalUrl}/v1/slack/events and its redirect URL to ${apiUrl}/v2/slack/callback.`,

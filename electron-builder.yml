@@ -1,9 +1,9 @@
-appId: app.openbot.desktop
-productName: OpenBot
+appId: app.aikingbot.desktop
+productName: AIKINGBOT
 protocols:
-  - name: OpenBot invitations
+  - name: AIKINGBOT invitations
     schemes:
-      - openbot
+      - aikingbot
 asar: true
 artifactName: ${productName}-${version}-${arch}.${ext}
 electronUpdaterCompatibility: ">=2.16"
@@ -20,7 +20,7 @@ electronFuses:
 publish:
   provider: github
   owner: nightly-labs
-  repo: openbot
+  repo: aikingbot
 files:
   - out/**/*
   - package.json
@@ -85,14 +85,14 @@ mac:
     - from: build/icon-preview-macos-safe-area.png
       to: icons/icon-preview-macos-safe-area.png
     # The sherpa-onnx addon and its libraries. The Parakeet and Whisper models are downloaded on demand.
-    - from: .openbot-build/voice/runtime
+    - from: .aikingbot-build/voice/runtime
       to: voice/runtime
     - from: build/remote-desktop-runtime
       to: remote-desktop-runtime
     - from: build/cua-driver/darwin/${arch}
       to: cua-driver/darwin/${arch}
   # The Computer Use driver arrives signed by Cua AI with the hardened runtime, a secure timestamp
-  # and `com.apple.security.automation.apple-events`. Re-signing it with OpenBot's inherited
+  # and `com.apple.security.automation.apple-events`. Re-signing it with AIKINGBOT's inherited
   # entitlements would drop that entitlement and break the driver's Automation route, so its own
   # Developer ID signature is kept. Notarization accepts a nested binary signed by another team.
   signIgnore:
@@ -102,11 +102,11 @@ mac:
   darkModeSupport: true
   extendInfo:
     ElectronTeamID: ZTRDTUL87R
-    NSMicrophoneUsageDescription: OpenBot uses the microphone to transcribe voice prompts locally on this Mac.
-    # Computer Use runs the driver as a child process, so macOS asks for both grants in OpenBot's
+    NSMicrophoneUsageDescription: AIKINGBOT uses the microphone to transcribe voice prompts locally on this Mac.
+    # Computer Use runs the driver as a child process, so macOS asks for both grants in AIKINGBOT's
     # name and shows these sentences.
-    NSScreenCaptureUsageDescription: OpenBot captures the screen so an agent can see the app windows you ask it to control.
-    NSAppleEventsUsageDescription: OpenBot sends Automation events so an agent can control the apps you ask it to control.
+    NSScreenCaptureUsageDescription: AIKINGBOT captures the screen so an agent can see the app windows you ask it to control.
+    NSAppleEventsUsageDescription: AIKINGBOT sends Automation events so an agent can control the apps you ask it to control.
     NSUserActivityTypes:
       - NSUserActivityTypeBrowsingWeb
   # No `arch` here: a target's own `arch` list replaces the one given on the command line, so
@@ -119,7 +119,7 @@ mac:
 win:
   icon: build/icon-production.ico
   extraResources:
-    - from: .openbot-build/voice/runtime
+    - from: .aikingbot-build/voice/runtime
       to: voice/runtime
     - from: build/remote-desktop-runtime
       to: remote-desktop-runtime
@@ -134,8 +134,8 @@ linux:
   icon: build/icon-production.png
   synopsis: A local-first multi-agent desktop workspace.
   extraResources:
-    - from: build/linux/openbot.apparmor
-      to: linux/openbot.apparmor
+    - from: build/linux/aikingbot.apparmor
+      to: linux/aikingbot.apparmor
     # A hosted server installs the packages, scripts and units of the release that it updates to.
     - from: scripts/hosting
       to: hosting

@@ -4,7 +4,7 @@ import { DiscordConnectPage } from "../../components/landing/DiscordConnectPage"
 export const Route = createFileRoute("/discord/connect")({
   head: () => ({
     meta: [
-      { title: "Return to OpenBot" },
+      { title: "Return to AIKINGBOT" },
       { name: "robots", content: "noindex, nofollow, noarchive" },
       { name: "referrer", content: "no-referrer" },
     ],

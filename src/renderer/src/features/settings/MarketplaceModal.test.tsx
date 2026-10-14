@@ -1,12 +1,12 @@
 import type {
   AgentSummary,
+  AIKINGBOTDesktopApi,
   InstalledSkill,
   MarketplaceAgentDetail,
   MarketplaceSkillPage,
   McpServerConfig,
-  OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import type { MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+} from "@aikingbot/contracts/ipc";
+import type { MarketplacePluginDetail } from "@aikingbot/ui/features/settings/marketplace-plugins";
 import { fireEvent, render, screen, waitFor, within } from "@solidjs/testing-library";
 import { type ComponentProps, createSignal } from "solid-js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -93,7 +93,7 @@ describe("MarketplaceModal", () => {
       ],
       nextCursor: null,
     };
-    const skills: OpenBotDesktopApi["skills"] = {
+    const skills: AIKINGBOTDesktopApi["skills"] = {
       localList: vi.fn(async () => []),
       localGet: vi.fn(),
       localCreate: vi.fn(),
@@ -119,10 +119,10 @@ describe("MarketplaceModal", () => {
       uninstall: vi.fn(),
       setEnabled: vi.fn(),
     };
-    window.openbot = { ...window.openbot, skills };
+    window.aikingbot = { ...window.aikingbot, skills };
     // The controller hears `skills-changed` on the agent event stream.
-    window.openbot.agent = { ...window.openbot.agent, onEvent: vi.fn(() => () => undefined) };
-    window.openbot.marketplaceAgents = {
+    window.aikingbot.agent = { ...window.aikingbot.agent, onEvent: vi.fn(() => () => undefined) };
+    window.aikingbot.marketplaceAgents = {
       list: vi.fn(async () => ({ agents: [], nextCursor: null })),
       get: vi.fn(),
       listMine: vi.fn(async () => []),
@@ -134,7 +134,7 @@ describe("MarketplaceModal", () => {
 
   describe("skills", () => {
     it.each([1, 2])("tries only an installed version %s that matches the listing", async (version) => {
-      vi.spyOn(window.openbot.skills, "listInstalled").mockImplementation(async (agentId) =>
+      vi.spyOn(window.aikingbot.skills, "listInstalled").mockImplementation(async (agentId) =>
         agentId === "writer" ? [installedSkill("release-notes", "Release Notes", { installedVersion: version })] : [],
       );
       const onTrySkill = vi.fn();
@@ -156,26 +156,26 @@ describe("MarketplaceModal", () => {
     });
 
     it("names an unread skills list instead of asking for an install that may exist", async () => {
-      vi.spyOn(window.openbot.skills, "listInstalled").mockRejectedValue(new Error("Skill list unavailable."));
+      vi.spyOn(window.aikingbot.skills, "listInstalled").mockRejectedValue(new Error("Skill list unavailable."));
       renderMarketplace({ agents: [agentRow("writer", "Writer")], activeAgentId: "writer", onTrySkill: vi.fn() });
       await openSkillPage();
 
       // A list that could not be read looks exactly like an empty one. Naming a missing skill here
       // sends the user to install what the agent may already have.
-      expect(await screen.findByText("OpenBot could not read this agent's skills. Try again.")).toBeInTheDocument();
+      expect(await screen.findByText("AIKINGBOT could not read this agent's skills. Try again.")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Try skill" })).toBeDisabled();
       expect(screen.getByRole("alert")).toHaveTextContent("Skill list unavailable.");
     });
 
     it("keeps a failed skills read after an install instead of offering the install again", async () => {
       let reads = 0;
-      vi.spyOn(window.openbot.skills, "listInstalled").mockImplementation(async () => {
+      vi.spyOn(window.aikingbot.skills, "listInstalled").mockImplementation(async () => {
         reads += 1;
         if (reads === 1) return [];
         throw new Error("Skill list unavailable.");
       });
       const install = vi
-        .spyOn(window.openbot.skills, "install")
+        .spyOn(window.aikingbot.skills, "install")
         .mockResolvedValue(installedSkill("release-notes", "Release Notes"));
       renderMarketplace({ agents: [agentRow("writer", "Writer")], activeAgentId: "writer", onTrySkill: vi.fn() });
       await openSkillPage();
@@ -186,7 +186,7 @@ describe("MarketplaceModal", () => {
       await waitFor(() => expect(install).toHaveBeenCalledWith(expect.objectContaining({ agentId: "writer" })));
       fireEvent.keyDown(screen.getByRole("menu"), { key: "Escape" });
       // The skill is installed, but the list on screen is older than the install.
-      expect(await screen.findByText("OpenBot could not read this agent's skills. Try again.")).toBeInTheDocument();
+      expect(await screen.findByText("AIKINGBOT could not read this agent's skills. Try again.")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Try skill" })).toBeDisabled();
     });
 
@@ -210,7 +210,7 @@ describe("MarketplaceModal", () => {
      * others, and the user must learn which agents did not get the skill.
      */
     it("installs on each agent for All agents and names the agents that failed", async () => {
-      const install = vi.spyOn(window.openbot.skills, "install").mockImplementation(async (input) => {
+      const install = vi.spyOn(window.aikingbot.skills, "install").mockImplementation(async (input) => {
         if (input.agentId !== "writer") throw new Error("The agent workspace is read-only.");
         return installedSkill("release-notes", "Release Notes");
       });
@@ -279,9 +279,9 @@ describe("MarketplaceModal", () => {
     } satisfies AgentSummary;
 
     beforeEach(() => {
-      window.openbot.marketplaceAgents.list = vi.fn(async () => ({ agents: [detail], nextCursor: null }));
-      window.openbot.marketplaceAgents.get = vi.fn(async () => detail);
-      window.openbot.marketplaceAgents.install = vi.fn(async () => ({ agent: addedAgent }));
+      window.aikingbot.marketplaceAgents.list = vi.fn(async () => ({ agents: [detail], nextCursor: null }));
+      window.aikingbot.marketplaceAgents.get = vi.fn(async () => detail);
+      window.aikingbot.marketplaceAgents.install = vi.fn(async () => ({ agent: addedAgent }));
     });
 
     it("adds an agent without closing the Marketplace, then opens its chat on request", async () => {
@@ -290,8 +290,8 @@ describe("MarketplaceModal", () => {
       renderMarketplace({ onOpenChange, onAgentInstalled });
       fireEvent.click(await screen.findByRole("button", { name: "Add Research Agent" }));
 
-      await waitFor(() => expect(window.openbot.marketplaceAgents.install).toHaveBeenCalled());
-      const input = vi.mocked(window.openbot.marketplaceAgents.install).mock.lastCall?.[0];
+      await waitFor(() => expect(window.aikingbot.marketplaceAgents.install).toHaveBeenCalled());
+      const input = vi.mocked(window.aikingbot.marketplaceAgents.install).mock.lastCall?.[0];
       // A new agent, not an update of one the user has.
       expect(input).toMatchObject({ listingId: detail.id });
       expect(input).not.toHaveProperty("agentId");
@@ -330,7 +330,7 @@ describe("MarketplaceModal", () => {
       fireEvent.click(await screen.findByRole("button", { name: "Update" }));
 
       await waitFor(() =>
-        expect(window.openbot.marketplaceAgents.install).toHaveBeenCalledWith(
+        expect(window.aikingbot.marketplaceAgents.install).toHaveBeenCalledWith(
           expect.objectContaining({ listingId: detail.id, agentId: "existing-research-agent" }),
         ),
       );
@@ -354,7 +354,7 @@ describe("MarketplaceModal", () => {
       installs: 0,
       featured: true,
       updatedAt: "2026-09-18T00:00:00.000Z",
-      shareUrl: "https://openbot.run/plugins/aave",
+      shareUrl: "https://aikingbot.aikingx.com/plugins/aave",
       prompts: [],
       apps: [
         {
@@ -441,11 +441,11 @@ describe("MarketplaceModal", () => {
 
     it("connects the app on the host it was given", async () => {
       const saved: McpServerConfig[] = [];
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => {
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => {
         saved.push(input.config);
         return saved;
       });
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
+      window.aikingbot.agent = { ...window.aikingbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
       renderMarketplace({ ...writer, plugins: [plugin] });
       await openAppPage();
       fireEvent.click(await screen.findByRole("button", { name: "Connect Aave" }));
@@ -462,13 +462,13 @@ describe("MarketplaceModal", () => {
     });
 
     it("saves the configuration the connect dialog proved", async () => {
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
-      const testMcpServer: OpenBotDesktopApi["agent"]["testMcpServer"] = vi.fn(async () => ({
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
+      const testMcpServer: AIKINGBOTDesktopApi["agent"]["testMcpServer"] = vi.fn(async () => ({
         toolCount: 4,
         error: null,
       }));
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => []),
         saveMcpServer,
         testMcpServer,
@@ -489,13 +489,13 @@ describe("MarketplaceModal", () => {
     it("connects to the user's own Composio link and refuses a link from another host", async () => {
       const composio = MARKETPLACE_PLUGINS.find((listing) => listing.slug === "composio");
       if (!composio) throw new Error("The catalog has no Composio listing.");
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
-      const testMcpServer: OpenBotDesktopApi["agent"]["testMcpServer"] = vi.fn(async () => ({
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
+      const testMcpServer: AIKINGBOTDesktopApi["agent"]["testMcpServer"] = vi.fn(async () => ({
         toolCount: 12,
         error: null,
       }));
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => []),
         saveMcpServer,
         testMcpServer,
@@ -522,8 +522,8 @@ describe("MarketplaceModal", () => {
     });
 
     it("saves nothing when the connect dialog is closed", async () => {
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
+      window.aikingbot.agent = { ...window.aikingbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
       renderMarketplace({ ...writer, plugins: [withKey] });
       await openAppPage();
       fireEvent.click(await screen.findByRole("button", { name: "Connect Aave" }));
@@ -535,8 +535,8 @@ describe("MarketplaceModal", () => {
     });
 
     it("stops the connect step when the Marketplace itself is closed", async () => {
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => [input.config]);
+      window.aikingbot.agent = { ...window.aikingbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
       const [open, setOpen] = createSignal(true);
       renderMarketplace(() => ({ ...writer, open: open(), onOpenChange: setOpen, plugins: [withKey] }));
       await openAppPage();
@@ -556,12 +556,12 @@ describe("MarketplaceModal", () => {
         order.push("skill");
         return installedYield;
       });
-      const saveMcpServer: OpenBotDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => {
+      const saveMcpServer: AIKINGBOTDesktopApi["agent"]["saveMcpServer"] = vi.fn(async (input) => {
         order.push("app");
         return [input.config];
       });
-      window.openbot.skills = { ...window.openbot.skills, install };
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
+      window.aikingbot.skills = { ...window.aikingbot.skills, install };
+      window.aikingbot.agent = { ...window.aikingbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer };
       renderMarketplace({ ...writer, plugins: [withSkill] });
       await openAppPage();
       fireEvent.click(await screen.findByRole("button", { name: "Connect Aave" }));
@@ -575,9 +575,9 @@ describe("MarketplaceModal", () => {
     it("removes the skill it installed when the app cannot be saved", async () => {
       const install = vi.fn(async () => installedYield);
       const uninstall = vi.fn(async () => undefined);
-      window.openbot.skills = { ...window.openbot.skills, install, uninstall };
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.skills = { ...window.aikingbot.skills, install, uninstall };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => []),
         saveMcpServer: vi.fn(async () => {
           throw new Error("This MCP server no longer exists.");
@@ -600,9 +600,9 @@ describe("MarketplaceModal", () => {
     }
 
     it("names the app and the skill it is about to remove before removing either", async () => {
-      window.openbot.skills = { ...window.openbot.skills, listInstalled: vi.fn(async () => [installedYield]) };
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.skills = { ...window.aikingbot.skills, listInstalled: vi.fn(async () => [installedYield]) };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => [hostApp()]),
         removeMcpServer: vi.fn(async () => []),
       };
@@ -612,13 +612,13 @@ describe("MarketplaceModal", () => {
       expect(within(confirm).getByRole("heading", { name: "Disconnect Aave?" })).toBeInTheDocument();
       expect(within(confirm).getByText(appName)).toBeInTheDocument();
       expect(within(confirm).getByText("yield-analysis")).toBeInTheDocument();
-      expect(window.openbot.agent.removeMcpServer).not.toHaveBeenCalled();
-      expect(window.openbot.skills.uninstall).not.toHaveBeenCalled();
+      expect(window.aikingbot.agent.removeMcpServer).not.toHaveBeenCalled();
+      expect(window.aikingbot.skills.uninstall).not.toHaveBeenCalled();
     });
 
     it("removes the host's app row and the agent's skill when the disconnect is confirmed", async () => {
       const order: string[] = [];
-      const removeMcpServer: OpenBotDesktopApi["agent"]["removeMcpServer"] = vi.fn(async () => {
+      const removeMcpServer: AIKINGBOTDesktopApi["agent"]["removeMcpServer"] = vi.fn(async () => {
         order.push("app");
         return [];
       });
@@ -626,9 +626,13 @@ describe("MarketplaceModal", () => {
         order.push("skill");
       });
       let held: InstalledSkill[] = [installedYield];
-      window.openbot.skills = { ...window.openbot.skills, listInstalled: vi.fn(async () => held), uninstall };
+      window.aikingbot.skills = { ...window.aikingbot.skills, listInstalled: vi.fn(async () => held), uninstall };
       let hostRows: McpServerConfig[] = [hostApp()];
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => hostRows), removeMcpServer };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
+        listMcpServers: vi.fn(async () => hostRows),
+        removeMcpServer,
+      };
       renderMarketplace({ ...writer, plugins: [withSkill] });
       const confirm = await askToDisconnect();
       hostRows = [];
@@ -643,9 +647,9 @@ describe("MarketplaceModal", () => {
     });
 
     it("removes nothing when the confirmation is cancelled", async () => {
-      window.openbot.skills = { ...window.openbot.skills, listInstalled: vi.fn(async () => [installedYield]) };
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.skills = { ...window.aikingbot.skills, listInstalled: vi.fn(async () => [installedYield]) };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => [hostApp()]),
         removeMcpServer: vi.fn(async () => []),
       };
@@ -654,8 +658,8 @@ describe("MarketplaceModal", () => {
       fireEvent.click(within(confirm).getByRole("button", { name: "Cancel" }));
 
       await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
-      expect(window.openbot.agent.removeMcpServer).not.toHaveBeenCalled();
-      expect(window.openbot.skills.uninstall).not.toHaveBeenCalled();
+      expect(window.aikingbot.agent.removeMcpServer).not.toHaveBeenCalled();
+      expect(window.aikingbot.skills.uninstall).not.toHaveBeenCalled();
       expect(screen.getByRole("button", { name: "Disconnect" })).toBeInTheDocument();
     });
 
@@ -666,9 +670,9 @@ describe("MarketplaceModal", () => {
     it("reports what could not be removed and still removes the rest", async () => {
       const uninstall = vi.fn(async () => undefined);
       let held: InstalledSkill[] = [installedYield];
-      window.openbot.skills = { ...window.openbot.skills, listInstalled: vi.fn(async () => held), uninstall };
-      window.openbot.agent = {
-        ...window.openbot.agent,
+      window.aikingbot.skills = { ...window.aikingbot.skills, listInstalled: vi.fn(async () => held), uninstall };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
         listMcpServers: vi.fn(async () => [hostApp()]),
         removeMcpServer: vi.fn(async () => {
           throw new Error("This MCP server no longer exists.");
@@ -692,8 +696,12 @@ describe("MarketplaceModal", () => {
      */
     it("keeps a server that only shares the app's name as the user's own", async () => {
       const mine = { ...hostApp(), id: "mcp-mine", url: "https://mcp.example.test/mine?token=secret-value" };
-      const removeMcpServer: OpenBotDesktopApi["agent"]["removeMcpServer"] = vi.fn(async () => []);
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => [mine]), removeMcpServer };
+      const removeMcpServer: AIKINGBOTDesktopApi["agent"]["removeMcpServer"] = vi.fn(async () => []);
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
+        listMcpServers: vi.fn(async () => [mine]),
+        removeMcpServer,
+      };
       renderMarketplace({ ...writer, plugins: [plugin] });
       await openAppPage();
 
@@ -717,23 +725,31 @@ describe("MarketplaceModal", () => {
      * still asks the user to connect.
      */
     it("opens the listing a link names without connecting it", async () => {
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer: vi.fn() };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
+        listMcpServers: vi.fn(async () => []),
+        saveMcpServer: vi.fn(),
+      };
       renderMarketplace({ ...writer, plugins: [plugin], initialPluginSlug: "aave" });
 
       expect(await screen.findByRole("button", { name: "Connect Aave" })).toBeInTheDocument();
       expect(screen.getByText(plugin.description)).toBeInTheDocument();
-      expect(window.openbot.agent.saveMcpServer).not.toHaveBeenCalled();
+      expect(window.aikingbot.agent.saveMcpServer).not.toHaveBeenCalled();
     });
 
     it("says a link names no listing this catalog holds, and shows the apps", async () => {
       renderMarketplace({ ...writer, plugins: [plugin], initialPluginSlug: "not-a-plugin" });
 
-      expect(await screen.findByText("This plugin is not in the OpenBot catalog.")).toBeInTheDocument();
+      expect(await screen.findByText("This plugin is not in the AIKINGBOT catalog.")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Open Aave" })).toBeInTheDocument();
     });
 
     it("reopens the same listing when its link arrives again after leaving it", async () => {
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer: vi.fn() };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
+        listMcpServers: vi.fn(async () => []),
+        saveMcpServer: vi.fn(),
+      };
       const [slug, setSlug] = createSignal<string | null>("aave");
       const consumed = vi.fn();
       renderMarketplace(() => ({
@@ -758,7 +774,11 @@ describe("MarketplaceModal", () => {
     });
 
     it("forgets the open page when a link names no listing", async () => {
-      window.openbot.agent = { ...window.openbot.agent, listMcpServers: vi.fn(async () => []), saveMcpServer: vi.fn() };
+      window.aikingbot.agent = {
+        ...window.aikingbot.agent,
+        listMcpServers: vi.fn(async () => []),
+        saveMcpServer: vi.fn(),
+      };
       const [slug, setSlug] = createSignal<string | null>("aave");
       renderMarketplace(() => ({
         ...writer,
@@ -770,7 +790,7 @@ describe("MarketplaceModal", () => {
       expect(await screen.findByText(plugin.description)).toBeInTheDocument();
 
       setSlug("not-a-plugin");
-      expect(await screen.findByText("This plugin is not in the OpenBot catalog.")).toBeInTheDocument();
+      expect(await screen.findByText("This plugin is not in the AIKINGBOT catalog.")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Open Aave" })).toBeInTheDocument();
       expect(screen.queryByText(plugin.description)).toBeNull();
       expect(screen.queryByRole("button", { name: "Marketplace" })).toBeNull();
@@ -783,7 +803,7 @@ describe("MarketplaceModal", () => {
       await openAppPage();
       fireEvent.click(await screen.findByRole("button", { name: "Copy link" }));
 
-      await waitFor(() => expect(writeText).toHaveBeenCalledWith("https://openbot.run/plugins/aave"));
+      await waitFor(() => expect(writeText).toHaveBeenCalledWith("https://aikingbot.aikingx.com/plugins/aave"));
     });
 
     it("reports a link copy that the clipboard refuses", async () => {

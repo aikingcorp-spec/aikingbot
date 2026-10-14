@@ -19,7 +19,7 @@ const operationId = () => `command-${++count}`;
 beforeEach(async () => {
   reported = [];
   allowReported = false;
-  root = await mkdtemp(join(tmpdir(), "openbot-channels-archive-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-channels-archive-"));
   data = stores(root);
   await runChannel(data.store.initialize());
   await runChannel(data.mailbox.initialize());

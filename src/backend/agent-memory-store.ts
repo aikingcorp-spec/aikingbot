@@ -1,19 +1,19 @@
 import { randomUUID } from "node:crypto";
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@aikingbot/contracts/agent-memory-context";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   AgentMemory,
   AgentMemorySelection,
   AgentMemorySelectionChange,
   AgentMemorySelectionState,
   MemoryEntry,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Schema } from "effect";
 import { initializeAgentMemorySelection } from "./agent-memory-selection";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import { databaseRows, requiredNumberColumn, requiredStringColumn } from "./database/database-rows";
 import { MemoryStore, type MemoryTables, type SaveMemoryInput } from "./memory-store";
-import type { OpenBotDatabase } from "./openbot-database";
 
 export class AgentMemorySelectionError extends Schema.TaggedError<AgentMemorySelectionError>()(
   "AgentMemorySelectionError",
@@ -60,7 +60,7 @@ function agentMemoryTables(limit: () => number): MemoryTables {
 
 /** Owns saved agent memories, their selection, and local recall. Channel memories remain separate. */
 export class AgentMemoryStore extends MemoryStore {
-  constructor(database: OpenBotDatabase, limit: () => number = () => INPUT_LIMITS.agentMemories) {
+  constructor(database: AIKINGBOTDatabase, limit: () => number = () => INPUT_LIMITS.agentMemories) {
     super(database, agentMemoryTables(limit));
   }
 

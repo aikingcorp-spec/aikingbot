@@ -1,5 +1,5 @@
-import { Button, Heading } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import { Button, Heading } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
 import { createSignal, For, onCleanup, onSettled } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createConversationController } from "../src/features/conversation/Conversation";
@@ -18,7 +18,7 @@ import { VOICE_LEVEL_COUNT } from "../src/features/conversation/stores/voice-sto
 import type { VoicePhase } from "../src/features/conversation/voice-status";
 import { CONVERSATION_STORY_ARGS, StoryAppProviders } from "./conversation-story-support";
 import { STORY_AGENT_STATUS } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 /** A fixed stretch of speech, so the waveform looks the same in each screenshot. */
 const SPEECH_LEVELS = Array.from({ length: VOICE_LEVEL_COUNT }, (_, index) =>
@@ -98,18 +98,18 @@ function VoiceInputComposer(props: { state: VoiceInputState }) {
   );
 }
 
-function useMockOpenBot() {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot();
-  window.openbot = mock.api;
+function useMockAIKINGBOT() {
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT();
+  window.aikingbot = mock.api;
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
 }
 
 function VoiceInputStates() {
-  useMockOpenBot();
+  useMockAIKINGBOT();
   return (
     <main class="foundation-story">
       <StoryAppProviders>
@@ -174,7 +174,7 @@ function VoiceMorphLoop() {
 }
 
 function VoiceMorph() {
-  useMockOpenBot();
+  useMockAIKINGBOT();
   return (
     <main class="foundation-story">
       <StoryAppProviders>

@@ -22,11 +22,11 @@ import type {
   TeamPresenceSnapshot,
   UpdateAgentInput,
   WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import type { UnloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import type { AccountProfilePanelProps } from "@openbot/ui/features/settings/AccountProfilePanel";
+} from "@aikingbot/contracts/ipc";
+import type { AgentMessage, AgentProfile } from "@aikingbot/ui/data";
+import type { BrowserViewRuntime } from "@aikingbot/ui/features/browser/BrowserLiveView";
+import type { UnloadedHistory } from "@aikingbot/ui/features/conversation/ChatScrollRail";
+import type { AccountProfilePanelProps } from "@aikingbot/ui/features/settings/AccountProfilePanel";
 import type { JSX } from "@solidjs/web";
 import type { ConversationRuntime } from "./conversation-runtime";
 
@@ -67,7 +67,7 @@ export interface ConversationProps {
    * pressed Connect or Install on the card: the page then starts the connect step.
    */
   onOpenMarketplaceApp?: (request: { appId: string; connect: boolean }) => void;
-  platform?: import("@openbot/contracts/ipc").AppInfo["platform"];
+  platform?: import("@aikingbot/contracts/ipc").AppInfo["platform"];
 
   agentStatus: AgentStatus;
   /** A joined server's agents are still on their way, so the composer says that it connects. */
@@ -95,7 +95,7 @@ export interface ConversationProps {
   /**
    * Take the user to the provider's sign-in. Separate from `onConnectProvider`, which is the
    * managed-download path and is withheld when downloads are unavailable: a signed-out provider
-   * needs a way in whether or not OpenBot manages its CLI.
+   * needs a way in whether or not AIKINGBOT manages its CLI.
    */
   onSignInProvider?: (provider: AgentProviderId) => void | Promise<void>;
   /** The code sign-in, for a provider that has one, when the browser sign-in is slow or fails. */

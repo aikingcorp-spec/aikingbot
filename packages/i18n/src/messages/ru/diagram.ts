@@ -102,7 +102,7 @@ export const messages = {
   "diagram.routine.runLabel": "{status}, {time}",
   "diagram.routine.manual": "Вручную",
   "diagram.flows.unsupported":
-    "Этот сервер не поддерживает цепочки регулярных задач. Обновите OpenBot на компьютере, где он работает.",
+    "Этот сервер не поддерживает цепочки регулярных задач. Обновите AIKINGBOT на компьютере, где он работает.",
   "diagram.flows.webhookAdminOnly":
     "Изменять и запускать задачу по вебхуку может только владелец или администратор этого сервера.",
   "diagram.flows.loadFailed": "Не удалось загрузить регулярные задачи этого агента.",

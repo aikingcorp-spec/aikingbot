@@ -1,5 +1,5 @@
-import type { AgentPromptQuestion, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { mobileTranslateFor } from "@openbot/i18n/mobile";
+import type { AgentPromptQuestion, ConversationSnapshot } from "@aikingbot/contracts/ipc";
+import { mobileTranslateFor } from "@aikingbot/i18n/mobile";
 import { assert, describe, expect, it } from "vitest";
 import {
   indexChatMessages,

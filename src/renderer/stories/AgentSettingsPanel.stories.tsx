@@ -1,4 +1,4 @@
-import AgentSettingsPanel from "@openbot/ui/features/conversation/AgentSettingsPanel";
+import AgentSettingsPanel from "@aikingbot/ui/features/conversation/AgentSettingsPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_MODELS } from "./fixtures";

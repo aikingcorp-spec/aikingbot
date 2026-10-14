@@ -11,16 +11,16 @@ import {
   parseHostedServerCheckout,
   parseHostedServerList,
   parseHostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/hosted-servers";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import {
   createHostedServerStatusCheck,
   createHostedServerWake,
   type HostedServerAvailability,
   type HostedServerWakeResponse,
   WAKE_RECONNECT_STATES,
-} from "@openbot/team-client/hosted-server-wake";
+} from "@aikingbot/team-client/hosted-server-wake";
 import { Effect, type Layer } from "effect";
 import {
   type AccountRequestClient,
@@ -39,8 +39,8 @@ export type HostedServerAuthClient = AccountRequestClient;
  * process. A packaged build never sends it.
  */
 export function takeHostingDeveloperKey(environment: NodeJS.ProcessEnv, isPackaged: boolean): string | null {
-  const key = environment.OPENBOT_HOSTING_DEVELOPER_KEY?.trim() || null;
-  delete environment.OPENBOT_HOSTING_DEVELOPER_KEY;
+  const key = environment.AIKINGBOT_HOSTING_DEVELOPER_KEY?.trim() || null;
+  delete environment.AIKINGBOT_HOSTING_DEVELOPER_KEY;
   return isPackaged ? null : key;
 }
 

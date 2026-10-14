@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "OpenBot を読み込んでいます…",
+  "webClient.loading": "AIKINGBOT を読み込んでいます…",
   "webClient.loadingLine.wake": "エージェントを起こしています…",
   "webClient.loadingLine.coffee": "エージェントにコーヒーを淹れています…",
   "webClient.loadingLine.tokens": "トークンを指で数えています…",
@@ -22,11 +22,11 @@ export const messages = {
   "webClient.notice.hostsFailed": "コンピューターを読み込めませんでした",
   "webClient.notice.connectComputer": "コンピューターを接続してください",
   "webClient.connect.description":
-    "コンピューターで OpenBot を実行すると、このブラウザーからエージェントとチャットできます。招待でコンピューターに参加することもできます。",
-  "webClient.connect.stepInstall": "コンピューターに OpenBot をインストールして開きます。",
+    "コンピューターで AIKINGBOT を実行すると、このブラウザーからエージェントとチャットできます。招待でコンピューターに参加することもできます。",
+  "webClient.connect.stepInstall": "コンピューターに AIKINGBOT をインストールして開きます。",
   "webClient.connect.stepSignIn": "メールアドレスでサインインします。",
   "webClient.connect.stepRemote": "リモートアクセスをオンにします。",
-  "webClient.notice.download": "OpenBot をダウンロード",
+  "webClient.notice.download": "AIKINGBOT をダウンロード",
   "webClient.notice.join": "招待で参加",
   "webClient.notice.refreshHosts": "ホストを更新",
   "webClient.agent.modelsFailed": "ホストのモデルを読み込めませんでした。",
@@ -36,7 +36,7 @@ export const messages = {
   "webClient.error.usageOffline": "使用量を表示するには、ホストに接続してください。",
   "webClient.error.desktopOnly": "この操作はデスクトップアプリで使えます。",
   "webClient.settings.preferences.title": "環境設定",
-  "webClient.settings.preferences.description": "このブラウザーでの OpenBot の言語とサウンドを選びます。",
+  "webClient.settings.preferences.description": "このブラウザーでの AIKINGBOT の言語とサウンドを選びます。",
   "webClient.error.checkConversation": "もう一度送信する前に会話を確認してください。",
   "webClient.error.hostReported": "ホストがエラーを報告しました。会話とホストの状態を確認してください。",
   "webClient.error.requestFailed": "リクエストに失敗しました。",
@@ -65,14 +65,14 @@ export const messages = {
   "webClient.error.identityChanged": "ホストの ID が変わりました。接続を拒否しました。",
   "webClient.error.connectionUnavailable": "ホストへの接続を利用できません。",
   "webClient.error.incompatible":
-    "このホストは OpenBot web に対応していません。ホストをアップデートして、このページを再読み込みしてください。",
+    "このホストは AIKINGBOT web に対応していません。ホストをアップデートして、このページを再読み込みしてください。",
   "webClient.error.sendUnconfirmed": "メッセージの配信が確認できません。もう一度送信する前に更新してください。",
   "webClient.error.fileType": "この種類のファイルを添付するには、ホストをアップデートしてください。",
   "webClient.error.uploadCancelled": "添付ファイルのアップロードはキャンセルされました。",
   "webClient.error.duplication": "このホストはエージェントの複製に対応していません。",
   "webClient.error.connectServerFirst": "先にこのサーバーに接続してください。",
   "webClient.error.agentInstallNotAllowed":
-    "ここにエージェントを追加できるのはオーナーまたは管理者のみで、ホストでは最新の OpenBot が動作している必要があります。",
+    "ここにエージェントを追加できるのはオーナーまたは管理者のみで、ホストでは最新の AIKINGBOT が動作している必要があります。",
   "webClient.error.linkDesktopOnly": "このリンクはデスクトップアプリでのみ開けます。",
   "webClient.error.saveEndpointOffline": "エンドポイントを保存するには、ホストに接続してください。",
   "webClient.error.removeEndpointOffline": "エンドポイントを削除するには、ホストに接続してください。",

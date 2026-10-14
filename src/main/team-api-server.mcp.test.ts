@@ -7,7 +7,7 @@ import { Effect } from "effect";
 // and header values the host holds. `requireAdmin` is the whole gate, so these are the cases that
 // prove it is in place.
 
-import { decodeMcpServerConfigs, decodeMcpTestResult, type McpServerConfig } from "@openbot/contracts/ipc";
+import { decodeMcpServerConfigs, decodeMcpTestResult, type McpServerConfig } from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it } from "vitest";
 import { NO_MCP_TOOL_RUNTIMES } from "../backend/mcp-provider-shapes";
 import { McpServerError } from "../backend/mcp-server-store";
@@ -72,8 +72,8 @@ describe("Team API MCP server access", () => {
     const token = await fixture.signIn();
     const headers = {
       Authorization: `Bearer ${token}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "mcp-servers-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "mcp-servers-v1",
       "Content-Type": "application/json",
     };
 
@@ -83,7 +83,7 @@ describe("Team API MCP server access", () => {
     // Without the capability the routes answer 400 rather than 404: the connection did not ask for
     // the feature, so the host never classifies its paths.
     expect(
-      (await fetch(`${base}/v1/mcp-servers`, { headers: { ...headers, "OpenBot-Capabilities": "" } })).status,
+      (await fetch(`${base}/v1/mcp-servers`, { headers: { ...headers, "AIKINGBOT-Capabilities": "" } })).status,
     ).toBe(400);
 
     const invite = await Effect.runPromise(fixture.store.createInvite("member"));
@@ -159,8 +159,8 @@ describe("Team API MCP server access", () => {
     const { base } = await fixture.start({ mcpServers });
     const headers = {
       Authorization: `Bearer ${await fixture.signIn()}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "mcp-servers-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "mcp-servers-v1",
       "Content-Type": "application/json",
     };
 
@@ -205,15 +205,15 @@ describe("Team API MCP server access", () => {
     });
     const headers = {
       Authorization: `Bearer ${await fixture.signIn()}`,
-      "OpenBot-Protocol-Version": "3",
-      "OpenBot-Capabilities": "mcp-servers-v1",
+      "AIKINGBOT-Protocol-Version": "3",
+      "AIKINGBOT-Capabilities": "mcp-servers-v1",
       "Content-Type": "application/json",
     };
     const post = (path: string, body: unknown) =>
       fetch(`${base}/v1/mcp-servers/${path}`, { method: "POST", headers, body: JSON.stringify(body) });
 
     // A command nothing names waits for the download, then still probes.
-    const missing = { ...config, id: "", name: "Missing", command: "openbot-no-such-command" };
+    const missing = { ...config, id: "", name: "Missing", command: "aikingbot-no-such-command" };
     expect(decodeMcpTestResult(await (await post("test", { config: missing })).json())).toEqual({
       toolCount: 3,
       error: null,
@@ -247,7 +247,7 @@ describe("Team API MCP server access", () => {
     expect(compatibility).toMatchObject({ capabilities: expect.not.arrayContaining(["mcp-servers-v1"]) });
     const token = await fixture.signIn();
     const blocked = await fetch(`${base}/v1/mcp-servers`, {
-      headers: { Authorization: `Bearer ${token}`, "OpenBot-Capabilities": "mcp-servers-v1" },
+      headers: { Authorization: `Bearer ${token}`, "AIKINGBOT-Capabilities": "mcp-servers-v1" },
     });
     expect(blocked.status).toBe(400);
   });

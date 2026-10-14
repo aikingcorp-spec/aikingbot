@@ -1,9 +1,9 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   type AgentApproval,
   type DynamicIslandPresentation,
   isDynamicIslandPresentation,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   createDynamicIslandPresentation,
@@ -17,7 +17,7 @@ import {
 const text: DynamicIslandText = {
   taskWorking: "Working on your request",
   questionHeader: "Question from your agent",
-  questionText: "Open OpenBot to answer this question.",
+  questionText: "Open AIKINGBOT to answer this question.",
   optionFallback: (number) => `Option ${number}`,
   takeoverTitle: "Browser step needs you",
   takeoverDetail: "Complete the sign-in, verification, or consent in the browser.",
@@ -210,7 +210,7 @@ describe("createDynamicIslandPresentation", () => {
     expect(firstQuestion).toMatchObject({
       id: "question-1",
       header: "Question from your agent",
-      question: "Open OpenBot to answer this question.",
+      question: "Open AIKINGBOT to answer this question.",
     });
     expect(firstQuestion?.options).toHaveLength(INPUT_LIMITS.promptOptions);
     expect(firstQuestion?.options?.[0]).toEqual({ label: "Option 1", description: "Option 1" });

@@ -14,7 +14,7 @@ export const messages = {
   "skill.loadingDetails": "Details werden geladen…",
   "skill.emptyEnabled": "Dieser Agent hat keine aktivierten Fähigkeiten.",
   "skill.emptyAssigned": "Diesem Agenten sind noch keine Fähigkeiten zugewiesen.",
-  "skill.folderSkill": "OpenBot hat diese Fähigkeit nicht installiert. Bearbeite oder entferne sie in {location}.",
+  "skill.folderSkill": "AIKINGBOT hat diese Fähigkeit nicht installiert. Bearbeite oder entferne sie in {location}.",
   "skill.localOnHost": "Diese lokale Fähigkeit ist auf dem Host gespeichert. Öffne ihre Details auf dem Host-Computer.",
   "skill.moreFor": "Mehr für {name}",
   "skill.update": "Aktualisieren",
@@ -36,7 +36,7 @@ export const messages = {
     "Beim Aktualisieren dieser Fähigkeit werden die lokalen Dateien durch das neueste Fähigkeitspaket ersetzt. Deine Änderungen in diesem Fähigkeitsordner gehen verloren.",
   "skill.confirm.removeModifiedBody":
     "Diese Fähigkeit enthält lokale Änderungen im Arbeitsbereich des Agenten. Entfernen löscht diese Dateien. Die ursprünglichen Chatnachrichten bleiben erhalten.",
-  "skill.confirm.removeBody": "OpenBot entfernt diese Fähigkeit vom Agenten. Der Chatverlauf bleibt erhalten.",
+  "skill.confirm.removeBody": "AIKINGBOT entfernt diese Fähigkeit vom Agenten. Der Chatverlauf bleibt erhalten.",
   "skill.confirm.replace": "Fähigkeit ersetzen",
   "skill.confirm.remove": "Fähigkeit entfernen",
   "skill.unavailable.readOnly": "Entfernte Fähigkeiten sind schreibgeschützt.",

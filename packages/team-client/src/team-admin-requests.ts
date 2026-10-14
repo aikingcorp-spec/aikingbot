@@ -3,11 +3,11 @@ import {
   isAgentSessionSettings,
   type ResetAgentSessionSettingInput,
   type SetAgentSessionSettingInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_SESSION_SETTINGS_ROUTES } from "@openbot/contracts/team-protocol/agent-session-settings-v1";
-import { HOST_MEMBER_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-member-update-v1";
-import { HOST_RELEASE_ROUTES } from "@openbot/contracts/team-protocol/host-release-v1";
-import type { PROVIDERS_V5_ROUTES } from "@openbot/contracts/team-protocol/providers-v5";
+} from "@aikingbot/contracts/ipc";
+import { AGENT_SESSION_SETTINGS_ROUTES } from "@aikingbot/contracts/team-protocol/agent-session-settings-v1";
+import { HOST_MEMBER_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/host-member-update-v1";
+import { HOST_RELEASE_ROUTES } from "@aikingbot/contracts/team-protocol/host-release-v1";
+import type { PROVIDERS_V5_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v5";
 // Admin requests to one host: agent settings and skills, shared tables, agent share links, the server name and logo,
 // the app update, MCP servers, storage, hosted sites and providers.
 //
@@ -15,8 +15,8 @@ import type { PROVIDERS_V5_ROUTES } from "@openbot/contracts/team-protocol/provi
 // them through their own transport, so the path, body and decoding of each request are here once.
 // The host answers only an owner or admin; a member gets a refusal, which the transport rejects.
 
-import type { ManagedProviderId } from "@openbot/contracts/agent-providers";
-import { parseHostedSiteList } from "@openbot/contracts/hosted-sites";
+import type { ManagedProviderId } from "@aikingbot/contracts/agent-providers";
+import { parseHostedSiteList } from "@aikingbot/contracts/hosted-sites";
 import {
   type AddedAgent,
   type AddMessagingOrchestratorResult,
@@ -102,8 +102,8 @@ import {
   type UpdateAgentAdminSettingsInput,
   type UpdateHostIdentityInput,
   type UpdateRestartMode,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, guardedListDecoder, nullableString, requiredBoolean } from "@openbot/contracts/ipc-decoding";
+} from "@aikingbot/contracts/ipc";
+import { decodeRecord, guardedListDecoder, nullableString, requiredBoolean } from "@aikingbot/contracts/ipc-decoding";
 import {
   decodeEventActivity,
   decodeEventRoutines,
@@ -119,30 +119,33 @@ import {
   type SaveEventRoutineInput,
   type SaveEventRoutineResult,
   type WebhookSecret,
-} from "@openbot/contracts/ipc-events";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/agent-admin-v1";
-import { AGENT_INSTALL_ROUTES } from "@openbot/contracts/team-protocol/agent-install-v1";
-import { AGENT_PUBLISH_IMAGE_BYTES, AGENT_PUBLISH_ROUTES } from "@openbot/contracts/team-protocol/agent-publish-v1";
-import { AGENT_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/agent-update-v1";
-import { CONNECTORS_ROUTES } from "@openbot/contracts/team-protocol/connectors-v1";
-import { EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
-import { HOST_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/host-admin-v1";
-import { HOST_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-update-v1";
-import { HOSTED_SITES_ROUTES } from "@openbot/contracts/team-protocol/hosted-sites-v1";
-import { MCP_SIGN_IN_APP_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-app-v1";
-import { MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MCP_ROUTES } from "@openbot/contracts/team-protocol/mcp-v1";
-import { PROVIDER_HOST_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/provider-host-sign-in-v1";
-import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
-import type { PROVIDERS_RUNTIMES_V2_ROUTES } from "@openbot/contracts/team-protocol/providers-v2";
-import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@openbot/contracts/team-protocol/providers-v3";
-import type { PROVIDERS_V4_ROUTES } from "@openbot/contracts/team-protocol/providers-v4";
-import { SHARED_TABLES_ROUTES } from "@openbot/contracts/team-protocol/shared-tables-v1";
-import { type SIGN_IN_RELAY_PROVIDERS, SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { SKILLS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
+} from "@aikingbot/contracts/ipc-events";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { AGENT_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/agent-admin-v1";
+import { AGENT_INSTALL_ROUTES } from "@aikingbot/contracts/team-protocol/agent-install-v1";
+import { AGENT_PUBLISH_IMAGE_BYTES, AGENT_PUBLISH_ROUTES } from "@aikingbot/contracts/team-protocol/agent-publish-v1";
+import { AGENT_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/agent-update-v1";
+import { CONNECTORS_ROUTES } from "@aikingbot/contracts/team-protocol/connectors-v1";
+import { EVENTS_ROUTES } from "@aikingbot/contracts/team-protocol/events-v1";
+import { HOST_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/host-admin-v1";
+import { HOST_UPDATE_ROUTES } from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { HOSTED_SITES_ROUTES } from "@aikingbot/contracts/team-protocol/hosted-sites-v1";
+import { MCP_SIGN_IN_APP_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-sign-in-app-v1";
+import { MCP_SIGN_IN_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-sign-in-v1";
+import { MCP_ROUTES } from "@aikingbot/contracts/team-protocol/mcp-v1";
+import { PROVIDER_HOST_SIGN_IN_ROUTES } from "@aikingbot/contracts/team-protocol/provider-host-sign-in-v1";
+import { PROVIDERS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v1";
+import type { PROVIDERS_RUNTIMES_V2_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v2";
+import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v3";
+import type { PROVIDERS_V4_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v4";
+import { SHARED_TABLES_ROUTES } from "@aikingbot/contracts/team-protocol/shared-tables-v1";
+import {
+  type SIGN_IN_RELAY_PROVIDERS,
+  SIGN_IN_RELAY_ROUTES,
+} from "@aikingbot/contracts/team-protocol/sign-in-relay-v1";
+import { SKILLS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/skills-admin-v1";
+import { STORAGE_ROUTES } from "@aikingbot/contracts/team-protocol/storage-v1";
+import type { TeamProtocolV2Json } from "@aikingbot/contracts/team-protocol/v2";
 import { Effect, Schema } from "effect";
 import { bytesToBase64 } from "./base64";
 import type { TeamApiRequest } from "./team-api-requests";

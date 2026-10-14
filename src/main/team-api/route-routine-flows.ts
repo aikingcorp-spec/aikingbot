@@ -1,11 +1,11 @@
-import type { RoutineFlowCanvas, RoutineFlowStep } from "@openbot/contracts/ipc";
+import type { RoutineFlowCanvas, RoutineFlowStep } from "@aikingbot/contracts/ipc";
 import {
   ROUTINE_FLOW_STEP_TEXT_LIMIT,
   ROUTINE_FLOWS_CAPABILITY,
   ROUTINE_FLOWS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/routine-flows-v1";
+import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@aikingbot/contracts/team-protocol/v2";
+import { sourceText } from "@aikingbot/i18n/source";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { RoutineFlowError } from "../../backend/routine-flows/routine-flow-store";

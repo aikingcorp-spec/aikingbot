@@ -11,8 +11,8 @@ import {
 
 describe("development profile", () => {
   it("uses a separate userData folder for the test client", () => {
-    expect(developmentUserDataName(readDevelopmentProfile("test-client"))).toBe("OpenBot Dev Test Client");
-    expect(developmentUserDataName(readDevelopmentProfile("app"))).toBe("OpenBot Dev");
+    expect(developmentUserDataName(readDevelopmentProfile("test-client"))).toBe("AIKINGBOT Dev Test Client");
+    expect(developmentUserDataName(readDevelopmentProfile("app"))).toBe("AIKINGBOT Dev");
   });
 
   it("does not accept an arbitrary profile as a path component", () => {
@@ -24,18 +24,18 @@ describe("development profile", () => {
 
   it("isolates a fallback dev instance without accepting arbitrary path content", () => {
     expect(readDevelopmentInstanceId("5174")).toBe("5174");
-    expect(developmentUserDataName("app", "5174")).toBe("OpenBot Dev 5174");
+    expect(developmentUserDataName("app", "5174")).toBe("AIKINGBOT Dev 5174");
   });
 
   it("keeps an isolated worktree on one profile whichever port it wins", () => {
-    const instanceId = developmentInstanceIdForWorktree("/worktrees/openbot-191");
+    const instanceId = developmentInstanceIdForWorktree("/worktrees/aikingbot-191");
 
     // These paths collided under the old five-digit hash.
-    expect(developmentInstanceIdForWorktree("/worktrees/openbot-191")).toBe(instanceId);
-    expect(developmentInstanceIdForWorktree("/worktrees/openbot-356")).not.toBe(instanceId);
+    expect(developmentInstanceIdForWorktree("/worktrees/aikingbot-191")).toBe(instanceId);
+    expect(developmentInstanceIdForWorktree("/worktrees/aikingbot-356")).not.toBe(instanceId);
     expect(instanceId).not.toBe("22200");
     expect(readDevelopmentInstanceId(instanceId)).toBe(instanceId);
-    expect(developmentUserDataName("app", instanceId)).toBe(`OpenBot Dev ${instanceId}`);
+    expect(developmentUserDataName("app", instanceId)).toBe(`AIKINGBOT Dev ${instanceId}`);
   });
 
   it("only accepts a remote-debugging port inside the range automation connects to", () => {

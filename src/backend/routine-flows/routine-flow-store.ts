@@ -5,7 +5,7 @@
  * runtime says when something changed.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   ROUTINE_FLOW_STEP_STATUSES,
   type RoutineFlowLink,
@@ -13,11 +13,11 @@ import {
   type RoutineFlowStep,
   type RoutineFlowStepStatus,
   type RoutineRunStatus,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import type { AIKINGBOTDatabase } from "../aikingbot-database";
 import { databaseRow, databaseRows } from "../database/database-rows";
-import type { OpenBotDatabase } from "../openbot-database";
 import { routineFlowConnectProblem, routineFlowDepths } from "./routine-flow-graph";
 
 /** A refusal the user reads: the text is already a sentence for them. */
@@ -38,7 +38,7 @@ export interface RoutineFlowRun {
 }
 
 export interface RoutineFlowStoreOptions {
-  database: OpenBotDatabase;
+  database: AIKINGBOTDatabase;
   createId?: () => string;
 }
 
@@ -59,7 +59,7 @@ const RUN_STATUSES = [
 ] as const satisfies readonly RoutineRunStatus[];
 
 export class RoutineFlowStore {
-  readonly #database: OpenBotDatabase;
+  readonly #database: AIKINGBOTDatabase;
   readonly #createId: () => string;
 
   constructor(options: RoutineFlowStoreOptions) {

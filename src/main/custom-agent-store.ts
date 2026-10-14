@@ -1,17 +1,17 @@
 // The user's own ACP agents: what is on disk, and every write that changes it.
 //
 // An agent carries environment values, often an API key, so this file is the only place they exist
-// outside the agent process OpenBot starts. The renderer is given `list()`, which has the variable
+// outside the agent process AIKINGBOT starts. The renderer is given `list()`, which has the variable
 // names only; the backend is given `configs()`, which is what a spawn needs. Nothing else reads the
 // file.
 //
 // Electron-free, with the cipher injected, so its tests need neither a keychain nor a display.
 
 import { readFile } from "node:fs/promises";
-import type { CustomAgentEnvInput, CustomAgentSummary, SaveCustomAgentInput } from "@openbot/contracts/ipc";
-import { CUSTOM_AGENT_LIMITS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { CustomAgentEnvInput, CustomAgentSummary, SaveCustomAgentInput } from "@aikingbot/contracts/ipc";
+import { CUSTOM_AGENT_LIMITS } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { registerSecretValue } from "@aikingbot/logging";
 import { Effect, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { resolveAgentCommand } from "../backend/acp-agent-command";

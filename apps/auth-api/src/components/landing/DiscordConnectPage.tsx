@@ -1,4 +1,4 @@
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@aikingbot/brand";
 import { createSignal, onSettled, Show } from "solid-js";
 import { Button } from "../ui/button";
 import { handOffToWebClient } from "./web-messaging-handoff";
@@ -6,7 +6,7 @@ import { handOffToWebClient } from "./web-messaging-handoff";
 /**
  * The page that returns a Discord install to the desktop app, or to the browser client tab that started
  * it. The install callback redirects here with a sealed grant, or an error code, in the fragment. The
- * page only builds the `openbot://` link or passes the grant on: only the host can open the grant.
+ * page only builds the `aikingbot://` link or passes the grant on: only the host can open the grant.
  */
 export function DiscordConnectPage() {
   const [openUrl, setOpenUrl] = createSignal("");
@@ -36,38 +36,38 @@ export function DiscordConnectPage() {
   return <DiscordConnectView openUrl={openUrl()} failure={failure()} webClient={webClient()} />;
 }
 
-/** The page's card: the link back to OpenBot, or why Discord did not finish. */
+/** The page's card: the link back to AIKINGBOT, or why Discord did not finish. */
 export function DiscordConnectView(props: { openUrl: string; failure: string | null; webClient?: boolean }) {
   return (
     <main class="join-page">
-      <a class="landing-brand join-page-brand" href="/" aria-label="OpenBot home">
+      <a class="landing-brand join-page-brand" href="/" aria-label="AIKINGBOT home">
         <AppLogo variant="production" class="landing-brand-logo" />
-        <span>OpenBot</span>
+        <span>AIKINGBOT</span>
       </a>
       <section class="join-card" aria-labelledby="discord-connect-title">
         <AppLogo variant="production" animation="blink" class="join-card-logo" />
         <p class="join-card-eyebrow">Discord</p>
-        <h1 id="discord-connect-title">Return to OpenBot</h1>
+        <h1 id="discord-connect-title">Return to AIKINGBOT</h1>
         <Show
           when={!props.failure}
           fallback={
             <p class="join-card-error">
               {props.failure === "discord_guild_taken"
-                ? "Another OpenBot server already answers this Discord server. Disconnect it on that server, then try again."
-                : "Discord did not finish the connection. Go back to OpenBot and start again."}
+                ? "Another AIKINGBOT server already answers this Discord server. Disconnect it on that server, then try again."
+                : "Discord did not finish the connection. Go back to AIKINGBOT and start again."}
             </p>
           }
         >
           <p class="join-card-copy">
             {props.webClient
-              ? "Your OpenBot tab finishes the Discord connection. You can close this tab."
-              : "OpenBot finishes the Discord connection on your computer."}
+              ? "Your AIKINGBOT tab finishes the Discord connection. You can close this tab."
+              : "AIKINGBOT finishes the Discord connection on your computer."}
           </p>
           <Show when={props.openUrl}>
             {(href) => (
               <div class="join-card-actions join-card-actions-single">
                 <Button href={href()} variant="primary" size="lg" icon="open">
-                  Open OpenBot
+                  Open AIKINGBOT
                 </Button>
               </div>
             )}
@@ -81,5 +81,5 @@ export function DiscordConnectView(props: { openUrl: string; failure: string | n
 function discordDeepLink(fragment: URLSearchParams): string | null {
   const nonce = fragment.get("nonce");
   const grant = fragment.get("grant");
-  return nonce && grant ? `openbot://discord-guild?${new URLSearchParams({ nonce, grant })}` : null;
+  return nonce && grant ? `aikingbot://discord-guild?${new URLSearchParams({ nonce, grant })}` : null;
 }

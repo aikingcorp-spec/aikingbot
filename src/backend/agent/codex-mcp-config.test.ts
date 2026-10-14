@@ -6,8 +6,8 @@ import { type CodexMcpServer, codexDisabledServers, toMcpShapeFailed } from "../
 import { readCodexMcpConfig } from "./codex-mcp-config";
 
 const server = {
-  command: "C:\\OpenBot\\cua-driver.exe",
-  args: ["mcp", "--socket", "\\\\.\\pipe\\openbot-test"],
+  command: "C:\\AIKINGBOT\\cua-driver.exe",
+  args: ["mcp", "--socket", "\\\\.\\pipe\\aikingbot-test"],
   env: { PRIVATE_TOKEN: "must-not-be-saved" },
 } satisfies CodexMcpServer;
 
@@ -32,7 +32,7 @@ function configResponse(
 
 describe("Codex MCP registration", () => {
   it("registers a disabled Windows server without credentials and reads the saved config", async () => {
-    const saved = configResponse({ computer_use: { command: "openbot-mcp", enabled: false } });
+    const saved = configResponse({ computer_use: { command: "aikingbot-mcp", enabled: false } });
     const client = new FakeAgentClient("codex", "DONE", true, true, {}, async (method) => {
       if (method === "config/batchWrite") client.configRead = saved;
     });
@@ -51,7 +51,7 @@ describe("Codex MCP registration", () => {
           edits: [
             {
               keyPath: "mcp_servers.computer_use",
-              value: { command: "openbot-mcp", enabled: false },
+              value: { command: "aikingbot-mcp", enabled: false },
               mergeStrategy: "replace",
             },
           ],
@@ -67,7 +67,7 @@ describe("Codex MCP registration", () => {
   it("keeps saved set_value approval after restart and an executable update", async () => {
     const saved = configResponse({
       computer_use: {
-        command: "C:\\OldOpenBot\\cua-driver.exe",
+        command: "C:\\OldAIKINGBOT\\cua-driver.exe",
         enabled: false,
         tools: { set_value: { approval_mode: "approve" }, click: { approval_mode: "prompt" } },
       },
@@ -101,7 +101,7 @@ describe("Codex MCP registration", () => {
       config: {
         mcp_servers: {
           T3_MCP: { url: "http://127.0.0.1:1", enabled: false },
-          Local_MCP: { command: "openbot-mcp", enabled: false },
+          Local_MCP: { command: "aikingbot-mcp", enabled: false },
         },
       },
     });
@@ -114,7 +114,7 @@ describe("Codex MCP registration", () => {
             value:
               name === "T3_MCP"
                 ? { url: "http://127.0.0.1:1", enabled: false }
-                : { command: "openbot-mcp", enabled: false },
+                : { command: "aikingbot-mcp", enabled: false },
             mergeStrategy: "replace",
           })),
           filePath: "C:\\Users\\Test\\.codex\\config.toml",
@@ -144,7 +144,7 @@ describe("Codex MCP registration", () => {
   it("keeps tool policies when a managed server changes transport in either direction", async () => {
     const client = new FakeAgentClient("codex");
     const tools = { t3_thread_read: { approval_mode: "prompt" } };
-    client.configRead = configResponse({ T3_MCP: { command: "openbot-mcp", enabled: false, tools } });
+    client.configRead = configResponse({ T3_MCP: { command: "aikingbot-mcp", enabled: false, tools } });
     for (const transport of ["http", "stdio"] as const) {
       const response = await runCauseEffect(
         readCodexMcpConfig(client, {
@@ -155,7 +155,7 @@ describe("Codex MCP registration", () => {
         config: {
           mcp_servers: {
             T3_MCP: {
-              ...(transport === "http" ? { url: "http://127.0.0.1:1" } : { command: "openbot-mcp" }),
+              ...(transport === "http" ? { url: "http://127.0.0.1:1" } : { command: "aikingbot-mcp" }),
               enabled: false,
               tools,
             },

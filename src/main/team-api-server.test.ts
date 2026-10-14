@@ -9,15 +9,15 @@ import { RemoteWorkflowError } from "./remote-service-effects";
 // preserve. The domains themselves are in the `team-api-server.<domain>.test.ts` siblings.
 
 import { join } from "node:path";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_SEMANTIC_TAGS_CAPABILITY } from "@openbot/contracts/team-protocol/current";
+import { isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { TEAM_SEMANTIC_TAGS_CAPABILITY } from "@aikingbot/contracts/team-protocol/current";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamProtocolV1HttpRoute,
-} from "@openbot/contracts/team-protocol/v1";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/team-protocol/v1";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SidebarLayoutStore } from "../backend/sidebar-layout-store";
 import { TeamApiServer } from "./team-api-server";
@@ -331,7 +331,7 @@ describe("TeamApiServer routing", () => {
     const { base } = await start({
       agents: createAgents({ listAgents: () => [] }),
       sidebarLayout,
-      logger: createOpenBotLogger("test", () => undefined),
+      logger: createAIKINGBOTLogger("test", () => undefined),
     });
     // The point is which paths route, not what the stubs do once reached, so the failures they raise
     // are expected here and their logging would bury the assertion.
@@ -405,7 +405,7 @@ describe("TeamApiServer status contract", () => {
     // logger keeps what they raise from burying the row that failed.
     const { base } = await fixture.start({
       agents: createAgents({ listAgents: () => [] }),
-      logger: createOpenBotLogger("test", () => undefined),
+      logger: createAIKINGBOTLogger("test", () => undefined),
       ...options,
     });
     return { base, signIn: fixture.signIn };

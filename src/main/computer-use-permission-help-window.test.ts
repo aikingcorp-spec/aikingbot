@@ -1,4 +1,4 @@
-import type { MacPermissionId } from "@openbot/contracts/ipc";
+import type { MacPermissionId } from "@aikingbot/contracts/ipc";
 import { assert, describe, expect, it, vi } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { ComputerUsePermissionHelpWindowController } from "./computer-use-permission-help-window";
@@ -26,7 +26,7 @@ type FakeWindow = ReturnType<typeof fakeWindow>;
 
 function controller(
   loadWindow?: (window: FakeWindow, permission: MacPermissionId) => Promise<void>,
-  bundlePath: () => string | null = () => "/Applications/OpenBot.app",
+  bundlePath: () => string | null = () => "/Applications/AIKINGBOT.app",
   bundleIcon: (path: string) => Promise<string> = async () => "data:image/png;base64,icon",
 ) {
   const windows: FakeWindow[] = [];
@@ -138,7 +138,7 @@ describe("ComputerUsePermissionHelpWindowController", () => {
 
     expect(startDrag).toHaveBeenCalledTimes(1);
     expect(startDrag).toHaveBeenCalledWith({
-      file: "/Applications/OpenBot.app",
+      file: "/Applications/AIKINGBOT.app",
       icon: "data:image/png;base64,icon",
     });
   });
@@ -148,7 +148,7 @@ describe("ComputerUsePermissionHelpWindowController", () => {
 
     help.reveal();
 
-    expect(revealed).toEqual(["/Applications/OpenBot.app"]);
+    expect(revealed).toEqual(["/Applications/AIKINGBOT.app"]);
   });
   it("uses Sunshine only in its helper and restores the Computer Use bundle when reopened", async () => {
     const { controller: help, windows, revealed } = controller();
@@ -157,17 +157,17 @@ describe("ComputerUsePermissionHelpWindowController", () => {
     assert(helpWindow);
     const senderId = helpWindow.webContents.id;
     expect(await runCauseEffect(help.permissionApp(senderId))).toMatchObject({ name: "Sunshine" });
-    expect(await runCauseEffect(help.permissionApp(senderId + 1000))).toMatchObject({ name: "OpenBot" });
+    expect(await runCauseEffect(help.permissionApp(senderId + 1000))).toMatchObject({ name: "AIKINGBOT" });
     const startDrag = vi.fn();
     await runCauseEffect(help.startDrag({ id: senderId, startDrag }));
     expect(startDrag).toHaveBeenCalledWith({ file: "/runtime/Sunshine.app", icon: "data:image/png;base64,icon" });
     help.reveal(senderId);
     expect(revealed).toEqual(["/runtime/Sunshine.app"]);
     await runCauseEffect(help.show("screen-recording"));
-    expect(await runCauseEffect(help.permissionApp(senderId))).toMatchObject({ name: "OpenBot" });
+    expect(await runCauseEffect(help.permissionApp(senderId))).toMatchObject({ name: "AIKINGBOT" });
     await runCauseEffect(help.show("accessibility", "/runtime/Sunshine.app"));
     help.close();
-    expect(await runCauseEffect(help.permissionApp(senderId))).toMatchObject({ name: "OpenBot" });
+    expect(await runCauseEffect(help.permissionApp(senderId))).toMatchObject({ name: "AIKINGBOT" });
   });
 
   it("does not drag a stale bundle after the helper changes", async () => {

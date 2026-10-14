@@ -1,4 +1,4 @@
-import { ONE_TIME_CODE_LENGTH } from "@openbot/contracts/validation";
+import { ONE_TIME_CODE_LENGTH } from "@aikingbot/contracts/validation";
 import { Spinner, Typography } from "heroui-native";
 import type { Ref } from "react";
 import { type TextInput, View } from "react-native";

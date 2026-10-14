@@ -2,13 +2,13 @@ import CryptoKit
 import Foundation
 import UserNotifications
 
-/// Opens a notification that an OpenBot host sealed, before iOS shows it. The host sends the agent
-/// name and the text through the OpenBot relay and Apple, sealed with keys that only this phone and
+/// Opens a notification that an AIKINGBOT host sealed, before iOS shows it. The host sends the agent
+/// name and the text through the AIKINGBOT relay and Apple, sealed with keys that only this phone and
 /// the host know, so the relay and Apple see the app name only. The app writes the keys of each
 /// server into the App Group (`push-notification-keys.ts`). A notification that no key opens keeps
 /// the app name, so a host credential alone cannot make the phone show its own text.
 ///
-/// The seal is the one of `live-activity-seal.ts` in `@openbot/team-client`: a keystream of
+/// The seal is the one of `live-activity-seal.ts` in `@aikingbot/team-client`: a keystream of
 /// HMAC-SHA256 blocks over a 16-byte nonce and a 32-bit counter, then a 16-byte HMAC-SHA256 tag
 /// over the nonce and the ciphertext, as base64url.
 final class NotificationService: UNNotificationServiceExtension {
@@ -125,7 +125,7 @@ enum SealedNotification {
 
   private static func loadServers() -> [ServerKeys] {
     guard
-      let group = Bundle.main.object(forInfoDictionaryKey: "OpenBotAppGroup") as? String,
+      let group = Bundle.main.object(forInfoDictionaryKey: "AIKINGBOTAppGroup") as? String,
       let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group),
       let data = try? Data(contentsOf: container.appendingPathComponent(keysFile)),
       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],

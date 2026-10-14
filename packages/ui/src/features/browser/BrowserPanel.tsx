@@ -1,11 +1,11 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   BrowserControlAction,
   BrowserControlDetailAction,
   BrowserControlSession,
   BrowserTab,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Alert,
   AlertContent,
@@ -19,8 +19,8 @@ import {
   PictureInPicture2,
   Tabs,
   TriangleAlert,
-} from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
+} from "@aikingbot/ui";
+import type { AgentProfile } from "@aikingbot/ui/data";
 import {
   BrowserBackIcon,
   BrowserControlIcon,
@@ -28,8 +28,8 @@ import {
   BrowserReloadIcon,
   CloseIcon,
   PlusIcon,
-} from "@openbot/ui/features/conversation/ConversationIcons";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui/features/conversation/ConversationIcons";
+import { useText } from "@aikingbot/ui/text";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, For, onSettled, Show } from "solid-js";
 import BrowserLiveView, { type BrowserViewRuntime } from "./BrowserLiveView";

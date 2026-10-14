@@ -4,8 +4,8 @@ import type {
   ConversationSearchResult,
   RoutineCalendarOwner,
   RoutineCalendarRoutine,
-} from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
+} from "@aikingbot/contracts/ipc";
+import { markdownPreviewText } from "@aikingbot/contracts/markdown-preview-text";
 import type { MobileAgent } from "@/features/workspace/context/mobile-workspace-context";
 
 /** The filters of the desktop global search, in its order, and the settings pages of this app. */

@@ -1,4 +1,4 @@
-import { pluginLinkText } from "@openbot/contracts/plugin-links";
+import { pluginLinkText } from "@aikingbot/contracts/plugin-links";
 import {
   Button,
   ExternalLink,
@@ -12,8 +12,8 @@ import {
   Plug,
   SettingsSection,
   Text,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, For, Match, Show, Switch } from "solid-js";
 import { BitwardenConnectorPanel } from "../settings/BitwardenConnectorPanel";
 import { GitHubConnectorPanel } from "../settings/GitHubConnectorPanel";

@@ -1,4 +1,4 @@
-import type { AddedAgent, InstallMarketplaceAgentInput, McpSignInRelayPage } from "@openbot/contracts/ipc";
+import type { AddedAgent, InstallMarketplaceAgentInput, McpSignInRelayPage } from "@aikingbot/contracts/ipc";
 import { appPort } from "../../app-port";
 import { type AgentSkillCalls, agentSkillCalls, type SkillsPort, skillsPort } from "../../skills-port";
 
@@ -29,7 +29,7 @@ export interface MarketplaceSignInRelay {
   cancel: (url: string, serverId: string) => Promise<void>;
 }
 
-/** Read on each call, as `skillsPort` is: tests and stories replace `window.openbot` per case. */
+/** Read on each call, as `skillsPort` is: tests and stories replace `window.aikingbot` per case. */
 export function desktopMarketplaceCalls(): MarketplaceCalls {
   const port = skillsPort();
   return {

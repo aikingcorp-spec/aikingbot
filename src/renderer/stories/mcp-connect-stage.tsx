@@ -10,11 +10,11 @@
  * listing installs, behind the same connect attempt, so "never answers" is what waiting looks like.
  */
 
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import { Button, Text } from "@openbot/ui";
-import type { McpConnectSubject } from "@openbot/ui/features/settings/McpConnectShell";
-import type { MarketplacePluginApp } from "@openbot/ui/features/settings/marketplace-plugins";
-import type { McpKeyFlow } from "@openbot/ui/features/settings/mcp-connect-auth";
+import type { McpServerConfig, McpTestResult } from "@aikingbot/contracts/ipc";
+import { Button, Text } from "@aikingbot/ui";
+import type { McpConnectSubject } from "@aikingbot/ui/features/settings/McpConnectShell";
+import type { MarketplacePluginApp } from "@aikingbot/ui/features/settings/marketplace-plugins";
+import type { McpKeyFlow } from "@aikingbot/ui/features/settings/mcp-connect-auth";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Show } from "solid-js";
 import { createPluginAppConfig } from "../src/features/settings/marketplace-plugin-catalog";

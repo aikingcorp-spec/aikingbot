@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { connect } from "node:net";
 import { dirname, join } from "node:path";
 import type { Duplex } from "node:stream";
-import type { RemoteDesktopIceServer } from "@openbot/contracts/ipc";
+import type { RemoteDesktopIceServer } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import type * as Ws from "ws";
@@ -47,7 +47,7 @@ describe("RemoteScreenGateway", () => {
       await expect(createSession(gateway, "http://127.0.0.1:9")).rejects.toMatchObject({
         code: "host_unavailable",
         message:
-          "The Sunshine and Moonlight Web runtime is missing or is not supported on this host. Install the full OpenBot release on a Mac, a Windows x64 host or a Linux x64 host, then restart OpenBot.",
+          "The Sunshine and Moonlight Web runtime is missing or is not supported on this host. Install the full AIKINGBOT release on a Mac, a Windows x64 host or a Linux x64 host, then restart AIKINGBOT.",
       });
       expect(gateway.list()).toEqual([]);
       await runCauseEffect(gateway.stop());
@@ -170,7 +170,7 @@ describe("RemoteScreenGateway", () => {
       body: JSON.stringify({ grant: session.viewerGrant }),
     });
     expect(first.status).toBe(204);
-    expect(first.headers.get("set-cookie")).toContain("openbotRemoteViewer=");
+    expect(first.headers.get("set-cookie")).toContain("aikingbotRemoteViewer=");
     const viewerCookie = first.headers.get("set-cookie")?.split(";")[0] ?? "";
     for (const blockedPath of ["admin.html", "index.html", "api/host/stream"]) {
       const blocked = await fetch(`${origin}/v1/remote-screen/sessions/${session.id}/moonlight/${blockedPath}`, {
@@ -182,7 +182,7 @@ describe("RemoteScreenGateway", () => {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: viewerCookie },
       body: JSON.stringify({
-        source: "openbot-moonlight",
+        source: "aikingbot-moonlight",
         type: "viewer-state",
         sessionId: session.id,
         state: "connected",
@@ -211,13 +211,13 @@ describe("RemoteScreenGateway", () => {
     const gateway = createGateway({ runtimeBaseUrl: `http://127.0.0.1:${upstreamAddress.port}`, writeClipboard });
     const { origin, close } = await serveGateway(gateway);
     const session = await createSession(gateway, origin);
-    const clipboard = `${origin}/v1/remote-screen/sessions/${session.id}/moonlight/openbot-clipboard`;
+    const clipboard = `${origin}/v1/remote-screen/sessions/${session.id}/moonlight/aikingbot-clipboard`;
 
     const refused = await fetch(clipboard, { method: "POST", body: "from another page" });
     expect(refused.status).toBe(401);
     expect(writeClipboard).not.toHaveBeenCalled();
 
-    const viewer = { "X-OpenBot-WebRTC-Session": "team-member-a" };
+    const viewer = { "X-AIKINGBOT-WebRTC-Session": "team-member-a" };
     const crossSite = await fetch(clipboard, {
       method: "POST",
       headers: { ...viewer, "Sec-Fetch-Site": "cross-site" },
@@ -232,7 +232,7 @@ describe("RemoteScreenGateway", () => {
     const page = await fetch(`${origin}/v1/remote-screen/sessions/${session.id}/moonlight/stream.html`, {
       headers: viewer,
     });
-    expect(await page.text()).toContain('<head><script type="module" src="openbot-paste.js"></script>');
+    expect(await page.text()).toContain('<head><script type="module" src="aikingbot-paste.js"></script>');
 
     await runCauseEffect(gateway.stop());
     await close();
@@ -559,7 +559,7 @@ describe("RemoteScreenGateway", () => {
     const session = await createSession(gateway, origin);
     const client = new webSockets.WebSocket(
       `${origin.replace(/^http/, "ws")}/v1/remote-screen/sessions/${session.id}/stream`,
-      { headers: { "X-OpenBot-WebRTC-Session": "team-member-a" } },
+      { headers: { "X-AIKINGBOT-WebRTC-Session": "team-member-a" } },
     );
     await new Promise<void>((resolve, reject) => {
       client.once("open", resolve);
@@ -584,7 +584,7 @@ describe("RemoteScreenGateway", () => {
       upstreamWebSockets.handleUpgrade(request, socket, head, (webSocket) => {
         webSocket.on("message", (data) => {
           upstreamMessages.push({
-            user: String(request.headers["x-openbot-remote-user"]),
+            user: String(request.headers["x-aikingbot-remote-user"]),
             message: data.toString(),
           });
         });
@@ -635,7 +635,7 @@ describe("RemoteScreenGateway", () => {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: firstCookie },
       body: JSON.stringify({
-        source: "openbot-moonlight",
+        source: "aikingbot-moonlight",
         type: "viewer-state",
         sessionId: sessions[firstIndex]?.id,
         state: "connected",
@@ -721,8 +721,8 @@ function createGateway(
       options.runtimeInstalled === false
         ? null
         : { sunshine: "/sunshine", moonlightWebServer: "/web-server", moonlightStreamer: "/streamer" },
-    runtimeStateDirectory: "/tmp/openbot-test-runtime",
-    getRuntimeCredentials: () => Effect.succeed({ username: "openbot", password: "secret" }),
+    runtimeStateDirectory: "/tmp/aikingbot-test-runtime",
+    getRuntimeCredentials: () => Effect.succeed({ username: "aikingbot", password: "secret" }),
     getDisplays: () => displays,
     getIceServers: () => remoteCall(options.getIceServers ?? (async () => [{ urls: "stun:127.0.0.1:3478" }])),
     ...(options.onScreenRecordingDenied ? { onScreenRecordingDenied: options.onScreenRecordingDenied } : {}),
@@ -776,7 +776,7 @@ class FakeRuntime implements RemoteScreenRuntime {
   start() {
     return Effect.succeed({
       baseUrl: this.baseUrl,
-      authHeader: "X-OpenBot-Remote-User",
+      authHeader: "X-AIKINGBOT-Remote-User",
       hostId: 12,
       hostIds: [12, 13, 14, 15],
       desktopAppId: 1,

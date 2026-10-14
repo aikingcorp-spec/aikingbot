@@ -11,7 +11,7 @@ export const unstable_settings = { initialRouteName: "index" };
 
 export default function MessageActionsLayout() {
   const { t } = useText();
-  const background = String(useCSSVariable("--openbot-bg-sheet"));
+  const background = String(useCSSVariable("--aikingbot-bg-sheet"));
   const { select } = useMessageActions();
   useEffect(() => () => select(null), [select]);
   return (

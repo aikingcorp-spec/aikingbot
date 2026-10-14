@@ -96,7 +96,7 @@ describe("safe failure reports", () => {
   });
 
   it("persists a refused HTTP report, sends it after restart, and writes a transport artifact", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-reports-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-reports-"));
     const path = join(root, "reports.json");
     const bodies: unknown[] = [];
     let status = 503;
@@ -134,9 +134,9 @@ describe("safe failure reports", () => {
           properties: { provider: "codex", cause_code: "invalid_upload_request", __path: "", __referrer: "" },
         },
       });
-      await mkdir(".openbot-build/telemetry", { recursive: true });
+      await mkdir(".aikingbot-build/telemetry", { recursive: true });
       await writeFile(
-        ".openbot-build/telemetry/transport.json",
+        ".aikingbot-build/telemetry/transport.json",
         JSON.stringify({ passed: true, attempts: bodies, persistedAfterDelivery: 0 }, null, 2),
       );
     } finally {

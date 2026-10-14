@@ -14,8 +14,8 @@
  * a click outside cancel it, and nothing about it is dismissible while the removal is running.
  */
 
-import { ConfirmDialog, Text } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { ConfirmDialog, Text } from "@aikingbot/ui";
+import { useText } from "@aikingbot/ui/text";
 import { For, Show } from "solid-js";
 
 /** What an uninstall is about to take, as the page found it on this computer. */

@@ -1,5 +1,5 @@
-import type { MessagingConnection, MessagingDesktopApi, MessagingPlatform } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { MessagingConnection, MessagingDesktopApi, MessagingPlatform } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { clone } from "./mock-support";
 
 /** The platforms whose preview has one workspace. Telegram has a chat for each link. */

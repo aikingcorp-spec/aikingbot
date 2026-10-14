@@ -1,7 +1,7 @@
 // The agent routines a routine canvas shows: every trigger kind, so a webhook routine brings its URL,
 // event type and filters with it. The trigger reads as it does in the events API.
 
-import type { RoutineFlowRoutineInfo } from "@openbot/contracts/ipc";
+import type { RoutineFlowRoutineInfo } from "@aikingbot/contracts/ipc";
 import type { AgentRoutineStore } from "../agent-routine-store";
 import type { OwnedRoutineRecord } from "../routine-store";
 import type { RoutineFlowsDependencies } from "./routine-flows";

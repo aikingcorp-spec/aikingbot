@@ -2,11 +2,11 @@ import { createHash } from "node:crypto";
 import { createReadStream, existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isNumber, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { parse } from "yaml";
 
-const logger = createOpenBotLogger("verify-update-artifacts");
+const logger = createAIKINGBOTLogger("verify-update-artifacts");
 
 const MIB = 1024 * 1024;
 const platform = process.argv[2];
@@ -54,7 +54,7 @@ if (platform === "linux" || platform === "linux-arm64") {
 // Each macOS job builds its own architecture, and electron-builder writes x64 to `dist/mac`.
 const resourcesRoot =
   platform === "macos"
-    ? join(distRoot, process.arch === "arm64" ? "mac-arm64" : "mac", "OpenBot.app", "Contents", "Resources")
+    ? join(distRoot, process.arch === "arm64" ? "mac-arm64" : "mac", "AIKINGBOT.app", "Contents", "Resources")
     : join(distRoot, platform === "windows" ? "win-unpacked" : `${platform}-unpacked`, "resources");
 // Linux ships no voice runtime. macOS and Windows ship it, and download the model on first use.
 if (platform === "macos" || platform === "windows") {

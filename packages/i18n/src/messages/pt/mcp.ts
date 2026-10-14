@@ -8,10 +8,10 @@ export const messages = {
   "mcp.connect.close": "Fechar conexão de {name}",
   "mcp.connect.getKey": "Obter uma chave",
   "mcp.connect.keyDescription":
-    "Cole uma credencial da sua conta de {name}. O OpenBot usa a credencial para conectar. Local de armazenamento: {host}.",
+    "Cole uma credencial da sua conta de {name}. O AIKINGBOT usa a credencial para conectar. Local de armazenamento: {host}.",
   "mcp.connect.thisComputer": "este computador",
   "mcp.connect.noCredentialDescription":
-    "{name} não exige credenciais. O OpenBot conecta uma vez para ver as ferramentas disponíveis.",
+    "{name} não exige credenciais. O AIKINGBOT conecta uma vez para ver as ferramentas disponíveis.",
   "mcp.connect.connect": "Conectar",
   "mcp.connect.required": "Obrigatório.",
   "mcp.connect.keptOn": "Local de armazenamento: {host}.",
@@ -22,7 +22,7 @@ export const messages = {
   "mcp.local.address": "Endereço",
   "mcp.local.docs": "Guia de configuração",
   "mcp.signIn.description":
-    "Entre na sua conta de {name}. O OpenBot obtém as ferramentas que essa conta pode acessar, sem receber sua senha.",
+    "Entre na sua conta de {name}. O AIKINGBOT obtém as ferramentas que essa conta pode acessar, sem receber sua senha.",
   "mcp.signIn.waiting": "Aguardando o navegador…",
   "mcp.signIn.continue": "Continuar para {name}",
   "mcp.signIn.pageDescription": "Esta página está aberta no navegador de {host}. Autentique-se aqui.",
@@ -60,7 +60,7 @@ export const messages = {
   "mcp.panel.empty": "Nenhum servidor MCP ainda.",
   "mcp.panel.enable": "Ativar {name}",
   "mcp.panel.detailsTitle": "Detalhes",
-  "mcp.panel.detailsDescription": "Dê um nome a este servidor e escolha como o OpenBot o acessa.",
+  "mcp.panel.detailsDescription": "Dê um nome a este servidor e escolha como o AIKINGBOT o acessa.",
   "mcp.panel.transport": "Transporte",
   "mcp.panel.name": "Nome",
   "mcp.panel.namePlaceholder": "Nome do servidor MCP",
@@ -111,16 +111,16 @@ export const messages = {
   "mcp.panel.signInTo": "Entrar em {name}",
   "mcp.panel.cancelSignInTo": "Cancelar autenticação em {name}",
   "mcp.panel.signInWaiting": {
-    one: "Conclua a autenticação no navegador. O OpenBot para de esperar após {count} minuto.",
-    other: "Conclua a autenticação no navegador. O OpenBot para de esperar após {count} minutos.",
+    one: "Conclua a autenticação no navegador. O AIKINGBOT para de esperar após {count} minuto.",
+    other: "Conclua a autenticação no navegador. O AIKINGBOT para de esperar após {count} minutos.",
   },
   "mcp.panel.signInWaitingOn": {
-    one: "Abrindo a página de autenticação em {host}. O OpenBot para de esperar após {count} minuto.",
-    other: "Abrindo a página de autenticação em {host}. O OpenBot para de esperar após {count} minutos.",
+    one: "Abrindo a página de autenticação em {host}. O AIKINGBOT para de esperar após {count} minuto.",
+    other: "Abrindo a página de autenticação em {host}. O AIKINGBOT para de esperar após {count} minutos.",
   },
   "mcp.panel.appTitle": "App de autenticação",
   "mcp.panel.appDescription":
-    "Use um app OAuth que você registrou no provedor do servidor. O OpenBot usa esse app quando o servidor não consegue registrar o OpenBot sozinho. Deixe em branco para o OpenBot se registrar.",
+    "Use um app OAuth que você registrou no provedor do servidor. O AIKINGBOT usa esse app quando o servidor não consegue registrar o AIKINGBOT sozinho. Deixe em branco para o AIKINGBOT se registrar.",
   "mcp.panel.appSaveFirst": "Primeiro salve este servidor. Depois você pode adicionar um app de autenticação.",
   "mcp.panel.appUrlChanged": "Primeiro salve a nova URL do servidor. O app de autenticação pertence à URL salva.",
   "mcp.panel.appLoadFailed": "Não foi possível ler o app de autenticação.",
@@ -143,17 +143,17 @@ export const messages = {
   "mcp.panel.appSaved": "App salvo. Faça a autenticação para usá-lo.",
   "mcp.panel.appRemoved": "App removido.",
   "mcp.signIn.relayDescription":
-    "Confirme que a página de autenticação está em {page} e abra-a no seu navegador. Quando você terminar, o OpenBot envia a autenticação para {host}.",
+    "Confirme que a página de autenticação está em {page} e abra-a no seu navegador. Quando você terminar, o AIKINGBOT envia a autenticação para {host}.",
   "mcp.signIn.relayOpenDescription":
-    "Abra a página de autenticação de {page} no seu navegador. Quando terminar, cole aqui o endereço que o navegador mostra. O OpenBot então envia a autenticação para {host}.",
+    "Abra a página de autenticação de {page} no seu navegador. Quando terminar, cole aqui o endereço que o navegador mostra. O AIKINGBOT então envia a autenticação para {host}.",
   "mcp.signIn.relayDeviceDescription":
     "Confirme que a página de autenticação está em {page}, abra-a no seu navegador e termine lá. {host} detecta a autenticação sozinho.",
   "mcp.signIn.relayOpen": "Abrir página de autenticação",
-  "mcp.signIn.relayPasteHint": "Se o navegador não voltar ao OpenBot, copie o endereço que ele mostra e cole aqui.",
+  "mcp.signIn.relayPasteHint": "Se o navegador não voltar ao AIKINGBOT, copie o endereço que ele mostra e cole aqui.",
   "mcp.signIn.relayPasteRequired":
-    "O OpenBot não consegue receber a autenticação do navegador sozinho. Quando terminar, copie o endereço que o navegador mostra e cole aqui.",
+    "O AIKINGBOT não consegue receber a autenticação do navegador sozinho. Quando terminar, copie o endereço que o navegador mostra e cole aqui.",
   "mcp.signIn.relayAddress": "Endereço do navegador",
   "mcp.signIn.relaySend": "Enviar",
   "mcp.panel.callbackUrlRelayed":
-    "A página de autenticação abre no seu navegador, e o OpenBot no seu computador envia a autenticação para {host}. Adicione exatamente esta URL às URLs de redirecionamento permitidas do app.",
+    "A página de autenticação abre no seu navegador, e o AIKINGBOT no seu computador envia a autenticação para {host}. Adicione exatamente esta URL às URLs de redirecionamento permitidas do app.",
 } as const satisfies PartialTranslation<typeof source>;

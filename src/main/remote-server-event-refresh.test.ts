@@ -1,5 +1,5 @@
 // @vitest-environment node
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";

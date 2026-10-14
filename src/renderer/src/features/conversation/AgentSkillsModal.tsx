@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { InstalledSkill, MarketplaceSkillDetail } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { InstalledSkill, MarketplaceSkillDetail } from "@aikingbot/contracts/ipc";
+import type { AppTranslate } from "@aikingbot/i18n";
 import {
   Button,
   ChevronRight,
@@ -14,11 +14,11 @@ import {
   Switch,
   Trash2,
   X,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { SkillGlyph } from "@openbot/ui/features/conversation/SkillGlyph";
-import { SkillLibraryToolbar } from "@openbot/ui/features/conversation/SkillLibraryToolbar";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { createScrollFades } from "@aikingbot/ui/components/createScrollFades";
+import { SkillGlyph } from "@aikingbot/ui/features/conversation/SkillGlyph";
+import { SkillLibraryToolbar } from "@aikingbot/ui/features/conversation/SkillLibraryToolbar";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { SkillPreview } from "../../components/SkillPreview";
@@ -701,11 +701,11 @@ function SkillMoreMenu(props: {
 
 function isBuiltInSkill(skill: InstalledSkill): boolean {
   return (
-    skill.origin === "managed" || skill.slug === "openbot-site-hosting" || skill.skillId === "openbot-site-hosting"
+    skill.origin === "managed" || skill.slug === "aikingbot-site-hosting" || skill.skillId === "aikingbot-site-hosting"
   );
 }
 
-/** A skill in a skill folder that OpenBot lists but does not manage. */
+/** A skill in a skill folder that AIKINGBOT lists but does not manage. */
 function isFolderSkill(skill: InstalledSkill): boolean {
   return skill.origin === "workspace";
 }
@@ -721,7 +721,7 @@ function userAssignedSkills(skills: InstalledSkill[]): InstalledSkill[] {
     .sort((left, right) => left.name.localeCompare(right.name));
 }
 
-/** A skill in a folder OpenBot did not write is not an assignment, so it does not count toward the cap. */
+/** A skill in a folder AIKINGBOT did not write is not an assignment, so it does not count toward the cap. */
 export function assignedSkillCount(skills: InstalledSkill[]): number {
   return skills.filter((skill) => !isBuiltInSkill(skill) && !isFolderSkill(skill)).length;
 }

@@ -1,15 +1,15 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AIKINGBOTDesktopApi } from "@aikingbot/contracts/ipc";
 
 /**
  * What the storage panels reach in main: the stored files of a server, and the agent names that
  * label them.
  */
 export interface FilesPort {
-  agent: Pick<OpenBotDesktopApi["agent"], "listAgents">;
-  storage: Pick<OpenBotDesktopApi["storage"], "clear" | "deleteFile" | "getUsage" | "openFile">;
+  agent: Pick<AIKINGBOTDesktopApi["agent"], "listAgents">;
+  storage: Pick<AIKINGBOTDesktopApi["storage"], "clear" | "deleteFile" | "getUsage" | "openFile">;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function filesPort(): FilesPort {
-  return window.openbot;
+  return window.aikingbot;
 }

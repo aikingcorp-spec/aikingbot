@@ -4,21 +4,21 @@ import type {
   ExternalDestination,
   ProviderAdminDesktopApi,
   ServerSummary,
-} from "@openbot/contracts/ipc";
-import { decodeRegistryEntries, decodeRegistryInstallResult, decodeRegistryOperations } from "@openbot/contracts/ipc";
-import { ACP_REGISTRY_ROUTES } from "@openbot/contracts/team-protocol/acp-registry-v1";
-import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
+} from "@aikingbot/contracts/ipc";
+import { decodeRegistryEntries, decodeRegistryInstallResult, decodeRegistryOperations } from "@aikingbot/contracts/ipc";
+import { ACP_REGISTRY_ROUTES } from "@aikingbot/contracts/team-protocol/acp-registry-v1";
+import { PROVIDERS_ADMIN_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v1";
 import {
   PROVIDERS_RUNTIMES_V2_CAPABILITY,
   PROVIDERS_RUNTIMES_V2_ROUTES,
-} from "@openbot/contracts/team-protocol/providers-v2";
+} from "@aikingbot/contracts/team-protocol/providers-v2";
 import {
   PROVIDERS_SIGN_IN_V3_CAPABILITY,
   PROVIDERS_SIGN_IN_V3_ROUTES,
-} from "@openbot/contracts/team-protocol/providers-v3";
-import { PROVIDERS_V4_CAPABILITY, PROVIDERS_V4_ROUTES } from "@openbot/contracts/team-protocol/providers-v4";
-import { PROVIDERS_V5_CAPABILITY, PROVIDERS_V5_ROUTES } from "@openbot/contracts/team-protocol/providers-v5";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@aikingbot/contracts/team-protocol/providers-v3";
+import { PROVIDERS_V4_CAPABILITY, PROVIDERS_V4_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v4";
+import { PROVIDERS_V5_CAPABILITY, PROVIDERS_V5_ROUTES } from "@aikingbot/contracts/team-protocol/providers-v5";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   cancelProviderCodeLogin,
   cancelProviderHostSignIn,
@@ -38,11 +38,11 @@ import {
   startProviderCodeLogin,
   startProviderHostSignIn,
   submitProviderCodeLogin,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import type { AcpRegistrySettingsApi } from "@openbot/ui/features/custom-providers/AcpRegistrySettings";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
+import type { BrowserViewRuntime } from "@aikingbot/ui/features/browser/BrowserLiveView";
+import type { AcpRegistrySettingsApi } from "@aikingbot/ui/features/custom-providers/AcpRegistrySettings";
+import { currentText } from "@aikingbot/ui/text";
 import { Effect } from "effect";
 import { createEffect, createMemo } from "solid-js";
 import { hostCustomProvidersApi } from "../custom-providers/custom-providers-port";
@@ -64,7 +64,7 @@ const CODE_LOGIN_POLL_MS = 3000;
  */
 const WEB_EXTERNAL_DESTINATIONS: Partial<Record<ExternalDestination, string>> = {
   "opencode-auth": "https://opencode.ai/auth",
-  feedback: "https://x.com/intent/post?text=Feedback%20for%20OpenBot%20%40norbertbodziony%3A%20",
+  feedback: "https://x.com/intent/post?text=Feedback%20for%20AIKINGBOT%20%40norbertbodziony%3A%20",
   message: "https://x.com/norbertbodziony",
 };
 

@@ -8,9 +8,9 @@ import {
   COMPUTER_USE_MCP_SERVER_ID,
   isReservedMcpServerName,
   type McpServerConfig,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Deferred, Effect, Schema } from "effect";
 import { runInLoginShell } from "./cli";
 import { causeHelpers } from "./effect-boundary";
@@ -23,7 +23,7 @@ const execFileAsync = promisify(execFile);
 export type McpServerSource = () => readonly McpServerConfig[];
 
 /**
- * What OpenBot can lend a machine that does not have it: the `bin` directories of the tool runtimes
+ * What AIKINGBOT can lend a machine that does not have it: the `bin` directories of the tool runtimes
  * it downloaded, and the command words it can answer itself.
  *
  * Both are a floor, never a choice. The directories are appended *after* the user's own `PATH`, so
@@ -49,7 +49,7 @@ export type McpToolRuntimeSource = () => McpToolRuntimes;
 /**
  * The bearer token for an http server this machine has signed in to, or `null` for every other one.
  *
- * Read at each spawn and never stored on the row: the token is OpenBot's to refresh, and a value in
+ * Read at each spawn and never stored on the row: the token is AIKINGBOT's to refresh, and a value in
  * the configuration would be a credential the panel shows, the Team API carries and a user edits.
  * Asked per configuration rather than per URL, so a listing that grows a second way in can answer
  * differently without this signature moving.
@@ -109,7 +109,7 @@ export type UsableMcpServer =
       command: string;
       workingDirectory: string;
       path: string | null;
-      /** The bearer token OpenBot holds for this server, added at hand-off. `null` for all others. */
+      /** The bearer token AIKINGBOT holds for this server, added at hand-off. `null` for all others. */
       authorization: string | null;
       error?: undefined;
       reason?: undefined;
@@ -646,14 +646,14 @@ function secretDigest(config: McpServerConfig): string {
  * The headers one http server is handed, with the OAuth token added here and only here.
  *
  * The token is never written to the row. That is the whole reason this stage exists: a credential
- * `mcp-remote` kept in a file of its own was one OpenBot could not redact, and a credential written
+ * `mcp-remote` kept in a file of its own was one AIKINGBOT could not redact, and a credential written
  * into `McpServerConfig.headers` would be one the panel shows, the Team API carries to a remote
- * administrator, and a user can edit into something OpenBot then refreshes over. Injected at the
+ * administrator, and a user can edit into something AIKINGBOT then refreshes over. Injected at the
  * hand-off, it is a value `McpHandoffLog` has already seen, so every log, export and send path
  * removes it.
  *
  * A header the user typed wins. Someone who pasted their own `Authorization` has said which
- * credential this server takes, and silently replacing it would be OpenBot overruling them with an
+ * credential this server takes, and silently replacing it would be AIKINGBOT overruling them with an
  * account they did not choose.
  */
 export function mcpHandoffHeaders(server: ResolvedMcpServer): Record<string, string> {

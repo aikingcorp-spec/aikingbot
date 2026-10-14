@@ -1,9 +1,9 @@
 // The Slack, Discord and Telegram connections of the joined server in the browser client
 // (`connectors-v1`). The host opens no page; this browser opens the platform's page that the host
 // names. A Slack or Discord install returns to a page of this origin, which gives the sealed grant
-// back to this tab (`@openbot/contracts/web-messaging-install`). This tab sends it on to the host.
+// back to this tab (`@aikingbot/contracts/web-messaging-install`). This tab sends it on to the host.
 
-import { type MessagingPlatform, messagingPage } from "@openbot/contracts/ipc";
+import { type MessagingPlatform, messagingPage } from "@aikingbot/contracts/ipc";
 import {
   decodeWebMessagingInstallGrant,
   decodeWebMessagingInstallMark,
@@ -14,9 +14,9 @@ import {
   type WebMessagingInstallPlatform,
   webMessagingInstallKey,
   webMessagingInstallReceipt,
-} from "@openbot/contracts/web-messaging-install";
-import { sourceText } from "@openbot/i18n/source";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@aikingbot/contracts/web-messaging-install";
+import { sourceText } from "@aikingbot/i18n/source";
+import { runTeamEffect } from "@aikingbot/team-client";
 import {
   type MessagingConnectorPage,
   messagingConnectorAddOrchestrator,
@@ -27,15 +27,15 @@ import {
   messagingConnectorReconnect,
   messagingConnectorSetEnabled,
   type TeamAdminRequestError,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { classifyFailure } from "@openbot/telemetry";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@aikingbot/team-client/team-api-requests";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { currentText } from "@aikingbot/ui/text";
 import { Effect } from "effect";
 import { actionToast } from "../../action-toast";
 import type { HostMessagingApi } from "../connectors/host-messaging-port";
 
-/** Local storage that is not available holds no mark, and the return page opens `openbot://`. */
+/** Local storage that is not available holds no mark, and the return page opens `aikingbot://`. */
 function withStorage(action: (storage: Storage) => void): boolean {
   try {
     action(localStorage);

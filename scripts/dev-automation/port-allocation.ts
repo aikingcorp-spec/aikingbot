@@ -17,7 +17,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber } from "@aikingbot/contracts/runtime-values";
 import { verifyRecordedProcess } from "./registry-files";
 import {
   type DevStackRecord,

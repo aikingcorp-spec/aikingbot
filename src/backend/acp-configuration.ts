@@ -3,10 +3,10 @@ import type {
   AgentSessionSettingOption,
   AgentSessionSettingsSnapshot,
   AgentSessionSettingValue,
-} from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { isString } from "@aikingbot/contracts/runtime-values";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { Effect, Fiber, type Scope } from "effect";
 import type { AgentProvider } from "./agent-client";
 import { isRecord } from "./protocol";
@@ -18,7 +18,7 @@ import {
 } from "./provider-client-effects";
 import { TimeoutError } from "./with-timeout";
 
-const logger = createOpenBotLogger("provider-runtime");
+const logger = createAIKINGBOTLogger("provider-runtime");
 /**
  * How long model discovery may spend on asking an agent for each model's reasoning efforts. One
  * OpenCode sweep of 49 models costs about 20ms, so this is not a target: it is the point where an
@@ -263,7 +263,7 @@ export class AcpConfiguration {
         }
         continue;
       }
-      // An effort travels by OpenBot's name, and the agent's own name for it is read from the option
+      // An effort travels by AIKINGBOT's name, and the agent's own name for it is read from the option
       // this session published, not from the catalog: the session is the one that has to accept it.
       const values = selectValues(option);
       const wanted =
@@ -512,11 +512,11 @@ function selectValues(option: Extract<SessionConfigOption, { type: "select" }>) 
 }
 
 /**
- * What OpenBot's effort names are sent as, keyed by the OpenBot name.
+ * What AIKINGBOT's effort names are sent as, keyed by the AIKINGBOT name.
  *
  * The exact name wins over an alias, whichever comes first. OpenCode offers
  * `["minimal", "low", "medium", "high", "xhigh"]`, where `minimal` also reads as low effort: first
- * value per key would make OpenBot's `low` send `minimal`, and a user who asks for low effort would
+ * value per key would make AIKINGBOT's `low` send `minimal`, and a user who asks for low effort would
  * silently get the lowest one the model has. An alias is still kept for a key the agent has no exact
  * name for, which is how a model with `minimal` and no `low` stays reachable.
  */
@@ -527,7 +527,7 @@ function reasoningEffortWireValues(values: string[]): Map<string, string> {
     if (!normalized) continue;
     const held = result.get(normalized);
     // `value.toLowerCase()` and not the normalized form of it: an exact name is the agent's own
-    // spelling of the key, and every key OpenBot has is one word.
+    // spelling of the key, and every key AIKINGBOT has is one word.
     if (held === undefined || (held !== normalized && value.toLowerCase() === normalized)) {
       result.set(normalized, value);
     }

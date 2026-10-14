@@ -1,8 +1,8 @@
-import { type AgentTemplatePreview, isAgentTemplateCardPng } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { PublishAgentDialog } from "@openbot/ui/features/agents/PublishAgentDialog";
-import { currentText } from "@openbot/ui/text";
+import { type AgentTemplatePreview, isAgentTemplateCardPng } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { toast } from "@aikingbot/ui";
+import { PublishAgentDialog } from "@aikingbot/ui/features/agents/PublishAgentDialog";
+import { currentText } from "@aikingbot/ui/text";
 import { createStore } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { writeClipboardText } from "../../clipboard";
@@ -62,7 +62,7 @@ export function createPublishAgent(calls: () => AgentTemplatePublishCalls = () =
     void load(agentId);
   }
 
-  /** The preload rebuilt `shareUrl` from the id, on `openbot.run` or, in development, the local Worker. */
+  /** The preload rebuilt `shareUrl` from the id, on `aikingbot.aikingx.com` or, in development, the local Worker. */
   async function copyShareLink(): Promise<boolean> {
     const publication = state.preview?.publication;
     if (!publication) return false;

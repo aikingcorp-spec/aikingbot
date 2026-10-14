@@ -1,4 +1,4 @@
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent, TeamRealtimeEvent } from "@aikingbot/contracts/ipc";
 import type { EventRoutinesApi } from "../conversation/routine-webhooks-api";
 import type { RoutineFlowsHost } from "../routine-flows/routine-flows-port";
 import { openWebLink } from "./web-attachments";

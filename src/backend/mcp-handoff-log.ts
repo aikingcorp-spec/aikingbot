@@ -1,4 +1,4 @@
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import type { McpServerConfig } from "@aikingbot/contracts/ipc";
 import { mcpSecretValues } from "./mcp-redaction";
 
 /**
@@ -27,7 +27,7 @@ export class McpHandoffLog {
   }
 
   /**
-   * Remembers one secret that is not on a row: the bearer token OpenBot mints for a signed-in http
+   * Remembers one secret that is not on a row: the bearer token AIKINGBOT mints for a signed-in http
    * server. It reaches a provider process in a header and is never stored, so `mcpSecretValues`
    * cannot find it, and a CLI quoting the request it failed on would otherwise print it in full.
    */

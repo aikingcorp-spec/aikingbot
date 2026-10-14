@@ -1,11 +1,11 @@
-import type { HostUpdateStatus } from "@openbot/contracts/ipc";
-import { Progress, toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import type { HostUpdateStatus } from "@aikingbot/contracts/ipc";
+import { Progress, toast } from "@aikingbot/ui";
+import { currentText } from "@aikingbot/ui/text";
 import { createRoot, createSignal } from "solid-js";
 import type { HostUpdateCalls } from "./ServerUpdatePanel";
 
 /**
- * The OpenBot update of a joined host, as notices for its admins (`host-update-v1`): an offer when a
+ * The AIKINGBOT update of a joined host, as notices for its admins (`host-update-v1`): an offer when a
  * new version is available, and a live percentage while the host downloads it. The host sends no
  * progress event, so a download is read again each second. The notices outlive Server Settings,
  * which is why this module keeps its own state instead of the panel's.

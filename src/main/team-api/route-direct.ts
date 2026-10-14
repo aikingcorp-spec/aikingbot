@@ -5,7 +5,7 @@
 // an `HttpError`, so misuse of these routes answers 500 and is logged - deliberately, since a
 // member addressing someone who is not on the team is a client bug, not a bad field.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import type {
   DirectConversationPage,
   DirectConversationPageAnchor,
@@ -13,9 +13,9 @@ import type {
   DirectConversationSnapshot,
   DirectMessage,
   DirectThreadSummary,
-} from "@openbot/contracts/ipc";
-import { isNumber } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@aikingbot/contracts/ipc";
+import { isNumber } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";
 import { pageAnchor, pageLimit, pathIdentifier, readJson, stringField } from "./request-helpers";

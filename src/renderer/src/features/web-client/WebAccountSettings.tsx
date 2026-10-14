@@ -1,6 +1,6 @@
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppLanguage } from "@aikingbot/contracts/app-language";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
+import type { AppTextKey } from "@aikingbot/i18n";
 import {
   Item,
   ItemActions,
@@ -13,15 +13,15 @@ import {
   SwitchField,
   Tabs,
   UserRound,
-} from "@openbot/ui";
-import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
-import { ProfileNameSaveBar } from "@openbot/ui/features/settings/ProfileNameSaveBar";
-import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
-import { SettingsDialogShell } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
-import { SoundThemePicker } from "@openbot/ui/features/settings/SoundThemePicker";
-import { createSettingsProfileStore } from "@openbot/ui/features/settings/stores/profile-store";
-import { useText } from "@openbot/ui/text";
+} from "@aikingbot/ui";
+import { LanguageSelect } from "@aikingbot/ui/features/settings/LanguageSelect";
+import { ProfileNameSaveBar } from "@aikingbot/ui/features/settings/ProfileNameSaveBar";
+import { SendShortcutSelect } from "@aikingbot/ui/features/settings/SendShortcutSelect";
+import { SettingsDialogShell } from "@aikingbot/ui/features/settings/SettingsDialogShell";
+import { SettingsProfileTab } from "@aikingbot/ui/features/settings/SettingsProfileTab";
+import { SoundThemePicker } from "@aikingbot/ui/features/settings/SoundThemePicker";
+import { createSettingsProfileStore } from "@aikingbot/ui/features/settings/stores/profile-store";
+import { useText } from "@aikingbot/ui/text";
 import { createSignal, onCleanup } from "solid-js";
 import { readActionSoundChoice, replayActionSoundChoice, setActionSoundChoice } from "../../action-sounds";
 import { isCompletionSoundEnabled, setCompletionSoundEnabled } from "../../completion-sound";

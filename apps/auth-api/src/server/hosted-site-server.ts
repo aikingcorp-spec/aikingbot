@@ -1,9 +1,9 @@
-import { siteLimitForPlan } from "@openbot/contracts/billing";
+import { siteLimitForPlan } from "@aikingbot/contracts/billing";
 import {
   HOSTED_SITE_HOST_ID_HEADER,
   HOSTED_SITE_HOST_TOKEN_HEADER,
   HOSTED_SITE_UNLINKED_LIMIT,
-} from "@openbot/contracts/hosted-sites";
+} from "@aikingbot/contracts/hosted-sites";
 import { Effect } from "effect";
 import { getServerEntitlement } from "./billing-entitlement";
 import { sha256 } from "./crypto";

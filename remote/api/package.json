@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/remote-api",
+  "name": "@aikingbot/remote-api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@discordjs/rest": "2.6.3",
     "@discordjs/ws": "2.0.4",
-    "@openbot/contracts": "workspace:*",
+    "@aikingbot/contracts": "workspace:*",
     "discord-api-types": "0.38.56",
     "effect": "catalog:",
     "elysia": "1.4.30",

@@ -1,4 +1,4 @@
-import { skillConversationEvent } from "@openbot/contracts/ipc";
+import { skillConversationEvent } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LocalSkillTools } from "./agent/skill-tools";
@@ -6,7 +6,7 @@ import { ToolOperationFailed } from "./agent/tool-operation";
 import type { AgentProvider } from "./agent-client";
 import type { AgentService } from "./agent-service";
 import {
-  callOpenBotTool,
+  callAIKINGBOTTool,
   createTestService,
   FakeAgentClient,
   fakeClaudeCli,
@@ -32,7 +32,7 @@ describe.sequential("local skill provider tools", () => {
   it.each(["codex", "claude"] as const)(
     "routes %s skill tools to the caller and rejects agent overrides",
     async (provider) => {
-      process.env.OPENBOT_CLAUDE_PATH = await fakeClaudeCli();
+      process.env.AIKINGBOT_CLAUDE_PATH = await fakeClaudeCli();
       const { store, mailbox } = stores(root);
       const clients = new Map<AgentProvider, FakeAgentClient>();
       const create = vi
@@ -76,16 +76,16 @@ describe.sequential("local skill provider tools", () => {
       const client = clients.get(provider);
       const threadId = store.activeProviderSession("chief")?.externalSessionId;
       if (!client || !threadId) throw new Error("Provider session did not start.");
-      const failure = await callOpenBotTool(client, threadId, "create_skill", { sourcePath: "draft" });
+      const failure = await callAIKINGBOTTool(client, threadId, "create_skill", { sourcePath: "draft" });
       expect(failure.result).toEqual({
         success: false,
         contentItems: [{ type: "inputText", text: "validation test" }],
       });
       expect(create).toHaveBeenCalledWith({ agentId: "chief", sourcePath: "draft" });
       create.mockClear();
-      await callOpenBotTool(client, threadId, "create_skill", { sourcePath: "draft", agentId: "other" });
+      await callAIKINGBOTTool(client, threadId, "create_skill", { sourcePath: "draft", agentId: "other" });
       expect(create).not.toHaveBeenCalled();
-      await callOpenBotTool(client, threadId, "list_local_skills", {});
+      await callAIKINGBOTTool(client, threadId, "list_local_skills", {});
       expect(api.list).toHaveBeenCalledOnce();
       const events = () =>
         store.database
@@ -115,7 +115,7 @@ describe.sequential("local skill provider tools", () => {
       vi.mocked(api.get).mockReturnValue(Effect.succeed({ ...skill, archivePath }));
       vi.mocked(api.list).mockReturnValue(Effect.succeed([skill]));
       for (const tool of ["read_local_skill", "list_local_skills"]) {
-        const response = await callOpenBotTool(
+        const response = await callAIKINGBOTTool(
           client,
           threadId,
           tool,
@@ -144,16 +144,16 @@ describe.sequential("local skill provider tools", () => {
           state: "installed",
         }),
       );
-      const created = await callOpenBotTool(client, threadId, "create_skill", { sourcePath: "draft" });
+      const created = await callAIKINGBOTTool(client, threadId, "create_skill", { sourcePath: "draft" });
       expect(JSON.stringify(created.result)).not.toContain("data:image");
-      const revised = await callOpenBotTool(client, threadId, "revise_skill", {
+      const revised = await callAIKINGBOTTool(client, threadId, "revise_skill", {
         skillId: skill.id,
         expectedRevision: 1,
         sourcePath: "draft",
       });
       expect(JSON.stringify(revised.result)).not.toContain("data:image");
       expect(skill.iconUrl).toContain("data:image");
-      await callOpenBotTool(client, threadId, "install_local_skill", { skillId: skill.id, revision: 2 });
+      await callAIKINGBOTTool(client, threadId, "install_local_skill", { skillId: skill.id, revision: 2 });
       expect(events()).toEqual([
         { action: "created", skillId: skill.id, revision: 1, skillName: skill.name },
         { action: "revised", skillId: skill.id, revision: 2, skillName: skill.name },
@@ -198,7 +198,7 @@ describe.sequential("local skill provider tools", () => {
       const execution = service.channels.store.context("skills-channel", "chief");
       const session = store.database.activeProviderSession(execution.threadId, provider);
       if (!session) throw new Error("Channel session did not start.");
-      await callOpenBotTool(client, session.externalSessionId, "create_skill", { sourcePath: "channel-draft" });
+      await callAIKINGBOTTool(client, session.externalSessionId, "create_skill", { sourcePath: "channel-draft" });
       expect(events()).toHaveLength(3);
       expect(
         store.database

@@ -31,7 +31,7 @@ Messages use `AgentService.sendMessage` and its persisted retry keys. The attent
 each pending object an opaque local handle. Responses match that handle and agent together; an
 expired handle cannot answer a later provider request. Pending details are not trimmed to the UI
 snapshot budget. The HTTP boundary redacts outgoing values. Browser takeovers and secret questions
-are notices only and direct the person to OpenBot. Messages and routine runs share the rate limit.
+are notices only and direct the person to AIKINGBOT. Messages and routine runs share the rate limit.
 
 ## Quiet routine runs
 
@@ -77,7 +77,7 @@ the marker it skips the turn's thinking too, so a later import does not bring a 
 computer as an iCalendar feed (`src/main/routine-feed-ics.ts`) for Server Settings > Routines. It
 runs only after the user makes a feed URL, and binds `127.0.0.1`. The URL is
 `/routines/<token>.ics`, with an optional `?agent=<id>`: a calendar app cannot send a header, so the
-token is in the path. `<userData>/openbot-routine-feed-v1.json` keeps the token, encrypted with the
+token is in the path. `<userData>/aikingbot-routine-feed-v1.json` keeps the token, encrypted with the
 secret storage cipher, and the port, so the URL stays the same after a restart. When the port is not
 free, the listener takes a new one and saves it. **New URL** replaces the token, and **Turn off**
 deletes the file. A wrong token gets 404. A request with an `Origin` header or a foreign `Host`
@@ -123,7 +123,7 @@ on a joined host.
   runs a test through the events API, as the routine settings do. On a joined host only an owner or
   admin has that API (`events-v1`); a member sees no webhook config and cannot change or run a
   webhook routine from the canvas.
-- Agents read and change flows with the `openbot` tools `list_routine_flows`, `connect_routine_agents`
+- Agents read and change flows with the `aikingbot` tools `list_routine_flows`, `connect_routine_agents`
   and `disconnect_routine_agents` (`routine-flow-tools.ts`). `RoutineFlows` is built after the agent
   service, so the tool router reads it through a getter. The canvas chat panel sends the user's request
   to the open agent's own conversation and shows the answer of the turn that read it.
@@ -139,12 +139,12 @@ the user can ask for a detailed coordination report.
 
 An agent does not refuse a task, or say that it has no access to a service, before it tries each
 path. When the task is outside its profile, or names a service that a teammate may own, it calls
-`openbot.list_agents` first and delegates to a teammate whose name, title or description covers
+`aikingbot.list_agents` first and delegates to a teammate whose name, title or description covers
 the work. In a channel task it delegates only to a channel member. MCP servers are host-global, so
 a specialist teammate differs only by its profile, skills and memories. Otherwise the agent uses its
 connected MCP servers, its skills, the embedded browser and Computer Use.
 
-A sign-in page does not stop it: it calls `openbot_browser.request_takeover`. The request shows in
+A sign-in page does not stop it: it calls `aikingbot_browser.request_takeover`. The request shows in
 the agent's conversation, and in the dynamic island when the agent's notifications are on, also for
 delegated work. A routine run reports the sign-in instead, because nobody may answer; a requester in
 a routine run says so in the delegated message. The tool returns only after the user answers, which
@@ -168,12 +168,12 @@ checked unless a tool result or a reply shows it. When nothing works, the agent 
 and the one action that unblocks it; for a service with a plugin, that action is to install or
 enable the plugin. It can offer to create a specialist teammate, but it creates one only after the user agrees.
 
-An agent that delegates work can follow and stop it. `openbot.list_agents` reports each agent's
+An agent that delegates work can follow and stop it. `aikingbot.list_agents` reports each agent's
 `status` (a starting delivery and a context compaction count as `working`), `queuedMessages`
 (channel work excluded), `turnStartedAt`, and `lastActivityAt`. The last two come from the provider
 notifications that `TurnLifecycle` sees; they are in memory only, so after a restart
-`lastActivityAt` falls back to the newest message for the agent. OpenBot does not record which
-files a turn changed. `openbot.interrupt_agent` (`src/backend/agent/agent-interrupt-tool.ts`)
+`lastActivityAt` falls back to the newest message for the agent. AIKINGBOT does not record which
+files a turn changed. `aikingbot.interrupt_agent` (`src/backend/agent/agent-interrupt-tool.ts`)
 refuses the caller itself, a channel turn, and a turn that any delivery other than the caller's
 started, so an agent cannot stop work from the user, a routine, or another agent. It cancels the
 caller's queued requests to the target before it sends `turn/interrupt`, because the interrupted
@@ -217,22 +217,22 @@ These are manual model evaluations, separate from the fake-provider lifecycle re
 ## Prompt-driven agent profiles
 
 Users create and edit agent profiles by asking an agent in the normal desktop or mobile
-conversation. `openbot.create_agent` creates a persistent teammate with instructions and a first
-task; `openbot.update_profile` changes an existing agent's name, title, instructions, generated
+conversation. `aikingbot.create_agent` creates a persistent teammate with instructions and a first
+task; `aikingbot.update_profile` changes an existing agent's name, title, instructions, generated
 or custom avatar, provider, model, reasoning effort, access, Computer Use, or notifications. `avatarPath` accepts a local PNG, JPEG, or WebP file up to 512 KB, with relative
 paths resolved from the calling agent’s workspace. The agent uses its available tools to resize or
-compress a copy when needed. OpenBot validates the prepared file before profile changes and copies
+compress a copy when needed. AIKINGBOT validates the prepared file before profile changes and copies
 it into managed avatar storage. Generated avatar settings remove the custom image. Both run through
 the existing agent service and validate arguments before changing state.
-`openbot.create_agent` also accepts an optional `provider`, `model` and `reasoningEffort`. The
-read-only `openbot.list_models` returns the models of each provider that the model picker shows, with
+`aikingbot.create_agent` also accepts an optional `provider`, `model` and `reasoningEffort`. The
+read-only `aikingbot.list_models` returns the models of each provider that the model picker shows, with
 their reasoning efforts and the default model for a request that names only a provider. An unknown
-model or an unsupported effort is an error that names the valid values; OpenBot checks them before
+model or an unsupported effort is an error that names the valid values; AIKINGBOT checks them before
 it creates the agent. Without a provider and a model, the new agent starts on the calling agent's
 provider, model and reasoning effort, so a team that one agent creates runs where that agent runs.
 When the caller's provider no longer lists its model, the new agent starts on the user's default.
 Creation stays this small. The calling agent then configures the new agent, or any other local
-agent, with the same tools that act on itself. `openbot.read_agent` returns one agent's setup:
+agent, with the same tools that act on itself. `aikingbot.read_agent` returns one agent's setup:
 profile, runtime, access, Computer Use, notifications, auto-approve, installed skills, routines,
 and the names and transports of the MCP servers it gets. It does not return MCP commands,
 environment values, URLs, or headers, because they can hold secrets. `install_local_skill`,
@@ -245,7 +245,7 @@ the access and Computer Use limits of the agent that creates it, so a Workspace-
 get around its sandbox through a teammate. There is no creation step for skills or routines in
 the UI.
 Codex and Grok receive the dynamic tool definitions; Claude exposes the same operations through
-its SDK MCP bridge. `src/backend/openbot-tools.ts` owns the tool names, descriptions, and Zod
+its SDK MCP bridge. `src/backend/aikingbot-tools.ts` owns the tool names, descriptions, and Zod
 argument shapes used by both declarations. It reuses the profile, section, and routine schemas.
 Claude uses the SDK’s `AskUserQuestion` flow instead of the `ask_user` MCP tool.
 There is no separate prompt-generation button or review dialog.
@@ -258,10 +258,10 @@ and change events delivered to desktop and connected clients.
 
 `html_render` publishes a visual reply: an HTML page that shows above the agent's reply. The router
 stores the page as a generated `text/html` attachment and adds an assistant message with the item
-type `visual-reply:<height>` and the page title as its text (`@openbot/contracts/chat-visual`). A
+type `visual-reply:<height>` and the page title as its text (`@aikingbot/contracts/chat-visual`). A
 client that does not know the item type shows the title and the file. A visual message is not
 readable: unread counts, latest-message previews and mobile read state skip it. The desktop serves
-the page on `openbot-visual:` (`openbot-remote-visual:` for a remote host) with
+the page on `aikingbot-visual:` (`aikingbot-remote-visual:` for a remote host) with
 `Content-Security-Policy: sandbox allow-scripts allow-forms` and the frame script, and the frame has
 the same sandbox without `allow-same-origin`. The page runs its scripts and can load files from the
 network, but it has an opaque origin, gets no permission, and talks to the app only with the checked
@@ -280,7 +280,7 @@ Unchanged fingerprints resume the existing session. Pending history handoffs are
 the replacement is bound, reloaded after restart, and removed after a turn accepts the handoff.
 
 The same handoff carries a chat to another provider after a provider switch. It holds the user and
-assistant messages after the last context-reset marker, with attachment names only. OpenBot stores
+assistant messages after the last context-reset marker, with attachment names only. AIKINGBOT stores
 no tool steps, so the work log comes from the providers. At the switch, before the old sessions are
 retired, `ThreadLifecycle.readWorkSteps` reads each active session with `thread/read` through the
 client that holds it, with a 10-second limit. The switch then checks again that no turn started.
@@ -322,7 +322,7 @@ agent. This does not introduce a schema migration or alter released protocol cod
 
 Server Settings > Import moves agents from a `.zip` export into the local host, or into a remote host
 that serves `agent-import-v1` (see [Agent import from a joined server](servers.md#agent-import-from-a-joined-server)).
-The format is `openbot-import.json` plus `agents/<key>/`
+The format is `aikingbot-import.json` plus `agents/<key>/`
 folders. `resources/agent-import/grok-bot/SKILL.md` writes it and `src/main/agent-import-manifest.ts`
 reads it; both are a product contract, so add only optional fields and raise `version` for a change
 of meaning. The renderer never names a path: `agent-import:choose` opens the dialog in main, and
@@ -354,10 +354,10 @@ There is no review and no marketplace listing. Before a publish, the renderer dr
 card (`agent-template-card.tsx`) with the agent's avatar and text. It draws it there because the
 avatar and its fonts are there, and it uses a `data:` URL because the Content Security Policy
 refuses `blob:` images. The Worker accepts only a PNG of that size, stores it in R2, and serves it
-as the page's `og:image`, so a post on X shows the agent. `openbot.run/agents/<id>` is a public
+as the page's `og:image`, so a post on X shows the agent. `aikingbot.aikingx.com/agents/<id>` is a public
 card page, tinted with the avatar colour. The Bloub library uses browser-only APIs when its module
 loads, so the page loads the avatar and its colour in the browser after hydration. Its button opens
-`openbot://agents/<id>`, the third renderer link kind in
+`aikingbot://agents/<id>`, the third renderer link kind in
 `src/main/deep-link-router.ts`. The app then shows the template in `AgentTemplateInstallDialog`;
 like a plugin link, the link itself installs nothing. The page's fallback line also links
 `/app?agent=<id>`, where the browser client shows the same preview. In the same way, the invitation

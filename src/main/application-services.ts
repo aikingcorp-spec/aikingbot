@@ -1,6 +1,6 @@
-import { isManagedRuntimeProvider } from "@openbot/contracts/agent-providers";
-import { openPanelTransport, ReportQueue } from "@openbot/telemetry";
-import { fileReportStorage } from "@openbot/telemetry/node";
+import { isManagedRuntimeProvider } from "@aikingbot/contracts/agent-providers";
+import { openPanelTransport, ReportQueue } from "@aikingbot/telemetry";
+import { fileReportStorage } from "@aikingbot/telemetry/node";
 import { Effect, Fiber } from "effect";
 import { toAgentRemovalFailed } from "../backend/agent/agent-removal";
 import { toHostedSiteOperationFailed } from "../backend/agent/hosted-site-coordinator";
@@ -49,7 +49,7 @@ import { existsSync } from "node:fs";
 import { readdir, rm } from "node:fs/promises";
 import { homedir, hostname, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import { selfHostedApiOrigin } from "@aikingbot/contracts/invite-links";
 import type {
   AgentStatus,
   AppVariant,
@@ -60,12 +60,12 @@ import type {
   ProviderRuntimeSnapshot,
   VoiceModelStatus,
   VoiceStreamTranscript,
-} from "@openbot/contracts/ipc";
-import { IPC_ENDPOINTS, isManagedToolRuntime, isUpdateBusyPhase, latestTurnAnswer } from "@openbot/contracts/ipc";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
-import { REMOTE_ACCOUNT_CHECK_INTERVAL_MS } from "@openbot/team-client";
+} from "@aikingbot/contracts/ipc";
+import { IPC_ENDPOINTS, isManagedToolRuntime, isUpdateBusyPhase, latestTurnAnswer } from "@aikingbot/contracts/ipc";
+import { decodeRecord, requiredString } from "@aikingbot/contracts/ipc-decoding";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger, toLogValue } from "@aikingbot/logging";
+import { REMOTE_ACCOUNT_CHECK_INTERVAL_MS } from "@aikingbot/team-client";
 import { app, type BrowserWindow, clipboard, nativeImage, powerMonitor, safeStorage, screen, shell } from "electron";
 import { pasteCodeLoginSupported } from "../backend/agent/cli-code-login";
 import { toMcpGatewayFailed } from "../backend/agent/mcp-gateway";
@@ -222,7 +222,7 @@ import {
   type UpdateAdapter,
   UpdateService,
 } from "./update-service";
-import { listSiblingOpenBotInstances } from "./update-sibling-instances";
+import { listSiblingAIKINGBOTInstances } from "./update-sibling-instances";
 import { VoiceApiKeyStore } from "./voice-api-key-store";
 import { openScribeSocket } from "./voice-cloud-stream";
 import {
@@ -235,42 +235,42 @@ import { spawnVoiceTranscriptionHost } from "./voice-transcription-host-process"
 import { VoiceTranscriptionService } from "./voice-transcription-service";
 import { WebhookRelay } from "./webhook-relay";
 
-const logger = createOpenBotLogger("application-services");
-const SETUP_FILE = "openbot-setup-v2.json";
-const ANALYTICS_PREFERENCE_FILE = "openbot-analytics-preference-v1.json";
-const ANALYTICS_INVENTORY_FILE = "openbot-analytics-inventory-v1.json";
-const APPROVAL_AUTOMATION_FILE = "openbot-approval-automation-v2.json";
-const ROUTINE_FEED_FILE = "openbot-routine-feed-v1.json";
-const LEGACY_APPROVAL_AUTOMATION_FILE = "openbot-approval-automation-v1.json";
-const LANGUAGE_PREFERENCE_FILE = "openbot-language-preference-v1.json";
-const LOGO_COLOR_PREFERENCE_FILE = "openbot-logo-color-preference-v1.json";
-const UPDATE_PREFERENCE_FILE = "openbot-update-preference-v1.json";
-const NOTIFICATION_PREFERENCE_FILE = "openbot-notification-preference-v1.json";
-const PUSH_NOTIFICATION_FILE = "openbot-push-notifications-v1.json";
-const BUSY_MESSAGE_MODE_PREFERENCE_FILE = "openbot-busy-message-mode-v1.json";
-const AGENT_MEMORY_LIMIT_PREFERENCE_FILE = "openbot-agent-memory-limit-v1.json";
-const REMOTE_SESSION_REUSE_PREFERENCE_FILE = "openbot-remote-session-reuse-preference-v1.json";
-const DYNAMIC_ISLAND_PREFERENCE_FILE = "openbot-dynamic-island-preference-v1.json";
-const BROWSER_STATE_FILE = "openbot-browser-state-v1.json";
-const SIDEBAR_LAYOUT_FILE = "openbot-sidebar-layout-v1.json";
-const TEAM_FILE = "openbot-team-server-v1.json";
+const logger = createAIKINGBOTLogger("application-services");
+const SETUP_FILE = "aikingbot-setup-v2.json";
+const ANALYTICS_PREFERENCE_FILE = "aikingbot-analytics-preference-v1.json";
+const ANALYTICS_INVENTORY_FILE = "aikingbot-analytics-inventory-v1.json";
+const APPROVAL_AUTOMATION_FILE = "aikingbot-approval-automation-v2.json";
+const ROUTINE_FEED_FILE = "aikingbot-routine-feed-v1.json";
+const LEGACY_APPROVAL_AUTOMATION_FILE = "aikingbot-approval-automation-v1.json";
+const LANGUAGE_PREFERENCE_FILE = "aikingbot-language-preference-v1.json";
+const LOGO_COLOR_PREFERENCE_FILE = "aikingbot-logo-color-preference-v1.json";
+const UPDATE_PREFERENCE_FILE = "aikingbot-update-preference-v1.json";
+const NOTIFICATION_PREFERENCE_FILE = "aikingbot-notification-preference-v1.json";
+const PUSH_NOTIFICATION_FILE = "aikingbot-push-notifications-v1.json";
+const BUSY_MESSAGE_MODE_PREFERENCE_FILE = "aikingbot-busy-message-mode-v1.json";
+const AGENT_MEMORY_LIMIT_PREFERENCE_FILE = "aikingbot-agent-memory-limit-v1.json";
+const REMOTE_SESSION_REUSE_PREFERENCE_FILE = "aikingbot-remote-session-reuse-preference-v1.json";
+const DYNAMIC_ISLAND_PREFERENCE_FILE = "aikingbot-dynamic-island-preference-v1.json";
+const BROWSER_STATE_FILE = "aikingbot-browser-state-v1.json";
+const SIDEBAR_LAYOUT_FILE = "aikingbot-sidebar-layout-v1.json";
+const TEAM_FILE = "aikingbot-team-server-v1.json";
 /** One host per account. The v1 file above stays as the last build without accounts left it. */
-const TEAM_FILE_V2 = "openbot-team-server-v2.json";
-const REMOTE_SERVERS_FILE = "openbot-remote-servers-v1.json";
-const CENTRAL_AUTH_FILE = "openbot-central-auth-v1.bin";
-const REMOTE_SESSIONS_FILE = "openbot-remote-sessions-v1.bin";
-const LEGACY_REMOTE_DESKTOP_CREDENTIAL_FILE = "openbot-remote-desktop-credential-v1.json";
-const REMOTE_DESKTOP_RUNTIME_SECRET_FILE = "openbot-remote-desktop-runtime-v1.json";
-const CUSTOM_PROVIDERS_FILE = "openbot-custom-providers-v1.json";
-const PROVIDER_CREDENTIAL_FILE = "openbot-provider-credentials-v1.json";
-const MESSAGING_CREDENTIAL_FILE = "openbot-messaging-credentials-v1.json";
-const INGRESS_QUEUE_KEY_FILE = "openbot-ingress-queue-key-v1.json";
+const TEAM_FILE_V2 = "aikingbot-team-server-v2.json";
+const REMOTE_SERVERS_FILE = "aikingbot-remote-servers-v1.json";
+const CENTRAL_AUTH_FILE = "aikingbot-central-auth-v1.bin";
+const REMOTE_SESSIONS_FILE = "aikingbot-remote-sessions-v1.bin";
+const LEGACY_REMOTE_DESKTOP_CREDENTIAL_FILE = "aikingbot-remote-desktop-credential-v1.json";
+const REMOTE_DESKTOP_RUNTIME_SECRET_FILE = "aikingbot-remote-desktop-runtime-v1.json";
+const CUSTOM_PROVIDERS_FILE = "aikingbot-custom-providers-v1.json";
+const PROVIDER_CREDENTIAL_FILE = "aikingbot-provider-credentials-v1.json";
+const MESSAGING_CREDENTIAL_FILE = "aikingbot-messaging-credentials-v1.json";
+const INGRESS_QUEUE_KEY_FILE = "aikingbot-ingress-queue-key-v1.json";
 /** The MCP sign-ins. Separate from the keys above: a key is typed by the user, a token is not. */
-const MCP_OAUTH_FILE = "openbot-mcp-oauth-v1.json";
+const MCP_OAUTH_FILE = "aikingbot-mcp-oauth-v1.json";
 /** The one GitHub sign-in of this computer, with the same cipher as the MCP sign-ins. */
-const GITHUB_CONNECTOR_FILE = "openbot-github-connector-v1.json";
+const GITHUB_CONNECTOR_FILE = "aikingbot-github-connector-v1.json";
 /** The 1Password service account token of this computer, with the same cipher. */
-const ONEPASSWORD_CONNECTOR_FILE = "openbot-onepassword-connector-v1.json";
+const ONEPASSWORD_CONNECTOR_FILE = "aikingbot-onepassword-connector-v1.json";
 
 /**
  * Where each service stops, as a position in the shutdown sequence rather than a position in the
@@ -284,7 +284,7 @@ const ONEPASSWORD_CONNECTOR_FILE = "openbot-onepassword-connector-v1.json";
  * the Electron binary - which is also the name macOS shows in the Privacy & Security panes, and the
  * reason a dev grant does not carry over to a packaged build.
  */
-const PACKAGED_BUNDLE_IDENTIFIER = "app.openbot.desktop";
+const PACKAGED_BUNDLE_IDENTIFIER = "app.aikingbot.desktop";
 const DEVELOPMENT_BUNDLE_IDENTIFIER = "com.github.Electron";
 
 const TEARDOWN_ORDER = {
@@ -512,7 +512,7 @@ async function createMessagingServices({
   const messagingCredentialLoadError = await Effect.runPromise(messagingCredentials.load());
   if (messagingCredentialLoadError)
     logger.warn(
-      `OpenBot could not read the messaging token file (${messagingCredentialLoadError.name}). It was left unchanged.`,
+      `AIKINGBOT could not read the messaging token file (${messagingCredentialLoadError.name}). It was left unchanged.`,
     );
   // The Signal socket that brings the events of the Slack workspaces, Discord guilds and Telegram chats
   // linked to this host, and makes its Discord and Telegram calls.
@@ -537,8 +537,8 @@ async function createMessagingServices({
     Effect.runPromise(signalIngress.dispose()),
   );
   // Development only: `bun run dev:slack` names this loopback port, so a Slack install returns to this
-  // dev app and not to an installed OpenBot that owns `openbot://`.
-  const developmentSlackCallbackPort = app.isPackaged ? 0 : Number(process.env.OPENBOT_DEV_SLACK_CALLBACK_PORT ?? 0);
+  // dev app and not to an installed AIKINGBOT that owns `aikingbot://`.
+  const developmentSlackCallbackPort = app.isPackaged ? 0 : Number(process.env.AIKINGBOT_DEV_SLACK_CALLBACK_PORT ?? 0);
   const messaging = new MessagingService({
     threads: service.messaging,
     agents: {
@@ -654,7 +654,7 @@ async function createMessagingServices({
   );
   teardown.push(TEARDOWN_ORDER.messaging, "the messaging connections", () => Effect.runPromise(messaging.stop()));
   if (developmentSlackCallbackPort > 0) {
-    // As `openbot://` does for a packaged build, a finished install brings OpenBot to the front.
+    // As `aikingbot://` does for a packaged build, a finished install brings AIKINGBOT to the front.
     const callback = await startSlackDevCallbackServer(developmentSlackCallbackPort, async (nonce, grant) => {
       const received = await runCauseEffect(messaging.completeSlackWorkspace(nonce, grant));
       if (received) app.focus({ steal: true });
@@ -723,12 +723,12 @@ export async function createApplicationServices({
   });
   teardown.push(TEARDOWN_ORDER.dynamicIsland, "the Dynamic Island", () => dynamicIsland.destroy());
   const centralAuthApiUrl = readCentralAuthApiUrl(
-    process.env.OPENBOT_AUTH_API_URL,
-    app.isPackaged ? "https://api.openbot.run" : "http://127.0.0.1:3100",
+    process.env.AIKINGBOT_AUTH_API_URL,
+    app.isPackaged ? "https://api.aikingbot.aikingx.com" : "http://127.0.0.1:3100",
   );
   const centralAuth = new CentralAuthManager({
     apiUrl: centralAuthApiUrl,
-    mobileConnectApiUrl: readMobileConnectApiUrl(process.env.OPENBOT_MOBILE_AUTH_API_URL, centralAuthApiUrl),
+    mobileConnectApiUrl: readMobileConnectApiUrl(process.env.AIKINGBOT_MOBILE_AUTH_API_URL, centralAuthApiUrl),
     storagePath: join(app.getPath("userData"), CENTRAL_AUTH_FILE),
     ...safeStorageCipher("error.app.macSecureStorageUnavailable"),
   });
@@ -784,24 +784,24 @@ export async function createApplicationServices({
   await runCauseEffect(store.initialize());
   const managedSkills = new ManagedSkillService(
     app.isPackaged
-      ? join(process.resourcesPath, "managed-skills", "openbot-site-hosting", "SKILL.md")
-      : resolve(__dirname, "../../resources/managed-skills/openbot-site-hosting/SKILL.md"),
+      ? join(process.resourcesPath, "managed-skills", "aikingbot-site-hosting", "SKILL.md")
+      : resolve(__dirname, "../../resources/managed-skills/aikingbot-site-hosting/SKILL.md"),
   );
   const skillCreator = new ManagedSkillService(
     app.isPackaged
-      ? join(process.resourcesPath, "managed-skills", "openbot-skill-creator", "SKILL.md")
-      : resolve(__dirname, "../../resources/managed-skills/openbot-skill-creator/SKILL.md"),
+      ? join(process.resourcesPath, "managed-skills", "aikingbot-skill-creator", "SKILL.md")
+      : resolve(__dirname, "../../resources/managed-skills/aikingbot-skill-creator/SKILL.md"),
     undefined,
     undefined,
-    "openbot-skill-creator",
+    "aikingbot-skill-creator",
   );
   const dataSkill = new ManagedSkillService(
     app.isPackaged
-      ? join(process.resourcesPath, "managed-skills", "openbot-data", "SKILL.md")
-      : resolve(__dirname, "../../resources/managed-skills/openbot-data/SKILL.md"),
+      ? join(process.resourcesPath, "managed-skills", "aikingbot-data", "SKILL.md")
+      : resolve(__dirname, "../../resources/managed-skills/aikingbot-data/SKILL.md"),
     undefined,
     undefined,
-    "openbot-data",
+    "aikingbot-data",
   );
   await Effect.runPromise(managedSkills.syncAll(store.list()));
   await Effect.runPromise(skillCreator.syncAll(store.list()));
@@ -831,13 +831,13 @@ export async function createApplicationServices({
   const developmentUrl = process.env.ELECTRON_RENDERER_URL;
   const teamWebRtcBridge = new TeamWebRtcBridge({
     developmentUrl,
-    iceTransportPolicy: developmentUrl && process.env.OPENBOT_DEV_ICE_TRANSPORT_POLICY === "relay" ? "relay" : "all",
+    iceTransportPolicy: developmentUrl && process.env.AIKINGBOT_DEV_ICE_TRANSPORT_POLICY === "relay" ? "relay" : "all",
   });
   teamWebRtcBridge.on("accountProfileChanged", refreshAccountProfile);
   teardown.push(TEARDOWN_ORDER.teamWebRtcBridge, "the team WebRTC bridge", () =>
     runCauseEffect(teamWebRtcBridge.stop()),
   );
-  // Only a hosted server: its machine is small, and one unit holds OpenBot and every agent process.
+  // Only a hosted server: its machine is small, and one unit holds AIKINGBOT and every agent process.
   const hostMemory = hostedServer
     ? new HostedServerMemory({
         onError: (message, error) => logger.warn(message, toLogValue(error)),
@@ -931,13 +931,13 @@ export async function createApplicationServices({
    * The installed CLIs are the computer's, the partial downloads are this profile's.
    *
    * Development gives every renderer port and every `--isolated` worktree a `userData` of its own,
-   * so a store kept there started empty each time: OpenBot fell back to the user's own CLI, offered
+   * so a store kept there started empty each time: AIKINGBOT fell back to the user's own CLI, offered
    * the pinned version against it, and downloaded 144 MB again for a profile that would be replaced
-   * by the next port. The packaged app's `userData` is `appData/OpenBot` already, so the shared
+   * by the next port. The packaged app's `userData` is `appData/AIKINGBOT` already, so the shared
    * store is the path it always used. The switch is read here rather than imported from the entry
    * point, which this file may not reach into; both readers read the same immutable value.
    */
-  const providerUse = new ProviderUseSettingsStore(join(app.getPath("userData"), "openbot-provider-use-v1.json"));
+  const providerUse = new ProviderUseSettingsStore(join(app.getPath("userData"), "aikingbot-provider-use-v1.json"));
   await runCauseEffect(providerUse.load());
   const providerRuntimes = new ProviderRuntimeManager({
     isProviderOn: (provider) => !providerUse.off().includes(provider),
@@ -1007,11 +1007,11 @@ export async function createApplicationServices({
   // parse message quotes the file.
   const credentialLoadError = await Effect.runPromise(providerCredentials.load());
   if (credentialLoadError) {
-    logger.warn(`OpenBot could not read the provider key file (${credentialLoadError.name}). It was left unchanged.`);
+    logger.warn(`AIKINGBOT could not read the provider key file (${credentialLoadError.name}). It was left unchanged.`);
   }
   /*
    * The MCP sign-ins, in their own file with the same cipher. `mcp-remote` used to keep these where
-   * OpenBot could not redact them; here they are covered by the same rule as every other secret.
+   * AIKINGBOT could not redact them; here they are covered by the same rule as every other secret.
    *
    * Unreadable is not fatal, for the same reason as the keys above: every signed-in server asks for
    * a sign-in again, and nothing else on this machine stops working.
@@ -1019,12 +1019,12 @@ export async function createApplicationServices({
   const mcpOAuthStore = new McpOAuthStore(join(app.getPath("userData"), MCP_OAUTH_FILE), secretCipher);
   const mcpOAuthLoadError = await Effect.runPromise(mcpOAuthStore.load());
   if (mcpOAuthLoadError) {
-    logger.warn(`OpenBot could not read the MCP sign-in file (${mcpOAuthLoadError.name}). It was left unchanged.`);
+    logger.warn(`AIKINGBOT could not read the MCP sign-in file (${mcpOAuthLoadError.name}). It was left unchanged.`);
   }
   /*
    * Where a returning grant lands. The loopback listener is the address RFC 8252 gives a native
-   * app and the only one some authorization servers accept - Canva refuses `openbot://mcp-auth`
-   * on its own authorization page, where OpenBot cannot see the failure or explain it.
+   * app and the only one some authorization servers accept - Canva refuses `aikingbot://mcp-auth`
+   * on its own authorization page, where AIKINGBOT cannot see the failure or explain it.
    *
    * A port that cannot be bound is not fatal: the deep link is still registered with the
    * operating system, and the servers that accept it keep working. It is logged because it
@@ -1062,7 +1062,7 @@ export async function createApplicationServices({
     },
   }).catch((error: unknown) => {
     logger.warn(
-      "OpenBot could not listen for MCP sign-ins on this machine, so the openbot:// link is used instead. Servers that refuse it cannot be signed in to:",
+      "AIKINGBOT could not listen for MCP sign-ins on this machine, so the aikingbot:// link is used instead. Servers that refuse it cannot be signed in to:",
       toLogValue(error),
     );
     return null;
@@ -1126,7 +1126,7 @@ export async function createApplicationServices({
       onStatementSettled: (durationMs) => statementTimings.record(durationMs),
     }),
   });
-  // Looked up again on demand, because a user may install the driver while OpenBot runs, and the
+  // Looked up again on demand, because a user may install the driver while AIKINGBOT runs, and the
   // panel's "Check again" has to see it.
   const resolveCuaDriverExecutable = () =>
     resolveCuaDriver({
@@ -1137,7 +1137,7 @@ export async function createApplicationServices({
       architecture: process.arch,
       homeDirectory: homedir(),
       pathVariable: process.env.PATH ?? null,
-      overrides: [process.env.OPENBOT_CUA_DRIVER_PATH, process.env.CUA_DRIVER_PATH],
+      overrides: [process.env.AIKINGBOT_CUA_DRIVER_PATH, process.env.CUA_DRIVER_PATH],
       installDirectory: process.env.CUA_DRIVER_RS_INSTALL_DIR ?? process.env.CUA_DRIVER_BIN_DIR,
       localAppDataDirectory: process.env.LOCALAPPDATA,
       applicationsDirectory: "/Applications",
@@ -1172,11 +1172,11 @@ export async function createApplicationServices({
   // daemon: stopping it first would leave them reading a socket nothing answers.
   teardown.push(TEARDOWN_ORDER.cuaDriver, "the Computer Use driver", () => runCauseEffect(cuaDriver.stop()));
   /*
-   * The rim OpenBot draws over the window an agent works in.
+   * The rim AIKINGBOT draws over the window an agent works in.
    *
    * It asks the daemon two read-only questions over a connection of its own: whether any agent
    * holds a live session, and where every window is. Both answers come from the daemon's own view,
-   * which an MCP client of OpenBot's could not see: the tools report only the sessions of the lease
+   * which an MCP client of AIKINGBOT's could not see: the tools report only the sessions of the lease
    * that asks, and the agent's lease is its own.
    */
   const computerUseReads = new CuaDriverDaemonClient(() =>
@@ -1187,7 +1187,7 @@ export async function createApplicationServices({
     loadWindow: loadComputerUseHighlightRenderer,
     place: sendComputerUseHighlightPlacement,
     displays: computerUseDisplays,
-    // The driver's own cursor on one screen, OpenBot's inside this overlay on more than one. The
+    // The driver's own cursor on one screen, AIKINGBOT's inside this overlay on more than one. The
     // runtime answers `null` for the screen it draws itself, so only one cursor is ever drawn.
     readPointer: () => {
       const pointer = cuaDriver.lastPointer(COMPUTER_USE_CURSOR_MAX_AGE_MS);
@@ -1436,7 +1436,7 @@ export async function createApplicationServices({
   );
   /*
    * Where the decision put the download: onboarding, which is the screen this start is about to
-   * show. A user who finished onboarding before OpenBot downloaded a runtime at all is asked for
+   * show. A user who finished onboarding before AIKINGBOT downloaded a runtime at all is asked for
    * one here too, but only when this machine already has an MCP server to start.
    *
    * Nothing waits for it and nothing reports it. MCP is optional, so a failed download must not
@@ -1587,7 +1587,7 @@ export async function createApplicationServices({
       sourceRoot: resolve(__dirname, "../.."),
       platform: process.platform === "darwin" || process.platform === "win32" ? process.platform : "linux",
       architecture: process.arch,
-      overrideRoot: process.env.OPENBOT_REMOTE_DESKTOP_RUNTIME_PATH,
+      overrideRoot: process.env.AIKINGBOT_REMOTE_DESKTOP_RUNTIME_PATH,
     }),
   );
   const agentAdminSettings = createAgentAdminSettings({ agents: service, approvalAutomation });
@@ -1861,8 +1861,8 @@ export async function createApplicationServices({
   const failureReports =
     app.isPackaged && appVariant === "production"
       ? new ReportQueue(
-          fileReportStorage(join(app.getPath("userData"), "openbot-error-reports-v1.json")),
-          openPanelTransport({ clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2", origin: "openbot-app://app" }),
+          fileReportStorage(join(app.getPath("userData"), "aikingbot-error-reports-v1.json")),
+          openPanelTransport({ clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2", origin: "aikingbot-app://app" }),
           {
             surface: "desktop_host",
             app_version: app.getVersion(),
@@ -2037,15 +2037,15 @@ export async function createApplicationServices({
   });
   await runCauseEffect(voiceApiKeys.load());
   const voice = new VoiceTranscriptionService({
-    resourcesRoot: app.isPackaged ? join(process.resourcesPath, "voice") : resolve(".openbot-build/voice"),
-    // `voice:prepare` puts Parakeet in `.openbot-build/voice/model` for development.
+    resourcesRoot: app.isPackaged ? join(process.resourcesPath, "voice") : resolve(".aikingbot-build/voice"),
+    // `voice:prepare` puts Parakeet in `.aikingbot-build/voice/model` for development.
     modelDirectories: {
       "parakeet-tdt-0.6b-v3": app.isPackaged
         ? join(app.getPath("userData"), "runtimes", PARAKEET_MODEL_DIRECTORY)
-        : resolve(".openbot-build/voice/model"),
+        : resolve(".aikingbot-build/voice/model"),
       "whisper-turbo": app.isPackaged
         ? join(app.getPath("userData"), "runtimes", WHISPER_TURBO_MODEL_DIRECTORY)
-        : resolve(".openbot-build/voice", WHISPER_TURBO_MODEL_DIRECTORY),
+        : resolve(".aikingbot-build/voice", WHISPER_TURBO_MODEL_DIRECTORY),
     },
     preferences: voicePreferences,
     apiKeys: voiceApiKeys,
@@ -2065,18 +2065,20 @@ export async function createApplicationServices({
   // Skip the file check in dev: unpacked runs never enable updates, so avoid touching resourcesPath.
   const updateMetadataAvailable = app.isPackaged && existsSync(join(process.resourcesPath, "app-update.yml"));
   // A hosted or self-installed server runs a release that root owns. Root installs updates for it
-  // when openbot-hosted-update has installed its request units. A container has none.
+  // when aikingbot-hosted-update has installed its request units. A container has none.
   const hostedInstaller =
     app.isPackaged &&
     process.platform === "linux" &&
-    (process.env.OPENBOT_HOSTED_SERVER === "1" || installationMode === "self") &&
+    (process.env.AIKINGBOT_HOSTED_SERVER === "1" || installationMode === "self") &&
     existsSync(HOSTED_UPDATE_TRIGGER);
   const updatesEnabled =
     app.isPackaged &&
     (hostedInstaller || (supportsInstalledUpdates(process.platform) && updateMetadataAvailable)) &&
     isValidSemver(currentVersion);
   if (app.isPackaged && updateMetadataAvailable && !isValidSemver(currentVersion)) {
-    logger.warn(`OpenBot updates are disabled because the application version is not valid SemVer: ${currentVersion}`);
+    logger.warn(
+      `AIKINGBOT updates are disabled because the application version is not valid SemVer: ${currentVersion}`,
+    );
   }
   let updateAdapter: UpdateAdapter = createDisabledUpdateAdapter();
   let updaterEnabled = updatesEnabled;
@@ -2090,11 +2092,11 @@ export async function createApplicationServices({
         updateAdapter = realAdapter;
       } else {
         updaterEnabled = false;
-        logger.warn("OpenBot updates are disabled: electron-updater did not export autoUpdater");
+        logger.warn("AIKINGBOT updates are disabled: electron-updater did not export autoUpdater");
       }
     } catch {
       updaterEnabled = false;
-      logger.warn("OpenBot updates are disabled: electron-updater failed to load");
+      logger.warn("AIKINGBOT updates are disabled: electron-updater failed to load");
     }
   }
   const updater = new UpdateService(updateAdapter, {
@@ -2103,12 +2105,12 @@ export async function createApplicationServices({
     autoDownload: updatePreference.autoDownload,
     beforeInstall: prepareForUpdateInstall,
     // Packaged runs share one application bundle across macOS users. Installing while another
-    // login session runs OpenBot from that bundle would replace it underneath that session, so
+    // login session runs AIKINGBOT from that bundle would replace it underneath that session, so
     // the service refuses the install until every sibling session stopped. Unpackaged runs never
     // enable updates, so there is nothing to guard there.
     checkSiblingInstances: app.isPackaged
       ? () =>
-          listSiblingOpenBotInstances({
+          listSiblingAIKINGBOTInstances({
             executablePath: app.getPath("exe"),
             currentPid: process.pid,
             platform: process.platform,
@@ -2118,7 +2120,7 @@ export async function createApplicationServices({
                 if (siblings.length === 0) return;
                 const list = siblings.map(({ pid, uid }) => `pid ${pid} (uid ${uid})`).join(", ");
                 logger.warn(
-                  `OpenBot update install refused: other OpenBot processes run from this application: ${list}`,
+                  `AIKINGBOT update install refused: other AIKINGBOT processes run from this application: ${list}`,
                 );
               }),
             ),
@@ -2129,7 +2131,7 @@ export async function createApplicationServices({
     logDirectory: join(app.getPath("userData"), "logs", "update"),
     // Squirrel.Mac only. The path is meaningless under a Linux or Windows home directory.
     shipItDirectory:
-      process.platform === "darwin" ? join(homedir(), "Library", "Caches", "app.openbot.desktop.ShipIt") : undefined,
+      process.platform === "darwin" ? join(homedir(), "Library", "Caches", "app.aikingbot.desktop.ShipIt") : undefined,
   });
   teardown.push(TEARDOWN_ORDER.updater, "the update service", () => Effect.runPromise(updater.stop()));
   const agentInitialization = new AgentInitializationGate(() =>

@@ -16,7 +16,7 @@ export const messages = {
   "mobile.settings.about.privacy": "Polityka prywatności",
   "mobile.settings.home.profile": "Profil",
   "mobile.settings.home.preferences": "Preferencje",
-  "mobile.settings.home.about": "O OpenBot",
+  "mobile.settings.home.about": "O AIKINGBOT",
   "mobile.settings.home.support": "Pomoc",
   "mobile.settings.home.supportHint": "Uzyskaj pomoc i zapisz dziennik pomocy",
   "mobile.settings.support.help": "Uzyskaj pomoc",
@@ -36,7 +36,7 @@ export const messages = {
   "mobile.settings.support.clearTitle": "Wyczyścić dziennik pomocy?",
   "mobile.settings.support.clearBody": "Usuwa to wszystkie zdarzenia z dziennika na tym telefonie.",
   "mobile.settings.support.logFooter":
-    "Dziennik pozostaje na tym telefonie, a OpenBot go nie wysyła. Zapisuje kroki połączenia, żądania i błędy. Nie zapisuje wiadomości ani plików i maskuje hasła oraz tokeny. Przeczytaj plik, zanim go udostępnisz.",
+    "Dziennik pozostaje na tym telefonie, a AIKINGBOT go nie wysyła. Zapisuje kroki połączenia, żądania i błędy. Nie zapisuje wiadomości ani plików i maskuje hasła oraz tokeny. Przeczytaj plik, zanim go udostępnisz.",
   "mobile.settings.support.saveFailed": "Nie udało się zapisać pliku dziennika. Spróbuj ponownie.",
   "mobile.settings.support.sharingUnavailable": "Udostępnianie jest niedostępne na tym telefonie.",
   "mobile.settings.support.recent": "Ostatnie zdarzenia",
@@ -95,28 +95,28 @@ export const messages = {
   "mobile.settings.feedback.retry": "Ponów zapis ustawienia haptyki",
   "mobile.settings.liveActivities.title": "Aktywności na żywo",
   "mobile.settings.liveActivities.footer":
-    "Pokazuje pracę agentów, wiadomości, pytania i zatwierdzenia na ekranie blokady i w Dynamic Island, gdy OpenBot działa.",
+    "Pokazuje pracę agentów, wiadomości, pytania i zatwierdzenia na ekranie blokady i w Dynamic Island, gdy AIKINGBOT działa.",
   "mobile.settings.liveActivities.toggle": "Pokazuj aktywność agentów",
   "mobile.settings.liveActivities.retry": "Ponów zapis ustawienia Aktywności na żywo",
   "mobile.settings.notifications.title": "Powiadomienia",
   "mobile.settings.notifications.toggle": "Zezwalaj na powiadomienia",
   "mobile.settings.notifications.footer":
-    "Agenci powiadomią Cię, gdy skończą, zatrzymają się z błędem albo będą potrzebować Twojej odpowiedzi, zgody lub kroku w przeglądarce. Nic nie przychodzi, gdy używasz OpenBot. Gdy używasz aplikacji na komputer, przychodzi tylko to, co Cię potrzebuje. Gdy widać Aktywność na żywo, to ona pokazuje zdarzenie.",
-  "mobile.settings.notifications.denied": "Powiadomienia OpenBot są wyłączone w Ustawieniach iOS.",
+    "Agenci powiadomią Cię, gdy skończą, zatrzymają się z błędem albo będą potrzebować Twojej odpowiedzi, zgody lub kroku w przeglądarce. Nic nie przychodzi, gdy używasz AIKINGBOT. Gdy używasz aplikacji na komputer, przychodzi tylko to, co Cię potrzebuje. Gdy widać Aktywność na żywo, to ona pokazuje zdarzenie.",
+  "mobile.settings.notifications.denied": "Powiadomienia AIKINGBOT są wyłączone w Ustawieniach iOS.",
   "mobile.settings.notifications.openSettings": "Otwórz Ustawienia iOS",
   "mobile.settings.notifications.preview": "Pokazuj podgląd odpowiedzi",
   "mobile.settings.notifications.previewFooter":
-    "Pokazuje początek odpowiedzi, pytanie albo działanie do zatwierdzenia. Apple i usługa kont OpenBot nie mogą go odczytać.",
+    "Pokazuje początek odpowiedzi, pytanie albo działanie do zatwierdzenia. Apple i usługa kont AIKINGBOT nie mogą go odczytać.",
   "mobile.settings.notifications.sound": "Dźwięk",
   "mobile.settings.notifications.playSound": "Odtwarzaj dźwięk",
-  "mobile.settings.notifications.sound.openbot": "OpenBot",
+  "mobile.settings.notifications.sound.aikingbot": "AIKINGBOT",
   "mobile.settings.notifications.sound.warm": "Ciepły",
   "mobile.settings.notifications.sound.mech": "Mechaniczny",
   "mobile.settings.notifications.sound.bubble": "Bąbelkowy",
   "mobile.settings.notifications.sound.press": "Klikający",
   "mobile.settings.notifications.sound.default": "Domyślny iOS",
   "mobile.settings.notifications.soundFooter":
-    "Powiadomienia i Aktywność na żywo odtwarzają ten dźwięk. Aktywność na żywo włącza też ekran. Dźwięk OpenBot to ten sam dźwięk, który aplikacja na komputer odtwarza po ukończeniu zadania. Cztery kolejne dźwięki to dźwięki motywów dźwiękowych aplikacji na komputer.",
+    "Powiadomienia i Aktywność na żywo odtwarzają ten dźwięk. Aktywność na żywo włącza też ekran. Dźwięk AIKINGBOT to ten sam dźwięk, który aplikacja na komputer odtwarza po ukończeniu zadania. Cztery kolejne dźwięki to dźwięki motywów dźwiękowych aplikacji na komputer.",
   "mobile.settings.notifications.notifyAbout": "Powiadamiaj mnie o",
   "mobile.settings.notifications.level.all": "Cała aktywność",
   "mobile.settings.notifications.level.needsMe": "Tylko gdy wymaga mojej uwagi",
@@ -133,7 +133,7 @@ export const messages = {
   "mobile.settings.notifications.serverFooter":
     "Zdarzenia tego serwera, o których powiadamia ten telefon. Aplikacja na komputer ma własne ustawienia.",
   "mobile.settings.notifications.serverUnsupported":
-    "Ten serwer nie może wysyłać powiadomień. Zaktualizuj OpenBot na komputerze, na którym działa.",
+    "Ten serwer nie może wysyłać powiadomień. Zaktualizuj AIKINGBOT na komputerze, na którym działa.",
   "mobile.settings.privacy.title": "Prywatność",
   "mobile.settings.privacy.footer":
     "Udostępniaj dane o użyciu funkcji i wynikach połączeń z tego telefonu. Treść wiadomości i pliki nie są wysyłane.",
@@ -156,6 +156,6 @@ export const messages = {
   "mobile.settings.profile.security": "Bezpieczeństwo",
   "mobile.settings.profile.accountSessions": "Sesje konta",
   "mobile.settings.profile.signOutTitle": "Wylogować się?",
-  "mobile.settings.profile.signOutBody": "Połącz się ponownie, skanując nowy kod z OpenBot na komputerze.",
+  "mobile.settings.profile.signOutBody": "Połącz się ponownie, skanując nowy kod z AIKINGBOT na komputerze.",
   "mobile.settings.profile.signOut": "Wyloguj się",
 } as const satisfies PartialTranslation<typeof source>;

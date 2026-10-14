@@ -1,7 +1,7 @@
-import type { AddedAgent, AgentTemplateDetail, ServerSummary } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { AgentTemplateInstallDialog } from "@openbot/ui/features/agents/AgentTemplateInstallDialog";
-import { useText } from "@openbot/ui/text";
+import type { AddedAgent, AgentTemplateDetail, ServerSummary } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { AgentTemplateInstallDialog } from "@aikingbot/ui/features/agents/AgentTemplateInstallDialog";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createStore } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type AgentTemplateInstallCalls, agentTemplatesPort } from "./agent-templates-port";
@@ -12,7 +12,7 @@ interface InstallState {
 }
 
 /**
- * The dialog an `openbot://agents/<id>` link opens. It reads the template by the id the link named
+ * The dialog an `aikingbot://agents/<id>` link opens. It reads the template by the id the link named
  * and installs it only when the user presses Add agent: on `server` when one is given, whose host
  * downloads the template itself, otherwise on this computer.
  */

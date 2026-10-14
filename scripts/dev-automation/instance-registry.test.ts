@@ -22,7 +22,7 @@ function record(overrides: Partial<DevInstanceRecord> = {}): DevInstanceRecord {
   return {
     service: "app",
     instanceId: "default",
-    profile: "OpenBot Dev",
+    profile: "AIKINGBOT Dev",
     projectRoot: "/worktrees/one",
     rendererPort: 5_173,
     remoteDebuggingPort: 9_333,
@@ -37,29 +37,29 @@ describe("devRuntimeDirectory", () => {
   // reports no stack while the app runs.
   it("ignores TMPDIR on each platform", () => {
     const environment = { TMPDIR: "/tmp/other", TEMP: "C:\\Temp" };
-    expect(devRuntimeDirectory("darwin", environment, "/Users/dev")).toBe("/Users/dev/Library/Caches/OpenBot/dev");
+    expect(devRuntimeDirectory("darwin", environment, "/Users/dev")).toBe("/Users/dev/Library/Caches/AIKINGBOT/dev");
     expect(devRuntimeDirectory("linux", { ...environment, XDG_RUNTIME_DIR: "/run/user/1000" }, "/home/dev")).toBe(
-      "/run/user/1000/openbot-dev",
+      "/run/user/1000/aikingbot-dev",
     );
-    expect(devRuntimeDirectory("linux", environment, "/home/dev")).toBe("/home/dev/.cache/openbot/dev");
+    expect(devRuntimeDirectory("linux", environment, "/home/dev")).toBe("/home/dev/.cache/aikingbot/dev");
     expect(devRuntimeDirectory("win32", { ...environment, LOCALAPPDATA: "C:\\Users\\dev\\AppData\\Local" })).toBe(
-      "C:\\Users\\dev\\AppData\\Local\\OpenBot\\openbot-dev-instances",
+      "C:\\Users\\dev\\AppData\\Local\\AIKINGBOT\\aikingbot-dev-instances",
     );
   });
 
   it("takes an absolute override and refuses a relative one", () => {
-    expect(devRuntimeDirectory("linux", { OPENBOT_DEV_REGISTRY_DIR: "/srv/dev/" }, "/home/dev")).toBe("/srv/dev/");
-    expect(() => devRuntimeDirectory("linux", { OPENBOT_DEV_REGISTRY_DIR: "registry" }, "/home/dev")).toThrow(
-      "OPENBOT_DEV_REGISTRY_DIR must be an absolute path.",
+    expect(devRuntimeDirectory("linux", { AIKINGBOT_DEV_REGISTRY_DIR: "/srv/dev/" }, "/home/dev")).toBe("/srv/dev/");
+    expect(() => devRuntimeDirectory("linux", { AIKINGBOT_DEV_REGISTRY_DIR: "registry" }, "/home/dev")).toThrow(
+      "AIKINGBOT_DEV_REGISTRY_DIR must be an absolute path.",
     );
   });
 
   it("gives each stack its own remote handoff file outside the instance records", () => {
-    const first = developmentRemoteConnectionPath({ OPENBOT_DEV_STACK_ID: "101" }, "/r");
-    const second = developmentRemoteConnectionPath({ OPENBOT_DEV_STACK_ID: "202" }, "/r");
+    const first = developmentRemoteConnectionPath({ AIKINGBOT_DEV_STACK_ID: "101" }, "/r");
+    const second = developmentRemoteConnectionPath({ AIKINGBOT_DEV_STACK_ID: "202" }, "/r");
     expect(first).toBe(join("/r", "remote", "connection-101.json"));
     expect(second).not.toBe(first);
-    expect(developmentRemoteConnectionPath({ OPENBOT_DEV_STACK_ID: "../x" }, "/r")).toBe(
+    expect(developmentRemoteConnectionPath({ AIKINGBOT_DEV_STACK_ID: "../x" }, "/r")).toBe(
       join("/r", "remote", "connection-default.json"),
     );
   });
@@ -69,7 +69,7 @@ describe("selectDevInstance", () => {
   const here = record();
   const sibling = record({
     instanceId: "5174",
-    profile: "OpenBot Dev 5174",
+    profile: "AIKINGBOT Dev 5174",
     projectRoot: "/worktrees/two",
     rendererPort: 5_174,
     remoteDebuggingPort: 9_335,
@@ -147,7 +147,7 @@ describe("readDevInstanceRecords", () => {
   let directory = "";
 
   beforeEach(() => {
-    directory = mkdtempSync(join(tmpdir(), "openbot-dev-instances-test-"));
+    directory = mkdtempSync(join(tmpdir(), "aikingbot-dev-instances-test-"));
   });
 
   afterEach(() => {
@@ -187,7 +187,7 @@ describe("readDevInstanceRecords", () => {
     // an instance that died and left its pid to be recycled, and driving it
     // would type into whichever profile now holds 9333.
     const stale = record({ pid: 1_111, startedAt: 1_000 });
-    const current = record({ pid: 2_222, startedAt: 2_000, profile: "OpenBot Dev 19333", instanceId: "19333" });
+    const current = record({ pid: 2_222, startedAt: 2_000, profile: "AIKINGBOT Dev 19333", instanceId: "19333" });
     writeDevInstanceRecord(stale, directory);
     writeDevInstanceRecord(current, directory);
     expect(readDevInstanceRecords(directory, () => true)).toEqual([current]);
@@ -248,15 +248,15 @@ describe("createDevInstanceRecord", () => {
       args: [],
       cwd: "/worktrees/two",
       env: {
-        OPENBOT_DEV_RENDERER_PORT: "5174",
-        OPENBOT_DEV_REMOTE_DEBUGGING_PORT: "9335",
-        OPENBOT_DEV_INSTANCE_ID: "5174",
+        AIKINGBOT_DEV_RENDERER_PORT: "5174",
+        AIKINGBOT_DEV_REMOTE_DEBUGGING_PORT: "9335",
+        AIKINGBOT_DEV_INSTANCE_ID: "5174",
       },
     };
     expect(createDevInstanceRecord(spec, 77, 1_700)).toEqual({
       service: "app",
       instanceId: "5174",
-      profile: "OpenBot Dev 5174",
+      profile: "AIKINGBOT Dev 5174",
       projectRoot: "/worktrees/two",
       rendererPort: 5_174,
       remoteDebuggingPort: 9_335,
@@ -276,7 +276,7 @@ describe("writeDevInstanceRecord permissions", () => {
   it.skipIf(process.platform === "win32")(
     "keeps the registry directory and its records readable only by their owner",
     () => {
-      const directory = mkdtempSync(join(tmpdir(), "openbot-registry-mode-"));
+      const directory = mkdtempSync(join(tmpdir(), "aikingbot-registry-mode-"));
       writeDevInstanceRecord(record(), directory);
       // The path is predictable and lives in a shared /tmp, so the mode is the
       // only thing keeping another local account from reading which worktree a
@@ -311,7 +311,7 @@ describe("assertOwnerOnlyDirectory", () => {
   });
 
   it.skipIf(process.platform === "win32")("guards the reader too, not only the writer", () => {
-    const directory = mkdtempSync(join(tmpdir(), "openbot-registry-read-"));
+    const directory = mkdtempSync(join(tmpdir(), "aikingbot-registry-read-"));
     writeDevInstanceRecord(record(), directory);
     chmodSync(directory, 0o777);
     // A reader that never publishes would otherwise trust a planted record.

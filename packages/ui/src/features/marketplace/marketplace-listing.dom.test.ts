@@ -1,4 +1,4 @@
-import type { MarketplaceSkillQuery, SkillCategory } from "@openbot/contracts/ipc";
+import type { MarketplaceSkillQuery, SkillCategory } from "@aikingbot/contracts/ipc";
 import { createRoot, createSignal, flush } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {

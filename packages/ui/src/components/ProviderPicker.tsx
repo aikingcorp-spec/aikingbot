@@ -1,5 +1,5 @@
-import { ProviderLogo } from "@openbot/brand";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
+import { ProviderLogo } from "@aikingbot/brand";
+import { agentProviderDescriptor } from "@aikingbot/contracts/agent-providers";
 import type {
   AgentProviderId,
   AgentProviderState,
@@ -7,8 +7,8 @@ import type {
   ProviderApiKeyStatus,
   ProviderRuntimePhase,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
-import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@aikingbot/contracts/ipc";
+import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@aikingbot/i18n";
 import {
   Badge,
   Button,
@@ -25,7 +25,7 @@ import {
   Spinner,
   Switch,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, createStore, createUniqueId, For, Show } from "solid-js";
 import { providerUpdateAvailable, providerVersionLabel } from "../features/provider-updates/provider-update";
@@ -95,7 +95,7 @@ export interface ProviderPickerOption {
   /** What "Copy diagnostics" puts on the clipboard. Offered only while the row has a last error. */
   diagnostics?: string | undefined;
   /**
-   * The user turned the provider off in OpenBot. OpenBot does not start, check or list it, so the
+   * The user turned the provider off in AIKINGBOT. AIKINGBOT does not start, check or list it, so the
    * row shows only "Off" and the switch that turns it on again.
    */
   off?: boolean | undefined;
@@ -133,7 +133,7 @@ export interface ProviderPickerProps {
   onRestartProvider?: ((provider: AgentProviderId) => void | Promise<void>) | undefined;
   onCancelProviderRestart?: ((provider: AgentProviderId) => void | Promise<void>) | undefined;
   /**
-   * Turns a provider on or off in OpenBot. With it each provider row has a switch. A row whose
+   * Turns a provider on or off in AIKINGBOT. With it each provider row has a switch. A row whose
    * `usedBy` names an agent stays on and names the agents, so no agent loses its provider silently.
    */
   onSetProviderOn?: ((provider: AgentProviderId, on: boolean) => void | Promise<void>) | undefined;

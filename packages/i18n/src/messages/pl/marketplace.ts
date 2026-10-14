@@ -22,7 +22,7 @@ export const messages = {
   "marketplace.kinds": "Typy zawartości Marketplace",
   "marketplace.tab.agents": "Agenci",
   "marketplace.tab.skills": "Umiejętności",
-  "marketplace.plugins.missing": "Tej wtyczki nie ma w katalogu OpenBot.",
+  "marketplace.plugins.missing": "Tej wtyczki nie ma w katalogu AIKINGBOT.",
   "marketplace.agents.loadingDetail": "Wczytywanie szczegółów agenta…",
   "marketplace.agents.skills": "Umiejętności",
   "marketplace.agents.routines": "Rutyny",
@@ -30,7 +30,7 @@ export const messages = {
   "marketplace.agents.routineInactive": "Nieaktywna",
   "marketplace.skill.loading": "Wczytywanie umiejętności",
   "marketplace.skill.update": "Zaktualizuj umiejętność",
-  "marketplace.try.readFailed": "OpenBot nie mógł odczytać umiejętności tego agenta. Spróbuj ponownie.",
+  "marketplace.try.readFailed": "AIKINGBOT nie mógł odczytać umiejętności tego agenta. Spróbuj ponownie.",
   "marketplace.try.enable": "Włącz tę umiejętność w ustawieniach agenta, aby ją wypróbować.",
   "marketplace.try.repair": "Napraw tę umiejętność w ustawieniach agenta, aby ją wypróbować.",
   "marketplace.try.update": "Zaktualizuj tę umiejętność, aby wypróbować tę wersję.",
@@ -167,7 +167,7 @@ export const messages = {
   "marketplace.plugin.figma.prompt.assets": "Wyeksportuj ikony marketingowe w 2x do pakietu aplikacji.",
   "marketplace.plugin.paper.tagline": "Płótno projektowe oparte na HTML i CSS",
   "marketplace.plugin.paper.description":
-    "Paper pozwala agentom czytać i zapisywać plik projektu otwarty w Paper Desktop: sprawdzać obszary robocze, zaznaczenia, obliczone style, JSX i tokeny oraz tworzyć lub zmieniać ramki, tekst i style. Zainstaluj Paper Desktop, otwórz go raz i otwórz plik przed rozpoczęciem. OpenBot uruchamia Paper CLI instalowane przez Paper Desktop. Paper nie wymaga klucza. Narzędzia zapisu zmieniają otwarty plik, więc sprawdź każdy zapis, zanim go zatwierdzisz.",
+    "Paper pozwala agentom czytać i zapisywać plik projektu otwarty w Paper Desktop: sprawdzać obszary robocze, zaznaczenia, obliczone style, JSX i tokeny oraz tworzyć lub zmieniać ramki, tekst i style. Zainstaluj Paper Desktop, otwórz go raz i otwórz plik przed rozpoczęciem. AIKINGBOT uruchamia Paper CLI instalowane przez Paper Desktop. Paper nie wymaga klucza. Narzędzia zapisu zmieniają otwarty plik, więc sprawdź każdy zapis, zanim go zatwierdzisz.",
   "marketplace.plugin.paper.app":
     "Czyta i zapisuje otwarty plik Paper Desktop przez lokalny serwer MCP przekazywany przez Paper CLI. Wymaga Paper Desktop z otwartym plikiem.",
   "marketplace.plugin.paper.prompt.implement":

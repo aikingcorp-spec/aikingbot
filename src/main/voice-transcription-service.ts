@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import {
   AUTOMATIC_VOICE_LANGUAGE,
   ELEVENLABS_VOICE_MODEL_ID,
@@ -18,9 +18,9 @@ import {
   type VoiceStreamAudio,
   type VoiceStreamTranscript,
   type VoiceTranscriptionResult,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { Effect, Exit, Fiber, Scope } from "effect";
 import type { VoiceApiKeyStore } from "./voice-api-key-store";
 import {
@@ -38,7 +38,7 @@ import type {
   VoiceTranscriptionResponse,
 } from "./voice-transcription-protocol";
 
-const logger = createOpenBotLogger("voice-transcription-service");
+const logger = createAIKINGBOTLogger("voice-transcription-service");
 
 const TRANSCRIPTION_TIMEOUT_MS = 180_000;
 const MODEL_ENGINES: Record<LocalVoiceModelId, VoiceTranscriptionEngine> = {

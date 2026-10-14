@@ -1,4 +1,4 @@
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
 import {
   BROWSER_VIEW_CONTEXT_MENU_QUERY,
   BROWSER_VIEW_CURSOR_QUERY,
@@ -15,13 +15,13 @@ import {
   decodeBrowserViewHostMessage,
   decodeBrowserViewSessionResponse,
   encodeBrowserViewInput,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
+} from "@aikingbot/contracts/team-protocol/browser-view-v1";
 import {
   decodeRemoteDesktopSignalBinary,
   decodeRemoteDesktopSignalControl,
   encodeRemoteDesktopSignalControl,
-} from "@openbot/contracts/team-protocol/remote-stream-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/team-protocol/remote-stream-v1";
+import { sourceText } from "@aikingbot/i18n/source";
 import { Effect, Result, Schema } from "effect";
 import { runTeamEffect } from "./effect-boundary";
 import { createTeamRequestId } from "./request-id";

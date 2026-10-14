@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { claudeWriteOutsideRoots } from "./claude-workspace-sandbox";
 
 // The temporary folders are writable, so the test folder is in the checkout.
-const TEST_PARENT = join(process.cwd(), ".openbot-build", "claude-sandbox-test");
+const TEST_PARENT = join(process.cwd(), ".aikingbot-build", "claude-sandbox-test");
 
 let root: string;
 let workspace: string;
@@ -37,7 +37,7 @@ describe("claudeWriteOutsideRoots", () => {
     await expect(outsideRoots("Write", { file_path: join(workspace, "new/dir/a.txt") })).resolves.toBeNull();
     await expect(outsideRoots("Edit", { file_path: "relative.txt" })).resolves.toBeNull();
     await expect(outsideRoots("NotebookEdit", { notebook_path: join(shared, "a.ipynb") })).resolves.toBeNull();
-    await expect(outsideRoots("Write", { file_path: join(tmpdir(), "openbot-a.txt") })).resolves.toBeNull();
+    await expect(outsideRoots("Write", { file_path: join(tmpdir(), "aikingbot-a.txt") })).resolves.toBeNull();
   });
 
   it("asks for a write outside, also through a relative path", async () => {

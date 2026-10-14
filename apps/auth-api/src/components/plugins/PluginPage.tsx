@@ -1,4 +1,4 @@
-import { createOpenBotPluginUrl, createWebAppPluginPath, pluginLinkText } from "@openbot/contracts/plugin-links";
+import { createAIKINGBOTPluginUrl, createWebAppPluginPath, pluginLinkText } from "@aikingbot/contracts/plugin-links";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { For, onSettled, Show } from "solid-js";
@@ -122,10 +122,10 @@ export function PluginPage(props: PluginPageProps) {
                 </div>
               </div>
               <PluginOpenButtons
-                href={createOpenBotPluginUrl(props.plugin.slug)}
+                href={createAIKINGBOTPluginUrl(props.plugin.slug)}
                 browserHref={createWebAppPluginPath(props.plugin.slug)}
-                label="Open in OpenBot"
-                downloadCopy={`${props.plugin.name} installs from inside OpenBot. Get the app, then open this plugin from its Apps tab.`}
+                label="Open in AIKINGBOT"
+                downloadCopy={`${props.plugin.name} installs from inside AIKINGBOT. Get the app, then open this plugin from its Apps tab.`}
               />
             </div>
           </header>

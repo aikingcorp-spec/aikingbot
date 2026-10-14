@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 
 function filesUnder(directory: string): string[] {
   return readdirSync(directory).flatMap((entry) => {
@@ -181,7 +181,7 @@ export function checkUiFoundation(
     /role=["'](?:dialog|alertdialog|menu|tablist|tab|tabpanel|listbox|option)["']/gu,
   );
 
-  // The palette moved to @openbot/brand, which is now the only file allowed to hold
+  // The palette moved to @aikingbot/brand, which is now the only file allowed to hold
   // a colour literal, so every stylesheet the renderer owns is scanned whole. This
   // used to slice styles.css after its :root block to spare the palette, which also
   // spared everything else declared in there. It then named styles.css and styles/
@@ -248,7 +248,7 @@ export function checkUiFoundation(
 }
 
 if (import.meta.main) {
-  const logger = createOpenBotLogger("ui-foundation-check");
+  const logger = createAIKINGBOTLogger("ui-foundation-check");
   const projectRoot = fileURLToPath(new URL("..", import.meta.url));
   const { failures, manualCompositeCount } = checkUiFoundation(
     resolve(projectRoot, "src/renderer/src"),

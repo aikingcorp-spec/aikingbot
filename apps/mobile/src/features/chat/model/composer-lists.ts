@@ -1,4 +1,4 @@
-import { type MarkdownListEdit, markdownListLineBreak } from "@openbot/contracts/markdown-lists";
+import { type MarkdownListEdit, markdownListLineBreak } from "@aikingbot/contracts/markdown-lists";
 
 /**
  * The list edit for a Return key press, when `next` is `previous` with one line break at the caret.

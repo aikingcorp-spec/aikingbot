@@ -211,10 +211,10 @@ jobs:
         if: runner.os == 'Windows' && steps.runtime-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
-          "OPENBOT_BUN_DIR=$(Split-Path (Get-Command bun).Source -Parent)" >> $env:GITHUB_ENV
-          "OPENBOT_CARGO_DIR=$(Split-Path (Get-Command cargo).Source -Parent)" >> $env:GITHUB_ENV
-          "OPENBOT_NODE_DIR=$(Split-Path (Get-Command node).Source -Parent)" >> $env:GITHUB_ENV
-          "OPENBOT_PERL_DIR=$(Split-Path (Get-Command perl).Source -Parent)" >> $env:GITHUB_ENV
+          "AIKINGBOT_BUN_DIR=$(Split-Path (Get-Command bun).Source -Parent)" >> $env:GITHUB_ENV
+          "AIKINGBOT_CARGO_DIR=$(Split-Path (Get-Command cargo).Source -Parent)" >> $env:GITHUB_ENV
+          "AIKINGBOT_NODE_DIR=$(Split-Path (Get-Command node).Source -Parent)" >> $env:GITHUB_ENV
+          "AIKINGBOT_PERL_DIR=$(Split-Path (Get-Command perl).Source -Parent)" >> $env:GITHUB_ENV
 
       - name: Install macOS build dependencies
         if: runner.os == 'macOS' && steps.runtime-cache.outputs.cache-hit != 'true'
@@ -279,10 +279,10 @@ jobs:
         env:
           CMAKE_GENERATOR: Ninja
         run: |
-          native_perl="$(cygpath "$OPENBOT_PERL_DIR")/perl.exe"
+          native_perl="$(cygpath "$AIKINGBOT_PERL_DIR")/perl.exe"
           "$native_perl" -e 'die "Windows Perl is required\n" unless $^O eq "MSWin32";'
           export OPENSSL_SRC_PERL="$(cygpath -w "$native_perl")"
-          export PATH="$PATH:$(cygpath "$OPENBOT_BUN_DIR"):$(cygpath "$OPENBOT_CARGO_DIR"):$(cygpath "$OPENBOT_NODE_DIR")"
+          export PATH="$PATH:$(cygpath "$AIKINGBOT_BUN_DIR"):$(cygpath "$AIKINGBOT_CARGO_DIR"):$(cygpath "$AIKINGBOT_NODE_DIR")"
           bun run build:remote-desktop-runtime
 
       - name: Verify runtime
@@ -432,7 +432,7 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --target "$GITHUB_SHA" \
               --title "Remote desktop runtime ${{ needs.prepare.outputs.input_digest }}" \
-              --notes "Pinned Sunshine and Moonlight Web runtime for OpenBot. This prerelease is not an OpenBot application update." \
+              --notes "Pinned Sunshine and Moonlight Web runtime for AIKINGBOT. This prerelease is not an AIKINGBOT application update." \
               --prerelease \
               --latest=false
           fi
@@ -442,7 +442,7 @@ jobs:
             exit 1
           fi
 
-      - name: Confirm stable OpenBot release did not change
+      - name: Confirm stable AIKINGBOT release did not change
         shell: bash
         env:
           BEFORE: ${{ needs.prepare.outputs.stable_release }}
@@ -493,10 +493,10 @@ jobs:
       - name: Restore Whisper model cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: .openbot-build/whisper/model
-          key: openbot-whisper-model-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/prepare-whisper.ts') }}
+          path: .aikingbot-build/whisper/model
+          key: aikingbot-whisper-model-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/prepare-whisper.ts') }}
           restore-keys: |
-            openbot-whisper-model-${{ runner.os }}-${{ runner.arch }}-
+            aikingbot-whisper-model-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -535,7 +535,7 @@ jobs:
             libx11-6 libxcb-shm0 libxcb-xfixes0 libxcb1 libxfixes3 libxrandr2 libxtst6
           xvfb-run -a bun run test:remote-desktop-runtime
 
-      - name: Package OpenBot from the downloaded runtime
+      - name: Package AIKINGBOT from the downloaded runtime
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: ${{ matrix.platform == 'win32' && 'bun run package:win:verify' || matrix.platform == 'linux' && 'bun run package:linux' || 'bun run package:verify' }}

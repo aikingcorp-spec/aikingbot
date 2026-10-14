@@ -4,8 +4,8 @@ import type {
   HostUpdateStatus,
   McpServerConfig,
   McpTestResult,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
 import { createSignal, createStore, onSettled, snapshot } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -23,7 +23,7 @@ import {
   STORY_SERVERS,
 } from "../src/preview/fixtures";
 import { createSignInHost } from "./mcp-sign-in-host";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 const localServer = STORY_SERVERS.find((server) => server.kind === "local") ?? STORY_SERVERS[0];
 const remoteServer = STORY_SERVERS.find((server) => server.kind === "remote") ?? STORY_SERVERS[1];
@@ -148,7 +148,7 @@ export const LocalOnline: Story = {
   args: {
     hostStatus: {
       ...STORY_HOST_STATUS,
-      apiUrl: "https://eu-west-1.gateway.example.com/openbot/servers/team_7f3c19a2",
+      apiUrl: "https://eu-west-1.gateway.example.com/aikingbot/servers/team_7f3c19a2",
     },
   },
 };
@@ -361,18 +361,18 @@ function RemoteSetupStory(props: {
   hostUpdate?: HostUpdateStatus;
   hostRelease?: HostReleaseStatus;
 }) {
-  const previous = window.openbot;
+  const previous = window.aikingbot;
   // Storybook passes the args as a store, and the mock copies its options with `structuredClone`.
   const hostStatus = props.settings.hostStatus;
-  const mock = createMockOpenBot({
+  const mock = createMockAIKINGBOT({
     ...(hostStatus ? { hostStatus: snapshot(hostStatus) } : {}),
     ...(props.hostUpdate ? { hostUpdate: props.hostUpdate } : {}),
     ...(props.hostRelease ? { hostRelease: props.hostRelease } : {}),
   });
-  window.openbot = mock.api;
+  window.aikingbot = mock.api;
   onSettled(() => () => {
     mock.dispose();
-    window.openbot = previous;
+    window.aikingbot = previous;
   });
   return <ServerSettingsModal {...props.settings} />;
 }

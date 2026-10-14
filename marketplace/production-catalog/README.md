@@ -1,6 +1,6 @@
-# OpenBot team launch catalog
+# AIKINGBOT team launch catalog
 
-Version v2 contains 21 Skills and 15 Agents. The `pstack` Skill installs 52 skills `pstack-<name>` with it. Four Skills and four Agents are featured on first publication. All entries show the public OpenBot logo as their creator badge, use the publisher **OpenBot**, start with zero installs, and include no scheduled routines. They work from supplied material and available tools; they do not assume a connected inbox, CRM, ad account, or phone service. The `pstack` Skill is the exception: it is the upstream text, unchanged in substance, and some of its skills use MCP servers, connectors or web links when the agent has them.
+Version v2 contains 21 Skills and 15 Agents. The `pstack` Skill installs 52 skills `pstack-<name>` with it. Four Skills and four Agents are featured on first publication. All entries show the public AIKINGBOT logo as their creator badge, use the publisher **AIKINGBOT**, start with zero installs, and include no scheduled routines. They work from supplied material and available tools; they do not assume a connected inbox, CRM, ad account, or phone service. The `pstack` Skill is the exception: it is the upstream text, unchanged in substance, and some of its skills use MCP servers, connectors or web links when the agent has them.
 
 ## Review locally
 
@@ -10,7 +10,7 @@ bun run marketplace:seed:local
 bun run dev --isolated
 ```
 
-Reuse the dev app if it is already running. Open Marketplace and search **OpenBot** in Skills or Agents. Local seeding adds approved catalog records to this worktree's local account database and bundles to its local preview bucket. It does not reset the Electron profile, erase other listings, or create local Agents. Install an Agent from Marketplace to use it.
+Reuse the dev app if it is already running. Open Marketplace and search **AIKINGBOT** in Skills or Agents. Local seeding adds approved catalog records to this worktree's local account database and bundles to its local preview bucket. It does not reset the Electron profile, erase other listings, or create local Agents. Install an Agent from Marketplace to use it.
 
 ## Prepare and publish
 
@@ -66,30 +66,30 @@ Do not use the separate `skills:seed`, `agents:seed`, or `dev:seed` demo scripts
 | [distinctive-frontend-design](skills/distinctive-frontend-design/SKILL.md) | design | anthropic |
 | [internal-communications](skills/internal-communications/SKILL.md) | documents | anthropic |
 | [decision-quality-check](skills/decision-quality-check/SKILL.md) | productivity | anthropic |
-| [change-review ★](skills/change-review/SKILL.md) | coding | openbot |
-| [bug-triage](skills/bug-triage/SKILL.md) | coding | openbot |
-| [interface-critique](skills/interface-critique/SKILL.md) | design | openbot |
-| [evidence-brief ★](skills/evidence-brief/SKILL.md) | research | openbot |
-| [competitor-comparison](skills/competitor-comparison/SKILL.md) | research | openbot |
-| [launch-notes ★](skills/launch-notes/SKILL.md) | documents | openbot |
-| [meeting-actions ★](skills/meeting-actions/SKILL.md) | productivity | openbot |
-| [project-plan](skills/project-plan/SKILL.md) | productivity | openbot |
-| [support-reply](skills/support-reply/SKILL.md) | documents | openbot |
-| [account-brief](skills/account-brief/SKILL.md) | research | openbot |
-| [outreach-draft](skills/outreach-draft/SKILL.md) | documents | openbot |
-| [campaign-analysis](skills/campaign-analysis/SKILL.md) | data-analytics | openbot |
-| [data-quality-review](skills/data-quality-review/SKILL.md) | data-analytics | openbot |
-| [workflow-playbook](skills/workflow-playbook/SKILL.md) | automation | openbot |
-| [hiring-scorecard](skills/hiring-scorecard/SKILL.md) | other | openbot |
+| [change-review ★](skills/change-review/SKILL.md) | coding | aikingbot |
+| [bug-triage](skills/bug-triage/SKILL.md) | coding | aikingbot |
+| [interface-critique](skills/interface-critique/SKILL.md) | design | aikingbot |
+| [evidence-brief ★](skills/evidence-brief/SKILL.md) | research | aikingbot |
+| [competitor-comparison](skills/competitor-comparison/SKILL.md) | research | aikingbot |
+| [launch-notes ★](skills/launch-notes/SKILL.md) | documents | aikingbot |
+| [meeting-actions ★](skills/meeting-actions/SKILL.md) | productivity | aikingbot |
+| [project-plan](skills/project-plan/SKILL.md) | productivity | aikingbot |
+| [support-reply](skills/support-reply/SKILL.md) | documents | aikingbot |
+| [account-brief](skills/account-brief/SKILL.md) | research | aikingbot |
+| [outreach-draft](skills/outreach-draft/SKILL.md) | documents | aikingbot |
+| [campaign-analysis](skills/campaign-analysis/SKILL.md) | data-analytics | aikingbot |
+| [data-quality-review](skills/data-quality-review/SKILL.md) | data-analytics | aikingbot |
+| [workflow-playbook](skills/workflow-playbook/SKILL.md) | automation | aikingbot |
+| [hiring-scorecard](skills/hiring-scorecard/SKILL.md) | other | aikingbot |
 | `pstack`, with the 52 skills `pstack-<name>` of [bundles/pstack/skills](bundles/pstack/skills) | coding | cursor |
 
 ★ Featured on first publication. Existing Featured settings are preserved on reruns.
 
 ## Attribution
 
-The 15 original OpenBot team Skills use the repository PolyForm Noncommercial 1.0.0 license. The five existing adapted Skills retain their pinned OpenAI or Anthropic source attribution and Apache-2.0 license. Each generated bundle contains the applicable LICENSE.txt and NOTICE.txt; the build also produces UPSTREAM_NOTICES.md.
+The 15 original AIKINGBOT team Skills use the repository PolyForm Noncommercial 1.0.0 license. The five existing adapted Skills retain their pinned OpenAI or Anthropic source attribution and Apache-2.0 license. Each generated bundle contains the applicable LICENSE.txt and NOTICE.txt; the build also produces UPSTREAM_NOTICES.md.
 
-`bundles/pstack/` is an unchanged copy of the `skills/` and `agents/` of the pstack plugin by Lauren Tan from the pinned `cursor/plugins` commit, under the MIT License. It is a pack in `catalog.json`: the build publishes it as the one Skill `pstack`. Its archive holds an index `SKILL.md`, the `LICENSE`, a `NOTICE.md`, and each folder of `skills/` as `skills/pstack-<folder>/`. The app installs each of those as a skill folder of its own, beside `pstack`, under one lock entry: one download and one install receipt. In Markdown, the build renames links, `/<name>` commands and `<name>` mentions of other pstack skills to `pstack-<name>`, removes `disable-model-invocation` so `$pstack-<name>` works with every provider, copies `agents/` into each skill that names a subagent, and adds a closing `pstack in OpenBot` section. Links to files that no skill installs go to the pinned commit. To update it, copy the new upstream `skills/` and `agents/`, update the pinned commit in `catalog.json` and `NOTICE.md`, and increase `catalogVersion`.
+`bundles/pstack/` is an unchanged copy of the `skills/` and `agents/` of the pstack plugin by Lauren Tan from the pinned `cursor/plugins` commit, under the MIT License. It is a pack in `catalog.json`: the build publishes it as the one Skill `pstack`. Its archive holds an index `SKILL.md`, the `LICENSE`, a `NOTICE.md`, and each folder of `skills/` as `skills/pstack-<folder>/`. The app installs each of those as a skill folder of its own, beside `pstack`, under one lock entry: one download and one install receipt. In Markdown, the build renames links, `/<name>` commands and `<name>` mentions of other pstack skills to `pstack-<name>`, removes `disable-model-invocation` so `$pstack-<name>` works with every provider, copies `agents/` into each skill that names a subagent, and adds a closing `pstack in AIKINGBOT` section. Links to files that no skill installs go to the pinned commit. To update it, copy the new upstream `skills/` and `agents/`, update the pinned commit in `catalog.json` and `NOTICE.md`, and increase `catalogVersion`.
 
 ## Check Agent preview switching
 

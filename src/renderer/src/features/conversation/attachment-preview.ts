@@ -1,7 +1,7 @@
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { type AttachmentSummary, type FilePreview, filePreviewKindForFile } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { currentText } from "@openbot/ui/text";
+import { attachmentMimeTypeForName } from "@aikingbot/contracts/attachment-files";
+import { type AttachmentSummary, type FilePreview, filePreviewKindForFile } from "@aikingbot/contracts/ipc";
+import { sourceText } from "@aikingbot/i18n/source";
+import { currentText } from "@aikingbot/ui/text";
 
 /** Kinds the panel can render straight from `previewUrl`, without reading the bytes first. */
 const URL_PREVIEW_KINDS = new Set<FilePreview["previewKind"]>(["image", "pdf", "audio", "video"]);
@@ -13,7 +13,7 @@ const URL_PREVIEW_KINDS = new Set<FilePreview["previewKind"]>(["image", "pdf", "
 const attachmentUnavailable = () => sourceText("error.attachment.unavailable");
 
 /** Only the local host's files are checked: a remote check downloads the whole file first. */
-const LOCAL_ATTACHMENT_URL = /^openbot-attachment:/u;
+const LOCAL_ATTACHMENT_URL = /^aikingbot-attachment:/u;
 
 /**
  * Builds the file preview panel's `FilePreview` from an attachment record. `AttachmentSummary`

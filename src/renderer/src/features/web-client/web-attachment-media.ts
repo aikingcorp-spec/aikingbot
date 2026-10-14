@@ -1,7 +1,7 @@
-import { attachmentMimeTypeForName, playableMediaKind } from "@openbot/contracts/attachment-files";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
-import type { AttachmentMediaSource } from "@openbot/ui/features/conversation/AttachmentCards";
+import { attachmentMimeTypeForName, playableMediaKind } from "@aikingbot/contracts/attachment-files";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
+import { MOBILE_ATTACHMENT_BYTES } from "@aikingbot/team-client/remote-peer";
+import type { AttachmentMediaSource } from "@aikingbot/ui/features/conversation/AttachmentCards";
 import { createSignal } from "solid-js";
 import type { WebWorkspaceRuntime } from "./web-runtime";
 

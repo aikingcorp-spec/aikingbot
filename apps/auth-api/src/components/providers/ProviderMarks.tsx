@@ -1,10 +1,10 @@
-import { AppLogo, ProviderLogo } from "@openbot/brand";
+import { AppLogo, ProviderLogo } from "@aikingbot/brand";
 import { Show } from "solid-js";
 import type { ProviderPage } from "../../content/providers/provider-page";
 import { LandingIcon } from "../landing/LandingIcon";
 
 /**
- * The frosted plate of the compare pages, with OpenBot's mark, "runs", and the
+ * The frosted plate of the compare pages, with AIKINGBOT's mark, "runs", and the
  * provider's mark. The hero shows the names under the marks; an index card shows
  * the marks only.
  */
@@ -14,7 +14,7 @@ export function ProviderMarks(props: { page: Pick<ProviderPage, "provider" | "na
       <span class="compare-mark">
         <AppLogo variant="production" animation={props.small ? "none" : "blink"} class="compare-mark-logo" />
         <Show when={!props.small}>
-          <span class="compare-mark-name">OpenBot</span>
+          <span class="compare-mark-name">AIKINGBOT</span>
         </Show>
       </span>
       <span class="compare-vs">runs</span>

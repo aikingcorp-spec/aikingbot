@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { redactText } from "@openbot/logging";
+import { redactText } from "@aikingbot/logging";
 import { describe, expect, it } from "vitest";
 import { createDiagnosticStream } from "./stderr-diagnostics";
 
@@ -11,7 +11,7 @@ function collect(limit?: number) {
 }
 
 /*
- * A provider CLI writes its failures to stderr, and OpenBot shows them and logs them. The pipe
+ * A provider CLI writes its failures to stderr, and AIKINGBOT shows them and logs them. The pipe
  * decides where a chunk ends, so the record boundary has to be found here: redaction reads one
  * string, and half a record reads as prose that happens to hold a credential.
  */

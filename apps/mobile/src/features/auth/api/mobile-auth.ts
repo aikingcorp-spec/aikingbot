@@ -1,17 +1,17 @@
-import { type AvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
-import { OPENBOT_CONTROL_PLANE_ORIGIN } from "@openbot/contracts/invite-links";
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
+import { type AvatarMimeType, isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS } from "@aikingbot/contracts/input-limits";
+import { AIKINGBOT_CONTROL_PLANE_ORIGIN } from "@aikingbot/contracts/invite-links";
+import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
 import {
   isMobileConnectDevelopmentHost,
   isMobileConnectHostBinding,
   type MobileConnectHostBinding,
   parseMobileConnectUrl,
   validateMobileConnectHostBinding,
-} from "@openbot/contracts/mobile-connect";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress, normalizeOneTimeCode, validateProfileName } from "@openbot/contracts/validation";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@aikingbot/contracts/mobile-connect";
+import { type DynamicRecord, isDynamicRecord, isString } from "@aikingbot/contracts/runtime-values";
+import { normalizeEmailAddress, normalizeOneTimeCode, validateProfileName } from "@aikingbot/contracts/validation";
+import type { MobileTextKey } from "@aikingbot/i18n/mobile";
 import * as Crypto from "expo-crypto";
 import * as Device from "expo-device";
 import * as SecureStore from "expo-secure-store";
@@ -21,9 +21,9 @@ import { currentText } from "@/shared/lib/text";
 // Relative: the Node test project resolves no `@/` path that the test does not mock.
 import { fetch } from "../../support/model/logged-fetch";
 
-const MOBILE_SESSION_KEY = "openbot.mobile.session.v1";
-const MOBILE_REVOCATIONS_KEY = "openbot.mobile.pending-revocations.v1";
-const MOBILE_DEVICE_ID_KEY = "openbot.mobile.device-id.v1";
+const MOBILE_SESSION_KEY = "aikingbot.mobile.session.v1";
+const MOBILE_REVOCATIONS_KEY = "aikingbot.mobile.pending-revocations.v1";
+const MOBILE_DEVICE_ID_KEY = "aikingbot.mobile.device-id.v1";
 const MOBILE_AUTH_REQUEST_TIMEOUT_MS = 10_000;
 
 let mobileSessionStorageTail = Promise.resolve();
@@ -115,8 +115,8 @@ async function redeemMobileConnectSession(value: string): Promise<MobileSession>
 
 /** The account service for email sign-in. A development build can name a local one. */
 function mobileAccountApiUrl(): string {
-  const override = process.env.EXPO_PUBLIC_OPENBOT_API_URL;
-  return (override && __DEV__ && normalizeAccountApiUrl(override)) || OPENBOT_CONTROL_PLANE_ORIGIN;
+  const override = process.env.EXPO_PUBLIC_AIKINGBOT_API_URL;
+  return (override && __DEV__ && normalizeAccountApiUrl(override)) || AIKINGBOT_CONTROL_PLANE_ORIGIN;
 }
 
 export interface MobileEmailChallenge {
@@ -710,7 +710,7 @@ function decodeStoredMobileCredential(value: unknown): MobileCredential {
 /** The Mobile Connect rule for an account service origin: HTTPS, or HTTP on a private network. */
 function normalizeAccountApiUrl(value: string): string | null {
   return (
-    parseMobileConnectUrl(`openbot://mobile-connect?api=${encodeURIComponent(value)}&ticket=${"x".repeat(32)}`)
+    parseMobileConnectUrl(`aikingbot://mobile-connect?api=${encodeURIComponent(value)}&ticket=${"x".repeat(32)}`)
       ?.apiUrl ?? null
   );
 }

@@ -1,5 +1,5 @@
-import type { ComputerUseCoveredArea } from "@openbot/contracts/ipc";
-import { useText } from "@openbot/ui/text";
+import type { ComputerUseCoveredArea } from "@aikingbot/contracts/ipc";
+import { useText } from "@aikingbot/ui/text";
 
 export interface ComputerUseWindowHighlightProps {
   /** Which application window the agent is working in, for the screen reader and the label. */
@@ -17,7 +17,7 @@ export interface ComputerUseWindowHighlightProps {
 }
 
 /**
- * The hue OpenBot draws over the window an agent is working in.
+ * The hue AIKINGBOT draws over the window an agent is working in.
  *
  * The agent cursor says where a click lands; it does not say which window the next twenty actions
  * belong to. This answers that with one even rim of the accent around the whole window and a short

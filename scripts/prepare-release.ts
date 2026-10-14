@@ -1,8 +1,8 @@
 import { execFileSync } from "node:child_process";
 import { readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isOneOf, isString } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import {
   assembleSection,
   FRAGMENT_DIR,
@@ -17,7 +17,7 @@ import {
 //   bun scripts/prepare-release.ts <major|minor|patch>           the desktop app and the web client
 //   bun scripts/prepare-release.ts <major|minor|patch> --mobile  the iPhone app
 
-const logger = createOpenBotLogger("prepare-release");
+const logger = createAIKINGBOTLogger("prepare-release");
 
 type Increment = "major" | "minor" | "patch";
 
@@ -35,7 +35,7 @@ interface ReleaseTarget {
 }
 
 const DESKTOP: ReleaseTarget = {
-  name: "OpenBot",
+  name: "AIKINGBOT",
   changelog: "CHANGELOG.md",
   fragmentDir: FRAGMENT_DIR,
   versionFiles: ["package.json"],
@@ -44,7 +44,7 @@ const DESKTOP: ReleaseTarget = {
 };
 
 const MOBILE: ReleaseTarget = {
-  name: "OpenBot mobile",
+  name: "AIKINGBOT mobile",
   changelog: MOBILE_CHANGELOG,
   fragmentDir: MOBILE_FRAGMENT_DIR,
   versionFiles: MOBILE_VERSION_FILES,

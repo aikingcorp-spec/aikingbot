@@ -1,10 +1,10 @@
-import { AppLoadingShell } from "@openbot/ui/features/account/AppLoadingShell";
+import { AppLoadingShell } from "@aikingbot/ui/features/account/AppLoadingShell";
 import { Dynamic } from "@solidjs/web";
 import { createLazyFileRoute } from "@tanstack/solid-router";
 import { type Component, createSignal, flush, lazy, onSettled, Show } from "solid-js";
 import "../../../../src/renderer/src/features/web-client/web-client.css";
 
-const loadWebApp = () => import("@openbot/renderer-web");
+const loadWebApp = () => import("@aikingbot/renderer-web");
 const WebApp = lazy(() => loadWebApp().then((module) => ({ default: module.WebApp })));
 
 export const Route = createLazyFileRoute("/app")({ component: BrowserAppPage });
@@ -16,7 +16,7 @@ function BrowserAppPage() {
   const [crew, setCrew] = createSignal<Component>();
   onSettled(() => {
     void loadWebApp();
-    void import("@openbot/ui/features/account/AppLoadingScreen")
+    void import("@aikingbot/ui/features/account/AppLoadingScreen")
       .then((module) => {
         setCrew(() => module.AppLoadingScreen);
         // Show the crew before the web client starts: the page keeps this fallback while the web

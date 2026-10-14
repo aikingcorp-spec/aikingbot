@@ -12,7 +12,7 @@ export const unstable_settings = { initialRouteName: "index" };
 // an invitation is an inner page too, so the user can go back to the plans.
 export default function HostedServerLayout() {
   const { t } = useText();
-  const background = String(useCSSVariable("--openbot-bg-sheet"));
+  const background = String(useCSSVariable("--aikingbot-bg-sheet"));
   return (
     <Stack
       screenListeners={sheetBackHaptics}

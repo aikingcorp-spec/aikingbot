@@ -115,7 +115,7 @@ export const messages = {
   "agentSettings.runtime.workspaceEnforcedClaude":
     "Una modifica a un file all'esterno te la chiede prima, anche con l'approvazione automatica attiva. Un comando non può scrivere all'esterno.",
   "agentSettings.runtime.workspaceUnlimited":
-    "Il controllo del computer e il browser di OpenBot non sono limitati; puoi disattivare il controllo del computer qui sotto.",
+    "Il controllo del computer e il browser di AIKINGBOT non sono limitati; puoi disattivare il controllo del computer qui sotto.",
   "agentSettings.computerUse.title": "Controllo del computer",
   "agentSettings.computerUse.description": "Permetti a questo agente di controllare le app su questo computer",
   "agentSettings.automation.title": "Script locali",

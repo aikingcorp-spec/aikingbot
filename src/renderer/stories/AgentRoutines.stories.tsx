@@ -1,4 +1,4 @@
-import type { Routine, RoutineRun } from "@openbot/contracts/ipc";
+import type { Routine, RoutineRun } from "@aikingbot/contracts/ipc";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -7,7 +7,7 @@ import AgentSettingsPanel from "../src/features/conversation/AgentSettingsPanel"
 import { desktopEventRoutinesApi } from "../src/features/conversation/routine-webhooks-api";
 import { agentRoutinesPort, eventRoutinesPort } from "../src/features/conversation/routines-port";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_MODELS } from "./fixtures";
-import { createMockOpenBot } from "./mock-openbot";
+import { createMockAIKINGBOT } from "./mock-aikingbot";
 
 const morningBrief: Routine = {
   id: "routine-morning-brief",
@@ -56,16 +56,16 @@ const fullPanelRuns: RoutineRun[] = [
 ];
 
 function RoutinesStory(props: { routines?: Routine[]; runs?: RoutineRun[]; localHost?: boolean }) {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot({ routines: { chief: props.routines ?? storyRoutines } });
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT({ routines: { chief: props.routines ?? storyRoutines } });
+  window.aikingbot = mock.api;
   if (props.runs) mock.api.agent.listRoutineRuns = async () => structuredClone(props.runs ?? []);
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return (
-    <main style={{ width: "380px", height: "720px", overflow: "auto", background: "var(--openbot-bg-canvas)" }}>
+    <main style={{ width: "380px", height: "720px", overflow: "auto", background: "var(--aikingbot-bg-canvas)" }}>
       <AgentRoutinesSettings
         port={agentRoutinesPort("chief", false, props.localHost === true)}
         onCountChange={fn()}
@@ -78,9 +78,9 @@ function RoutinesStory(props: { routines?: Routine[]; runs?: RoutineRun[]; local
 
 /** A routine that a webhook starts, on the preview host. */
 function WebhookRoutineStory() {
-  const previousApi = window.openbot;
-  const mock = createMockOpenBot({ routines: { chief: [] } });
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const mock = createMockAIKINGBOT({ routines: { chief: [] } });
+  window.aikingbot = mock.api;
   const owner = { kind: "agent", id: "chief" } as const;
   const api = desktopEventRoutinesApi("story-server");
   const seeded = api.saveRoutine({
@@ -121,32 +121,32 @@ function WebhookRoutineStory() {
   );
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
   });
   return (
-    <main style={{ width: "380px", height: "720px", overflow: "auto", background: "var(--openbot-bg-canvas)" }}>
+    <main style={{ width: "380px", height: "720px", overflow: "auto", background: "var(--aikingbot-bg-canvas)" }}>
       <AgentRoutinesSettings port={port} onCountChange={fn()} onBack={fn()} onClose={fn()} />
     </main>
   );
 }
 
 function FullSettingsPanelStory() {
-  const previousApi = window.openbot;
-  const previousWidth = window.localStorage.getItem("openbot:settings-panel-width");
-  const mock = createMockOpenBot({ routines: { chief: storyRoutines } });
-  window.openbot = mock.api;
+  const previousApi = window.aikingbot;
+  const previousWidth = window.localStorage.getItem("aikingbot:settings-panel-width");
+  const mock = createMockAIKINGBOT({ routines: { chief: storyRoutines } });
+  window.aikingbot = mock.api;
   mock.api.agent.listRoutineRuns = async (input) =>
     input.routineId === morningBrief.id ? structuredClone(fullPanelRuns) : [];
-  window.localStorage.setItem("openbot:settings-panel-width", "380");
+  window.localStorage.setItem("aikingbot:settings-panel-width", "380");
 
   onCleanup(() => {
     mock.dispose();
-    window.openbot = previousApi;
+    window.aikingbot = previousApi;
     if (previousWidth === null) {
-      window.localStorage.removeItem("openbot:settings-panel-width");
+      window.localStorage.removeItem("aikingbot:settings-panel-width");
       return;
     }
-    window.localStorage.setItem("openbot:settings-panel-width", previousWidth);
+    window.localStorage.setItem("aikingbot:settings-panel-width", previousWidth);
   });
 
   return (
@@ -231,7 +231,7 @@ export const RunHistoryStatuses: Story = {
 };
 
 /**
- * OpenBot was closed for five occurrences of an hourly routine set to run once when OpenBot opens.
+ * AIKINGBOT was closed for five occurrences of an hourly routine set to run once when AIKINGBOT opens.
  * It ran the newest one late and recorded the four before it as skipped. Yesterday it skipped one.
  * The times are on the hour.
  */

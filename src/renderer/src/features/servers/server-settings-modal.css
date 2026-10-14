@@ -1,28 +1,28 @@
 .server-settings-modal-shell .settings-modal-main {
-  background: var(--openbot-bg-canvas);
+  background: var(--aikingbot-bg-canvas);
 }
 
 .server-settings-modal-shell .settings-modal-scroll-frame::before {
   background: linear-gradient(
     to bottom,
-    var(--openbot-bg-canvas) 0%,
-    var(--openbot-bg-canvas) 28%,
-    var(--openbot-bg-canvas-clear) 100%
+    var(--aikingbot-bg-canvas) 0%,
+    var(--aikingbot-bg-canvas) 28%,
+    var(--aikingbot-bg-canvas-clear) 100%
   );
 }
 
 .server-settings-modal-shell .settings-modal-scroll-frame::after {
   background: linear-gradient(
     to top,
-    var(--openbot-bg-canvas) 0%,
-    var(--openbot-bg-canvas) 28%,
-    var(--openbot-bg-canvas-clear) 100%
+    var(--aikingbot-bg-canvas) 0%,
+    var(--aikingbot-bg-canvas) 28%,
+    var(--aikingbot-bg-canvas-clear) 100%
   );
 }
 
 .server-settings-panel {
   width: 100%;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
   animation: none;
 }
 
@@ -33,13 +33,13 @@
   flex: 0 0 auto;
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-semibold);
-  letter-spacing: var(--openbot-tracking-wide);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control-hover);
+  color: var(--aikingbot-text-secondary);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-semibold);
+  letter-spacing: var(--aikingbot-tracking-wide);
 }
 
 .server-settings-logo img {
@@ -47,13 +47,13 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  outline: 1px solid var(--openbot-image-outline);
+  outline: 1px solid var(--aikingbot-image-outline);
   outline-offset: -1px;
 }
 
 .server-settings-logo-trigger {
-  border-radius: var(--openbot-radius-md);
-  color: var(--openbot-text-muted);
+  border-radius: var(--aikingbot-radius-md);
+  color: var(--aikingbot-text-muted);
 }
 
 .server-settings-logo-trigger .server-settings-logo {
@@ -65,12 +65,12 @@
 }
 
 .server-settings-logo-placeholder {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--aikingbot-icon-md);
+  height: var(--aikingbot-icon-md);
 }
 
 .server-settings-item-error {
-  color: var(--openbot-danger);
+  color: var(--aikingbot-danger);
 }
 
 .server-settings-readonly-name.ui-item {
@@ -84,84 +84,84 @@
 
 .server-settings-publish-setting.ui-switch-field,
 .server-settings-mute-setting.ui-switch-field {
-  padding: var(--openbot-space-3) var(--openbot-space-4);
+  padding: var(--aikingbot-space-3) var(--aikingbot-space-4);
 }
 
 .server-settings-publish-setting.ui-switch-field,
 .server-settings-mute-setting.ui-switch-field {
   width: 100%;
   justify-content: space-between;
-  gap: var(--openbot-space-6);
+  gap: var(--aikingbot-space-6);
 }
 
 .server-settings-readonly-value {
   min-width: 180px;
   max-width: 300px;
   overflow-wrap: anywhere;
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-medium);
   text-align: right;
   user-select: text;
 }
 
 .server-settings-address-control.ui-button {
   width: 320px;
-  height: var(--openbot-control-md);
+  height: var(--aikingbot-control-md);
   min-width: 0;
   flex-direction: row-reverse;
   justify-content: space-between;
   overflow: visible;
   border: 0;
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
-  padding-inline: var(--openbot-space-3) var(--openbot-space-2);
-  color: var(--openbot-text-secondary);
-  box-shadow: inset 0 0 0 1px var(--openbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
+  padding-inline: var(--aikingbot-space-3) var(--aikingbot-space-2);
+  color: var(--aikingbot-text-secondary);
+  box-shadow: inset 0 0 0 1px var(--aikingbot-border);
 }
 
 .server-settings-address-control > span {
   min-width: 0;
   flex: 1 1 auto;
   overflow: hidden;
-  font-family: var(--openbot-font-mono);
-  font-weight: var(--openbot-weight-regular);
+  font-family: var(--aikingbot-font-mono);
+  font-weight: var(--aikingbot-weight-regular);
   text-align: left;
   text-overflow: ellipsis;
 }
 
 .server-settings-address-control > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .server-settings-address-control[data-copied] {
-  color: var(--openbot-success);
+  color: var(--aikingbot-success);
 }
 
 .server-settings-error-toast {
   position: absolute;
-  right: var(--openbot-space-6);
-  bottom: var(--openbot-space-6);
-  left: var(--openbot-space-6);
+  right: var(--aikingbot-space-6);
+  bottom: var(--aikingbot-space-6);
+  left: var(--aikingbot-space-6);
   z-index: 3;
-  box-shadow: 0 12px 32px var(--openbot-shadow-dialog);
+  box-shadow: 0 12px 32px var(--aikingbot-shadow-dialog);
 }
 
 .server-settings-error-toast[data-with-save-bar] {
-  bottom: calc(60px + var(--openbot-space-3));
+  bottom: calc(60px + var(--aikingbot-space-3));
 }
 
 .server-settings-members-alert {
   border: 0;
-  background: var(--openbot-bg-control);
+  background: var(--aikingbot-bg-control);
 }
 
 .server-settings-members-title {
   display: inline-flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .server-settings-search {
@@ -173,23 +173,23 @@
 .server-settings-search > svg {
   position: absolute;
   top: 50%;
-  left: var(--openbot-space-3);
+  left: var(--aikingbot-space-3);
   z-index: 1;
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
-  color: var(--openbot-text-muted);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
+  color: var(--aikingbot-text-muted);
   pointer-events: none;
   transform: translateY(-50%);
 }
 
 .server-settings-search .ui-input {
-  padding-left: var(--openbot-space-8);
+  padding-left: var(--aikingbot-space-8);
 }
 
 .server-settings-invite-card.ui-card {
   border: 0;
-  background: var(--openbot-bg-surface);
-  padding: var(--openbot-space-4);
+  background: var(--aikingbot-bg-surface);
+  padding: var(--aikingbot-space-4);
   box-shadow: none;
 }
 
@@ -197,7 +197,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 112px auto;
   align-items: start;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* The hidden tab panels stay mounted for the slide animation, so without this the
@@ -236,12 +236,12 @@
 }
 
 .server-settings-invite-link-input.ui-input {
-  font-family: var(--openbot-font-mono);
+  font-family: var(--aikingbot-font-mono);
   cursor: text;
 }
 
 .server-settings-invite-link-input.ui-input::placeholder {
-  font-family: var(--openbot-font-sans);
+  font-family: var(--aikingbot-font-sans);
 }
 
 .server-settings-invite-copy > span {
@@ -253,15 +253,15 @@
 .server-settings-invite-new-link > svg,
 .server-settings-routine-feed-row .ui-button > svg,
 .server-settings-routine-feed-actions .ui-button > svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
   flex: 0 0 auto;
-  stroke-width: var(--openbot-icon-stroke);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .server-settings-invite-hint {
   display: block;
-  margin-top: var(--openbot-space-2);
+  margin-top: var(--aikingbot-space-2);
 }
 
 .server-settings-role-select {
@@ -270,12 +270,12 @@
 
 .server-settings-invite-result {
   border: 0;
-  background: var(--openbot-bg-surface-raised);
-  margin-top: var(--openbot-space-3);
+  background: var(--aikingbot-bg-surface-raised);
+  margin-top: var(--aikingbot-space-3);
 }
 
 .server-settings-member-row[data-disabled] {
-  background: var(--openbot-bg-control);
+  background: var(--aikingbot-bg-control);
 }
 
 .server-settings-member-meta {
@@ -305,8 +305,8 @@
 }
 
 .server-settings-member-menu-trigger svg {
-  width: var(--openbot-icon-sm);
-  height: var(--openbot-icon-sm);
+  width: var(--aikingbot-icon-sm);
+  height: var(--aikingbot-icon-sm);
 }
 
 .server-settings-empty-row .ui-item-content {
@@ -317,15 +317,15 @@
   width: 40px;
   height: 40px;
   justify-content: center;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-bg-control);
-  color: var(--openbot-text-secondary);
+  border: 1px solid var(--aikingbot-border);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-bg-control);
+  color: var(--aikingbot-text-secondary);
 }
 
 .server-settings-desktop-icon svg {
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
+  width: var(--aikingbot-icon-lg);
+  height: var(--aikingbot-icon-lg);
 }
 
 .server-settings-desktop-description {
@@ -339,7 +339,7 @@
   max-width: 260px;
   display: grid;
   justify-items: end;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
   text-align: right;
 }
 
@@ -349,7 +349,7 @@
 }
 
 .server-settings-desktop-status {
-  margin-top: var(--openbot-space-1);
+  margin-top: var(--aikingbot-space-1);
 }
 
 @media (max-width: 720px) {
@@ -377,8 +377,8 @@
   }
 
   .server-settings-error-toast {
-    right: var(--openbot-space-4);
-    left: var(--openbot-space-4);
+    right: var(--aikingbot-space-4);
+    left: var(--aikingbot-space-4);
   }
 
   .server-settings-invite-composer {
@@ -444,17 +444,17 @@
 
 .server-settings-invite-share {
   display: flex;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .server-settings-invite-share > .ui-button:last-child {
-  animation: server-settings-invite-qr-in var(--openbot-duration-normal) var(--openbot-ease-out);
+  animation: server-settings-invite-qr-in var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
 }
 
 @keyframes server-settings-invite-qr-in {
   from {
     opacity: 0;
-    transform: translateX(calc(-1 * var(--openbot-space-4)));
+    transform: translateX(calc(-1 * var(--aikingbot-space-4)));
   }
   to {
     opacity: 1;
@@ -463,13 +463,13 @@
 }
 
 .server-settings-invite-qr {
-  animation: server-settings-invite-panel-in var(--openbot-duration-normal) var(--openbot-ease-out);
+  animation: server-settings-invite-panel-in var(--aikingbot-duration-normal) var(--aikingbot-ease-out);
   transform-origin: top;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--openbot-space-3);
-  padding: var(--openbot-space-4);
+  gap: var(--aikingbot-space-3);
+  padding: var(--aikingbot-space-4);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -481,7 +481,7 @@
 @keyframes server-settings-invite-panel-in {
   from {
     opacity: 0;
-    transform: translateY(calc(-1 * var(--openbot-space-3))) scale(0.96);
+    transform: translateY(calc(-1 * var(--aikingbot-space-3))) scale(0.96);
   }
   to {
     opacity: 1;
@@ -497,7 +497,7 @@
 .server-settings-routine-feed-row {
   display: flex;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .server-settings-routine-feed-agent {
@@ -508,7 +508,7 @@
 .server-settings-routine-feed-row .ui-input {
   flex: 1;
   min-width: 0;
-  font-family: var(--openbot-font-mono);
+  font-family: var(--aikingbot-font-mono);
   cursor: text;
 }
 
@@ -521,5 +521,5 @@
 .server-settings-routine-feed-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }

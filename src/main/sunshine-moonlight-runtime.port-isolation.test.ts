@@ -13,7 +13,7 @@ import { createServer as createTcpServer, type Server as TcpServer } from "node:
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PassThrough } from "node:stream";
-import type { RemoteDesktopDisplay, RemoteDesktopIceServer } from "@openbot/contracts/ipc";
+import type { RemoteDesktopDisplay, RemoteDesktopIceServer } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { assert, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
@@ -35,7 +35,7 @@ import {
   sunshinePortFamiliesOverlap,
 } from "./sunshine-moonlight-runtime";
 
-// Two OpenBot instances on one Mac share the host network namespace, so per-instance Sunshine
+// Two AIKINGBOT instances on one Mac share the host network namespace, so per-instance Sunshine
 // ports are the only thing keeping a second Remote Desktop from failing to bind. These tests
 // stand up two real runtimes against fake Sunshine/Moonlight loopback servers (only the process
 // spawn boundary is stubbed) and prove the ports stay apart end to end.
@@ -187,7 +187,7 @@ function sunshineHandler(harness: Harness): (request: IncomingMessage, response:
       response.end();
       return;
     }
-    if (request.method === "GET" && url.pathname === "/api/openbot/displays") {
+    if (request.method === "GET" && url.pathname === "/api/aikingbot/displays") {
       json({ displays: [] });
       return;
     }
@@ -357,8 +357,8 @@ function createHarness(stateDirectory: string): Harness {
         return child;
       }
       if (executable === TEST_PATHS.moonlightWebServer) {
-        harness.iceUrl = options.env?.OPENBOT_ICE_HELPER_URL ?? "";
-        harness.iceToken = options.env?.OPENBOT_ICE_HELPER_TOKEN ?? "";
+        harness.iceUrl = options.env?.AIKINGBOT_ICE_HELPER_URL ?? "";
+        harness.iceToken = options.env?.AIKINGBOT_ICE_HELPER_TOKEN ?? "";
         const configPath = args[args.indexOf("--config-path") + 1];
         assert(configPath);
         harness.pairingName = moonlightConfigFileSchema.parse(
@@ -399,14 +399,14 @@ async function createStartedRuntime(
   runtime: SunshineMoonlightRuntime;
   harness: Harness;
 }> {
-  const stateDirectory = await mkdtemp(join(tmpdir(), "openbot-sunshine-port-test-"));
+  const stateDirectory = await mkdtemp(join(tmpdir(), "aikingbot-sunshine-port-test-"));
   const harness = createHarness(stateDirectory);
   configureHarness?.(harness);
   const runtime = new SunshineMoonlightRuntime({
     paths: TEST_PATHS,
     stateDirectory,
     platform: "darwin",
-    credentials: { username: "openbot-test", password: "test-password" },
+    credentials: { username: "aikingbot-test", password: "test-password" },
     getDisplays: () => structuredClone(TEST_DISPLAYS),
     getIceServers: () => desktopCall(getIceServers),
     spawnProcess: harness.spawn,
@@ -654,7 +654,7 @@ describe("Sunshine port isolation", () => {
         expect(httpsPort).not.toBe(47_990);
         expect(harness.pinBodies.length).toBeGreaterThan(0);
         const paths = harness.sunshineHits.map((hit) => hit.path);
-        expect(paths).toContain("/api/openbot/displays");
+        expect(paths).toContain("/api/aikingbot/displays");
         expect(paths).toContain("/api/pin");
         for (const hit of harness.sunshineHits) {
           expect(hit.localPort).toBe(httpsPort);
@@ -677,7 +677,7 @@ describe("Sunshine port isolation", () => {
         expect(first.runtime.state).toBeNull();
         expect(second.runtime.state).not.toBeNull();
         const authenticate = await fetch(`${secondBaseUrl}/api/authenticate`, {
-          headers: { [second.harness.authHeader]: "openbot-remote-slot-1" },
+          headers: { [second.harness.authHeader]: "aikingbot-remote-slot-1" },
         });
         expect(authenticate.ok).toBe(true);
         await expect(fetch(first.runtime.state?.baseUrl ?? "http://127.0.0.1:1/")).rejects.toThrow();
@@ -685,7 +685,7 @@ describe("Sunshine port isolation", () => {
         await runCauseEffect(first.runtime.start());
         expect(first.runtime.state).not.toBeNull();
         const stillThere = await fetch(`${secondBaseUrl}/api/authenticate`, {
-          headers: { [second.harness.authHeader]: "openbot-remote-slot-1" },
+          headers: { [second.harness.authHeader]: "aikingbot-remote-slot-1" },
         });
         expect(stillThere.ok).toBe(true);
       } finally {
@@ -708,7 +708,7 @@ describe("Sunshine port isolation", () => {
       expect(first.runtime.sunshineHttpPort).not.toBe(oldPort);
       expect(new Set(first.harness.observedSunshineHttpPorts)).toEqual(new Set([first.runtime.sunshineHttpPort]));
       const denied = await fetch(`${first.runtime.state?.baseUrl}/api/authenticate`, {
-        headers: { "X-OpenBot-Remote-User": "openbot-remote-slot-1" },
+        headers: { "X-AIKINGBOT-Remote-User": "aikingbot-remote-slot-1" },
       });
       expect(denied.status).toBe(401);
       expect(first.harness.authHeader).not.toBe(other.harness.authHeader);
@@ -730,7 +730,7 @@ describe("Sunshine runtime lifecycle", () => {
     { during: "the wait for Sunshine", executable: TEST_PATHS.sunshine, spawned: 1 },
     { during: "the Moonlight spawn", executable: TEST_PATHS.moonlightWebServer, spawned: 2 },
   ])("leaves no process and no port claim after a stop during $during", async ({ executable: stopAt, spawned }) => {
-    const stateDirectory = await mkdtemp(join(tmpdir(), "openbot-sunshine-stop-test-"));
+    const stateDirectory = await mkdtemp(join(tmpdir(), "aikingbot-sunshine-stop-test-"));
     const harness = createHarness(stateDirectory);
     const children: ChildProcess[] = [];
     const stops: Promise<void>[] = [];
@@ -738,7 +738,7 @@ describe("Sunshine runtime lifecycle", () => {
       paths: TEST_PATHS,
       stateDirectory,
       platform: "darwin",
-      credentials: { username: "openbot-test", password: "test-password" },
+      credentials: { username: "aikingbot-test", password: "test-password" },
       getDisplays: () => structuredClone(TEST_DISPLAYS),
       getIceServers: () => Effect.succeed([]),
       spawnProcess: (executable, args, options) => {

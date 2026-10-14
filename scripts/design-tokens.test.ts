@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-// Every --openbot-* token is written once, in packages/brand/src/tokens.css, and
+// Every --aikingbot-* token is written once, in packages/brand/src/tokens.css, and
 // the desktop renderer, the public web app and the mobile app all import it.
 // Nothing in CSS enforces that. Before this file existed the same names lived in
 // three palettes that no single commit had ever touched together: the web one was
@@ -21,8 +21,8 @@ const NATIVE_TOKENS = "packages/brand/src/tokens-native.css";
 // How each palette is spelled at an import site. Everything else here asserts what
 // the shared file contains; this is what ties a surface to it.
 const IMPORT_OF: Readonly<Record<typeof SHARED_TOKENS | typeof NATIVE_TOKENS, string>> = {
-  [SHARED_TOKENS]: '@import "@openbot/brand/tokens.css";',
-  [NATIVE_TOKENS]: '@import "@openbot/brand/tokens-native.css";',
+  [SHARED_TOKENS]: '@import "@aikingbot/brand/tokens.css";',
+  [NATIVE_TOKENS]: '@import "@aikingbot/brand/tokens-native.css";',
 };
 
 // Where a surface is allowed to look for a token: the shared palette, plus files
@@ -55,7 +55,7 @@ const SURFACES = [
   },
 ] as const;
 
-// A surface may declare a root --openbot-* of its own only with the reason written
+// A surface may declare a root --aikingbot-* of its own only with the reason written
 // down. The escape hatch is keyed by name so the reason travels with it, and the
 // next person can tell a deliberate override from a copy someone forgot to delete.
 // Scoping the rule to names already in the shared palette would not do: a
@@ -161,7 +161,7 @@ function readRootTokens(path: string): Map<string, string> {
         blocks.pop();
         prelude = "";
       } else if (blocks.at(-1) === ":root") {
-        const declaration = /^\s*(--openbot-[a-z0-9-]+):\s*(.+);\s*$/u.exec(part);
+        const declaration = /^\s*(--aikingbot-[a-z0-9-]+):\s*(.+);\s*$/u.exec(part);
         const [, name, value] = declaration ?? [];
         if (name && value) tokens.set(name, value);
         prelude = part;
@@ -212,7 +212,7 @@ function stylesheetImports(path: string): readonly string[] {
     assert(specifier !== undefined);
     if (specifier.startsWith(".")) imports.push(join(dirname(path), specifier));
     else {
-      const packaged = /^@openbot\/brand\/(.+\.css)$/u.exec(specifier);
+      const packaged = /^@aikingbot\/brand\/(.+\.css)$/u.exec(specifier);
       if (packaged?.[1]) imports.push(`packages/brand/src/${packaged[1]}`);
     }
   }
@@ -233,22 +233,22 @@ function readVariantTokens(path: string, theme: string): Map<string, string> {
 
   const tokens = new Map<string, string>();
   for (const line of source.slice(start, end).split("\n")) {
-    const [, name, value] = /^\s*(--openbot-[a-z0-9-]+):\s*(.+);\s*$/u.exec(line) ?? [];
+    const [, name, value] = /^\s*(--aikingbot-[a-z0-9-]+):\s*(.+);\s*$/u.exec(line) ?? [];
     if (name && value) tokens.set(name, value);
   }
   return tokens;
 }
 
 function readDeclaredTokens(path: string): readonly string[] {
-  return [...read(path).matchAll(/^\s*(--openbot-[a-z0-9-]+):/gmu)].flatMap(([, name]) => (name ? [name] : []));
+  return [...read(path).matchAll(/^\s*(--aikingbot-[a-z0-9-]+):/gmu)].flatMap(([, name]) => (name ? [name] : []));
 }
 
-// var(--openbot-x) in CSS and JSX, plus uniwind's useCSSVariable("--openbot-x"),
+// var(--aikingbot-x) in CSS and JSX, plus uniwind's useCSSVariable("--aikingbot-x"),
 // which is how mobile reads a token outside a class name.
 function readReferencedTokens(paths: readonly string[]): readonly (readonly [string, string])[] {
   const references: (readonly [string, string])[] = [];
   for (const path of paths) {
-    for (const match of read(path).matchAll(/(?:var\(|useCSSVariable\(")\s*(--openbot-[a-z0-9-]+)/gu)) {
+    for (const match of read(path).matchAll(/(?:var\(|useCSSVariable\(")\s*(--aikingbot-[a-z0-9-]+)/gu)) {
       const [, name] = match;
       assert(name !== undefined);
       references.push([name, path]);

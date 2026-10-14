@@ -5,10 +5,10 @@ import type {
   ConversationPageInfo,
   ConversationReadState,
   ConversationSnapshot,
-} from "@openbot/contracts/ipc";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import type { AgentMessage } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
+} from "@aikingbot/contracts/ipc";
+import { cleanAgentMessageText } from "@aikingbot/team-client/agent-message-text";
+import type { AgentMessage } from "@aikingbot/ui/data";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createStore, onCleanup, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import {

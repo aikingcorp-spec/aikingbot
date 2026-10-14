@@ -1,12 +1,12 @@
-import type { AccountUsage, AgentSummary, ServerSummary, UpdateStatus } from "@openbot/contracts/ipc";
-import { AccountUpdateIsland } from "@openbot/ui/features/account/AccountUpdateIsland";
+import type { AccountUsage, AgentSummary, ServerSummary, UpdateStatus } from "@aikingbot/contracts/ipc";
+import { AccountUpdateIsland } from "@aikingbot/ui/features/account/AccountUpdateIsland";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, onCleanup, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import productionLogoUrl from "../src/assets/openbot-logo-production.png";
+import productionLogoUrl from "../src/assets/aikingbot-logo-production.png";
+import { AIKINGBOTPlayground } from "../src/preview/AIKINGBOTPlayground";
 import { STORY_AGENT_SUMMARIES, STORY_SERVERS, STORY_UPDATE_STATUS, STORY_USAGE } from "../src/preview/fixtures";
-import { OpenBotPlayground } from "../src/preview/OpenBotPlayground";
 import "./AccountDockConcepts.css";
 
 type UpdateIslandState = "none" | "available" | "ready";
@@ -33,7 +33,7 @@ const CONCEPT_AGENT_NAMES = [
 ];
 
 const CONCEPT_SERVER_NAMES = [
-  "OpenBot team",
+  "AIKINGBOT team",
   "Nightly Labs",
   "Product studio",
   "Research room",
@@ -62,7 +62,7 @@ const CONCEPT_AGENTS: AgentSummary[] = [
       id,
       name,
       threadId: `thread-${id}`,
-      workspacePath: `/mock/OpenBot/Agents/${id}`,
+      workspacePath: `/mock/AIKINGBOT/Agents/${id}`,
       preview: index % 2 === 0 ? "A new update is ready for review." : "The latest task is in progress.",
       updatedAt: new Date(Date.parse("2026-08-28T10:00:00.000Z") - index * 3_600_000).toISOString(),
       avatarSeed: id,
@@ -224,7 +224,7 @@ function AccountDockConceptPlayground(props: AccountDockConceptPlaygroundProps) 
     },
   );
 
-  const storageKey = "openbot:left-panel-collapsed";
+  const storageKey = "aikingbot:left-panel-collapsed";
   const previous = window.localStorage.getItem(storageKey);
   window.localStorage.setItem(storageKey, "false");
   onCleanup(() => {
@@ -237,7 +237,7 @@ function AccountDockConceptPlayground(props: AccountDockConceptPlaygroundProps) 
 
   return (
     <div class="account-dock-concept">
-      <OpenBotPlayground
+      <AIKINGBOTPlayground
         options={{
           authState: {
             status: "signed_in",
@@ -292,7 +292,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "The selected desktop account dock spans both navigation columns and uses the real OpenBot navigation, account popovers, and independent scroll containers.",
+          "The selected desktop account dock spans both navigation columns and uses the real AIKINGBOT navigation, account popovers, and independent scroll containers.",
       },
     },
   },

@@ -1,5 +1,5 @@
-import { DISCORD_BOT_PERMISSIONS } from "@openbot/contracts/discord-app";
-import { createDiscordGuildKeyPair, openDiscordGuildGrant } from "@openbot/contracts/discord-guild-grant";
+import { DISCORD_BOT_PERMISSIONS } from "@aikingbot/contracts/discord-app";
+import { createDiscordGuildKeyPair, openDiscordGuildGrant } from "@aikingbot/contracts/discord-guild-grant";
 import { describe, expect, it, vi } from "vitest";
 import { DiscordAppService } from "../src/server/discord-app";
 import { runApiEffect } from "../src/server/effect-runtime";
@@ -7,13 +7,13 @@ import { migratedDatabase, sqliteD1 } from "./sqlite-d1";
 
 const owner = { id: "owner", email: "owner@example.com", name: null, avatarUrl: null };
 const other = { id: "other", email: "other@example.com", name: null, avatarUrl: null };
-const redirectUri = "https://openbot.run/v2/discord/callback";
+const redirectUri = "https://aikingbot.aikingx.com/v2/discord/callback";
 const secrets = { DISCORD_CLIENT_ID: "123456", DISCORD_CLIENT_SECRET: "secret", DISCORD_STATE_SECRET: "s".repeat(32) };
 
 // The guild link decides which computer gets a Discord server's messages. The Worker must not act on
 // a state it did not sign, must not let another account take a guild from its host, and must not keep
 // or return the user token that the exchange gives.
-describe("OpenBot Discord app install", () => {
+describe("AIKINGBOT Discord app install", () => {
   it("links the guild to the host that asked and seals the link to that host", async () => {
     const { service, database, fetch } = setup();
     const host = await createDiscordGuildKeyPair();

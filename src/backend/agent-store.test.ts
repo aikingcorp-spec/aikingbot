@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, readdir, readFile, readlink, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentStore } from "./agent-store";
 import { runCauseEffect } from "./effect-boundary";
@@ -30,7 +30,7 @@ afterEach(async () => {
 
 describe("AgentStore", () => {
   it("starts a new user with no agents", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
 
@@ -40,7 +40,7 @@ describe("AgentStore", () => {
   });
 
   it("creates separate agent workspaces and a shared directory", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -50,18 +50,18 @@ describe("AgentStore", () => {
     const chief = await runCauseEffect(store.getOrCreate("chief"));
     const sales = await runCauseEffect(store.getOrCreate("sales-outbound"));
 
-    expect(chief.workspacePath).toBe(join(home, "OpenBot", "Agents", "chief"));
+    expect(chief.workspacePath).toBe(join(home, "AIKINGBOT", "Agents", "chief"));
     expect(chief.description).toBe("");
     expect(chief.preview).toBe("No messages yet");
     expect(chief.model).toBe("gpt-6-luna");
     expect(chief.reasoningEffort).toBe("low");
-    expect(sales.workspacePath).toBe(join(home, "OpenBot", "Agents", "sales-outbound"));
-    expect(store.sharedRoot).toBe(join(home, "OpenBot", "Shared"));
+    expect(sales.workspacePath).toBe(join(home, "AIKINGBOT", "Agents", "sales-outbound"));
+    expect(store.sharedRoot).toBe(join(home, "AIKINGBOT", "Shared"));
     expect(chief.workspacePath).not.toBe(sales.workspacePath);
   });
 
   it("moves a workspace left behind in the pre-rename directory without overwriting the new one", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -72,14 +72,14 @@ describe("AgentStore", () => {
     const chief = await runCauseEffect(store.getOrCreate("chief"));
     await writeFile(join(chief.workspacePath, "notes.md"), "kept too");
 
-    // The disk a pre-rename build left behind: the workspace under `OpenBot/Bots/bot-<uuid>`, beside an
+    // The disk a pre-rename build left behind: the workspace under `AIKINGBOT/Bots/bot-<uuid>`, beside an
     // unfinished copy from a duplication that crashed. Migration v13 has already pointed the stored path
-    // at `OpenBot/Agents/agent-<uuid>`, which is why the files have to follow it.
-    const legacyRoot = join(home, "OpenBot", "Bots");
+    // at `AIKINGBOT/Agents/agent-<uuid>`, which is why the files have to follow it.
+    const legacyRoot = join(home, "AIKINGBOT", "Bots");
     const legacyWorkspace = join(legacyRoot, `bot-${agent.id.slice("agent-".length)}`);
     await mkdir(legacyRoot, { recursive: true });
     await rename(agent.workspacePath, legacyWorkspace);
-    await mkdir(`${legacyWorkspace}.openbot-stage`, { recursive: true });
+    await mkdir(`${legacyWorkspace}.aikingbot-stage`, { recursive: true });
     // An id the application never minted keeps its spelling across the rename, so migration v13 leaves its
     // stored path alone as well: after the upgrade this agent is still *recorded* under `Bots/chief`, and
     // that is the state the move has to start from. A reconciler that reads the destination out of the
@@ -104,11 +104,11 @@ describe("AgentStore", () => {
     await runCauseEffect(reconciled.initialize());
 
     expect(await readFile(join(agent.workspacePath, "notes.md"), "utf8")).toBe("kept");
-    expect(await readFile(join(home, "OpenBot", "Agents", chief.id, "notes.md"), "utf8")).toBe("kept too");
+    expect(await readFile(join(home, "AIKINGBOT", "Agents", chief.id, "notes.md"), "utf8")).toBe("kept too");
     // Moving the files without recording where they went leaves every conversation and tool call pointing
     // at a directory that is no longer there.
     expect(reconciled.list().find((entry) => entry.id === chief.id)?.workspacePath).toBe(
-      join(home, "OpenBot", "Agents", chief.id),
+      join(home, "AIKINGBOT", "Agents", chief.id),
     );
     await expect(readFile(join(userData, "avatars", "agents", agent.id, "avatar.png"), "utf8")).resolves.toBe(
       "uploaded",
@@ -154,8 +154,8 @@ describe("AgentStore", () => {
     await expect(readFile(adopted.resolveAvatar(agent.id)?.path ?? "")).resolves.toEqual(Buffer.from(image));
   });
 
-  it("persists stable OpenBot thread ids in SQLite", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+  it("persists stable AIKINGBOT thread ids in SQLite", async () => {
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const store = new AgentStore(userData, join(root, "home"));
@@ -167,7 +167,7 @@ describe("AgentStore", () => {
     // gone, such as a message sent to it, rebuilds the agent with no thread and arrives here -- and a
     // random id would file it against an empty thread while the user's own thread, with every message
     // in it, stays on disk addressable by nothing.
-    expect(threadId).toBe("openbot-thread-chief");
+    expect(threadId).toBe("aikingbot-thread-chief");
     const restored = new AgentStore(userData, join(root, "home"));
     await runCauseEffect(restored.initialize());
     expect(restored.list().find((agent) => agent.id === "chief")?.threadId).toBe(threadId);
@@ -182,7 +182,7 @@ describe("AgentStore", () => {
   // roster with no join, and nothing enumerates threads -- so the user sees an empty chat while every
   // message is still on disk. Startup gives the thread back rather than leaving it addressable by nothing.
   it("gives back a thread its roster row stopped naming", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -217,14 +217,14 @@ describe("AgentStore", () => {
   });
 
   it("does not reclaim a channel execution thread as an agent chat", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
     const store = new AgentStore(userData, home);
     await runCauseEffect(store.initialize());
     const agent = await runCauseEffect(store.getOrCreate("chief"));
-    const channelThreadId = "openbot-thread-channel-chief";
+    const channelThreadId = "aikingbot-thread-channel-chief";
     const now = "2026-09-01T12:00:00.000Z";
     store.database.connection
       .prepare("INSERT INTO projection_channels(channel_id, channel_json) VALUES (?, ?)")
@@ -248,7 +248,7 @@ describe("AgentStore", () => {
   });
 
   it("rebuilds a roster its projection lost from the event log", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -312,7 +312,7 @@ describe("AgentStore", () => {
   });
 
   it("persists marketplace installation versions", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -340,7 +340,7 @@ describe("AgentStore", () => {
   });
 
   it("keeps local scripts off for a profile stored before the setting, and for a damaged value", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -366,7 +366,7 @@ describe("AgentStore", () => {
   });
 
   it("migrates version 1 avatars to stable id seeds", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const statePath = join(userData, "bots.json");
@@ -385,7 +385,7 @@ describe("AgentStore", () => {
           model: "gpt-5.6-luna",
           reasoningEffort: "medium",
           threadId: "native-codex-thread",
-          workspacePath: join(root, "home", "OpenBot", "Bots", "chief"),
+          workspacePath: join(root, "home", "AIKINGBOT", "Bots", "chief"),
           preview: "Hello",
           updatedAt: "2026-01-01T00:00:00.000Z",
           avatarShape: "cloud",
@@ -402,11 +402,11 @@ describe("AgentStore", () => {
       avatarSeed: "chief",
       avatarHue: null,
     });
-    expect(restored.list()[0]?.threadId).toBe("openbot-thread-chief");
+    expect(restored.list()[0]?.threadId).toBe("aikingbot-thread-chief");
     // Imported and kept, but not resumable: the tool parameters were renamed in the same upgrade, and this
     // session arrives after the migration that retires every other one for exactly that reason.
     expect(restored.activeProviderSession("chief")).toBeNull();
-    expect(restored.database.listProviderSessions("openbot-thread-chief")).toMatchObject([
+    expect(restored.database.listProviderSessions("aikingbot-thread-chief")).toMatchObject([
       { externalSessionId: "native-codex-thread", state: "inactive" },
     ]);
     await expect(readFile(statePath, "utf8")).resolves.toContain('"version": 1');
@@ -414,7 +414,7 @@ describe("AgentStore", () => {
   });
 
   it("imports a version 2 agent file without changing the legacy source", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const statePath = join(userData, "bots.json");
@@ -433,7 +433,7 @@ describe("AgentStore", () => {
           model: "claude-sonnet-5",
           reasoningEffort: "high",
           threadId: null,
-          workspacePath: join(root, "home", "OpenBot", "Bots", "writer"),
+          workspacePath: join(root, "home", "AIKINGBOT", "Bots", "writer"),
           preview: "No messages yet",
           updatedAt: null,
           avatarSeed: "writer",
@@ -452,7 +452,7 @@ describe("AgentStore", () => {
   });
 
   it("rejects old role-based profiles without overwriting the source", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-old-role-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-old-role-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const statePath = join(userData, "bots.json");
@@ -474,7 +474,7 @@ describe("AgentStore", () => {
   });
 
   it("resets a stored profile field it cannot read and keeps the agent, its thread and its workspace", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-unreadable-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-unreadable-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -538,7 +538,7 @@ describe("AgentStore", () => {
   });
 
   it("refuses to start on a stored profile field no default can stand in for", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-unusable-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-unusable-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -565,7 +565,7 @@ describe("AgentStore", () => {
   });
 
   it("refuses to store a profile value the next launch could not read", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-rejects-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-rejects-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const store = new AgentStore(userData, join(root, "home"));
@@ -598,7 +598,7 @@ describe("AgentStore", () => {
   it.each(["", "   ", AGENT_PROFILE_INPUT.description])(
     "creates unique agents with description %j at the top of the persistent list",
     async (description) => {
-      const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+      const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
       temporaryRoots.push(root);
       const userData = join(root, "user-data");
       const store = new AgentStore(userData, join(root, "home"));
@@ -645,7 +645,7 @@ describe("AgentStore", () => {
   );
 
   it("duplicates the profile, avatar, workspace, and symbolic links into an independent agent", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -734,7 +734,7 @@ describe("AgentStore", () => {
   });
 
   it("removes a durable pending duplicate during restart recovery", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-recovery-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-recovery-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -755,7 +755,7 @@ describe("AgentStore", () => {
   });
 
   it("removes a pending duplicate a pre-rename release left half-copied", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-recovery-legacy-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-recovery-legacy-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -769,8 +769,8 @@ describe("AgentStore", () => {
     // Recovery has to resolve the agent through both spellings and then address it by the id it has now,
     // or the half-made duplicate stays in the sidebar and its workspace stays on disk.
     const legacyId = `bot-${duplicate.id.slice("agent-".length)}`;
-    const legacyWorkspace = join(home, "OpenBot", "Bots", legacyId);
-    await mkdir(join(home, "OpenBot", "Bots"), { recursive: true });
+    const legacyWorkspace = join(home, "AIKINGBOT", "Bots", legacyId);
+    await mkdir(join(home, "AIKINGBOT", "Bots"), { recursive: true });
     await rename(duplicate.workspacePath, legacyWorkspace);
     const duplications = join(userData, "agent-duplications");
     const pending = JSON.parse(await readFile(join(duplications, `${duplicate.id}.pending`), "utf8"));
@@ -789,7 +789,7 @@ describe("AgentStore", () => {
   });
 
   it("keeps a committed duplicate whose pending marker a pre-rename release wrote", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-recovery-legacy-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-recovery-legacy-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -820,7 +820,7 @@ describe("AgentStore", () => {
   });
 
   it("returns the committed duplicate for the same operation after restart", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-idempotency-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-idempotency-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -857,7 +857,7 @@ describe("AgentStore", () => {
   });
 
   it("removes a partial duplicate when profile persistence fails", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-rollback-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-rollback-"));
     temporaryRoots.push(root);
     const home = join(root, "home");
     const store = new AgentStore(join(root, "user-data"), home);
@@ -871,12 +871,12 @@ describe("AgentStore", () => {
     await expect(runCauseEffect(store.duplicateAgent(source.id))).rejects.toThrow("database unavailable");
 
     expect(store.list().map((agent) => agent.id)).toEqual([source.id]);
-    expect(await readdir(join(home, "OpenBot", "Agents"))).toEqual([source.id]);
+    expect(await readdir(join(home, "AIKINGBOT", "Agents"))).toEqual([source.id]);
     await expect(readFile(join(source.workspacePath, "note.txt"), "utf8")).resolves.toBe("keep\n");
   });
 
   it("duplicates an agent whose preview moves while its workspace is being copied", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-preview-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-preview-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -897,7 +897,7 @@ describe("AgentStore", () => {
   });
 
   it("removes the copy when a duplicated profile field changes while the workspace is being copied", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-profile-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-profile-"));
     temporaryRoots.push(root);
     const home = join(root, "home");
     const store = new AgentStore(join(root, "user-data"), home);
@@ -914,11 +914,11 @@ describe("AgentStore", () => {
     );
 
     expect(store.list().map((agent) => agent.id)).toEqual([source.id]);
-    expect(await readdir(join(home, "OpenBot", "Agents"))).toEqual([source.id]);
+    expect(await readdir(join(home, "AIKINGBOT", "Agents"))).toEqual([source.id]);
   });
 
   it("rejects duplication after the host reaches its agent limit", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-duplicate-limit-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-duplicate-limit-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -934,7 +934,7 @@ describe("AgentStore", () => {
   });
 
   it("validates the complete Agent profile before it writes data", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -954,7 +954,7 @@ describe("AgentStore", () => {
   });
 
   it("rejects path traversal agent ids", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -963,7 +963,7 @@ describe("AgentStore", () => {
   });
 
   it("fails closed instead of overwriting agent state from a newer version", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const statePath = join(userData, "bots.json");
@@ -977,7 +977,7 @@ describe("AgentStore", () => {
   });
 
   it("persists editable agent settings", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const store = new AgentStore(userData, join(root, "home"));
@@ -1014,7 +1014,7 @@ describe("AgentStore", () => {
   });
 
   it("gives new agents and agents stored before the access setting full access", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-access-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-access-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -1033,7 +1033,7 @@ describe("AgentStore", () => {
   });
 
   it("stores, restores, and removes managed agent avatar files", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const store = new AgentStore(userData, join(root, "home"));
@@ -1042,7 +1042,7 @@ describe("AgentStore", () => {
     const image = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
     const updated = await runCauseEffect(store.setAvatar("chief", { mimeType: "image/png", bytes: image }));
-    expect(updated.avatarUrl).toMatch(/^openbot-avatar:\/\/agent\/chief\?v=/u);
+    expect(updated.avatarUrl).toMatch(/^aikingbot-avatar:\/\/agent\/chief\?v=/u);
     const storedAvatar = store.resolveAvatar("chief");
     expect(storedAvatar?.mimeType).toBe("image/png");
     await expect(readFile(storedAvatar?.path ?? "")).resolves.toEqual(Buffer.from(image));
@@ -1057,7 +1057,7 @@ describe("AgentStore", () => {
   });
 
   it("restores the previous avatar when SQLite persistence fails", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -1084,7 +1084,7 @@ describe("AgentStore", () => {
   });
 
   it("rejects agent fields above their limits without truncating stored values", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -1107,8 +1107,8 @@ describe("AgentStore", () => {
     });
   });
 
-  it("keeps the OpenBot thread when the model changes provider", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+  it("keeps the AIKINGBOT thread when the model changes provider", async () => {
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -1127,7 +1127,7 @@ describe("AgentStore", () => {
   });
 
   it("keeps provider sessions private and creates a new session when returning", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -1153,7 +1153,7 @@ describe("AgentStore", () => {
   });
 
   it("retains the agent across reload after partial file deletion and permits retry", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -1180,7 +1180,7 @@ describe("AgentStore", () => {
   });
 
   it("keeps the in-memory roster when the deletion transaction fails", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const store = new AgentStore(join(root, "user-data"), join(root, "home"));
     await runCauseEffect(store.initialize());
@@ -1195,7 +1195,7 @@ describe("AgentStore", () => {
   });
 
   it("deletes agents persistently without reseeding examples", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openbot-store-"));
+    const root = await mkdtemp(join(tmpdir(), "aikingbot-store-"));
     temporaryRoots.push(root);
     const userData = join(root, "user-data");
     const home = join(root, "home");
@@ -1210,7 +1210,7 @@ describe("AgentStore", () => {
     // agent can be sitting under exactly that derived name -- and these are recursive deletes.
     const sibling = `bot-${agent.id.slice("agent-".length)}`;
     await runCauseEffect(store.getOrCreate(sibling));
-    const siblingLegacyWorkspace = join(home, "OpenBot", "Bots", sibling);
+    const siblingLegacyWorkspace = join(home, "AIKINGBOT", "Bots", sibling);
     await mkdir(siblingLegacyWorkspace, { recursive: true });
     await writeFile(join(siblingLegacyWorkspace, "notes.md"), "sibling data");
     await mkdir(join(userData, "avatars", sibling), { recursive: true });
@@ -1222,7 +1222,7 @@ describe("AgentStore", () => {
     await expect(readFile(join(siblingLegacyWorkspace, "notes.md"), "utf8")).resolves.toBe("sibling data");
     await expect(readFile(join(userData, "avatars", sibling, "avatar.png"), "utf8")).resolves.toBe("sibling face");
 
-    // A legacy import keeps the id it read and the `~/OpenBot/Bots/<id>` workspace that came with it, so
+    // A legacy import keeps the id it read and the `~/AIKINGBOT/Bots/<id>` workspace that came with it, so
     // for that agent the pre-rename root is where its files actually are. Deleting only the derived
     // directory would report success and leave the workspace on disk.
     await runCauseEffect(store.deleteAgent(sibling));

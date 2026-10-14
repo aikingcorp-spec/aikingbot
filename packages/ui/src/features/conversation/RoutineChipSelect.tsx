@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectItem, SelectPrimitive } from "@openbot/ui";
+import { Select, SelectContent, SelectItem, SelectPrimitive } from "@aikingbot/ui";
 import { useText } from "../../text";
 import type { RoutineSelectOption } from "./routine-schedule-ui";
 

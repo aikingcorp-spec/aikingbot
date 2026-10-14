@@ -1,10 +1,10 @@
 import type {
+  AIKINGBOTDesktopApi,
   InstalledSkill,
   InstallSkillInput,
-  OpenBotDesktopApi,
   SetEnabledSkillInput,
   UninstallSkillInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 
 /**
  * What the skill screens reach in main: the marketplace, the agent skills dialog and the local
@@ -13,7 +13,7 @@ import type {
  */
 export interface SkillsPort {
   agent: Pick<
-    OpenBotDesktopApi["agent"],
+    AIKINGBOTDesktopApi["agent"],
     | "addMarketplaceAgent"
     | "cancelMcpSignIn"
     | "completeMcpSignInRelay"
@@ -31,9 +31,9 @@ export interface SkillsPort {
     | "testMcpServer"
     | "uninstallAgentSkill"
   >;
-  marketplaceAgents: Pick<OpenBotDesktopApi["marketplaceAgents"], "get" | "install" | "list">;
+  marketplaceAgents: Pick<AIKINGBOTDesktopApi["marketplaceAgents"], "get" | "install" | "list">;
   skills: Pick<
-    OpenBotDesktopApi["skills"],
+    AIKINGBOTDesktopApi["skills"],
     | "get"
     | "install"
     | "list"
@@ -46,9 +46,9 @@ export interface SkillsPort {
   >;
 }
 
-/** Read on each call: tests and stories replace `window.openbot` per case. */
+/** Read on each call: tests and stories replace `window.aikingbot` per case. */
 export function skillsPort(): SkillsPort {
-  return window.openbot;
+  return window.aikingbot;
 }
 
 /** The marketplace reads the agent skills dialog uses for descriptions and details. */

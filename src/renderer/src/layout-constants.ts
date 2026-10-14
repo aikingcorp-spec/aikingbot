@@ -4,11 +4,11 @@
  * not import `App.tsx` without closing an import cycle.
  */
 
-export const LEFT_PANEL_STORAGE_KEY = "openbot:left-panel-width";
-export const LEFT_PANEL_COLLAPSED_STORAGE_KEY = "openbot:left-panel-collapsed";
-export const SERVER_VIEW_STORAGE_KEY = "openbot:server-view";
+export const LEFT_PANEL_STORAGE_KEY = "aikingbot:left-panel-width";
+export const LEFT_PANEL_COLLAPSED_STORAGE_KEY = "aikingbot:left-panel-collapsed";
+export const SERVER_VIEW_STORAGE_KEY = "aikingbot:server-view";
 /** Whether the middle shows the open agent's chat or its routines. */
-export const SIDEBAR_VIEW_STORAGE_KEY = "openbot:sidebar-view";
+export const SIDEBAR_VIEW_STORAGE_KEY = "aikingbot:sidebar-view";
 export const LEFT_PANEL_DEFAULT = 280;
 export const LEFT_PANEL_MIN = 128;
 export const LEFT_PANEL_MAX = 400;

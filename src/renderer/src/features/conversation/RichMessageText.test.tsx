@@ -1,7 +1,7 @@
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { DataTable } from "@openbot/ui/features/conversation/DataTable";
-import { MarkdownFilePreview } from "@openbot/ui/features/conversation/MarkdownFilePreview";
-import { RichMessageText } from "@openbot/ui/features/conversation/RichMessageText";
+import { serializeAttachmentReference } from "@aikingbot/contracts/attachment-references";
+import { DataTable } from "@aikingbot/ui/features/conversation/DataTable";
+import { MarkdownFilePreview } from "@aikingbot/ui/features/conversation/MarkdownFilePreview";
+import { RichMessageText } from "@aikingbot/ui/features/conversation/RichMessageText";
 import { fireEvent, render, screen, within } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -84,7 +84,7 @@ describe("RichMessageText tooltips", () => {
 
     const reference = screen.getByRole("button", { name: "Open attached file raport.csv" });
     expect(reference).toHaveTextContent("CSV");
-    expect(reference).not.toHaveTextContent("/OpenBot/");
+    expect(reference).not.toHaveTextContent("/AIKINGBOT/");
     await fireEvent.click(reference);
     expect(onOpenAttachment).toHaveBeenCalledWith(attachment);
   });
@@ -93,7 +93,7 @@ describe("RichMessageText tooltips", () => {
     const onOpenSharedFile = vi.fn();
     render(() => (
       <RichMessageText
-        body="Open ~/OpenBot/Shared/raport.csv."
+        body="Open ~/AIKINGBOT/Shared/raport.csv."
         agents={[]}
         onSelectAgent={vi.fn()}
         onOpenLink={vi.fn()}
@@ -103,9 +103,9 @@ describe("RichMessageText tooltips", () => {
 
     const reference = screen.getByRole("button", { name: "Open shared file raport.csv" });
     expect(reference).toHaveTextContent("CSV");
-    expect(reference).not.toHaveTextContent("~/OpenBot/Shared");
+    expect(reference).not.toHaveTextContent("~/AIKINGBOT/Shared");
     await fireEvent.click(reference);
-    expect(onOpenSharedFile).toHaveBeenCalledWith("~/OpenBot/Shared/raport.csv");
+    expect(onOpenSharedFile).toHaveBeenCalledWith("~/AIKINGBOT/Shared/raport.csv");
   });
 
   it("associates a citation tooltip with its trigger and closes it with Escape", async () => {
@@ -216,7 +216,7 @@ describe("MarkdownFilePreview", () => {
         "| --- | --- |",
         "| Preview | Ready |",
         "",
-        "[OpenBot](https://openbot.run)",
+        "[AIKINGBOT](https://aikingbot.aikingx.com)",
       ].join("\n"),
     );
 
@@ -224,7 +224,7 @@ describe("MarkdownFilePreview", () => {
     expect(screen.getByText("bold").tagName).toBe("STRONG");
     expect(screen.getByText("emphasis").tagName).toBe("EM");
     expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "OpenBot" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "AIKINGBOT" })).toBeInTheDocument();
   });
 
   it("escapes raw HTML and drops unsafe links", () => {

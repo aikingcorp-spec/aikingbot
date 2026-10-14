@@ -1,5 +1,5 @@
-import type { FailureProperties } from "@openbot/telemetry";
-import { Alert, ConfirmDialog, NotificationObserver, Toaster, toast } from "@openbot/ui";
+import type { FailureProperties } from "@aikingbot/telemetry";
+import { Alert, ConfirmDialog, NotificationObserver, Toaster, toast } from "@aikingbot/ui";
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, expect, it } from "vitest";

@@ -1,4 +1,4 @@
-import type { AddedAgent, AgentTemplateDetail, InstallAgentTemplateInput } from "@openbot/contracts/ipc";
+import type { AddedAgent, AgentTemplateDetail, InstallAgentTemplateInput } from "@aikingbot/contracts/ipc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import { act, type PropsWithChildren, type ReactNode } from "react";
@@ -24,7 +24,7 @@ const state = vi.hoisted(() => {
 });
 vi.mock("expo/fetch", () => ({ fetch: state.fetch }));
 vi.mock("@/features/auth/context/mobile-session-context", () => ({
-  useMobileSession: () => ({ session: { apiUrl: "https://api.openbot.run" } }),
+  useMobileSession: () => ({ session: { apiUrl: "https://api.aikingbot.aikingx.com" } }),
 }));
 vi.mock("@/features/workspace/context/mobile-workspace-context", () => ({
   useMobileWorkspace: () => ({
@@ -236,12 +236,12 @@ afterEach(async () => {
 });
 
 it("previews the template and installs it only on an eligible server the user chose", async () => {
-  const id = receive(`https://openbot.run/agents/${templateId}`);
+  const id = receive(`https://aikingbot.aikingx.com/agents/${templateId}`);
   await render();
   expect(screen.getByRole("progressbar", { name: "Loading agent…" })).toBeTruthy();
   await screen.findByRole("heading", { name: "dr eggbot" });
   expect(state.fetch).toHaveBeenCalledWith(
-    `https://api.openbot.run/v1/agent-templates/${templateId}`,
+    `https://api.aikingbot.aikingx.com/v1/agent-templates/${templateId}`,
     expect.anything(),
   );
   expect(readIncomingLink(id)).toEqual({ kind: "invalid" });
@@ -256,7 +256,7 @@ it("previews the template and installs it only on an eligible server the user ch
     "Lab",
   ]);
   expect(screen.getByRole("radio", { name: "Old" })).toHaveProperty("disabled", true);
-  expect(screen.getByText("Update OpenBot on this server to add shared agents.")).toBeTruthy();
+  expect(screen.getByText("Update AIKINGBOT on this server to add shared agents.")).toBeTruthy();
   expect(screen.getByText("Only servers where you are an owner or admin are listed.")).toBeTruthy();
   expect(state.install).not.toHaveBeenCalled();
 
@@ -274,7 +274,7 @@ it("previews the template and installs it only on an eligible server the user ch
 });
 
 it("keeps the selected server when it disconnects and does not install elsewhere", async () => {
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "dr eggbot" });
   await act(() => fireEvent.click(screen.getByRole("radio", { name: "Lab" })));
@@ -289,7 +289,7 @@ it("keeps the selected server when it disconnects and does not install elsewhere
 
 it("keeps the sheet and shows the host refusal when the install fails", async () => {
   state.install.mockRejectedValueOnce(new Error("Only an owner or admin can add agents."));
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "dr eggbot" });
   await act(() => fireEvent.click(screen.getByRole("button", { name: "Add agent" })));
@@ -303,7 +303,7 @@ it("lists a connecting server as disabled and does not offer Install", async () 
     server("member", "Guest", "member"),
     { ...server("studio", "Studio", "owner"), state: "connecting" },
   ];
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "dr eggbot" });
   expect(screen.getAllByRole("radio")).toHaveLength(1);
@@ -313,7 +313,7 @@ it("lists a connecting server as disabled and does not offer Install", async () 
 
 it("tells a member that only an owner or admin can add the agent", async () => {
   state.servers = [server("member", "Guest", "member")];
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByText("You must be an owner or admin of a server to add a shared agent.");
   expect(screen.queryByRole("radio")).toBeNull();
@@ -322,7 +322,7 @@ it("tells a member that only an owner or admin can add the agent", async () => {
 
 it("shows a removed template as not found", async () => {
   state.fetch.mockResolvedValueOnce(json({ error: "The agent was not found." }, 404));
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "Agent not found" });
   expect(screen.queryByRole("radio")).toBeNull();
@@ -330,7 +330,7 @@ it("shows a removed template as not found", async () => {
 
 it("shows a load failure and loads the template again on Retry", async () => {
   state.fetch.mockResolvedValueOnce(json({ error: "unavailable" }, 503));
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "Could not load the agent" });
   await act(() => fireEvent.click(screen.getByRole("button", { name: "Retry" })));
@@ -339,14 +339,14 @@ it("shows a load failure and loads the template again on Retry", async () => {
 
 it("refuses a template whose id differs from the link", async () => {
   state.fetch.mockResolvedValueOnce(json({ ...detail, id: "ZyXwVuTsRqPoNmLkJiHg_-" }));
-  receive(`openbot://agents/${templateId}`);
+  receive(`aikingbot://agents/${templateId}`);
   await render();
   await screen.findByRole("heading", { name: "Could not load the agent" });
   expect(screen.queryByRole("radio")).toBeNull();
 });
 
 it("shows a malformed link as unavailable without a request", async () => {
-  receive(`openbot://agents/${templateId}?install=1`);
+  receive(`aikingbot://agents/${templateId}?install=1`);
   await render();
   expect(screen.getByRole("heading", { name: "Link unavailable" })).toBeTruthy();
   expect(state.fetch).not.toHaveBeenCalled();

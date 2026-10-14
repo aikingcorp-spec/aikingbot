@@ -1,12 +1,12 @@
 import { spawn } from "node:child_process";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { cliSpawnTarget } from "../src/backend/cli";
 import { withoutElectronRuntimeFlags } from "./electron-spawn-env";
 import { resolvePackageBin } from "./package-bin";
 
-const logger = createOpenBotLogger("preview");
+const logger = createAIKINGBOTLogger("preview");
 
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const executable = resolvePackageBin(projectRoot, "electron-vite");
@@ -16,7 +16,7 @@ const child = spawn(target.command, target.args, {
   // The parent shell may run inside an Electron harness with
   // ELECTRON_RUN_AS_NODE=1, which would make the spawned Electron run as
   // plain Node instead of opening the preview app.
-  env: { ...withoutElectronRuntimeFlags(process.env), OPENBOT_APP_VARIANT: "preview" },
+  env: { ...withoutElectronRuntimeFlags(process.env), AIKINGBOT_APP_VARIANT: "preview" },
   stdio: "inherit",
   shell: false,
   windowsVerbatimArguments: target.windowsVerbatimArguments,

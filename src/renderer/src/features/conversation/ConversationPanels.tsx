@@ -1,8 +1,8 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { SETTINGS_PANEL_DEFAULT, SETTINGS_PANEL_MAX } from "@openbot/ui/components/SettingsPanel";
-import { McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
-import { useText } from "@openbot/ui/text";
+import type { ServerSummary } from "@aikingbot/contracts/ipc";
+import { classifyFailure } from "@aikingbot/telemetry";
+import { SETTINGS_PANEL_DEFAULT, SETTINGS_PANEL_MAX } from "@aikingbot/ui/components/SettingsPanel";
+import { McpSignInRelayDialog } from "@aikingbot/ui/features/settings/McpSignInPage";
+import { useText } from "@aikingbot/ui/text";
 import { actionToast } from "../../action-toast";
 import { createSettingsPanelWidth, saveSettingsPanelWidth } from "../../components/settings-panel-width";
 import { agentTemplatesPort } from "../agent-templates/agent-templates-port";
@@ -430,8 +430,8 @@ export function ConversationPanels(panelProps: { onOpenUsage?: (trigger: HTMLBut
 }
 
 const AgentSettingsPanel = lazy(loadAgentSettingsPanel);
-const AccountProfilePanel = lazy(() => import("@openbot/ui/features/settings/AccountProfilePanel"));
-const BrowserPanel = lazy(() => import("@openbot/ui/features/browser/BrowserPanel"));
+const AccountProfilePanel = lazy(() => import("@aikingbot/ui/features/settings/AccountProfilePanel"));
+const BrowserPanel = lazy(() => import("@aikingbot/ui/features/browser/BrowserPanel"));
 const FilePreviewPanel = lazy(() => import("./FilePreviewPanel"));
 const ChatFilesPanel = lazy(() => import("../files/ChatFilesPanel"));
 

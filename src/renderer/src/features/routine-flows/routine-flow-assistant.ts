@@ -5,10 +5,10 @@
  * stays on the Agents tab.
  */
 
-import { latestTurnAnswer } from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import type { DiagramChatMessage } from "@openbot/ui/features/diagrams/diagram-model";
-import { useText } from "@openbot/ui/text";
+import { latestTurnAnswer } from "@aikingbot/contracts/ipc";
+import { toast } from "@aikingbot/ui";
+import type { DiagramChatMessage } from "@aikingbot/ui/features/diagrams/diagram-model";
+import { useText } from "@aikingbot/ui/text";
 import { createEffect, createStore, onSettled } from "solid-js";
 import type { RoutineFlowsHost } from "./routine-flows-port";
 

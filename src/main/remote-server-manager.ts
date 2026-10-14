@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { basename } from "node:path";
-import { isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { type InviteLinkOptions, type InviteLinkPayload, parseInviteUrl } from "@openbot/contracts/invite-links";
+import { isValidAvatarImage } from "@aikingbot/contracts/avatar-images";
+import { type InviteLinkOptions, type InviteLinkPayload, parseInviteUrl } from "@aikingbot/contracts/invite-links";
 import type {
   AgentEvent,
   AgentImportPreview,
@@ -42,22 +42,22 @@ import type {
   TeamRealtimeEvent,
   TeamRole,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import {
   decodeRemoteAgentImportPreview,
   LOCAL_SERVER_ID,
   REMOTE_DESKTOP_SETUP_CAPABILITY,
   type RemoteDesktopTestInput,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_IMPORT_ROUTES } from "@openbot/contracts/team-protocol/agent-import-v1";
-import { decodeBrowserViewSessionResponse } from "@openbot/contracts/team-protocol/browser-view-v1";
-import { TEAM_MEMBER_LEAVE_CAPABILITY, type TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import type { HostRestartEvent } from "@openbot/contracts/team-protocol/host-update-v1";
-import { decodeTeamProtocolV1CurrentHttpResponse } from "@openbot/contracts/team-protocol/v1-adapter";
-import { sourceText } from "@openbot/i18n/source";
-import { WAKE_RECONNECT_STATES } from "@openbot/team-client/hosted-server-wake";
+} from "@aikingbot/contracts/ipc";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@aikingbot/contracts/team-api-routes";
+import { AGENT_IMPORT_ROUTES } from "@aikingbot/contracts/team-protocol/agent-import-v1";
+import { decodeBrowserViewSessionResponse } from "@aikingbot/contracts/team-protocol/browser-view-v1";
+import { TEAM_MEMBER_LEAVE_CAPABILITY, type TeamCurrentCapability } from "@aikingbot/contracts/team-protocol/current";
+import type { HostRestartEvent } from "@aikingbot/contracts/team-protocol/host-update-v1";
+import { decodeTeamProtocolV1CurrentHttpResponse } from "@aikingbot/contracts/team-protocol/v1-adapter";
+import { sourceText } from "@aikingbot/i18n/source";
+import { WAKE_RECONNECT_STATES } from "@aikingbot/team-client/hosted-server-wake";
 import { Deferred, Effect, Exit, Layer, Result, Scope, Semaphore } from "effect";
 import type { CentralAuthOperationError } from "./central-auth-effects";
 import { contentDispositionFileName } from "./content-disposition";
@@ -1512,7 +1512,7 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
       return {
         sessionId: session.id,
         url: url.toString(),
-        protocols: [`openbot-token.${this.#store.token(server)}`],
+        protocols: [`aikingbot-token.${this.#store.token(server)}`],
       };
     },
     (operation) => this.#owned(operation),

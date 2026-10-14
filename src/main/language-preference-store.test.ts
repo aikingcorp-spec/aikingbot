@@ -57,7 +57,7 @@ describe("language preference store", () => {
 });
 
 async function temporaryRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "openbot-language-preference-"));
+  const root = await mkdtemp(join(tmpdir(), "aikingbot-language-preference-"));
   roots.push(root);
   await mkdir(root, { recursive: true });
   return root;

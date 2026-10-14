@@ -3,13 +3,13 @@
   container-type: inline-size;
   display: grid;
   min-width: 0;
-  gap: var(--openbot-space-4);
-  color: var(--openbot-text-primary);
+  gap: var(--aikingbot-space-4);
+  color: var(--aikingbot-text-primary);
 }
 
 .routine-planner-header {
   display: grid;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .routine-planner-title {
@@ -18,35 +18,35 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-3);
+  gap: var(--aikingbot-space-3);
 }
 
 .routine-planner-identity {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 /* The arrow lines up with the content edge, not its hit area. */
 .routine-planner-identity .ui-icon-button {
-  margin-left: calc(-1 * var(--openbot-space-2));
+  margin-left: calc(-1 * var(--aikingbot-space-2));
 }
 
 .routine-planner-title h2 {
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--aikingbot-text-lg);
+  font-weight: var(--aikingbot-weight-semibold);
 }
 
 .routine-planner-title h2 span {
-  color: var(--openbot-text-muted);
-  font-weight: var(--openbot-weight-regular);
+  color: var(--aikingbot-text-muted);
+  font-weight: var(--aikingbot-weight-regular);
 }
 
 .routine-planner-title p,
 .routine-planner-note {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .routine-planner-toolbar {
@@ -55,30 +55,30 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .routine-planner-nav {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-planner-range {
-  margin-left: var(--openbot-space-2);
-  font-size: var(--openbot-text-md);
-  font-weight: var(--openbot-weight-medium);
+  margin-left: var(--aikingbot-space-2);
+  font-size: var(--aikingbot-text-md);
+  font-weight: var(--aikingbot-weight-medium);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .routine-planner-clock-change {
-  border-radius: var(--openbot-radius-md);
-  background: var(--openbot-warning-soft);
-  padding: var(--openbot-space-1-5) var(--openbot-space-3);
-  color: var(--openbot-warning-text);
-  font-size: var(--openbot-text-sm);
+  border-radius: var(--aikingbot-radius-md);
+  background: var(--aikingbot-warning-soft);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-3);
+  color: var(--aikingbot-warning-text);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .routine-planner-body {
@@ -86,7 +86,7 @@
   min-width: 0;
   grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
   align-items: start;
-  gap: var(--openbot-space-4);
+  gap: var(--aikingbot-space-4);
 }
 
 /* Each day is a list, not a time grid: runs at the same minute stack and stay readable. */
@@ -94,7 +94,7 @@
   display: grid;
   min-width: 0;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-planner-day {
@@ -102,43 +102,43 @@
   min-width: 0;
   min-height: 12rem;
   align-content: start;
-  gap: var(--openbot-space-1);
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface);
-  padding: var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-1);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-lg);
+  background: var(--aikingbot-bg-surface);
+  padding: var(--aikingbot-space-1-5);
 }
 
 .routine-planner-day[data-past] {
-  background: var(--openbot-transparent);
+  background: var(--aikingbot-transparent);
 }
 
 .routine-planner-day[aria-current="date"] {
-  border-color: var(--openbot-accent-strong);
+  border-color: var(--aikingbot-accent-strong);
 }
 
 .routine-planner-day-button.ui-button {
   width: 100%;
   justify-content: flex-start;
-  gap: var(--openbot-space-1-5);
-  color: var(--openbot-text-muted);
+  gap: var(--aikingbot-space-1-5);
+  color: var(--aikingbot-text-muted);
 }
 
 .routine-planner-day-button strong {
-  color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-semibold);
+  color: var(--aikingbot-text-primary);
+  font-weight: var(--aikingbot-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 
 .routine-planner-day[aria-current="date"] .routine-planner-day-button strong {
-  color: var(--openbot-accent-text);
+  color: var(--aikingbot-accent-text);
 }
 
 .routine-planner-runs,
 .routine-planner-entries {
   display: grid;
   min-width: 0;
-  gap: var(--openbot-space-0-5);
+  gap: var(--aikingbot-space-0-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -146,34 +146,34 @@
 
 .routine-planner-status {
   display: grid;
-  width: var(--openbot-space-4);
-  height: var(--openbot-space-4);
+  width: var(--aikingbot-space-4);
+  height: var(--aikingbot-space-4);
   place-items: center;
 }
 
 .routine-planner-status > svg {
-  width: var(--openbot-space-3);
-  height: var(--openbot-space-3);
+  width: var(--aikingbot-space-3);
+  height: var(--aikingbot-space-3);
   stroke-width: 2;
 }
 
 .routine-planner-status-dot {
-  width: var(--openbot-space-2);
-  height: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-accent);
+  width: var(--aikingbot-space-2);
+  height: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-pill);
+  background: var(--aikingbot-accent);
 }
 
 .routine-planner-status[data-status="paused"] {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .routine-planner-status[data-status="failed"] {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }
 
 .routine-planner-status[data-status="completed"] {
-  color: var(--openbot-success-text);
+  color: var(--aikingbot-success-text);
 }
 
 .routine-planner-avatars {
@@ -181,30 +181,30 @@
 }
 
 .routine-planner-avatar.agent-avatar {
-  width: var(--openbot-space-4);
-  height: var(--openbot-space-4);
+  width: var(--aikingbot-space-4);
+  height: var(--aikingbot-space-4);
 }
 
 .routine-planner-avatars .routine-planner-avatar + .routine-planner-avatar {
-  margin-left: calc(var(--openbot-space-1-5) * -1);
+  margin-left: calc(var(--aikingbot-space-1-5) * -1);
 }
 
 .routine-planner-run.ui-button {
   display: grid;
   width: 100%;
   height: auto;
-  min-height: var(--openbot-control-sm);
+  min-height: var(--aikingbot-control-sm);
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas:
     "mark time avatars"
     "name name name";
   align-items: center;
-  gap: var(--openbot-space-0-5) var(--openbot-space-1);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-control);
-  padding: var(--openbot-space-1) var(--openbot-space-1-5);
+  gap: var(--aikingbot-space-0-5) var(--aikingbot-space-1);
+  border-radius: var(--aikingbot-radius-sm);
+  background: var(--aikingbot-bg-control);
+  padding: var(--aikingbot-space-1) var(--aikingbot-space-1-5);
   text-align: left;
-  font-size: var(--openbot-text-sm);
+  font-size: var(--aikingbot-text-sm);
 }
 
 .routine-planner-run .routine-planner-status {
@@ -213,7 +213,7 @@
 
 .routine-planner-run-time {
   grid-area: time;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -241,22 +241,22 @@
 }
 
 .routine-planner-run[data-status="paused"] {
-  outline: 1px dashed var(--openbot-border-grouped);
+  outline: 1px dashed var(--aikingbot-border-grouped);
   outline-offset: -1px;
-  background: var(--openbot-transparent);
+  background: var(--aikingbot-transparent);
 }
 
 .routine-planner-run[data-status="failed"] {
-  background: var(--openbot-danger-soft);
+  background: var(--aikingbot-danger-soft);
 }
 
 .routine-planner-run[data-status="completed"] .routine-planner-run-name {
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .routine-planner-more.ui-button {
   justify-self: start;
-  color: var(--openbot-text-muted);
+  color: var(--aikingbot-text-muted);
 }
 
 .routine-planner-upcoming,
@@ -264,33 +264,33 @@
   display: grid;
   min-width: 0;
   align-content: start;
-  gap: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
 }
 
 .routine-planner-upcoming {
-  border: 1px solid var(--openbot-border-strong);
-  border-radius: var(--openbot-radius-lg);
-  padding: var(--openbot-space-3);
+  border: 1px solid var(--aikingbot-border-strong);
+  border-radius: var(--aikingbot-radius-lg);
+  padding: var(--aikingbot-space-3);
 }
 
 .routine-planner-upcoming h3,
 .routine-planner-hour h3 {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-medium);
 }
 
 .routine-planner-hour {
   display: grid;
   grid-template-columns: 4rem minmax(0, 1fr);
   align-items: start;
-  gap: var(--openbot-space-2);
-  border-top: 1px solid var(--openbot-border-strong);
-  padding-top: var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
+  border-top: 1px solid var(--aikingbot-border-strong);
+  padding-top: var(--aikingbot-space-2);
 }
 
 .routine-planner-hour h3 {
-  padding-top: var(--openbot-space-2);
+  padding-top: var(--aikingbot-space-2);
   font-variant-numeric: tabular-nums;
 }
 
@@ -298,7 +298,7 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--aikingbot-space-1);
 }
 
 .routine-planner-entry-main.ui-button {
@@ -308,9 +308,9 @@
   flex: 1 1 auto;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-md);
-  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  gap: var(--aikingbot-space-2);
+  border-radius: var(--aikingbot-radius-md);
+  padding: var(--aikingbot-space-1-5) var(--aikingbot-space-2);
   text-align: left;
 }
 
@@ -327,17 +327,17 @@
 }
 
 .routine-planner-entry-name {
-  font-size: var(--openbot-text-md);
+  font-size: var(--aikingbot-text-md);
 }
 
 .routine-planner-entry-meta {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-regular);
+  color: var(--aikingbot-text-muted);
+  font-size: var(--aikingbot-text-sm);
+  font-weight: var(--aikingbot-weight-regular);
 }
 
 .routine-planner-entry[data-status="failed"] .routine-planner-entry-meta {
-  color: var(--openbot-danger-text);
+  color: var(--aikingbot-danger-text);
 }
 
 .routine-planner-entry-agents {
@@ -346,33 +346,33 @@
 }
 
 .routine-planner-agent .routine-planner-avatar.agent-avatar {
-  width: var(--openbot-control-xs);
-  height: var(--openbot-control-xs);
+  width: var(--aikingbot-control-xs);
+  height: var(--aikingbot-control-xs);
 }
 
 .routine-planner-empty {
   display: grid;
   justify-items: center;
-  gap: var(--openbot-space-3);
-  border: 1px dashed var(--openbot-border-grouped);
-  border-radius: var(--openbot-radius-lg);
-  padding: var(--openbot-space-8) var(--openbot-space-4);
-  color: var(--openbot-text-muted);
+  gap: var(--aikingbot-space-3);
+  border: 1px dashed var(--aikingbot-border-grouped);
+  border-radius: var(--aikingbot-radius-lg);
+  padding: var(--aikingbot-space-8) var(--aikingbot-space-4);
+  color: var(--aikingbot-text-muted);
   text-align: center;
 }
 
 .routine-planner-empty > svg {
-  width: var(--openbot-space-6);
-  height: var(--openbot-space-6);
-  stroke-width: var(--openbot-icon-stroke);
+  width: var(--aikingbot-space-6);
+  height: var(--aikingbot-space-6);
+  stroke-width: var(--aikingbot-icon-stroke);
 }
 
 .routine-planner-skeleton-heading {
-  height: var(--openbot-control-xs);
+  height: var(--aikingbot-control-xs);
 }
 
 .routine-planner-skeleton-run {
-  height: var(--openbot-control-md);
+  height: var(--aikingbot-control-md);
 }
 
 /* Seven day columns need the full width: the next runs move below the week. */

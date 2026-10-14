@@ -3,11 +3,11 @@ import { existsSync } from "node:fs";
 import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { isDynamicRecord } from "@aikingbot/contracts/runtime-values";
+import { createAIKINGBOTLogger } from "@aikingbot/logging";
 import { FuseV1Options, getCurrentFuseWire } from "@electron/fuses";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
 
-const logger = createOpenBotLogger("verify-macos-package");
+const logger = createAIKINGBOTLogger("verify-macos-package");
 
 const FUSE_DISABLED = 48;
 const FUSE_ENABLED = 49;
@@ -27,13 +27,13 @@ const EXPECTED_MACOS_ICON_FILES = [
 // electron-builder writes the default x64 build to `dist/mac` and adds a suffix for any other one.
 // The package is built for the runner's own architecture, so that is the one to verify.
 const architecture = process.arch === "arm64" ? "arm64" : process.arch === "x64" ? "x64" : null;
-if (!architecture) throw new Error(`OpenBot does not ship for macOS ${process.arch}.`);
+if (!architecture) throw new Error(`AIKINGBOT does not ship for macOS ${process.arch}.`);
 const machOArchitecture = architecture === "arm64" ? "arm64" : "x86_64";
 const appPath = resolve(
-  process.argv[2] ?? (architecture === "arm64" ? "dist/mac-arm64/OpenBot.app" : "dist/mac/OpenBot.app"),
+  process.argv[2] ?? (architecture === "arm64" ? "dist/mac-arm64/AIKINGBOT.app" : "dist/mac/AIKINGBOT.app"),
 );
 const contentsPath = resolve(appPath, "Contents");
-const executablePath = resolve(contentsPath, "MacOS/OpenBot");
+const executablePath = resolve(contentsPath, "MacOS/AIKINGBOT");
 const resourcesPath = resolve(contentsPath, "Resources");
 const packagedIconPath = resolve(resourcesPath, "icon.icns");
 const sourceIconPath = resolve("build/icon-production.icns");
@@ -68,9 +68,9 @@ await Promise.all([
   access(resolve(resourcesPath, "remote-desktop-runtime/source-manifest.json")),
   access(resolve(resourcesPath, "remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt")),
   access(resolve(resourcesPath, "remote-desktop-runtime/sources/Sunshine-v2026.516.143833-source.tar.gz")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/sunshine-v2026.516.143833-openbot.patch")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-openbot-source.tar.gz")),
-  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-openbot.patch")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/sunshine-v2026.516.143833-aikingbot.patch")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-aikingbot-source.tar.gz")),
+  access(resolve(resourcesPath, "remote-desktop-runtime/sources/moonlight-web-stream-v2.10.0-aikingbot.patch")),
   access(resolve(remoteRuntimePath, "Sunshine.app/Contents/MacOS/Sunshine")),
   access(resolve(remoteRuntimePath, "web-server")),
   access(resolve(remoteRuntimePath, "streamer")),
@@ -90,7 +90,7 @@ await Promise.all(
   ),
 );
 // `signIgnore` keeps the driver's own Developer ID signature, and with it the Automation
-// entitlement that re-signing under OpenBot's inherited entitlements would drop.
+// entitlement that re-signing under AIKINGBOT's inherited entitlements would drop.
 assertCuaDriverSignature(resolve(cuaDriverPath, "cua-driver"));
 await verifyPackagedIcon(packagedIconPath, sourceIconPath);
 await Promise.all(["codex", "claude", "grok"].map((name) => assertAbsent(resolve(resourcesPath, name))));
@@ -101,9 +101,9 @@ await assertAbsent(
 
 const plist = JSON.parse(run("plutil", ["-convert", "json", "-o", "-", plistPath]));
 if (!isDynamicRecord(plist)) throw new Error("Info.plist is not a JSON object.");
-expectEqual(plist.CFBundleDisplayName, "OpenBot", "display name");
-expectEqual(plist.CFBundleExecutable, "OpenBot", "executable name");
-expectEqual(plist.CFBundleIdentifier, "app.openbot.desktop", "bundle identifier");
+expectEqual(plist.CFBundleDisplayName, "AIKINGBOT", "display name");
+expectEqual(plist.CFBundleExecutable, "AIKINGBOT", "executable name");
+expectEqual(plist.CFBundleIdentifier, "app.aikingbot.desktop", "bundle identifier");
 expectEqual(plist.CFBundleIconFile, "icon.icns", "application icon");
 expectEqual(plist.LSMinimumSystemVersion, "13.0", "minimum macOS version");
 expectEqual(plist.ElectronTeamID, "ZTRDTUL87R", "Apple Team ID");
@@ -113,7 +113,7 @@ if (!Array.isArray(plist.NSUserActivityTypes) || !plist.NSUserActivityTypes.incl
 if (!plist.ElectronAsarIntegrity) throw new Error("ASAR integrity metadata is missing.");
 expectEqual(
   plist.NSMicrophoneUsageDescription,
-  "OpenBot uses the microphone to transcribe voice prompts locally on this Mac.",
+  "AIKINGBOT uses the microphone to transcribe voice prompts locally on this Mac.",
   "microphone usage description",
 );
 
@@ -176,7 +176,7 @@ await verifyLaunch(executablePath);
 
 logger.info(`Verified ${appPath}`);
 logger.info(
-  `OpenBot ${String(packageJson.version)} · ${machOArchitecture} · icon · GPL remote runtime · WebRTC remote stack · ASAR integrity · hardened fuses · launch`,
+  `AIKINGBOT ${String(packageJson.version)} · ${machOArchitecture} · icon · GPL remote runtime · WebRTC remote stack · ASAR integrity · hardened fuses · launch`,
 );
 
 function expectEqual(actual: unknown, expected: unknown, label: string): void {
@@ -200,8 +200,8 @@ async function verifyPackagedIcon(packagedPath: string, sourcePath: string): Pro
     throw new Error("The packaged macOS icon does not match build/icon-production.icns.");
   }
 
-  const iconRoot = await mkdtemp(join(tmpdir(), "openbot-icon-"));
-  const iconSetPath = join(iconRoot, "OpenBot.iconset");
+  const iconRoot = await mkdtemp(join(tmpdir(), "aikingbot-icon-"));
+  const iconSetPath = join(iconRoot, "AIKINGBOT.iconset");
   try {
     run("iconutil", ["--convert", "iconset", packagedPath, "--output", iconSetPath]);
     await Promise.all(EXPECTED_MACOS_ICON_FILES.map((name) => access(join(iconSetPath, name))));
@@ -210,7 +210,7 @@ async function verifyPackagedIcon(packagedPath: string, sourcePath: string): Pro
   }
 }
 
-/** The Computer Use driver keeps the signature it was published with, not OpenBot's. */
+/** The Computer Use driver keeps the signature it was published with, not AIKINGBOT's. */
 function assertCuaDriverSignature(binary: string): void {
   const description = run("codesign", ["-dvvv", binary], true);
   if (!description.includes("Authority=Developer ID Application: Cua AI, Inc. (YCK386LBJ7)")) {
@@ -236,15 +236,15 @@ function run(command: string, args: string[], includeStderr = false): string {
 }
 
 async function verifyLaunch(executable: string): Promise<void> {
-  const userDataPath = await mkdtemp(join(tmpdir(), "openbot-package-smoke-"));
+  const userDataPath = await mkdtemp(join(tmpdir(), "aikingbot-package-smoke-"));
   const child = spawn(executable, [`--user-data-dir=${userDataPath}`, "--use-mock-keychain"], {
     env: {
       ...process.env,
       CODEX_HOME: join(userDataPath, "codex-home"),
       CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
-      OPENBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
-      OPENBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
-      OPENBOT_GROK_PATH: join(userDataPath, "missing-grok"),
+      AIKINGBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
+      AIKINGBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
+      AIKINGBOT_GROK_PATH: join(userDataPath, "missing-grok"),
     },
     stdio: ["ignore", "ignore", "pipe"],
   });
@@ -259,7 +259,9 @@ async function verifyLaunch(executable: string): Promise<void> {
       new Promise<never>((_, reject) => {
         child.once("exit", (code, signal) => {
           reject(
-            new Error(`Packaged OpenBot exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`),
+            new Error(
+              `Packaged AIKINGBOT exited during launch (${signal ?? `code ${String(code)}`}): ${stderr.trim()}`,
+            ),
           );
         });
       }),
@@ -287,9 +289,9 @@ async function verifySecondInstanceExits(executable: string, userDataPath: strin
       ...process.env,
       CODEX_HOME: join(userDataPath, "codex-home"),
       CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
-      OPENBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
-      OPENBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
-      OPENBOT_GROK_PATH: join(userDataPath, "missing-grok"),
+      AIKINGBOT_CODEX_PATH: join(userDataPath, "missing-codex"),
+      AIKINGBOT_CLAUDE_PATH: join(userDataPath, "missing-claude"),
+      AIKINGBOT_GROK_PATH: join(userDataPath, "missing-grok"),
     },
     stdio: ["ignore", "ignore", "pipe"],
   });
@@ -306,11 +308,11 @@ async function verifySecondInstanceExits(executable: string, userDataPath: strin
   ]);
   if (!result) {
     second.kill("SIGKILL");
-    throw new Error(`A second OpenBot instance did not exit: ${stderr.trim()}`);
+    throw new Error(`A second AIKINGBOT instance did not exit: ${stderr.trim()}`);
   }
   if (result.code !== 0 || result.signal) {
     throw new Error(
-      `A second OpenBot instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
+      `A second AIKINGBOT instance exited unexpectedly (${result.signal ?? `code ${String(result.code)}`}).`,
     );
   }
 }

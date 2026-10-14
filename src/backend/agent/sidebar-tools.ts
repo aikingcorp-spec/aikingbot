@@ -1,9 +1,9 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { SidebarLayoutAction } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { SidebarLayoutAction } from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { SidebarLayoutStore } from "../sidebar-layout-store";
-import { openBotToolResult } from "./routine-tools";
+import { aikingBotToolResult } from "./routine-tools";
 import { ToolOperationFailed, toolStep, toToolOperationFailed } from "./tool-operation";
 
 const sectionId = z.string().min(1).max(INPUT_LIMITS.identifier);
@@ -48,5 +48,5 @@ export const handleSidebarTool = Effect.fn("SidebarTools.handle")(function* (
   }
   if (!sidebar) return yield* new ToolOperationFailed({ cause: new Error("Sidebar sections are unavailable.") });
   const layout = action ? yield* sidebar.mutate(action, agentIds).pipe(toToolOperationFailed) : sidebar.getSnapshot();
-  return openBotToolResult(layout);
+  return aikingBotToolResult(layout);
 });

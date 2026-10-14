@@ -1,4 +1,4 @@
-import type { AgentTemplateDetail } from "@openbot/contracts/ipc";
+import type { AgentTemplateDetail } from "@aikingbot/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import { createRootRoute, createRoute, createRouter, RouterContextProvider } from "@tanstack/solid-router";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -81,7 +81,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** What `openbot.run/agents/<id>` shows. "Add to OpenBot" opens `openbot://agents/<id>`. */
+/** What `aikingbot.aikingx.com/agents/<id>` shows. "Add to AIKINGBOT" opens `aikingbot://agents/<id>`. */
 export const SharedAgent: Story = {};
 
 /** The owner uploaded a photo for the agent, so the page shows it instead of the generated avatar. */

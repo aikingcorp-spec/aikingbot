@@ -1,7 +1,7 @@
-import { parseRegistryId, parseRegistryInstall, parseRegistryQuery } from "@openbot/contracts/ipc";
-import { ACP_REGISTRY_CAPABILITY, ACP_REGISTRY_ROUTES } from "@openbot/contracts/team-protocol/acp-registry-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { parseRegistryId, parseRegistryInstall, parseRegistryQuery } from "@aikingbot/contracts/ipc";
+import { ACP_REGISTRY_CAPABILITY, ACP_REGISTRY_ROUTES } from "@aikingbot/contracts/team-protocol/acp-registry-v1";
+import { sourceText } from "@aikingbot/i18n/source";
+import { redactText } from "@aikingbot/logging";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

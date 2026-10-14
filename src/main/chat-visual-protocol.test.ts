@@ -1,4 +1,4 @@
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@aikingbot/contracts/chat-visual";
 import { describe, expect, it } from "vitest";
 import { attachmentCorsHeaders, attachmentDocumentHeaders, chatVisualResponse } from "./chat-visual-protocol";
 
@@ -27,10 +27,10 @@ describe("visual reply pages", () => {
 describe("attachment scheme headers", () => {
   it("lets only the app read an attachment across origins", () => {
     expect(attachmentCorsHeaders(developmentUrl, developmentUrl)["Access-Control-Allow-Origin"]).toBe(developmentUrl);
-    expect(attachmentCorsHeaders("openbot-app://app", undefined)["Access-Control-Allow-Origin"]).toBe(
-      "openbot-app://app",
+    expect(attachmentCorsHeaders("aikingbot-app://app", undefined)["Access-Control-Allow-Origin"]).toBe(
+      "aikingbot-app://app",
     );
-    for (const origin of ["null", "openbot-visual://file", "https://example.com", null]) {
+    for (const origin of ["null", "aikingbot-visual://file", "https://example.com", null]) {
       expect(attachmentCorsHeaders(origin, developmentUrl)).not.toHaveProperty("Access-Control-Allow-Origin");
     }
   });

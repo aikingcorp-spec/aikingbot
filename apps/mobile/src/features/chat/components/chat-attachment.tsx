@@ -1,5 +1,5 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
+import { MOBILE_ATTACHMENT_BYTES } from "@aikingbot/team-client/remote-peer";
 import { Image } from "expo-image";
 import { Button, Skeleton, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

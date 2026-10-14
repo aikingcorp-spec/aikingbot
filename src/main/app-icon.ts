@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { type AppLogoColor, type AppVariant, DEFAULT_APP_LOGO_COLOR } from "@openbot/contracts/ipc";
+import { type AppLogoColor, type AppVariant, DEFAULT_APP_LOGO_COLOR } from "@aikingbot/contracts/ipc";
 
 const APP_VARIANTS = ["production", "dev", "preview"] as const satisfies readonly AppVariant[];
 

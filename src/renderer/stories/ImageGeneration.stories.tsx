@@ -1,9 +1,9 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import { ImageGeneration, type ImageGenerationProps } from "@openbot/ui/features/conversation/ImageGeneration";
+import type { AttachmentSummary } from "@aikingbot/contracts/ipc";
+import { ImageGeneration, type ImageGenerationProps } from "@aikingbot/ui/features/conversation/ImageGeneration";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-const generatedPreview = new URL("../src/assets/openbot-logo-production.png", import.meta.url).href;
+const generatedPreview = new URL("../src/assets/aikingbot-logo-production.png", import.meta.url).href;
 
 const generatedAttachment: AttachmentSummary = {
   id: "generated-image-1",

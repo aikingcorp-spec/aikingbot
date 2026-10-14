@@ -75,5 +75,5 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
 ]);
 
 export function optionalRouteCodec(path: string): OptionalRouteCodec | undefined {
-  return CODECS.get(new URL(path, "http://openbot.invalid").pathname);
+  return CODECS.get(new URL(path, "http://aikingbot.invalid").pathname);
 }

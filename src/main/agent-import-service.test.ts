@@ -9,7 +9,7 @@ import {
   type CreateChannelRoutineInput,
   type CreateRoutineInput,
   decodeAgentImportPreview,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { Effect } from "effect";
 import { zipSync } from "fflate";
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "vitest";
@@ -71,7 +71,7 @@ function manifest(
   extra: { version?: number; channels?: unknown[] } = {},
 ): Uint8Array {
   return encode({
-    format: "openbot-agent-import",
+    format: "aikingbot-agent-import",
     version: 1,
     source: { app: "grok-bot", exportedAt: "2026-09-22T16:40:00.000Z" },
     agents: agentList,
@@ -80,7 +80,7 @@ function manifest(
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "openbot-agent-import-"));
+  root = await mkdtemp(join(tmpdir(), "aikingbot-agent-import-"));
   agents = [];
   routines = [];
   memories = [];
@@ -195,7 +195,7 @@ describe("AgentImportService", () => {
   it("imports an agent with its skills, routines, memories, avatar and files", async () => {
     // A zip made by compressing a folder puts everything inside that folder.
     const path = await exportFile({
-      "export/openbot-import.json": manifest([
+      "export/aikingbot-import.json": manifest([
         manifestAgent("research", {
           avatar: "agents/research/avatar.png",
           skills: ["agents/research/skills/web-brief"],
@@ -244,12 +244,12 @@ describe("AgentImportService", () => {
     expect(skill).toMatchObject({ name: "Web brief", version: 1 });
     expect(installLocal).toHaveBeenCalledWith({ agentId, skillId: skill?.id, revision: 1 });
     // The copy that was published is not left in the workspace for the agent to find.
-    expect(await readdir(join(workspace, ".openbot/import-skills"))).toEqual([]);
+    expect(await readdir(join(workspace, ".aikingbot/import-skills"))).toEqual([]);
   });
 
   it("marks an agent whose name is already on the server, without a warning", async () => {
     const first = await runCauseEffect(
-      service.stage(await exportFile({ "openbot-import.json": manifest([manifestAgent("research")]) }, "b.zip")),
+      service.stage(await exportFile({ "aikingbot-import.json": manifest([manifestAgent("research")]) }, "b.zip")),
     );
     expect(first.agents[0]?.nameExists).toBe(false);
     await runCauseEffect(service.apply({ token: first.token, keys: ["research"], channelKeys: [] }));
@@ -257,7 +257,7 @@ describe("AgentImportService", () => {
     const again = await runCauseEffect(
       service.stage(
         await exportFile(
-          { "openbot-import.json": manifest([manifestAgent("research"), manifestAgent("sales")]) },
+          { "aikingbot-import.json": manifest([manifestAgent("research"), manifestAgent("sales")]) },
           "c.zip",
         ),
       ),
@@ -288,7 +288,7 @@ describe("AgentImportService", () => {
     const exportWith = (channelList: unknown[], name = "export.zip") =>
       exportFile(
         {
-          "openbot-import.json": manifest([manifestAgent("gauff"), manifestAgent("iga"), manifestAgent("wta")], {
+          "aikingbot-import.json": manifest([manifestAgent("gauff"), manifestAgent("iga"), manifestAgent("wta")], {
             channels: channelList,
           }),
         },
@@ -337,7 +337,7 @@ describe("AgentImportService", () => {
       expect(channels[0]?.leadAgentId).toBeNull();
       expect(result.warnings).toEqual([expect.stringContaining("its lead was not imported")]);
 
-      // A group chat with one other agent is still a channel, as OpenBot allows.
+      // A group chat with one other agent is still a channel, as AIKINGBOT allows.
       const second = await runCauseEffect(
         service.stage(
           await exportWith([desk(), desk({ key: "pair", members: ["iga", "wta"], lead: null })], "second.zip"),
@@ -392,7 +392,7 @@ describe("AgentImportService", () => {
 
   it("publishes a skill that an earlier import added as a new revision", async () => {
     const files = {
-      "openbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
+      "aikingbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
       "agents/research/skills/web-brief/SKILL.md": encode(SKILL),
     };
     for (const name of ["first.zip", "second.zip"]) {
@@ -420,13 +420,13 @@ describe("AgentImportService", () => {
       "unsafe file: agents/research/files/D:/escape.txt",
     ],
   ])("rejects an export with %s", async (_label, extra, message) => {
-    const path = await exportFile({ "openbot-import.json": manifest([manifestAgent("research")]), ...extra });
+    const path = await exportFile({ "aikingbot-import.json": manifest([manifestAgent("research")]), ...extra });
     await expect(runCauseEffect(service.stage(path))).rejects.toThrow(message);
   });
 
   it("imports an export that lists its folders as entries", async () => {
     const path = await exportFile({
-      "openbot-import.json": manifest([manifestAgent("research", { files: "agents/research/files" })]),
+      "aikingbot-import.json": manifest([manifestAgent("research", { files: "agents/research/files" })]),
       "agents/research/files/": new Uint8Array(),
       "agents/research/files/plan.md": encode("# Plan"),
     });
@@ -437,9 +437,9 @@ describe("AgentImportService", () => {
   });
 
   it("rejects an export that changed after the preview", async () => {
-    const path = await exportFile({ "openbot-import.json": manifest([manifestAgent("research")]) });
+    const path = await exportFile({ "aikingbot-import.json": manifest([manifestAgent("research")]) });
     const preview = await runCauseEffect(service.stage(path));
-    await exportFile({ "openbot-import.json": manifest([manifestAgent("research")]), "extra.txt": encode("x") });
+    await exportFile({ "aikingbot-import.json": manifest([manifestAgent("research")]), "extra.txt": encode("x") });
     await expect(
       runCauseEffect(service.apply({ token: preview.token, keys: ["research"], channelKeys: [] })),
     ).rejects.toThrow("changed");
@@ -447,32 +447,35 @@ describe("AgentImportService", () => {
   });
 
   it("rejects a manifest it cannot read", async () => {
-    const newer = await exportFile({ "openbot-import.json": manifest([manifestAgent("a")], { version: 2 }) }, "v2.zip");
+    const newer = await exportFile(
+      { "aikingbot-import.json": manifest([manifestAgent("a")], { version: 2 }) },
+      "v2.zip",
+    );
     await expect(runCauseEffect(service.stage(newer))).rejects.toThrow("newer export skill");
     const long = await exportFile(
-      { "openbot-import.json": manifest([manifestAgent("a", { name: "x".repeat(81) })]) },
+      { "aikingbot-import.json": manifest([manifestAgent("a", { name: "x".repeat(81) })]) },
       "long.zip",
     );
     await expect(runCauseEffect(service.stage(long))).rejects.toThrow('Agent "a" has an invalid name.');
     const outside = await exportFile(
-      { "openbot-import.json": manifest([manifestAgent("a", { files: "agents/b/files" })]) },
+      { "aikingbot-import.json": manifest([manifestAgent("a", { files: "agents/b/files" })]) },
       "outside.zip",
     );
     await expect(runCauseEffect(service.stage(outside))).rejects.toThrow('Agent "a" has an invalid files path.');
     // Grok Bot still writing the file: the zip ends before its directory.
-    const whole = zipSync({ "openbot-import.json": manifest([manifestAgent("a")]) });
+    const whole = zipSync({ "aikingbot-import.json": manifest([manifestAgent("a")]) });
     const partial = join(root, "partial.zip");
     await writeFile(partial, whole.subarray(0, Math.floor(whole.length / 2)));
     await expect(runCauseEffect(service.stage(partial))).rejects.toThrow(
       "If Grok Bot is still saving it, wait and choose it again.",
     );
     const missing = await exportFile({ "notes.txt": encode("x") }, "missing.zip");
-    await expect(runCauseEffect(service.stage(missing))).rejects.toThrow("must contain openbot-import.json");
+    await expect(runCauseEffect(service.stage(missing))).rejects.toThrow("must contain aikingbot-import.json");
   });
 
   it("skips a routine with an invalid schedule and says so", async () => {
     const path = await exportFile({
-      "openbot-import.json": manifest([
+      "aikingbot-import.json": manifest([
         manifestAgent("research", {
           routines: [
             { name: "Broken", instruction: "Run.", active: true, schedule: { kind: "daily", time: "25:00" } },
@@ -499,7 +502,7 @@ describe("AgentImportService", () => {
 
   it("removes an agent whose skill fails and imports the others", async () => {
     const path = await exportFile({
-      "openbot-import.json": manifest([
+      "aikingbot-import.json": manifest([
         manifestAgent("broken", { skills: ["agents/broken/skills/good", "agents/broken/skills/bad"] }),
         manifestAgent("research"),
       ]),
@@ -522,7 +525,7 @@ describe("AgentImportService", () => {
     const keys = ["research", "sales", "marketing", "support", "legal"];
     const template = "raw/dot-github/pull_request_template.md";
     const path = await exportFile({
-      "openbot-import.json": manifest(keys.map((key) => manifestAgent(key, { files: `agents/${key}/files` }))),
+      "aikingbot-import.json": manifest(keys.map((key) => manifestAgent(key, { files: `agents/${key}/files` }))),
       ...Object.fromEntries(keys.map((key) => [`agents/${key}/files/${template}`, encode(`# ${key}`)])),
     });
     const preview = await runCauseEffect(service.stage(path));
@@ -543,7 +546,7 @@ describe("AgentImportService", () => {
 
   it("removes the skill revision a failed import published", async () => {
     const files = {
-      "openbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
+      "aikingbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
       "agents/research/skills/web-brief/SKILL.md": encode(SKILL),
     };
     const first = await runCauseEffect(service.stage(await exportFile(files, "first.zip")));
@@ -557,7 +560,7 @@ describe("AgentImportService", () => {
   });
 
   it("accepts a token once, and not after it is discarded", async () => {
-    const path = await exportFile({ "openbot-import.json": manifest([manifestAgent("research")]) });
+    const path = await exportFile({ "aikingbot-import.json": manifest([manifestAgent("research")]) });
     const used = await runCauseEffect(service.stage(path));
     await runCauseEffect(service.apply({ token: used.token, keys: ["research"], channelKeys: [] }));
     await expect(
@@ -572,7 +575,7 @@ describe("AgentImportService", () => {
   });
 
   it("keeps a member's upload to that member and removes its file when it closes", async () => {
-    const bytes = zipSync({ "openbot-import.json": manifest([manifestAgent("research")]) });
+    const bytes = zipSync({ "aikingbot-import.json": manifest([manifestAgent("research")]) });
     const uploads = join(root, "uploads");
     const applied = await runCauseEffect(service.stageUpload(async () => bytes, "member-a"));
     const input = { token: applied.token, keys: ["research"], channelKeys: [] };
@@ -593,7 +596,7 @@ describe("AgentImportService", () => {
   });
 
   it("releases a member's upload that nobody applies after 30 minutes", async () => {
-    const bytes = zipSync({ "openbot-import.json": manifest([manifestAgent("research")]) });
+    const bytes = zipSync({ "aikingbot-import.json": manifest([manifestAgent("research")]) });
     const uploads = join(root, "uploads");
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     try {
@@ -610,7 +613,7 @@ describe("AgentImportService", () => {
   });
 
   it("refuses a fifth upload before it reads the body", async () => {
-    const bytes = zipSync({ "openbot-import.json": manifest([manifestAgent("research")]) });
+    const bytes = zipSync({ "aikingbot-import.json": manifest([manifestAgent("research")]) });
     for (const owner of ["member-a", "member-b", "member-c", "member-d"])
       await runCauseEffect(service.stageUpload(async () => bytes, owner));
     const read = vi.fn(async () => bytes);
@@ -620,7 +623,7 @@ describe("AgentImportService", () => {
 
   it("installs a skill the server already has as it is when a member imports", async () => {
     const files = {
-      "openbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
+      "aikingbot-import.json": manifest([manifestAgent("research", { skills: ["agents/research/skills/web-brief"] })]),
       "agents/research/skills/web-brief/SKILL.md": encode(SKILL),
     };
     const local = await runCauseEffect(service.stage(await exportFile(files)));

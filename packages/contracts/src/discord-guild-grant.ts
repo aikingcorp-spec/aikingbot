@@ -1,13 +1,13 @@
-// The hand-off of a Discord guild link from the account Worker to one desktop host. The OpenBot
+// The hand-off of a Discord guild link from the account Worker to one desktop host. The AIKINGBOT
 // Discord app's bot token stays in Signal, so the grant carries no secret. It is sealed to the host
 // (`./host-grant.ts`) so that a page cannot hand the host a guild that it did not connect.
 
 import { createHostGrantKeyPair, type HostGrantKind, openHostGrant, sealHostGrant } from "./host-grant";
 import { isDynamicRecord, isString } from "./runtime-values";
 
-const KIND: HostGrantKind = { version: 1, info: "openbot-discord-guild-grant-v1" };
+const KIND: HostGrantKind = { version: 1, info: "aikingbot-discord-guild-grant-v1" };
 
-/** The guild that installed the OpenBot Discord app, now linked to the host. */
+/** The guild that installed the AIKINGBOT Discord app, now linked to the host. */
 export interface DiscordGuildGrant {
   guildId: string;
   guildName: string;

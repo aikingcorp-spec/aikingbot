@@ -4,8 +4,8 @@ import type {
   RoutineRun,
   RoutineRunStatus,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
-import type { OpenBotDatabase } from "./openbot-database";
+} from "@aikingbot/contracts/ipc";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import {
   type DueRoutine,
   type OwnedRoutine,
@@ -31,7 +31,7 @@ export interface DueRoutineTrigger {
  * change with the extraction.
  */
 export class AgentRoutineStore extends RoutineStore {
-  constructor(database: OpenBotDatabase) {
+  constructor(database: AIKINGBOTDatabase) {
     super(database, ROUTINE_TABLES.agent);
   }
 

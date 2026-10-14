@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { SaveCustomProviderInput } from "@openbot/contracts/ipc";
-import { CUSTOM_PROVIDER_LIMITS } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@aikingbot/contracts/input-limits";
+import type { SaveCustomProviderInput } from "@aikingbot/contracts/ipc";
+import { CUSTOM_PROVIDER_LIMITS } from "@aikingbot/contracts/ipc";
 import {
   ArrowLeft,
   Button,
@@ -15,7 +15,7 @@ import {
   Spinner,
   Text,
   X,
-} from "@openbot/ui";
+} from "@aikingbot/ui";
 import {
   createEffect,
   createSignal,
@@ -100,7 +100,7 @@ export function CustomProviderDialog(props: CustomProviderDialogProps) {
   const [draft, setDraft] = createStore<CustomProviderDraft>(
     untrack(() => (props.draft ? cloneDraft(props.draft) : emptyCustomProviderDraft())),
   );
-  // Nothing is red until the user has asked OpenBot to accept the form, so a blank form does not
+  // Nothing is red until the user has asked AIKINGBOT to accept the form, so a blank form does not
   // open covered in messages about fields nobody has reached yet.
   const [submitted, setSubmitted] = createSignal(untrack(() => Boolean(props.showErrors)));
 

@@ -8,7 +8,7 @@ export default defineConfig({
     // Some tests render a whole content collection: 1.6 s locally, and more than 5 s on CI runners
     // that also run the server suite. A failure still names its own assertion well before this limit.
     testTimeout: 20_000,
-    environmentOptions: { jsdom: { url: "https://openbot.run/" } },
+    environmentOptions: { jsdom: { url: "https://aikingbot.aikingx.com/" } },
     setupFiles: ["@testing-library/jest-dom/vitest", "./test/dialog-methods.ts"],
     include: [
       "test/analytics.test.ts",

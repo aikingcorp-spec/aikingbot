@@ -1,5 +1,5 @@
-import type { AgentPromptQuestion } from "@openbot/contracts/ipc";
-import { QuestionPromptBubble } from "@openbot/ui/components/QuestionPromptBubble";
+import type { AgentPromptQuestion } from "@aikingbot/contracts/ipc";
+import { QuestionPromptBubble } from "@aikingbot/ui/components/QuestionPromptBubble";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

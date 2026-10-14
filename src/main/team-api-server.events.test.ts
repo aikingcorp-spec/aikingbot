@@ -1,12 +1,12 @@
-import { isAgentSummary } from "@openbot/contracts/ipc";
+import { isAgentSummary } from "@aikingbot/contracts/ipc";
 import {
   decodeTeamProtocolV1CurrentHttpResponse,
   encodeTeamProtocolV1CurrentHttpResponse,
-} from "@openbot/contracts/team-protocol/v1-adapter";
+} from "@aikingbot/contracts/team-protocol/v1-adapter";
 import {
   decodeTeamProtocolV3CurrentHttpResponse,
   encodeTeamProtocolV3CurrentHttpResponse,
-} from "@openbot/contracts/team-protocol/v3-adapter";
+} from "@aikingbot/contracts/team-protocol/v3-adapter";
 import { Effect } from "effect";
 import opencodeFixture from "../../packages/contracts/src/team-protocol/fixtures/v4/host-http-response.json";
 import { legacyProviderView } from "./team-api/provider-visibility";
@@ -17,14 +17,14 @@ import { legacyProviderView } from "./team-api/provider-visibility";
 
 import { EventEmitter } from "node:events";
 import { join } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@aikingbot/contracts/ipc";
 import {
   AGENT_RUNTIME_SNAPSHOT_BYTES_LIMIT,
   hostedSiteConversationEventItemType,
   hostedSiteConversationEventText,
   routineConversationEventItemType,
   routineRunConversationEventItemType,
-} from "@openbot/contracts/ipc";
+} from "@aikingbot/contracts/ipc";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SidebarLayoutStore } from "../backend/sidebar-layout-store";
 import {
@@ -54,8 +54,8 @@ describe("TeamApiServer events", () => {
     const login = await Effect.runPromise(store.login("owner", "correct horse battery"));
     for (const supportsOpencode of [false, true]) {
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-team-v1",
-        `openbot-token.${login.sessionToken}`,
+        "aikingbot-team-v1",
+        `aikingbot-token.${login.sessionToken}`,
       ]);
       const presence = nextJsonEvent(socket);
       await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));
@@ -105,8 +105,8 @@ describe("TeamApiServer events", () => {
       ["agent-runtime-snapshots", "opencode", "local-providers", "local-providers-v2"],
     ]) {
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-team-v1",
-        `openbot-token.${login.sessionToken}`,
+        "aikingbot-team-v1",
+        `aikingbot-token.${login.sessionToken}`,
       ]);
       const presence = nextJsonEvent(socket);
       await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));
@@ -139,8 +139,8 @@ describe("TeamApiServer events", () => {
     const { port } = await start({ agents: createAgents({}, events) });
     const login = await Effect.runPromise(store.login("owner", "correct horse battery"));
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-team-v1",
-      `openbot-token.${login.sessionToken}`,
+      "aikingbot-team-v1",
+      `aikingbot-token.${login.sessionToken}`,
     ]);
     const presence = nextJsonEvent(socket);
     await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));
@@ -185,8 +185,8 @@ describe("TeamApiServer events", () => {
     const sockets: WebSocket[] = [];
     for (const supportsSkillsEvents of [true, false]) {
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-team-v1",
-        `openbot-token.${login.sessionToken}`,
+        "aikingbot-team-v1",
+        `aikingbot-token.${login.sessionToken}`,
       ]);
       const presence = nextJsonEvent(socket);
       await new Promise<void>((resolve) => socket.addEventListener("open", () => resolve(), { once: true }));
@@ -288,8 +288,8 @@ describe("TeamApiServer events", () => {
 
     const owner = await Effect.runPromise(store.login("owner", "correct horse battery"));
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-events-v2",
-      `openbot-token.${member.sessionToken}`,
+      "aikingbot-events-v2",
+      `aikingbot-token.${member.sessionToken}`,
     ]);
     const initialEvents = nextJsonEvents(socket, 2);
     await new Promise<void>((resolve, reject) => {
@@ -425,8 +425,8 @@ describe("TeamApiServer events", () => {
     socket.close();
     await firstSocketClosed;
     const oversizedSocket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-events-v2",
-      `openbot-token.${member.sessionToken}`,
+      "aikingbot-events-v2",
+      `aikingbot-token.${member.sessionToken}`,
     ]);
     const oversizedInitialEvents = nextJsonEvents(oversizedSocket, 2);
     await new Promise<void>((resolve, reject) => {
@@ -509,8 +509,8 @@ describe("TeamApiServer events", () => {
       const messages: Array<{ type: string }> = [];
       received.set(name, messages);
       const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-        "openbot-team-v1",
-        `openbot-token.${login.sessionToken}`,
+        "aikingbot-team-v1",
+        `aikingbot-token.${login.sessionToken}`,
       ]);
       const presence = nextJsonEvent(socket);
       await new Promise<void>((resolve, reject) => {
@@ -616,8 +616,8 @@ describe("TeamApiServer events", () => {
       ),
     });
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-events",
-      `openbot-token.${login.sessionToken}`,
+      "aikingbot-events",
+      `aikingbot-token.${login.sessionToken}`,
     ]);
     const firstEvent = nextJsonEvent(socket);
 
@@ -627,7 +627,7 @@ describe("TeamApiServer events", () => {
         socket.addEventListener("error", () => reject(new Error("WebSocket did not open.")), { once: true });
       });
       await expect(firstEvent).resolves.toMatchObject({ type: "team-presence" });
-      expect(socket.protocol).toBe("openbot-events");
+      expect(socket.protocol).toBe("aikingbot-events");
       const supportedEvent = nextJsonEvent(socket);
       agentEvents.emit("event", { type: "runtime-snapshot", snapshot: createAgents().getRuntimeSnapshot() });
       agentEvents.emit("event", { type: "agents-changed", agents: [] });
@@ -684,8 +684,8 @@ describe("TeamApiServer events", () => {
       agents: createAgents({ listAgents: () => [primaryAgent], readConversation }, agentEvents),
     });
     const socket = new WebSocket(`ws://127.0.0.1:${port}/v1/events`, [
-      "openbot-events",
-      `openbot-token.${login.sessionToken}`,
+      "aikingbot-events",
+      `aikingbot-token.${login.sessionToken}`,
     ]);
     const presence = nextJsonEvent(socket);
     try {

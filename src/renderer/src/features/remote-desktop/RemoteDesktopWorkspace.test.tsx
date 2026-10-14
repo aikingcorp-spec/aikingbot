@@ -1,5 +1,5 @@
-import type { RemoteDesktopErrorCode, RemoteDesktopSession, ServerSummary } from "@openbot/contracts/ipc";
-import { RemoteDesktopWorkspace } from "@openbot/ui/features/remote-desktop/RemoteDesktopWorkspace";
+import type { RemoteDesktopErrorCode, RemoteDesktopSession, ServerSummary } from "@aikingbot/contracts/ipc";
+import { RemoteDesktopWorkspace } from "@aikingbot/ui/features/remote-desktop/RemoteDesktopWorkspace";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";
@@ -76,7 +76,7 @@ describe("RemoteDesktopWorkspace", () => {
     expect(frame).toHaveAttribute("src", `${session.viewerUrl}#${session.viewerGrant}`);
     expect(frame).toHaveAttribute("sandbox", expect.stringContaining("allow-pointer-lock"));
 
-    await fireEvent.click(screen.getByRole("button", { name: "Back to OpenBot" }));
+    await fireEvent.click(screen.getByRole("button", { name: "Back to AIKINGBOT" }));
     expect(onHide).toHaveBeenCalledOnce();
     expect(onDisconnect).not.toHaveBeenCalled();
     expect(workspace).toHaveAttribute("aria-hidden", "true");
@@ -98,7 +98,7 @@ describe("RemoteDesktopWorkspace", () => {
         origin: new URL(session.viewerUrl).origin,
         source: frame.contentWindow,
         data: {
-          source: "openbot-moonlight",
+          source: "aikingbot-moonlight",
           type: "viewer-state",
           sessionId: session.id,
           state: "connected",
@@ -139,7 +139,7 @@ describe("RemoteDesktopWorkspace", () => {
 
   it("names the host and the repair step when the host may not record its screen", async () => {
     const { onRetry } = renderWorkspace({
-      connectionError: "The host has not allowed OpenBot to record its screen.",
+      connectionError: "The host has not allowed AIKINGBOT to record its screen.",
       connectionErrorCode: "host_permissions_required",
     });
 

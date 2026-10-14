@@ -1,7 +1,7 @@
-import type { AgentApproval, RespondToBrowserSecretInput } from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
-import { BrowserSecretCard } from "@openbot/ui/features/conversation/BrowserSecretCard";
-import { ApprovalCard, BrowserTakeoverCard, ChoiceCard } from "@openbot/ui/features/conversation/ConversationPrompts";
+import type { AgentApproval, RespondToBrowserSecretInput } from "@aikingbot/contracts/ipc";
+import { Toaster, toast } from "@aikingbot/ui";
+import { BrowserSecretCard } from "@aikingbot/ui/features/conversation/BrowserSecretCard";
+import { ApprovalCard, BrowserTakeoverCard, ChoiceCard } from "@aikingbot/ui/features/conversation/ConversationPrompts";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 

@@ -1,8 +1,8 @@
-import type { EventRoutineOwner } from "@openbot/contracts/ipc-events";
+import type { EventRoutineOwner } from "@aikingbot/contracts/ipc-events";
 import { Effect, Schema } from "effect";
 import type { RoutineScheduler } from "./agent/routine-scheduler";
+import type { AIKINGBOTDatabase } from "./aikingbot-database";
 import type { ChannelRoutineScheduler } from "./channel-routine-scheduler";
-import type { OpenBotDatabase } from "./openbot-database";
 import type {
   OwnedRoutineRecord,
   ReceivedWebhookEvent,
@@ -17,7 +17,7 @@ export class RoutineRecordFailed extends Schema.TaggedError<RoutineRecordFailed>
 }) {}
 
 export interface RoutineRecordsOptions {
-  database: OpenBotDatabase;
+  database: AIKINGBOTDatabase;
   agentRoutines: RoutineScheduler;
   channelRoutines: ChannelRoutineScheduler;
   agentExists(agentId: string): boolean;

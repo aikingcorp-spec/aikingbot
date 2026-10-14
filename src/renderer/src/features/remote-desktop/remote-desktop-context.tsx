@@ -1,5 +1,9 @@
-import type { RemoteDesktopConnectResult, RemoteDesktopErrorCode, RemoteDesktopSession } from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+import type {
+  RemoteDesktopConnectResult,
+  RemoteDesktopErrorCode,
+  RemoteDesktopSession,
+} from "@aikingbot/contracts/ipc";
+import { currentText } from "@aikingbot/ui/text";
 import { createEffect, createMemo, createSignal, flush, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { usePlatform } from "../../platform";

@@ -1,5 +1,5 @@
-import type { AnalyticsPreference } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { AnalyticsPreference } from "@aikingbot/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@aikingbot/contracts/runtime-values";
 import { Effect } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

@@ -2,7 +2,7 @@ import { Effect, Schema } from "effect";
 
 class HostLogoError extends Schema.TaggedError<HostLogoError>()("HostLogoError", {}) {}
 
-import { isUuidV4 } from "@openbot/contracts/validation";
+import { isUuidV4 } from "@aikingbot/contracts/validation";
 
 export function hostLogoObjectKey(hostId: string, version: string): string {
   if (!/^[A-Za-z0-9:_-]{1,128}$/u.test(hostId) || !isUuidV4(version)) throw new Error("Invalid host logo key.");
