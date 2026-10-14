@@ -41,7 +41,8 @@ try {
   let apiUrl: string;
   let dataDir: string;
   if (offline) {
-    fixture = await launchVerificationServer({ ...process.env, FAKE_CLAUDE_REPLIES: JSON.stringify([
+    // AIKING_OFFLINE_REPLIES (a JSON array) lets UI reviews script richer offline replies; the default stays the verification text.
+    fixture = await launchVerificationServer({ ...process.env, FAKE_CLAUDE_REPLIES: process.env.AIKING_OFFLINE_REPLIES ?? JSON.stringify([
       "AIKINGBOT is running. This reply came through the real chat pipeline using the offline verification provider.",
       "The saved conversation is available. The desktop foundation is ready for the next integration stage.",
     ]) });

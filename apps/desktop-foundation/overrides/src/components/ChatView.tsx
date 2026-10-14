@@ -863,7 +863,7 @@ const MessagesList = memo(function MessagesList({
           );
         }
         if (item.kind === "run") {
-          if (!showToolCalls) return divider && <div key={item.id} className="contents">{divider}</div>;
+          // Tool runs always show as one collapsed card; "Show tool calls" still controls single steps.
           return (
             <div key={item.id} className="contents">
               {newDay && <DaySeparator at={first.at} today={today} />}

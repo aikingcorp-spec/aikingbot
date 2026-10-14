@@ -132,6 +132,31 @@ await step("agent-from-template", async () => {
 });
 await closeOverlays();
 
+await step("create-agent-from-template", async () => {
+  await button("Marketplace").click();
+  const dialog = page.getByRole("dialog", { name: "Marketplace" });
+  await dialog.getByRole("tab", { name: "Agents" }).click();
+  await dialog.getByRole("button", { name: "Coding partner, Details" }).click();
+  await button("Add agent").click();
+  await page.getByRole("textbox", { name: "Name" }).first().waitFor();
+  await button("Create agent").click();
+  await page.getByRole("textbox", { name: /^Message Dev/ }).waitFor({ timeout: 60_000 });
+});
+
+await step("conversation-reply", async () => {
+  const input = page.getByRole("textbox", { name: /^Message Dev/ });
+  await input.fill("Plan the launch of the AIKING media pipeline for a matte tumbler TikTok ad.");
+  await button("Send message").click();
+  await page.getByRole("log", { name: /^Conversation with Dev/ }).getByText(/launch plan|AIKINGBOT is running/).first().waitFor({ timeout: 120_000 });
+});
+
+await step("tool-activity", async () => {
+  const run = page.locator("[data-activity-run] > button").last();
+  await run.waitFor({ timeout: 30_000 });
+  await run.click();
+  assert.equal(await run.getAttribute("aria-expanded"), "true");
+});
+
 await step("new-agent", async () => {
   await button("New or share").click();
   await button("New agent").click();
