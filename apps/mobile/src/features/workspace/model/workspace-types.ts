@@ -1,0 +1,350 @@
+import type { AttachmentSupport } from "@openbot/contracts/attachment-files";
+import type {
+  AddedAgent,
+  AgentAdminSettings,
+  AgentAnalytics,
+  AgentAnalyticsInput,
+  AgentHostSettings,
+  AgentMemory,
+  AgentMemorySelectionState,
+  AgentModelId,
+  AgentModelOption,
+  AgentProviderId,
+  AgentReasoningEffort,
+  AgentSessionSettings,
+  AgentTemplatePreview,
+  AgentTemplatePublication,
+  AvatarHue,
+  AvatarImageInput,
+  ConversationFileSearchPage,
+  ConversationSearchPage,
+  ConversationSnapshot,
+  CreateAgentInput,
+  CreateRoutineInput,
+  DraftAttachment,
+  HostAnalytics,
+  HostAnalyticsInput,
+  InstallAgentTemplateInput,
+  InstalledSkill,
+  QueueSnapshot,
+  ResetAgentSessionSettingInput,
+  RespondToApprovalInput,
+  RespondToBrowserSecretInput,
+  RespondToPromptInput,
+  Routine,
+  RoutineCalendar,
+  RoutineCalendarInput,
+  RoutineCalendarOwner,
+  SetAgentMemoryInclusionInput,
+  SetAgentSessionSettingInput,
+  SetEnabledSkillInput,
+  SharedTable,
+  SidebarLayoutAction,
+  SidebarLayoutSnapshot,
+  StorageUsage,
+  UninstallSkillInput,
+  UpdateAgentAdminSettingsInput,
+  UpdateAgentHostSettingsInput,
+  UpdateAgentInput,
+  UpdateRoutineInput,
+} from "@openbot/contracts/ipc";
+import type {
+  EventActivity,
+  EventRoutine,
+  EventRoutineOwner,
+  EventRoutineRef,
+  ListEventActivityInput,
+  SaveEventRoutineInput,
+  SaveEventRoutineResult,
+  WebhookSecret,
+} from "@openbot/contracts/ipc-events";
+import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
+import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@openbot/team-client";
+import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
+import type { MobileBrowserTab } from "@/features/browser/model/browser-tabs";
+import type { BrowserViewBridgeEvent, RemoteBrowserViewSession } from "@/features/browser/model/browser-view-bridge";
+import type { MobileConversationStore } from "./conversation-store";
+import type { LiveWorkspaceStore } from "./live-workspace-store";
+
+type MobileServerKind = "local" | "remote";
+export type MobileServerState = "unknown" | "connecting" | "online" | "offline" | "error";
+export type MobileServerDirectoryState = "loading" | "ready" | "error";
+
+export interface MobileServer {
+  id: string;
+  name: string;
+  /** The logo version in the account directory, or null when the server has no logo. */
+  logoKey: string | null;
+  kind: MobileServerKind;
+  state: MobileServerState;
+  initialConnectionPending: boolean;
+  connectionMessage: string | null;
+  /** The last failed connection step and its code, until the server is online again. */
+  connectionFailure?: RemoteConnectionFailure | null;
+  recoveryStatus?: RemoteRecoveryStatus;
+  address: string | null;
+  accent: string;
+  publicKey: string;
+  membershipId: string;
+  role: "owner" | "admin" | "member";
+  /** The active members that the host's plan allows. Absent when the account server gave none. */
+  memberLimit?: number;
+}
+
+export interface MobileAgent {
+  provider?: AgentProviderId;
+  model?: AgentModelId;
+  reasoningEffort?: AgentReasoningEffort;
+  /** One switch for every member: off stops the host's notifications and Live Activity for the agent. */
+  notifications?: boolean;
+  /** The agent workspace folder on the host. */
+  workspacePath?: string;
+  id: string;
+  serverId: string;
+  name: string;
+  title: string;
+  description: string;
+  preview: string;
+  updatedLabel: string;
+  avatarUrl?: string | null;
+  avatarSeed: string;
+  avatarHue: AvatarHue | null;
+}
+
+type ToggleAgentPinResult = "pinned" | "unpinned" | "error";
+
+interface AddRemoteServerInput {
+  inviteUrl: string;
+}
+
+/** What a host serves of the live browser view. */
+export interface MobileBrowserViewSupport {
+  /** `browser-control` and `browser-view`: the phone can show the agent's tab and use it. */
+  view: boolean;
+  /** `browser-view-clipboard`: the host pastes text and answers the selected text. */
+  clipboard: boolean;
+  /** `browser-view-context-menu`: the host sends the phone the menu of its right-clicks. */
+  contextMenu: boolean;
+  /** `browser-view-viewport`: the host holds the page at the size the phone asks for. */
+  viewport: boolean;
+}
+
+/** What the phone does to a host browser tab, through the released `browser-control` routes. */
+type MobileBrowserTabAction =
+  | { type: "navigate"; tabId: string; direction: "back" | "forward" }
+  | { type: "reload"; tabId: string }
+  | { type: "open"; url: string; ownerAgentId: string; ownerThreadId: string | null }
+  | { type: "close"; tabId: string };
+
+export interface MobileWorkspaceContextValue {
+  browserViewSupport: (serverId: string) => MobileBrowserViewSupport;
+  /** Null when the server is not connected, or its peer page is not ready yet. */
+  openBrowserView: (
+    serverId: string,
+    tabId: string,
+    listener: (event: BrowserViewBridgeEvent) => void,
+  ) => RemoteBrowserViewSession | null;
+  /** The new tab for `open`, and null for the other actions. */
+  controlBrowserTab: (serverId: string, action: MobileBrowserTabAction) => Promise<MobileBrowserTab | null>;
+  /**
+   * Allows or denies an approval that the server's agent waits on. Rejects with
+   * `InactiveRequestError`, and drops the request, when it no longer waits on the host.
+   */
+  respondToApproval: (serverId: string, input: RespondToApprovalInput) => Promise<void>;
+  respondToBrowserTakeover: (
+    serverId: string,
+    input: { requestId: string | number; decision: "complete" | "cancel" },
+  ) => Promise<void>;
+  respondToBrowserSecret: (serverId: string, input: RespondToBrowserSecretInput) => Promise<void>;
+  sidebarByServer: Record<string, { layout: SidebarLayoutSnapshot | null; error: string | null }>;
+  mutateSidebarLayout: (serverId: string, action: SidebarLayoutAction) => Promise<void>;
+  loadQueue: (agentId: string, serverId: string) => Promise<QueueSnapshot>;
+  canEditQueue: (serverId: string) => boolean;
+  /** True when the host advertises `message-client-id-v1`: a repeat of a message is stored once. */
+  canRetryMessage: (serverId: string) => boolean;
+  /** The files this host accepts beyond the base list, as the desktop picker reads them. */
+  attachmentSupport: (serverId: string) => AttachmentSupport;
+  changeQueue: (
+    agentId: string,
+    serverId: string,
+    action: "cancel" | "steer" | "reorder",
+    input: { deliveryId?: string; expectedTurnId?: string; deliveryIds?: string[] },
+  ) => Promise<void>;
+  editQueue: (agentId: string, serverId: string, input: QueueEditRequest) => Promise<QueueSnapshot>;
+  interruptTurn: (agentId: string, turnId: string, serverId?: string) => Promise<void>;
+  /** The default server first, then the other servers in the order saved on this device. */
+  servers: MobileServer[];
+  /** Saves the order of the other servers on this device. Returns false and keeps the old order on failure. */
+  reorderServers: (serverIds: string[]) => boolean;
+  /** The one server above the divider. With no saved choice, the paired host. */
+  defaultServerId: string | null;
+  /** Makes a server the default in place of the current one, or removes it with `null`. Returns false on failure. */
+  setDefaultServer: (serverId: string | null) => boolean;
+  teamDirectory: RemoteTeamDirectoryClient;
+  serverDirectoryState: MobileServerDirectoryState;
+  serverDirectoryError: string | null;
+  agents: MobileAgent[];
+  activeServer: MobileServer;
+  activeAgents: MobileAgent[];
+  hiddenAgents: MobileAgent[];
+  pinnedAgentIds: string[];
+  conversationStore: MobileConversationStore;
+  /** Activity, unread agents, and browser requests. Read them with a selector hook, not from the context. */
+  liveState: LiveWorkspaceStore;
+  selectServer: (serverId: string) => void;
+  leaveServer: (serverId: string) => Promise<void>;
+  /** Removes a server that this account owns from the account service. The host can be offline. */
+  removeServer: (serverId: string) => Promise<void>;
+  refreshServers: () => Promise<void>;
+  refreshServer: (serverId: string) => Promise<void>;
+  /** The account server says that a hosted server starts, for example after a restart. The app connects again soon. */
+  hostedServerStarting: (serverId: string) => void;
+  /** An owner or admin of an online host that serves `host-admin-v1`. The host checks the role again. */
+  canEditServerIdentity: (serverId: string) => boolean;
+  /** An online host that sends notifications to this phone (`push-notifications-v1`). */
+  canSendNotifications: (serverId: string) => boolean;
+  /** An absent field stays unchanged; a `null` logo removes it. */
+  updateServerIdentity: (
+    serverId: string,
+    input: { serverName?: string; logo?: AvatarImageInput | null },
+  ) => Promise<void>;
+  addRemoteServer: (input: AddRemoteServerInput) => Promise<string>;
+  createAgent: (input: CreateAgentInput) => Promise<void>;
+  updateAgent: (input: UpdateAgentInput, serverId?: string) => Promise<void>;
+  setAgentAvatar: (agentId: string, image: RemoteFileUpload | null, serverId: string) => Promise<void>;
+  loadAgentAvatar: (agentId: string, avatarUrl: string, serverId: string) => Promise<string>;
+  deleteAgent: (agentId: string) => Promise<void>;
+  duplicateAgent: (agentId: string) => Promise<void>;
+  saveAgentMemory: (agentId: string, text: string, serverId: string, memoryId?: string) => Promise<void>;
+  deleteAgentMemory: (agentId: string, memoryId: string, serverId: string) => Promise<void>;
+  createAgentRoutine: (input: CreateRoutineInput, serverId: string) => Promise<void>;
+  updateAgentRoutine: (input: UpdateRoutineInput, serverId: string) => Promise<void>;
+  deleteAgentRoutine: (agentId: string, routineId: string, serverId: string) => Promise<void>;
+  testAgentRoutine: (agentId: string, routineId: string, serverId: string) => Promise<void>;
+  /** Event administration is available only to owners and admins on hosts with events-v1. */
+  canManageEvents: (serverId: string) => boolean;
+  listEventRoutines: (owner: EventRoutineOwner, serverId: string) => Promise<EventRoutine[]>;
+  /** The result has the signing secret only when the save made a new webhook trigger. */
+  saveEventRoutine: (input: SaveEventRoutineInput, serverId: string) => Promise<SaveEventRoutineResult>;
+  deleteEventRoutine: (input: EventRoutineRef, serverId: string) => Promise<void>;
+  testEventRoutine: (input: EventRoutineRef, serverId: string) => Promise<void>;
+  rotateEventRoutineSecret: (input: EventRoutineRef, serverId: string) => Promise<WebhookSecret>;
+  listEventActivity: (input: ListEventActivityInput, serverId: string) => Promise<EventActivity[]>;
+  loadAgentModels: (serverId: string) => Promise<AgentModelOption[]>;
+  loadAgentMemorySelection: (agentId: string, serverId: string) => Promise<AgentMemorySelectionState | null>;
+  setAgentMemoryInclusion: (
+    input: SetAgentMemoryInclusionInput,
+    serverId: string,
+  ) => Promise<AgentMemorySelectionState>;
+  loadAgentMemories: (agentId: string, serverId: string) => Promise<AgentMemory[]>;
+  loadAgentRoutines: (agentId: string, serverId: string) => Promise<Routine[]>;
+  /** Every routine of the server's agents, with its runs in the range. */
+  /**
+   * `owners` are the agents whose routines to read, when the caller already knows them.
+   * Without it, the phone reads the agent list of the host first.
+   */
+  loadRoutineCalendar: (
+    input: RoutineCalendarInput,
+    serverId: string,
+    owners?: readonly RoutineCalendarOwner[],
+  ) => Promise<RoutineCalendar>;
+  loadAgentAnalytics: (input: AgentAnalyticsInput, serverId: string) => Promise<AgentAnalytics | null>;
+  /** Null when the host does not advertise `host-analytics`. Without an agent ID, the report covers every agent. */
+  loadHostAnalytics: (input: HostAnalyticsInput, serverId: string) => Promise<HostAnalytics | null>;
+  /**
+   * Null when the host does not advertise `installed-skills`. With `manage`, reads the
+   * `skills-admin-v1` list, which has the enabled state and origin; the host refuses a member.
+   */
+  loadAgentSkills: (agentId: string, serverId: string, manage?: boolean) => Promise<InstalledSkill[] | null>;
+  /** An owner or admin of an online host that serves `skills-admin-v1`. The host checks the role again. */
+  canManageAgentSkills: (serverId: string) => boolean;
+  /** Owners and admins only; the host refuses a member. Resolves with the skill the host saved. */
+  setAgentSkillEnabled: (input: SetEnabledSkillInput, serverId: string) => Promise<InstalledSkill>;
+  /** Owners and admins only; the host refuses a member. */
+  uninstallAgentSkill: (input: UninstallSkillInput, serverId: string) => Promise<void>;
+  /** Null when the host does not advertise `storage-v1`. */
+  loadAgentStorage: (agentId: string, serverId: string, force?: boolean) => Promise<StorageUsage | null>;
+  /** Null when the host does not advertise `agent-admin-v1`. Owners and admins only; the host refuses a member. */
+  loadAgentAdminSettings: (agentId: string, serverId: string) => Promise<AgentAdminSettings | null>;
+  /** Owners and admins only; the host refuses a member. Resolves with the settings the host saved. */
+  updateAgentAdminSettings: (input: UpdateAgentAdminSettingsInput, serverId: string) => Promise<AgentAdminSettings>;
+  /** An owner or admin of an online host that serves `agent-admin-v1`. The host checks the role again. */
+  canManageAgentAccess: (serverId: string) => boolean;
+  /** An owner or admin of an online host that serves `agent-host-settings-v1`. The host checks the role again. */
+  canManageAgentHostSettings: (serverId: string) => boolean;
+  /**
+   * Computer Use, local scripts and the busy-message mode. Null when the host does not advertise
+   * `agent-host-settings-v1`. Owners and admins only; the host refuses a member.
+   */
+  loadAgentHostSettings: (agentId: string, serverId: string) => Promise<AgentHostSettings | null>;
+  /** Owners and admins only; the host refuses a member. Resolves with the settings the host saved. */
+  updateAgentHostSettings: (input: UpdateAgentHostSettingsInput, serverId: string) => Promise<AgentHostSettings>;
+  /** True when the host advertises `context-reset-v1`. Any member can start a new chat. */
+  canStartNewChat: (serverId: string) => boolean;
+  /** The agent forgets the messages before it. The host refuses while the agent works. */
+  loadAgentSessionSettings: (agentId: string, serverId: string) => Promise<AgentSessionSettings | null>;
+  setAgentSessionSetting: (input: SetAgentSessionSettingInput, serverId: string) => Promise<AgentSessionSettings>;
+  resetAgentSessionSetting: (input: ResetAgentSessionSettingInput, serverId: string) => Promise<AgentSessionSettings>;
+  startNewChat: (agentId: string, serverId: string) => Promise<void>;
+  /** An owner or admin of an online host that serves `shared-tables-v1`. The host checks the role again. */
+  canManageSharedTables: (serverId: string) => boolean;
+  /** Every table that the agents of the host share. Owners and admins only. */
+  listSharedTables: (serverId: string) => Promise<SharedTable[]>;
+  /** Owners and admins only. The table goes for every agent. */
+  deleteSharedTable: (name: string, serverId: string) => Promise<void>;
+  /** An owner or admin of an online host that serves `agent-publish-v1`. The host checks the role again. */
+  canPublishAgent: (serverId: string) => boolean;
+  /** What the host would publish for the agent, and its link when it is published. Owners and admins only. */
+  loadAgentTemplatePreview: (agentId: string, serverId: string) => Promise<AgentTemplatePreview>;
+  /** The host publishes with its own account, without a share card. Owners and admins only. */
+  publishAgentTemplate: (agentId: string, serverId: string) => Promise<AgentTemplatePublication>;
+  /** Owners and admins only. The link stops working. */
+  unpublishAgentTemplate: (agentId: string, serverId: string) => Promise<void>;
+  /** True when the host advertises `agent-install-v1`. The host still refuses a member. */
+  canInstallAgentTemplate: (serverId: string) => boolean;
+  /** Owners and admins only. The host downloads the template with its own account. */
+  installAgentTemplate: (input: InstallAgentTemplateInput, serverId: string) => Promise<AddedAgent>;
+  /** Owners and admins only; the host refuses a member. */
+  deleteStoredFile: (fileId: string, serverId: string) => Promise<void>;
+  /** Searches message text in the server's agent chats, one page from `cursor` or from the newest match. */
+  searchMessages: (query: string, serverId: string, cursor?: string) => Promise<ConversationSearchPage>;
+  /** True when the host advertises `conversation-file-search-v1`. */
+  canSearchFiles: (serverId: string) => boolean;
+  /** Searches file names in the server's agent chats. An empty query lists the newest files. */
+  searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
+  loadConversation: (agentId: string, serverId?: string) => Promise<ConversationSnapshot>;
+  /**
+   * Loads the page around a message, for a chat that opens at a search result. False when the host
+   * does not have the message.
+   */
+  loadConversationAround: (agentId: string, messageId: string, serverId?: string) => Promise<boolean>;
+  /** Loads the latest page in place of a window around a searched message. */
+  loadLatestMessages: (agentId: string, serverId?: string) => Promise<void>;
+  loadOlderMessages: (agentId: string, serverId?: string) => Promise<void>;
+  respondToPrompt: (agentId: string, input: RespondToPromptInput) => Promise<void>;
+  sendMessage: (
+    agentId: string,
+    text: string,
+    attachmentDraftIds?: string[],
+    replyToMessageId?: string | null,
+    serverId?: string,
+    /** Names the message for the host, which stores a repeat of it once. Send it only when `canRetryMessage`. */
+    clientMessageId?: string,
+  ) => Promise<string>;
+  uploadAttachment: (
+    agentId: string,
+    input: RemoteFileUpload,
+    serverId?: string,
+    /** Hears the fraction of the file sent so far, from 0 to 1. */
+    onProgress?: (fraction: number) => void,
+  ) => Promise<DraftAttachment>;
+  downloadAttachment: (serverId: string, attachmentId: string) => Promise<RemoteFileUpload>;
+  discardAttachment: (agentId: string, attachmentId: string, serverId?: string) => Promise<void>;
+  hideAgent: (agentId: string) => void;
+  unhideAgent: (agentId: string) => void;
+  markAgentRead: (agentId: string, throughMessageId?: string, serverId?: string) => void;
+  markAgentUnread: (agentId: string) => void;
+  /** Marks every unread chat of the active server read. It rejects when a chat stays unread. */
+  markAllRead: () => Promise<void>;
+  toggleAgentPin: (agentId: string) => ToggleAgentPinResult;
+}

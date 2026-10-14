@@ -1,0 +1,555 @@
+import { type MenuAction, MenuView } from "@expo/ui/community/menu";
+import type { SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
+import { type Href, router, Stack } from "expo-router";
+import { HeaderHeightContext } from "expo-router/react-navigation";
+import { Button, Typography } from "heroui-native";
+import { useThemeColor } from "heroui-native/hooks";
+import { EllipsisVertical, Layers3, Search, WifiOff } from "lucide-react-native";
+import { useContext, useLayoutEffect, useMemo, useState } from "react";
+import { Pressable, View } from "react-native";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  FadeIn,
+  LinearTransition,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { scheduleOnRN } from "react-native-worklets";
+import {
+  type AgentListRevealState,
+  AgentListRowReveal,
+  useAgentListReveal,
+} from "@/features/agents/components/agent-list-reveal";
+import { AgentListRow } from "@/features/agents/components/agent-list-row";
+import { useAgentPinTransition } from "@/features/agents/components/agent-pin-transition";
+import { AgentWaitingGroupHeader } from "@/features/agents/components/agent-wait-badge";
+import { EmptyAgentsScene } from "@/features/agents/components/empty-agents-scene";
+import { PinnedAgentsGrid } from "@/features/agents/components/pinned-agents-grid";
+import { SidebarSectionHeader } from "@/features/agents/components/sidebar-section-header";
+import { showFailureAlert } from "@/features/analytics/failure-reports";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { ConnectionHeaderStatus } from "@/features/workspace/components/connection-header-status";
+import { useWaitingAgentIds } from "@/features/workspace/components/use-agent-activity";
+import { useUnreadAgentIds } from "@/features/workspace/components/use-live-workspace";
+import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { mobileSidebarItems, mobileWaitingItems } from "@/features/workspace/model/sidebar-layout";
+import { useAppLoadingOverlay, useScreenLoadingLabel } from "@/shared/components/app-loading-overlay";
+import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
+import { haptics } from "@/shared/lib/haptics";
+import { isAndroid, isIOS } from "@/shared/lib/platform";
+import { currentText, useText } from "@/shared/lib/text";
+
+const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
+const ROW_ENTER = FadeIn.duration(180).easing(EASE_OUT).reduceMotion(ReduceMotion.System);
+const LIST_REFLOW = LinearTransition.duration(240).easing(EASE_OUT).reduceMotion(ReduceMotion.System);
+
+function TransitioningChatRow({
+  chatId,
+  children,
+  index,
+  reveal,
+  collapsed,
+}: {
+  chatId: string;
+  children: React.ReactNode;
+  index: number;
+  reveal: AgentListRevealState;
+  collapsed: boolean;
+}) {
+  const { transition } = useAgentPinTransition();
+  const isTarget = transition?.chatId === chatId && transition.target === "row";
+
+  const [initiallyExpanded] = useState(!collapsed);
+  const [contentMounted, setContentMounted] = useState(!collapsed);
+  const [measuredHeight, setMeasuredHeight] = useState<number | null>(null);
+  const height = useSharedValue(0);
+  useLayoutEffect(() => {
+    if (!collapsed) setContentMounted(true);
+    if (measuredHeight === null) return;
+    let active = true;
+    const releaseContent = () => {
+      if (active) setContentMounted(false);
+    };
+    height.set(
+      withTiming(
+        collapsed ? 0 : measuredHeight,
+        {
+          duration: 240,
+          easing: EASE_OUT,
+          reduceMotion: ReduceMotion.System,
+        },
+        (finished) => {
+          if (finished && collapsed) scheduleOnRN(releaseContent);
+        },
+      ),
+    );
+    return () => {
+      active = false;
+      cancelAnimation(height);
+    };
+  }, [collapsed, height, measuredHeight]);
+  const bodyStyle = useAnimatedStyle(() => ({
+    height: measuredHeight === null && initiallyExpanded ? undefined : height.get(),
+    overflow: "hidden",
+  }));
+  // Derive the fade from the same height, so a reversed toggle cannot leave
+  // opacity and the accordion at different points in their transitions.
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity:
+      measuredHeight !== null && measuredHeight > 0
+        ? Math.min(1, Math.max(0, height.get() / measuredHeight))
+        : initiallyExpanded
+          ? 1
+          : 0,
+  }));
+
+  return (
+    <Animated.View
+      style={bodyStyle}
+      pointerEvents={collapsed ? "none" : "auto"}
+      accessibilityElementsHidden={collapsed}
+      importantForAccessibility={collapsed ? "no-hide-descendants" : "auto"}
+    >
+      {contentMounted ? (
+        <Animated.View
+          style={[
+            measuredHeight === null && initiallyExpanded
+              ? undefined
+              : { position: "absolute", top: 0, left: 0, right: 0 },
+            contentStyle,
+          ]}
+          onLayout={({ nativeEvent }) => {
+            const nextHeight = nativeEvent.layout.height;
+            if (measuredHeight === null && initiallyExpanded) height.set(nextHeight);
+            setMeasuredHeight(nextHeight);
+          }}
+        >
+          <Animated.View collapsable={false} entering={isTarget ? ROW_ENTER : undefined}>
+            <AgentListRowReveal index={index} reveal={reveal} skip={isTarget}>
+              {children}
+            </AgentListRowReveal>
+          </Animated.View>
+        </Animated.View>
+      ) : null}
+    </Animated.View>
+  );
+}
+
+function HeaderIconButton({
+  accessibilityLabel,
+  children,
+  onPress,
+}: {
+  accessibilityLabel: string;
+  children: React.ReactNode;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      hitSlop={4}
+      className="size-11 items-center justify-center rounded-full"
+      onPress={onPress}
+    >
+      {children}
+    </Pressable>
+  );
+}
+
+function openFromMenu(href: Href): void {
+  void haptics.impact("soft");
+  router.push(href);
+}
+
+export function ConnectedScreen() {
+  const { t, sourceText } = useText();
+  const { isLoaderPresent } = useAppLoadingOverlay();
+  const { openDrawer } = useAppDrawer();
+  const {
+    sidebarByServer,
+    refreshServer,
+    agents,
+    activeAgents,
+    activeServer,
+    hiddenAgents,
+    markAllRead,
+    pinnedAgentIds,
+    refreshServers,
+    serverDirectoryError,
+    serverDirectoryState,
+    servers,
+  } = useMobileWorkspace();
+  const [collapsedByServer, setCollapsedByServer] = useState<Record<string, ReadonlySet<string>>>({});
+  const collapsedSectionIds = collapsedByServer[activeServer.id];
+  const [foreground, muted] = useThemeColor(["foreground", "muted"]);
+  const iconColor = String(foreground);
+  const mutedColor = String(muted);
+  const hasSelectedServer = servers.some((server) => server.id === activeServer.id);
+  const showLoader =
+    (serverDirectoryState === "loading" && servers.length === 0) ||
+    (hasSelectedServer && activeServer.initialConnectionPending);
+  const listReady = !showLoader && !isLoaderPresent;
+  // Connecting to a server continues while the user reads a chat, so the label only
+  // belongs to this screen while it is the route on top.
+  useScreenLoadingLabel(
+    "/connected",
+    showLoader ? t(hasSelectedServer ? "mobile.agent.home.connecting" : "mobile.agent.home.loadingServers") : null,
+  );
+  const pinnedAgents = pinnedAgentIds
+    .map((agentId) => activeAgents.find((agent) => agent.id === agentId))
+    .filter((agent): agent is (typeof activeAgents)[number] => Boolean(agent));
+  const hasHiddenChats = hiddenAgents.length > 0;
+  const hasPins = pinnedAgents.length > 0;
+  const unreadAgentIds = useUnreadAgentIds();
+  const hasUnread = agents.some((agent) => agent.serverId === activeServer.id && unreadAgentIds.includes(agent.id));
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+  const canMarkAllRead = hasUnread && !markingAllRead && activeServer.state === "online";
+  const markAllChatsRead = () => {
+    if (!canMarkAllRead) return;
+    void haptics.impact("soft");
+    setMarkingAllRead(true);
+    void markAllRead()
+      .catch((error: unknown) =>
+        showFailureAlert(
+          error,
+          "settings",
+          currentText().t("mobile.workspace.alert.markAllReadTitle"),
+          currentText().t("mobile.workspace.alert.markAllReadBody"),
+        ),
+      )
+      .finally(() => setMarkingAllRead(false));
+  };
+  const unpinnedAgents = useMemo(
+    () => activeAgents.filter((agent) => !pinnedAgentIds.includes(agent.id)),
+    [activeAgents, pinnedAgentIds],
+  );
+  const sidebar = sidebarByServer[activeServer.id];
+  // A waiting agent leaves its section for "Needs you". A pinned agent stays in its tile, which shows the same badge.
+  const waitingAgentIds = useWaitingAgentIds();
+  const items = useMemo(
+    () => [
+      ...mobileWaitingItems(
+        sidebar?.layout ?? null,
+        unpinnedAgents.filter((agent) => waitingAgentIds.has(agent.id)),
+      ),
+      ...mobileSidebarItems(
+        sidebar?.layout ?? null,
+        unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id)),
+        undefined,
+        t,
+      ),
+    ],
+    [sidebar?.layout, unpinnedAgents, waitingAgentIds, t],
+  );
+  const visibleSectionIds = items.filter((item) => item.kind === "section").map((item) => item.id);
+  const headerHeight = useContext(HeaderHeightContext) ?? 0;
+  const insets = useSafeAreaInsets();
+  // With nothing in the list, the scene replaces it. In a list, the native header and safe-area
+  // insets add to a content container that already fills the screen, so iOS would scroll it.
+  // Pins and a sidebar error still need the list header, so they keep the scene in the list.
+  const showAgentsScene =
+    hasSelectedServer &&
+    activeServer.state === "online" &&
+    activeAgents.length === 0 &&
+    items.length === 0 &&
+    !hasPins &&
+    !sidebar?.error;
+  const addAgent = () => {
+    void haptics.impact("soft");
+    router.push("/add-agent");
+  };
+  const listReveal = useAgentListReveal(listReady, activeServer.id);
+  // Collapse keeps stable list cells and changes their heights on the UI thread.
+  // Enable cell reflow again when a host layout update moves agents or sections.
+  const [collapseLayout, setCollapseLayout] = useState<SidebarLayoutSnapshot | null>(null);
+  const collapsedChatIds = useMemo(() => {
+    const ids = new Set<string>();
+    let sectionCollapsed = false;
+    for (const item of items) {
+      if (item.kind === "waiting") sectionCollapsed = false;
+      else if (item.kind === "section") sectionCollapsed = collapsedSectionIds?.has(item.id) ?? false;
+      else if (sectionCollapsed) ids.add(item.id);
+    }
+    return ids;
+  }, [items, collapsedSectionIds]);
+  // Add actions come first, then a divider and the actions on existing chats.
+  const optionsActions = useMemo<MenuAction[]>(() => {
+    const chatActions: MenuAction[] = [
+      ...(hasSelectedServer
+        ? [
+            {
+              id: "mark-all-read",
+              title: t("mobile.agent.home.markAllRead"),
+              attributes: { disabled: !canMarkAllRead },
+            },
+          ]
+        : []),
+      ...(hasHiddenChats ? [{ id: "hidden-chats", title: t("mobile.agent.hidden.title") }] : []),
+    ];
+    return [
+      {
+        id: "add",
+        title: "",
+        displayInline: true,
+        subactions: [
+          { id: "add-agent", title: t("mobile.agent.home.addAgent") },
+          ...(sidebar?.layout ? [{ id: "add-section", title: t("mobile.agent.sectionForm.newTitle") }] : []),
+        ],
+      },
+      ...(chatActions.length > 0 ? [{ id: "chats", title: "", displayInline: true, subactions: chatActions }] : []),
+    ];
+  }, [hasHiddenChats, hasSelectedServer, canMarkAllRead, sidebar?.layout, t]);
+
+  return (
+    <View className="flex-1 bg-background">
+      {listReady && showAgentsScene ? (
+        // The transparent header covers the top of the screen. The bottom matches the list's `pb-safe-offset-4`.
+        <EmptyAgentsScene
+          onAddAgent={addAgent}
+          style={{ paddingTop: headerHeight, paddingBottom: insets.bottom + 16 }}
+        />
+      ) : listReady ? (
+        <Animated.FlatList
+          key={activeServer.id}
+          onLayout={listReveal.onLayout}
+          itemLayoutAnimation={listReveal.finished && sidebar?.layout !== collapseLayout ? LIST_REFLOW : undefined}
+          skipEnteringExitingAnimations
+          removeClippedSubviews={false}
+          className="flex-1 bg-background"
+          alwaysBounceVertical={false}
+          contentContainerClassName={items.length > 0 ? "pb-safe-offset-4" : "grow pb-safe-offset-4"}
+          // Android has no content inset, so the list starts below the transparent header.
+          contentContainerStyle={isAndroid ? { paddingTop: headerHeight } : undefined}
+          // Keep the native header inset even when short content cannot scroll or bounce.
+          contentInsetAdjustmentBehavior="always"
+          data={items}
+          keyExtractor={(item) => `${item.kind}:${item.id}`}
+          renderItem={({ item, index }) =>
+            item.kind === "waiting" ? (
+              <AgentListRowReveal index={index + (hasPins ? 1 : 0)} reveal={listReveal}>
+                <AgentWaitingGroupHeader count={item.count} />
+              </AgentListRowReveal>
+            ) : item.kind === "section" ? (
+              <AgentListRowReveal index={index + (hasPins ? 1 : 0)} reveal={listReveal}>
+                <SidebarSectionHeader
+                  key={`${activeServer.id}:${item.id}`}
+                  id={item.id}
+                  name={item.name}
+                  empty={item.empty}
+                  visibleSectionIds={visibleSectionIds}
+                  collapsed={collapsedSectionIds?.has(item.id) ?? false}
+                  onToggle={() => {
+                    setCollapseLayout(sidebar?.layout ?? null);
+                    setCollapsedByServer((current) => {
+                      const next = new Set(current[activeServer.id]);
+                      if (next.has(item.id)) next.delete(item.id);
+                      else next.add(item.id);
+                      return { ...current, [activeServer.id]: next };
+                    });
+                  }}
+                />
+              </AgentListRowReveal>
+            ) : (
+              <TransitioningChatRow
+                chatId={item.agent.id}
+                index={index + (hasPins ? 1 : 0)}
+                reveal={listReveal}
+                collapsed={collapsedChatIds.has(item.id)}
+              >
+                <AgentListRow agent={item.agent} leftInset={15} rightInset={24} />
+              </TransitioningChatRow>
+            )
+          }
+          ListHeaderComponent={
+            <AgentListRowReveal index={0} reveal={listReveal}>
+              {sidebar?.error ? (
+                <View className="gap-2 px-4">
+                  <Typography.Paragraph className="text-danger-text">{sourceText(sidebar.error)}</Typography.Paragraph>
+                  <Button
+                    variant="secondary"
+                    onPress={() => void refreshServer(activeServer.id).catch(() => undefined)}
+                  >
+                    <Button.Label>{t("mobile.agent.home.retrySections")}</Button.Label>
+                  </Button>
+                </View>
+              ) : null}
+              <PinnedAgentsGrid agents={pinnedAgents} />
+            </AgentListRowReveal>
+          }
+          ListEmptyComponent={
+            serverDirectoryState === "error" && servers.length === 0 ? (
+              <View className="flex-1 items-center justify-center gap-5 px-8 py-16">
+                <View className="size-16 items-center justify-center rounded-3xl bg-control">
+                  <WifiOff color={mutedColor} size={28} strokeWidth={1.6} />
+                </View>
+                <View className="items-center gap-1.5">
+                  <Typography.Heading type="h4">{t("mobile.agent.home.serversFailed")}</Typography.Heading>
+                  <Typography.Paragraph align="center" className="text-text-secondary">
+                    {serverDirectoryError ? sourceText(serverDirectoryError) : t("mobile.agent.home.serversFailedBody")}
+                  </Typography.Paragraph>
+                </View>
+                <Button size="md" variant="secondary" onPress={() => void refreshServers().catch(() => undefined)}>
+                  <Button.Label>{t("common.tryAgain")}</Button.Label>
+                </Button>
+              </View>
+            ) : servers.length === 0 ? (
+              <View className="flex-1 items-center justify-center gap-5 px-8 py-16">
+                <View className="size-16 items-center justify-center rounded-3xl bg-control">
+                  <Layers3 color={mutedColor} size={28} strokeWidth={1.6} />
+                </View>
+                <View className="items-center gap-1.5">
+                  <Typography.Heading type="h4">{t("mobile.agent.home.noServers")}</Typography.Heading>
+                  <Typography.Paragraph align="center" className="text-text-secondary">
+                    {t("mobile.agent.home.noServersBody")}
+                  </Typography.Paragraph>
+                </View>
+              </View>
+            ) : !hasSelectedServer ? (
+              <View className="flex-1 items-center justify-center gap-5 px-8 py-16">
+                <Typography.Heading type="h4">{t("mobile.agent.home.chooseServer")}</Typography.Heading>
+                <Button size="md" variant="secondary" onPress={openDrawer}>
+                  <Button.Label>{t("mobile.agent.home.openServers")}</Button.Label>
+                </Button>
+              </View>
+            ) : activeAgents.length === 0 && activeServer.state !== "online" ? (
+              <View className="flex-1 items-center justify-center gap-5 px-8 py-16">
+                <WifiOff color={mutedColor} size={28} strokeWidth={1.6} />
+                <View className="items-center gap-1.5">
+                  <Typography.Heading type="h4">{t("mobile.agent.home.waiting")}</Typography.Heading>
+                  <Typography.Paragraph align="center" className="text-text-secondary">
+                    {t("mobile.agent.home.waitingBody")}
+                  </Typography.Paragraph>
+                </View>
+              </View>
+            ) : activeAgents.length === 0 ? (
+              <EmptyAgentsScene onAddAgent={addAgent} />
+            ) : null
+          }
+        />
+      ) : null}
+
+      {/* The list scrolls under the transparent header, which gets the blur of the chat header. iOS 27
+          shows no native scroll edge effect here. The native top edge is hidden to avoid two effects. */}
+      <SheetScrollEdgeEffect style={{ height: headerHeight + 20, left: 0, position: "absolute", right: 0, top: 0 }} />
+
+      <Stack.Screen
+        options={{
+          headerLeft: isAndroid
+            ? () => (
+                <View className="flex-row items-center gap-2">
+                  <HeaderIconButton accessibilityLabel={t("mobile.agent.home.openServers")} onPress={openDrawer}>
+                    <Layers3 color={iconColor} size={22} strokeWidth={1.8} />
+                  </HeaderIconButton>
+                  <ConnectionHeaderStatus server={hasSelectedServer ? activeServer : undefined} />
+                </View>
+              )
+            : undefined,
+          headerRight: isAndroid
+            ? () => (
+                <View className="flex-row items-center gap-1">
+                  <HeaderIconButton
+                    accessibilityLabel={t("mobile.agent.home.searchAgents")}
+                    onPress={() => {
+                      void haptics.impact("soft");
+                      router.push("/search-agents");
+                    }}
+                  >
+                    <Search color={iconColor} size={22} strokeWidth={1.9} />
+                  </HeaderIconButton>
+                  <MenuView
+                    actions={optionsActions}
+                    onPressAction={(event) => {
+                      if (event.nativeEvent.event === "add-section")
+                        router.push({ pathname: "/section-form", params: { serverId: activeServer.id } });
+                      if (event.nativeEvent.event === "add-agent") router.push("/add-agent");
+                      if (event.nativeEvent.event === "hidden-chats") router.push("/hidden-chats");
+                      if (event.nativeEvent.event === "mark-all-read") markAllChatsRead();
+                    }}
+                    style={{ height: 44, width: 44 }}
+                  >
+                    <View
+                      accessibilityLabel={t("mobile.agent.home.chatOptions")}
+                      accessibilityRole="button"
+                      accessible
+                      className="size-11 items-center justify-center rounded-full"
+                    >
+                      <EllipsisVertical color={iconColor} size={24} strokeWidth={1.9} />
+                    </View>
+                  </MenuView>
+                </View>
+              )
+            : undefined,
+          headerTintColor: foreground,
+          headerTransparent: true,
+          scrollEdgeEffects: { top: "hidden" },
+          title: "",
+        }}
+      />
+
+      {isIOS ? (
+        <>
+          <Stack.Toolbar placement="left">
+            <Stack.Toolbar.Button icon="square.stack.3d.up.fill" onPress={openDrawer} />
+            <Stack.Toolbar.View hidesSharedBackground>
+              <ConnectionHeaderStatus server={hasSelectedServer ? activeServer : undefined} />
+            </Stack.Toolbar.View>
+          </Stack.Toolbar>
+          <Stack.Toolbar placement="right">
+            <Stack.Toolbar.Button
+              icon="magnifyingglass"
+              accessibilityLabel={t("mobile.agent.home.searchAgents")}
+              separateBackground
+              onPress={() => {
+                void haptics.impact("soft");
+                router.push("/search-agents");
+              }}
+            />
+            <Stack.Toolbar.Menu
+              icon="ellipsis"
+              accessibilityLabel={t("mobile.agent.home.chatOptions")}
+              separateBackground
+            >
+              {/* Add actions come first, then a divider and the actions on existing chats. */}
+              <Stack.Toolbar.Menu inline>
+                <Stack.Toolbar.MenuAction icon="plus.circle" onPress={() => openFromMenu("/add-agent")}>
+                  {t("mobile.agent.home.addAgent")}
+                </Stack.Toolbar.MenuAction>
+                {sidebar?.layout ? (
+                  <Stack.Toolbar.MenuAction
+                    icon="folder.badge.plus"
+                    onPress={() => openFromMenu({ pathname: "/section-form", params: { serverId: activeServer.id } })}
+                  >
+                    {t("mobile.agent.sectionForm.newTitle")}
+                  </Stack.Toolbar.MenuAction>
+                ) : null}
+              </Stack.Toolbar.Menu>
+              {hasSelectedServer || hasHiddenChats ? (
+                <Stack.Toolbar.Menu inline>
+                  {hasSelectedServer ? (
+                    <Stack.Toolbar.MenuAction
+                      icon="envelope.open"
+                      disabled={!canMarkAllRead}
+                      onPress={markAllChatsRead}
+                    >
+                      {t("mobile.agent.home.markAllRead")}
+                    </Stack.Toolbar.MenuAction>
+                  ) : null}
+                  {hasHiddenChats ? (
+                    <Stack.Toolbar.MenuAction icon="eye.slash" onPress={() => openFromMenu("/hidden-chats")}>
+                      {t("mobile.agent.hidden.title")}
+                    </Stack.Toolbar.MenuAction>
+                  ) : null}
+                </Stack.Toolbar.Menu>
+              ) : null}
+            </Stack.Toolbar.Menu>
+          </Stack.Toolbar>
+        </>
+      ) : null}
+    </View>
+  );
+}

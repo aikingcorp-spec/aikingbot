@@ -1,0 +1,30 @@
+import type { PartialTranslation } from "../../../message";
+import type { messages as source } from "../../en/mobile/search";
+
+export const messages = {
+  "mobile.search.clear": "検索をクリア",
+  "mobile.search.filter.label": "結果を絞り込む",
+  "mobile.search.filter.all": "すべて",
+  "mobile.search.filter.agents": "エージェント",
+  "mobile.search.filter.messages": "メッセージ",
+  "mobile.search.filter.files": "ファイル",
+  "mobile.search.filter.routines": "ルーティン",
+  "mobile.search.filter.settings": "設定",
+  "mobile.search.clearFilter": "フィルタを解除",
+  "mobile.search.seeAll": "すべて表示",
+  "mobile.search.seeAllLabel": "{section}をすべて表示",
+  "mobile.search.emptyTitle": "一致する結果はありません",
+  "mobile.search.emptyBody": "別の検索語をお試しください。",
+  "mobile.search.hintTitle": "メッセージを検索",
+  "mobile.search.hintBody": "エージェントとのチャットのメッセージに含まれる語句を入力してください。",
+  "mobile.search.loading": "検索中…",
+  "mobile.search.failedTitle": "一部の結果を読み込めませんでした",
+  "mobile.search.errorBody": "このコンピューターへの接続を確認して、もう一度お試しください。",
+  "mobile.search.retry": "もう一度試す",
+  "mobile.search.showMore": "さらにメッセージを表示",
+  "mobile.search.showMoreFiles": "さらにファイルを表示",
+  "mobile.search.youWrote": "あなた: {text}",
+  "mobile.search.authorText": "{author}: {text}",
+  "mobile.search.fileDetail": "{name} · {size}",
+  "mobile.search.routinePaused": "一時停止中",
+} as const satisfies PartialTranslation<typeof source>;

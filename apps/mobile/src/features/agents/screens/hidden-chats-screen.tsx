@@ -1,0 +1,92 @@
+import { type Href, Link, router } from "expo-router";
+import { Typography } from "heroui-native";
+import { useThemeColor } from "heroui-native/hooks";
+import { Eye } from "lucide-react-native";
+import type { ReactNode } from "react";
+import { Pressable, View } from "react-native";
+import { BloubAvatar } from "@/features/agents/components/bloub-avatar";
+import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { SheetScrollView } from "@/shared/components/sheet-scroll-view";
+import { haptics } from "@/shared/lib/haptics";
+import { useText } from "@/shared/lib/text";
+
+export function HiddenChatsScreen() {
+  const { t } = useText();
+  const { hiddenAgents, unhideAgent } = useMobileWorkspace();
+  const foreground = useThemeColor("foreground");
+  const items: { id: string; name: string; href: Href; avatar: ReactNode; show: () => void }[] = hiddenAgents.map(
+    (agent) => ({
+      id: agent.id,
+      name: agent.name,
+      href: { pathname: "/chat/[agentId]" as const, params: { agentId: agent.id } },
+      avatar: (
+        <BloubAvatar
+          agentId={agent.id}
+          serverId={agent.serverId}
+          hue={agent.avatarHue}
+          seed={agent.avatarSeed}
+          size={46}
+          animateIdle={false}
+        />
+      ),
+      show: () => {
+        unhideAgent(agent.id);
+        void haptics.notification();
+        if (hiddenAgents.length === 1) router.back();
+      },
+    }),
+  );
+
+  return (
+    <SheetScrollView contentContainerClassName="gap-5 px-5 pb-safe-offset-5 pt-7">
+      <View className="items-center gap-2 px-4">
+        <Typography.Heading type="h4" align="center">
+          {t("mobile.agent.hidden.title")}
+        </Typography.Heading>
+        <Typography.Paragraph type="body-xs" align="center" className="text-text-secondary">
+          {t("mobile.agent.hidden.body")}
+        </Typography.Paragraph>
+      </View>
+
+      <View className="overflow-hidden rounded-3xl bg-control">
+        {items.map((item) => (
+          <View key={item.id} className="min-h-18 flex-row items-center gap-2 px-3 py-2">
+            <Link
+              href={item.href}
+              asChild
+              dismissTo
+              onPress={() => {
+                void haptics.impact("soft");
+              }}
+            >
+              <Link.Trigger>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("mobile.agent.list.open", { name: item.name })}
+                  className="min-w-0 flex-1 flex-row items-center gap-3 rounded-2xl px-1 py-1"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.58 : 1 })}
+                >
+                  {item.avatar}
+                  <Typography.Paragraph className="min-w-0 flex-1" weight="semibold" numberOfLines={1}>
+                    {item.name}
+                  </Typography.Paragraph>
+                </Pressable>
+              </Link.Trigger>
+            </Link>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("mobile.agent.hidden.showNamed", { name: item.name })}
+              className="min-h-10 flex-row items-center gap-1.5 rounded-full bg-control-active px-3"
+              onPress={item.show}
+            >
+              <Eye color={String(foreground)} size={16} strokeWidth={1.9} />
+              <Typography.Paragraph type="body-xs" weight="semibold">
+                {t("mobile.agent.hidden.show")}
+              </Typography.Paragraph>
+            </Pressable>
+          </View>
+        ))}
+      </View>
+    </SheetScrollView>
+  );
+}
