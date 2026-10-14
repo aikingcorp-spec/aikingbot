@@ -1,7 +1,8 @@
 // AIKING stage 2: workspace rail, chrome frame, sidebar kept in the Routines view, Marketplace dialog. Based on OpenMausBot src/App.tsx (Apache-2.0).
 import { WorkspaceRail } from "@/aiking/WorkspaceChrome";
 import { Marketplace } from "@/aiking/Marketplace";
-import { registerMarketplaceOpener } from "@/aiking/marketplace-state";
+import { registerMarketplaceOpener, requestFullAgentDialog, useFullAgentDialog } from "@/aiking/marketplace-state";
+import { NewAgentScreen } from "@/aiking/NewAgentScreen";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAdvancedMode } from "@/lib/interface-mode";
 import { Loader2, Menu } from "lucide-react";
@@ -48,6 +49,11 @@ import { ChatNotice } from "@/components/ChatErrorBanner";
 
 function Shell({ viewer }: { viewer: WelcomeViewer | null }) {
   const { state, dispatch } = useStore();
+  const fullAgentDialog = useFullAgentDialog();
+  useEffect(() => {
+    // The full dialog is a one-time step from the quick screen; the next New agent starts quick again.
+    if (!state.newBotOpen) requestFullAgentDialog(false);
+  }, [state.newBotOpen]);
   useEffect(() => {
     registerMarketplaceOpener((open) => dispatch({ type: "togglePlugins", open }));
     return () => registerMarketplaceOpener(null);
@@ -289,7 +295,9 @@ function Shell({ viewer }: { viewer: WelcomeViewer | null }) {
           menuButtonRef.current?.focus();
         }}
       />
-      {state.activeView === "team-map" ? (
+      {state.newBotOpen && !fullAgentDialog ? (
+        <NewAgentScreen />
+      ) : state.activeView === "team-map" ? (
         <TeamMapPage />
       ) : state.activeView === "routines" ? (
         <RoutinesPage onBack={closeCalendar} onOpenRoom={openCalendarRoom} />
@@ -350,7 +358,7 @@ function Shell({ viewer }: { viewer: WelcomeViewer | null }) {
       <CloudSetup viewer={viewer} />
       {state.pluginsOpen && <Marketplace />}
       {state.triggersOpen && <TriggersPanel />}
-      {state.newBotOpen && <NewBotDialog />}
+      {state.newBotOpen && fullAgentDialog && <NewBotDialog />}
       {state.shortcutsOpen && (
         <KeyboardShortcutsModal
           open={state.shortcutsOpen}

@@ -3,11 +3,16 @@
 // through the upstream `togglePlugins` action, so every existing "Apps"
 // entry point (sidebar, command palette, settings links) lands here.
 import { useSyncExternalStore } from "react";
+import type { BotDefaultsProfile } from "../../shared/new-bot-defaults";
+
+export type AgentSeed = Partial<BotDefaultsProfile>;
 
 export type MarketplaceTab = "agents" | "apps" | "skills";
 
 let tab: MarketplaceTab = "agents";
 let seededRole: string | null = null;
+let seededPatch: AgentSeed | null = null;
+let fullDialog = false;
 const listeners = new Set<() => void>();
 let dispatcher: ((open: boolean) => void) | null = null;
 
@@ -51,4 +56,32 @@ export function takeSeededRole(): string | null {
   const role = seededRole;
   seededRole = null;
   return role;
+}
+
+/** Fields typed on the quick New agent screen, carried into the full dialog by "More options". */
+export function seedNewAgentPatch(patch: AgentSeed | null) {
+  seededPatch = patch;
+}
+
+export function takeSeededPatch(): AgentSeed | null {
+  const patch = seededPatch;
+  seededPatch = null;
+  return patch;
+}
+
+/** The quick screen is the default; "More options" opens the full dialog once. */
+export function requestFullAgentDialog(full: boolean) {
+  fullDialog = full;
+  emit();
+}
+
+export function useFullAgentDialog(): boolean {
+  return useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => fullDialog,
+    () => fullDialog,
+  );
 }

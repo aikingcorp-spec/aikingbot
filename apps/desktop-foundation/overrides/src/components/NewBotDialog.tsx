@@ -5,7 +5,7 @@ import { api, BotEditorStore, useStore, type Bot, type ModelSelection } from "@/
 import { BotCreationDraft, EMPTY_BOT_DEFAULTS } from "@/lib/bot-creation-draft";
 import { createConfiguredBot, preparedBotTemplate } from "@/lib/create-configured-bot";
 import { BOT_ROLES, roleProfilePatch } from "@/lib/bot-roles";
-import { takeSeededRole } from "@/aiking/marketplace-state";
+import { takeSeededPatch, takeSeededRole } from "@/aiking/marketplace-state";
 import { chosenPreset, presetDraftPatch, presetGroups, presetPictureFile, presetSummaryLines, type BotPreset } from "@/lib/bot-presets";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/i18n";
@@ -73,6 +73,7 @@ export function LocalNewBotDialog({ defaultsMode = false, onClose, section, onCr
 } = {}) {
   const parent = useStore();
   const [seededRole] = useState(() => (defaultsMode ? null : takeSeededRole()));
+  const [seededPatch] = useState(() => (defaultsMode ? null : takeSeededPatch()));
   const [, render] = useState(0);
   const [draft, setDraft] = useState(() => new BotCreationDraft(EMPTY_BOT_DEFAULTS, () => render(value => value + 1)));
   const [active, setActive] = useState<Section>("Identity");
@@ -108,11 +109,12 @@ export function LocalNewBotDialog({ defaultsMode = false, onClose, section, onCr
         const role = seededRole ? BOT_ROLES.find(candidate => candidate.id === seededRole) : undefined;
         const next = new BotCreationDraft(defaults, () => render(value => value + 1));
         if (role) next.patch(roleProfilePatch(role));
+        if (seededPatch) next.patch(seededPatch);
         setDraft(next);
         setReady(true);
       }).catch(cause => { if (!cancelled) setError(String(cause)); });
     return () => { cancelled = true; };
-  }, [defaultsMode, section, seededRole]);
+  }, [defaultsMode, section, seededRole, seededPatch]);
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useEffect(() => () => draft.dispose(), [draft]);
   // Disabling the focused Create button drops focus to the page in Chromium.

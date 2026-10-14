@@ -32,7 +32,17 @@ const page = cdp
   ? context.pages().find((p) => new URL(p.url()).origin === new URL(info.uiUrl).origin)
   : await context.newPage();
 assert.ok(page, "The owned desktop must show the fixture URL.");
-const surface = cdp ? "electron" : "browser";
+const skin = process.env.AIKING_TOUR_SKIN;
+const advanced = process.env.AIKING_TOUR_ADVANCED === "1";
+if ((skin || advanced) && !cdp) {
+  await context.addInitScript(({ id, on }) => {
+    try {
+      if (id) localStorage.setItem("omb-skin", id);
+      localStorage.setItem("omb-advanced-mode", on ? "1" : "0");
+    } catch {}
+  }, { id: skin, on: advanced });
+}
+const surface = `${cdp ? "electron" : "browser"}${skin ? `-${skin}` : ""}${advanced ? "-advanced" : ""}${width !== 1440 ? `-${width}` : ""}`;
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 if (!cdp) await page.goto(info.uiUrl, { waitUntil: "domcontentloaded", timeout: 120_000 });
@@ -103,7 +113,13 @@ async function openLook() {
   for (let attempt = 0; attempt < 3 && !(await reset.isVisible().catch(() => false)); attempt += 1) {
     // The profile button toggles the panel, so open it only when the Look entry is not already there.
     if (!(await look.isVisible().catch(() => false))) await page.getByRole("button", { name: /^Open .*'s profile$/ }).first().click();
-    await look.waitFor({ timeout: 5_000 }).then(() => look.click()).catch(() => {});
+    // Advanced mode lists the profile as sections; the avatar editor sits under Identity.
+    const identity = page.getByRole("button", { name: /^Identity/ }).first();
+    if (await identity.isVisible().catch(() => false)) {
+      if ((await identity.getAttribute("aria-expanded")) !== "true") await identity.click();
+    } else {
+      await look.waitFor({ timeout: 5_000 }).then(() => look.click()).catch(() => {});
+    }
     await reset.waitFor({ timeout: 5_000 }).catch(() => {});
   }
   await reset.waitFor({ timeout: 5_000 });
@@ -211,7 +227,33 @@ await step("tool-activity", async () => {
 await step("new-agent", async () => {
   await button("New or share").click();
   await button("New agent").click();
-  await page.getByRole("textbox", { name: "Name" }).first().waitFor();
+  await page.locator("[data-new-agent-screen]").waitFor();
+  await page.getByRole("textbox", { name: "Name" }).fill("Launch Scout");
+  await page.getByRole("textbox", { name: /What should this agent help with/ }).fill("Find TikTok hooks for product launches.");
+  await page.getByRole("radio", { name: "orange color" }).click();
+  await page.getByRole("radio", { name: "Diamond shape" }).click();
+});
+
+await step("new-agent-more-options", async () => {
+  await button("More options").click();
+  const dialog = page.getByRole("dialog", { name: "New agent" });
+  await dialog.waitFor();
+  assert.equal(await dialog.getByRole("textbox", { name: "Name" }).first().inputValue(), "Launch Scout");
+  await closeOverlays();
+  await page.locator("[data-new-agent-screen]").waitFor({ state: "detached" });
+});
+
+await step("new-agent-created", async () => {
+  await button("New or share").click();
+  await button("New agent").click();
+  await page.locator("[data-new-agent-screen]").waitFor();
+  await page.getByRole("textbox", { name: "Name" }).fill("Launch Scout");
+  await page.getByRole("radio", { name: "orange color" }).click();
+  await page.getByRole("radio", { name: "Diamond shape" }).click();
+  await button("Create agent").click();
+  await page.getByRole("textbox", { name: "Message Launch Scout" }).waitFor({ timeout: 60_000 });
+  const created = (await apiBots()).filter((bot) => bot.name === "Launch Scout").at(-1);
+  assert.deepEqual([created?.color, created?.mascotBody], ["orange", "diamond"]);
 });
 await closeOverlays();
 
@@ -291,8 +333,8 @@ await step("avatar-mascot-persists", async () => {
 await closeOverlays();
 
 await step("model-picker", async () => {
-  await page.locator("[data-chathead-controls] button").first().click();
-  await page.getByText(/Quick|Balanced/).first().waitFor();
+  await page.locator("[data-chathead-controls] button").filter({ hasText: /Claude|GPT|Gemini|Grok|model/i }).first().click();
+  await page.getByText(/Quick|Balanced|Effort/).first().waitFor();
 });
 await closeOverlays();
 

@@ -85,6 +85,18 @@ const en = {
   "conn.servers": "{count} servers",
   "conn.skill": "{count} skill",
   "conn.skillsCount": "{count} skills",
+  "newAgent.title": "New agent",
+  "newAgent.close": "Close new agent",
+  "newAgent.color": "Color",
+  "newAgent.colorNamed": "{color} color",
+  "newAgent.shape": "Shape",
+  "newAgent.shapeNamed": "{shape} shape",
+  "newAgent.name": "Name",
+  "newAgent.job": "What should this agent help with?",
+  "newAgent.jobPlaceholder": "Plan trips, compare options, or help with everyday work.",
+  "newAgent.more": "More options",
+  "newAgent.create": "Create agent",
+  "newAgent.suggestions": "Suggestions",
 } as const;
 
 export type AikingKey = keyof typeof en;
