@@ -10,6 +10,7 @@
 //   AIKING_VERIFY_CDP=http://127.0.0.1:9223 node apps/desktop-foundation/ui-tour.mjs
 import assert from "node:assert/strict";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { crc32, deflateSync } from "node:zlib";
 import { join } from "node:path";
 import { chromium } from "playwright-core";
 import { runtimeRoot } from "./setup.mjs";
@@ -53,8 +54,9 @@ async function step(name, run) {
       console.log(`skip ${name}: ${error.message}`);
       return;
     }
-    results.push({ name, ok: false, error: String(error?.message ?? error).split("\n")[0] });
-    console.log(`FAIL ${name}: ${String(error?.message ?? error).split("\n")[0]}`);
+    const at = String(error?.stack ?? "").split("\n").find((line) => line.includes("ui-tour.mjs"))?.trim();
+    results.push({ name, ok: false, error: String(error?.message ?? error).split("\n")[0], at });
+    console.log(`FAIL ${name}: ${String(error?.message ?? error).split("\n")[0]} ${at ?? ""}`);
     await page.screenshot({ path: join(out, `${surface}-${name}-failed.png`) }).catch(() => {});
   }
 }
@@ -65,6 +67,49 @@ async function closeOverlays() {
   }
 }
 const button = (name, exact = true) => page.getByRole("button", { name, exact });
+/** A small real PNG (a diagonal gradient), so the avatar upload goes through the actual image path. */
+function gradientPng(size = 96) {
+  const rows = [];
+  for (let y = 0; y < size; y += 1) {
+    const row = [0];
+    for (let x = 0; x < size; x += 1) row.push(40 + x, 120 + Math.round(y / 2), 200 - x);
+    rows.push(Buffer.from(row));
+  }
+  const chunk = (type, data) => {
+    const length = Buffer.alloc(4); length.writeUInt32BE(data.length);
+    const body = Buffer.concat([Buffer.from(type), data]);
+    const crc = Buffer.alloc(4); crc.writeUInt32BE(crc32(body) >>> 0);
+    return Buffer.concat([length, body, crc]);
+  };
+  const header = Buffer.alloc(13);
+  header.writeUInt32BE(size, 0); header.writeUInt32BE(size, 4); header[8] = 8; header[9] = 2;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", header), chunk("IDAT", deflateSync(Buffer.concat(rows))), chunk("IEND", Buffer.alloc(0))]);
+}
+async function waitForBot(id, test, timeout = 30_000) {
+  const until = Date.now() + timeout;
+  for (;;) {
+    const bot = (await apiBots()).find((candidate) => candidate.id === id);
+    if (bot && test(bot)) return bot;
+    if (Date.now() > until) throw new Error(`Agent ${id} did not reach the expected saved state: ${JSON.stringify(bot ? { color: bot.color, body: bot.mascotBody, expression: bot.mascotExpression, crop: bot.avatarCrop, url: Boolean(bot.avatarUrl) } : null)}`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+}
+async function apiBots() {
+  return (await fetch(`${info.apiUrl}/api/bots`).then((r) => r.json())).bots;
+}
+async function openLook() {
+  const reset = page.getByRole("button", { name: "Reset mascot" });
+  const look = page.getByRole("button", { name: /^Change how .* looks$/ });
+  for (let attempt = 0; attempt < 3 && !(await reset.isVisible().catch(() => false)); attempt += 1) {
+    // The profile button toggles the panel, so open it only when the Look entry is not already there.
+    if (!(await look.isVisible().catch(() => false))) await page.getByRole("button", { name: /^Open .*'s profile$/ }).first().click();
+    await look.waitFor({ timeout: 5_000 }).then(() => look.click()).catch(() => {});
+    await reset.waitFor({ timeout: 5_000 }).catch(() => {});
+  }
+  await reset.waitFor({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Reset mascot" }).waitFor();
+}
+
 
 const composer = page.getByRole("textbox", { name: /^Message / }).first();
 await composer.waitFor({ timeout: 120_000 });
@@ -198,6 +243,50 @@ await composer.waitFor();
 await step("agent-profile", async () => {
   await page.getByRole("button", { name: /^Open .*'s profile$/ }).first().click();
   await page.getByRole("button", { name: /^Close/ }).first().waitFor();
+});
+await closeOverlays();
+
+/** A dedicated agent for avatar checks, opened by id so duplicate names and reload selection cannot mislead. */
+let avatarAgent = null;
+async function selectAvatarAgent() {
+  if (!avatarAgent) {
+    avatarAgent = (await fetch(`${info.apiUrl}/api/bots`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: "Avatar QA" }) }).then((r) => r.json())).bot.id;
+  }
+  const row = page.locator(`[data-sidebar-bot-row="${avatarAgent}"]`);
+  await row.waitFor({ timeout: 30_000 });
+  await row.click();
+  await page.getByRole("textbox", { name: "Message Avatar QA" }).waitFor();
+  return avatarAgent;
+}
+
+await step("avatar-upload-persists", async () => {
+  const id = await selectAvatarAgent();
+  await openLook();
+  await page.locator('input[type="file"][accept*="image"]').first().setInputFiles({ name: "avatar.png", mimeType: "image/png", buffer: gradientPng() });
+  await waitForBot(id, (bot) => Boolean(bot.avatarUrl) && bot.avatarCrop !== "mascot");
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await composer.waitFor({ timeout: 120_000 });
+  await page.locator(`[data-sidebar-bot-row="${id}"] img`).waitFor({ timeout: 30_000 });
+  const loaded = await page.locator(`[data-sidebar-bot-row="${id}"] img`).evaluate((img) => img.complete && img.naturalWidth > 0);
+  assert.equal(loaded, true, "The uploaded avatar image loads after a reload.");
+});
+
+await step("avatar-mascot-persists", async () => {
+  const id = await selectAvatarAgent();
+  await openLook();
+  await button("Reset mascot").click();
+  await button("Use purple mascot color").click();
+  await button("Use the Hexagon body").click();
+  await button("Use proud expression").click();
+  await waitForBot(id, (bot) => bot.color === "purple" && bot.mascotBody === "hexagon" && bot.mascotExpression === "proud" && (bot.avatarCrop ?? "mascot") === "mascot");
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await composer.waitFor({ timeout: 120_000 });
+  await page.locator(`[data-sidebar-bot-row="${id}"] [data-body="hexagon"] svg[data-state="proud"]`).waitFor({ timeout: 30_000 });
+  await selectAvatarAgent();
+  await openLook();
+  assert.equal(await button("Use proud expression").getAttribute("aria-pressed"), "true");
+  assert.equal(await button("Use purple mascot color").getAttribute("aria-pressed"), "true");
+  assert.equal(await button("Use the Hexagon body").getAttribute("aria-pressed"), "true");
 });
 await closeOverlays();
 

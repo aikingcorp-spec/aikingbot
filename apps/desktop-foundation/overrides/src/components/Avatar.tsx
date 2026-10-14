@@ -163,29 +163,48 @@ function bodyShape(bodyId: MascotBodyId | undefined): (fill: string) => React.Re
   }
 }
 
-type Face = "dots" | "happy" | "closed" | "up" | "down" | "wide" | "wink" | "sad" | "angry";
+type Face = "dots" | "happy" | "closed" | "up" | "down" | "wide" | "wink" | "sad" | "angry" | "curious" | "drowsy" | "attentive" | "sleeping" | "squint" | "proud";
 
+/** Every pickable expression has its own face; the other states borrow the nearest one. */
 const FACE_BY_STATE: Record<string, Face> = {
-  sleeping: "closed", drowsy: "closed", bored: "closed",
-  happy: "happy", laughing: "happy", celebrate: "happy", proud: "happy", excited: "happy", playful: "happy", bouncing: "happy",
-  thinking: "up", searching: "up", curious: "up", confused: "up", suspicious: "up", orbit: "up", radar: "up", listening: "up",
+  idle: "dots",
+  happy: "happy", laughing: "happy", celebrate: "happy", excited: "happy", playful: "happy", bouncing: "happy",
+  curious: "curious", confused: "curious",
+  drowsy: "drowsy", bored: "drowsy",
   working: "down", writing: "down", loading: "down", progress: "down", uploading: "down", sending: "down", receiving: "down", dictating: "down", humming: "down", spawning: "down", dragging: "down",
+  thinking: "up", searching: "up", orbit: "up", radar: "up",
+  listening: "attentive",
+  sleeping: "sleeping",
+  suspicious: "squint",
+  proud: "proud",
   surprised: "wide", scared: "wide", alerting: "wide", notifying: "wide", waking: "wide",
   shy: "wink", sad: "sad", angry: "angry",
 };
 
 function faceFor(state: string): React.ReactNode {
   const eye = "#ffffff";
-  const stroke = { stroke: eye, strokeWidth: 3.4, strokeLinecap: "round" as const, fill: "none" };
+  const stroke = { stroke: eye, strokeWidth: 3.4, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, fill: "none" };
   switch (FACE_BY_STATE[state] ?? "dots") {
     case "happy":
       return <><path d="M20 35q4-6 8 0" {...stroke} /><path d="M36 35q4-6 8 0" {...stroke} /></>;
+    case "proud":
+      return <><path d="M20 33q4-5 8 0" {...stroke} /><path d="M36 33q4-5 8 0" {...stroke} /><path d="M27 41q5 3.5 10 0" {...stroke} strokeWidth={2.8} /></>;
     case "closed":
       return <><path d="M20 33.5h8" {...stroke} /><path d="M36 33.5h8" {...stroke} /></>;
+    case "sleeping":
+      return <><path d="M20 34q4 3 8 0" {...stroke} /><path d="M36 34q4 3 8 0" {...stroke} /><path d="M45 18h5l-5 6h5" {...stroke} strokeWidth={2.2} /></>;
+    case "drowsy":
+      return <><path d="M20 31.5h8" {...stroke} strokeWidth={2.6} /><path d="M36 31.5h8" {...stroke} strokeWidth={2.6} /><path d="M20.5 33a3.5 3.5 0 0 0 7 0Z" fill={eye} /><path d="M36.5 33a3.5 3.5 0 0 0 7 0Z" fill={eye} /></>;
     case "up":
       return <><circle cx="26" cy="28.5" r="3.6" fill={eye} /><circle cx="42" cy="28.5" r="3.6" fill={eye} /></>;
     case "down":
       return <><ellipse cx="23" cy="36" rx="3.8" ry="3" fill={eye} /><ellipse cx="39" cy="36" rx="3.8" ry="3" fill={eye} /></>;
+    case "curious":
+      return <><circle cx="24" cy="32" r="5" fill={eye} /><circle cx="40" cy="33" r="2.8" fill={eye} /><path d="M35 25l8-2" {...stroke} strokeWidth={2.4} /></>;
+    case "attentive":
+      return <><ellipse cx="24" cy="31" rx="3" ry="4.4" fill={eye} /><ellipse cx="40" cy="31" rx="3" ry="4.4" fill={eye} /><path d="M8 27q-3 5 0 10M56 27q3 5 0 10" {...stroke} strokeWidth={2.2} /></>;
+    case "squint":
+      return <><path d="M19 32l9 1.2" {...stroke} /><path d="M45 32l-9 1.2" {...stroke} /><path d="M27 41h10" {...stroke} strokeWidth={2.6} /></>;
     case "wide":
       return <><ellipse cx="24" cy="32" rx="3.6" ry="5" fill={eye} /><ellipse cx="40" cy="32" rx="3.6" ry="5" fill={eye} /></>;
     case "wink":
