@@ -5,7 +5,7 @@
   "type": "module",
   "description": "AIKING Core: chat, agent runtime, MCP tools and skills.",
   "scripts": {
-    "test": "bun test",
+    "test": "bun test ./test",
     "typecheck": "tsc --noEmit && tsc --noEmit -p apps/shell",
     "demo": "bun run demo/run-demo.ts",
     "chat": "bun run src/cli.ts",

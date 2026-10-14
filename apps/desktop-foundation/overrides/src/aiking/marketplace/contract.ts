@@ -123,6 +123,7 @@ export type InstallRecord = { listingId: string; version: string; kind: ListingK
 
 /** Install records: browser storage in stage 2, AIKING Core in stage 3. */
 export interface InstallRecordStore {
+  flush?(): Promise<void>;
   all(): InstallRecord[];
   add(record: InstallRecord): void;
   remove(listingId: string, target?: string): void;

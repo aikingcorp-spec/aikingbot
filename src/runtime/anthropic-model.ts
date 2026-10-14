@@ -31,6 +31,7 @@ type ApiBlockParam = Anthropic.Beta.BetaContentBlockParam;
 type ApiMessage = Anthropic.Beta.BetaMessage;
 
 export interface AnthropicModelOptions {
+	apiKey?: string;
 	model?: string;
 	maxTokens?: number;
 	effort?: "low" | "medium" | "high" | "xhigh" | "max";
@@ -170,6 +171,7 @@ export class AnthropicModel implements ModelClient {
 		this.client =
 			options.client ??
 			new Anthropic({
+				...(options.apiKey ? { apiKey: options.apiKey } : {}),
 				...(options.maxRetries !== undefined ? { maxRetries: options.maxRetries } : {}),
 				...(options.timeoutMs !== undefined ? { timeout: options.timeoutMs } : {}),
 			});
@@ -195,8 +197,8 @@ export class AnthropicModel implements ModelClient {
 			};
 			const { onTextDelta } = options;
 			message = onTextDelta
-				? await this.client.beta.messages.stream(params).on("text", (delta) => onTextDelta(delta)).finalMessage()
-				: await this.client.beta.messages.create(params);
+				? await this.client.beta.messages.stream(params, { signal: options.signal }).on("text", (delta) => onTextDelta(delta)).finalMessage()
+				: await this.client.beta.messages.create(params, { signal: options.signal });
 		} catch (error) {
 			const status = error instanceof Anthropic.APIError ? error.status : undefined;
 			throw new ModelError(classifyApiError(error), PROVIDER, this.model, (error as Error).message, status, {

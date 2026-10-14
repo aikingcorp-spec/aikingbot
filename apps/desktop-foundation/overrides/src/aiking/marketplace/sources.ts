@@ -70,7 +70,7 @@ export class BundledCatalogSource implements CatalogSource {
  */
 export class HttpCatalogSource implements CatalogSource {
   readonly id: string;
-  constructor(private readonly base: string, private readonly fetcher: typeof fetch = fetch) {
+  constructor(private readonly base: string, private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis)) {
     this.id = `http:${new URL(base).host}`;
   }
   private document: Promise<CatalogDocument> | null = null;

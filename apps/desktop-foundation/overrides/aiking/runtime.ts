@@ -2,17 +2,20 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
+import { createServer, preview } from "vite";
 import { launchVerificationServer, type VerificationServer } from "../scripts/control-omb.ts";
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const runtime = resolve(source, "..");
 const offline = process.argv.includes("--offline");
 const desktop = process.argv.includes("--desktop");
+const core = process.argv.includes("--core");
+const production = process.argv.includes("--production");
 let fixture: VerificationServer | undefined;
 let harness: ChildProcess | undefined;
 let electron: ChildProcess | undefined;
 let ui: Awaited<ReturnType<typeof createServer>> | undefined;
+let previewUi: Awaited<ReturnType<typeof preview>> | undefined;
 let stopping = false;
 let desktopProfile: string | undefined;
 
@@ -31,6 +34,7 @@ async function close() {
   await stopChild(electron);
   if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true });
   await ui?.close();
+  if (previewUi) await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
   if (fixture) await fixture.close();
   else await stopChild(harness);
 }
@@ -44,7 +48,7 @@ try {
   let dataDir: string;
   if (offline) {
     // AIKING_OFFLINE_REPLIES (a JSON array) lets UI reviews script richer offline replies; the default stays the verification text.
-    fixture = await launchVerificationServer({ ...process.env, FAKE_CLAUDE_REPLIES: process.env.AIKING_OFFLINE_REPLIES ?? JSON.stringify([
+    fixture = await launchVerificationServer({ ...process.env, ...(core ? { AIKING_CORE_TEST: "1" } : {}), FAKE_CLAUDE_REPLIES: process.env.AIKING_OFFLINE_REPLIES ?? JSON.stringify([
       "AIKINGBOT is running. This reply came through the real chat pipeline using the offline verification provider.",
       "The saved conversation is available. The desktop foundation is ready for the next integration stage.",
     ]), FAKE_CLAUDE_TOOL_CALLS: process.env.FAKE_CLAUDE_TOOL_CALLS ?? JSON.stringify([
@@ -77,14 +81,15 @@ try {
       await new Promise((done) => setTimeout(done, 100));
     }
   }
-  ui = await createServer({ root: source, server: {
+  const serverOptions = {
     host: "127.0.0.1", port: Number(process.env.AIKING_UI_PORT || 5199), strictPort: true,
     proxy: { "/api": { target: apiUrl, ws: true }, "/.well-known/openmausbot/environment": { target: apiUrl } },
-  } });
-  await ui.listen();
-  const uiUrl = ui.resolvedUrls?.local[0];
+  };
+  if (production) previewUi = await preview({ root: source, preview: serverOptions });
+  else { ui = await createServer({ root: source, server: serverOptions }); await ui.listen(); }
+  const uiUrl = (previewUi ?? ui)?.resolvedUrls?.local[0];
   if (!uiUrl) throw new Error("Vite did not report its URL.");
-  const info = { product: "AIKINGBOT", mode: offline ? "offline-verification" : "local", coreIntegrated: false,
+  const info = { product: "AIKINGBOT", mode: offline ? "offline-verification" : "local", coreIntegrated: true, coreVerification: core,
     uiUrl, apiUrl, dataDir, pid: process.pid, harnessPid: fixture?.child.pid ?? harness?.pid,
     sourceCommit: "93b3c24cdade51e362e443d2387a9f37eb7e115c" };
   writeFileSync(join(runtime, "runtime.json"), `${JSON.stringify(info, null, 2)}\n`);

@@ -20,6 +20,7 @@ import type { Approver, ToolRegistry } from "./tools.ts";
 
 /** Per-run hooks, for callers (such as a UI gateway) that serve many conversations with one runtime. */
 export interface RunHooks {
+	signal?: AbortSignal;
 	onEvent?: (event: RuntimeEvent) => void;
 	/** Approver for this run; replaces the registry policy's approver. */
 	approver?: Approver;
@@ -121,6 +122,7 @@ export class AgentRuntime {
 		});
 
 		for (let step = 1; step <= this.maxSteps; step++) {
+			hooks.signal?.throwIfAborted();
 			onEvent?.({ type: "step", step });
 			const messageId = `msg_${crypto.randomUUID()}`;
 			let streaming = false;
@@ -128,14 +130,16 @@ export class AgentRuntime {
 				{ system, messages, tools: definitions },
 				onEvent
 					? {
+							signal: hooks.signal,
 							onTextDelta: (delta) => {
 								if (!streaming) onEvent({ type: "text_start", messageId });
 								streaming = true;
 								onEvent({ type: "text_delta", messageId, delta });
 							},
 						}
-					: {},
+					: { signal: hooks.signal },
 			);
+			hooks.signal?.throwIfAborted();
 			if (streaming) onEvent?.({ type: "text_end", messageId });
 			cost.add(response.usage);
 			servedBy.push(response.model);
@@ -179,12 +183,13 @@ export class AgentRuntime {
 						return { type: "tool_result", toolCallId: call.id, content: `Not run: ${reason}.`, isError: true };
 					}
 					onEvent?.({ type: "tool_call", id: call.id, name: call.name, input: call.input });
-					const outcome = await tools.call(call.name, call.input, { approver: hooks.approver, toolCallId: call.id });
+					const outcome = await tools.call(call.name, call.input, { approver: hooks.approver, toolCallId: call.id, signal: hooks.signal });
 					onEvent?.({ type: "tool_result", id: call.id, name: call.name, ...outcome });
 					return { type: "tool_result", toolCallId: call.id, content: outcome.content, isError: outcome.isError };
 				}),
 			);
 			toolCalls += Math.min(calls.length, this.maxPerStep, Math.max(0, this.maxToolCalls - toolCalls));
+			hooks.signal?.throwIfAborted();
 			// Every call gets a result, in call order, in one user message.
 			push({ role: "user", content: results });
 			if (limitHit) return result("tool_limit", step);

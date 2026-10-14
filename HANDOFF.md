@@ -3,6 +3,21 @@
 Cập nhật: 2026-10-14. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
+## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
+
+Base: Stage 2 `5037d24fa0545369a234fee6743788effe484c05`. Stage 3 offline integration gate đạt:
+Core runtime + tool MCP thật đi qua UI, approval/deny, transcript/session persistence; Voice đi qua
+backend local và Core; Marketplace catalog/install records lưu trên server. Model và STT/TTS trong
+E2E là fixture offline, được ghi rõ trong UI/report. Chưa gọi provider thật hoặc API tính phí.
+
+- Core: 84 test pass; desktop integration: 25 pass; Chromium shipping E2E: 6/6.
+- Typecheck Core/shell, server, renderer đạt; UI production build đạt; lint code mới đạt.
+- Bằng chứng: `.aikingbot-foundation/evidence/shipping/`; xem
+  [`docs/stage-3-functional-integration.md`](docs/stage-3-functional-integration.md).
+- Tiếp theo ngay: Stage 4 (Marketplace update/recovery, feature matrix, regression toàn ứng dụng),
+  sau đó Stage 5 (metadata/packaging, Linux artifact và CI Windows, Electron/Chromium tour).
+- Dùng đúng Apache source pin; không truy cập VPS/OpenBot production/dữ liệu thật.
+
 ## Stage 2 — UI/UX parity (nhánh `stage2/ui-parity`, 2026-10-14)
 
 Ứng dụng chính là `apps/desktop-foundation/` (OpenMausBot OSS + overrides). Stage 2 đưa giao diện về tương đương

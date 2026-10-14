@@ -6,7 +6,7 @@ import { sourceRoot } from "./setup.mjs";
 if (!existsSync(join(sourceRoot, "node_modules/vite"))) {
   throw new Error("Run node apps/desktop-foundation/setup.mjs first.");
 }
-const allowed = new Set(["--offline", "--desktop"]);
+const allowed = new Set(["--offline", "--desktop", "--core", "--production"]);
 for (const arg of process.argv.slice(2)) if (!allowed.has(arg)) throw new Error(`Unknown option: ${arg}`);
 const child = spawn(process.execPath, ["--experimental-strip-types", "aiking/runtime.ts", ...process.argv.slice(2)], {
   cwd: sourceRoot, env: process.env, stdio: "inherit",

@@ -4,7 +4,8 @@
 // message, and appends every finished turn to a transcript store (JSONL file
 // or SQLite) so a chat survives a restart.
 
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { dirname } from "node:path";
 import type { AgentRuntime, RunHooks, RunResult } from "../runtime/agent-runtime.ts";
 import type { Message } from "../runtime/model.ts";
@@ -31,7 +32,10 @@ export class JsonlTranscript implements TranscriptStore {
 
 	async append(messages: Message[]): Promise<void> {
 		await mkdir(dirname(this.path), { recursive: true });
-		await appendFile(this.path, messages.map((m) => `${JSON.stringify(m)}\n`).join(""));
+		const previous = await readFile(this.path, "utf8").catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return ""; throw error; });
+		const temp = `${this.path}.${randomUUID()}.tmp`;
+		await writeFile(temp, previous + messages.map((m) => `${JSON.stringify(m)}\n`).join(""), { mode: 0o600, flush: true });
+		await rename(temp, this.path);
 	}
 }
 
@@ -64,8 +68,8 @@ export class ChatSession {
 		const result = await this.runtime.run([...this.history, userMessage], hooks);
 		// Commit only after the run returns, so a failed request leaves no half turn.
 		const turn = [userMessage, ...result.added];
-		this.history.push(...turn);
 		await this.store?.append(turn);
+		this.history.push(...turn);
 		return result;
 	}
 }

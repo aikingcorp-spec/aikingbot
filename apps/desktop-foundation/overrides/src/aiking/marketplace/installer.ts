@@ -106,11 +106,13 @@ export async function installAgent(listing: AgentListing): Promise<{ bot: Bot; w
     routines,
   });
   installRecords().add({ listingId: listing.id, version: listing.version, kind: "agent", targets: [result.bot.id], installedAt: new Date().toISOString() });
+  await installRecords().flush?.();
   return result;
 }
 
-export function forgetAgent(listingId: string, botId: string) {
+export async function forgetAgent(listingId: string, botId: string) {
   installRecords().remove(listingId, botId);
+  await installRecords().flush?.();
 }
 
 // ── Skills ──────────────────────────────────────────────────────────────
@@ -139,6 +141,7 @@ export function skillStatus(listing: SkillListing, holders: Map<string, AgentSki
 export async function installSkill(listing: SkillListing, botId: string) {
   await api(`/api/bots/${encodeURIComponent(botId)}/skill-template`, { method: "POST", body: JSON.stringify(skillTemplate(listing)) });
   installRecords().add({ listingId: listing.id, version: listing.version, kind: "skill", targets: [botId], installedAt: new Date().toISOString() });
+  await installRecords().flush?.();
 }
 
 export async function setSkillEnabled(listing: SkillListing, botId: string, enabled: boolean) {
@@ -148,6 +151,7 @@ export async function setSkillEnabled(listing: SkillListing, botId: string, enab
 export async function uninstallSkill(listing: SkillListing, botId: string) {
   await api(`/api/bots/${encodeURIComponent(botId)}/skills/${encodeURIComponent(listing.skillName)}`, { method: "DELETE" });
   installRecords().remove(listing.id, botId);
+  await installRecords().flush?.();
 }
 
 // ── Apps ────────────────────────────────────────────────────────────────
@@ -198,6 +202,7 @@ export async function installMcp(listing: AppListing): Promise<{ ok: boolean; er
   // The host saves a new server switched off; Install is the person's explicit choice to turn it on.
   await api(`/api/mcp/servers/${encodeURIComponent(server.name)}`, { method: "PATCH", body: JSON.stringify({ enabled: true }) });
   installRecords().add({ listingId: listing.id, version: listing.version, kind: "app", targets: [server.name], installedAt: new Date().toISOString() });
+  await installRecords().flush?.();
   return testMcp(server.name);
 }
 
@@ -214,6 +219,7 @@ export async function uninstallMcp(listing: AppListing) {
   if (listing.connector.type !== "mcp") throw new Error("Not an MCP listing");
   await api(`/api/mcp/servers/${encodeURIComponent(listing.connector.server.name)}`, { method: "DELETE" });
   installRecords().remove(listing.id);
+  await installRecords().flush?.();
 }
 
 export function listingKey(listing: Listing) {

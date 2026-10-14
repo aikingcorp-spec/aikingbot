@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Mic, MicOff, Phone, PhoneOff, X } from "lucide-react";
-import type { Bot } from "@/state/store";
+import { api, type Bot } from "@/state/store";
 import { BotAvatar } from "@/components/Avatar";
 import { CallButton as ProviderCallButton } from "@/components/CallView";
 import { useOnCall } from "@/lib/call";
@@ -40,7 +40,9 @@ function VoiceCall({ target: current }: { target: CallTarget }) {
   const [microphone, setMicrophone] = useState(() => readPreference("microphone"));
   const [speaker, setSpeaker] = useState(() => readPreference("speaker"));
   const [endpoint, setEndpoint] = useState(() => readPreference("endpoint"));
-  const [mode, setMode] = useState(() => readPreference("mode") === "websocket" ? "websocket" : "loopback");
+  const [mode, setMode] = useState(() => ["local", "websocket"].includes(readPreference("mode")) ? readPreference("mode") : "loopback");
+  const [serviceMode, setServiceMode] = useState("Loading voice server status…");
+  useEffect(() => { void api<{ voice: { mode: string; configured: boolean } }>("/api/aiking/status").then((status) => setServiceMode(status.voice.mode === "offline-scripted" ? "Offline STT/TTS fixture; agent uses its selected engine." : status.voice.configured ? "Configured STT/TTS providers; agent uses its selected engine." : "Server requires STT/TTS provider configuration.")).catch(() => setServiceMode("Local voice service is unavailable on this server.")); }, []);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [deviceError, setDeviceError] = useState("");
   const [session, setSession] = useState(() => new VoiceSession(createLoopbackTransport, new WebAudioCapture(), new WebAudioPlayback()));
@@ -76,7 +78,10 @@ function VoiceCall({ target: current }: { target: CallTarget }) {
     if (mode === "websocket") {
       try { url = voiceSocketUrl(endpoint); } catch (cause) { setDeviceError(cause instanceof Error ? cause.message : "Enter a voice server URL."); return; }
     }
-    const next = new VoiceSession(mode === "loopback" ? createLoopbackTransport : () => new WebSocketVoiceTransport(url), new WebAudioCapture(), new WebAudioPlayback());
+    const next = new VoiceSession(mode === "loopback" ? createLoopbackTransport : () => new WebSocketVoiceTransport(mode === "local" ? async () => {
+      const result = await api<{ ticket: string; path: string }>("/api/aiking/voice/ticket", { method: "POST", body: JSON.stringify({ botId: current.bot.id, threadId: current.bot.threadId }) });
+      const socket = new URL(result.path, location.href); socket.protocol = location.protocol === "https:" ? "wss:" : "ws:"; socket.searchParams.set("ticket", result.ticket); return socket.href;
+    } : url), new WebAudioCapture(), new WebAudioPlayback());
     setSession(next);
     void next.start({ botId: current.bot.id, threadId: current.bot.threadId, microphone, speaker });
   };
@@ -97,8 +102,8 @@ function VoiceCall({ target: current }: { target: CallTarget }) {
           <DeviceSelect label="Microphone" kind="audioinput" value={microphone} devices={devices} disabled={active} onChange={(value) => choose("microphone", value, setMicrophone)} />
           <DeviceSelect label="Speaker" kind="audiooutput" value={speaker} devices={devices} disabled={active} onChange={(value) => choose("speaker", value, setSpeaker)} />
         </div>
-        <label className="block space-y-1 text-sm"><span className="text-ink-secondary">Voice service</span><select aria-label="Voice service" disabled={active} value={mode} onChange={(event) => choose("mode", event.target.value, setMode)} className="w-full rounded-lg border border-hairline bg-raised p-2"><option value="loopback">Offline test (scripted)</option><option value="websocket">AIKING Core voice server</option></select></label>
-        {mode === "websocket" ? <label className="block space-y-1 text-sm"><span className="text-ink-secondary">Voice server URL</span><input aria-label="Voice server URL" placeholder="wss://core.example/v1/voice/sessions" disabled={active} value={endpoint} onChange={(event) => choose("endpoint", event.target.value, setEndpoint)} className="w-full rounded-lg border border-hairline bg-raised p-2" /></label> : <p className="text-xs text-ink-tertiary">Tests your microphone and speaker locally with a scripted reply and a tone. No speech recognition or AI provider is connected.</p>}
+        <label className="block space-y-1 text-sm"><span className="text-ink-secondary">Voice service</span><select aria-label="Voice service" disabled={active} value={mode} onChange={(event) => choose("mode", event.target.value, setMode)} className="w-full rounded-lg border border-hairline bg-raised p-2"><option value="loopback">Offline test (scripted)</option><option value="local">Local voice service</option><option value="websocket">AIKING Core voice server</option></select></label>
+        {mode === "websocket" ? <label className="block space-y-1 text-sm"><span className="text-ink-secondary">Voice server URL</span><input aria-label="Voice server URL" placeholder="wss://core.example/v1/voice/sessions" disabled={active} value={endpoint} onChange={(event) => choose("endpoint", event.target.value, setEndpoint)} className="w-full rounded-lg border border-hairline bg-raised p-2" /></label> : mode === "local" ? <p className="text-xs text-ink-tertiary">{serviceMode}</p> : <p className="text-xs text-ink-tertiary">Tests your microphone and speaker locally with a scripted reply and a tone. No speech recognition or AI provider is connected.</p>}
         <div role="meter" aria-label="Microphone level" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(Math.min(1, snapshot.level * 5) * 100)} className="h-1.5 overflow-hidden rounded-full bg-raised"><div className="h-full bg-accent transition-[width]" style={{ width: `${Math.min(1, snapshot.level * 5) * 100}%` }} /></div>
         {snapshot.status.phase === "error" && <p role="alert" data-voice-error={snapshot.status.error.code} className="text-sm text-danger">{snapshot.status.error.message}</p>}
         {deviceError && <p role="alert" className="text-sm text-danger">{deviceError}</p>}

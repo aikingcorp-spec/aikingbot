@@ -107,10 +107,14 @@ export class WebSocketVoiceTransport implements VoiceTransport {
   private outputRate?: number;
   private timer?: ReturnType<typeof setTimeout>;
   private cancelConnect?: () => void;
-  constructor(private readonly endpoint: string) {}
-  connect(events: VoiceTransportEvents, options: { botId: string; threadId: string; resumeToken?: string }): Promise<void> {
+  private generation = 0;
+  constructor(private readonly endpoint: string | (() => Promise<string>)) {}
+  async connect(events: VoiceTransportEvents, options: { botId: string; threadId: string; resumeToken?: string }): Promise<void> {
+    const generation = ++this.generation;
+    const endpoint = typeof this.endpoint === "string" ? this.endpoint : await this.endpoint();
+    if (generation !== this.generation) throw new Error("Voice connection was cancelled.");
     return new Promise((resolve, reject) => {
-      const socket = new WebSocket(voiceSocketUrl(this.endpoint));
+      const socket = new WebSocket(voiceSocketUrl(endpoint));
       this.socket = socket; this.events = events;
       socket.binaryType = "arraybuffer";
       const clear = () => { clearTimeout(this.timer); this.timer = undefined; this.cancelConnect = undefined; };
@@ -165,6 +169,7 @@ export class WebSocketVoiceTransport implements VoiceTransport {
   endOfUtterance() { this.send({ type: "input.end" }); }
   interrupt() { this.send({ type: "response.cancel" }); }
   close() {
+    ++this.generation;
     const socket = this.socket;
     this.cancelConnect?.();
     clearTimeout(this.timer); this.timer = undefined;

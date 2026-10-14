@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { patchIntegration } from "./integration-patches.mjs";
 
 export const foundationRoot = dirname(fileURLToPath(import.meta.url));
 export const repositoryRoot = resolve(foundationRoot, "../..");
@@ -29,6 +30,7 @@ export function prepareSource() {
   execFileSync("git", ["archive", "--format=tar", `--output=${archive}`, lock.commit, ".", ...lock.excludedPaths.map((p) => `:(exclude)${p}`)], { cwd: vendorRoot });
   execFileSync("tar", ["-xf", archive, "-C", sourceRoot]);
   cpSync(join(foundationRoot, "overrides"), sourceRoot, { recursive: true });
+  patchIntegration(sourceRoot);
   const pkgPath = join(sourceRoot, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
   pkg.name = "aikingbot-foundation";
@@ -37,6 +39,16 @@ export function prepareSource() {
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
   writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", edition: "oss", coreIntegrated: false }, null, 2)}\n`);
   console.log(`Prepared AIKINGBOT from ${lock.repository} @ ${actual}; enterprise/ excluded.`);
+}
+
+export async function prepareCore() {
+  const { build } = await import(join(sourceRoot, "node_modules/esbuild/lib/main.js"));
+  await build({ entryPoints: [join(repositoryRoot, "src/desktop.ts")], outfile: join(sourceRoot, "aiking/core/index.mjs"), bundle: true,
+    platform: "node", target: "node24", format: "esm", banner: { js: 'import { createRequire as aikingCreateRequire } from "node:module"; const require = aikingCreateRequire(import.meta.url);' } });
+  const catalogModule = join(sourceRoot, "aiking/catalog-build.mjs");
+  await build({ entryPoints: [join(foundationRoot, "overrides/src/aiking/marketplace/aiking-catalog.ts")], outfile: catalogModule, platform: "node", target: "node24", format: "esm", bundle: true });
+  const { AIKING_CATALOG } = await import(`${catalogModule}?build=${Date.now()}`);
+  writeFileSync(join(sourceRoot, "aiking/catalog.json"), JSON.stringify(AIKING_CATALOG));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -50,4 +62,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     });
     execFileSync(process.execPath, ["aiking/assets.mjs"], { cwd: sourceRoot, stdio: "inherit" });
   }
+  await prepareCore();
 }

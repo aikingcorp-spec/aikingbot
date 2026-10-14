@@ -125,7 +125,8 @@ export class ToolRegistry {
 		return tools;
 	}
 
-	async call(name: string, input: unknown, options: { approver?: Approver; toolCallId?: string } = {}): Promise<ToolOutcome> {
+	async call(name: string, input: unknown, options: { approver?: Approver; toolCallId?: string; signal?: AbortSignal } = {}): Promise<ToolOutcome> {
+		options.signal?.throwIfAborted();
 		const owner = this.sources.find((s) => s.definitions().some((d) => d.name === name));
 		const definition = owner?.definitions().find((d) => d.name === name);
 		if (!owner || !definition) return { content: `Unknown tool "${name}".`, isError: true };
@@ -140,16 +141,24 @@ export class ToolRegistry {
 		}
 
 		const timeoutMs = this.policy.timeouts?.[name] ?? this.policy.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+		options.signal?.throwIfAborted();
 		const controller = new AbortController();
+		const signal = options.signal ? AbortSignal.any([controller.signal, options.signal]) : controller.signal;
+		let abortListener: (() => void) | undefined;
+		const aborted = new Promise<never>((_, reject) => {
+			abortListener = () => reject(signal.reason ?? new Error("Tool call cancelled"));
+			signal.addEventListener("abort", abortListener, { once: true });
+		});
 		let timer: ReturnType<typeof setTimeout> | undefined;
 		const timeout = new Promise<never>((_, reject) => {
 			timer = setTimeout(() => {
-				controller.abort();
-				reject(new ToolTimeoutError(name, timeoutMs));
+				const error = new ToolTimeoutError(name, timeoutMs);
+				controller.abort(error);
+				reject(error);
 			}, timeoutMs);
 		});
 		try {
-			const outcome = await Promise.race([owner.call(name, input, { signal: controller.signal, timeoutMs }), timeout]);
+			const outcome = await Promise.race([owner.call(name, input, { signal, timeoutMs }), timeout, aborted]);
 			if (!outcome) return { content: `Unknown tool "${name}".`, isError: true };
 			return this.capped(outcome);
 		} catch (error) {
@@ -157,6 +166,7 @@ export class ToolRegistry {
 			return { content: `Tool "${name}" failed: ${(error as Error).message}`, isError: true };
 		} finally {
 			clearTimeout(timer);
+			if (abortListener) signal.removeEventListener("abort", abortListener);
 		}
 	}
 

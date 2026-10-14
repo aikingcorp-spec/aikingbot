@@ -6,17 +6,19 @@
 import { CapabilityIndex } from "./capabilities/capability-index.ts";
 import { CapabilityTools } from "./capabilities/capability-tools.ts";
 import { ChatSession } from "./chat/chat-session.ts";
-import { McpHub, type StdioServerConfig } from "./mcp/mcp-hub.ts";
+import { McpHub, type McpServerConfig } from "./mcp/mcp-hub.ts";
 import { AgentRuntime, type RuntimeEvent } from "./runtime/agent-runtime.ts";
 import type { ModelClient } from "./runtime/model.ts";
-import { type GuardEvent, ToolRegistry, type ToolPolicy } from "./runtime/tools.ts";
+import { type GuardEvent, ToolRegistry, type ToolPolicy, type ToolSource } from "./runtime/tools.ts";
 import { SkillLibrary } from "./skills/skill-library.ts";
 import { SkillTools } from "./skills/skill-tools.ts";
 
 export interface CoreConfig {
+	toolAllowed?: (name: string) => boolean;
+	toolSources?: ToolSource[];
 	model: ModelClient;
 	skillsDir?: string;
-	mcpServers?: Record<string, StdioServerConfig>;
+	mcpServers?: Record<string, McpServerConfig>;
 	transcriptPath?: string;
 	instructions?: string;
 	maxSteps?: number;
@@ -59,7 +61,8 @@ export async function createCore(config: CoreConfig): Promise<Core> {
 	const mcp = new McpHub();
 	for (const [name, server] of Object.entries(config.mcpServers ?? {})) {
 		try {
-			await mcp.connectStdio(name, server);
+			if ("command" in server) await mcp.connectStdio(name, server);
+			else await mcp.connectRemote(name, server);
 		} catch (error) {
 			warnings.push(`MCP server "${name}" not connected: ${(error as Error).message}`);
 		}
@@ -69,7 +72,10 @@ export async function createCore(config: CoreConfig): Promise<Core> {
 	const runtime = new AgentRuntime({
 		model: config.model,
 		tools: new ToolRegistry(
-			[new SkillTools(library), new CapabilityTools(capabilities), mcp],
+			[new SkillTools(library), new CapabilityTools(capabilities), mcp, ...(config.toolSources ?? [])].map((source) => ({
+				definitions: () => source.definitions().filter((definition) => config.toolAllowed?.(definition.name) !== false),
+				call: (name, input, context) => config.toolAllowed?.(name) === false ? Promise.resolve(undefined) : source.call(name, input, context),
+			})),
 			config.toolPolicy,
 			config.onGuard,
 		),

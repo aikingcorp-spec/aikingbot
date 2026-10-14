@@ -13,6 +13,7 @@ import { BrowserSignInPage } from "./pair/BrowserSignInPage";
 import { PairPage } from "./pair/PairPage";
 import "./styles.css";
 import "./aiking/theme.css";
+import { initializeMarketplace } from "./aiking/marketplace/server-records";
 
 // Before first paint; settleAdvancedModeDefault must run before applySkin writes omb-skin.
 settleAdvancedModeDefault();
@@ -42,6 +43,6 @@ async function chooseRoot(): Promise<React.ReactNode> {
   return <App />;
 }
 
-void Promise.all([bootstrapBrand(), chooseRoot()]).then(([, root]) => {
+void Promise.all([bootstrapBrand(), chooseRoot(), initializeMarketplace()]).then(([, root]) => {
   createRoot(document.getElementById("root")!).render(<StrictMode>{root}</StrictMode>);
 });

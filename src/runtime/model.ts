@@ -90,6 +90,7 @@ export interface ModelResponse {
 }
 
 export interface CreateOptions {
+	signal?: AbortSignal;
 	/** Called with each piece of assistant text as it is generated. Providers without streaming may skip it. */
 	onTextDelta?: (delta: string) => void;
 }

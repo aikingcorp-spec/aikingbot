@@ -6,6 +6,8 @@
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { GuardedToolDefinition, ToolCallContext, ToolOutcome, ToolRisk, ToolSource } from "../runtime/tools.ts";
 
@@ -23,6 +25,13 @@ export interface StdioServerConfig extends ServerOptions {
 	cwd?: string;
 	env?: Record<string, string>;
 }
+
+export interface RemoteServerConfig extends ServerOptions {
+	type: "http" | "sse";
+	url: string;
+	headers?: Record<string, string>;
+}
+export type McpServerConfig = StdioServerConfig | RemoteServerConfig;
 
 /** Inputs and outputs a tool declares under `_meta["aiking/capability"]`. */
 export interface ToolCapability {
@@ -114,8 +123,8 @@ export class McpHub implements ToolSource {
 		if (this.servers.has(name)) throw new Error(`MCP server "${name}" is already connected`);
 
 		const client = new Client({ name: "aiking-core", version: "0.2.0" });
-		await client.connect(transport);
 		try {
+			await client.connect(transport, { timeout: 30_000 });
 			const { tools } = await client.listTools();
 			const map = new Map<string, string>();
 			const definitions: GuardedToolDefinition[] = [];
@@ -150,6 +159,15 @@ export class McpHub implements ToolSource {
 			}),
 			{ toolRisk: config.toolRisk },
 		);
+	}
+
+	connectRemote(name: string, config: RemoteServerConfig): Promise<string[]> {
+		const url = new URL(config.url);
+		if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) throw new Error("MCP requires HTTP(S), with credentials in headers.");
+		const requestInit = { headers: config.headers };
+		return this.connect(name, config.type === "sse"
+			? new SSEClientTransport(url, { requestInit, eventSourceInit: { fetch: (input, init) => fetch(input, { ...init, headers: config.headers }) } })
+			: new StreamableHTTPClientTransport(url, { requestInit }), config);
 	}
 
 	definitions(): GuardedToolDefinition[] {

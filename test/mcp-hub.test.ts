@@ -2,6 +2,9 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { join } from "node:path";
+import { createServer } from "node:http";
+import { randomUUID } from "node:crypto";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMediaToolsServer, frameSize } from "../demo/media-tools-server.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -31,6 +34,24 @@ describe("frameSize", () => {
 });
 
 describe("McpHub", () => {
+	test("uses authenticated streamable HTTP without exposing credentials in tool names", async () => {
+		const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: () => randomUUID(), enableJsonResponse: true });
+		const mcp = createMediaToolsServer(); await mcp.connect(transport);
+		let authenticated = 0;
+		const server = createServer((req, res) => {
+			if (req.headers.authorization !== "Bearer local-fixture") { res.writeHead(401).end(); return; }
+			authenticated++; void transport.handleRequest(req, res);
+		});
+		await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+		const address = server.address(); if (!address || typeof address === "string") throw new Error("No fixture port");
+		const hub = new McpHub();
+		try {
+			await hub.connectRemote("media", { type: "http", url: `http://127.0.0.1:${address.port}/mcp`, headers: { authorization: "Bearer local-fixture" } });
+			expect((await hub.call("mcp__media__frame_size", { ratio: "1:1", long_edge: 1024 }))?.content).toBe('{"width":1024,"height":1024}');
+			expect(authenticated).toBeGreaterThan(2);
+			expect(hub.definitions().every(tool => !tool.name.includes("fixture"))).toBe(true);
+		} finally { await hub.close(); await mcp.close(); await new Promise<void>(resolve => server.close(() => resolve())); }
+	});
 	test("exposes server tools with namespaced names and the server's schema", async () => {
 		const hub = await hubWithMediaServer();
 		const [tool] = hub.definitions();
