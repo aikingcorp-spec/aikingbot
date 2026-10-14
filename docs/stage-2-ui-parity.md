@@ -96,3 +96,50 @@ node apps/desktop-foundation/terminology.mjs
 
 Ảnh và báo cáo JSON nằm ở `.aikingbot-foundation/evidence/stage2/` (không commit). Electron từ chối chạy bằng root
 khi bật sandbox — chạy bằng user thường, không thêm `--no-sandbox`.
+
+## Stage 2 finalization (2026-10-14, second pass)
+
+### Chặng 1 — UI/UX: xong
+- Avatar: 10 biểu cảm chọn được đều khác nhau; màu / body / biểu cảm / ảnh tải lên lưu trên host và khôi phục sau reload
+  (kiểm bằng UI và API trong tour).
+- Màn **New agent** kiểu OpenBot (màu, hình dạng, tên, việc cần làm, gợi ý) + "More options" mang dữ liệu sang dialog đầy đủ.
+- Tour chạy thêm 3 biến thể: skin AIKING Light (`AIKING_TOUR_SKIN=aiking-light`), Advanced mode (`AIKING_TOUR_ADVANCED=1`),
+  cửa sổ 900px (`AIKING_TOUR_WIDTH=900`).
+- Còn lại có chủ đích: ~100 chuỗi "bot" viết cứng trong component sâu (Advanced mode, VM, memory) — thay ở mức source sẽ
+  phá định danh nội bộ, cần sửa từng file.
+
+### Chặng 2 — Marketplace / Apps / Connectors: xong
+- Contract: `overrides/src/aiking/marketplace/contract.ts` (zod; listing có `id` + `version` bất biến; agent ghim skill theo
+  phiên bản; `InstallStatus`; `CatalogSource`; `InstallRecordStore`).
+- Nguồn: `BundledCatalogSource` (catalog AIKING: 8 agent, 8 skill SKILL.md, 16 app) và `HttpCatalogSource`
+  (`GET {base}/v1/catalog`, `GET {base}/v1/catalog/listings/{id}`) cho Stage 3; đổi bằng `setCatalogSource()`.
+- Installer (`marketplace/installer.ts`) dùng API thật của host:
+  - Agent → `createAgent` (profile, memory, skill qua `POST /api/bots/:id/skill-template`, routine). Gỡ → `deleteBot`.
+  - Skill → thêm / bật-tắt / gỡ theo từng agent (`skill-template`, `PATCH|DELETE /api/bots/:id/skills/:name`).
+  - MCP → `POST /api/mcp/servers` + bật + `POST …/test` (Connected / Error thật); gỡ bằng `DELETE`.
+  - Composio → trạng thái từ `/api/connectors/connected`; nút Connect mở luồng kết nối gốc ("All connectors").
+- "AIKING Toolbox": MCP server stdio nhỏ (chạy bằng `node -e`), có 3 tool — dùng để kiểm chứng offline.
+- Install record lưu ở localStorage (Stage 2) → Stage 3 chuyển sang Core qua `setInstallRecords()`.
+
+### Chặng 3 — Voice: mới có contract, CHƯA triển khai
+- Nền đã có: chế độ **live** (OpenAI realtime qua WebRTC, key ở harness, `server/live-call.ts`, `src/lib/live-call-media.ts`)
+  và chế độ **turns** (nhận dạng giọng nói của Electron/macOS → agent → TTS `/api/tts/speak`). Cả hai cần provider/OS cụ thể.
+- Đã thêm: `overrides/src/aiking/voice/contract.ts` — trạng thái phiên, mã lỗi, `VoiceTransport`, bộ phận pipeline
+  (STT / agent / TTS), chính sách reconnect, giao thức WebSocket v1 cho Core.
+- Đã thêm: audio thật để test `fixtures/voice/jfk-16k.wav` (phạm vi công cộng).
+- Việc tiếp theo (theo thứ tự): chọn thiết bị (`enumerateDevices`, `setSinkId`) → capture Web Audio 16 kHz + VAD năng lượng →
+  `VoiceSession` (barge-in, reconnect) → transport loopback (mock) + WebSocket theo contract → màn gọi thoại → E2E Chromium với
+  micro giả dùng file WAV trên. Kiểm tra tương thích model / approvals / schedules / computer / browser / remote / multi-agent
+  chưa làm ở lượt này.
+
+### Kiểm chứng lượt này
+- `ui-tour.mjs` trên Chromium: **36/36** (dark); 32/32 (light, trước khi thêm bước Marketplace); Advanced mode 31/31 + bỏ qua
+  hợp lệ. Unit test catalog: **5/5** (vitest). Typecheck renderer: pass. Electron chưa chạy lại ở lượt này.
+- Chạy thật: tạo/gỡ agent, skill, MCP, avatar, New agent, phản hồi qua pipeline (provider **offline giả lập**).
+- Mock / chưa thật: provider AI thật, Composio (chưa có key), MCP Filesystem (cần mạng/npx), voice.
+
+### Cần backend / provider thật (Stage 3)
+1. AIKING Core: catalog Marketplace + install records + publish.
+2. Composio project key (hoặc connector của Core) để connect app thật.
+3. Provider AI thật (Claude/OpenAI…) thay provider offline.
+4. Voice: provider realtime hoặc STT + TTS (server Core theo giao thức WebSocket v1).

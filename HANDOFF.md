@@ -17,8 +17,10 @@ OpenBot 0.39 với thương hiệu AIKING. Chi tiết, bảng màn hình xong/c�
 - OpenBot mới (PolyForm Noncommercial) chỉ được quan sát qua ảnh/đo đạc. Không copy code.
 - Electron trên Linux: chạy bằng user thường (sandbox bật). Root bị Electron từ chối — không thêm `--no-sandbox`.
 
-Việc tiếp theo cho UI: catalog Marketplace thật từ AIKING Core (Stage 3), connector first-party, rail nhiều
-workspace, gói ngôn ngữ `vi`, dialog New agent dạng trang. Phần Core bên dưới (mục 0–9) là lịch sử v0.2.
+Lượt 2 (Stage 2 finalization): Chặng 1 (UI) và Chặng 2 (Marketplace catalog + install thật) xong; Chặng 3 (Voice) mới có
+contract `overrides/src/aiking/voice/contract.ts` + audio test. Trạng thái chi tiết và việc tiếp theo: mục
+"Stage 2 finalization" trong `docs/stage-2-ui-parity.md`. Việc đầu tiên cho agent kế tiếp: triển khai Voice theo contract,
+rồi chạy lại `ui-tour.mjs` trên Chromium và Electron (Electron chạy bằng user thường). Phần Core bên dưới (mục 0–9) là lịch sử v0.2.
 
 ## 0. Bối cảnh và luật làm việc (bắt buộc)
 
