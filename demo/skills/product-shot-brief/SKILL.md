@@ -1,6 +1,9 @@
 ---
 name: product-shot-brief
 description: Write a generation brief for an AI product shot (image model prompt plus output size).
+tasks: [product photo prompt, still image of a product for a feed post]
+inputs: [frame-spec]
+outputs: [image-brief]
 ---
 
 # Product shot brief

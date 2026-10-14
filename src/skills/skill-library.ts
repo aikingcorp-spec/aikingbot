@@ -9,11 +9,28 @@ import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 
+/**
+ * What a skill can do, declared in front matter so the agent can combine
+ * skills by their inputs and outputs instead of by keyword alone:
+ *
+ *   tasks: [write a video ad script, write hooks for short-form video]
+ *   inputs: [requirements]
+ *   outputs: [ad-script]
+ *
+ * `inputs` / `outputs` are artifact names shared across skills and tools.
+ */
+export interface SkillCapability {
+	tasks: string[];
+	inputs: string[];
+	outputs: string[];
+}
+
 export interface Skill {
 	name: string;
 	description: string;
 	body: string;
 	directory: string;
+	capability?: SkillCapability;
 }
 
 export class SkillFormatError extends Error {
@@ -50,7 +67,30 @@ export function parseSkillFile(file: string, text: string): Omit<Skill, "directo
 	if (typeof description !== "string" || description.trim() === "") {
 		throw new SkillFormatError(file, "`description` is required");
 	}
-	return { name, description: description.trim(), body: body.trim() };
+	const capability = parseCapability(file, meta as Record<string, unknown>);
+	return { name, description: description.trim(), body: body.trim(), ...(capability ? { capability } : {}) };
+}
+
+const ARTIFACT_NAME = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+function stringList(file: string, key: string, value: unknown, pattern?: RegExp): string[] {
+	if (value === undefined) return [];
+	if (!Array.isArray(value) || !value.every((v) => typeof v === "string" && v.trim() !== "")) {
+		throw new SkillFormatError(file, `\`${key}\` must be a list of strings`);
+	}
+	const list = value.map((v: string) => v.trim());
+	const bad = pattern && list.find((v) => !pattern.test(v));
+	if (bad) throw new SkillFormatError(file, `\`${key}\` entry "${bad}" must be lowercase letters, digits and dashes`);
+	return list;
+}
+
+function parseCapability(file: string, meta: Record<string, unknown>): SkillCapability | undefined {
+	if (meta.tasks === undefined && meta.inputs === undefined && meta.outputs === undefined) return undefined;
+	return {
+		tasks: stringList(file, "tasks", meta.tasks),
+		inputs: stringList(file, "inputs", meta.inputs, ARTIFACT_NAME),
+		outputs: stringList(file, "outputs", meta.outputs, ARTIFACT_NAME),
+	};
 }
 
 export interface LoadResult {
