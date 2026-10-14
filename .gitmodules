@@ -1,0 +1,3 @@
+[submodule "vendor/openmausbot"]
+	path = vendor/openmausbot
+	url = https://github.com/milind-soni/OpenMausBot.git

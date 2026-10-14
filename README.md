@@ -1,5 +1,7 @@
 # AIKING Core
 
+**AIKINGBOT stage 1:** the complete desktop foundation is in [apps/desktop-foundation](apps/desktop-foundation/README.md). It runs the selected OpenMausBot OSS application with AIKING branding. [Source comparison](docs/stage-1-source-comparison.md) and [the later Core integration plan](docs/stage-1-core-integration.md) describe the boundary. Core integration is not implemented in this stage.
+
 Lõi agent độc lập của AIKINGBOT.
 
 ```
