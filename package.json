@@ -6,18 +6,25 @@
   "description": "AIKING Core: chat, agent runtime, MCP tools and skills.",
   "scripts": {
     "test": "bun test",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p apps/shell",
     "demo": "bun run demo/run-demo.ts",
-    "chat": "bun run src/cli.ts"
+    "chat": "bun run src/cli.ts",
+    "build:shell": "vite build --config apps/shell/vite.config.ts",
+    "app": "bun run build:shell && bun run src/gateway/main.ts",
+    "app:dev": "bun run src/gateway/main.ts"
   },
   "dependencies": {
+    "@ag-ui/core": "1.0.2",
     "@anthropic-ai/sdk": "^0.133.0",
     "@modelcontextprotocol/sdk": "^1.32.1",
+    "solid-js": "1.9.17",
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/bun": "^1.4.3",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite": "7.3.7",
+    "vite-plugin-solid": "2.11.14"
   }
 }

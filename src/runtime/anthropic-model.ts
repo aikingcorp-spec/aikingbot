@@ -11,6 +11,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import {
 	type ContentBlock,
+	type CreateOptions,
 	type FallbackNote,
 	type Message,
 	type ModelClient,
@@ -175,11 +176,11 @@ export class AnthropicModel implements ModelClient {
 		this.model = options.model ?? DEFAULT_MODEL;
 	}
 
-	async create(request: ModelRequest): Promise<ModelResponse> {
+	async create(request: ModelRequest, options: CreateOptions = {}): Promise<ModelResponse> {
 		const useFallbacks = this.options.fallbacks !== false;
 		let message: ApiMessage;
 		try {
-			message = await this.client.beta.messages.create({
+			const params = {
 				model: this.model,
 				max_tokens: this.options.maxTokens ?? 16_000,
 				output_config: { effort: this.options.effort ?? "medium" },
@@ -191,7 +192,11 @@ export class AnthropicModel implements ModelClient {
 					input_schema: t.inputSchema as Anthropic.Tool.InputSchema,
 				})),
 				...(useFallbacks ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const } : {}),
-			});
+			};
+			const { onTextDelta } = options;
+			message = onTextDelta
+				? await this.client.beta.messages.stream(params).on("text", (delta) => onTextDelta(delta)).finalMessage()
+				: await this.client.beta.messages.create(params);
 		} catch (error) {
 			const status = error instanceof Anthropic.APIError ? error.status : undefined;
 			throw new ModelError(classifyApiError(error), PROVIDER, this.model, (error as Error).message, status, {

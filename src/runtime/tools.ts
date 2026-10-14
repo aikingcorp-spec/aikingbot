@@ -37,6 +37,8 @@ export interface PermissionRequest {
 	tool: string;
 	risk: ToolRisk;
 	input: unknown;
+	/** The model's tool call id, when the request comes from the agent loop. */
+	toolCallId?: string;
 }
 
 /** Asks a human (or a policy) whether one call may run. */
@@ -65,16 +67,17 @@ export type GateDecision = { allowed: true } | { allowed: false; reason: string 
 export class PermissionGate {
 	constructor(private readonly policy: ToolPolicy = {}) {}
 
-	async check(request: PermissionRequest): Promise<GateDecision> {
+	/** `approver` replaces the policy's approver for this check (for example, the UI of the current run). */
+	async check(request: PermissionRequest, approver = this.policy.approver): Promise<GateDecision> {
 		const { risk, tool } = request;
 		if (risk === "read") return { allowed: true };
 		if (risk === "side_effect" && this.policy.preapproved?.includes(tool)) return { allowed: true };
 		if (risk === "dangerous" && !this.policy.allowDangerous?.includes(tool)) {
 			return { allowed: false, reason: `"${tool}" is dangerous and not enabled by policy` };
 		}
-		if (!this.policy.approver) return { allowed: false, reason: `"${tool}" needs approval and no approver is configured` };
+		if (!approver) return { allowed: false, reason: `"${tool}" needs approval and no approver is configured` };
 		try {
-			return (await this.policy.approver(request))
+			return (await approver(request))
 				? { allowed: true }
 				: { allowed: false, reason: `approval for "${tool}" was declined` };
 		} catch (error) {
@@ -122,12 +125,15 @@ export class ToolRegistry {
 		return tools;
 	}
 
-	async call(name: string, input: unknown): Promise<ToolOutcome> {
+	async call(name: string, input: unknown, options: { approver?: Approver; toolCallId?: string } = {}): Promise<ToolOutcome> {
 		const owner = this.sources.find((s) => s.definitions().some((d) => d.name === name));
 		const definition = owner?.definitions().find((d) => d.name === name);
 		if (!owner || !definition) return { content: `Unknown tool "${name}".`, isError: true };
 
-		const decision = await this.gate.check({ tool: name, risk: definition.risk, input });
+		const decision = await this.gate.check(
+			{ tool: name, risk: definition.risk, input, ...(options.toolCallId ? { toolCallId: options.toolCallId } : {}) },
+			options.approver ?? this.policy.approver,
+		);
 		if (!decision.allowed) {
 			this.onGuard?.({ type: "denied", tool: name, risk: definition.risk, reason: decision.reason });
 			return { content: `Permission denied: ${decision.reason}. Do not retry; tell the user what is needed.`, isError: true };
