@@ -45,7 +45,7 @@ try {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   if (!cdp) await page.goto(info.uiUrl, { waitUntil: "domcontentloaded", timeout: 120_000 });
-  await page.getByRole("textbox", { name: "Search bots and messages" }).waitFor({ timeout: 120_000 });
+  await page.getByRole("textbox", { name: "Search agents and messages" }).waitFor({ timeout: 120_000 });
   for (let i = 0; i < 2; i++) {
     const skip = page.getByRole("button", { name: "Skip tour", exact: true });
     if (await skip.isVisible()) await skip.click();

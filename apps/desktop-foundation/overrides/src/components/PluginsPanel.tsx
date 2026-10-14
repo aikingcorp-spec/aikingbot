@@ -15,6 +15,7 @@ import { BotAvatar } from "./Avatar";
 import { SidebarPopoverMenu } from "./SidebarPopoverMenu";
 import { CATEGORY_SECTION_SIZE, catalogSections, inCategory, rankCategories } from "@/lib/app-catalog";
 import { McpServersPanel } from "./McpServersPanel";
+import { APP_LOGOS, type AppLogo } from "@/aiking/app-logos";
 
 export interface ToolkitCard {
   slug: string;
@@ -204,8 +205,10 @@ export function onlyLatestConnectorResponses(
   );
 }
 
-export function ServiceIcon({ card, className = "size-11" }: { card: Pick<ToolkitCard, "logo" | "domain" | "label">; className?: string }) {
+export function ServiceIcon({ card, className = "size-11" }: { card: Pick<ToolkitCard, "logo" | "domain" | "label"> & { slug?: string }; className?: string }) {
   const [stage, setStage] = useState(card.logo ? 0 : card.domain ? 1 : 2);
+  const bundled = card.slug ? APP_LOGOS[card.slug] : undefined;
+  if (bundled) return <BundledLogo logo={bundled} className={className} />;
   if (stage === 0 && card.logo) {
     return (
       <img
@@ -232,6 +235,25 @@ export function ServiceIcon({ card, className = "size-11" }: { card: Pick<Toolki
     <div className={cn("flex items-center justify-center rounded-xl bg-raised text-[15px] font-semibold text-ink-secondary", className)}>
       {card.label.slice(0, 1).toUpperCase()}
     </div>
+  );
+}
+
+function relativeLuminance(hex: string): number {
+  const value = Number.parseInt(hex.slice(1), 16);
+  const channel = (c: number) => {
+    const v = c / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel((value >> 16) & 255) + 0.7152 * channel((value >> 8) & 255) + 0.0722 * channel(value & 255);
+}
+
+function BundledLogo({ logo, className }: { logo: AppLogo; className?: string }) {
+  // Near-black marks (GitHub, Notion, X) take the ink color so they read on a dark tile.
+  const fill = relativeLuminance(logo.hex) < 0.04 ? "var(--color-ink)" : logo.hex;
+  return (
+    <span data-app-logo className={cn("flex items-center justify-center rounded-xl bg-raised ring-1 ring-ink/[0.06]", className)}>
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-[55%]" fill={fill}><path d={logo.path} /></svg>
+    </span>
   );
 }
 

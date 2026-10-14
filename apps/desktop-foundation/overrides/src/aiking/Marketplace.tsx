@@ -63,8 +63,35 @@ export function Marketplace() {
   const close = () => dispatch({ type: "togglePlugins", open: false });
 
   useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialogRef.current?.focus();
+    return () => { if (opener?.isConnected) opener.focus(); };
   }, []);
+  const detailRef = useRef(detail);
+  detailRef.current = detail;
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      // A menu or nested dialog inside the panel closes first.
+      const nested = dialog.querySelector('[role="dialog"], [role="menu"], [role="listbox"]');
+      if (nested && nested.getClientRects().length) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (detailRef.current) {
+        setDetail(null);
+        dialog.focus();
+      } else {
+        dispatch({ type: "togglePlugins", open: false });
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [dispatch]);
+  useEffect(() => {
+    if (detail) dialogRef.current?.focus();
+  }, [detail]);
   useEffect(() => {
     if (state.pluginsSurface === "mcp") setMarketplaceTab("apps");
   }, [state.pluginsSurface]);
@@ -90,14 +117,18 @@ export function Marketplace() {
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="aiking-marketplace-title"
+        aria-label={at("market.title")}
         tabIndex={-1}
         data-aiking-marketplace
         onKeyDown={(event) => {
-          if (event.key !== "Escape") return;
-          event.stopPropagation();
-          if (detail) setDetail(null);
-          else close();
+          if (event.key !== "Tab") return;
+          const items = [...event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex="0"]')]
+            .filter((element) => element.getClientRects().length > 0);
+          const first = items[0];
+          const last = items.at(-1);
+          if (!first || !last) return;
+          if (event.shiftKey && (document.activeElement === first || document.activeElement === event.currentTarget)) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
         }}
         className="animate-pop-in flex h-[min(704px,calc(100dvh-2rem))] w-[min(1040px,100%)] flex-col overflow-hidden rounded-[18px] border border-hairline bg-app shadow-[0_24px_64px_rgba(0,0,0,0.5)] outline-none"
       >
@@ -106,10 +137,10 @@ export function Marketplace() {
             <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
               <button type="button" onClick={() => setDetail(null)} className="text-ink-secondary hover:text-ink">{at("market.back")}</button>
               <ChevronRight size={14} aria-hidden="true" className="text-ink-tertiary" />
-              <span id="aiking-marketplace-title" className="truncate text-ink">{detail.name}</span>
+              <span className="truncate text-ink">{detail.title}</span>
             </nav>
           ) : (
-            <h2 id="aiking-marketplace-title" className="text-[14px] font-semibold text-ink">{at("market.title")}</h2>
+            <h2 className="text-[14px] font-semibold text-ink">{at("market.title")}</h2>
           )}
           <button
             type="button"

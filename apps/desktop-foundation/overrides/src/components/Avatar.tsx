@@ -1,3 +1,4 @@
+// AIKING stage 2: original AIKINGBOT agent avatars (flat body shapes with expressive eyes).
 import {
   forwardRef,
   memo,
@@ -78,6 +79,7 @@ function MausAvatarComponent(
     turn,
     animated = true,
     gradient,
+    bodyId,
   }: MausAvatarProps,
   ref: React.Ref<MausAvatarHandle>,
 ) {
@@ -104,8 +106,10 @@ function MausAvatarComponent(
     else blink();
   }, [motion, motionKey, animated]);
 
+  const face = faceFor(state);
+  const shape = bodyShape(bodyId);
   return (
-    <span ref={mark} className="inline-flex shrink-0" data-expression={expression} style={{ width: size, height: size, transform: turn ? `rotate(${turn}deg)` : undefined }}>
+    <span ref={mark} className="inline-flex shrink-0" data-expression={expression} data-body={bodyId ?? "cursor"} style={{ width: size, height: size, transform: turn ? `rotate(${turn}deg)` : undefined }}>
       <svg
         viewBox="0 0 64 64"
         width={size}
@@ -116,18 +120,83 @@ function MausAvatarComponent(
         data-state={state}
       >
         <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor={colors[0]} />
-            <stop offset="0.52" stopColor={colors[1]} />
-            <stop offset="1" stopColor={colors[2]} />
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={colors[1]} />
+            <stop offset="1" stopColor={mixToward(colors[1], colors[2], 0.28)} />
           </linearGradient>
         </defs>
-        <rect x="2" y="2" width="60" height="60" rx="18" fill={`url(#${gradientId})`} />
-        <path d="M32 13 48 42H16Z" fill="none" stroke="#111318" strokeWidth="4" strokeLinejoin="round" />
-        <path d="M26 33h12M32 45v6" stroke="#111318" strokeWidth="3" strokeLinecap="round" />
+        {shape(`url(#${gradientId})`)}
+        <g transform={bodyId === "capsule" ? "translate(0 0)" : bodyId === "drop" ? "translate(0 4)" : bodyId === "star" ? "translate(0 2)" : undefined}>{face}</g>
       </svg>
     </span>
   );
+}
+
+function mixToward(a: string, b: string, t: number): string {
+  if (!a.startsWith("#") || !b.startsWith("#")) return a;
+  return mix(a, b, t);
+}
+
+/** Original AIKINGBOT agent bodies: one flat shape per body id. */
+function bodyShape(bodyId: MascotBodyId | undefined): (fill: string) => React.ReactNode {
+  switch (bodyId) {
+    case "circle":
+      return (fill) => <circle cx="32" cy="32" r="29" fill={fill} />;
+    case "blob":
+      return (fill) => <path d="M33 3c15 0 28 9 28 27 0 19-13 31-30 31C14 61 3 50 3 34 3 16 17 3 33 3Z" fill={fill} />;
+    case "squircle":
+      return (fill) => <rect x="4" y="4" width="56" height="56" rx="22" fill={fill} />;
+    case "capsule":
+      return (fill) => <rect x="2" y="14" width="60" height="36" rx="18" fill={fill} />;
+    case "drop":
+      return (fill) => <path d="M32 2c10 13 27 26 27 39 0 12-12 21-27 21S5 53 5 41C5 28 22 15 32 2Z" fill={fill} />;
+    case "shield":
+      return (fill) => <path d="M32 3 57 11v19c0 16-11 27-25 31C18 57 7 46 7 30V11Z" fill={fill} strokeLinejoin="round" />;
+    case "hexagon":
+      return (fill) => <path d="M18 5h28l15 27-15 27H18L3 32Z" fill={fill} strokeLinejoin="round" />;
+    case "diamond":
+      return (fill) => <rect x="12" y="12" width="40" height="40" rx="10" transform="rotate(45 32 32)" fill={fill} />;
+    case "star":
+      return (fill) => <path d="M32 3l8 15 17-2-7 16 11 13-17 3-4 17-8-12-8 12-4-17-17-3 11-13-7-16 17 2Z" fill={fill} strokeLinejoin="round" />;
+    default:
+      return (fill) => <rect x="3" y="3" width="58" height="58" rx="17" fill={fill} />;
+  }
+}
+
+type Face = "dots" | "happy" | "closed" | "up" | "down" | "wide" | "wink" | "sad" | "angry";
+
+const FACE_BY_STATE: Record<string, Face> = {
+  sleeping: "closed", drowsy: "closed", bored: "closed",
+  happy: "happy", laughing: "happy", celebrate: "happy", proud: "happy", excited: "happy", playful: "happy", bouncing: "happy",
+  thinking: "up", searching: "up", curious: "up", confused: "up", suspicious: "up", orbit: "up", radar: "up", listening: "up",
+  working: "down", writing: "down", loading: "down", progress: "down", uploading: "down", sending: "down", receiving: "down", dictating: "down", humming: "down", spawning: "down", dragging: "down",
+  surprised: "wide", scared: "wide", alerting: "wide", notifying: "wide", waking: "wide",
+  shy: "wink", sad: "sad", angry: "angry",
+};
+
+function faceFor(state: string): React.ReactNode {
+  const eye = "#ffffff";
+  const stroke = { stroke: eye, strokeWidth: 3.4, strokeLinecap: "round" as const, fill: "none" };
+  switch (FACE_BY_STATE[state] ?? "dots") {
+    case "happy":
+      return <><path d="M20 35q4-6 8 0" {...stroke} /><path d="M36 35q4-6 8 0" {...stroke} /></>;
+    case "closed":
+      return <><path d="M20 33.5h8" {...stroke} /><path d="M36 33.5h8" {...stroke} /></>;
+    case "up":
+      return <><circle cx="26" cy="28.5" r="3.6" fill={eye} /><circle cx="42" cy="28.5" r="3.6" fill={eye} /></>;
+    case "down":
+      return <><ellipse cx="23" cy="36" rx="3.8" ry="3" fill={eye} /><ellipse cx="39" cy="36" rx="3.8" ry="3" fill={eye} /></>;
+    case "wide":
+      return <><ellipse cx="24" cy="32" rx="3.6" ry="5" fill={eye} /><ellipse cx="40" cy="32" rx="3.6" ry="5" fill={eye} /></>;
+    case "wink":
+      return <><circle cx="24" cy="32" r="3.6" fill={eye} /><path d="M36 33q4-5 8 0" {...stroke} /></>;
+    case "sad":
+      return <><circle cx="24" cy="34" r="3.4" fill={eye} /><circle cx="40" cy="34" r="3.4" fill={eye} /><path d="M19 27l7-2.5M45 27l-7-2.5" {...stroke} strokeWidth={2.6} /></>;
+    case "angry":
+      return <><circle cx="24" cy="34" r="3.4" fill={eye} /><circle cx="40" cy="34" r="3.4" fill={eye} /><path d="M19 25l7 3M45 25l-7 3" {...stroke} strokeWidth={2.6} /></>;
+    default:
+      return <><circle cx="24" cy="32" r="3.6" fill={eye} /><circle cx="40" cy="32" r="3.6" fill={eye} /></>;
+  }
 }
 
 export const MausAvatar = memo(forwardRef(MausAvatarComponent));
