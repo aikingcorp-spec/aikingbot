@@ -1,6 +1,7 @@
 // AIKING stage 2: OpenBot-parity settings layout (quiet rail, 18px page title, grouped rows). Based on OpenMausBot src/components/SettingsModal.tsx (Apache-2.0).
 import { useEffect, useRef, useState } from "react";
-import { Archive, CircleUser, Coins, FlaskConical, KeyRound, LockKeyhole, Monitor, Palette, ScrollText, Search, Sparkles, TabletSmartphone, Terminal, User, Users, X, Building2, Zap, BookOpen } from "lucide-react";
+import { Archive, CircleUser, Coins, FlaskConical, KeyRound, LockKeyhole, Monitor, Palette, ScrollText, Search, Sparkles, TabletSmartphone, Terminal, User, Users, X, Building2, Zap, BookOpen, Plug } from "lucide-react";
+import { ConnectorsOverview } from "@/aiking/ConnectorsOverview";
 import { api, useStore, type AppSettingsSection, type ConfigStatus } from "@/state/store";
 import { analyticsEnabled, setAnalyticsEnabled } from "@/lib/analytics";
 import { browserAvailable, browserUnavailableReason, builtInBrowserEnabled, routinesInConversationEnabled, showToolCallsEnabled, skillAuthoringEnabled, skillsLibraryEnabled } from "@/lib/feature-flags";
@@ -108,7 +109,8 @@ export type SimpleSettingsPage = {
 export const SIMPLE_PAGES: SimpleSettingsPage[] = [
   { id: "general", labelKey: "settings.section.general", icon: User, sections: ["general"] },
   { id: "appearance", labelKey: "settings.section.appearance", icon: Palette, sections: ["appearance"] },
-  { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines", "connections", "decisionModel"] },
+  { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines", "decisionModel"] },
+  { id: "connectors", labelKey: "settings.group.connectors", icon: Plug, sections: ["connections"] },
   { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["companion", "desktopWorkspaces", "computer", "logins"] },
   { id: "account", labelKey: "settings.group.account", icon: CircleUser, sections: ["cloudAccount", "organization", "people", "activity"] },
 ];
@@ -943,6 +945,9 @@ export function SettingsModal() {
         return <ExperimentalFeaturesRow />;
       case "connections":
         return (
+          <>
+          <ConnectorsOverview onOpenKeys={() => scrollRef.current?.querySelector("[data-settings-api-keys]")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+          <div data-settings-api-keys="" className="scroll-mt-2" />
           <Card
             title={t("settings.connections.title")}
             subtitle={t("settings.connections.subtitle")}
@@ -990,6 +995,7 @@ export function SettingsModal() {
               </details>
             </div>
           </Card>
+          </>
         );
       case "decisionModel":
         return <DecisionModelSettings />;

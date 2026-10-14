@@ -4322,5 +4322,6 @@
   "widget.days.everyDay": "Every day",
   "widget.days.weekdays": "Weekdays",
   "widget.days.weekends": "Weekends",
-  "widget.days.none": "No days picked"
+  "widget.days.none": "No days picked",
+  "settings.group.connectors": "Connectors"
 }

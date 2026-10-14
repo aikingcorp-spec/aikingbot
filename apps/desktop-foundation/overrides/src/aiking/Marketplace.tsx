@@ -340,47 +340,93 @@ function EmptyState({ query }: { query: string }) {
   );
 }
 
+type SkillEntry = { name: string; description: string; tags: string[]; version: string | null; agents: Array<{ id: string; name: string }> };
+
 function SkillGrid({ query, onManage }: { query: string; onManage: () => void }) {
-  const [skills, setSkills] = useState<SkillsLibrarySkillWire[] | null>(null);
+  const { state, dispatch } = useStore();
+  const [skills, setSkills] = useState<SkillEntry[] | null>(null);
+  const [library, setLibrary] = useState(true);
   const [error, setError] = useState("");
+  const agents = state.bots.filter((bot) => !bot.hidden);
+  const agentKey = agents.map((bot) => bot.id).join(",");
+  const agentsRef = useRef(agents);
+  agentsRef.current = agents;
   useEffect(() => {
     let alive = true;
+    const fromAgents = async () => {
+      const lists = await Promise.all(agentsRef.current.map(async (bot) => {
+        const response = await fetch(`/api/bots/${encodeURIComponent(bot.id)}/skills`);
+        const body = (await response.json().catch(() => ({}))) as { skills?: Array<{ name: string; description: string }> };
+        return { bot, skills: response.ok ? body.skills ?? [] : [] };
+      }));
+      const byName = new Map<string, SkillEntry>();
+      for (const { bot, skills: own } of lists) {
+        for (const skill of own) {
+          const entry = byName.get(skill.name) ?? { name: skill.name, description: skill.description, tags: [], version: null, agents: [] };
+          entry.agents.push({ id: bot.id, name: bot.name });
+          byName.set(skill.name, entry);
+        }
+      }
+      return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
+    };
     void fetch("/api/skills-library")
       .then(async (response) => {
+        if (response.status === 404) {
+          if (alive) setLibrary(false);
+          const own = await fromAgents();
+          if (alive) setSkills(own);
+          return;
+        }
         const body = (await response.json()) as { skills?: SkillsLibrarySkillWire[]; error?: string };
         if (!response.ok) throw new Error(body.error ?? "Skills could not be loaded");
-        if (alive) setSkills(body.skills ?? []);
+        if (alive) setSkills((body.skills ?? []).map((skill) => ({ name: skill.name, description: skill.description, tags: skill.tags, version: skill.version, agents: skill.assignedBots })));
       })
       .catch((cause) => alive && setError(cause instanceof Error ? cause.message : String(cause)));
     return () => { alive = false; };
-  }, []);
+  }, [agentKey]);
   const shown = useMemo(
     () => (skills ?? []).filter((skill) => matches(query, skill.name, skill.description, ...skill.tags)),
     [skills, query],
   );
+  const openAgentSkills = (botId: string) => {
+    dispatch({ type: "togglePlugins", open: false });
+    dispatch({ type: "toggleSettings", open: true, botId, section: "skills" });
+  };
+  const firstAgent = agents[0];
   return (
     <>
       <div className="mb-3 flex items-center gap-3">
-        <h3 className="text-[14px] font-semibold text-ink">{at("market.installedSkills")}</h3>
-        <span className="hidden text-[12px] text-ink-tertiary sm:inline">{at("market.skillsHint")}</span>
-        <span className="ml-auto"><OutlineButton onClick={onManage}><Settings2 size={14} aria-hidden="true" />{at("market.manage")}</OutlineButton></span>
+        <h3 className="text-[14px] font-semibold text-ink">{library ? at("market.installedSkills") : at("market.agentSkills")}</h3>
+        <span className="hidden min-w-0 truncate text-[12px] text-ink-tertiary sm:inline">{at("market.skillsHint")}</span>
+        {library
+          ? <span className="ml-auto shrink-0"><OutlineButton onClick={onManage}><Settings2 size={14} aria-hidden="true" />{at("market.manage")}</OutlineButton></span>
+          : firstAgent && <span className="ml-auto shrink-0"><OutlineButton onClick={() => openAgentSkills(firstAgent.id)}><Plus size={14} aria-hidden="true" />{at("market.addSkill")}</OutlineButton></span>}
       </div>
       {error ? (
         <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>
       ) : skills === null ? (
         <div className="flex items-center justify-center gap-2 py-20 text-[13px] text-ink-secondary"><Loader2 size={14} className="animate-spin" /></div>
-      ) : shown.length === 0 ? <EmptyState query={query} /> : (
+      ) : shown.length === 0 ? (
+        query ? <EmptyState query={query} /> : (
+          <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-[14px] border border-dashed border-hairline text-center">
+            <Sparkles size={20} aria-hidden="true" className="text-ink-tertiary" />
+            <p className="text-[14px] font-medium text-ink">{at("market.noSkills")}</p>
+            <p className="max-w-sm text-[12.5px] text-ink-secondary">{at("market.noSkillsHint")}</p>
+          </div>
+        )
+      ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((skill) => (
             <MarketCard
               key={skill.name}
               icon={<span className="flex size-9 items-center justify-center rounded-lg bg-raised text-ink-secondary"><Sparkles size={17} aria-hidden="true" /></span>}
               title={skill.name}
-              action={skill.assignedBots.length > 0
-                ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count: skill.assignedBots.length })}</span>
+              onOpen={skill.agents[0] ? () => openAgentSkills(skill.agents[0]!.id) : undefined}
+              action={skill.agents.length > 0
+                ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count: skill.agents.length })}</span>
                 : undefined}
               description={skill.description}
-              meta={[skill.version ? `${at("market.version")} ${skill.version}` : "", skill.tags.slice(0, 2).join(", "), skill.assignedBots.length ? "" : at("market.skillOff")].filter(Boolean).join(" · ")}
+              meta={[skill.version ? `${at("market.version")} ${skill.version}` : "", skill.tags.slice(0, 2).join(", "), skill.agents.map((agent) => agent.name).slice(0, 3).join(", ") || at("market.skillOff")].filter(Boolean).join(" · ")}
             />
           ))}
         </div>

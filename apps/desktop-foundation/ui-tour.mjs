@@ -119,7 +119,7 @@ await step("marketplace-mcp", async () => {
 await step("marketplace-skills", async () => {
   const dialog = page.getByRole("dialog", { name: "Marketplace" });
   await dialog.getByRole("tab", { name: "Skills" }).click();
-  await dialog.getByRole("heading", { name: "Installed skills" }).waitFor();
+  await dialog.getByRole("heading", { name: /^(Agent skills|Skills library)$/ }).waitFor();
 });
 
 await step("agent-from-template", async () => {
@@ -170,7 +170,7 @@ await step("computer-panel", async () => {
 });
 await closeOverlays();
 
-for (const section of ["General", "Appearance", "AI", "Computers", "Account"]) {
+for (const section of ["General", "Appearance", "AI", "Connectors", "Computers", "Account"]) {
   await step(`settings-${section.toLowerCase()}`, async () => {
     if (!(await page.getByRole("dialog").filter({ has: page.locator("[data-settings-search]") }).isVisible().catch(() => false))) {
       await button("You").click();

@@ -50,6 +50,11 @@ export function toAgents(input) {
   });
 }
 
+// Keys AIKINGBOT adds to the catalog. Other languages fall back to English for them.
+const ADDED = {
+  "settings.group.connectors": "Connectors",
+};
+
 const upstream = JSON.parse(readFileSync(source, "utf8"));
 const out = {};
 let changed = 0;
@@ -58,6 +63,7 @@ for (const [key, value] of Object.entries(upstream)) {
   if (next !== value) changed += 1;
   out[key] = next;
 }
+Object.assign(out, ADDED);
 mkdirSync(dirname(target), { recursive: true });
 writeFileSync(target, `${JSON.stringify(out, null, 2)}\n`);
 console.log(`Wrote ${target}: ${changed} of ${Object.keys(upstream).length} strings use "agent".`);
