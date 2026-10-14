@@ -1,3 +1,4 @@
+import "./build-endpoints";
 import { join, resolve } from "node:path";
 import { parseInviteUrl, selfHostedApiOrigin } from "@aikingbot/contracts/invite-links";
 import {

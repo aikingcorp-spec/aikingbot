@@ -7,6 +7,11 @@ const rendererPort = readRendererPort(process.env.AIKINGBOT_DEV_RENDERER_PORT);
 
 export default defineConfig({
   main: {
+    // Build-time account service endpoints (src/main/build-endpoints.ts). Empty means local-only.
+    define: {
+      __AIKINGBOT_BUILD_AUTH_API_URL__: JSON.stringify(process.env.AIKINGBOT_BUILD_AUTH_API_URL ?? ""),
+      __AIKINGBOT_BUILD_REMOTE_SIGNAL_URL__: JSON.stringify(process.env.AIKINGBOT_BUILD_REMOTE_SIGNAL_URL ?? ""),
+    },
     // Workspace sources ship as TypeScript and must be bundled for the packaged app.
     plugins: [
       externalizeDepsPlugin({
