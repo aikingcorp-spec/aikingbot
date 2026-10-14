@@ -1,0 +1,4 @@
+node_modules/
+.aiking/
+*.log
+TASKS.md

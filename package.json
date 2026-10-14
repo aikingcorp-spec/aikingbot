@@ -1,0 +1,23 @@
+{
+  "name": "@aiking/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AIKING Core: chat, agent runtime, MCP tools and skills.",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "demo": "bun run demo/run-demo.ts",
+    "chat": "bun run src/cli.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3",
+    "typescript": "^7.0.2"
+  }
+}
