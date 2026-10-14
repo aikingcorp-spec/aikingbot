@@ -14,7 +14,7 @@
  */
 
 import type { CentralAuthUser } from "@aikingbot/contracts/ipc";
-import { session } from "electron";
+import { app, type Session, session } from "electron";
 
 /** The registrable hosts of the AIKING hosted services, each also covering its subdomains. */
 export const HOSTED_SERVICE_HOSTS = ["aikingbot.aikingx.com", "aikingbot-sites.aikingx.com"] as const;
@@ -75,14 +75,30 @@ export function guardFetch(fetchImpl: typeof fetch): typeof fetch {
   return Object.assign(guarded, fetchImpl);
 }
 
+/** The `webRequest` URL patterns of every hosted origin, for HTTP and for WebSocket. */
+export function hostedServiceUrlPatterns(): string[] {
+  return HOSTED_SERVICE_HOSTS.flatMap((host) =>
+    ["http", "https", "ws", "wss"].flatMap((scheme) => [`${scheme}://${host}/*`, `${scheme}://*.${host}/*`]),
+  );
+}
+
+function guardSession(target: Session): void {
+  target.webRequest.onBeforeRequest({ urls: hostedServiceUrlPatterns() }, (_details, callback) =>
+    callback({ cancel: true }),
+  );
+}
+
 /**
- * Installs the guard on the main process `fetch` and on the default Electron session, which covers
- * the renderer and `net` requests. Call it inside `app.whenReady()`, before any service starts.
+ * Installs the guard on the main process `fetch` and on every Electron session: the default one,
+ * which covers the renderer and `net`, and each partition created later, such as the agent browser
+ * and previews. A WebSocket from the main process only ever opens to a Signal address that the
+ * account service hands out, so with no account service it has nothing to connect to. Call it inside
+ * `app.whenReady()`, before any service starts.
  */
 export function installHostedServiceGuard(env: NodeJS.ProcessEnv = process.env): boolean {
   if (hostedServicesEnabled(env)) return false;
   globalThis.fetch = guardFetch(globalThis.fetch);
-  const urls = HOSTED_SERVICE_HOSTS.flatMap((host) => [`*://${host}/*`, `*://*.${host}/*`]);
-  session.defaultSession.webRequest.onBeforeRequest({ urls }, (_details, callback) => callback({ cancel: true }));
+  guardSession(session.defaultSession);
+  app.on("session-created", guardSession);
   return true;
 }

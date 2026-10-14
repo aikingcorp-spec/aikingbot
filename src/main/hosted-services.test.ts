@@ -1,8 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("electron", () => ({ session: { defaultSession: { webRequest: { onBeforeRequest: vi.fn() } } } }));
+vi.mock("electron", () => ({
+  app: { on: vi.fn() },
+  session: { defaultSession: { webRequest: { onBeforeRequest: vi.fn() } } },
+}));
 
-import { guardFetch, HostedServiceDisabledError, hostedServicesEnabled, isHostedServiceUrl } from "./hosted-services";
+import {
+  guardFetch,
+  HostedServiceDisabledError,
+  hostedServicesEnabled,
+  hostedServiceUrlPatterns,
+  isHostedServiceUrl,
+} from "./hosted-services";
 
 describe("hosted services guard", () => {
   it("recognizes the hosted origins and their subdomains only", () => {
@@ -35,5 +44,11 @@ describe("hosted services guard", () => {
     expect(hostedServicesEnabled({})).toBe(false);
     expect(hostedServicesEnabled({ AIKINGBOT_HOSTED_SERVICES: "true" })).toBe(false);
     expect(hostedServicesEnabled({ AIKINGBOT_HOSTED_SERVICES: "1" })).toBe(true);
+  });
+
+  it("blocks HTTP and WebSocket requests to every hosted origin in each session", () => {
+    expect(hostedServiceUrlPatterns()).toEqual(
+      expect.arrayContaining(["wss://*.aikingbot.aikingx.com/*", "https://aikingbot.aikingx.com/*"]),
+    );
   });
 });
