@@ -3,6 +3,23 @@
 Cập nhật: 2026-10-14. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
+## Stage 2 — UI/UX parity (nhánh `stage2/ui-parity`, 2026-10-14)
+
+Ứng dụng chính là `apps/desktop-foundation/` (OpenMausBot OSS + overrides). Stage 2 đưa giao diện về tương đương
+OpenBot 0.39 với thương hiệu AIKING. Chi tiết, bảng màn hình xong/còn thiếu, token đo được:
+[`docs/stage-2-ui-parity.md`](docs/stage-2-ui-parity.md).
+
+- Sửa ở `apps/desktop-foundation/overrides/` rồi chạy `node apps/desktop-foundation/setup.mjs --source-only`
+  (hoặc chép overrides vào `.aikingbot-foundation/source/`). Không sửa source sinh ra làm bản lâu dài.
+- Code mới: `overrides/src/aiking/` (theme, rail, marketplace, connectors, sliding tabs, logo, strings).
+- `en.json` là file sinh bởi `apps/desktop-foundation/terminology.mjs` — sửa script, không sửa tay.
+- Kiểm thử tương tác: `apps/desktop-foundation/ui-tour.mjs` (28 bước, browser + Electron/CDP), `verify.mjs` (Stage 1).
+- OpenBot mới (PolyForm Noncommercial) chỉ được quan sát qua ảnh/đo đạc. Không copy code.
+- Electron trên Linux: chạy bằng user thường (sandbox bật). Root bị Electron từ chối — không thêm `--no-sandbox`.
+
+Việc tiếp theo cho UI: catalog Marketplace thật từ AIKING Core (Stage 3), connector first-party, rail nhiều
+workspace, gói ngôn ngữ `vi`, dialog New agent dạng trang. Phần Core bên dưới (mục 0–9) là lịch sử v0.2.
+
 ## 0. Bối cảnh và luật làm việc (bắt buộc)
 
 - Repo: `github.com/aikingcorp-spec/AIKINGX_Bot`, nhánh **`claude/aiking-core-rnd`** (nhánh orphan, độc lập

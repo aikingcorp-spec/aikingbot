@@ -62,3 +62,18 @@ dependency gián tiếp), không có trong bundle UI hay runtime. CC-BY-4.0 cho 
 ghi công nếu phân phối lại dữ liệu đó.
 
 Muốn tạo lại danh sách này sau khi đổi dependency thì chạy lại lệnh kiểm kê trong `docs/README-licenses.md`.
+
+## Stage 2 — desktop foundation UI (2026-10-14)
+
+Mọi file mới trong `apps/desktop-foundation/overrides/src/aiking/` là code AIKING viết mới. Các override
+`src/components/*.tsx` ở Stage 2 là bản sửa của file OpenMausBot (Apache-2.0) cùng đường dẫn; dòng đầu mỗi file ghi rõ.
+
+Giao diện OpenBot 0.39 (PolyForm Noncommercial) chỉ được **quan sát**: chạy Storybook tham chiếu, chụp màn hình,
+đo màu/kích thước đã render. Không sao chép file, CSS, component hay asset nào của OpenBot. Avatar agent, rail,
+marketplace, connectors là thiết kế và code gốc của AIKING.
+
+| Thành phần | Nguồn | Giấy phép | Ghi chú |
+| --- | --- | --- | --- |
+| `overrides/public/fonts/inter/*.woff2` | Inter Variable, `@fontsource-variable/inter` 5.3.0 (rsms/inter) | SIL OFL-1.1 | `OFL.txt` đi kèm; dùng thương mại được |
+| `overrides/src/aiking/app-logos.ts` | Path + màu từ `simple-icons` 16.35.0 | CC0-1.0 | Logo là nhãn hiệu của chủ sở hữu; chỉ dùng để nhận diện dịch vụ connector |
+| `overrides/src/locales/en.json` | Sinh từ `en.json` của OpenMausBot bằng `terminology.mjs` | Apache-2.0 | bot→agent, OpenMausBot→AIKINGBOT; tên lệnh CLI và ghi công giữ nguyên |

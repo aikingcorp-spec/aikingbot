@@ -76,6 +76,17 @@ Artifacts are generated locally, not committed: `electron-{chat,workspace,settin
 
 Signed installers, cross-platform native permissions, real remote/computer sessions, provider installations and external OAuth/actions remain unverified. Full latest OpenBot UI and feature parity is a later stage; the exact gaps are in the source comparison.
 
+## Stage 2 interface
+
+The default look follows the OpenBot 0.39 reference with the AIKING brand: workspace rail, Agents/Routines sidebar, Marketplace (Agents, Apps, Skills), Settings → Connectors, tool activity cards and original agent avatars. See [Stage 2 UI parity](../../docs/stage-2-ui-parity.md). With an offline stack running:
+
+```sh
+AIKING_CHROME=/path/to/chrome node apps/desktop-foundation/ui-tour.mjs
+AIKING_VERIFY_CDP=http://127.0.0.1:9223 node apps/desktop-foundation/ui-tour.mjs   # Electron
+```
+
+The tour writes one screenshot per screen and `<surface>-ui-tour.json` to `.aikingbot-foundation/evidence/stage2/`. On Linux, run Electron as a normal user; it refuses to start as root with its sandbox on.
+
 ## Reused source and boundaries
 
 The complete OSS source is retained, including `src/App.tsx`, the state/store, chat/sidebar/composer, groups, routines, settings, provider/model controls, Apps/MCP/skills, computer/browser panels, `server/`, `shared/` and `electron/`. `LICENSE`, `NOTICE`, `LICENSING.md` and `third_party/` are preserved. AIKING overrides replace product marks, default avatars and active icons; upstream marketing analytics and email collection are disabled. The optional enterprise entitlement checks stay unchanged.
