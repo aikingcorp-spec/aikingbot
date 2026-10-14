@@ -1,64 +1,55 @@
-// Copyright (c) 2026 AIKING. The marketplace: Agents, Apps and Skills in one
-// dialog. Layout follows the OpenBot 0.39 reference screenshots; the code is
-// original. Apps reuse the upstream connector panel (PluginsPanel, embedded),
-// so connecting, authorizing and MCP servers behave exactly as before.
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+// Copyright (c) 2026 AIKING. The marketplace: Agents, Apps and Skills from a
+// catalog (marketplace/contract.ts), installed with the app's real endpoints
+// (marketplace/installer.ts). Layout follows the OpenBot 0.39 reference
+// screenshots; the code is original. "All connectors" embeds the upstream
+// connector panel, so Composio sign-in and MCP management behave as before.
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronRight, Loader2, Plus, Search, Settings2, Sparkles, X } from "lucide-react";
-import { useStore } from "@/state/store";
-import { BOT_ROLES, type BotRole } from "@/lib/bot-roles";
+import {
+  AlertTriangle, Check, ChevronRight, CircleDot, FolderOpen, ListFilter, Loader2, Plus, RefreshCw, Search, Sparkles, Trash2, Wrench, X,
+} from "lucide-react";
+import { openBot, useStore, type Bot } from "@/state/store";
 import { cn } from "@/lib/cn";
+import { MausAvatar } from "@/components/Avatar";
+import { normalizeState } from "@/lib/mascot";
 import { PluginsPanel } from "@/components/PluginsPanel";
-import type { SkillsLibrarySkillWire } from "../../shared/wire";
 import { SlidingTabs } from "./SlidingTabs";
-import { seedNewAgentRole, setMarketplaceTab, useMarketplaceTab, type MarketplaceTab } from "./marketplace-state";
+import { setMarketplaceTab, useMarketplaceTab, type MarketplaceTab } from "./marketplace-state";
 import { at } from "./strings";
+import { APP_LOGOS } from "./app-logos";
+import type { AgentListing, AppListing, CatalogPage, InstallStatus, Listing, ListingKind, SkillListing } from "./marketplace/contract";
+import { catalogSource } from "./marketplace/sources";
+import {
+  agentStatus, appStatus, forgetAgent, installAgent, installMcp, installSkill, loadAppsState, setSkillEnabled, skillHolders,
+  skillStatus, testMcp, uninstallMcp, uninstallSkill, type AgentSkillState, type AppsState,
+} from "./marketplace/installer";
+import { useShowThreads } from "@/lib/thread-preferences";
 
-const TEMPLATE_COLORS = ["#f59e0b", "#3b82f6", "#2fbf71", "#8b5cf6", "#ef4444", "#ec4899", "#2dd4bf", "#eab308"];
-const TEMPLATE_SHAPES = ["pill", "squircle", "blob", "hex"] as const;
+type Detail = { kind: ListingKind; id: string } | null;
+const KIND_OF_TAB: Record<MarketplaceTab, ListingKind> = { agents: "agent", apps: "app", skills: "skill" };
 
-const ROLE_CATEGORY: Record<string, string> = {
-  assistant: "Everyday",
-  inbox: "Productivity",
-  research: "Research",
-  coder: "Coding",
-  community: "Community",
-  ops: "Operations",
-};
-
-const APP_LABEL: Record<string, string> = {
-  gmail: "Gmail",
-  github: "GitHub",
-  discord: "Discord",
-  slack: "Slack",
-  googlecalendar: "Google Calendar",
-  notion: "Notion",
-  linear: "Linear",
-};
-
-/** A small generated mascot for a template: a colored shape with two eyes. */
-export function TemplateMascot({ index, size = 34 }: { index: number; size?: number }) {
-  const color = TEMPLATE_COLORS[index % TEMPLATE_COLORS.length]!;
-  const shape = TEMPLATE_SHAPES[index % TEMPLATE_SHAPES.length]!;
-  const body =
-    shape === "pill" ? <rect x="2" y="9" width="32" height="18" rx="9" fill={color} />
-      : shape === "squircle" ? <rect x="4" y="4" width="28" height="28" rx="9" fill={color} />
-        : shape === "hex" ? <path d="M10 4h16l8 14-8 14H10L2 18Z" fill={color} />
-          : <path d="M18 3c8 0 15 6 15 15s-7 15-15 15S3 27 3 18 10 3 18 3Z" fill={color} />;
-  return (
-    <svg aria-hidden="true" viewBox="0 0 36 36" width={size} height={size} className="shrink-0">
-      {body}
-      <circle cx="14" cy="18" r="1.9" fill="#fff" />
-      <circle cx="22" cy="18" r="1.9" fill="#fff" />
-    </svg>
-  );
+function useCatalog<K extends ListingKind>(kind: K, text: string, category: string | null) {
+  const [page, setPage] = useState<CatalogPage<Extract<Listing, { kind: K }>> | null>(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    let alive = true;
+    catalogSource().list({ kind, text, category })
+      .then((result) => alive && (setPage(result), setError("")))
+      .catch((cause) => alive && setError(cause instanceof Error ? cause.message : String(cause)));
+    return () => { alive = false; };
+  }, [kind, text, category]);
+  return { page, error };
 }
 
 export function Marketplace() {
-  const { state, dispatch } = useStore();
+  const { dispatch, state } = useStore();
   const tab = useMarketplaceTab();
   const [query, setQuery] = useState("");
-  const [detail, setDetail] = useState<BotRole | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [detail, setDetail] = useState<Detail>(null);
+  const [revision, setRevision] = useState(0);
+  const bump = useCallback(() => setRevision((value) => value + 1), []);
   const dialogRef = useRef<HTMLDivElement>(null);
   const close = () => dispatch({ type: "togglePlugins", open: false });
 
@@ -74,7 +65,6 @@ export function Marketplace() {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       const dialog = dialogRef.current;
       if (!dialog) return;
-      // A menu or nested dialog inside the panel closes first.
       const nested = dialog.querySelector('[role="dialog"], [role="menu"], [role="listbox"]');
       if (nested && nested.getClientRects().length) return;
       event.preventDefault();
@@ -90,29 +80,28 @@ export function Marketplace() {
     return () => window.removeEventListener("keydown", onKey, true);
   }, [dispatch]);
   useEffect(() => {
-    if (detail) dialogRef.current?.focus();
-  }, [detail]);
-  useEffect(() => {
     if (state.pluginsSurface === "mcp") setMarketplaceTab("apps");
   }, [state.pluginsSurface]);
 
+  const kind = KIND_OF_TAB[tab];
+  const { page, error } = useCatalog(kind, query, category);
   const chooseTab = (next: MarketplaceTab) => {
     setDetail(null);
     setQuery("");
+    setCategory(null);
+    setFilterOpen(false);
     setMarketplaceTab(next);
   };
-
-  const addAgent = (role: BotRole) => {
-    seedNewAgentRole(role.id);
-    close();
-    dispatch({ type: "toggleNewBot", open: true });
-  };
+  const [detailListing, setDetailListing] = useState<Listing | null>(null);
+  useEffect(() => {
+    let alive = true;
+    if (!detail) { setDetailListing(null); return; }
+    void catalogSource().get(detail.id).then((found) => alive && setDetailListing(found && found.kind === detail.kind ? found : null));
+    return () => { alive = false; };
+  }, [detail]);
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4"
-      onMouseDown={(event) => event.target === event.currentTarget && close()}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4" onMouseDown={(event) => event.target === event.currentTarget && close()}>
       <div
         ref={dialogRef}
         role="dialog"
@@ -137,23 +126,24 @@ export function Marketplace() {
             <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
               <button type="button" onClick={() => setDetail(null)} className="text-ink-secondary hover:text-ink">{at("market.back")}</button>
               <ChevronRight size={14} aria-hidden="true" className="text-ink-tertiary" />
-              <span className="truncate text-ink">{detail.title}</span>
+              <span className="truncate text-ink">{detailListing?.name ?? ""}</span>
             </nav>
           ) : (
             <h2 className="text-[14px] font-semibold text-ink">{at("market.title")}</h2>
           )}
-          <button
-            type="button"
-            onClick={close}
-            aria-label={at("market.close")}
-            className="ml-auto flex size-7 items-center justify-center rounded-md text-ink-secondary hover:bg-raised hover:text-ink"
-          >
+          <button type="button" onClick={close} aria-label={at("market.close")} className="ml-auto flex size-7 items-center justify-center rounded-md text-ink-secondary hover:bg-raised hover:text-ink">
             <X size={15} />
           </button>
         </header>
 
         {detail ? (
-          <AgentDetail role={detail} index={BOT_ROLES.indexOf(detail)} onAdd={() => addAgent(detail)} />
+          detailListing ? (
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              {detailListing.kind === "agent" && <AgentDetail listing={detailListing} revision={revision} onChanged={bump} onClose={close} />}
+              {detailListing.kind === "skill" && <SkillDetail listing={detailListing} revision={revision} onChanged={bump} />}
+              {detailListing.kind === "app" && <AppDetail listing={detailListing} revision={revision} onChanged={bump} onBrowse={() => { setDetail(null); }} />}
+            </div>
+          ) : <div className="flex flex-1 items-center justify-center"><Loader2 size={16} className="animate-spin text-ink-secondary" /></div>
         ) : (
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex shrink-0 flex-wrap items-center gap-3 px-6 pb-4 pt-6">
@@ -178,11 +168,41 @@ export function Marketplace() {
                   className="min-w-0 flex-1 bg-transparent text-[13px] text-ink placeholder:text-ink-tertiary focus:outline-none"
                 />
               </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={filterOpen}
+                  onClick={() => setFilterOpen((open) => !open)}
+                  className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium", category ? "bg-raised text-ink" : "text-ink-secondary hover:bg-raised hover:text-ink")}
+                >
+                  <ListFilter size={14} aria-hidden="true" />{category ?? at("market.filter")}
+                </button>
+                {filterOpen && page && (
+                  <div role="menu" aria-label={at("market.filter")} className="animate-pop-in absolute right-0 top-full z-10 mt-1 w-52 rounded-xl border border-hairline bg-menu p-1 shadow-xl">
+                    {[null, ...page.categories].map((candidate) => (
+                      <button
+                        key={candidate ?? "all"}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={category === candidate}
+                        onClick={() => { setCategory(candidate); setFilterOpen(false); }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] text-ink hover:bg-raised"
+                      >
+                        <span className="w-4">{category === candidate && <Check size={13} aria-hidden="true" />}</span>
+                        {candidate ?? at("market.allCategories")}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
-              {tab === "agents" && <AgentGrid query={query} onOpen={setDetail} onAdd={addAgent} />}
-              {tab === "apps" && <PluginsPanel embedded query={query} />}
-              {tab === "skills" && <SkillGrid query={query} onManage={() => { close(); dispatch({ type: "toggleAppSettings", open: true, section: "skills" }); }} />}
+              {error ? <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>
+                : !page ? <Spinner />
+                  : tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
+                    : tab === "skills" ? <SkillGrid page={page as CatalogPage<SkillListing>} query={query} revision={revision} onOpen={(id) => setDetail({ kind: "skill", id })} />
+                      : <AppGrid page={page as CatalogPage<AppListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "app", id })} />}
             </div>
           </div>
         )}
@@ -192,143 +212,10 @@ export function Marketplace() {
   );
 }
 
-function matches(query: string, ...fields: Array<string | undefined>) {
-  const q = query.trim().toLowerCase();
-  return !q || fields.some((field) => field?.toLowerCase().includes(q));
-}
+// ── Shared pieces ───────────────────────────────────────────────────────
 
-export function MarketCard({ icon, title, action, description, meta, onOpen, label }: {
-  icon: ReactNode;
-  title: string;
-  action?: ReactNode;
-  description: string;
-  meta?: string;
-  onOpen?: () => void;
-  label?: string;
-}) {
-  return (
-    <div
-      data-market-card
-      className={cn(
-        "group relative flex min-h-[150px] min-w-0 flex-col rounded-[14px] border border-hairline bg-[color-mix(in_srgb,var(--color-raised)_55%,var(--color-app))] p-4 transition-colors",
-        onOpen && "hover:border-ink/15 hover:bg-raised",
-      )}
-    >
-      {onOpen && (
-        <button type="button" onClick={onOpen} aria-label={label ?? title} className="absolute inset-0 rounded-[14px] outline-none focus-visible:ring-2 focus-visible:ring-focus" />
-      )}
-      <div className="flex min-h-8 items-center gap-3">
-        {icon}
-        <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-ink">{title}</span>
-        {action && <span className="relative z-[1] shrink-0">{action}</span>}
-      </div>
-      <p className="mt-3 line-clamp-2 text-[13px] leading-[18px] text-ink/85">{description}</p>
-      {meta && <p className="mt-auto pt-3 text-[12px] text-ink-tertiary">{meta}</p>}
-    </div>
-  );
-}
-
-export function OutlineButton({ children, onClick, disabled, label }: { children: ReactNode; onClick?: () => void; disabled?: boolean; label?: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-hairline bg-app px-3 text-[13px] font-medium text-ink transition-colors hover:bg-raised-hover disabled:opacity-50"
-    >
-      {children}
-    </button>
-  );
-}
-
-function AgentGrid({ query, onOpen, onAdd }: { query: string; onOpen: (role: BotRole) => void; onAdd: (role: BotRole) => void }) {
-  const { state } = useStore();
-  const shown = BOT_ROLES.filter((role) => matches(query, role.name, role.title, role.description));
-  const installed = new Set(state.bots.filter((bot) => !bot.hidden).map((bot) => bot.title.trim().toLowerCase()));
-  return (
-    <>
-      <p className="mb-3 text-[12px] text-ink-tertiary">{at("market.coreNotice")}</p>
-      {shown.length === 0 ? <EmptyState query={query} /> : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map((role) => {
-            const index = BOT_ROLES.indexOf(role);
-            const added = installed.has(role.title.trim().toLowerCase());
-            return (
-              <MarketCard
-                key={role.id}
-                icon={<TemplateMascot index={index} />}
-                title={role.title}
-                label={`${role.title}, ${at("market.details")}`}
-                onOpen={() => onOpen(role)}
-                action={added
-                  ? <span className="inline-flex h-8 items-center gap-1 px-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.added")}</span>
-                  : <OutlineButton onClick={() => onAdd(role)} label={`${at("market.add")} ${role.title}`}><Plus size={14} aria-hidden="true" />{at("market.add")}</OutlineButton>}
-                description={role.description}
-                meta={`AIKING · ${ROLE_CATEGORY[role.id] ?? at("market.templates")}`}
-              />
-            );
-          })}
-        </div>
-      )}
-    </>
-  );
-}
-
-function AgentDetail({ role, index, onAdd }: { role: BotRole; index: number; onAdd: () => void }) {
-  return (
-    <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-      <div className="flex items-start gap-4">
-        <TemplateMascot index={index} size={44} />
-        <div className="min-w-0 flex-1">
-          <h3 className="text-[18px] font-semibold text-ink">{role.title}</h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{role.description}</p>
-        </div>
-        <button
-          type="button"
-          onClick={onAdd}
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-ink px-4 text-[14px] font-medium text-app hover:bg-ink/90"
-        >
-          <Plus size={15} aria-hidden="true" />{at("market.addAgent")}
-        </button>
-      </div>
-      <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
-        <div className="flex flex-col gap-6">
-          <section>
-            <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.instructions")}</h4>
-            <p className="rounded-xl bg-raised px-4 py-3 text-[13px] leading-[20px] text-ink/85">{role.soul}</p>
-          </section>
-          {role.apps.length > 0 && (
-            <section>
-              <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.appsSection")}</h4>
-              <ul className="flex flex-col gap-1">
-                {role.apps.map((app) => (
-                  <li key={app} className="flex items-center gap-3 rounded-lg px-2 py-1.5">
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-raised text-[13px] font-semibold text-ink-secondary">{(APP_LABEL[app] ?? app).slice(0, 1)}</span>
-                    <span className="text-[13px] font-medium text-ink">{APP_LABEL[app] ?? app}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </div>
-        <dl className="flex flex-col gap-4 border-hairline md:border-l md:pl-6">
-          <Meta term={at("market.creator")} value="AIKING" />
-          <Meta term={at("market.category")} value={ROLE_CATEGORY[role.id] ?? at("market.templates")} />
-          <Meta term={at("market.engine")} value="Your default model" />
-        </dl>
-      </div>
-    </div>
-  );
-}
-
-function Meta({ term, value }: { term: string; value: string }) {
-  return (
-    <div>
-      <dt className="text-[12px] text-ink-tertiary">{term}</dt>
-      <dd className="mt-1 text-[13px] text-ink">{value}</dd>
-    </div>
-  );
+function Spinner() {
+  return <div className="flex items-center justify-center py-20 text-ink-secondary"><Loader2 size={16} className="animate-spin" /></div>;
 }
 
 function EmptyState({ query }: { query: string }) {
@@ -340,97 +227,544 @@ function EmptyState({ query }: { query: string }) {
   );
 }
 
-type SkillEntry = { name: string; description: string; tags: string[]; version: string | null; agents: Array<{ id: string; name: string }> };
-
-function SkillGrid({ query, onManage }: { query: string; onManage: () => void }) {
-  const { state, dispatch } = useStore();
-  const [skills, setSkills] = useState<SkillEntry[] | null>(null);
-  const [library, setLibrary] = useState(true);
-  const [error, setError] = useState("");
-  const agents = state.bots.filter((bot) => !bot.hidden);
-  const agentKey = agents.map((bot) => bot.id).join(",");
-  const agentsRef = useRef(agents);
-  agentsRef.current = agents;
-  useEffect(() => {
-    let alive = true;
-    const fromAgents = async () => {
-      const lists = await Promise.all(agentsRef.current.map(async (bot) => {
-        const response = await fetch(`/api/bots/${encodeURIComponent(bot.id)}/skills`);
-        const body = (await response.json().catch(() => ({}))) as { skills?: Array<{ name: string; description: string }> };
-        return { bot, skills: response.ok ? body.skills ?? [] : [] };
-      }));
-      const byName = new Map<string, SkillEntry>();
-      for (const { bot, skills: own } of lists) {
-        for (const skill of own) {
-          const entry = byName.get(skill.name) ?? { name: skill.name, description: skill.description, tags: [], version: null, agents: [] };
-          entry.agents.push({ id: bot.id, name: bot.name });
-          byName.set(skill.name, entry);
-        }
-      }
-      return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
-    };
-    void fetch("/api/skills-library")
-      .then(async (response) => {
-        if (response.status === 404) {
-          if (alive) setLibrary(false);
-          const own = await fromAgents();
-          if (alive) setSkills(own);
-          return;
-        }
-        const body = (await response.json()) as { skills?: SkillsLibrarySkillWire[]; error?: string };
-        if (!response.ok) throw new Error(body.error ?? "Skills could not be loaded");
-        if (alive) setSkills((body.skills ?? []).map((skill) => ({ name: skill.name, description: skill.description, tags: skill.tags, version: skill.version, agents: skill.assignedBots })));
-      })
-      .catch((cause) => alive && setError(cause instanceof Error ? cause.message : String(cause)));
-    return () => { alive = false; };
-  }, [agentKey]);
-  const shown = useMemo(
-    () => (skills ?? []).filter((skill) => matches(query, skill.name, skill.description, ...skill.tags)),
-    [skills, query],
+export function MarketCard({ icon, title, action, description, meta, onOpen, label }: {
+  icon: ReactNode; title: string; action?: ReactNode; description: string; meta?: ReactNode; onOpen?: () => void; label?: string;
+}) {
+  return (
+    <div data-market-card className={cn("group relative flex min-h-[150px] min-w-0 flex-col rounded-[14px] border border-hairline bg-[color-mix(in_srgb,var(--color-raised)_55%,var(--color-app))] p-4 transition-colors", onOpen && "hover:border-ink/15 hover:bg-raised")}>
+      {onOpen && <button type="button" onClick={onOpen} aria-label={label ?? title} className="absolute inset-0 rounded-[14px] outline-none focus-visible:ring-2 focus-visible:ring-focus" />}
+      <div className="flex min-h-8 items-center gap-3">
+        {icon}
+        <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-ink">{title}</span>
+        {action && <span className="relative z-[1] shrink-0">{action}</span>}
+      </div>
+      <p className="mt-3 line-clamp-2 text-[13px] leading-[18px] text-ink/85">{description}</p>
+      {meta && <div className="mt-auto pt-3 text-[12px] text-ink-tertiary">{meta}</div>}
+    </div>
   );
-  const openAgentSkills = (botId: string) => {
-    dispatch({ type: "togglePlugins", open: false });
-    dispatch({ type: "toggleSettings", open: true, botId, section: "skills" });
+}
+
+export function OutlineButton({ children, onClick, disabled, label, tone = "default" }: { children: ReactNode; onClick?: () => void; disabled?: boolean; label?: string; tone?: "default" | "danger" }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      className={cn(
+        "inline-flex h-8 items-center gap-1.5 rounded-lg border border-hairline bg-app px-3 text-[13px] font-medium transition-colors hover:bg-raised-hover disabled:opacity-50",
+        tone === "danger" ? "text-danger" : "text-ink",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function PrimaryButton({ children, onClick, disabled, busy }: { children: ReactNode; onClick: () => void; disabled?: boolean; busy?: boolean }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled || busy} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-ink px-4 text-[14px] font-medium text-app hover:bg-ink/90 disabled:opacity-60">
+      {busy ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : null}
+      {children}
+    </button>
+  );
+}
+
+export function StatusPill({ status }: { status: InstallStatus }) {
+  const tone = status.state === "connected" || status.state === "installed" ? "ok"
+    : status.state === "error" ? "error" : status.state === "needs-setup" || status.state === "partial" ? "warn" : "off";
+  const text = status.state === "connected" ? at("market.connected")
+    : status.state === "installed" ? (status.update ? at("market.updateAvailable") : at("market.added"))
+      : status.state === "error" ? at("market.error")
+        : status.state === "needs-setup" ? at("market.needsSetup")
+          : status.state === "partial" ? at("market.partial") : at("market.notAdded");
+  return (
+    <span
+      data-install-state={status.state}
+      title={"detail" in status ? status.detail : undefined}
+      className={cn(
+        "inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-[12px] font-medium",
+        tone === "ok" && "text-success", tone === "error" && "bg-danger/10 text-danger", tone === "warn" && "bg-warning/10 text-warning", tone === "off" && "text-ink-tertiary",
+      )}
+    >
+      {tone === "ok" ? <Check size={13} aria-hidden="true" /> : tone === "error" ? <AlertTriangle size={12} aria-hidden="true" /> : tone === "warn" ? <CircleDot size={12} aria-hidden="true" /> : null}
+      {text}
+    </span>
+  );
+}
+
+function Meta({ term, value }: { term: string; value: ReactNode }) {
+  return (
+    <div>
+      <dt className="text-[12px] text-ink-tertiary">{term}</dt>
+      <dd className="mt-1 text-[13px] text-ink">{value}</dd>
+    </div>
+  );
+}
+
+function ListingMeta({ listing }: { listing: Listing }) {
+  return (
+    <dl className="flex flex-col gap-4 border-hairline md:border-l md:pl-6">
+      <Meta term={at("market.creator")} value={<span className="inline-flex items-center gap-1">{listing.publisher.name}{listing.publisher.verified && <Check size={12} aria-label={at("market.verified")} className="text-success" />}</span>} />
+      <Meta term={at("market.category")} value={listing.category} />
+      <Meta term={at("market.version")} value={listing.version} />
+      {listing.tags.length > 0 && <Meta term={at("market.tags")} value={listing.tags.join(", ")} />}
+    </dl>
+  );
+}
+
+function errorText(cause: unknown) {
+  return cause instanceof Error ? cause.message : String(cause);
+}
+
+export function AppIcon({ listing, size = 36 }: { listing: AppListing; size?: number }) {
+  const logo = listing.logo ? APP_LOGOS[listing.logo] : undefined;
+  const style = { width: size, height: size };
+  if (logo) {
+    return (
+      <span className="flex shrink-0 items-center justify-center rounded-lg bg-raised ring-1 ring-ink/[0.06]" style={style}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="size-[55%]" fill={logo.hex === "#181717" || logo.hex === "#000000" ? "var(--color-ink)" : logo.hex}><path d={logo.path} /></svg>
+      </span>
+    );
+  }
+  const Icon = listing.connector.type === "mcp" && listing.connector.server.name === "filesystem" ? FolderOpen : Wrench;
+  return <span className="flex shrink-0 items-center justify-center rounded-lg bg-raised text-accent-text ring-1 ring-ink/[0.06]" style={style}><Icon size={size * 0.48} aria-hidden="true" /></span>;
+}
+
+// ── Agents ──────────────────────────────────────────────────────────────
+
+function AgentGrid({ page, query, revision, onChanged, onOpen, onClose }: {
+  page: CatalogPage<AgentListing>; query: string; revision: number; onChanged: () => void; onOpen: (id: string) => void; onClose: () => void;
+}) {
+  const { state, dispatch } = useStore();
+  const showThreads = useShowThreads();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  void revision;
+  const add = async (listing: AgentListing) => {
+    setBusy(listing.id);
+    setError("");
+    try {
+      const { bot, warnings } = await installAgent(listing);
+      dispatch({ type: "botAdded", bot, preserveSelection: true });
+      if (warnings.length) setError(warnings.join("\n"));
+      onChanged();
+    } catch (cause) {
+      setError(errorText(cause));
+    } finally {
+      setBusy(null);
+    }
   };
-  const firstAgent = agents[0];
+  if (page.items.length === 0) return <EmptyState query={query} />;
   return (
     <>
-      <div className="mb-3 flex items-center gap-3">
-        <h3 className="text-[14px] font-semibold text-ink">{library ? at("market.installedSkills") : at("market.agentSkills")}</h3>
-        <span className="hidden min-w-0 truncate text-[12px] text-ink-tertiary sm:inline">{at("market.skillsHint")}</span>
-        {library
-          ? <span className="ml-auto shrink-0"><OutlineButton onClick={onManage}><Settings2 size={14} aria-hidden="true" />{at("market.manage")}</OutlineButton></span>
-          : firstAgent && <span className="ml-auto shrink-0"><OutlineButton onClick={() => openAgentSkills(firstAgent.id)}><Plus size={14} aria-hidden="true" />{at("market.addSkill")}</OutlineButton></span>}
-      </div>
-      {error ? (
-        <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>
-      ) : skills === null ? (
-        <div className="flex items-center justify-center gap-2 py-20 text-[13px] text-ink-secondary"><Loader2 size={14} className="animate-spin" /></div>
-      ) : shown.length === 0 ? (
-        query ? <EmptyState query={query} /> : (
-          <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-[14px] border border-dashed border-hairline text-center">
-            <Sparkles size={20} aria-hidden="true" className="text-ink-tertiary" />
-            <p className="text-[14px] font-medium text-ink">{at("market.noSkills")}</p>
-            <p className="max-w-sm text-[12.5px] text-ink-secondary">{at("market.noSkillsHint")}</p>
-          </div>
-        )
-      ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map((skill) => (
+      {error && <p role="alert" className="mb-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {page.items.map((listing) => {
+          const status = agentStatus(listing, state.bots);
+          const installedBot = status.state === "installed" ? state.bots.find((bot) => bot.id === status.targets[0]) : undefined;
+          return (
             <MarketCard
-              key={skill.name}
-              icon={<span className="flex size-9 items-center justify-center rounded-lg bg-raised text-ink-secondary"><Sparkles size={17} aria-hidden="true" /></span>}
-              title={skill.name}
-              onOpen={skill.agents[0] ? () => openAgentSkills(skill.agents[0]!.id) : undefined}
-              action={skill.agents.length > 0
-                ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count: skill.agents.length })}</span>
-                : undefined}
-              description={skill.description}
-              meta={[skill.version ? `${at("market.version")} ${skill.version}` : "", skill.tags.slice(0, 2).join(", "), skill.agents.map((agent) => agent.name).slice(0, 3).join(", ") || at("market.skillOff")].filter(Boolean).join(" · ")}
+              key={listing.id}
+              icon={<MausAvatar color={listing.look.color} bodyId={listing.look.body} state={normalizeState(listing.look.expression) ?? "idle"} size={34} animated={false} />}
+              title={listing.name}
+              label={`${listing.name}, ${at("market.details")}`}
+              onOpen={() => onOpen(listing.id)}
+              action={installedBot
+                ? <OutlineButton label={`${at("market.open")} ${listing.name}`} onClick={() => { openBot(dispatch, installedBot, showThreads); onClose(); }}>{at("market.open")}</OutlineButton>
+                : <OutlineButton label={`${at("market.add")} ${listing.name}`} disabled={busy !== null} onClick={() => void add(listing)}>
+                  {busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{busy === listing.id ? at("market.adding") : at("market.add")}
+                </OutlineButton>}
+              description={listing.summary}
+              meta={<span className="flex items-center gap-1.5">{listing.publisher.name} · {listing.category}{status.state === "installed" && <> · <StatusPill status={status} /></>}</span>}
             />
-          ))}
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+function AgentDetail({ listing, revision, onChanged, onClose }: { listing: AgentListing; revision: number; onChanged: () => void; onClose: () => void }) {
+  const { state, dispatch } = useStore();
+  const showThreads = useShowThreads();
+  const [skills, setSkills] = useState<SkillListing[]>([]);
+  const [apps, setApps] = useState<AppListing[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [error, setError] = useState("");
+  void revision;
+  useEffect(() => {
+    let alive = true;
+    void Promise.all(listing.skills.map((pin) => catalogSource().get(pin.id))).then((found) => alive && setSkills(found.filter((item): item is SkillListing => item?.kind === "skill")));
+    void Promise.all(listing.apps.map((id) => catalogSource().get(id))).then((found) => alive && setApps(found.filter((item): item is AppListing => item?.kind === "app")));
+    return () => { alive = false; };
+  }, [listing]);
+  const status = agentStatus(listing, state.bots);
+  const installedBot: Bot | undefined = status.state === "installed" ? state.bots.find((bot) => bot.id === status.targets[0]) : undefined;
+  const add = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      const { bot, warnings } = await installAgent(listing);
+      dispatch({ type: "botAdded", bot, preserveSelection: true });
+      if (warnings.length) setError(warnings.join("\n"));
+      onChanged();
+    } catch (cause) {
+      setError(errorText(cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const remove = () => {
+    if (!installedBot) return;
+    dispatch({ type: "deleteBot", botId: installedBot.id });
+    forgetAgent(listing.id, installedBot.id);
+    setConfirming(false);
+    onChanged();
+  };
+  return (
+    <div data-listing-detail={listing.id}>
+      <div className="flex flex-wrap items-start gap-4">
+        <MausAvatar color={listing.look.color} bodyId={listing.look.body} state={normalizeState(listing.look.expression) ?? "idle"} size={48} animated={false} />
+        <div className="min-w-0 flex-1">
+          <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}<StatusPill status={status} /></h3>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {installedBot ? (
+            <>
+              {confirming
+                ? <OutlineButton tone="danger" onClick={remove}><Trash2 size={14} aria-hidden="true" />{at("market.confirmRemove")}</OutlineButton>
+                : <OutlineButton tone="danger" onClick={() => setConfirming(true)}><Trash2 size={14} aria-hidden="true" />{at("market.removeAgent")}</OutlineButton>}
+              <PrimaryButton onClick={() => { openBot(dispatch, installedBot, showThreads); onClose(); }}>{at("market.openAgent")}</PrimaryButton>
+            </>
+          ) : <PrimaryButton busy={busy} onClick={() => void add()}><Plus size={15} aria-hidden="true" />{at("market.addAgent")}</PrimaryButton>}
+        </div>
+      </div>
+      {confirming && <p className="mt-3 text-[12.5px] text-ink-secondary">{at("market.removeAgentHint", { name: installedBot?.name ?? listing.profile.name })}</p>}
+      {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+      <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="flex flex-col gap-6">
+          <section>
+            <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.instructions")}</h4>
+            <p className="rounded-xl bg-raised px-4 py-3 text-[13px] leading-[20px] text-ink/85">{listing.profile.instructions}</p>
+          </section>
+          {skills.length > 0 && (
+            <section>
+              <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.skillsSection")}</h4>
+              <ul className="flex flex-col gap-1">
+                {skills.map((skill) => (
+                  <li key={skill.id} className="flex items-center gap-3 rounded-lg px-1 py-1.5">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-raised text-ink-secondary"><Sparkles size={16} aria-hidden="true" /></span>
+                    <span><span className="block text-[13px] font-medium text-ink">{skill.name}</span><span className="block text-[12px] text-ink-tertiary">{at("market.version")} {skill.version}</span></span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {(listing.routines?.length ?? 0) > 0 && (
+            <section>
+              <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.routinesSection")}</h4>
+              <ul className="flex flex-col gap-1">
+                {listing.routines!.map((routine) => (
+                  <li key={routine.name} className="rounded-lg px-1 py-1.5 text-[13px]">
+                    <span className="block font-medium text-ink">{routine.name}</span>
+                    <span className="block text-[12px] text-ink-tertiary">{routine.time} · {routine.enabled ? at("market.routineOn") : at("market.routineOff")}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {apps.length > 0 && (
+            <section>
+              <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.worksWith")}</h4>
+              <div className="flex flex-wrap gap-2">
+                {apps.map((app) => <span key={app.id} className="inline-flex h-8 items-center gap-2 rounded-lg border border-hairline bg-raised pl-1 pr-2.5 text-[13px] text-ink"><AppIcon listing={app} size={24} />{app.name}</span>)}
+              </div>
+            </section>
+          )}
+        </div>
+        <ListingMeta listing={listing} />
+      </div>
+    </div>
+  );
+}
+
+// ── Skills ──────────────────────────────────────────────────────────────
+
+function useSkillHolders(revision: number) {
+  const { state } = useStore();
+  const [holders, setHolders] = useState<Map<string, AgentSkillState[]> | null>(null);
+  const agentKey = state.bots.filter((bot) => !bot.hidden).map((bot) => bot.id).join(",");
+  const botsRef = useRef(state.bots);
+  botsRef.current = state.bots;
+  useEffect(() => {
+    let alive = true;
+    void skillHolders(botsRef.current).then((map) => alive && setHolders(map));
+    return () => { alive = false; };
+  }, [agentKey, revision]);
+  return holders;
+}
+
+function SkillGrid({ page, query, revision, onOpen }: { page: CatalogPage<SkillListing>; query: string; revision: number; onOpen: (id: string) => void }) {
+  const holders = useSkillHolders(revision);
+  if (page.items.length === 0) return <EmptyState query={query} />;
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {page.items.map((listing) => {
+        const status = holders ? skillStatus(listing, holders) : null;
+        const count = status?.state === "installed" ? status.targets.length : 0;
+        return (
+          <MarketCard
+            key={listing.id}
+            icon={<span className="flex size-9 items-center justify-center rounded-lg bg-raised text-ink-secondary"><Sparkles size={17} aria-hidden="true" /></span>}
+            title={listing.name}
+            label={`${listing.name}, ${at("market.details")}`}
+            onOpen={() => onOpen(listing.id)}
+            action={count > 0 ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count })}</span> : <OutlineButton label={`${at("market.add")} ${listing.name}`} onClick={() => onOpen(listing.id)}><Plus size={14} aria-hidden="true" />{at("market.add")}</OutlineButton>}
+            description={listing.summary}
+            meta={`${listing.publisher.name} · ${listing.category} · ${at("market.version")} ${listing.version}`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; revision: number; onChanged: () => void }) {
+  const { state } = useStore();
+  const holders = useSkillHolders(revision);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const agents = state.bots.filter((bot) => !bot.hidden);
+  const [pending, setPending] = useState<Record<string, boolean>>({});
+  const holding = new Map((holders?.get(listing.skillName) ?? []).map((entry) => [entry.botId, { ...entry, enabled: pending[entry.botId] ?? entry.enabled }]));
+  useEffect(() => setPending({}), [holders]);
+  const act = async (botId: string, run: () => Promise<void>): Promise<boolean> => {
+    setBusy(botId);
+    setError("");
+    try {
+      await run();
+      onChanged();
+      return true;
+    } catch (cause) {
+      setError(errorText(cause));
+      return false;
+    } finally {
+      setBusy(null);
+    }
+  };
+  const body = listing.text.replace(/^---[\s\S]*?---\s*/, "");
+  return (
+    <div data-listing-detail={listing.id}>
+      <div className="flex items-start gap-4">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-raised text-ink-secondary"><Sparkles size={22} aria-hidden="true" /></span>
+        <div className="min-w-0 flex-1">
+          <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{holders && <StatusPill status={skillStatus(listing, holders)} />}</h3>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+        </div>
+      </div>
+      {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+      <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="flex flex-col gap-6">
+          <section aria-labelledby="skill-agents">
+            <h4 id="skill-agents" className="mb-2 text-[14px] font-semibold text-ink">{at("market.useWith")}</h4>
+            {agents.length === 0 ? <p className="text-[13px] text-ink-secondary">{at("market.noAgents")}</p> : (
+              <ul className="divide-y divide-hairline overflow-hidden rounded-xl bg-raised">
+                {agents.map((bot) => {
+                  const held = holding.get(bot.id);
+                  return (
+                    <li key={bot.id} data-skill-agent={bot.id} className="flex items-center gap-3 px-3 py-2.5">
+                      <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{bot.name}</span>
+                      {held ? (
+                        <>
+                          <label className="flex items-center gap-2 text-[12px] text-ink-secondary">
+                            <input
+                              type="checkbox"
+                              checked={held.enabled}
+                              disabled={busy !== null}
+                              aria-label={at("market.skillEnabledFor", { name: bot.name })}
+                              onChange={(event) => {
+                                const enabled = event.target.checked;
+                                setPending((current) => ({ ...current, [bot.id]: enabled }));
+                                void act(bot.id, () => setSkillEnabled(listing, bot.id, enabled)).then((ok) => {
+                                  if (!ok) setPending((current) => { const { [bot.id]: _undo, ...rest } = current; return rest; });
+                                });
+                              }}
+                              className="accent-[var(--color-accent)]"
+                            />
+                            {held.enabled ? at("market.on") : at("market.off")}
+                          </label>
+                          <OutlineButton tone="danger" label={at("market.removeFrom", { name: bot.name })} disabled={busy !== null} onClick={() => void act(bot.id, () => uninstallSkill(listing, bot.id))}>
+                            {busy === bot.id ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <Trash2 size={13} aria-hidden="true" />}{at("market.remove")}
+                          </OutlineButton>
+                        </>
+                      ) : (
+                        <OutlineButton label={at("market.addTo", { name: bot.name })} disabled={busy !== null} onClick={() => void act(bot.id, () => installSkill(listing, bot.id))}>
+                          {busy === bot.id ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <Plus size={13} aria-hidden="true" />}{at("market.add")}
+                        </OutlineButton>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+          <section>
+            <h4 className="mb-2 text-[14px] font-semibold text-ink">SKILL.md</h4>
+            <pre className="max-h-72 overflow-auto whitespace-pre-wrap rounded-xl bg-raised px-4 py-3 font-mono text-[12px] leading-[19px] text-ink/85">{body}</pre>
+          </section>
+        </div>
+        <ListingMeta listing={listing} />
+      </div>
+    </div>
+  );
+}
+
+// ── Apps ────────────────────────────────────────────────────────────────
+
+let probeCache: AppsState["probes"] = {};
+
+function useAppsState(revision: number) {
+  const [apps, setApps] = useState<AppsState | null>(null);
+  const reload = useCallback(async () => {
+    const loaded = await loadAppsState();
+    setApps({ ...loaded, probes: probeCache });
+  }, []);
+  useEffect(() => { void reload(); }, [reload, revision]);
+  return { apps, reload };
+}
+
+function AppGrid({ page, query, revision, onChanged, onOpen }: { page: CatalogPage<AppListing>; query: string; revision: number; onChanged: () => void; onOpen: (id: string) => void }) {
+  const { dispatch } = useStore();
+  const { apps } = useAppsState(revision);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [connectQuery, setConnectQuery] = useState<string | null>(null);
+  const allRef = useRef<HTMLDivElement>(null);
+  const install = async (listing: AppListing) => {
+    setBusy(listing.id);
+    setError("");
+    try {
+      const probe = await installMcp(listing);
+      probeCache = { ...probeCache, [listing.connector.type === "mcp" ? listing.connector.server.name : listing.id]: probe };
+      onChanged();
+    } catch (cause) {
+      setError(errorText(cause));
+    } finally {
+      setBusy(null);
+    }
+  };
+  const connect = (listing: AppListing) => {
+    setConnectQuery(listing.name);
+    requestAnimationFrame(() => allRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+  return (
+    <>
+      {error && <p role="alert" className="mb-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+      {apps && !apps.composioConfigured && (
+        <p data-composio-notice className="mb-3 rounded-xl bg-raised px-4 py-3 text-[13px] text-ink-secondary">
+          {at("market.notConfigured")}{" "}
+          <button type="button" onClick={() => { dispatch({ type: "togglePlugins", open: false }); dispatch({ type: "toggleAppSettings", open: true, section: "connections" }); }} className="font-medium text-ink underline underline-offset-2">{at("market.openSettings")}</button>
+        </p>
+      )}
+      <h3 className="mb-2.5 text-[14px] font-semibold text-ink">{at("market.catalogApps")}</h3>
+      {page.items.length === 0 ? <EmptyState query={query} /> : !apps ? <Spinner /> : (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {page.items.map((listing) => {
+            const status = appStatus(listing, apps);
+            const mcp = listing.connector.type === "mcp";
+            const action = mcp
+              ? status.state === "available"
+                ? <OutlineButton label={`${at("market.install")} ${listing.name}`} disabled={busy !== null} onClick={() => void install(listing)}>{busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{at("market.install")}</OutlineButton>
+                : <StatusPill status={status} />
+              : status.state === "connected" ? <StatusPill status={status} />
+                : <OutlineButton label={`${at("market.connect")} ${listing.name}`} onClick={() => connect(listing)}>{at("market.connect")}</OutlineButton>;
+            return (
+              <MarketCard
+                key={listing.id}
+                icon={<AppIcon listing={listing} />}
+                title={listing.name}
+                label={`${listing.name}, ${at("market.details")}`}
+                onOpen={() => onOpen(listing.id)}
+                action={action}
+                description={listing.summary}
+                meta={<span className="flex items-center gap-1.5">{mcp ? at("market.mcpServer") : listing.category}{(status.state === "error" || (mcp && status.state === "needs-setup")) && <> · <StatusPill status={status} /></>}</span>}
+              />
+            );
+          })}
         </div>
       )}
+      <div ref={allRef} className="mt-8 scroll-mt-2 border-t border-hairline pt-6">
+        <h3 className="mb-3 text-[14px] font-semibold text-ink">{at("market.allConnectors")}</h3>
+        <PluginsPanel embedded query={connectQuery ?? query} />
+      </div>
     </>
+  );
+}
+
+function AppDetail({ listing, revision, onChanged, onBrowse }: { listing: AppListing; revision: number; onChanged: () => void; onBrowse: () => void }) {
+  const { apps, reload } = useAppsState(revision);
+  const [busy, setBusy] = useState<"install" | "test" | "remove" | null>(null);
+  const [error, setError] = useState("");
+  const status = apps ? appStatus(listing, apps) : null;
+  const server = listing.connector.type === "mcp" ? listing.connector.server : null;
+  const run = async (kind: "install" | "test" | "remove") => {
+    setBusy(kind);
+    setError("");
+    try {
+      if (kind === "install") {
+        const probe = await installMcp(listing);
+        probeCache = { ...probeCache, [server!.name]: probe };
+      } else if (kind === "test") {
+        probeCache = { ...probeCache, [server!.name]: await testMcp(server!.name) };
+      } else {
+        await uninstallMcp(listing);
+        const { [server!.name]: _gone, ...rest } = probeCache;
+        probeCache = rest;
+      }
+      onChanged();
+      await reload();
+    } catch (cause) {
+      setError(errorText(cause));
+    } finally {
+      setBusy(null);
+    }
+  };
+  const detail = useMemo(() => (status && "detail" in status ? status.detail : undefined), [status]);
+  return (
+    <div data-listing-detail={listing.id}>
+      <div className="flex flex-wrap items-start gap-4">
+        <AppIcon listing={listing} size={48} />
+        <div className="min-w-0 flex-1">
+          <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{status && <StatusPill status={status} />}</h3>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          {detail && <p data-status-detail className="mt-1 text-[12.5px] text-ink-tertiary">{detail}</p>}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {server ? (
+            status?.state === "available" ? <PrimaryButton busy={busy === "install"} onClick={() => void run("install")}><Plus size={15} aria-hidden="true" />{at("market.install")}</PrimaryButton> : (
+              <>
+                <OutlineButton disabled={busy !== null} onClick={() => void run("test")}>{busy === "test" ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <RefreshCw size={14} aria-hidden="true" />}{at("market.test")}</OutlineButton>
+                <OutlineButton tone="danger" disabled={busy !== null} onClick={() => void run("remove")}><Trash2 size={14} aria-hidden="true" />{at("market.remove")}</OutlineButton>
+              </>
+            )
+          ) : <OutlineButton onClick={onBrowse}>{at("market.connectInAll")}</OutlineButton>}
+        </div>
+      </div>
+      {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+      <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
+        <section>
+          <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.howItConnects")}</h4>
+          {server ? (
+            <pre className="overflow-auto whitespace-pre-wrap rounded-xl bg-raised px-4 py-3 font-mono text-[12px] leading-[19px] text-ink/85">
+              {server.type === "stdio" ? `${server.command} ${server.args[0] === "-e" ? "-e <bundled script>" : server.args.join(" ")}` : server.url}
+            </pre>
+          ) : <p className="text-[13px] leading-[20px] text-ink-secondary">{at("market.composioHow")}</p>}
+        </section>
+        <ListingMeta listing={listing} />
+      </div>
+    </div>
   );
 }

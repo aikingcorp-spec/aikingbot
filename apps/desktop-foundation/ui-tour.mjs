@@ -151,70 +151,143 @@ await step("sidebar-search-empty", async () => {
 });
 await page.getByRole("textbox", { name: "Search agents and messages" }).fill("");
 
+const market = () => page.getByRole("dialog", { name: "Marketplace" });
+async function openMarket(tab) {
+  if (!(await market().isVisible().catch(() => false))) await button("Marketplace").click();
+  await market().waitFor();
+  if (await page.getByRole("navigation", { name: "Breadcrumb" }).isVisible().catch(() => false)) {
+    await page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("button", { name: "Marketplace" }).click();
+  }
+  await market().getByRole("tab", { name: tab }).click();
+  await market().getByRole("tab", { name: tab, selected: true }).waitFor();
+}
+let producerId = null;
+
 await step("marketplace-agents", async () => {
-  await button("Marketplace").click();
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.waitFor();
-  await dialog.getByRole("tab", { name: "Agents", selected: true }).waitFor();
-  assert.ok(await dialog.locator("[data-market-card]").count() >= 3);
+  await openMarket("Agents");
+  assert.ok(await market().locator("[data-market-card]").count() >= 8);
 });
 
-await step("marketplace-search", async () => {
-  await page.getByRole("dialog", { name: "Marketplace" }).getByRole("textbox", { name: "Search" }).fill("research");
-  await page.getByRole("button", { name: /^Researcher, Details$/ }).waitFor();
+await step("marketplace-filter-search", async () => {
+  const filter = market().locator('button[aria-haspopup="menu"]');
+  await filter.click();
+  await page.getByRole("menuitemradio", { name: "Research" }).click();
+  await market().getByRole("button", { name: "Research Analyst, Details" }).waitFor();
+  assert.equal(await market().getByRole("button", { name: "Media Producer, Details" }).count(), 0);
+  await filter.click();
+  await page.getByRole("menuitemradio", { name: "All categories" }).click();
+  await market().getByRole("textbox", { name: "Search" }).fill("tiktok");
+  await market().getByRole("button", { name: "Media Producer, Details" }).waitFor();
+  await market().getByRole("textbox", { name: "Search" }).fill("");
 });
 
 await step("marketplace-agent-detail", async () => {
-  await page.getByRole("button", { name: /^Researcher, Details$/ }).click();
-  await page.getByRole("button", { name: "Add agent" }).waitFor();
+  await market().getByRole("button", { name: "Media Producer, Details" }).click();
   await page.getByRole("navigation", { name: "Breadcrumb" }).waitFor();
+  await page.locator('[data-listing-detail="media-producer"]').getByText("TikTok hook writer").waitFor();
 });
 
-await step("marketplace-apps", async () => {
-  await page.keyboard.press("Escape");
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.getByRole("tab", { name: "Apps" }).click();
-  await dialog.locator("[data-apps-embedded]").waitFor();
+await step("marketplace-install-agent", async () => {
+  await button("Add agent").click();
+  await button("Open agent").waitFor({ timeout: 60_000 });
+  const producer = (await apiBots()).filter((bot) => bot.name === "Producer").at(-1);
+  assert.ok(producer, "The template created an agent on the host.");
+  producerId = producer.id;
+  assert.deepEqual([producer.color, producer.mascotBody, producer.mascotExpression], ["orange", "squircle", "proud"]);
+  assert.match(producer.soul ?? "", /short-form media/);
+  const skills = (await fetch(`${info.apiUrl}/api/bots/${producer.id}/skills`).then((r) => r.json())).skills.map((skill) => skill.name).sort();
+  assert.deepEqual(skills, ["image-prompt-builder", "tiktok-hook-writer", "video-shot-list"]);
+  const memory = await fetch(`${info.apiUrl}/api/bots/${producer.id}/memory/file?path=MEMORY.md`).then((r) => r.json()).catch(() => ({}));
+  if (typeof memory.text === "string") assert.match(memory.text, /9:16/);
 });
 
-await step("marketplace-mcp", async () => {
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.locator('[data-apps-filter="mcp"]').click();
-  await dialog.locator('[data-apps-filter="mcp"][aria-pressed="true"]').waitFor();
+await step("marketplace-uninstall-agent", async () => {
+  await button("Remove agent").click();
+  await button("Confirm remove").click();
+  await button("Add agent").waitFor({ timeout: 30_000 });
+  const until = Date.now() + 20_000;
+  while ((await apiBots()).some((bot) => bot.id === producerId)) {
+    assert.ok(Date.now() < until, "The removed agent is gone from the host.");
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
 });
 
-await step("marketplace-skills", async () => {
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.getByRole("tab", { name: "Skills" }).click();
-  await dialog.getByRole("heading", { name: /^(Agent skills|Skills library)$/ }).waitFor();
+let skillAgentId = null;
+await step("marketplace-skill-assign", async () => {
+  skillAgentId = (await fetch(`${info.apiUrl}/api/bots`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: "Skill QA" }) }).then((r) => r.json())).bot.id;
+  await openMarket("Skills");
+  await market().getByRole("button", { name: "Campaign brief, Details" }).click();
+  const row = page.locator(`[data-skill-agent="${skillAgentId}"]`);
+  await row.getByRole("button", { name: "Add to Skill QA" }).click();
+  await row.getByRole("checkbox", { name: "Use for Skill QA" }).waitFor({ timeout: 30_000 });
+  const listed = (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills;
+  assert.equal(listed.find((skill) => skill.name === "campaign-brief")?.enabled, true);
 });
 
-await step("agent-from-template", async () => {
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.getByRole("tab", { name: "Agents" }).click();
-  await dialog.getByRole("button", { name: "Add Researcher" }).click();
-  await page.getByRole("dialog", { name: "Marketplace" }).waitFor({ state: "detached" });
-  await page.getByRole("textbox", { name: "Name" }).first().waitFor();
-  assert.equal(await page.getByRole("textbox", { name: "Name" }).first().inputValue(), "Scout");
+await step("marketplace-skill-toggle-remove", async () => {
+  const row = page.locator(`[data-skill-agent="${skillAgentId}"]`);
+  await row.getByRole("checkbox", { name: "Use for Skill QA" }).uncheck();
+  await row.getByText("Off").waitFor({ timeout: 30_000 });
+  let listed = (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills;
+  assert.equal(listed.find((skill) => skill.name === "campaign-brief")?.enabled, false);
+  await row.getByRole("button", { name: "Remove from Skill QA" }).click();
+  await row.getByRole("button", { name: "Add to Skill QA" }).waitFor({ timeout: 30_000 });
+  listed = (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills;
+  assert.equal(listed.some((skill) => skill.name === "campaign-brief"), false);
+});
+
+await step("marketplace-mcp-install-connected", async () => {
+  for (const name of ["aiking-toolbox", "filesystem"]) await fetch(`${info.apiUrl}/api/mcp/servers/${name}`, { method: "DELETE" }).catch(() => {});
+  await openMarket("Apps");
+  await market().getByRole("button", { name: "Install AIKING Toolbox" }).click();
+  const card = market().locator("[data-market-card]").filter({ hasText: "AIKING Toolbox" });
+  await card.locator('[data-install-state="connected"]').waitFor({ timeout: 30_000 });
+  const servers = (await fetch(`${info.apiUrl}/api/mcp/servers`).then((r) => r.json())).servers;
+  assert.ok(servers.some((server) => server.name === "aiking-toolbox" && server.enabled !== false));
+});
+
+await step("marketplace-mcp-error-state", async () => {
+  await market().getByRole("button", { name: "Filesystem, Details" }).click();
+  await button("Install").click();
+  await page.locator('[data-listing-detail="filesystem-mcp"] [data-install-state]').filter({ hasText: /Connected|Error/ }).waitFor({ timeout: 60_000 });
+  const state = await page.locator('[data-listing-detail="filesystem-mcp"] [data-install-state]').first().getAttribute("data-install-state");
+  console.log(`     filesystem MCP reported: ${state} (needs npx and network; offline it should be "error")`);
+  await button("Remove").click();
+  await button("Install").waitFor({ timeout: 30_000 });
+});
+
+await step("marketplace-mcp-remove", async () => {
+  await page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("button", { name: "Marketplace" }).click();
+  await market().getByRole("button", { name: "AIKING Toolbox, Details" }).click();
+  await button("Test").click();
+  await page.locator('[data-listing-detail="aiking-toolbox"] [data-install-state="connected"]').waitFor({ timeout: 30_000 });
+  await button("Remove").click();
+  await button("Install").waitFor({ timeout: 30_000 });
+  const servers = (await fetch(`${info.apiUrl}/api/mcp/servers`).then((r) => r.json())).servers;
+  assert.equal(servers.some((server) => server.name === "aiking-toolbox"), false);
+});
+
+await step("marketplace-composio-connect", async () => {
+  await page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("button", { name: "Marketplace" }).click();
+  await market().getByRole("button", { name: "Connect GitHub" }).click();
+  await market().locator("[data-apps-embedded]").waitFor();
+  await market().locator('[data-app-tile="github"]').waitFor();
 });
 await closeOverlays();
 
 await step("create-agent-from-template", async () => {
-  await button("Marketplace").click();
-  const dialog = page.getByRole("dialog", { name: "Marketplace" });
-  await dialog.getByRole("tab", { name: "Agents" }).click();
-  await dialog.getByRole("button", { name: "Coding partner, Details" }).click();
+  await openMarket("Agents");
+  await market().getByRole("button", { name: "Code Reviewer, Details" }).click();
   await button("Add agent").click();
-  await page.getByRole("textbox", { name: "Name" }).first().waitFor();
-  await button("Create agent").click();
-  await page.getByRole("textbox", { name: /^Message Dev/ }).waitFor({ timeout: 60_000 });
+  await button("Open agent").click({ timeout: 60_000 });
+  await page.getByRole("textbox", { name: /^Message Reviewer/ }).waitFor({ timeout: 60_000 });
 });
 
 await step("conversation-reply", async () => {
-  const input = page.getByRole("textbox", { name: /^Message Dev/ });
+  const input = page.getByRole("textbox", { name: /^Message Reviewer/ });
   await input.fill("Plan the launch of the AIKING media pipeline for a matte tumbler TikTok ad.");
   await button("Send message").click();
-  await page.getByRole("log", { name: /^Conversation with Dev/ }).getByText(/launch plan|AIKINGBOT is running/).first().waitFor({ timeout: 120_000 });
+  await page.getByRole("log", { name: /^Conversation with Reviewer/ }).getByText(/launch plan|AIKINGBOT is running/).first().waitFor({ timeout: 120_000 });
 });
 
 await step("tool-activity", async () => {
