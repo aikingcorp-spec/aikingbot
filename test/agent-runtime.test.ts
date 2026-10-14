@@ -37,7 +37,13 @@ describe("AgentRuntime", () => {
 
 		expect(result).toMatchObject({ status: "completed", text: 'got {"v":1}', steps: 2, toolCalls: 1 });
 		expect(result.added.map((m) => m.role)).toEqual(["assistant", "user", "assistant"]);
-		expect(events.filter((e) => e.type !== "usage").map((e) => e.type)).toEqual(["tool_call", "tool_result", "text"]);
+		expect(events.filter((e) => ["tool_call", "tool_result", "text", "text_delta"].includes(e.type)).map((e) => e.type)).toEqual([
+			"tool_call",
+			"tool_result",
+			"text_delta", // "got "
+			"text_delta", // '{"v":1}'
+			"text",
+		]);
 		// Risk is policy data and never sent to the model.
 		expect(model.requests[0]?.tools).toEqual([{ name: "echo", description: undefined, inputSchema: { type: "object", properties: {} } }]);
 	});

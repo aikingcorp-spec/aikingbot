@@ -46,16 +46,27 @@ MCP tool: `annotations` (`readOnlyHint`, `destructiveHint`) quyết định risk
 - `side_effect`: cần approver đồng ý (hoặc nằm trong `preapproved`). Không có approver → từ chối.
 - `dangerous`: từ chối, không hỏi, trừ khi có trong `allowDangerous` — khi đó vẫn hỏi approver mỗi lần.
 
+## AIKINGBOT shell (v0.2)
+
+```
+apps/shell (SolidJS) ──AG-UI/SSE──► src/gateway (server + AG-UI adapter) ──AgentBackend──► AIKING Core ──► SQLite
+```
+
+Sidebar agent + threads, chat streaming, timeline tool call, thẻ approval (AG-UI interrupt/resume),
+tab Skills & MCP, lịch sử lưu SQLite và khôi phục sau restart. Báo cáo nghiên cứu và quyết định stack:
+`docs/v0.2-architecture.md`. Trạng thái và việc tiếp theo: `HANDOFF.md`.
+
 ## Lệnh
 
 ```bash
 bun install
-bun test             # 75 test: unit + vertical slice + pipeline demo
+bun test             # 83 test: unit, vertical slice, pipeline demo, gateway AG-UI
 bun run typecheck
 bun run demo         # demo offline: ý tưởng → phân tích → chọn skill → brief → MCP tool → render job (có approval)
 bun run demo --deny  # như trên, operator từ chối render
 bun run demo --live  # dùng Claude API (cần credentials, tốn credits)
 bun run chat         # CLI chat, đọc aiking.config.json
+bun run app          # UI + gateway offline: http://127.0.0.1:4317
 ```
 
 Ví dụ `aiking.config.json`:
@@ -73,7 +84,8 @@ Ví dụ `aiking.config.json`:
 | --- | --- | --- |
 | 1 | Chat → Runtime → MCP stdio → Skill | **Xong (v0.1)** |
 | 2a | ModelClient trung lập, fallback, chi phí, permission gate, capability discovery | **Xong (v0.2)** |
-| 2b | Streaming câu trả lời, prompt caching | Tiếp theo |
+| 2b | Streaming, SQLite, AG-UI gateway, shell UI (web) | **Xong (v0.2)** |
+| 2c | Approval bền vững qua restart, Electron wrapper, prompt caching | Tiếp theo |
 | 3 | MCP qua HTTP (Streamable HTTP), cấu hình server theo từng agent | |
 | 4 | Lưu trữ: SQLite cho agent / thread / message thay cho JSONL | |
 | 5 | Agent identity + workspace riêng cho từng agent | |

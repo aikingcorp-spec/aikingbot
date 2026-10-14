@@ -1,55 +1,72 @@
 // Copyright (c) 2026 AIKING. All rights reserved.
 //
 // Chat session: keeps the conversation history, runs the agent for each user
-// message, and appends every message to a JSONL transcript so a chat survives
-// a restart.
+// message, and appends every finished turn to a transcript store (JSONL file
+// or SQLite) so a chat survives a restart.
 
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import type { AgentRuntime, RunResult } from "../runtime/agent-runtime.ts";
-import type { Message as MessageParam } from "../runtime/model.ts";
+import type { AgentRuntime, RunHooks, RunResult } from "../runtime/agent-runtime.ts";
+import type { Message } from "../runtime/model.ts";
+
+/** Where a conversation is kept. Appends are whole turns only. */
+export interface TranscriptStore {
+	load(): Promise<Message[]>;
+	append(messages: Message[]): Promise<void>;
+}
+
+export class JsonlTranscript implements TranscriptStore {
+	constructor(private readonly path: string) {}
+
+	async load(): Promise<Message[]> {
+		const text = await readFile(this.path, "utf8").catch((error: NodeJS.ErrnoException) => {
+			if (error.code === "ENOENT") return "";
+			throw error;
+		});
+		return text
+			.split("\n")
+			.filter((line) => line.trim())
+			.map((line) => JSON.parse(line) as Message);
+	}
+
+	async append(messages: Message[]): Promise<void> {
+		await mkdir(dirname(this.path), { recursive: true });
+		await appendFile(this.path, messages.map((m) => `${JSON.stringify(m)}\n`).join(""));
+	}
+}
 
 export class ChatSession {
 	private constructor(
 		private readonly runtime: AgentRuntime,
-		private readonly history: MessageParam[],
-		private readonly transcriptPath?: string,
+		private readonly history: Message[],
+		private readonly store?: TranscriptStore,
 	) {}
 
-	/** Opens a session. With a transcript path, earlier messages are reloaded. */
-	static async open(runtime: AgentRuntime, transcriptPath?: string): Promise<ChatSession> {
-		const history: MessageParam[] = [];
-		if (transcriptPath) {
-			const text = await readFile(transcriptPath, "utf8").catch((error: NodeJS.ErrnoException) => {
-				if (error.code === "ENOENT") return "";
-				throw error;
-			});
-			for (const line of text.split("\n")) {
-				if (line.trim()) history.push(JSON.parse(line) as MessageParam);
-			}
-			dropIncompleteTail(history);
-		}
-		return new ChatSession(runtime, history, transcriptPath);
+	/** Opens a session. A transcript path means a JSONL file; earlier messages are reloaded. */
+	static async open(runtime: AgentRuntime, store?: string | TranscriptStore): Promise<ChatSession> {
+		const transcript = typeof store === "string" ? new JsonlTranscript(store) : store;
+		const history = transcript ? await transcript.load() : [];
+		dropIncompleteTail(history);
+		return new ChatSession(runtime, history, transcript);
 	}
 
-	messages(): readonly MessageParam[] {
+	/** Another conversation on the same runtime (one per thread). */
+	withTranscript(store: TranscriptStore): Promise<ChatSession> {
+		return ChatSession.open(this.runtime, store);
+	}
+
+	messages(): readonly Message[] {
 		return this.history;
 	}
 
-	async send(text: string): Promise<RunResult> {
-		const userMessage: MessageParam = { role: "user", content: text };
-		const result = await this.runtime.run([...this.history, userMessage]);
+	async send(text: string, hooks?: RunHooks): Promise<RunResult> {
+		const userMessage: Message = { role: "user", content: text };
+		const result = await this.runtime.run([...this.history, userMessage], hooks);
 		// Commit only after the run returns, so a failed request leaves no half turn.
 		const turn = [userMessage, ...result.added];
 		this.history.push(...turn);
-		await this.persist(turn);
+		await this.store?.append(turn);
 		return result;
-	}
-
-	private async persist(turn: MessageParam[]): Promise<void> {
-		if (!this.transcriptPath) return;
-		await mkdir(dirname(this.transcriptPath), { recursive: true });
-		await appendFile(this.transcriptPath, turn.map((m) => `${JSON.stringify(m)}\n`).join(""));
 	}
 }
 
@@ -59,7 +76,7 @@ export class ChatSession {
  * which the API accepts. Only a trailing assistant `tool_call` turn without
  * results would be invalid, so that one is removed.
  */
-function dropIncompleteTail(history: MessageParam[]): void {
+function dropIncompleteTail(history: Message[]): void {
 	const last = history.at(-1);
 	if (last?.role !== "assistant" || typeof last.content === "string") return;
 	if (last.content.some((b) => b.type === "tool_call")) history.pop();

@@ -89,10 +89,15 @@ export interface ModelResponse {
 	fallbacks: FallbackNote[];
 }
 
+export interface CreateOptions {
+	/** Called with each piece of assistant text as it is generated. Providers without streaming may skip it. */
+	onTextDelta?: (delta: string) => void;
+}
+
 /** The only thing the runtime needs from a model provider. */
 export interface ModelClient {
 	readonly provider: string;
-	create(request: ModelRequest): Promise<ModelResponse>;
+	create(request: ModelRequest, options?: CreateOptions): Promise<ModelResponse>;
 }
 
 export type ModelErrorKind =

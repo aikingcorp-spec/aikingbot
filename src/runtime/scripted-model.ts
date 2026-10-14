@@ -4,7 +4,7 @@
 // demo when no API credentials are available. Each step receives the
 // request, so a script can read tool results before it answers.
 
-import type { ContentBlock, ModelClient, ModelRequest, ModelResponse, StopReason } from "./model.ts";
+import type { ContentBlock, CreateOptions, ModelClient, ModelRequest, ModelResponse, StopReason } from "./model.ts";
 
 export interface ScriptTurn {
 	content: ContentBlock[];
@@ -46,12 +46,24 @@ export class ScriptedModel implements ModelClient {
 
 	constructor(private readonly steps: ScriptStep[]) {}
 
-	async create(request: ModelRequest): Promise<ModelResponse> {
+	/** With `chunkDelayMs`, text is streamed word by word through `onTextDelta`. */
+	chunkDelayMs = 0;
+
+	async create(request: ModelRequest, options: CreateOptions = {}): Promise<ModelResponse> {
 		this.requests.push({ ...request, messages: [...request.messages] });
 		const step = this.steps[this.index++];
 		if (!step) throw new Error("scripted model has no more steps");
 		const turn = step(request);
 		const model = turn.model ?? "scripted";
+		if (options.onTextDelta) {
+			for (const block of turn.content) {
+				if (block.type !== "text") continue;
+				for (const piece of block.text.match(/\S+\s*|\s+/g) ?? []) {
+					if (this.chunkDelayMs > 0) await new Promise((r) => setTimeout(r, this.chunkDelayMs));
+					options.onTextDelta(piece);
+				}
+			}
+		}
 		return {
 			content: turn.content,
 			stopReason: turn.stopReason,
