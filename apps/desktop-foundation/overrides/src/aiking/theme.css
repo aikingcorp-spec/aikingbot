@@ -270,3 +270,21 @@
   border-color: var(--color-hairline);
   font-size: 13px;
 }
+
+/* Group chat header: the same 40px chrome bar as a conversation. */
+:root:is([data-skin="aiking"], [data-skin="aiking-light"]) div:has(> [data-roomhead-row]) {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding-block: 0;
+  padding-inline-end: 12px;
+  background: var(--color-chrome);
+}
+@media (min-width: 768px) {
+  :root:is([data-skin="aiking"], [data-skin="aiking-light"]) div:has(> [data-roomhead-row]) { padding-inline-start: 12px; }
+}
+:root:is([data-skin="aiking"], [data-skin="aiking-light"]) [data-roomhead-row] { width: 100%; }
+:root:is([data-skin="aiking"], [data-skin="aiking-light"]) [data-roomhead-identity] > span:first-child {
+  font-size: 14px;
+  font-weight: 500;
+}

@@ -551,10 +551,10 @@ function NewRoomPanel({ onClose }: { onClose: () => void }) {
   };
   return (
     <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-[340px] rounded-2xl border border-hairline/50 bg-card p-4 shadow-2xl">
+      <div className="animate-pop-in w-[360px] rounded-[18px] border border-hairline bg-app p-5 shadow-[0_24px_64px_rgba(0,0,0,0.5)]">
         <div className="mb-3 text-[15px] font-semibold text-ink">{t("sidebar.newChannel.title")}</div>
         <input
           autoFocus
@@ -589,7 +589,7 @@ function NewRoomPanel({ onClose }: { onClose: () => void }) {
         <button
           onClick={create}
           disabled={!picked.size}
-          className="mt-3 w-full rounded-lg bg-accent py-2 text-[14px] font-medium text-white hover:brightness-110 disabled:opacity-40"
+          className="mt-3 w-full rounded-lg bg-accent py-2 text-[14px] font-medium text-accent-ink hover:brightness-110 disabled:opacity-40"
         >
           {picked.size === 0
             ? t("sidebar.newChannel.create")
@@ -2740,7 +2740,7 @@ export function Sidebar({ open, onClose, collapseToIcons = false }: {
             dispatch({ type: "patchGroup", groupId: roomSectionPicker.groupId, patch: { section } });
           }}
         />
-      {newRoom && <NewRoomPanel onClose={() => setNewRoom(false)} />}
+      {newRoom && createPortal(<NewRoomPanel onClose={() => setNewRoom(false)} />, document.body)}
       {/* Portaled: below md the sidebar's translate makes it the containing block for fixed children. */}
       {newChatOpen && createPortal(
         <SidebarNewChatPanel

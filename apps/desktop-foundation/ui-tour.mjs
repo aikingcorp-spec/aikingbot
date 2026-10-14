@@ -170,11 +170,23 @@ await step("new-menu", async () => {
 });
 await closeOverlays();
 
+await step("group-chat", async () => {
+  await button("New or share").click();
+  await button("New group chat").click();
+  await page.getByRole("textbox", { name: /Group chat name/ }).fill("Launch team");
+  const boxes = page.getByRole("checkbox");
+  await boxes.nth(0).click();
+  await boxes.nth(1).click();
+  await page.getByRole("button", { name: /^Create group chat/ }).click();
+  await page.getByRole("textbox", { name: /^Message Launch team/ }).waitFor({ timeout: 60_000 });
+});
+
 await step("routines", async () => {
   await page.getByRole("tab", { name: "Routines" }).click();
   await page.getByRole("tab", { name: "Routines", selected: true }).waitFor();
 });
 await page.getByRole("tab", { name: "Agents" }).click();
+await page.locator("[data-sidebar-bot-row]").first().click();
 await composer.waitFor();
 
 await step("agent-profile", async () => {
