@@ -60,6 +60,8 @@ function toApiBlock(block: ContentBlock): ApiBlockParam | undefined {
 				content: block.content,
 				...(block.isError ? { is_error: true } : {}),
 			};
+		case "image":
+			return { type: "image", source: { type: "base64", media_type: block.mediaType, data: block.data } };
 		case "opaque":
 			// Thinking and fallback blocks must round-trip unchanged; blocks from
 			// other providers mean nothing to Claude and are dropped.

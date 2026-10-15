@@ -96,6 +96,14 @@ describe("AnthropicModel adapter", () => {
 		]);
 	});
 
+	test("image blocks map to base64 image content", () => {
+		const api = toApiMessages([{ role: "user", content: [{ type: "image", mediaType: "image/png", data: "iVBORw0KGgo=" }, { type: "text", text: "Describe it." }] }]);
+		expect(api).toEqual([{ role: "user", content: [
+			{ type: "image", source: { type: "base64", media_type: "image/png", data: "iVBORw0KGgo=" } },
+			{ type: "text", text: "Describe it." },
+		] }]);
+	});
+
 	test("server-side refusal fallback: reports the switch and bills each model at its own rate", async () => {
 		const { client } = stubClient(() => ({
 			model: "claude-opus-5",

@@ -34,7 +34,16 @@ export interface OpaqueBlock {
 	data: unknown;
 }
 
-export type ContentBlock = TextBlock | ToolCallBlock | ToolResultBlock | OpaqueBlock;
+export type ImageMediaType = "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+
+/** An image the user attached to the current turn, base64-encoded. Transcripts keep a text note instead. */
+export interface ImageBlock {
+	type: "image";
+	mediaType: ImageMediaType;
+	data: string;
+}
+
+export type ContentBlock = TextBlock | ToolCallBlock | ToolResultBlock | OpaqueBlock | ImageBlock;
 
 export interface Message {
 	role: "user" | "assistant";

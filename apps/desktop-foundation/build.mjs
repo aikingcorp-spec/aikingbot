@@ -42,5 +42,5 @@ const artifacts = readdirSync(release).filter(name => /\.(?:exe|zip|deb|AppImage
   const path = join(release, name); return { name, bytes: statSync(path).size, sha256: createHash("sha256").update(readFileSync(path)).digest("hex") };
 });
 mkdirSync(join(runtimeRoot, "evidence/shipping"), { recursive: true });
-writeFileSync(join(runtimeRoot, "evidence/shipping/build-artifacts.json"), JSON.stringify({ builtAt: new Date().toISOString(), platform: process.platform, architecture: process.arch, version: JSON.parse(readFileSync(join(sourceRoot, "package.json"))).version, artifacts }, null, 2));
+writeFileSync(join(runtimeRoot, "evidence/shipping/build-artifacts.json"), JSON.stringify({ builtAt: new Date().toISOString(), commit: spawnSync("git", ["rev-parse", "HEAD"], { cwd: repositoryRoot, encoding: "utf8" }).stdout.trim(), platform: process.platform, architecture: process.arch, version: JSON.parse(readFileSync(join(sourceRoot, "package.json"))).version, artifacts }, null, 2));
 console.log(JSON.stringify({ release, artifacts }, null, 2));

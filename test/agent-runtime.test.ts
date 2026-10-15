@@ -5,6 +5,8 @@ import { AgentRuntime, type RuntimeEvent } from "../src/runtime/agent-runtime.ts
 import type { StopReason, ToolResultBlock } from "../src/runtime/model.ts";
 import { lastToolResult, ScriptedModel, textBlock, toolCall } from "../src/runtime/scripted-model.ts";
 import { type ToolOutcome, ToolRegistry, type ToolRisk, type ToolSource } from "../src/runtime/tools.ts";
+import { ChatSession, type TranscriptStore } from "../src/chat/chat-session.ts";
+import type { Message } from "../src/runtime/model.ts";
 
 function source(
 	handlers: Record<string, (input: unknown) => ToolOutcome | Promise<ToolOutcome>>,
@@ -171,5 +173,29 @@ describe("AgentRuntime", () => {
 
 	test("rejects duplicate tool names across sources", () => {
 		expect(() => new ToolRegistry([echo, echo]).definitions()).toThrow(/duplicate tool name/);
+	});
+});
+
+describe("ChatSession images", () => {
+	test("images reach every model call of their turn and the transcript keeps only a note", async () => {
+		const model = new ScriptedModel([
+			() => ({ content: [toolCall("echo", { v: 1 })], stopReason: "tool_use" }),
+			() => ({ content: [textBlock("A red square.")], stopReason: "end_turn" }),
+			() => ({ content: [textBlock("Still red.")], stopReason: "end_turn" }),
+		]);
+		const saved: Message[] = [];
+		const store: TranscriptStore = { load: async () => [], append: async (messages) => { saved.push(...structuredClone(messages)); } };
+		const session = await ChatSession.open(new AgentRuntime({ model, tools: new ToolRegistry([echo]), system: "s" }), store);
+		const image = { type: "image" as const, mediaType: "image/png" as const, data: Buffer.from("png-bytes").toString("base64") };
+		const result = await session.send("What colour is this?", undefined, [image]);
+		expect(result.text).toBe("A red square.");
+		for (const request of model.requests.slice(0, 2)) expect(request.messages[0]!.content).toEqual([image, { type: "text", text: "What colour is this?" }]);
+		expect(JSON.stringify(saved)).not.toContain(image.data);
+		expect(saved[0]).toEqual({ role: "user", content: [
+			{ type: "text", text: "[Image attached earlier: image/png, 9 bytes. It was shown to the model only in that turn.]" },
+			{ type: "text", text: "What colour is this?" },
+		] });
+		await session.send("And now?");
+		expect(JSON.stringify(model.requests[2]!.messages)).not.toContain(image.data);
 	});
 });

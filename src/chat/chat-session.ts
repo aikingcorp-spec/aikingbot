@@ -8,7 +8,7 @@ import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { dirname } from "node:path";
 import type { AgentRuntime, RunHooks, RunResult } from "../runtime/agent-runtime.ts";
-import type { Message } from "../runtime/model.ts";
+import type { ImageBlock, Message } from "../runtime/model.ts";
 
 /** Where a conversation is kept. Appends are whole turns only. */
 export interface TranscriptStore {
@@ -63,15 +63,25 @@ export class ChatSession {
 		return this.history;
 	}
 
-	async send(text: string, hooks?: RunHooks): Promise<RunResult> {
-		const userMessage: Message = { role: "user", content: text };
+	/**
+	 * Runs one user turn. Images reach the model for this turn only; the
+	 * transcript and later turns keep a short text note in their place.
+	 */
+	async send(text: string, hooks?: RunHooks, images: readonly ImageBlock[] = []): Promise<RunResult> {
+		const userMessage: Message = images.length ? { role: "user", content: [...images, { type: "text", text }] } : { role: "user", content: text };
 		const result = await this.runtime.run([...this.history, userMessage], hooks);
 		// Commit only after the run returns, so a failed request leaves no half turn.
-		const turn = [userMessage, ...result.added];
+		const kept: Message = images.length ? { role: "user", content: [...images.map((image) => ({ type: "text" as const, text: imageNote(image) })), { type: "text", text }] } : userMessage;
+		const turn = [kept, ...result.added];
 		await this.store?.append(turn);
 		this.history.push(...turn);
 		return result;
 	}
+}
+
+function imageNote(image: ImageBlock): string {
+	const bytes = Math.floor((image.data.length * 3) / 4) - (image.data.endsWith("==") ? 2 : image.data.endsWith("=") ? 1 : 0);
+	return `[Image attached earlier: ${image.mediaType}, ${bytes} bytes. It was shown to the model only in that turn.]`;
 }
 
 /**

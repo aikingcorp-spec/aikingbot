@@ -104,4 +104,21 @@ describe("AIKING Core provider integration", () => {
       expect(existsSync(output)).toBe(false); expect(events.filter(event => event.type === "turn.completed")).toHaveLength(1);
     } finally { off(); await provider.dispose(); rmSync(root, { recursive: true, force: true }); }
   });
+  it("sends attached images to the model for that turn and keeps only a note in the native transcript", async () => {
+    const provider = await instance(); const root = join(DATA_DIR, "aiking-core", createHash("sha256").update("core-verification").digest("hex"));
+    const id = createHash("sha256").update(JSON.stringify(["core-verification", "image-agent", "image-thread"])).digest("hex");
+    const folder = mkdtempSync(join(tmpdir(), "aiking-core-image-")); const path = join(folder, "frame.png");
+    const png = Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000000", "hex"); writeFileSync(path, png);
+    try {
+      expect(provider.adapter.capabilities).toMatchObject({ images: true, nativeImageInput: true });
+      const events = await simpleTurn(provider, { botId: "image-agent", threadId: "image-thread", text: "Review this frame.", images: [{ path, mime: "image/png", bytes: png.length }] });
+      expect(events.some(event => event.type === "item.completed" && event.itemType === "assistant_text" && /received 1 image/.test(String(event.text)))).toBe(true);
+      expect(events.at(-1)).toMatchObject({ type: "turn.completed", ok: true });
+      const transcript = readFileSync(join(root, `${id}.jsonl`), "utf8");
+      expect(transcript).not.toContain(png.toString("base64"));
+      expect(JSON.parse(transcript.split("\n")[0]!).content[0].text).toBe(`[Image attached earlier: image/png, ${png.length} bytes. It was shown to the model only in that turn.]`);
+      await expect(provider.adapter.sendTurn({ botId: "image-agent", threadId: "image-thread-2", text: "x", images: [{ path, mime: "image/png", bytes: png.length + 1 }] })).rejects.toThrow(/changed or is too large/);
+      await expect(provider.adapter.sendTurn({ botId: "image-agent", threadId: "image-thread-3", text: "x", images: Array.from({ length: 21 }, () => ({ path, mime: "image/png" as const, bytes: png.length })) })).rejects.toThrow(/at most 20/);
+    } finally { await provider.dispose(); rmSync(folder, { recursive: true, force: true }); }
+  });
 });

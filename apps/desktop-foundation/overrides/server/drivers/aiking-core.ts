@@ -2,7 +2,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync, renameSync, existsSync, readFileSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { createCore, AnthropicModel, DEFAULT_MODEL, type ModelClient, type CoreEvent, type Core } from "../../aiking/core/index.mjs";
+import { createCore, AnthropicModel, DEFAULT_MODEL, type ModelClient, type CoreEvent, type Core, type ImageBlock } from "../../aiking/core/index.mjs";
 import type { ProviderDriver, RuntimeEvent, RuntimeEventListener, SendTurnInput, RequestOutcome, McpServerSpec } from "../contracts.ts";
 import { DATA_DIR } from "../config.ts";
 import { allowsTool, canUseMcpServer } from "../../shared/tool-scope.ts";
@@ -18,10 +18,15 @@ export class CoreOfflineModel implements ModelClient {
   provider = "offline-verification";
   async create(request: Parameters<ModelClient["create"]>[0], options: Parameters<ModelClient["create"]>[1] = {}) {
     options.signal?.throwIfAborted();
-    const latest = request.messages.findLastIndex((message) => message.role === "user" && typeof message.content === "string");
+    // The latest user prompt: plain text, or text with this turn's images (tool results are not prompts).
+    const latest = request.messages.findLastIndex((message) => message.role === "user" && (typeof message.content === "string" || !message.content.some((block) => block.type === "tool_result")));
+    const prompt = request.messages[latest]?.content ?? "";
+    const blocks = typeof prompt === "string" ? [{ type: "text" as const, text: prompt }] : prompt;
+    const images = blocks.filter((block) => block.type === "image").length;
+    const task = blocks.flatMap((block) => block.type === "text" ? [block.text] : []).join("\n");
     const turns = request.messages.slice(latest + 1).filter((message) => message.role === "assistant").length;
     let content: Awaited<ReturnType<ModelClient["create"]>>["content"];
-    if (turns === 0) content = [{ type: "text", text: "AIKING Core · offline verification: planning tools." }, { type: "tool_call", id: randomUUID(), name: "plan_capabilities", input: { task: String(request.messages[latest]?.content ?? ""), have: ["text"] } }];
+    if (turns === 0) content = [{ type: "text", text: images ? `AIKING Core · offline verification: received ${images} image${images === 1 ? "" : "s"}; planning tools.` : "AIKING Core · offline verification: planning tools." }, { type: "tool_call", id: randomUUID(), name: "plan_capabilities", input: { task, have: images ? ["text", "image"] : ["text"] } }];
     else if (turns === 1 && request.tools.some((tool) => tool.name.endsWith("__remember"))) content = [{ type: "tool_call", id: randomUUID(), name: request.tools.find((tool) => tool.name.endsWith("__remember"))!.name, input: { text: "Core approved this offline fixture write." } }];
     else content = [{ type: "text", text: "AIKING Core completed the offline model → guarded tools → UI pipeline. This is a scripted model, not a live AI provider." }];
     for (const block of content) if (block.type === "text") for (const word of block.text.match(/\S+\s*/g) ?? []) {
@@ -30,6 +35,20 @@ export class CoreOfflineModel implements ModelClient {
     }
     return { content, stopReason: content.some((block) => block.type === "tool_call") ? "tool_use" as const : "end_turn" as const, model: "aiking-offline", usage: [], fallbacks: [] as [] };
   }
+}
+
+// Claude accepts up to 20 images per request at 5 MB each; the host gives us validated files on disk.
+const MAX_IMAGES = 20, MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+export function readTurnImages(images: SendTurnInput["images"]): ImageBlock[] {
+  if (!images?.length) return [];
+  if (images.length > MAX_IMAGES) throw new Error(`Core accepts at most ${MAX_IMAGES} images per message.`);
+  return images.map((image) => {
+    if (!["image/png", "image/jpeg", "image/gif", "image/webp"].includes(image.mime)) throw new Error("Core accepts PNG, JPEG, GIF or WebP images.");
+    if (image.bytes > MAX_IMAGE_BYTES) throw new Error("Each image for Core must be 5 MB or smaller.");
+    const data = readFileSync(image.path);
+    if (data.length !== image.bytes || data.length > MAX_IMAGE_BYTES) throw new Error("An attached image changed or is too large; attach it again.");
+    return { type: "image", mediaType: image.mime, data: data.toString("base64") };
+  });
 }
 
 export const AikingCoreDriver: ProviderDriver<Config> = {
@@ -70,10 +89,11 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
     const persist = (id: string, value: unknown) => { const path = join(root, `${id}.state.json`); const temp = `${path}.tmp`; writeFileSync(temp, JSON.stringify(value), { mode: 0o600 }); renameSync(temp, path); };
     const adapter: import("../contracts.ts").ProviderAdapter = {
       provider: KIND,
-      capabilities: { sessionModelSwitch: "in-session", agentsMcp: true, computerMcp: true, composioMcp: true, phoneMcp: true, browserMcp: true, dataMcp: true, customMcp: true, localComputerMcp: true, strictResume: true },
+      capabilities: { images: true, nativeImageInput: true, sessionModelSwitch: "in-session", agentsMcp: true, computerMcp: true, composioMcp: true, phoneMcp: true, browserMcp: true, dataMcp: true, customMcp: true, localComputerMcp: true, strictResume: true },
       async sendTurn(turn: SendTurnInput) {
         if (runs.has(turn.threadId)) throw new Error("Core already has a turn on this conversation.");
-        if (turn.guestConfined || turn.images?.length) throw new Error("Core does not support guest turns or image input yet. Choose another engine.");
+        if (turn.guestConfined) throw new Error("Core does not support guest turns yet. Choose another engine.");
+        const images = readTurnImages(turn.images);
         if (input.config.mode !== "offline" && !key) throw new Error("AIKING Core requires ANTHROPIC_API_KEY in its server instance environment.");
         const id = sessionKey(input.instanceId, turn.botId ?? "", turn.threadId);
         if (!turn.sessionReset && turn.resumeCursor !== undefined && turn.resumeCursor !== id) throw new Error("Core resume cursor belongs to a different conversation.");
@@ -138,7 +158,7 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
                 asks.set(requestId, { thread: turn.threadId, resolve: (value) => { clearTimeout(timer); controller.signal.removeEventListener("abort", abort); resolve(value); } });
                 emit({ ...identity, eventId: randomUUID(), type: "request.opened", requestId, requestType: "permission", tool: request.tool, summary: redactSecretsInText(`AIKING Core requests ${request.risk} access for ${request.tool}: ${JSON.stringify(request.input)}`).slice(0, 2000), nativeReview: "inactive", requiresExplicitApproval: request.risk === "dangerous" });
               });
-            } });
+            } }, images);
             persist(id, { schema: 1, botId: turn.botId, threadId: turn.threadId, turnId, status: result.status });
             if (result.cost.unpricedModels.length) emit({ ...identity, eventId: randomUUID(), type: "runtime.notice", message: `Cost unavailable for: ${result.cost.unpricedModels.join(", ")}.` });
             completion = { ...identity, eventId: randomUUID(), type: "turn.completed", ok: result.status === "completed", stopReason: result.status, ...(result.cost.unpricedModels.length ? {} : { cost: result.cost.usd }) };
