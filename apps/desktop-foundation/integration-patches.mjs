@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 export function patchIntegration(source) {
   const replace = (path, before, after) => {
-    const file = join(source, path); const text = readFileSync(file, "utf8");
+    const file = join(source, path); const text = readFileSync(file, "utf8").replaceAll("\r\n", "\n");
     if (!text.includes(before)) throw new Error(`Pinned integration anchor changed: ${path}`);
     writeFileSync(file, text.replace(before, after));
   };
@@ -16,7 +16,7 @@ export function patchIntegration(source) {
   replace("server/contracts.ts", '  text: string;\n  /** The recall block', '  text: string;\n  /** Owner-assigned reviewed library skills; private skills are resolved by botId. */\n  assignedSkills?: string[];\n  /** The recall block');
   replace("server/index.ts", '        system: prompt.text,', '        system: prompt.text,\n        assignedSkills: (liveBot ?? bot).assignedSkills,');
   replace("server/index.ts", '        system: roomSystem.text,', '        system: roomSystem.text,\n        assignedSkills: readyBot.assignedSkills,');
-  replace("server/skills.ts", 'export function installSkill(', readFileSync(new URL("./patches/catalog-skill.ts.inc", import.meta.url), "utf8") + 'export function installSkill(');
+  replace("server/skills.ts", 'export function installSkill(', readFileSync(new URL("./patches/catalog-skill.ts.inc", import.meta.url), "utf8").replaceAll("\r\n", "\n") + 'export function installSkill(');
   replace("scripts/control-omb.ts", "    instances: {\n", '    instances: {\n      ...(parentEnv.AIKING_CORE_TEST === "1" ? { "aiking-core-test": { driver: "aiking-core", displayName: "AIKING Core · Offline test", config: { mode: "offline" } } } : {}),\n');
   replace("server/index.ts", 'import { createServer, type IncomingMessage, type ServerResponse } from "node:http";', 'import { createServer, type IncomingMessage, type ServerResponse } from "node:http";\nimport { createAikingServices } from "./aiking/services.ts";');
   replace("server/index.ts", "const handleRequest = async", `const aikingServices = createAikingServices({

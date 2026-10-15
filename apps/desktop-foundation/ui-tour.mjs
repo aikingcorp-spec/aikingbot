@@ -29,9 +29,16 @@ const browser = cdp
   ? await chromium.connectOverCDP(cdp)
   : await chromium.launch({ executablePath: process.env.AIKING_CHROME || "/usr/bin/chromium", headless: true });
 const context = cdp ? browser.contexts()[0] : await browser.newContext({ viewport: { width, height }, colorScheme: "dark" });
-const page = cdp
+let page = cdp
   ? context.pages().find((p) => new URL(p.url()).origin === new URL(info.uiUrl).origin)
   : await context.newPage();
+if (cdp) {
+  const deadline = Date.now() + 30000;
+  while (!page && Date.now() < deadline) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    page = context.pages().find(p => new URL(p.url()).origin === new URL(info.uiUrl).origin);
+  }
+}
 assert.ok(page, "The owned desktop must show the fixture URL.");
 await page.setViewportSize({ width, height });
 const skin = process.env.AIKING_TOUR_SKIN;

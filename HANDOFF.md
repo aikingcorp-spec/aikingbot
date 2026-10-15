@@ -24,6 +24,9 @@ tắt upstream updater/account/Composio mặc định, sửa bundle ESM/`ws` b�
 smoke và packaged Core/MCP/approval ngoài checkout đạt. Chromium 11 E2E + Voice 5 bước đạt;
 tour dark/light 37/37 và advanced 1000px 33 pass/4 skip đạt. Electron tour, compatibility cuối và
 installer cuối đang chạy; chưa đánh dấu Stage 5 gate đạt. Desktop security 124 pass/2 platform skip.
+Compatibility cuối đạt 1000 pass/1 procfs skip. Packaged Electron đã qua startup/profile/renderer isolation,
+chặn mutation ngoài desktop và Origin lạ. Sửa startup khi Cloud chưa cấu hình và cleanup chạy đồng thời.
+CI run `38668030797` tìm lỗi CRLF Windows và thiếu pnpm trong Linux collector; đã sửa và thêm test LF/CRLF.
 Chi tiết/lệnh: [Stage 5](docs/stage-5-shipping-candidate.md). Tiếp tục kiểm tra logs, đóng gói bằng chứng,
 cập nhật kết quả thực tế, commit/push gate cuối. Không coi artifact từ lượt build cũ là bản bàn giao cuối.
 

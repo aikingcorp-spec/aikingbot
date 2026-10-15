@@ -36,7 +36,7 @@ npm ci --prefix apps/desktop-foundation --ignore-scripts
 node apps/desktop-foundation/setup.mjs
 bun test ./test
 npm run typecheck
-node apps/desktop-foundation/build.mjs
+npx --yes pnpm@10.33.0 exec node apps/desktop-foundation/build.mjs
 AIKING_VERIFY_STAGE=shipping node apps/desktop-foundation/compatibility.mjs
 node apps/desktop-foundation/security-checks.mjs
 node apps/desktop-foundation/packaged-core.mjs
@@ -54,6 +54,10 @@ SHA-256 manifest: `.aikingbot-foundation/evidence/shipping/build-artifacts.json`
 The workflow `.github/workflows/shipping-candidate.yml` runs tests, builds installers, checks the packaged
 server/Core, and uploads installers plus evidence for 14 days. Linux additionally runs sandboxed Electron.
 Source-only platforms and unfinished workflow jobs must not be described as tested installers.
+
+First CI run `38668030797` exposed CRLF patch anchors on Windows and a missing globally callable pnpm in
+the Linux package collector. Source patching now normalizes line endings, LF/CRLF regression tests pass,
+and CI installs the pinned pnpm explicitly. Final results from the follow-up run are tracked in HANDOFF.
 
 ## Verification and security
 

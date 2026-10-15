@@ -17,6 +17,7 @@ let electron: ChildProcess | undefined;
 let ui: Awaited<ReturnType<typeof createServer>> | undefined;
 let previewUi: Awaited<ReturnType<typeof preview>> | undefined;
 let stopping = false;
+let closing: Promise<void> | undefined;
 let desktopProfile: string | undefined;
 
 async function stopChild(child: ChildProcess | undefined) {
@@ -28,18 +29,21 @@ async function stopChild(child: ChildProcess | undefined) {
   });
 }
 
-async function close() {
-  if (stopping) return;
+function close(): Promise<void> {
+  if (closing) return closing;
   stopping = true;
-  await stopChild(electron);
-  if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true });
-  if (fixture) await fixture.close();
-  else await stopChild(harness);
-  await ui?.close();
-  if (previewUi) {
-    previewUi.httpServer.closeAllConnections();
-    await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
-  }
+  closing = (async () => {
+    if (fixture) await fixture.close();
+    else await stopChild(harness);
+    await stopChild(electron);
+    if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    await ui?.close();
+    if (previewUi) {
+      previewUi.httpServer.closeAllConnections();
+      await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
+    }
+  })();
+  return closing;
 }
 
 const stop = () => { void close().then(() => process.exit(0)); };

@@ -20,7 +20,7 @@ const port = async () => {
 async function stop(child) {
   if (child.exitCode !== null || child.signalCode !== null) return;
   const exited = new Promise(resolve => child.once("exit", resolve)); child.kill("SIGTERM");
-  const timer = setTimeout(() => child.kill("SIGKILL"), 15000);
+  const timer = setTimeout(() => child.kill("SIGKILL"), 30000);
   await exited; clearTimeout(timer);
 }
 async function run(script, extra) {

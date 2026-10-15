@@ -34,12 +34,16 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.3
       - run: npm ci --ignore-scripts
       - run: npm ci --prefix apps/desktop-foundation --ignore-scripts
       - run: node apps/desktop-foundation/setup.mjs
+      - run: node --test apps/desktop-foundation/patches.node-test.mjs
       - run: bun test ./test
       - run: npm run typecheck
       - name: Renderer and server typecheck
@@ -77,6 +81,8 @@ jobs:
         with:
           name: AIKINGBOT-${{ matrix.platform }}-${{ github.sha }}
           retention-days: 14
+          include-hidden-files: true
+          compression-level: 0
           if-no-files-found: error
           path: |
             .aikingbot-foundation/source/release/*.exe

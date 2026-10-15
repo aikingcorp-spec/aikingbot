@@ -65,7 +65,7 @@ node --experimental-strip-types aiking/verify-persistence.ts
 ## Build and shipping regression
 
 ```sh
-node apps/desktop-foundation/build.mjs
+npx --yes pnpm@10.33.0 exec node apps/desktop-foundation/build.mjs
 # Run after the production UI build; each tour launches a fresh disposable stack.
 AIKING_VERIFY_STAGE=shipping node apps/desktop-foundation/compatibility.mjs
 node apps/desktop-foundation/security-checks.mjs
@@ -80,7 +80,7 @@ Linux headless Electron commands need Xvfb/`DISPLAY` and an ordinary user with t
 The GitHub Actions shipping workflow supplies Windows/Linux runners. Outputs: `.aikingbot-foundation/source/release/`;
 SHA-256 manifest: `.aikingbot-foundation/evidence/shipping/build-artifacts.json`.
 `--reuse-native` reuses already prepared native bundles; `--package-only` packages existing compiled output for iterative packaging checks.
-For a clean build use the command without either flag.
+For a clean build use the command without either flag. The pnpm wrapper makes the pinned package manager available to electron-builder's dependency collector; CI installs the same version explicitly.
 
 Installed data defaults to `~/.aikingbot` and its own Electron profile/app ID. Existing OpenMausBot/OpenBot data is not migrated.
 Automatic updates are disabled unless `AIKING_UPDATE_FEED` names an explicit HTTPS feed. Cloud sign-in requires `AIKING_CLOUD_ORIGIN`;
