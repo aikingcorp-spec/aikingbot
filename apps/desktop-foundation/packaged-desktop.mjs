@@ -22,7 +22,7 @@ const child = spawn(binary, [`--user-data-dir=${join(scratch, "electron")}`, `--
   stdio: ["ignore", "pipe", "pipe"],
 });
 let output = ""; child.stdout.on("data", chunk => { output += chunk; }); child.stderr.on("data", chunk => { output += chunk; });
-let browser; let ok = false; let failure; const errors = [];
+let browser; let page; let ok = false; let failure; const errors = [];
 try {
   const deadline = Date.now() + 120000;
   for (;;) {
@@ -31,14 +31,16 @@ try {
     if (Date.now() > deadline) throw new Error("Packaged desktop did not expose its owned debug endpoint");
     await new Promise(resolve => setTimeout(resolve, 300));
   }
-  const context = browser.contexts()[0]; let page;
+  const context = browser.contexts()[0];
   while (Date.now() < deadline && !page) {
     page = context.pages().find(page => /^http:\/\/127\.0\.0\.1:\d+\//.test(page.url()));
     if (!page) await new Promise(resolve => setTimeout(resolve, 250));
   }
   assert.ok(page, "The packaged app loaded its embedded server.");
   page.on("pageerror", error => errors.push(error.message));
-  await page.getByRole("textbox", { name: /^Message / }).first().waitFor({ timeout: 120000 });
+  // A fresh package can have no configured agent/provider yet. Its sidebar and owned API must still work.
+  await page.getByRole("navigation", { name: "Workspaces", exact: true }).waitFor({ timeout: 120000 });
+  writeFileSync(join(out, "packaged-initial-state.json"), JSON.stringify({ text: (await page.locator("body").innerText()).slice(0, 4000) }, null, 2));
   const skip = page.getByRole("button", { name: "Skip tour", exact: true }); if (await skip.isVisible()) await skip.click();
   assert.equal(await page.evaluate(() => typeof window.require), "undefined");
   assert.equal(await page.evaluate(() => typeof window.process), "undefined");
@@ -90,7 +92,14 @@ try {
   await page.screenshot({ path: join(out, "packaged-desktop.png") });
   assert.deepEqual(errors, []); ok = true;
   console.log("Packaged desktop booted with isolated data, renderer isolation and authenticated API.");
-} catch (error) { failure = String(error); throw error; }
+} catch (error) {
+  failure = String(error);
+  if (page) {
+    await page.screenshot({ path: join(out, "packaged-desktop-failure.png") }).catch(() => {});
+    await page.locator("body").innerText().then(text => writeFileSync(join(out, "packaged-desktop-failure-state.json"), JSON.stringify({ text: text.slice(0, 6000), url: page.url() }, null, 2))).catch(() => {});
+  }
+  throw error;
+}
 finally {
   await browser?.close().catch(() => {});
   if (child.exitCode === null && child.signalCode === null) {

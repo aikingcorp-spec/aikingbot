@@ -71,9 +71,11 @@ jobs:
         run: |
           node apps/desktop-foundation/prepare-provider-runtime.mjs
           node -e "require('./.aikingbot-foundation/source/aiking/packaged-provider-runtime.cjs').installPackagedProviderRuntime(require('path').resolve('.aikingbot-foundation/source/aiking/provider-runtime/bin'),require('path').resolve('.aikingbot-foundation/source/release/win-unpacked/resources'))"
-      - name: Build repaired Windows EXE and ZIP from unchanged packaged application
+      - name: Packaged Electron authorization and provider runtime on repaired candidate
+        run: node apps/desktop-foundation/packaged-desktop.mjs
+      - name: Build repaired Windows installer from unchanged packaged application
         working-directory: .aikingbot-foundation/source
-        run: node node_modules/electron-builder/cli.js --config electron-builder.aiking.cjs --prepackaged release/win-unpacked --win nsis zip --x64 --publish never
+        run: node node_modules/electron-builder/cli.js --config electron-builder.aiking.cjs --prepackaged release/win-unpacked --win nsis --x64 --publish never
       - name: Hash newly built installer and record original application provenance
         shell: pwsh
         run: |
@@ -84,8 +86,13 @@ jobs:
           "$hash  $($f.Name)" | Set-Content mirror/SHA256SUMS -Encoding ascii
           Copy-Item mirror/build-artifacts.json mirror/original-build-artifacts.json
           @{ commit=$env:GITHUB_SHA; applicationCommit='1a911eae55c2a17d0076dc20b6a16b7a1d296d7c'; platform='win32'; architecture='x64'; version='0.3.0-rc.2'; builtAt=[DateTime]::UtcNow.ToString('o'); artifacts=@(@{name=$f.Name; bytes=$f.Length; sha256=$hash}) } | ConvertTo-Json -Depth 5 | Set-Content mirror/build-artifacts.json
-      - name: Packaged Electron authorization and provider runtime on repaired candidate
-        run: node apps/desktop-foundation/packaged-desktop.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AIKINGBOT-rc2-unqualified-windows-installer
+          path: mirror/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
       - name: Chromium dependencies
         working-directory: apps/desktop-foundation
         run: node node_modules/playwright-core/cli.js install --with-deps chromium
