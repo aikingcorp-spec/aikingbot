@@ -38,6 +38,8 @@ for (const file of ["LICENSE", "NOTICE"]) cpSync(join(sourceRoot, file), join(st
 cpSync(join(sourceRoot, "aiking/NOTICE.txt"), join(stage, "licenses/AIKINGBOT-NOTICE.txt"));
 cpSync(join(sourceRoot, "aiking/licenses"), join(stage, "licenses/AIKING-Core-dependencies"), { recursive: true });
 cpSync(join(repositoryRoot, "deploy/aikingbot-server"), join(stage, "deploy"), { recursive: true });
+// serverVersion() reads ../package.json from dist-server: the pairing page and descriptor show the real version.
+writeFileSync(join(stage, "package.json"), `${JSON.stringify({ name: "aikingbot-server", version: pkg.version, private: true }, null, 2)}\n`);
 
 const files = [];
 const walk = (directory) => {

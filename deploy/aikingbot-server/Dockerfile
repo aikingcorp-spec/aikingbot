@@ -55,6 +55,7 @@ COPY --chown=root:root dist-server ./dist-server
 COPY --chown=root:root dist ./dist
 COPY --chown=root:root licenses ./licenses
 COPY --chown=root:root bundle-manifest.json ./bundle-manifest.json
+COPY --chown=root:root package.json ./package.json
 COPY --chown=root:root deploy/scripts/container-start.sh /usr/local/bin/aikingbot-start
 RUN chmod 0755 /usr/local/bin/aikingbot-start && chmod -R go-w /app
 LABEL org.opencontainers.image.title="AIKINGBOT server" \
