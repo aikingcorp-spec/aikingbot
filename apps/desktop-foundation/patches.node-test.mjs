@@ -10,6 +10,7 @@ import { patchIntegration } from "./integration-patches.mjs";
 import { patchShipping } from "./shipping-patches.mjs";
 
 const files = ["package.json", "src/styles.css", "server/routes/desktop-viewer.ts", "server/config.ts", "server/contracts.ts", "server/index.ts", "server/skills.ts", "scripts/control-omb.ts", "electron/main.mjs", "electron/save-file.mjs", "electron/environments.cjs", "electron/startup-screen.mjs", "electron/cua.mjs", "electron/cua-linux-runtime.cjs", "electron/resources/speech-helper-Info.plist", "electron/companion-account-service.mjs", "electron/cloud-account.mjs", "electron/updater.mjs", "build/linux-after-install.sh", "build/linux-after-remove.sh", "build/linux-openmausbot-browser.apparmor", "scripts/after-pack.mjs", "scripts/bundle-server.mjs", "electron/save-file.node-test.mjs", "electron/server-supervisor.node-test.mjs", "scripts/linux-after-install.test.mjs"];
+files.push("src/lib/notices.ts");
 const pin = JSON.parse(readFileSync(join(foundationRoot, "source.lock.json"))).commit;
 for (const ending of ["LF", "CRLF"]) it(`applies all pinned integration/shipping patches to ${ending} input`, () => {
   const target = mkdtempSync(join(tmpdir(), "aiking-patches-"));

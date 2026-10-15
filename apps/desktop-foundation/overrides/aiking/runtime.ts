@@ -38,17 +38,18 @@ function close(): Promise<void> {
     await stopChild(electron);
     if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
     await ui?.close();
-    if (previewUi) {
-      previewUi.httpServer.closeAllConnections();
-      await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
-    }
+    await previewUi?.close();
   })();
   return closing;
 }
 
 const stop = () => { void close().then(() => process.exit(0)); };
-process.once("SIGINT", stop);
-process.once("SIGTERM", stop);
+process.on("SIGINT", stop);
+process.on("SIGTERM", stop);
+process.on("message", message => {
+  if (message && typeof message === "object" && "type" in message && message.type === "aiking.shutdown") stop();
+});
+if (process.send) process.once("disconnect", stop);
 
 try {
   let apiUrl: string;
@@ -92,8 +93,13 @@ try {
     host: "127.0.0.1", port: Number(process.env.AIKING_UI_PORT || 5199), strictPort: true,
     proxy: { "/api": { target: apiUrl, ws: true }, "/.well-known/openmausbot/environment": { target: apiUrl } },
   };
+  const termListeners = new Set(process.listeners("SIGTERM"));
+  const inputEndListeners = new Set(process.stdin.listeners("end"));
   if (production) previewUi = await preview({ root: source, preview: serverOptions });
   else { ui = await createServer({ root: source, server: serverOptions }); await ui.listen(); }
+  // Vite's CLI exit handlers would terminate this owner before its backend/Electron cleanup completes.
+  for (const listener of process.listeners("SIGTERM")) if (!termListeners.has(listener)) process.removeListener("SIGTERM", listener);
+  for (const listener of process.stdin.listeners("end")) if (!inputEndListeners.has(listener)) process.stdin.removeListener("end", listener);
   const uiUrl = (previewUi ?? ui)?.resolvedUrls?.local[0];
   if (!uiUrl) throw new Error("Vite did not report its URL.");
   const info = { product: "AIKINGBOT", mode: offline ? "offline-verification" : "local", coreIntegrated: true, coreVerification: core,

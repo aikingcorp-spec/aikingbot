@@ -15,12 +15,15 @@ export function patchShipping(source, pkg) {
     .replaceAll('".openmausbot', '".aikingbot').replaceAll('`.openmausbot', '`.aikingbot')
     .replaceAll('".opengrokbot"', '".aikingbot-legacy"')
     .replace('const DEFAULT_COMPOSIO_BROKER_URL = "https://openmausbot-composio.milindsoni201.workers.dev";', 'const DEFAULT_COMPOSIO_BROKER_URL = "";')
+    .replace('if (app.isPackaged && !desktopRemoteAccess) {\n    cloudAccountRestoring = true;', 'if (process.env.AIKING_CLOUD_ORIGIN && app.isPackaged && !desktopRemoteAccess) {\n    cloudAccountRestoring = true;')
+    .replace('() => ensureCloudAccount()[method]()', '() => { if (!process.env.AIKING_CLOUD_ORIGIN) { if (method === "state") return { status: "signed-out", message: "Cloud server is not configured." }; if (method === "offer") return null; if (!["cancel", "signOut"].includes(method)) throw new Error("Configure the AIKING Cloud server before signing in."); } return ensureCloudAccount()[method](); }')
     .replace('return app.isPackaged && !desktopRemoteAccess && brandedBuild === false;', 'return Boolean(process.env.AIKING_CLOUD_ORIGIN) && app.isPackaged && !desktopRemoteAccess && brandedBuild === false;')
     .replace('app.setDesktopName("com.openmausbot.app.desktop")', 'app.setDesktopName("com.aikingcorp.aikingbot.desktop")')
     .replace('app.setAsDefaultProtocolClient("openmausbot")', 'app.setAsDefaultProtocolClient("aikingbot")'));
   edit("electron/save-file.mjs", text => text.replace('path.join(home, ".openmausbot")', 'path.join(home, ".aikingbot")'));
   edit("electron/environments.cjs", text => text.replaceAll("OpenMausBot", "AIKINGBOT"));
   edit("electron/startup-screen.mjs", text => text.replaceAll("OpenMaus Bot", "AIKINGBOT"));
+  edit("src/lib/notices.ts", text => text.replace("Date.UTC(2026, 10, 1)", "0"));
   for (const path of ["electron/cua.mjs", "electron/cua-linux-runtime.cjs", "electron/resources/speech-helper-Info.plist"]) edit(path, text => text.replaceAll("com.openmausbot.app", "com.aikingcorp.aikingbot"));
   edit("electron/companion-account-service.mjs", text => text.replace('"https://accounts.openmausbot.com"', '""'));
   edit("electron/cloud-account.mjs", text => 'import { serviceOrigin } from "./aiking-service-config.mjs";\n' + text.replace('"https://cloud.openmausbot.com"', 'serviceOrigin(process.env.AIKING_CLOUD_ORIGIN) || "https://cloud.aikingbot.invalid"'));

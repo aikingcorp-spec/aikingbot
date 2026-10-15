@@ -19,9 +19,10 @@ const port = async () => {
 };
 async function stop(child) {
   if (child.exitCode !== null || child.signalCode !== null) return;
-  const exited = new Promise(resolve => child.once("exit", resolve)); child.kill("SIGTERM");
+  const exited = new Promise(resolve => child.once("exit", (code, signal) => resolve({ code, signal })));
+  if (child.connected) child.send({ type: "aiking.shutdown" }); else child.kill("SIGTERM");
   const timer = setTimeout(() => child.kill("SIGKILL"), 30000);
-  await exited; clearTimeout(timer);
+  const result = await exited; clearTimeout(timer); assert.equal(result.code, 0, `Owned fixture did not shut down cleanly (${result.signal || result.code})`);
 }
 async function run(script, extra) {
   const child = spawn(process.execPath, [join(foundationRoot, script)], { cwd: repositoryRoot, env: { ...env, ...extra }, stdio: "inherit" });
@@ -32,7 +33,7 @@ async function fixture(name, operation) {
   const uiPort = await port(); const debugPort = electron ? await port() : undefined;
   const log = createWriteStream(join(out, `runtime-${name}.log`));
   const child = spawn(process.execPath, ["--experimental-strip-types", "aiking/runtime.ts", "--offline", "--core", "--production", ...(electron ? ["--desktop"] : [])], {
-    cwd: sourceRoot, env: { ...env, AIKING_UI_PORT: String(uiPort), ...(debugPort ? { AIKING_DESKTOP_DEBUG_PORT: String(debugPort) } : {}) }, stdio: ["ignore", "pipe", "pipe"],
+    cwd: sourceRoot, env: { ...env, AIKING_UI_PORT: String(uiPort), ...(debugPort ? { AIKING_DESKTOP_DEBUG_PORT: String(debugPort) } : {}) }, stdio: ["ignore", "pipe", "pipe", "ipc"],
   });
   child.stdout.pipe(log, { end: false }); child.stderr.pipe(log, { end: false });
   let launchError; child.once("error", error => { launchError = error; });

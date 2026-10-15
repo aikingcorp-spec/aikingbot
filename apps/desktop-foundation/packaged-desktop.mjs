@@ -46,6 +46,7 @@ try {
   const denied = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "remove", listingId: "not-installed-fixture" }) });
   assert.equal(denied.status, 403, "Packaged API mutations require the desktop connection credential.");
   assert.equal((await fetch(endpoint, { headers: { origin: "https://untrusted.example" } })).status, 403);
+  assert.equal(await page.locator('[data-notice="product-hunt"]').count(), 0, "The packaged app must not promote an upstream launch.");
   await page.screenshot({ path: join(out, "packaged-desktop.png") });
   assert.deepEqual(errors, []); ok = true;
   console.log("Packaged desktop booted with isolated data, renderer isolation and authenticated API.");
