@@ -113,7 +113,10 @@ try {
     await page.getByRole("button", { name: "Remove agent", exact: true }).click(); await page.getByRole("button", { name: "Confirm remove", exact: true }).click();
     await page.getByRole("button", { name: "Add agent", exact: true }).waitFor({ timeout: 45000 });
     assert.ok(!(await api("/api/bots")).bots.some(bot => bot.id === installedAgent));
-    assert.ok(!(await api("/api/aiking/marketplace/records")).records.some(record => record.listingId === "media-producer"));
+    // The card switches to "Add agent" as soon as the agent is deleted; the queued record write lands right after.
+    const recorded = async () => (await api("/api/aiking/marketplace/records")).records.some(record => record.listingId === "media-producer");
+    for (const deadline = Date.now() + 15000; await recorded() && Date.now() < deadline;) await new Promise(resolve => setTimeout(resolve, 250));
+    assert.ok(!(await recorded()), "Marketplace install record is removed after uninstall.");
   });
   await page.getByRole("button", { name: "Close marketplace", exact: true }).click();
   await step("core-group-multi-agent", async () => {
