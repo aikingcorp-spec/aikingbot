@@ -35,9 +35,9 @@ export function prepareSource() {
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
   pkg.name = "aikingbot-foundation";
   pkg.productName = "AIKINGBOT";
-  pkg.description = "AIKINGBOT stage 1 desktop foundation, based on the Apache-2.0 OpenMausBot edition.";
+  pkg.description = "AIKINGBOT desktop with Core, voice and agent teams, based on the Apache-2.0 OpenMausBot edition.";
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
-  writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", edition: "oss", coreIntegrated: false }, null, 2)}\n`);
+  writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", edition: "oss", coreIntegrated: true }, null, 2)}\n`);
   console.log(`Prepared AIKINGBOT from ${lock.repository} @ ${actual}; enterprise/ excluded.`);
 }
 
@@ -49,6 +49,7 @@ export async function prepareCore() {
   await build({ entryPoints: [join(foundationRoot, "overrides/src/aiking/marketplace/aiking-catalog.ts")], outfile: catalogModule, platform: "node", target: "node24", format: "esm", bundle: true });
   const { AIKING_CATALOG } = await import(`${catalogModule}?build=${Date.now()}`);
   writeFileSync(join(sourceRoot, "aiking/catalog.json"), JSON.stringify(AIKING_CATALOG));
+  await build({ stdin: { contents: 'import { catalogDocumentSchema } from "./src/aiking/marketplace/contract.ts"; export const decodeCatalog = value => catalogDocumentSchema.parse(value);', resolveDir: sourceRoot }, outfile: join(sourceRoot, "aiking/catalog-schema.mjs"), platform: "node", target: "node24", format: "esm", bundle: true });
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

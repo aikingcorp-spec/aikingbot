@@ -10,6 +10,9 @@ import { createAikingServices } from "./services.ts";
 import { json, readBody } from "../harness/http.ts";
 import type { SessionRecord } from "../sessions.ts";
 import type { RequestAuth } from "../request-auth.ts";
+import { decodeCatalog } from "../../aiking/catalog-schema.mjs";
+import { createHash } from "node:crypto";
+import { installSkill, listSkills, readSkillFile } from "../skills.ts";
 
 async function fixture(existing?: string) {
   const dataDir = existing ?? mkdtempSync(join(tmpdir(), "aiking-services-"));
@@ -26,7 +29,7 @@ async function fixture(existing?: string) {
   const address = server.address(); if (!address || typeof address === "string") throw new Error("No port");
   const origin = `http://127.0.0.1:${address.port}`;
   const api = (path: string, body?: object, headers = {}) => fetch(origin + path, { method: body ? "POST" : "GET", headers: { "content-type": "application/json", origin, ...headers }, ...(body ? { body: JSON.stringify(body) } : {}) });
-  const ticket = async (owner = "owner-a") => (await (await api("/api/aiking/voice/ticket", { botId: "bot", threadId: "thread" }, { "x-owner": owner })).json()).ticket;
+  const ticket = async (owner = "owner-a") => ((await (await api("/api/aiking/voice/ticket", { botId: "bot", threadId: "thread" }, { "x-owner": owner })).json()) as { ticket: string }).ticket;
   const connect = async (key: string) => { const socket = new WebSocket(origin.replace("http", "ws") + "/api/aiking/voice/sessions?ticket=" + key, { origin }); await once(socket, "open"); return socket; };
   return { dataDir, live, services, api, ticket, connect, origin, cancelled: () => cancelled,
     close: async (keep = false) => { if (closed) return; closed = true; services.revokeOwner("owner-a"); services.revokeOwner("owner-b"); server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())); if (!keep) rmSync(dataDir, { recursive: true, force: true }); } };
@@ -43,7 +46,22 @@ describe("AIKING owner services", () => {
       expect((await f.api("/api/aiking/voice/ticket", { botId: "bot", threadId: "foreign" })).status).toBe(403);
       await f.close(true);
       const reopened = await fixture(f.dataDir);
-      try { expect((await (await reopened.api("/api/aiking/marketplace/records")).json()).records[0]).toEqual(record); } finally { await reopened.close(); }
+      try { expect(((await (await reopened.api("/api/aiking/marketplace/records")).json()) as { records: unknown[] }).records[0]).toMatchObject(record); } finally { await reopened.close(); }
+    } finally { await f.close(); }
+  });
+  it("updates only reviewed catalog skills at the requested hash and keeps disabled skills disabled", async () => {
+    const f = await fixture();
+    try {
+      const catalog = decodeCatalog(await (await f.api("/api/aiking/v1/catalog")).json()); const listing = catalog.listings.find(listing => listing.kind === "skill");
+      if (!listing || listing.kind !== "skill") throw new Error("No catalog skill");
+      const old = listing.text + "\nOld reviewed fixture revision.\n";
+      expect(installSkill("bot", `aiking-marketplace:${listing.id}@0.0.1`, [{ path: "SKILL.md", content: old }])).not.toHaveProperty("error");
+      const body = { listingId: listing.id, botId: "bot", threadId: "thread", baseSha256: "0".repeat(64) };
+      expect((await f.api("/api/aiking/marketplace/skill-update", body)).status).toBe(409); expect(readSkillFile("bot", listing.skillName)).toBe(old);
+      body.baseSha256 = createHash("sha256").update(old).digest("hex");
+      expect((await f.api("/api/aiking/marketplace/skill-update", body)).status).toBe(200);
+      expect(readSkillFile("bot", listing.skillName)).toBe(listing.text); expect(listSkills("bot").find(skill => skill.name === listing.skillName)?.enabled).toBe(false);
+      expect((await f.api("/api/aiking/marketplace/skill-update", body)).status).toBe(409);
     } finally { await f.close(); }
   });
   it("consumes tickets once, binds resume to its owner, cancels work on revocation", async () => {

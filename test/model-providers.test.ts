@@ -16,6 +16,15 @@ const request: ModelRequest = {
 	tools: [{ name: "echo", description: "Echo.", inputSchema: { type: "object", properties: {} } }],
 };
 
+test("fallback forwards streaming/cancellation and never starts another provider after abort", async () => {
+	const controller = new AbortController(); let second = 0; let streamed = "";
+	const first: ModelClient = { provider: "first", create: async (_request, options) => { expect(options?.signal).toBe(controller.signal); options?.onTextDelta?.("partial"); controller.abort(); throw new Error("cancelled fixture"); } };
+	const fallback: ModelClient = { provider: "second", create: async () => { second++; throw new Error("must not run"); } };
+	const chain = new FallbackModel([{ client: first, model: "first" }, { client: fallback, model: "second" }]);
+	await expect(chain.create(request, { signal: controller.signal, onTextDelta: text => { streamed += text; } })).rejects.toThrow();
+	expect(streamed).toBe("partial"); expect(second).toBe(0);
+});
+
 function stubClient(respond: (params: Record<string, unknown>) => unknown) {
 	const calls: Record<string, unknown>[] = [];
 	const client = {

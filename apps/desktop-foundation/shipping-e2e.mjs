@@ -24,7 +24,7 @@ const browser = await chromium.launch({ executablePath: process.env.AIKING_CHROM
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ["microphone"] });
 await context.addInitScript(() => localStorage.setItem("omb-advanced-mode", "0"));
 const page = await context.newPage(); const errors = []; page.on("pageerror", error => errors.push(error.message));
-const results = []; let ok = false; let failure;
+const results = []; let ok = false; let failure; let installedAgent;
 async function step(name, operation) { await operation(); await page.screenshot({ path: join(out, `${name}.png`) }); results.push({ name, ok: true }); console.log(`ok ${name}`); }
 const composer = () => page.getByRole("textbox", { name: /^Message Core Shipping QA/ });
 try {
@@ -58,8 +58,40 @@ try {
     await market.getByRole("button", { name: "Media Producer, Details", exact: true }).click();
     await page.getByRole("button", { name: "Add agent", exact: true }).click(); await page.getByRole("button", { name: "Open agent", exact: true }).waitFor({ timeout: 45000 });
     const records = await api("/api/aiking/marketplace/records"); assert.ok(records.records.some(record => record.listingId === "media-producer" && record.targets.length));
+    installedAgent = records.records.find(record => record.listingId === "media-producer").targets[0];
+  });
+  await step("marketplace-template-update", async () => {
+    const catalog = await api("/api/aiking/v1/catalog"); const listing = catalog.listings.find(listing => listing.id === "media-producer");
+    const skill = catalog.listings.find(skill => skill.id === listing.skills[0].id);
+    const before = (await api("/api/bots")).bots.find(bot => bot.id === installedAgent);
+    await api(`/api/bots/${installedAgent}/skills/${skill.skillName}`, undefined, "DELETE");
+    await api(`/api/bots/${installedAgent}/skill-template`, { name: skill.skillName, description: skill.summary, source: `aiking-marketplace:${skill.id}@0.0.1`, text: skill.text + "\nOld catalog revision fixture.\n", enabled: false, warnings: [] });
+    await api(`/api/bots/${installedAgent}/profile`, { name: "Producer kept name" }, "PATCH");
+    await api(`/api/bots/${installedAgent}/memory/file`, { path: "memory/marketplace-keep.md", text: "Keep this user note." }, "PUT");
+    await api("/api/aiking/marketplace/records", { action: "add", record: { listingId: listing.id, kind: "agent", version: "0.0.1", targets: [installedAgent], installedAt: new Date().toISOString() } });
+    await page.getByRole("button", { name: "Close marketplace", exact: true }).click(); await page.reload({ waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Marketplace", exact: true }).click();
+    await page.getByRole("button", { name: "Media Producer, Details", exact: true }).click();
+    await page.getByRole("button", { name: "Update template", exact: true }).click();
+    await page.getByRole("button", { name: "Apply template update", exact: true }).click();
+    await page.getByRole("button", { name: "Apply template update", exact: true }).waitFor({ state: "hidden", timeout: 45000 });
+    const after = (await api("/api/bots")).bots.find(bot => bot.id === installedAgent); assert.equal(after.name, "Producer kept name"); assert.deepEqual(after.modelSelection, before.modelSelection);
+    assert.equal((await api(`/api/bots/${installedAgent}/memory/file?path=memory/marketplace-keep.md`)).text, "Keep this user note.");
+    assert.equal((await api(`/api/bots/${installedAgent}/skills/${skill.skillName}`)).text, skill.text);
+    assert.equal((await api(`/api/bots/${installedAgent}/skills`)).skills.find(held => held.name === skill.skillName).enabled, false);
+    assert.equal((await api("/api/aiking/marketplace/records")).records.find(record => record.listingId === listing.id).targetVersions[installedAgent], listing.version);
   });
   await page.getByRole("button", { name: "Close marketplace", exact: true }).click();
+  await step("marketplace-legacy-migration", async () => {
+    const record = (await api("/api/aiking/marketplace/records")).records.find(record => record.listingId === "media-producer");
+    await api("/api/aiking/marketplace/records", { action: "remove", listingId: "media-producer" });
+    await page.evaluate(record => localStorage.setItem("aiking-marketplace-installs", JSON.stringify([{ ...record, targets: [...record.targets, "foreign-workspace-fixture"] }])), record);
+    await page.reload({ waitUntil: "domcontentloaded" }); await page.getByRole("button", { name: "Marketplace", exact: true }).waitFor();
+    const migrated = (await api("/api/aiking/marketplace/records")).records.find(record => record.listingId === "media-producer"); assert.deepEqual(migrated.targets, [installedAgent]);
+    await page.evaluate(record => localStorage.setItem("aiking-marketplace-installs", JSON.stringify([{ ...record, version: "0.0.1" }])), record);
+    await page.reload({ waitUntil: "domcontentloaded" }); await page.getByRole("button", { name: "Marketplace", exact: true }).waitFor();
+    assert.equal((await api("/api/aiking/marketplace/records")).records.find(record => record.listingId === "media-producer").targetVersions[installedAgent], record.version);
+  });
   await page.locator(`[data-sidebar-bot-row="${bot.id}"]`).click();
   await step("voice-local-backend", async () => {
     // Remove the write fixture from this voice agent; voice must never silently approve a side effect.
@@ -75,9 +107,17 @@ try {
     const wrong = await fetch(info.apiUrl + "/api/aiking/voice/ticket", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ botId: bot.id, threadId: "wrong-thread" }) }); assert.equal(wrong.status, 403);
     const cross = await fetch(info.apiUrl + "/api/aiking/marketplace/records", { headers: { origin: "https://untrusted.example" } }); assert.equal(cross.status, 403);
   });
+  await page.getByRole("button", { name: "Close voice call", exact: true }).click();
+  await step("marketplace-backend-uninstall", async () => {
+    await page.getByRole("button", { name: "Marketplace", exact: true }).click(); await page.getByRole("button", { name: "Media Producer, Details", exact: true }).click();
+    await page.getByRole("button", { name: "Remove agent", exact: true }).click(); await page.getByRole("button", { name: "Confirm remove", exact: true }).click();
+    await page.getByRole("button", { name: "Add agent", exact: true }).waitFor({ timeout: 45000 });
+    assert.ok(!(await api("/api/bots")).bots.some(bot => bot.id === installedAgent));
+    assert.ok(!(await api("/api/aiking/marketplace/records")).records.some(record => record.listingId === "media-producer"));
+  });
   assert.deepEqual(errors, []); ok = true;
 } catch (error) { failure = String(error); await page.screenshot({ path: join(out, "shipping-failed.png") }).catch(() => {}); throw error; }
 finally {
-  writeFileSync(join(out, "stage3-e2e.json"), JSON.stringify({ ok, failure, results, rendererErrors: errors, coreRuntimeVerified: true, realProviderVerified: false, speechProvider: "offline-scripted", botId: bot.id }, null, 2));
+  writeFileSync(join(out, "shipping-e2e.json"), JSON.stringify({ ok, failure, verifiedAt: new Date().toISOString(), results, rendererErrors: errors, coreRuntimeVerified: true, realProviderVerified: false, speechProvider: "offline-scripted", botId: bot.id }, null, 2));
   await browser.close();
 }

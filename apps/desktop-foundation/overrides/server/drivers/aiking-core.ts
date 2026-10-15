@@ -1,12 +1,12 @@
 // Copyright (c) 2026 AIKING.
 import { createHash, randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync, renameSync, existsSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, writeFileSync, renameSync, existsSync, readFileSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { createCore, AnthropicModel, DEFAULT_MODEL, type ModelClient, type CoreEvent, type Core } from "../../aiking/core/index.mjs";
 import type { ProviderDriver, RuntimeEvent, RuntimeEventListener, SendTurnInput, RequestOutcome, McpServerSpec } from "../contracts.ts";
 import { DATA_DIR } from "../config.ts";
 import { allowsTool, canUseMcpServer } from "../../shared/tool-scope.ts";
-import { listSkills, enabledSkillFile } from "../skills.ts";
+import { resolveBotSkills, enabledSkillFile } from "../skills.ts";
 import { redactSecretsInText } from "../../shared/redact.ts";
 
 type Config = { mode: "offline" | "anthropic"; model: string; allowDangerous?: string[] };
@@ -51,8 +51,20 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
     const paths = new Map<string, string>();
     const root = join(DATA_DIR, "aiking-core", createHash("sha256").update(input.instanceId).digest("hex"));
     mkdirSync(root, { recursive: true, mode: 0o700 });
+    const transcriptFor = (id: string) => {
+      const mappingPath = join(root, `${id}.mapping.json`); let generation = "";
+      if (existsSync(mappingPath)) { const mapping = JSON.parse(readFileSync(mappingPath, "utf8")); if (typeof mapping.generation !== "string" || !/^[a-f0-9-]{36}$/.test(mapping.generation)) throw new Error("Invalid Core transcript mapping."); generation = mapping.generation; }
+      return join(root, `${id}${generation ? `-${generation}` : ""}.jsonl`);
+    };
+    for (const name of readdirSync(root)) {
+      if (!/^[a-f0-9]{64}\.state\.json$/.test(name)) continue;
+      const file = join(root, name); const state = JSON.parse(readFileSync(file, "utf8"));
+      if (typeof state.threadId === "string") { const path = transcriptFor(name.replace(".state.json", "")); if (existsSync(path)) paths.set(state.threadId, path); }
+      if (!["running", "approval-pending"].includes(state.status)) continue;
+      writeFileSync(`${file}.tmp`, JSON.stringify({ ...state, status: "interrupted", recoveredAt: new Date().toISOString(), requestId: undefined }), { mode: 0o600 }); renameSync(`${file}.tmp`, file);
+    }
     const catalog = input.config.mode === "offline" ? { default: "aiking-offline", options: [{ id: "aiking-offline", label: "AIKING Core · Offline test (scripted)" }] } : { default: input.config.model, options: [{ id: input.config.model, label: `AIKING Core · ${input.config.model}` }] };
-    const key = input.environment.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
+    const key = input.environment.ANTHROPIC_API_KEY;
     const base = (threadId: string, turnId?: string) => ({ eventId: randomUUID(), provider: KIND, providerInstanceId: input.instanceId, threadId, turnId, createdAt: new Date().toISOString() });
     const emit = (event: RuntimeEvent) => listeners.forEach((listener) => listener(event));
     const persist = (id: string, value: unknown) => { const path = join(root, `${id}.state.json`); const temp = `${path}.tmp`; writeFileSync(temp, JSON.stringify(value), { mode: 0o600 }); renameSync(temp, path); };
@@ -64,15 +76,17 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
         if (turn.guestConfined || turn.images?.length) throw new Error("Core does not support guest turns or image input yet. Choose another engine.");
         if (input.config.mode !== "offline" && !key) throw new Error("AIKING Core requires ANTHROPIC_API_KEY in its server instance environment.");
         const id = sessionKey(input.instanceId, turn.botId ?? "", turn.threadId);
-        if (turn.resumeCursor !== undefined && turn.resumeCursor !== id) throw new Error("Core resume cursor belongs to a different conversation.");
+        if (!turn.sessionReset && turn.resumeCursor !== undefined && turn.resumeCursor !== id) throw new Error("Core resume cursor belongs to a different conversation.");
         const mappingPath = join(root, `${id}.mapping.json`);
-        let generation = "";
-        if (existsSync(mappingPath)) { const mapping = JSON.parse(readFileSync(mappingPath, "utf8")); if (typeof mapping.generation !== "string" || !/^[a-f0-9-]{36}$/.test(mapping.generation)) throw new Error("Invalid Core transcript mapping."); generation = mapping.generation; }
-        if (turn.sessionReset) { generation = randomUUID(); writeFileSync(`${mappingPath}.tmp`, JSON.stringify({ schema: 1, generation }), { mode: 0o600 }); renameSync(`${mappingPath}.tmp`, mappingPath); }
-        const transcriptPath = join(root, `${id}${generation ? `-${generation}` : ""}.jsonl`);
+        if (turn.sessionReset) { writeFileSync(`${mappingPath}.tmp`, JSON.stringify({ schema: 1, generation: randomUUID() }), { mode: 0o600 }); renameSync(`${mappingPath}.tmp`, mappingPath); }
+        const transcriptPath = transcriptFor(id);
+        const missing = !existsSync(transcriptPath);
+        const rebuilt = !turn.sessionReset && turn.resumeCursor !== undefined && missing;
+        if (rebuilt && !turn.recoveryText?.trim()) throw new Error("Core transcript is missing. Recover from the host conversation before resuming.");
+        if (missing && !rebuilt && turn.transcript?.length) writeFileSync(transcriptPath, turn.transcript.map(message => JSON.stringify({ role: message.role, content: message.text }) + "\n").join(""), { mode: 0o600 });
         paths.set(turn.threadId, transcriptPath);
         const turnId = randomUUID(); const controller = new AbortController();
-        emit({ ...base(turn.threadId, turnId), type: "session.started", sessionId: id, model: turn.model ?? catalog.default });
+        emit({ ...base(turn.threadId, turnId), type: "session.started", sessionId: id, model: turn.model ?? catalog.default, ...(rebuilt ? { rebuilt: true } : {}) });
         emit({ ...base(turn.threadId, turnId), type: "turn.started" });
         const start = async () => {
           let core: Core | undefined;
@@ -80,6 +94,7 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
           let text = "";
           const skillsDir = join(root, `${id}-${turnId}.skills`);
           const identity = base(turn.threadId, turnId);
+          let completion: Extract<RuntimeEvent, { type: "turn.completed" }> | undefined;
           const event = (value: CoreEvent) => {
             if (controller.signal.aborted) return;
             if (value.type === "text_start") { streamingId = value.messageId; text = ""; }
@@ -87,6 +102,10 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
             else if (value.type === "text_end") emit({ ...identity, eventId: randomUUID(), type: "item.completed", itemId: streamingId, itemType: "assistant_text", text });
             else if (value.type === "tool_call") emit({ ...identity, eventId: randomUUID(), type: "item.started", itemId: value.id, itemType: "tool", title: value.name });
             else if (value.type === "tool_result") emit({ ...identity, eventId: randomUUID(), type: "item.completed", itemId: value.id, itemType: "tool", ok: !value.isError, output: value.content });
+            else if (value.type === "usage" && value.usage.length) {
+              const usage = value.usage.at(-1)!;
+              emit({ ...identity, eventId: randomUUID(), type: "thread.token-usage.updated", input: usage.inputTokens + usage.cacheReadTokens + usage.cacheWriteTokens, output: usage.outputTokens });
+            } else if (value.type === "model_fallback") emit({ ...identity, eventId: randomUUID(), type: "runtime.notice", message: `Model fallback: ${value.fallback.from} → ${value.fallback.to} (${value.fallback.reason}).` });
           };
           try {
             persist(id, { schema: 1, botId: turn.botId, threadId: turn.threadId, turnId, status: "running", model: turn.model ?? catalog.default });
@@ -96,18 +115,19 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
               if (server && canUseMcpServer(turn.toolScope, name)) servers[name] = server;
             }
             mkdirSync(skillsDir, { recursive: true, mode: 0o700 });
-            for (const skill of turn.botId ? listSkills(turn.botId).filter(skill => skill.enabled) : []) {
-              const file = enabledSkillFile(turn.botId!, skill.name); if (!file) continue;
+            for (const skill of turn.botId ? resolveBotSkills(turn.botId, turn.assignedSkills).filter(skill => skill.enabled) : []) {
+              const file = enabledSkillFile(turn.botId!, skill.name, turn.assignedSkills); if (!file) continue;
               const directory = join(skillsDir, skill.name); mkdirSync(directory, { mode: 0o700 });
               writeFileSync(join(directory, "SKILL.md"), readFileSync(file), { mode: 0o600 });
             }
-            core = await createCore({ model: input.config.mode === "offline" ? new CoreOfflineModel() : new AnthropicModel({ model: turn.model ?? input.config.model, apiKey: key }), instructions: turn.system, transcriptPath, skillsDir, mcpServers: servers,
+            core = await createCore({ model: input.config.mode === "offline" ? new CoreOfflineModel() : new AnthropicModel({ model: turn.model ?? input.config.model, apiKey: key, baseURL: input.environment.ANTHROPIC_BASE_URL || "https://api.anthropic.com" }), instructions: turn.system, transcriptPath, skillsDir, mcpServers: servers,
               toolPolicy: { allowDangerous: input.config.allowDangerous },
-              toolAllowed: (name) => { const match = /^mcp__([a-z0-9_-]+)__(.+)$/.exec(name); return allowsTool(turn.toolScope, match ? { kind: "mcp", server: match[1], name: match[2] } : { kind: "native", name }); },
+              signal: controller.signal,
+              toolAllowed: (name) => { const match = /^mcp__([a-zA-Z0-9_-]+)__(.+)$/.exec(name); return allowsTool(turn.toolScope, match ? { kind: "mcp", server: match[1], name: match[2] } : { kind: "native", name }); },
             });
             controller.signal.throwIfAborted();
             for (const warning of core.warnings) emit({ ...identity, eventId: randomUUID(), type: "runtime.notice", message: warning });
-            const result = await core.chat.send(turn.text, { signal: controller.signal, onEvent: event, approver: async (request) => {
+            const result = await core.chat.send(rebuilt ? turn.recoveryText! : turn.text, { signal: controller.signal, onEvent: event, approver: async (request) => {
               const requestId = randomUUID();
               persist(id, { schema: 1, botId: turn.botId, threadId: turn.threadId, turnId, status: "approval-pending", tool: request.tool, requestId });
               return new Promise<boolean>((resolve) => {
@@ -120,12 +140,17 @@ export const AikingCoreDriver: ProviderDriver<Config> = {
               });
             } });
             persist(id, { schema: 1, botId: turn.botId, threadId: turn.threadId, turnId, status: result.status });
-            emit({ ...identity, eventId: randomUUID(), type: "turn.completed", ok: result.status === "completed", stopReason: result.status, cost: result.cost.usd });
+            if (result.cost.unpricedModels.length) emit({ ...identity, eventId: randomUUID(), type: "runtime.notice", message: `Cost unavailable for: ${result.cost.unpricedModels.join(", ")}.` });
+            completion = { ...identity, eventId: randomUUID(), type: "turn.completed", ok: result.status === "completed", stopReason: result.status, ...(result.cost.unpricedModels.length ? {} : { cost: result.cost.usd }) };
           } catch (error) {
             persist(id, { schema: 1, botId: turn.botId, threadId: turn.threadId, turnId, status: controller.signal.aborted ? "cancelled" : "error" });
             if (!controller.signal.aborted) emit({ ...identity, eventId: randomUUID(), type: "runtime.error", terminal: true, message: redactSecretsInText(error instanceof Error ? error.message : "Core turn failed.") });
-            emit({ ...identity, eventId: randomUUID(), type: "turn.completed", ok: false, stopReason: controller.signal.aborted ? "cancelled" : "error" });
-          } finally { await core?.close(); rmSync(skillsDir, { recursive: true, force: true }); runs.delete(turn.threadId); }
+            completion = { ...identity, eventId: randomUUID(), type: "turn.completed", ok: false, stopReason: controller.signal.aborted ? "cancelled" : "error" };
+          } finally {
+            try { await core?.close(); rmSync(skillsDir, { recursive: true, force: true }); }
+            catch { emit({ ...identity, eventId: randomUUID(), type: "runtime.notice", message: "Core cleanup needs review before the next turn." }); }
+            runs.delete(turn.threadId); if (completion) emit(completion);
+          }
         };
         const running: Running = { id: turnId, bot: turn.botId ?? "", controller, done: Promise.resolve() };
         runs.set(turn.threadId, running);

@@ -14,6 +14,7 @@ import { SkillLibrary } from "./skills/skill-library.ts";
 import { SkillTools } from "./skills/skill-tools.ts";
 
 export interface CoreConfig {
+	signal?: AbortSignal;
 	toolAllowed?: (name: string) => boolean;
 	toolSources?: ToolSource[];
 	model: ModelClient;
@@ -52,6 +53,7 @@ export function systemPrompt(capabilities: CapabilityIndex, instructions?: strin
 }
 
 export async function createCore(config: CoreConfig): Promise<Core> {
+	config.signal?.throwIfAborted();
 	const warnings: string[] = [];
 	const { library, errors } = config.skillsDir
 		? await SkillLibrary.load(config.skillsDir)
@@ -59,31 +61,36 @@ export async function createCore(config: CoreConfig): Promise<Core> {
 	for (const error of errors) warnings.push(`skill skipped: ${error.message}`);
 
 	const mcp = new McpHub();
-	for (const [name, server] of Object.entries(config.mcpServers ?? {})) {
-		try {
-			if ("command" in server) await mcp.connectStdio(name, server);
-			else await mcp.connectRemote(name, server);
-		} catch (error) {
-			warnings.push(`MCP server "${name}" not connected: ${(error as Error).message}`);
+	try {
+		for (const [name, server] of Object.entries(config.mcpServers ?? {})) {
+			try {
+				config.signal?.throwIfAborted();
+				if ("command" in server) await mcp.connectStdio(name, server, config.signal);
+				else await mcp.connectRemote(name, server, config.signal);
+			} catch (error) {
+				if (config.signal?.aborted) throw error;
+				warnings.push(`MCP server "${name}" not connected: ${(error as Error).message}`);
+			}
 		}
-	}
 
-	const capabilities = CapabilityIndex.from(library, mcp.toolInfo());
-	const runtime = new AgentRuntime({
-		model: config.model,
-		tools: new ToolRegistry(
-			[new SkillTools(library), new CapabilityTools(capabilities), mcp, ...(config.toolSources ?? [])].map((source) => ({
-				definitions: () => source.definitions().filter((definition) => config.toolAllowed?.(definition.name) !== false),
-				call: (name, input, context) => config.toolAllowed?.(name) === false ? Promise.resolve(undefined) : source.call(name, input, context),
-			})),
-			config.toolPolicy,
-			config.onGuard,
-		),
-		system: systemPrompt(capabilities, config.instructions),
-		maxSteps: config.maxSteps,
-		maxToolCalls: config.maxToolCalls,
-		onEvent: config.onEvent,
-	});
-	const chat = await ChatSession.open(runtime, config.transcriptPath);
-	return { chat, skills: library, mcp, capabilities, warnings, close: () => mcp.close() };
+		const capabilities = CapabilityIndex.from(library, mcp.toolInfo());
+		const runtime = new AgentRuntime({
+			model: config.model,
+			tools: new ToolRegistry(
+				[new SkillTools(library), new CapabilityTools(capabilities), mcp, ...(config.toolSources ?? [])].map((source) => ({
+					definitions: () => source.definitions().filter((definition) => config.toolAllowed?.(definition.name) !== false),
+					call: (name, input, context) => config.toolAllowed?.(name) === false ? Promise.resolve(undefined) : source.call(name, input, context),
+				})),
+				config.toolPolicy,
+				config.onGuard,
+			),
+			system: systemPrompt(capabilities, config.instructions),
+			maxSteps: config.maxSteps,
+			maxToolCalls: config.maxToolCalls,
+			onEvent: config.onEvent,
+		});
+		const chat = await ChatSession.open(runtime, config.transcriptPath);
+		config.signal?.throwIfAborted();
+		return { chat, skills: library, mcp, capabilities, warnings, close: () => mcp.close() };
+	} catch (error) { await mcp.close(); throw error; }
 }

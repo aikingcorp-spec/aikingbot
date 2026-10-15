@@ -9,9 +9,12 @@ import { z } from "zod";
 import type { RouteContext } from "../routes/table.ts";
 import { isLoopbackHost } from "../request-auth.ts";
 import { redactSecretsInText } from "../../shared/redact.ts";
+import { decodeCatalog } from "../../aiking/catalog-schema.mjs";
+import { updateCatalogSkill } from "../skills.ts";
 
 const startSchema = z.object({ type: z.literal("session.start"), botId: z.string().min(1).max(200), threadId: z.string().min(1).max(200), resumeToken: z.string().optional(), format: z.object({ sampleRate: z.literal(16000), encoding: z.literal("pcm16") }) });
-const recordSchema = z.object({ listingId: z.string().regex(/^[a-z0-9-]{1,100}$/), version: z.string().max(32), kind: z.enum(["agent", "app", "skill"]), targets: z.array(z.string().max(200)).max(100), installedAt: z.string().datetime() });
+const versionSchema = z.string().regex(/^\d+\.\d+\.\d+$/).max(32);
+const recordSchema = z.object({ listingId: z.string().regex(/^[a-z0-9-]{1,100}$/), version: versionSchema, kind: z.enum(["agent", "app", "skill"]), targets: z.array(z.string().max(200)).max(100), installedAt: z.string().datetime(), targetVersions: z.record(z.string().max(200), versionSchema).optional() });
 const ticketBody = z.object({ botId: z.string().min(1).max(200), threadId: z.string().min(1).max(200) });
 type ServicesOptions = { dataDir: string; offline: boolean; isOwnerLive(owner: string): boolean; owns(bot: string, thread: string): boolean; reply(bot: string, thread: string, text: string, signal: AbortSignal): Promise<string> };
 
@@ -35,7 +38,7 @@ function wav(pcm: Buffer) {
 export function createAikingServices(options: ServicesOptions) {
   const root = join(options.dataDir, "aiking"); mkdirSync(root, { recursive: true, mode: 0o700 });
   const recordsPath = join(root, "marketplace-installs.json");
-  const catalog = catalogDocument as { listings: Array<{ id: string; kind: string }>; [key: string]: unknown };
+  const catalog = decodeCatalog(process.env.AIKING_CATALOG_FILE ? JSON.parse(readFileSync(process.env.AIKING_CATALOG_FILE, "utf8")) : catalogDocument);
   let records = existsSync(recordsPath) ? z.array(recordSchema).parse(JSON.parse(readFileSync(recordsPath, "utf8"))) : [];
   const persist = () => { writeFileSync(`${recordsPath}.tmp`, JSON.stringify(records), { mode: 0o600 }); renameSync(`${recordsPath}.tmp`, recordsPath); };
   type Ticket = { botId: string; threadId: string; origin: string; owner: string; expires: number };
@@ -67,6 +70,10 @@ export function createAikingServices(options: ServicesOptions) {
         if (event.type === "session.start") {
           const start = startSchema.parse(event);
           if (ready || start.botId !== ticket.botId || start.threadId !== ticket.threadId || !options.owns(start.botId, start.threadId)) throw new Error("Voice session does not own this conversation.");
+          if (!options.offline) {
+            if (!process.env.AIKING_STT_URL || !process.env.AIKING_TTS_URL) throw new Error("Configure both speech-to-text and text-to-speech adapters before calling.");
+            speechEndpoint(process.env.AIKING_STT_URL); speechEndpoint(process.env.AIKING_TTS_URL);
+          }
           if (start.resumeToken) { const old = resumes.get(start.resumeToken); if (!old || old.expires < Date.now() || old.botId !== start.botId || old.threadId !== start.threadId || old.owner !== ticket.owner) throw new Error("Resume token is not valid for this conversation."); resumes.delete(start.resumeToken); }
           if (active.has(address)) throw new Error("Another call is active on this conversation.");
           if (active.size >= 20 || resumes.size >= 1000) throw new Error("Voice service is at capacity.");
@@ -134,8 +141,13 @@ export function createAikingServices(options: ServicesOptions) {
             const parsed = recordSchema.safeParse(body.record);
             if (!parsed.success || !catalog.listings.some(listing => listing.id === parsed.data.listingId && listing.kind === parsed.data.kind)) { json(res, 400, { error: "Invalid install record." }); return true; }
             const old = records.find(record => record.listingId === parsed.data.listingId);
-            if (old) { old.version = parsed.data.version; old.targets = [...new Set([...old.targets, ...parsed.data.targets])]; old.installedAt = parsed.data.installedAt; }
-            else if (records.length < 2000) records.push(parsed.data);
+            if (old) {
+              const targets = [...new Set([...old.targets, ...parsed.data.targets])];
+              if (targets.length > 100) { json(res, 409, { error: "Install target limit reached." }); return true; }
+              old.targetVersions = { ...Object.fromEntries(old.targets.map(target => [target, old.targetVersions?.[target] ?? old.version])), ...Object.fromEntries(parsed.data.targets.map(target => [target, parsed.data.version])) };
+              old.version = parsed.data.version; old.targets = targets; old.installedAt = parsed.data.installedAt;
+            }
+            else if (records.length < 2000) records.push({ ...parsed.data, targetVersions: Object.fromEntries(parsed.data.targets.map(target => [target, parsed.data.version])) });
             else { json(res, 409, { error: "Install record limit reached." }); return true; }
           } else if (body?.action === "remove" && typeof body.listingId === "string") {
             records = records.map(record => record.listingId === body.listingId && typeof body.target === "string" ? { ...record, targets: record.targets.filter(target => target !== body.target) } : record)
@@ -144,6 +156,13 @@ export function createAikingServices(options: ServicesOptions) {
           persist(); json(res, 200, { records });
         }
         else json(res, 405, { error: "Unsupported method." });
+      } else if (method === "POST" && path === "/api/aiking/marketplace/skill-update") {
+        const body = z.object({ listingId: z.string(), botId: z.string(), threadId: z.string(), baseSha256: z.string().regex(/^[a-f0-9]{64}$/) }).safeParse(await readBody(req));
+        if (!body.success || !options.owns(body.data.botId, body.data.threadId)) { json(res, 403, { error: "This conversation does not belong to that agent." }); return true; }
+        const listing = catalog.listings.find(listing => listing.id === body.data.listingId);
+        if (!listing || listing.kind !== "skill") { json(res, 404, { error: "Unknown catalog skill." }); return true; }
+        const result = updateCatalogSkill(body.data.botId, listing.skillName, listing.text, `aiking-marketplace:${listing.id}@${listing.version}`, body.data.baseSha256);
+        json(res, "error" in result ? 409 : 200, result);
       } else if (method === "POST" && path === "/api/aiking/voice/ticket") {
         const body = ticketBody.safeParse(await readBody(req));
         if (!body.success || !options.owns(body.data.botId, body.data.threadId)) json(res, 403, { error: "This conversation does not belong to that agent." });

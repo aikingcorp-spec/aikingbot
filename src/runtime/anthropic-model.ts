@@ -32,6 +32,7 @@ type ApiMessage = Anthropic.Beta.BetaMessage;
 
 export interface AnthropicModelOptions {
 	apiKey?: string;
+	baseURL?: string;
 	model?: string;
 	maxTokens?: number;
 	effort?: "low" | "medium" | "high" | "xhigh" | "max";
@@ -171,7 +172,8 @@ export class AnthropicModel implements ModelClient {
 		this.client =
 			options.client ??
 			new Anthropic({
-				...(options.apiKey ? { apiKey: options.apiKey } : {}),
+				...(options.apiKey ? { apiKey: options.apiKey, authToken: null } : {}),
+				...(options.baseURL ? { baseURL: options.baseURL } : {}),
 				...(options.maxRetries !== undefined ? { maxRetries: options.maxRetries } : {}),
 				...(options.timeoutMs !== undefined ? { timeout: options.timeoutMs } : {}),
 			});

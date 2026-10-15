@@ -20,8 +20,8 @@ import { APP_LOGOS } from "./app-logos";
 import type { AgentListing, AppListing, CatalogPage, InstallStatus, Listing, ListingKind, SkillListing } from "./marketplace/contract";
 import { catalogSource } from "./marketplace/sources";
 import {
-  agentStatus, appStatus, forgetAgent, installAgent, installMcp, installSkill, loadAppsState, setSkillEnabled, skillHolders,
-  skillStatus, testMcp, uninstallMcp, uninstallSkill, type AgentSkillState, type AppsState,
+  agentStatus, appStatus, removeAgent, installAgent, installMcp, installSkill, loadAppsState, setSkillEnabled, skillHolders,
+  skillStatus, testMcp, uninstallMcp, uninstallSkill, updateAgent, updateSkill, type AgentSkillState, type AppsState,
 } from "./marketplace/installer";
 import { useShowThreads } from "@/lib/thread-preferences";
 
@@ -93,10 +93,16 @@ export function Marketplace() {
     setMarketplaceTab(next);
   };
   const [detailListing, setDetailListing] = useState<Listing | null>(null);
+  const [detailError, setDetailError] = useState("");
   useEffect(() => {
     let alive = true;
-    if (!detail) { setDetailListing(null); return; }
-    void catalogSource().get(detail.id).then((found) => alive && setDetailListing(found && found.kind === detail.kind ? found : null));
+    setDetailError(""); setDetailListing(null);
+    if (!detail) return;
+    void catalogSource().get(detail.id).then((found) => {
+      if (!alive) return;
+      if (found && found.kind === detail.kind) setDetailListing(found);
+      else setDetailError(at("market.missingListing"));
+    }).catch(cause => { if (alive) setDetailError(errorText(cause)); });
     return () => { alive = false; };
   }, [detail]);
 
@@ -143,7 +149,7 @@ export function Marketplace() {
               {detailListing.kind === "skill" && <SkillDetail listing={detailListing} revision={revision} onChanged={bump} />}
               {detailListing.kind === "app" && <AppDetail listing={detailListing} revision={revision} onChanged={bump} onBrowse={() => { setDetail(null); }} />}
             </div>
-          ) : <div className="flex flex-1 items-center justify-center"><Loader2 size={16} className="animate-spin text-ink-secondary" /></div>
+          ) : detailError ? <p role="alert" className="p-6 text-danger">{detailError}</p> : <div className="flex flex-1 items-center justify-center"><Loader2 size={16} className="animate-spin text-ink-secondary" /></div>
         ) : (
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex shrink-0 flex-wrap items-center gap-3 px-6 pb-4 pt-6">
@@ -392,6 +398,7 @@ function AgentDetail({ listing, revision, onChanged, onClose }: { listing: Agent
   const [apps, setApps] = useState<AppListing[]>([]);
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [reviewUpdate, setReviewUpdate] = useState(false);
   const [error, setError] = useState("");
   void revision;
   useEffect(() => {
@@ -416,12 +423,19 @@ function AgentDetail({ listing, revision, onChanged, onClose }: { listing: Agent
       setBusy(false);
     }
   };
-  const remove = () => {
+  const remove = async () => {
     if (!installedBot) return;
-    dispatch({ type: "deleteBot", botId: installedBot.id });
-    forgetAgent(listing.id, installedBot.id);
-    setConfirming(false);
-    onChanged();
+    setBusy(true); setError("");
+    try { await removeAgent(listing.id, installedBot.id); setConfirming(false); onChanged(); }
+    catch (cause) { setError(errorText(cause)); }
+    finally { setBusy(false); }
+  };
+  const update = async () => {
+    if (!installedBot) return;
+    setBusy(true); setError("");
+    try { await updateAgent(listing, installedBot); setReviewUpdate(false); onChanged(); }
+    catch (cause) { setError(errorText(cause)); }
+    finally { setBusy(false); }
   };
   return (
     <div data-listing-detail={listing.id}>
@@ -435,14 +449,16 @@ function AgentDetail({ listing, revision, onChanged, onClose }: { listing: Agent
           {installedBot ? (
             <>
               {confirming
-                ? <OutlineButton tone="danger" onClick={remove}><Trash2 size={14} aria-hidden="true" />{at("market.confirmRemove")}</OutlineButton>
-                : <OutlineButton tone="danger" onClick={() => setConfirming(true)}><Trash2 size={14} aria-hidden="true" />{at("market.removeAgent")}</OutlineButton>}
+                ? <OutlineButton tone="danger" disabled={busy} onClick={() => void remove()}><Trash2 size={14} aria-hidden="true" />{at("market.confirmRemove")}</OutlineButton>
+                : <OutlineButton tone="danger" disabled={busy} onClick={() => setConfirming(true)}><Trash2 size={14} aria-hidden="true" />{at("market.removeAgent")}</OutlineButton>}
+              {status.state === "installed" && status.update && <OutlineButton disabled={busy} onClick={() => reviewUpdate ? void update() : setReviewUpdate(true)}><RefreshCw size={14} aria-hidden="true" />{at(reviewUpdate ? "market.applyUpdate" : "market.update")}</OutlineButton>}
               <PrimaryButton onClick={() => { openBot(dispatch, installedBot, showThreads); onClose(); }}>{at("market.openAgent")}</PrimaryButton>
             </>
           ) : <PrimaryButton busy={busy} onClick={() => void add()}><Plus size={15} aria-hidden="true" />{at("market.addAgent")}</PrimaryButton>}
         </div>
       </div>
       {confirming && <p className="mt-3 text-[12.5px] text-ink-secondary">{at("market.removeAgentHint", { name: installedBot?.name ?? listing.profile.name })}</p>}
+      {reviewUpdate && <p className="mt-3 text-[12.5px] text-ink-secondary">{at("market.updateHint", { name: installedBot?.name ?? listing.profile.name })}</p>}
       {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
       <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
         <div className="flex flex-col gap-6">
@@ -579,6 +595,7 @@ function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; 
                       <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{bot.name}</span>
                       {held ? (
                         <>
+                          <OutlineButton label={`Update ${listing.name} for ${bot.name}`} disabled={busy !== null} onClick={() => void act(bot.id, () => updateSkill(listing, bot.id, bot.threadId))}><RefreshCw size={13} aria-hidden="true" />{at("market.update")}</OutlineButton>
                           <label className="flex items-center gap-2 text-[12px] text-ink-secondary">
                             <input
                               type="checkbox"

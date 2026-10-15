@@ -18,7 +18,7 @@ const PLATFORM_BEFORE = /(Telegram|Slack|Discord|Whop|WhatsApp|Twilio|chat|Chat|
 // names (openmausbot ...) and the About credit (a component) are unchanged.
 const PRODUCT = [[/\bOpenMausBot\b/g, "AIKINGBOT"], [/\bMausBot\b/g, "AIKINGBOT"], [/\bOpenMausMobile\b/g, "AIKINGBOT Mobile"],
   [/\bOpenMaus-managed\b/g, "AIKINGBOT-managed"], [/\bOpenMaus\b/g, "AIKINGBOT"], [/\bcompatible Maus\b/g, "compatible agent"]];
-const PHRASES = [...PRODUCT, [/\bbot-to-bot\b/g, "agent-to-agent"], [/\bBot-to-bot\b/g, "Agent-to-agent"], [/\bbot-derived\b/g, "agent-derived"], [/\bbots\/groups\b/g, "agents/groups"]];
+const PHRASES = [...PRODUCT, [/Settings → API keys/g, "Settings → Connections"], [/Open API keys/g, "Open Connections"], [/\bbot-to-bot\b/g, "agent-to-agent"], [/\bBot-to-bot\b/g, "Agent-to-agent"], [/\bbot-derived\b/g, "agent-derived"], [/\bbots\/groups\b/g, "agents/groups"]];
 const WORD = /\b(an?\s+)?(bots?|Bots?|BOTS?)\b/g;
 
 function agentWord(word) {

@@ -9,6 +9,14 @@ export function patchIntegration(source) {
   };
   replace("src/styles.css", '@import "tailwindcss";', '@import "tailwindcss" source(none);\n@source "./";\n@source "../shared";\n@source "../index.html";');
   replace("server/routes/desktop-viewer.ts", '    server.on("upgrade", (req, socket, head) => {', '    server.on("upgrade", (req, socket, head) => {\n      if (/^\\/(?:api\\/aiking\\/voice\\/sessions|v1\\/voice\\/sessions)(?:\\?|$)/.test(req.url ?? "")) return;');
+  replace("server/config.ts", '  const DEFAULT_FLEET: InstanceConfigMap = {', '  const DEFAULT_FLEET: InstanceConfigMap = {\n    aikingCore: { driver: "aiking-core", displayName: "AIKING Core" },');
+  replace("server/config.ts", '  const PRODUCT_FLEET_ADDITIONS = {', '  const PRODUCT_FLEET_ADDITIONS = {\n    aikingCore: { driver: "aiking-core", displayName: "AIKING Core" },');
+  replace("server/config.ts", '  const compatKeyEnv = routingDefaults?.apiKeyEnv ?? "OPENAI_COMPAT_API_KEY";\n  switch (entry.driver) {', '  const compatKeyEnv = routingDefaults?.apiKeyEnv ?? "OPENAI_COMPAT_API_KEY";\n  switch (entry.driver) {\n    case "aiking-core": return claudeInstanceOwnsRouting(entry.environment);');
+  replace("server/config.ts", '  const environment = new Map<string, string>();', '  const environment = new Map<string, string>();\n  if (driver === "aiking-core" && (cfg.anthropic?.key || process.env.ANTHROPIC_API_KEY)) environment.set("ANTHROPIC_API_KEY", cfg.anthropic?.key || process.env.ANTHROPIC_API_KEY!);\n  if (driver === "aiking-core" && cfg.anthropic?.url) environment.set("ANTHROPIC_BASE_URL", cfg.anthropic.url);');
+  replace("server/contracts.ts", '  text: string;\n  /** The recall block', '  text: string;\n  /** Owner-assigned reviewed library skills; private skills are resolved by botId. */\n  assignedSkills?: string[];\n  /** The recall block');
+  replace("server/index.ts", '        system: prompt.text,', '        system: prompt.text,\n        assignedSkills: (liveBot ?? bot).assignedSkills,');
+  replace("server/index.ts", '        system: roomSystem.text,', '        system: roomSystem.text,\n        assignedSkills: readyBot.assignedSkills,');
+  replace("server/skills.ts", 'export function installSkill(', readFileSync(new URL("./patches/catalog-skill.ts.inc", import.meta.url), "utf8") + 'export function installSkill(');
   replace("scripts/control-omb.ts", "    instances: {\n", '    instances: {\n      ...(parentEnv.AIKING_CORE_TEST === "1" ? { "aiking-core-test": { driver: "aiking-core", displayName: "AIKING Core · Offline test", config: { mode: "offline" } } } : {}),\n');
   replace("server/index.ts", 'import { createServer, type IncomingMessage, type ServerResponse } from "node:http";', 'import { createServer, type IncomingMessage, type ServerResponse } from "node:http";\nimport { createAikingServices } from "./aiking/services.ts";');
   replace("server/index.ts", "const handleRequest = async", `const aikingServices = createAikingServices({

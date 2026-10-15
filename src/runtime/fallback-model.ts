@@ -6,7 +6,7 @@
 // the chain: another model would fail the same way or hide a real bug.
 // Every attempt is recorded so failures are visible, not swallowed.
 
-import { type ModelClient, ModelError, type ModelRequest, type ModelResponse } from "./model.ts";
+import { type CreateOptions, type ModelClient, ModelError, type ModelRequest, type ModelResponse } from "./model.ts";
 
 export interface FallbackAttempt {
 	provider: string;
@@ -41,7 +41,7 @@ export class FallbackModel implements ModelClient {
 		if (chain.length === 0) throw new Error("fallback chain needs at least one model");
 	}
 
-	async create(request: ModelRequest): Promise<ModelResponse> {
+	async create(request: ModelRequest, options: CreateOptions = {}): Promise<ModelResponse> {
 		const attempts: FallbackAttempt[] = [];
 		this.lastAttempts = attempts;
 		const record = (a: FallbackAttempt) => {
@@ -50,8 +50,9 @@ export class FallbackModel implements ModelClient {
 		};
 		let lastError: unknown;
 		for (const [index, { client, model }] of this.chain.entries()) {
+			options.signal?.throwIfAborted();
 			try {
-				const response = await client.create(request);
+				const response = await client.create(request, options);
 				record({ provider: client.provider, model, ok: true });
 				// Earlier failed attempts are model switches the caller must see.
 				const switches = attempts.slice(0, -1).map((a, i) => ({
@@ -61,6 +62,7 @@ export class FallbackModel implements ModelClient {
 				}));
 				return index === 0 ? response : { ...response, fallbacks: [...switches, ...response.fallbacks] };
 			} catch (error) {
+				options.signal?.throwIfAborted();
 				lastError = error;
 				const me = error instanceof ModelError ? error : undefined;
 				record({

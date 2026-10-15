@@ -77,7 +77,7 @@ function capabilityFromMeta(meta: Record<string, unknown> | undefined): ToolCapa
 	return { tasks: strings(c.tasks), inputs: strings(c.inputs), outputs: strings(c.outputs) };
 }
 
-const SERVER_NAME = /^[a-zA-Z0-9-]{1,24}$/;
+const SERVER_NAME = /^[a-zA-Z0-9_-]{1,32}$/;
 const TOOL_NAME = /^[a-zA-Z0-9_-]{1,128}$/;
 const MAX_RESULT_CHARS = 50_000;
 
@@ -118,13 +118,13 @@ export class McpHub implements ToolSource {
 	private readonly servers = new Map<string, ConnectedServer>();
 
 	/** Connects one server over any MCP transport (stdio, HTTP, in-memory). */
-	async connect(name: string, transport: Transport, options: ServerOptions = {}): Promise<string[]> {
+	async connect(name: string, transport: Transport, options: ServerOptions = {}, signal?: AbortSignal): Promise<string[]> {
 		if (!SERVER_NAME.test(name)) throw new Error(`invalid MCP server name "${name}"`);
 		if (this.servers.has(name)) throw new Error(`MCP server "${name}" is already connected`);
 
 		const client = new Client({ name: "aiking-core", version: "0.2.0" });
 		try {
-			await client.connect(transport, { timeout: 30_000 });
+			await client.connect(transport, { timeout: 30_000, signal });
 			const { tools } = await client.listTools();
 			const map = new Map<string, string>();
 			const definitions: GuardedToolDefinition[] = [];
@@ -147,7 +147,7 @@ export class McpHub implements ToolSource {
 		}
 	}
 
-	connectStdio(name: string, config: StdioServerConfig): Promise<string[]> {
+	connectStdio(name: string, config: StdioServerConfig, signal?: AbortSignal): Promise<string[]> {
 		return this.connect(
 			name,
 			new StdioClientTransport({
@@ -158,16 +158,17 @@ export class McpHub implements ToolSource {
 				stderr: "pipe",
 			}),
 			{ toolRisk: config.toolRisk },
+			signal,
 		);
 	}
 
-	connectRemote(name: string, config: RemoteServerConfig): Promise<string[]> {
+	connectRemote(name: string, config: RemoteServerConfig, signal?: AbortSignal): Promise<string[]> {
 		const url = new URL(config.url);
 		if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) throw new Error("MCP requires HTTP(S), with credentials in headers.");
 		const requestInit = { headers: config.headers };
 		return this.connect(name, config.type === "sse"
 			? new SSEClientTransport(url, { requestInit, eventSourceInit: { fetch: (input, init) => fetch(input, { ...init, headers: config.headers }) } })
-			: new StreamableHTTPClientTransport(url, { requestInit }), config);
+			: new StreamableHTTPClientTransport(url, { requestInit }), config, signal);
 	}
 
 	definitions(): GuardedToolDefinition[] {

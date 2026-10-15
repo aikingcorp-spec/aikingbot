@@ -5,18 +5,19 @@ Không chứa secret.
 
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
 
-Base: Stage 2 `5037d24fa0545369a234fee6743788effe484c05`. Stage 3 offline integration gate đạt:
-Core runtime + tool MCP thật đi qua UI, approval/deny, transcript/session persistence; Voice đi qua
-backend local và Core; Marketplace catalog/install records lưu trên server. Model và STT/TTS trong
-E2E là fixture offline, được ghi rõ trong UI/report. Chưa gọi provider thật hoặc API tính phí.
+Base Stage 2: `5037d24fa0545369a234fee6743788effe484c05`; Stage 3 đã push `e7ff535`.
+Stage 4 gate đạt: Marketplace update/migration/uninstall, engine/key integration, Core recovery/compact
+và chuyển lượt room. 950 compatibility test, 87 Core test, 6 recovery test tập trung, 9 Chromium E2E
+đạt; typecheck và UI production build đạt. Model/STT/TTS trong E2E là fixture, được ghi rõ.
+Chưa gọi provider thật, API tính phí, hoặc truy cập VPS/dữ liệu production.
 
-- Core: 84 test pass; desktop integration: 25 pass; Chromium shipping E2E: 6/6.
-- Typecheck Core/shell, server, renderer đạt; UI production build đạt; lint code mới đạt.
-- Bằng chứng: `.aikingbot-foundation/evidence/shipping/`; xem
-  [`docs/stage-3-functional-integration.md`](docs/stage-3-functional-integration.md).
-- Tiếp theo ngay: Stage 4 (Marketplace update/recovery, feature matrix, regression toàn ứng dụng),
-  sau đó Stage 5 (metadata/packaging, Linux artifact và CI Windows, Electron/Chromium tour).
-- Dùng đúng Apache source pin; không truy cập VPS/OpenBot production/dữ liệu thật.
+- [Stage 3](docs/stage-3-functional-integration.md), [Stage 4](docs/stage-4-product-completeness.md),
+  [feature matrix](docs/shipping-feature-matrix.md).
+- Bằng chứng: `.aikingbot-foundation/evidence/shipping/` (JSON + screenshot).
+- Tiếp tục ngay Stage 5: production identity/profile isolation, Linux build, Windows CI,
+  Chromium/Electron tour, security/platform checks, artifacts và checklist triển khai.
+- Mọi sửa đổi lâu dài ở overrides/patches; source sinh ở `.aikingbot-foundation/source/`.
+- Không dùng code OpenBot PolyForm; Apache source pin không đổi.
 
 ## Stage 2 — UI/UX parity (nhánh `stage2/ui-parity`, 2026-10-14)
 

@@ -34,6 +34,15 @@ describe("frameSize", () => {
 });
 
 describe("McpHub", () => {
+	test("supports the desktop host's 32-character server names and underscores", async () => {
+		const name = "a".repeat(31) + "_"; const hub = await hubWithMediaServer(name);
+		expect((await hub.call(`mcp__${name}__frame_size`, { ratio: "1:1", long_edge: 1024 }))?.isError).toBe(false);
+	});
+	test("cancellation aborts a stalled stdio initialization", async () => {
+		const hub = new McpHub(); hubs.push(hub);
+		await expect(hub.connectStdio("stalled", { command: process.execPath, args: ["-e", "setInterval(() => {}, 1000)"] }, AbortSignal.timeout(50))).rejects.toThrow();
+		expect(hub.definitions()).toEqual([]);
+	});
 	test("uses authenticated streamable HTTP without exposing credentials in tool names", async () => {
 		const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: () => randomUUID(), enableJsonResponse: true });
 		const mcp = createMediaToolsServer(); await mcp.connect(transport);

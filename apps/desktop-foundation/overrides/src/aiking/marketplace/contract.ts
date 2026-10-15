@@ -8,7 +8,7 @@
 //   - Catalog documents are untrusted input: decode them with these schemas at
 //     the boundary (local JSON or HTTP), never trust the shape.
 import { z } from "zod";
-import { MASCOT_BODY_IDS } from "../../../shared/mascot-bodies";
+import { MASCOT_BODY_IDS } from "../../../shared/mascot-bodies.ts";
 
 export const CATALOG_SCHEMA_VERSION = 1;
 
@@ -119,7 +119,7 @@ export type InstallStatus =
   | { state: "error"; detail: string };
 
 /** A record of an install, kept so uninstall and update know what the listing created. */
-export type InstallRecord = { listingId: string; version: string; kind: ListingKind; targets: string[]; installedAt: string };
+export type InstallRecord = { listingId: string; version: string; kind: ListingKind; targets: string[]; installedAt: string; targetVersions?: Record<string, string> };
 
 /** Install records: browser storage in stage 2, AIKING Core in stage 3. */
 export interface InstallRecordStore {

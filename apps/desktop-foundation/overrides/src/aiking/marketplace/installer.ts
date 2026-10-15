@@ -31,10 +31,11 @@ export class LocalInstallRecords implements InstallRecordStore {
     const records = this.all();
     const existing = records.find((candidate) => candidate.listingId === record.listingId);
     if (existing) {
+      existing.targetVersions = { ...Object.fromEntries(existing.targets.map(target => [target, existing.targetVersions?.[target] ?? existing.version])), ...Object.fromEntries(record.targets.map(target => [target, record.version])) };
       existing.targets = [...new Set([...existing.targets, ...record.targets])];
       existing.version = record.version;
       existing.installedAt = record.installedAt;
-    } else records.push(record);
+    } else records.push({ ...record, targetVersions: Object.fromEntries(record.targets.map(target => [target, record.version])) });
     this.save(records);
   }
   remove(listingId: string, target?: string) {
@@ -67,7 +68,9 @@ export function agentStatus(listing: AgentListing, bots: Bot[]): InstallStatus {
   const record = installRecords().all().find((candidate) => candidate.listingId === listing.id);
   const targets = record?.targets.filter((id) => live.has(id)) ?? [];
   if (!record || targets.length === 0) return { state: "available" };
-  return { state: "installed", version: record.version, targets, ...(newer(listing.version, record.version) ? { update: listing.version } : {}) };
+  const sorted = targets.toSorted((a, b) => newer(record.targetVersions?.[a] ?? record.version, record.targetVersions?.[b] ?? record.version) ? 1 : -1);
+  const version = record.targetVersions?.[sorted[0]!] ?? record.version;
+  return { state: "installed", version, targets: sorted, ...(newer(listing.version, version) ? { update: listing.version } : {}) };
 }
 
 export function skillTemplate(skill: SkillListing): BotSkillTemplate {
@@ -115,6 +118,18 @@ export async function forgetAgent(listingId: string, botId: string) {
   await installRecords().flush?.();
 }
 
+export async function updateAgent(listing: AgentListing, bot: Bot): Promise<Bot> {
+  for (const skill of await pinnedSkills(listing)) await updateSkill(skill, bot.id, bot.threadId);
+  const result = await api<{ bot: Bot }>(`/api/bots/${encodeURIComponent(bot.id)}`, { method: "PATCH", body: JSON.stringify({ soul: listing.profile.instructions }) });
+  installRecords().add({ listingId: listing.id, version: listing.version, kind: "agent", targets: [bot.id], installedAt: new Date().toISOString() });
+  await installRecords().flush?.(); return result.bot;
+}
+
+export async function removeAgent(listingId: string, botId: string) {
+  await api(`/api/bots/${encodeURIComponent(botId)}`, { method: "DELETE" });
+  await forgetAgent(listingId, botId);
+}
+
 // ── Skills ──────────────────────────────────────────────────────────────
 
 export type AgentSkillState = { botId: string; botName: string; enabled: boolean };
@@ -135,7 +150,23 @@ export async function skillHolders(bots: Bot[]): Promise<Map<string, AgentSkillS
 
 export function skillStatus(listing: SkillListing, holders: Map<string, AgentSkillState[]>): InstallStatus {
   const targets = holders.get(listing.skillName) ?? [];
-  return targets.length ? { state: "installed", version: listing.version, targets: targets.map((target) => target.botId) } : { state: "available" };
+  const record = installRecords().all().find(record => record.listingId === listing.id);
+  const versions = targets.map(target => record?.targetVersions?.[target.botId] ?? record?.version ?? "unknown");
+  const version = versions.reduce((old, next) => newer(old, next) ? next : old, versions[0] ?? "unknown");
+  return targets.length ? { state: "installed", version, targets: targets.map((target) => target.botId), ...(record && newer(listing.version, version) ? { update: listing.version } : {}) } : { state: "available" };
+}
+
+export async function updateSkill(listing: SkillListing, botId: string, threadId: string) {
+  const current = await api<{ skills: Array<{ name: string }> }>(`/api/bots/${encodeURIComponent(botId)}/skills`);
+  if (!current.skills.some(skill => skill.name === listing.skillName)) { await installSkill(listing, botId); return; }
+  const { text } = await api<{ text: string }>(`/api/bots/${encodeURIComponent(botId)}/skills/${encodeURIComponent(listing.skillName)}`);
+  if (text !== listing.text) {
+    const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    const baseSha256 = [...new Uint8Array(hash)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+    await api("/api/aiking/marketplace/skill-update", { method: "POST", body: JSON.stringify({ listingId: listing.id, botId, threadId, baseSha256 }) });
+  }
+  installRecords().add({ listingId: listing.id, version: listing.version, kind: "skill", targets: [botId], installedAt: new Date().toISOString() });
+  await installRecords().flush?.();
 }
 
 export async function installSkill(listing: SkillListing, botId: string) {
