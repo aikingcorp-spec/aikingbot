@@ -86,3 +86,16 @@ copy implementation Voice của OpenBot PolyForm. Không thêm dependency: React
 Audio `apps/desktop-foundation/fixtures/voice/jfk-16k.wav` có từ commit contract: diễn văn nhậm chức JFK 1961,
 tác phẩm chính phủ Hoa Kỳ thuộc public domain; bản ghi lấy từ `openai/whisper/tests/jfk.flac` (repo MIT),
 chuyển PCM16 mono 16 kHz và thêm silence để kiểm VAD.
+
+## Stage 3–5 — Core integration and desktop packaging (2026-10-15)
+
+Core adapter, Voice local services, Marketplace persistence/reviewed updates, shutdown/build/verification
+scripts are AIKING implementation. Changes to original host/Electron files are anchored patches against
+the same Apache pin; no newer OpenBot source or enterprise implementation is imported.
+Original Apache/native notices remain in the package. Core's public licensing decision remains unchanged.
+
+`prepareCore()` includes the original license/NOTICE texts and a version inventory for all 108 installed
+production dependencies in the root npm lock. `standardwebhooks@1.1.1` omits its license from npm;
+`overrides/aiking/third_party/standardwebhooks-LICENSE.txt` comes from
+`standard-webhooks/standard-webhooks@b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/LICENSE`
+(MIT, Copyright 2023 Svix), the package's published gitHead. Its source URL and SHA-256 are recorded beside it.

@@ -10,6 +10,7 @@ config.publish = null;
 config.files.push("!electron/**/*.node-test.*");
 config.protocols = [{ name: "AIKINGBOT links", schemes: ["aikingbot"] }];
 config.extraResources.push({ from: "aiking/NOTICE.txt", to: "licenses/AIKINGBOT-NOTICE.txt" });
+config.extraResources.push({ from: "aiking/licenses", to: "licenses/AIKING-Core-dependencies" });
 config.mac.extendInfo.NSMicrophoneUsageDescription = "AIKINGBOT uses the microphone for voice calls and dictation.";
 config.mac.extendInfo.NSSpeechRecognitionUsageDescription = "AIKINGBOT transcribes speech using your selected speech service.";
 config.mac.extendInfo.NSAccessibilityUsageDescription = "AIKINGBOT uses Accessibility when you let an agent control this Mac.";

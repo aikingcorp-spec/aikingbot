@@ -1,5 +1,8 @@
 # Stage 2 — UI/UX parity với OpenBot
 
+Historical Stage 2 record. Current Core/Marketplace/Voice integration and package verification are in
+[Stage 5 delivery](stage-5-shipping-candidate.md) and the [feature matrix](shipping-feature-matrix.md).
+
 Ngày: 2026-10-14. Nhánh: `stage2/ui-parity` (tách từ `AIKINGBOT`). Tham chiếu: nightly-labs/openbot `82c317a`
 (v0.39.1), chạy bằng Storybook + `OpenBotPlayground`, chỉ để quan sát (PolyForm Noncommercial — không copy code).
 

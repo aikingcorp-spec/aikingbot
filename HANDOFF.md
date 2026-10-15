@@ -5,30 +5,44 @@ Không chứa secret.
 
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
 
-Base Stage 2: `5037d24fa0545369a234fee6743788effe484c05`; Stage 3 đã push `e7ff535`.
-Stage 4 gate đạt: Marketplace update/migration/uninstall, engine/key integration, Core recovery/compact
-và chuyển lượt room. 950 compatibility test, 87 Core test, 6 recovery test tập trung, 9 Chromium E2E
-đạt; typecheck và UI production build đạt. Model/STT/TTS trong E2E là fixture, được ghi rõ.
-Chưa gọi provider thật, API tính phí, hoặc truy cập VPS/dữ liệu production.
+Base Stage 2: `5037d24fa0545369a234fee6743788effe484c05`.
+Stage 3 gate push `e7ff535`; Stage 4 gate push `0da04fb`.
+Stage 5 local candidate đạt; CI Windows/Linux đang chạy, chưa tuyên bố Windows installer đạt.
+Code checkpoint `aed55ccd58b23d83cc919cb3d41e3ead8f47ab1d` (shutdown IPC, hosted defaults,
+startup/promotion fix); thay đổi hiện tại bổ sung license dependency vào installer và tài liệu thực tế.
 
-- [Stage 3](docs/stage-3-functional-integration.md), [Stage 4](docs/stage-4-product-completeness.md),
-  [feature matrix](docs/shipping-feature-matrix.md).
-- Bằng chứng: `.aikingbot-foundation/evidence/shipping/` (JSON + screenshot).
-- Tiếp tục ngay Stage 5: production identity/profile isolation, Linux build, Windows CI,
-  Chromium/Electron tour, security/platform checks, artifacts và checklist triển khai.
-- Mọi sửa đổi lâu dài ở overrides/patches; source sinh ở `.aikingbot-foundation/source/`.
-- Không dùng code OpenBot PolyForm; Apache source pin không đổi.
+- Core thật nối React/Electron: streaming, MCP stdio/HTTP/SSE, skills đã review, approvals/deny/cancel,
+  sessions/recovery/mapping; giữ nguyên các engine mạnh của nền Apache.
+- Voice có Web Audio/JFK fixture → WebSocket local → Core → transcript/audio, interruption/reconnect.
+  Model, STT transcript và TTS tone trong E2E là fixture được ghi rõ. Chưa gọi provider tính phí.
+- Marketplace catalog/backend, install/update/uninstall/status và migration; group hai Core agent và
+  scheduler đã thực thi thật với model offline.
+- Build Linux thực tế: AppImage + DEB, app ID/profile/protocol riêng, updater mặc định tắt, không dùng
+  hosted account/Composio upstream. Package kèm 108 license dependency Core và notices nền/native.
+- Kiểm thử local: compatibility 1000 pass/1 procfs skip; desktop security 124 pass/2 platform skip;
+  patch LF/CRLF 2 pass; Core 87 pass ở Stage 4 (Core không đổi); shipping E2E 11/11, Voice 5/5.
+- UI tour profile sạch dark/light 1440px: Chromium 37/37 mỗi skin; Electron 36 pass/Account skip mỗi skin.
+  Advanced 1000px: 33 pass/4 skip mỗi surface. Không lỗi renderer. Tour cuối chạy lại sau sửa cleanup.
+- Packaged server ngoài checkout: startup, 13 proxies, MCP/CLI, encrypted backup, shutdown/cache restart đạt.
+  Packaged Core → MCP → approval → persisted reply và packaged Electron startup/auth/profile đạt.
+  Strict typecheck Core/shell, renderer/server/launcher và production UI build đạt.
+- Lifecycle đã sửa nguyên nhân Vite SIGTERM thoát sớm: một cleanup promise, IPC parent trên Windows;
+  kiểm tra shutdown đạt code 0, backend dừng, khoảng 300 ms.
 
-Stage 5 checkpoint: đã thêm builder/Windows+Linux CI, icon ICO/ICNS/PNG, app ID/protocol/profile riêng,
-tắt upstream updater/account/Composio mặc định, sửa bundle ESM/`ws` bằng createRequire. Packaged server
-smoke và packaged Core/MCP/approval ngoài checkout đạt. Chromium 11 E2E + Voice 5 bước đạt;
-tour dark/light 37/37 và advanced 1000px 33 pass/4 skip đạt. Electron tour, compatibility cuối và
-installer cuối đang chạy; chưa đánh dấu Stage 5 gate đạt. Desktop security 124 pass/2 platform skip.
-Compatibility cuối đạt 1000 pass/1 procfs skip. Packaged Electron đã qua startup/profile/renderer isolation,
-chặn mutation ngoài desktop và Origin lạ. Sửa startup khi Cloud chưa cấu hình và cleanup chạy đồng thời.
-CI run `38668030797` tìm lỗi CRLF Windows và thiếu pnpm trong Linux collector; đã sửa và thêm test LF/CRLF.
-Chi tiết/lệnh: [Stage 5](docs/stage-5-shipping-candidate.md). Tiếp tục kiểm tra logs, đóng gói bằng chứng,
-cập nhật kết quả thực tế, commit/push gate cuối. Không coi artifact từ lượt build cũ là bản bàn giao cuối.
+CI: run `38668030797` phát hiện CRLF Windows/thiếu pnpm Linux; đã sửa và thêm kiểm thử. Các run tiếp theo
+đang xác minh Windows/Linux. Theo dõi latest HEAD trên GitHub Actions, lấy artifacts và ghi kết quả cuối.
+Không đánh dấu job đang chạy là pass. Nếu không thể build OS trong runner local, giữ trạng thái CI thật.
+
+Bằng chứng/log/screenshot/hash: `.aikingbot-foundation/evidence/shipping/`.
+Installer: `.aikingbot-foundation/source/release/`. Manifest: `build-artifacts.json` trong evidence shipping.
+Tiếp tục: chờ build/license và CI cuối, đóng gói evidence sạch, cập nhật matrix/HANDOFF, commit + push gate.
+Các flow cần credentials/server, ký mã và kiểm thử thiết bị/OS thật nằm trong checklist Stage 5.
+Không chạm production VPS/OpenBot/dữ liệu thật; không dùng code OpenBot PolyForm.
+Mọi sửa lâu dài ở overrides/patches; source sinh `.aikingbot-foundation/source/`.
+
+Tài liệu: [Stage 3](docs/stage-3-functional-integration.md), [Stage 4](docs/stage-4-product-completeness.md),
+[Stage 5/lệnh triển khai/checklist](docs/stage-5-shipping-candidate.md),
+[feature matrix](docs/shipping-feature-matrix.md).
 
 ## Stage 2 — UI/UX parity (nhánh `stage2/ui-parity`, 2026-10-14)
 

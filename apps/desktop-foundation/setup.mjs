@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { patchIntegration } from "./integration-patches.mjs";
@@ -52,6 +52,24 @@ export async function prepareCore() {
   const { AIKING_CATALOG } = await import(`${pathToFileURL(catalogModule).href}?build=${Date.now()}`);
   writeFileSync(join(sourceRoot, "aiking/catalog.json"), JSON.stringify(AIKING_CATALOG));
   await build({ stdin: { contents: 'import { catalogDocumentSchema } from "./src/aiking/marketplace/contract.ts"; export const decodeCatalog = value => catalogDocumentSchema.parse(value);', resolveDir: sourceRoot }, outfile: join(sourceRoot, "aiking/catalog-schema.mjs"), platform: "node", target: "node24", format: "esm", bundle: true });
+  const packages = JSON.parse(readFileSync(join(repositoryRoot, "package-lock.json"))).packages;
+  const licenseRoot = join(sourceRoot, "aiking/licenses"); mkdirSync(licenseRoot, { recursive: true });
+  const inventory = [];
+  for (const [path, entry] of Object.entries(packages)) {
+    if (!path.startsWith("node_modules/") || entry.dev) continue;
+    let directory = join(repositoryRoot, path); if (!existsSync(directory)) continue;
+    const metadata = JSON.parse(readFileSync(join(directory, "package.json")));
+    let files = readdirSync(directory, { withFileTypes: true }).filter(file => file.isFile() && /^(?:licen[cs]e|copying|notice)(?:[.-]|$)/i.test(file.name)).map(file => file.name);
+    if (!files.length && metadata.name === "standardwebhooks" && metadata.version === "1.1.1") {
+      directory = join(foundationRoot, "overrides/aiking/third_party");
+      files = ["standardwebhooks-LICENSE.txt", "standardwebhooks-NOTICE.txt"];
+    }
+    if (!files.length) throw new Error(`Missing distribution license for ${metadata.name}; inspect before packaging.`);
+    const destination = join(licenseRoot, `${metadata.name.replaceAll("/", "__")}@${metadata.version}`); mkdirSync(destination, { recursive: true });
+    for (const file of files) cpSync(join(directory, file), join(destination, file));
+    inventory.push({ name: metadata.name, version: metadata.version, license: metadata.license, files });
+  }
+  writeFileSync(join(licenseRoot, "inventory.json"), JSON.stringify(inventory, null, 2));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

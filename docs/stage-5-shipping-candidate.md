@@ -1,8 +1,8 @@
 # Stage 5 — AIKINGBOT 0.3.0-rc.1
 
 Branch: `stage3/shipping-candidate`. Stage 3: `e7ff535`; Stage 4: `0da04fb`.
-Updated 2026-10-15. Local Linux packaging and final regression are in progress;
-the Windows/Linux workflow will run on the shipping branch push. CI results are not yet claimed.
+Updated 2026-10-15. Local Linux candidate verification passes. The latest Windows/Linux workflow is running;
+unfinished CI jobs and untested target OS installation are not claimed as passed.
 
 ## Product and package
 
@@ -10,6 +10,9 @@ The release retains the pinned Apache-2.0 OSS engines and adds the Core adapter,
 and authenticated local Voice backend. Installed app ID is `com.aikingcorp.aikingbot`, protocol `aikingbot`,
 data root `~/.aikingbot`, executable `aikingbot` on Linux. There is no automatic adoption of OpenMausBot,
 OpenBot or OpenGrok data. Development profiles remain under `.aikingbot-foundation/profiles/`.
+The package includes license texts and a version inventory for 108 Core production dependencies, in addition
+to the foundation/native notices. AIKING Core's existing reserved rights are retained; no new public source
+license is granted. The missing npm `standardwebhooks` license is supplied from the exact published gitHead.
 
 AppImage and Debian installers are generated on Linux x64; Windows NSIS and ZIP builds use a Windows x64
 runner because the original native CUA preparation explicitly requires that OS. Mac configuration/icons
@@ -72,6 +75,14 @@ Final reports live under `.aikingbot-foundation/evidence/shipping/`:
 | `desktop-security.xml` | IPC, file containment, permissions, server auth, data leases and bounded recovery |
 | `packaged-core.json` | Packaged Core → actual stdio MCP → approval → persisted reply, copied outside the checkout |
 | `packaged-desktop.json` | Actual packaged Electron, renderer isolation, mutation/Origin protection and fresh data |
+| `lifecycle.json` | Owned backend/Electron shutdown exits zero; no surviving backend |
+
+Local totals: 1,000 compatibility tests pass, one procfs-only test skipped; desktop security 124 pass/two
+platform skips; pinned patch application 2/2 (LF/CRLF); Core 87 pass (Stage 4, unchanged Core code).
+Shipping E2E 11/11 and Voice 5/5 pass. Tours: Chromium dark/light 37 each, advanced 33 + four valid skips;
+Electron dark/light 36 + one valid Account skip each, advanced 33 + four valid skips. All renderer-error
+lists are empty. Renderer/server/Core/shell checks and production UI build pass; the launcher also has a
+separate strict Node typecheck. The original large UI chunk warning remains a performance optimization item.
 
 Compatibility adjustments are recorded separately and restored after each run. They adapt branding,
 profile/protocol and Core key reload expectations; use a standard build umask; skip a procfs-only fixture
@@ -85,6 +96,10 @@ the Chromium sandbox and exact AppArmor policy; they do not disable system sandb
 retain the host's local-owner trust model; packaged mutations require its desktop capability. Remote
 devices require pairing, Origin checks and scopes. A shared server must use the service-trust deployment
 documented in the retained `docs/verification/shared-workspace-trust.md`, with OS-level user isolation.
+The owned development/verification launcher removes only Vite's newly registered process-exit handlers,
+then shuts down its backend, Electron and preview through one shared cleanup promise. Windows uses private
+parent IPC. This avoids Vite exiting early and abandoning native children. The upstream launch promotion
+is disabled; unconfigured hosted services do not restore grants or fetch offers.
 
 Offline models, STT transcript and TTS tone are labeled fixtures. No live provider/OAuth credentials,
 paid API calls, physical microphone quality, real VPS/VM/phone provisioning or production data were used.
