@@ -22,7 +22,7 @@ await api(`/api/bots/${bot.id}`, { mcpServers: [mcpName] }, "PATCH");
 await api("/api/aiking/marketplace/records", { action: "remove", listingId: "media-producer" });
 const browser = await chromium.launch({ executablePath: process.env.AIKING_CHROME || "/usr/bin/chromium", headless: true, args: ["--use-fake-device-for-media-stream", `--use-file-for-fake-audio-capture=${join(foundationRoot, "fixtures/voice/jfk-16k.wav")}`] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ["microphone"] });
-await context.addInitScript(() => localStorage.setItem("omb-advanced-mode", "0"));
+await context.addInitScript(() => { localStorage.setItem("omb-advanced-mode", "0"); localStorage.setItem("omb-email-gate", "skipped"); });
 const page = await context.newPage(); const errors = []; page.on("pageerror", error => errors.push(error.message));
 const results = []; let ok = false; let failure; let installedAgent;
 async function step(name, operation) { await operation(); await page.screenshot({ path: join(out, `${name}.png`) }); results.push({ name, ok: true }); console.log(`ok ${name}`); }

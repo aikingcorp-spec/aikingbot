@@ -53,6 +53,7 @@ const browser = await chromium.launch({ executablePath: process.env.AIKING_CHROM
   `--use-file-for-fake-audio-capture=${join(foundationRoot, "fixtures/voice/jfk-16k.wav")}`,
 ] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ["microphone"] });
+await context.addInitScript(() => { try { localStorage.setItem("omb-email-gate", "skipped"); } catch {} });
 await context.addInitScript(() => {
   const metrics = { contexts: [], tracks: [], playbackRates: [], sinks: [] };
   window.voiceEvidence = metrics;

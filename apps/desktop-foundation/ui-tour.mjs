@@ -142,8 +142,18 @@ async function openLook() {
 
 const composer = page.getByRole("textbox", { name: /^Message / }).first();
 await composer.waitFor({ timeout: 120_000 });
+// A clean profile opens the first-run welcome: it offers this computer or the AIKINGBOT workspace, and can be skipped.
+const welcome = page.getByRole("dialog", { name: "Welcome tour" });
+if (await welcome.waitFor({ timeout: 15_000 }).then(() => true, () => false)) {
+  await step("first-run-welcome", async () => {
+    await welcome.getByText("Welcome to AIKINGBOT").waitFor();
+    if (cdp) await welcome.getByRole("button", { name: "Have an AIKINGBOT account? Sign in to your workspace" }).waitFor();
+  });
+  await welcome.getByRole("button", { name: "Skip tour", exact: true }).click();
+  await welcome.waitFor({ state: "detached" });
+}
 const skip = button("Skip tour");
-if (await skip.isVisible().catch(() => false)) await skip.click();
+for (let i = 0; i < 3 && await skip.isVisible().catch(() => false); i++) { await skip.click(); await page.waitForTimeout(300); }
 await closeOverlays();
 
 await step("shell-chat", async () => {
