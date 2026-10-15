@@ -28,6 +28,10 @@ const expectations = [
     ["server/config.test.ts", 'expect(reloaded({ anthropic: { key: "a" } }, saved)).toEqual(["claude"]);', 'expect(reloaded({ anthropic: { key: "a" } }, saved)).toEqual(["aikingCore", "claude"]);'],
     ["server/remote-sessions.test.ts", '".openmausbot"', '".aikingbot"'],
     ["server/remote-sessions.test.ts", 'toBe("openmausbot:")', 'toBe("aikingbot:")'],
+    ["server/email-signin.test.ts", '".openmausbot"', '".aikingbot"'],
+    ["server/people-invite.test.ts", '".openmausbot"', '".aikingbot"'],
+    ["server/email-signin.test.ts", "/not on this server's sign-in list/", "/not a member of this workspace yet/"],
+    ["server/people-invite.test.ts", "/not on this server's sign-in list/", "/not a member of this workspace yet/"],
     ["scripts/linux-after-install.test.mjs", 'it("reads numeric procfs sysctls without byte-at-a-time shell reads"', 'it.skipIf(!fs.existsSync("/proc/sys/kernel/core_uses_pid"))("reads numeric procfs sysctls without byte-at-a-time shell reads"'],
   ] : []),
 ];
@@ -48,6 +52,7 @@ const tests = [
     "src/lib/create-configured-bot.test.ts", "server/redact.test.ts", "server/request-auth.test.ts",
     "electron/aiking-updater.test.mjs", "electron/secure-credentials.test.mjs", "electron/secure-credential-state.test.mjs",
     "scripts/linux-after-install.test.mjs",
+    "server/aiking/account-api.test.ts", "server/account-signin.test.ts", "server/email-signin.test.ts", "server/people-invite.test.ts",
   ] : []),
 ];
 const originals = new Map();

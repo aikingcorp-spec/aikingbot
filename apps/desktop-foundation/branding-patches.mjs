@@ -34,14 +34,24 @@ const KEEP = new Set([
 ]);
 const TEST = /(?:\.test\.|\.spec\.|node-test|\/test\/|__tests__|\/fixtures?\/|\/testing\/)/;
 
-function rebrand(text) {
+export function rebrand(text) {
   let next = text;
   for (const [from, to] of DOC_LINKS) next = next.replaceAll(from, to);
-  // A URL path segment keeps the upstream spelling; only prose and identities change.
+  // A URL path segment and a wire identifier (`X-OpenMausBot-Desktop-Owner`, which the server matches
+  // as `x-openmausbot-desktop-owner`) keep the upstream spelling; only prose and identities change.
   return NAMES.reduce((value, [pattern, replacement]) => value.replace(pattern, (match, ...rest) => {
     const offset = rest.at(-2); const before = value.slice(Math.max(0, offset - 1), offset);
-    return before === "/" ? match : match.replace(pattern, replacement);
+    return before === "/" || before === "-" ? match : match.replace(pattern, replacement);
   }), next);
+}
+
+/** Electron's owner capability header must be the one the server checks, or every packaged mutation is 403. */
+export function assertDesktopOwnerHeader(source) {
+  const electron = /DESKTOP_MUTATION_HEADER = "([^"]+)"/.exec(readFileSync(join(source, "electron/desktop-server-auth.cjs"), "utf8"))?.[1];
+  const server = /DESKTOP_OWNER_HEADER = "([^"]+)"/.exec(readFileSync(join(source, "server/request-auth.ts"), "utf8"))?.[1];
+  if (!electron || !server || electron.toLowerCase() !== server.toLowerCase()) {
+    throw new Error(`Desktop owner header mismatch: Electron sends ${electron}, server checks ${server}`);
+  }
 }
 
 export function patchBranding(source) {
@@ -119,5 +129,6 @@ export function patchBranding(source) {
   edit("src/components/RemoteComputerSection.tsx", text => text.replace('placeholder="https://…openmausbot.com or computer.tailnet.ts.net"', 'placeholder="https://computer.example.com or computer.tailnet.ts.net"'));
   // The widget gallery must not fetch upstream marketing images.
   edit("shared/widget-samples.ts", text => text.replace('src: "https://mausbot.com/og.png", alt: "MausBot"', 'src: "/app-icon.svg", alt: "AIKINGBOT"'));
+  assertDesktopOwnerHeader(source);
   return changes;
 }

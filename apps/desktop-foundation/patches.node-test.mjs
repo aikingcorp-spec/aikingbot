@@ -32,3 +32,9 @@ for (const ending of ["LF", "CRLF"]) it(`applies all pinned integration/shipping
     assert.match(readFileSync(join(target, "scripts/bundle-server.mjs"), "utf8"), /aikingPackageRequire/);
   } finally { rmSync(target, { recursive: true, force: true }); }
 });
+it("keeps wire identifiers while rebranding prose", async () => {
+  const { rebrand } = await import("./branding-patches.mjs");
+  assert.equal(rebrand('const H = "X-OpenMausBot-Desktop-Owner";'), 'const H = "X-OpenMausBot-Desktop-Owner";');
+  assert.equal(rebrand('"Welcome to OpenMausBot"'), '"Welcome to AIKINGBOT"');
+  assert.equal(rebrand('"user-agent": "OpenMausBot-skills"'), '"user-agent": "AIKINGBOT-skills"');
+});

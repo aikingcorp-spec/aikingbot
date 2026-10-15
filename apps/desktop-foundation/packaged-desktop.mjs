@@ -54,6 +54,23 @@ try {
     return { status: response.status, result: await response.text() };
   });
   assert.equal(ownerCheck.status, 404, "The real desktop renderer was denied mutation access: " + ownerCheck.result.slice(0, 300));
+  // The three operations reported as 403 from the Windows EXE, through the same renderer requests the UI makes.
+  const operations = await page.evaluate(async () => {
+    const send = async (path, body) => {
+      const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+      return { status: response.status, body: await response.json().catch(() => null) };
+    };
+    const catalog = await (await fetch("/api/aiking/v1/catalog")).json();
+    const skill = catalog.listings.find(listing => listing.kind === "skill");
+    const record = { listingId: skill.id, version: skill.version, kind: "skill", targets: ["aiking-packaged-smoke"], installedAt: new Date().toISOString() };
+    const install = await send("/api/aiking/marketplace/records", { action: "add", record });
+    const uninstall = await send("/api/aiking/marketplace/records", { action: "remove", listingId: skill.id, target: "aiking-packaged-smoke" });
+    const pairing = await send("/api/auth/pairing", { scopes: ["client"] });
+    return { install: install.status, installed: install.body?.records?.some(r => r.listingId === skill.id) === true, uninstall: uninstall.status, pairing: pairing.status, code: typeof pairing.body?.code === "string" };
+  });
+  assert.deepEqual(operations, { install: 200, installed: true, uninstall: 200, pairing: 200, code: true }, "Marketplace install/remove and Remote access pairing from the packaged renderer");
+  const forged = await fetch(new URL("/api/auth/pairing", page.url()), { method: "POST", headers: { "content-type": "application/json", "x-openmausbot-desktop-owner": "A".repeat(43) }, body: JSON.stringify({ scopes: ["client"] }) });
+  assert.equal(forged.status, 403, "A forged desktop owner header must stay denied.");
   if (process.platform === "win32") {
     const runtimeDir = join(sourceRoot, "release", "win-unpacked", "resources", "provider-runtime", "bin");
     assert.ok(existsSync(join(runtimeDir, "node.exe")), "Packaged Windows provider runtime lacks node.exe");
@@ -74,6 +91,6 @@ finally {
   }
   const log = join(scratch, "electron/logs/server.log"); if (existsSync(log)) output += readFileSync(log, "utf8");
   writeFileSync(join(out, "packaged-desktop.log"), output);
-  writeFileSync(join(out, "packaged-desktop.json"), JSON.stringify({ ok, failure, at: new Date().toISOString(), user: process.getuid?.(), sandboxDisabled: false, rendererErrors: errors, realProviderVerified: false }, null, 2));
+  writeFileSync(join(out, "packaged-desktop.json"), JSON.stringify({ ok, failure, at: new Date().toISOString(), user: process.getuid?.(), executable: process.env.AIKING_PACKAGE_EXECUTABLE ? "custom" : "release", rendererErrors: errors, realProviderVerified: false }, null, 2));
   rmSync(scratch, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 }
