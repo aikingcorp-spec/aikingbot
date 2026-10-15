@@ -52,6 +52,11 @@ const tests = [
     "src/lib/create-configured-bot.test.ts", "server/redact.test.ts", "server/request-auth.test.ts",
     "electron/aiking-updater.test.mjs", "electron/secure-credentials.test.mjs", "electron/secure-credential-state.test.mjs",
     "scripts/linux-after-install.test.mjs",
+    "src/aiking/provider-onboarding.test.ts",
+    "server/drivers/antigravity.test.ts", "server/drivers/antigravity-account.test.ts",
+    "server/drivers/antigravity-runtime.test.ts", "server/drivers/antigravity-lifecycle.test.ts",
+    "server/drivers/codex-device-auth.test.ts", "server/drivers/claude-login-auth.test.ts",
+    "server/drivers/acp/grok-device-auth.test.ts", "server/drivers/acp/gemini-auth.test.ts",
     "server/aiking/account-api.test.ts", "server/aiking/binary-engines.test.ts", "server/account-signin.test.ts", "server/email-signin.test.ts", "server/people-invite.test.ts",
   ] : []),
 ];
