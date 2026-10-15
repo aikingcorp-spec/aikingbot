@@ -444,8 +444,9 @@ await step("voice-call-screen", async () => {
   const call = page.getByRole("dialog", { name: /^Voice call with / });
   await call.getByRole("combobox", { name: "Microphone", exact: true }).waitFor();
   await call.getByRole("combobox", { name: "Speaker", exact: true }).waitFor();
-  assert.equal(await call.getByRole("combobox", { name: "Voice service" }).inputValue(), "loopback");
-  await call.getByText("Existing provider call options", { exact: true }).click();
+  await call.getByRole("list", { name: "Voice call readiness" }).waitFor();
+  await call.getByRole("button", { name: "Test microphone and speaker", exact: true }).waitFor();
+  await call.getByText("Other call modes: native realtime (OpenAI Live) and on-device speech", { exact: true }).click();
   assert.ok(await call.getByRole("button").count() >= 2);
 });
 await button("Close voice call").click();

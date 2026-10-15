@@ -162,3 +162,28 @@ describe("transports", () => {
     expect(events.onOpen).not.toHaveBeenCalled(); expect(vi.getTimerCount()).toBe(0);
   });
 });
+
+describe("voice call readiness", async () => {
+  const { engineCheck, microphoneCheck, platformCheck, speechCheck } = await import("./VoiceCall");
+  const bot = { id: "b", name: "Basil", threadId: "t", modelSelection: { instanceId: "claude", model: "sonnet" } } as never;
+  const noop = () => {};
+  it("names the missing engine sign-in and offers to connect it", () => {
+    expect(engineCheck(bot, null, noop).ok).toBeNull();
+    expect(engineCheck(bot, [], noop)).toMatchObject({ ok: false, fix: { label: "Connect an engine" } });
+    const signedOut = [{ instanceId: "claude", displayName: "Claude Code", snapshot: { state: "available", authenticated: false } }] as never;
+    expect(engineCheck(bot, signedOut, noop)).toMatchObject({ ok: false, fix: { label: "Connect Claude Code" } });
+    const ready = [{ instanceId: "claude", displayName: "Claude Code", snapshot: { state: "available", authenticated: true } }] as never;
+    expect(engineCheck(bot, ready, noop).ok).toBe(true);
+  });
+  it("never shows a scripted or missing speech service as a real call", () => {
+    expect(speechCheck({ voice: { mode: "configured-provider", configured: false } }, noop)).toMatchObject({ ok: false, fix: { label: "Open Connections" } });
+    expect(speechCheck({ voice: { mode: "offline-scripted", configured: true } }, noop).detail).toMatch(/no real speech recognition/);
+    expect(speechCheck({ voice: { mode: "configured-provider", configured: true, stt: "openai", tts: "openai" } }, noop).detail).toMatch(/billed by OpenAI/);
+    expect(speechCheck("forbidden", noop).ok).toBe(false);
+  });
+  it("explains microphone and device requirements", () => {
+    expect(microphoneCheck("denied", noop).detail).toMatch(/Privacy & security → Microphone/);
+    expect(microphoneCheck("prompt", noop).fix?.label).toBe("Allow microphone");
+    expect(platformCheck(false, true).ok).toBe(false);
+  });
+});

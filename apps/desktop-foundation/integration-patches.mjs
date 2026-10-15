@@ -22,6 +22,7 @@ export function patchIntegration(source) {
   replace("server/index.ts", "const handleRequest = async", `const aikingServices = createAikingServices({
   dataDir: DATA_DIR,
   isOwnerLive: owner => owner === "loopback" || sessions.isLive(owner),
+  speechKeys: () => ({ openai: cfg.openai?.key }),
   offline: Object.values(cfg.instances ?? {}).some(instance => instance.driver === "aiking-core" && (instance.config as { mode?: string })?.mode === "offline"),
   owns: (botId, threadId) => Boolean(store.bot(botId) && store.taskByThread(botId, threadId)),
   reply: async (botId, threadId, text, signal) => {

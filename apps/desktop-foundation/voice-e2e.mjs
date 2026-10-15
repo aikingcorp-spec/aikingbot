@@ -109,8 +109,13 @@ try {
     assert.equal(await dialog().getByLabel("Microphone", { exact: true }).inputValue(), selected);
     assert.equal(await dialog().getByLabel("Speaker", { exact: true }).inputValue(), selectedSpeaker);
   });
+  await step("voice-readiness", async () => {
+    const checks = dialog().getByRole("list", { name: "Voice call readiness" });
+    for (const id of ["platform", "engine", "speech"]) await checks.locator(`[data-voice-check="${id}"][data-voice-check-ok="true"]`).waitFor({ timeout: 30000 });
+    assert.equal(await page.getByRole("button", { name: "Start voice call", exact: true }).isEnabled(), true);
+  });
   await step("voice-loopback-audio", async () => {
-    await page.getByRole("button", { name: /^(Start voice call|Call again)$/ }).click();
+    await page.getByRole("button", { name: "Test microphone and speaker", exact: true }).click();
     await page.locator('[data-voice-phase="agent-speaking"]').waitFor({ timeout: 45000 });
     await page.getByRole("log", { name: "Voice transcript" }).getByText(/Offline microphone test/).waitFor();
     assert.ok(Number(await page.locator("[data-voice-frames]").getAttribute("data-voice-frames")) > 10);
@@ -133,9 +138,10 @@ try {
     await closedAudio();
   });
   await step("voice-websocket-reconnect", async () => {
+    await dialog().getByText("Advanced voice options", { exact: true }).click();
     await dialog().getByLabel("Voice service", { exact: true }).selectOption("websocket");
     await dialog().getByLabel("Voice server URL", { exact: true }).fill(endpoint);
-    await page.getByRole("button", { name: "Call again", exact: true }).click();
+    await page.getByRole("button", { name: /^(Start voice call|Call again)$/ }).click();
     await page.waitForFunction(() => Number(document.querySelector("[data-voice-reconnects]")?.getAttribute("data-voice-reconnects")) >= 1, null, { timeout: 45000 });
     await page.locator('[data-voice-phase="agent-speaking"]').waitFor({ timeout: 45000 });
     assert.ok(wire.starts.length >= 2); assert.equal(wire.starts[1].resumeToken, "e2e-resume");
@@ -152,10 +158,9 @@ try {
     const { targetInfo } = await cdp.send("Target.getTargetInfo");
     await cdp.send("Browser.setPermission", { permission: { name: "microphone" }, setting: "denied", origin: new URL(info.uiUrl).origin, browserContextId: targetInfo.browserContextId });
     await openCall();
-    await dialog().getByLabel("Voice service", { exact: true }).selectOption("loopback");
     await dialog().getByLabel("Microphone", { exact: true }).selectOption("");
     await dialog().getByLabel("Speaker", { exact: true }).selectOption("");
-    await page.getByRole("button", { name: /^(Start voice call|Call again)$/ }).click();
+    await page.getByRole("button", { name: "Test microphone and speaker", exact: true }).click();
     await page.locator('[data-voice-error="permission-denied"]').waitFor();
     await closedAudio();
   });

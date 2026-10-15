@@ -16,7 +16,21 @@ const startSchema = z.object({ type: z.literal("session.start"), botId: z.string
 const versionSchema = z.string().regex(/^\d+\.\d+\.\d+$/).max(32);
 const recordSchema = z.object({ listingId: z.string().regex(/^[a-z0-9-]{1,100}$/), version: versionSchema, kind: z.enum(["agent", "app", "skill"]), targets: z.array(z.string().max(200)).max(100), installedAt: z.string().datetime(), targetVersions: z.record(z.string().max(200), versionSchema).optional() });
 const ticketBody = z.object({ botId: z.string().min(1).max(200), threadId: z.string().min(1).max(200) });
-type ServicesOptions = { dataDir: string; offline: boolean; isOwnerLive(owner: string): boolean; owns(bot: string, thread: string): boolean; reply(bot: string, thread: string, text: string, signal: AbortSignal): Promise<string> };
+type ServicesOptions = { dataDir: string; offline: boolean; isOwnerLive(owner: string): boolean; owns(bot: string, thread: string): boolean; reply(bot: string, thread: string, text: string, signal: AbortSignal): Promise<string>; speechKeys?: () => { openai?: string } };
+type SpeechAdapter = { url: string; token?: string; model: string; provider: string };
+/** Speech for calls: the operator's adapters (AIKING_STT_URL/AIKING_TTS_URL) win; otherwise the workspace's own OpenAI key in Connections. */
+export type SpeechConfig = { stt: SpeechAdapter | null; tts: (SpeechAdapter & { voice: string }) | null };
+
+export function speechConfig(env: NodeJS.ProcessEnv, keys: { openai?: string } = {}): SpeechConfig {
+  const openai = keys.openai?.trim();
+  const stt = env.AIKING_STT_URL
+    ? { url: env.AIKING_STT_URL, token: env.AIKING_STT_TOKEN, model: env.AIKING_STT_MODEL || "whisper-1", provider: "operator" }
+    : openai ? { url: "https://api.openai.com/v1/audio/transcriptions", token: openai, model: env.AIKING_STT_MODEL || "whisper-1", provider: "openai" } : null;
+  const tts = env.AIKING_TTS_URL
+    ? { url: env.AIKING_TTS_URL, token: env.AIKING_TTS_TOKEN, model: env.AIKING_TTS_MODEL || "tts-1", voice: env.AIKING_TTS_VOICE || "alloy", provider: "operator" }
+    : openai ? { url: "https://api.openai.com/v1/audio/speech", token: openai, model: env.AIKING_TTS_MODEL || "gpt-4o-mini-tts", voice: env.AIKING_TTS_VOICE || "alloy", provider: "openai" } : null;
+  return { stt, tts };
+}
 
 function speechEndpoint(value: string) {
   const url = new URL(value);
@@ -71,8 +85,9 @@ export function createAikingServices(options: ServicesOptions) {
           const start = startSchema.parse(event);
           if (ready || start.botId !== ticket.botId || start.threadId !== ticket.threadId || !options.owns(start.botId, start.threadId)) throw new Error("Voice session does not own this conversation.");
           if (!options.offline) {
-            if (!process.env.AIKING_STT_URL || !process.env.AIKING_TTS_URL) throw new Error("Configure both speech-to-text and text-to-speech adapters before calling.");
-            speechEndpoint(process.env.AIKING_STT_URL); speechEndpoint(process.env.AIKING_TTS_URL);
+            const speech = speechConfig(process.env, options.speechKeys?.());
+            if (!speech.stt || !speech.tts) throw new Error("Voice calls need a speech service: add an OpenAI API key in Settings → Connections, or ask the workspace operator to configure speech adapters.");
+            speechEndpoint(speech.stt.url); speechEndpoint(speech.tts.url);
           }
           if (start.resumeToken) { const old = resumes.get(start.resumeToken); if (!old || old.expires < Date.now() || old.botId !== start.botId || old.threadId !== start.threadId || old.owner !== ticket.owner) throw new Error("Resume token is not valid for this conversation."); resumes.delete(start.resumeToken); }
           if (active.has(address)) throw new Error("Another call is active on this conversation.");
@@ -92,9 +107,9 @@ export function createAikingServices(options: ServicesOptions) {
               let text: string;
               if (options.offline) text = "Offline microphone fixture: plan the AIKING voice test.";
               else {
-                const endpoint = process.env.AIKING_STT_URL; if (!endpoint) throw new Error("Configure AIKING_STT_URL for the server speech-to-text adapter.");
-                const form = new FormData(); form.set("file", new Blob([wav(pcm)]), "speech.wav"); form.set("model", process.env.AIKING_STT_MODEL || "whisper-1");
-                const response = await fetch(speechEndpoint(endpoint), { method: "POST", body: form, signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: process.env.AIKING_STT_TOKEN ? { authorization: `Bearer ${process.env.AIKING_STT_TOKEN}` } : {} });
+                const stt = speechConfig(process.env, options.speechKeys?.()).stt; if (!stt) throw new Error("The speech-to-text service is no longer configured.");
+                const form = new FormData(); form.set("file", new Blob([wav(pcm)]), "speech.wav"); form.set("model", stt.model);
+                const response = await fetch(speechEndpoint(stt.url), { method: "POST", body: form, signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: stt.token ? { authorization: `Bearer ${stt.token}` } : {} });
                 if (!response.ok) throw new Error(`Speech-to-text service returned ${response.status}.`);
                 text = String((JSON.parse((await limitedBody(response, 1024 * 1024)).toString()) as { text?: unknown }).text ?? "").trim(); if (!text || text.length > 20000) throw new Error("No valid speech text was recognized.");
               }
@@ -106,8 +121,8 @@ export function createAikingServices(options: ServicesOptions) {
               let audio: Buffer; let sampleRate = 24000;
               if (options.offline) { audio = Buffer.alloc(24000 * 2); for (let i = 0; i < 24000; i++) audio.writeInt16LE(Math.round(Math.sin(i * 2 * Math.PI * 440 / 24000) * 1600), i * 2); }
               else {
-                const endpoint = process.env.AIKING_TTS_URL; if (!endpoint) throw new Error("Configure AIKING_TTS_URL for the server text-to-speech adapter.");
-                const response = await fetch(speechEndpoint(endpoint), { method: "POST", signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: { "content-type": "application/json", ...(process.env.AIKING_TTS_TOKEN ? { authorization: `Bearer ${process.env.AIKING_TTS_TOKEN}` } : {}) }, body: JSON.stringify({ text: reply, input: reply, voice: process.env.AIKING_TTS_VOICE || "alloy", model: process.env.AIKING_TTS_MODEL || "tts-1", response_format: "pcm" }) });
+                const tts = speechConfig(process.env, options.speechKeys?.()).tts; if (!tts) throw new Error("The text-to-speech service is no longer configured.");
+                const response = await fetch(speechEndpoint(tts.url), { method: "POST", signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]), headers: { "content-type": "application/json", ...(tts.token ? { authorization: `Bearer ${tts.token}` } : {}) }, body: JSON.stringify(tts.provider === "openai" ? { input: reply, voice: tts.voice, model: tts.model, response_format: "pcm" } : { text: reply, input: reply, voice: tts.voice, model: tts.model, response_format: "pcm" }) });
                 if (!response.ok) throw new Error(`Text-to-speech service returned ${response.status}.`);
                 sampleRate = Number(response.headers.get("x-sample-rate") || 24000);
                 audio = await limitedBody(response, 16 * 1024 * 1024); if (audio.length % 2 || !Number.isInteger(sampleRate) || sampleRate < 8000 || sampleRate > 96000) throw new Error("Invalid PCM16 speech response.");
@@ -130,7 +145,7 @@ export function createAikingServices(options: ServicesOptions) {
       if (!path.startsWith("/api/aiking/")) return false;
       if (method !== "GET" && !/^application\/json\b/i.test(String(req.headers["content-type"] ?? ""))) { json(res, 415, { error: "Send JSON with application/json content type." }); return true; }
       if (!auth.scopes.includes("admin")) { json(res, 403, { error: "AIKING settings require workspace owner access." }); return true; }
-      if (method === "GET" && path === "/api/aiking/status") json(res, 200, { coreIntegrated: true, voice: { mode: options.offline ? "offline-scripted" : "configured-provider", configured: options.offline || Boolean(process.env.AIKING_STT_URL && process.env.AIKING_TTS_URL) }, marketplace: "server-persistent", schema: 1 });
+      if (method === "GET" && path === "/api/aiking/status") { const speech = speechConfig(process.env, options.speechKeys?.()); json(res, 200, { coreIntegrated: true, voice: { mode: options.offline ? "offline-scripted" : "configured-provider", configured: options.offline || Boolean(speech.stt && speech.tts), stt: speech.stt?.provider ?? null, tts: speech.tts?.provider ?? null }, marketplace: "server-persistent", schema: 1 }); }
       else if (method === "GET" && path === "/api/aiking/v1/catalog") json(res, 200, catalog);
       else if (method === "GET" && path.startsWith("/api/aiking/v1/catalog/listings/")) { const listing = catalog.listings.find((listing) => listing.id === path.split("/").at(-1)); json(res, listing ? 200 : 404, listing ?? { error: "Unknown listing." }); }
       else if (path === "/api/aiking/marketplace/records") {

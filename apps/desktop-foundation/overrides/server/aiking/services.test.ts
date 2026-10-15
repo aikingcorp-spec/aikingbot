@@ -147,3 +147,17 @@ describe("AIKING owner services", () => {
     } finally { socket?.terminate(); await f.close(); restore(); await speech.close(); }
   });
 });
+
+describe("speech configuration", () => {
+  it("prefers the operator's adapters and otherwise uses the workspace's OpenAI key for both directions", async () => {
+    const { speechConfig } = await import("./services.ts");
+    expect(speechConfig({}, {})).toEqual({ stt: null, tts: null });
+    const fromKey = speechConfig({}, { openai: "sk-workspace" });
+    expect(fromKey.stt).toMatchObject({ url: "https://api.openai.com/v1/audio/transcriptions", token: "sk-workspace", provider: "openai" });
+    expect(fromKey.tts).toMatchObject({ url: "https://api.openai.com/v1/audio/speech", token: "sk-workspace", provider: "openai", voice: "alloy" });
+    const operator = speechConfig({ AIKING_STT_URL: "https://stt.example/v1", AIKING_TTS_URL: "https://tts.example/v1", AIKING_TTS_VOICE: "nova" }, { openai: "sk-workspace" });
+    expect(operator.stt).toMatchObject({ url: "https://stt.example/v1", provider: "operator" });
+    expect(operator.stt?.token).toBeUndefined();
+    expect(operator.tts).toMatchObject({ url: "https://tts.example/v1", provider: "operator", voice: "nova" });
+  });
+});

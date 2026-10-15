@@ -97,7 +97,8 @@ try {
     // Remove the write fixture from this voice agent; voice must never silently approve a side effect.
     await api(`/api/mcp/servers/${mcpName}`, { enabled: false }, "PATCH");
     await page.getByRole("button", { name: /^Voice call with Core Shipping QA/ }).click();
-    await page.getByLabel("Voice service", { exact: true }).selectOption("local");
+    // The workspace's own voice service is the default; the call starts once the readiness checks pass.
+    await page.locator('[data-voice-check="speech"][data-voice-check-ok="true"]').waitFor({ timeout: 30000 });
     await page.getByRole("button", { name: "Start voice call", exact: true }).click();
     await page.getByRole("log", { name: "Voice transcript" }).getByText(/AIKING Core completed/).waitFor({ timeout: 60000 });
     assert.ok(Number(await page.locator("[data-voice-frames]").getAttribute("data-voice-frames")) > 10);
