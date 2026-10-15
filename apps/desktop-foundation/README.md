@@ -7,7 +7,7 @@ A complete application based on the Apache-2.0 OpenMausBot OSS edition, pinned a
 Install Node.js 24 or newer, npm, Git and `tar`. Electron needs a desktop session on Linux. Use Git Bash or the system `tar` on Windows.
 
 ```sh
-git clone --branch stage3/shipping-candidate --recurse-submodules https://github.com/aikingcorp-spec/AIKINGX_Bot.git
+git clone --branch AIKINGBOT --recurse-submodules https://github.com/aikingcorp-spec/AIKINGX_Bot.git
 cd AIKINGX_Bot
 npm ci --ignore-scripts
 npm ci --prefix apps/desktop-foundation --ignore-scripts

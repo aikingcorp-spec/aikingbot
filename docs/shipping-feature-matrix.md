@@ -1,6 +1,6 @@
 # Shipping feature matrix
 
-Updated 2026-10-15. `Working` means the stated local/fixture flow passed; it does not imply a paid provider
+Updated 2026-10-15 (Claude takeover). `Working` means the stated local/fixture flow passed; it does not imply a paid provider
 or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundation/evidence/shipping/`.
 
 | Feature | Status | Evidence / remaining configuration |
@@ -22,6 +22,10 @@ or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundati
 | Computer/browser panels and control state | Working | Fixture panel/selection/control regressions; original native implementations retained |
 | Physical computer/browser/phone operation | Remaining Issues | Requires target OS permissions/native runtime validation; no physical device provisioned |
 | Remote authorization and session/viewer state | Working | 19 remote-session tests, auth/CSRF checks and panel fixtures |
+| Standalone server bundle (Node 24) | Working | `server-bundle.mjs` archive + SHA256SUMS; `server-smoke.mjs` 15 checks outside the checkout (pairing, Core/Voice status, Marketplace, restart, backup/restore) |
+| Docker / systemd deployment | Working | `deploy/aikingbot-server`: Caddy edge owns the namespace; local stack-check through the edge passes; full image with agent browser is built in CI; systemd unit verified with `systemd-analyze` |
+| Production VPS rollout | Requires Server | Run preflight on the VPS, own hostname/TLS, separate data root; production OpenBot untouched |
+| AIKINGBOT identity (names, links, hosted defaults) | Working | `branding-patches.mjs` over runtime source and translations; upstream portal/image defaults removed; attribution kept |
 | Real remote workspace, hosted management | Requires Server | Deploy own server/TLS and pair/enroll; no production host changed |
 | Encrypted backup/restore | Working | Actual export/import, Core and Marketplace files restored; destination pairing identity preserved |
 | Avatars, themes, onboarding, settings, files/media UI | Working | Fresh-profile Chromium/Electron tours: dark/light 1440px and advanced 1000px; no renderer errors |

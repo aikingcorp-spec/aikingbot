@@ -3,19 +3,45 @@
 Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
-## Tiếp quản Codex → Claude (2026-10-15 03:05 UTC) — TRẠNG THÁI HIỆN TẠI
+## Claude tiếp quản — TRẠNG THÁI HIỆN TẠI (cập nhật 2026-10-15 ~03:40 UTC)
 
-- Nhánh làm việc của Claude: **`AIKINGBOT`**, fast-forward từ `stage3/shipping-candidate@c9bea47` (cùng lịch sử,
-  không rebase). `stage3/shipping-candidate` giữ nguyên ở `c9bea47`; workflow được mở thêm trigger cho `AIKINGBOT`.
-- CI run 7 `38671558099` (`2dd6b48`): **Linux xanh toàn bộ** (tests, tours Electron, installer, packaged
-  server/Core/Electron). **Windows fail duy nhất** ở bước "Chromium Core, Marketplace, Voice and clean-profile
-  tours" (avatar ảnh chưa decode xong sau reload). Installer Windows vẫn build và upload được.
-- CI run 8 `38673404476` (`c9bea47`, sửa chờ decode avatar): đang chạy lúc tiếp quản, chưa có kết luận.
-  Không coi là pass cho tới khi job kết thúc.
-- Local container tiếp quản: Node 24.22.0 tại `/opt/node24` (CI dùng Node 24), Bun 1.4.2, user root
-  (Electron phải chạy user thường — xem Stage 2).
-- Thứ tự việc tiếp theo: (1) đóng CI Windows, lấy artifact + SHA-256; (2) audit branding/hosted services còn
-  sót; (3) gói triển khai server (Docker/systemd, reverse proxy, backup) chạy staging tách biệt; (4) bàn giao.
+Nhánh làm việc: **`AIKINGBOT`** (fast-forward từ `stage3/shipping-candidate@c9bea47`, không rebase).
+`stage3/shipping-candidate` giữ nguyên `c9bea47`. Workflow `shipping-candidate.yml` chạy trên cả hai nhánh.
+
+Đã làm (đều đã push):
+1. `cf29a7a` — Branding AIKINGBOT toàn runtime (`apps/desktop-foundation/branding-patches.mjs`, gọi trong setup):
+   177 file src/server/electron/shared + mọi bản dịch; tray, thông báo, system prompt, MCP/OAuth client name;
+   bỏ default `admin.openmausbot.com`, ảnh `mausbot.com`, link docs upstream → `docs/aikingbot/`. Giữ attribution,
+   asset pinned SHA, tên native helper, storage key/protocol id. Chi tiết: `apps/desktop-foundation/BRANDING-AUDIT.md`.
+2. `527aec0` — Server độc lập: `server-bundle.mjs` (tar.gz + SHA256SUMS + manifest commit/hash từng file),
+   `server-smoke.mjs` (15 kiểm tra), `deploy/aikingbot-server/` (Docker + Caddy edge sở hữu netns, mode sau proxy
+   có sẵn hoặc tự TLS, systemd hardened, vhost nginx/Caddy, preflight/backup/restore/stack-check).
+   Hướng dẫn: `docs/aikingbot/server-deployment.md` (gồm staging → production).
+3. `49245bf` — Sửa race E2E Windows: kiểm tra record Marketplace sau uninstall chờ ghi hàng đợi (≤15 s).
+
+CI:
+- Run 7 `38671558099` (`2dd6b48`): Linux xanh; Windows fail tour avatar (đã sửa ở `c9bea47`).
+- Run 8 `38673404476` (`c9bea47`): **Linux xanh toàn bộ**; Windows fail `marketplace-backend-uninstall`
+  (race ở trên, run 7 cùng bước đã pass → không phải lỗi product). Installer Windows build/upload được.
+- Run 9/11 bị hủy (đã có commit mới hơn). Run 10 `38675718326` (branding) và run cho `49245bf` cần đọc kết quả;
+  CI giờ thêm bước server bundle/smoke + Docker image đầy đủ (browser) + stack-check, upload
+  `AIKINGBOT-server-linux-x64-<sha>`.
+
+Kiểm chứng local (container Linux, Node 24.22.0 `/opt/node24`, root nên không chạy Electron):
+compatibility 1000 pass/1 skip; desktop security 124 pass/2 skip; Core `bun test` 87 pass; renderer + server
+typecheck; Chromium verify-shipping (E2E 11/11, Voice, tours dark/light/advanced) pass sau branding;
+server smoke 15/15; Docker stack (image `WITH_BROWSER=0` vì sandbox chặn deb.debian.org) + Caddy edge +
+stack-check pass; app restart/backup không làm rớt edge; `systemd-analyze verify` unit OK; preflight OK.
+
+Chưa làm được / cần người vận hành:
+- Không có quyền SSH VPS từ container này → chưa đối chiếu hạ tầng thật. Chạy
+  `deploy/aikingbot-server/scripts/preflight.sh` trên VPS trước (read-only), sau đó làm theo server-deployment.md.
+- Credential: Anthropic key (Core live), STT/TTS endpoint+token, Composio project/OAuth, chứng chỉ ký Windows/macOS,
+  DNS + TLS cho hostname staging/production, (tuỳ chọn) feed update HTTPS, catalog Marketplace đã review.
+- Windows installer chưa cài thử trên máy thật; macOS chưa build. Tiếng Việt UI chưa có.
+
+Tiếp tục: đọc kết quả CI mới nhất trên `AIKINGBOT`, lấy SHA-256 từ `build-artifacts.json` (evidence) và
+`SHA256SUMS` (server), cập nhật bảng artifact ở cuối mục này.
 
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
 
