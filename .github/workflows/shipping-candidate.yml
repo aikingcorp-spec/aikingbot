@@ -8,7 +8,7 @@ on:
         default: all
         options: [all, windows, linux]
   push:
-    branches: ['stage3/shipping-candidate']
+    branches: ['stage3/shipping-candidate', 'AIKINGBOT']
     tags: ['aikingbot-v*']
     paths:
       - 'src/**'

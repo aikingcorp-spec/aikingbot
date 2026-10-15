@@ -3,6 +3,20 @@
 Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
+## Tiếp quản Codex → Claude (2026-10-15 03:05 UTC) — TRẠNG THÁI HIỆN TẠI
+
+- Nhánh làm việc của Claude: **`AIKINGBOT`**, fast-forward từ `stage3/shipping-candidate@c9bea47` (cùng lịch sử,
+  không rebase). `stage3/shipping-candidate` giữ nguyên ở `c9bea47`; workflow được mở thêm trigger cho `AIKINGBOT`.
+- CI run 7 `38671558099` (`2dd6b48`): **Linux xanh toàn bộ** (tests, tours Electron, installer, packaged
+  server/Core/Electron). **Windows fail duy nhất** ở bước "Chromium Core, Marketplace, Voice and clean-profile
+  tours" (avatar ảnh chưa decode xong sau reload). Installer Windows vẫn build và upload được.
+- CI run 8 `38673404476` (`c9bea47`, sửa chờ decode avatar): đang chạy lúc tiếp quản, chưa có kết luận.
+  Không coi là pass cho tới khi job kết thúc.
+- Local container tiếp quản: Node 24.22.0 tại `/opt/node24` (CI dùng Node 24), Bun 1.4.2, user root
+  (Electron phải chạy user thường — xem Stage 2).
+- Thứ tự việc tiếp theo: (1) đóng CI Windows, lấy artifact + SHA-256; (2) audit branding/hosted services còn
+  sót; (3) gói triển khai server (Docker/systemd, reverse proxy, backup) chạy staging tách biệt; (4) bàn giao.
+
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
 
 Base Stage 2: `5037d24fa0545369a234fee6743788effe484c05`.
