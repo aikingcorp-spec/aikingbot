@@ -16,9 +16,22 @@ async function load(feed) {
   await vi.advanceTimersByTimeAsync(16000);
   return { autoUpdater, state: fixture.handlers.get("update:get-state")({}) };
 }
-it("does not load or contact any update service by default", async () => {
+it("uses the self-hosted Windows feed by default, while non-Windows platforms remain opt-in", async () => {
   const { autoUpdater, state } = await load(undefined);
-  expect(fixture.load).not.toHaveBeenCalled(); expect(autoUpdater.checkForUpdates).not.toHaveBeenCalled(); expect(state.status).toBe("idle");
+  if (process.platform === "win32") {
+    expect(autoUpdater.setFeedURL).toHaveBeenCalledExactlyOnceWith({ provider: "generic", url: "https://aikingbot.srv1866690.hstgr.cloud/updates/windows/" });
+    expect(autoUpdater.checkForUpdates).toHaveBeenCalledOnce();
+  } else {
+    expect(fixture.load).not.toHaveBeenCalled();
+    expect(autoUpdater.checkForUpdates).not.toHaveBeenCalled();
+    expect(state.status).toBe("idle");
+  }
+});
+it("honors an explicit off switch on Windows and other platforms", async () => {
+  const { autoUpdater, state } = await load("off");
+  expect(fixture.load).not.toHaveBeenCalled();
+  expect(autoUpdater.checkForUpdates).not.toHaveBeenCalled();
+  expect(state.status).toBe("idle");
 });
 it.each(["http://updates.example.test", "https://user:pass@updates.example.test", "invalid-url"])("rejects an unsafe release feed %s before checking", async feed => {
   const { autoUpdater, state } = await load(feed);

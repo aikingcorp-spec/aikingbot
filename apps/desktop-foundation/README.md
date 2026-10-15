@@ -1,4 +1,4 @@
-# AIKINGBOT desktop 0.3.0-rc.1
+# AIKINGBOT desktop 0.3.0-rc.2
 
 A complete application based on the Apache-2.0 OpenMausBot OSS edition, pinned at `93b3c24cdade51e362e443d2387a9f37eb7e115c`. React 19, Electron and Node 24 now integrate AIKING Core v0.2 alongside the retained original engines. Core, Marketplace, Voice local, groups and routines have offline end-to-end verification. See [shipping delivery](../../docs/stage-5-shipping-candidate.md) and [feature matrix](../../docs/shipping-feature-matrix.md) for actual platform/provider limits.
 
@@ -83,7 +83,7 @@ SHA-256 manifest: `.aikingbot-foundation/evidence/shipping/build-artifacts.json`
 For a clean build use the command without either flag. The pnpm wrapper makes the pinned package manager available to electron-builder's dependency collector; CI installs the same version explicitly.
 
 Installed data defaults to `~/.aikingbot` and its own Electron profile/app ID. Existing OpenMausBot/OpenBot data is not migrated.
-Automatic updates are disabled unless `AIKING_UPDATE_FEED` names an explicit HTTPS feed. Cloud sign-in requires `AIKING_CLOUD_ORIGIN`;
+On Windows, the rc.2 app checks the AIKINGBOT VPS HTTPS updater feed by default; set AIKING_UPDATE_FEED=off to disable it or supply another HTTPS feed. Non-Windows remains opt-in. Windows installers include their own Node.js/npm runtime for on-demand CLI provider installation, so end users do not install those developer tools. CLI/provider credentials stay in app-owned user data. Cloud sign-in requires AIKING_CLOUD_ORIGIN;
 managed account/Composio services require `OMB_CONTROL_PLANE_URL` / `OMB_COMPOSIO_BROKER_URL`. No upstream hosted service is selected by default.
 
 ## Historical Stage 1 evidence

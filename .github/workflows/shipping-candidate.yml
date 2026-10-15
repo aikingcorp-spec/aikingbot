@@ -85,6 +85,9 @@ jobs:
         run: node apps/desktop-foundation/packaged-core.mjs
       - name: Chromium Core, Marketplace, Voice and clean-profile tours
         run: node apps/desktop-foundation/verify-shipping.mjs
+      - name: Packaged Electron startup, local mutation authorization and portable provider runtime (Windows)
+        if: runner.os == 'Windows'
+        run: node apps/desktop-foundation/packaged-desktop.mjs
       - name: Packaged Electron startup and local API isolation
         if: runner.os == 'Linux'
         run: xvfb-run -a node apps/desktop-foundation/packaged-desktop.mjs
