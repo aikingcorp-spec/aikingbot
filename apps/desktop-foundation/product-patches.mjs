@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export const PRODUCT_PATCHED_FILES = ["src/state/store.tsx", "server/account-signin.ts", "server/index.ts", "src/pair/PairPage.tsx", "electron/environments.cjs", "electron/main.mjs", "electron/preload.cjs", "src/types/ogb.d.ts", "src/components/onboarding/beats/HelloBeat.tsx"];
+export const PRODUCT_PATCHED_FILES = ["src/state/store.tsx", "server/account-signin.ts", "server/index.ts", "src/pair/PairPage.tsx", "electron/environments.cjs", "electron/main.mjs", "electron/preload.cjs", "src/types/ogb.d.ts", "src/components/onboarding/beats/HelloBeat.tsx", "server/harness/registry.ts"];
 
 /** The hosted AIKINGBOT workspace a desktop offers without typing an address; AIKING_WORKSPACE_URL overrides it per build or launch. */
 export const DEFAULT_WORKSPACE_URL = "https://aikingbot-app.srv1866690.hstgr.cloud";
@@ -41,6 +41,17 @@ export function patchProduct(source) {
     ['                  placeholder="12345678"\n                  autoComplete="one-time-code"\n                  inputMode="numeric"', '                  placeholder="ABCD-EFGH"\n                  autoComplete="one-time-code"\n                  autoCapitalize="characters"'],
     ['(sent && otp.replace(/\\D/g, "").length < 8)', '(sent && otp.replace(/[^a-z0-9]/gi, "").length < 8)'],
     ['              Have a pairing code instead?', '              Advanced: connect with a pairing code']);
+
+  // Grok and similar single-binary engines install in one click from the vendor's release origin (no shell script, no Node).
+  edit("server/harness/registry.ts",
+    ['import { installNpmEngine, npmAvailable, serverInstallFor } from "../engine-install.ts";', 'import { installNpmEngine, npmAvailable, serverInstallFor } from "../engine-install.ts";\nimport { binaryEngineFor, installBinaryEngine } from "../aiking/binary-engines.ts";'],
+    ['function withServerInstall(install: AnyProviderDriver["install"], npmPresent: boolean): AnyProviderDriver["install"] {\n  if (!install) return undefined;\n  const server = serverInstallFor(install, npmPresent);', 'function withServerInstall(install: AnyProviderDriver["install"], npmPresent: boolean, driverKind?: string): AnyProviderDriver["install"] {\n  if (!install) return undefined;\n  const binary = binaryEngineFor(driverKind);\n  const server = serverInstallFor(install, npmPresent) ?? (binary ? { package: binary.label } : null);'],
+    ['            install: withServerInstall(driver?.install, npmPresent),', '            install: withServerInstall(driver?.install, npmPresent, entry.shadow.driverKind),'],
+    ['          install: withServerInstall(driver?.install, npmPresent),', '          install: withServerInstall(driver?.install, npmPresent, inst.driverKind),'],
+    ['    const server = serverInstallFor(driver?.install, this.npmPresent());\n    if (!server) return false;', '    const server = serverInstallFor(driver?.install, this.npmPresent());\n    const kind = entry.shadow?.driverKind ?? entry.live!.driverKind;\n    if (!server && binaryEngineFor(kind)) {\n      await installBinaryEngine(kind, { baseDir: this.enginesBaseDir });\n      return true;\n    }\n    if (!server) return false;']);
+  edit("server/index.ts",
+    ['registerEnginesBinDir();\n', 'registerEnginesBinDir();\nregisterBinaryEnginesDir();\n'],
+    ['import { createAikingServices } from "./aiking/services.ts";', 'import { createAikingServices } from "./aiking/services.ts";\nimport { registerBinaryEnginesDir } from "./aiking/binary-engines.ts";']);
 
   // Desktop: the hosted workspace is one menu item or one onboarding button away; the server then asks for the email code.
   edit("electron/environments.cjs",

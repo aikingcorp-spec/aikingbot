@@ -52,7 +52,7 @@ const tests = [
     "src/lib/create-configured-bot.test.ts", "server/redact.test.ts", "server/request-auth.test.ts",
     "electron/aiking-updater.test.mjs", "electron/secure-credentials.test.mjs", "electron/secure-credential-state.test.mjs",
     "scripts/linux-after-install.test.mjs",
-    "server/aiking/account-api.test.ts", "server/account-signin.test.ts", "server/email-signin.test.ts", "server/people-invite.test.ts",
+    "server/aiking/account-api.test.ts", "server/aiking/binary-engines.test.ts", "server/account-signin.test.ts", "server/email-signin.test.ts", "server/people-invite.test.ts",
   ] : []),
 ];
 const originals = new Map();
