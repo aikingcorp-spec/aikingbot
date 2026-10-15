@@ -53,6 +53,9 @@ async function fixture(name, operation) {
       await new Promise(resolve => setTimeout(resolve, 250));
     }
     await operation(debugPort ? { AIKING_VERIFY_CDP: `http://127.0.0.1:${debugPort}` } : {});
+  } catch (error) {
+    console.error(`Fixture ${name} failed:\n${readFileSync(join(out, `runtime-${name}.log`), "utf8").slice(-15000)}`);
+    throw error;
   } finally { await stop(child); log.end(); }
 }
 let ok = false;
