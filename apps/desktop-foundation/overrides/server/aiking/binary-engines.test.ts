@@ -4,7 +4,7 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { binaryPlatform, BINARY_ENGINES, installBinaryEngine } from "./binary-engines.ts";
+import { binaryEngineFor, binaryPlatform, BINARY_ENGINES, installBinaryEngine } from "./binary-engines.ts";
 
 const script = Buffer.from("#!/bin/sh\necho 'grok 9.9.9'\n");
 function origin(options: { md5?: string; status?: number; body?: Buffer } = {}) {
@@ -24,6 +24,8 @@ describe("binary engine installs", () => {
     expect(binaryPlatform("win32", "x64")).toBe("windows-x86_64");
     expect(binaryPlatform("linux", "arm64")).toBe("linux-aarch64");
     expect(binaryPlatform("aix" as NodeJS.Platform, "x64")).toBeNull();
+    expect(binaryEngineFor("grokAgent")?.id).toBe("grok");
+    expect(binaryEngineFor("codex")).toBeNull();
     expect(BINARY_ENGINES.grok!.artifactUrl("1.0.52", "windows-x86_64")).toBe("https://x.ai/cli/grok-1.0.52-windows-x86_64.exe");
     expect(BINARY_ENGINES.grok!.artifactUrl("1.0.52", "linux-x86_64")).toBe("https://x.ai/cli/grok-1.0.52-linux-x86_64");
   });

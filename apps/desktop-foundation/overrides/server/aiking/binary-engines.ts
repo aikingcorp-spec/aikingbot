@@ -36,8 +36,12 @@ export function binaryPlatform(platform: NodeJS.Platform = process.platform, arc
   return os && cpu ? `${os}-${cpu}` : null;
 }
 
-export function binaryEngineFor(driverKind: string | undefined): BinaryEngine | null {
-  return driverKind && Object.hasOwn(BINARY_ENGINES, driverKind) && binaryPlatform() ? BINARY_ENGINES[driverKind]! : null;
+/** Provider driver kinds whose CLI is one of these engines. */
+const ENGINE_OF_DRIVER: Record<string, string> = { grokAgent: "grok" };
+
+export function binaryEngineFor(driverKind: string | undefined): (BinaryEngine & { id: string }) | null {
+  const id = driverKind ? ENGINE_OF_DRIVER[driverKind] : undefined;
+  return id && binaryPlatform() ? { id, ...BINARY_ENGINES[id]! } : null;
 }
 
 export function binaryEnginesDir(baseDir = DATA_DIR): string {
