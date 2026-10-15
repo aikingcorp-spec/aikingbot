@@ -1,0 +1,12 @@
+{
+  "origin": "https://aikingbot.srv1866690.hstgr.cloud",
+  "appUrl": "https://aikingbot-app.srv1866690.hstgr.cloud",
+  "github": "https://github.com/aikingcorp-spec/AIKINGX_Bot",
+  "company": "https://aikingx.com",
+  "contactEmail": "aiking.corp@gmail.com",
+  "releaseManifest": "/downloads/release.json",
+  "locales": [
+    { "code": "vi", "path": "/", "htmlLang": "vi", "ogLocale": "vi_VN", "label": "Tiếng Việt", "short": "VI", "default": true },
+    { "code": "en", "path": "/en/", "htmlLang": "en", "ogLocale": "en_US", "label": "English", "short": "EN" }
+  ]
+}

@@ -3,6 +3,13 @@
 Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
+## VPS staging + website song ngữ + downloads (2026-10-15 ~05:20 UTC)
+
+Đọc trước: [`docs/aikingbot/vps-staging-handoff.md`](docs/aikingbot/vps-staging-handoff.md). Tóm tắt: server staging chạy tại
+https://aikingbot-app.srv1866690.hstgr.cloud, website VI/EN tại https://aikingbot.srv1866690.hstgr.cloud (code `apps/website/`,
+hạ tầng `deploy/aikingbot-web/`). Chưa có installer trên VPS và app chưa có feed update mặc định — blocker: VPS chỉ có
+deploy key read-only (không push, không tải artifact CI; artifact run 38678359992 hết hạn 2026-10-29).
+
 ## Claude tiếp quản — TRẠNG THÁI HIỆN TẠI (cập nhật 2026-10-15 ~03:40 UTC)
 
 Nhánh làm việc: **`AIKINGBOT`** (fast-forward từ `stage3/shipping-candidate@c9bea47`, không rebase).

@@ -1,0 +1,267 @@
+{
+  "meta": {
+    "title": "AIKINGBOT — Đội AI Agent làm việc cho bạn",
+    "description": "AIKINGBOT là ứng dụng desktop tạo đội AI Agent trên máy tính của bạn: nhiều model, Marketplace skill, lịch làm việc, giọng nói và làm việc từ xa qua server riêng. Bản Windows Beta miễn phí.",
+    "docsTitle": "Hướng dẫn cài đặt và sử dụng — AIKINGBOT",
+    "docsDescription": "Cài AIKINGBOT trên Windows, ghép nối với server, cập nhật phiên bản và xử lý sự cố trong giai đoạn beta.",
+    "notFoundTitle": "Không tìm thấy trang — AIKINGBOT"
+  },
+  "nav": {
+    "features": "Tính năng",
+    "how": "Cách hoạt động",
+    "download": "Tải về",
+    "faq": "Hỏi đáp",
+    "docs": "Hướng dẫn",
+    "openApp": "Mở ứng dụng web",
+    "downloadCta": "Tải cho Windows",
+    "skip": "Bỏ qua tới nội dung",
+    "menu": "Menu",
+    "language": "Ngôn ngữ"
+  },
+  "hero": {
+    "badge": "Windows Beta",
+    "title": "Đội AI Agent làm việc cho bạn, ngay trên máy tính của bạn",
+    "lead": "AIKINGBOT gom các AI Agent thành một đội: mỗi bot có vai trò, công cụ và lịch làm việc riêng. Dùng Claude, ChatGPT, Gemini, Grok hoặc model của riêng bạn, cài skill từ Marketplace và theo dõi công việc từ bất kỳ thiết bị nào qua server AIKINGBOT.",
+    "primary": "Tải cho Windows",
+    "secondary": "Mở ứng dụng web",
+    "note": "Miễn phí trong giai đoạn beta · Windows 10/11 64-bit · Dữ liệu lưu trên máy của bạn"
+  },
+  "preview": {
+    "eyebrow": "Giao diện thực tế",
+    "title": "Một không gian làm việc cho cả đội bot",
+    "lead": "Ảnh chụp từ AIKINGBOT staging đang chạy trên server — không phải bản dựng minh họa.",
+    "tabs": {
+      "chat": "Trò chuyện & giao việc",
+      "marketplace": "Marketplace",
+      "settings": "Cài đặt & kết nối"
+    },
+    "alt": {
+      "chat": "Màn hình chính AIKINGBOT với danh sách bot và khung trò chuyện",
+      "marketplace": "Marketplace AIKINGBOT với các agent và skill có thể cài đặt",
+      "settings": "Cài đặt AIKINGBOT với các kết nối model và truy cập từ xa"
+    }
+  },
+  "features": {
+    "eyebrow": "Tính năng",
+    "title": "Mọi thứ một đội AI cần để làm việc thật",
+    "lead": "Những khả năng dưới đây đã có trong bản beta. Mục có nhãn cần cấu hình đòi hỏi tài khoản hoặc dịch vụ của bạn.",
+    "needsSetup": "Cần cấu hình",
+    "items": {
+      "team": {
+        "title": "Đội AI Agent",
+        "body": "Tạo nhiều bot với vai trò riêng, gom vào nhóm để cùng xử lý một việc. Mỗi bot giữ lịch sử, thư mục làm việc và công cụ của mình."
+      },
+      "models": {
+        "title": "Nhiều model, nhiều nhà cung cấp",
+        "body": "AIKING Core với Claude, cùng các engine Claude, ChatGPT/Codex, Gemini, Grok, Mistral, Groq, Cerebras, MiniMax và mọi endpoint tương thích OpenAI — kể cả model chạy cục bộ."
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "body": "Cài agent mẫu như Media Producer, Ad Strategist, Trend Scout, Research Analyst và các skill viết hook TikTok, lập brief chiến dịch, ghi biên bản họp. Cập nhật hoặc gỡ bằng một nút."
+      },
+      "skills": {
+        "title": "Skill và Plugins (MCP)",
+        "body": "Mở rộng bot bằng skill đã kiểm duyệt và máy chủ MCP qua stdio, HTTP hoặc SSE. Công cụ có rủi ro luôn cần bạn phê duyệt trước khi chạy."
+      },
+      "workspace": {
+        "title": "Workspace và tệp",
+        "body": "Bot làm việc trong thư mục bạn chọn, đọc và tạo tệp, ảnh, tài liệu. Sao lưu mã hóa và khôi phục toàn bộ workspace khi đổi máy."
+      },
+      "schedule": {
+        "title": "Lịch làm việc",
+        "body": "Hẹn giờ cho bot chạy một lần hoặc định kỳ: báo cáo sáng thứ Hai, quét xu hướng mỗi ngày, tổng hợp hộp thư cuối tuần."
+      },
+      "remote": {
+        "title": "Làm việc từ xa",
+        "body": "Ghép nối máy tính, trình duyệt và điện thoại với server AIKINGBOT bằng mã một lần. Phân quyền theo thiết bị và thu hồi bất cứ lúc nào."
+      },
+      "voice": {
+        "title": "Gọi thoại với bot",
+        "body": "Nói chuyện trực tiếp với bot: chọn micro và loa, ngắt lời tự nhiên, tự kết nối lại. Cần dịch vụ nhận dạng và đọc giọng nói (STT/TTS) do bạn cấu hình."
+      }
+    }
+  },
+  "how": {
+    "eyebrow": "Cách hoạt động",
+    "title": "Bốn bước để đội bot bắt đầu làm việc",
+    "steps": {
+      "download": {
+        "title": "Tải ứng dụng",
+        "body": "Tải bộ cài Windows trực tiếp từ server AIKINGBOT và cài trong một phút, không cần quyền quản trị."
+      },
+      "connect": {
+        "title": "Kết nối",
+        "body": "Đăng nhập gói AI bạn đang dùng hoặc nhập API key. Muốn làm việc từ xa, ghép nối ứng dụng với server AIKINGBOT."
+      },
+      "team": {
+        "title": "Tạo đội bot",
+        "body": "Chọn agent từ Marketplace hoặc tự tạo bot mới, gán model, skill và thư mục làm việc cho từng bot."
+      },
+      "work": {
+        "title": "Giao việc",
+        "body": "Nhắn việc, đặt lịch hoặc gọi thoại. Theo dõi tiến độ, phê duyệt công cụ và nhận kết quả ngay trong cuộc trò chuyện."
+      }
+    }
+  },
+  "download": {
+    "eyebrow": "Tải về",
+    "title": "AIKINGBOT cho Windows",
+    "lead": "Bộ cài được phân phối trực tiếp từ server AIKINGBOT, kèm mã kiểm tra SHA-256 để bạn xác minh tệp.",
+    "windows": "Windows 10/11 · 64-bit",
+    "installer": "Bộ cài (.exe)",
+    "installerHint": "Khuyên dùng — tự cập nhật các bản sau",
+    "portable": "Bản portable (.zip)",
+    "portableHint": "Giải nén và chạy, không cài đặt",
+    "linux": "Linux",
+    "version": "Phiên bản",
+    "size": "Dung lượng",
+    "released": "Phát hành",
+    "checksum": "SHA-256",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "allFiles": "Tất cả tệp và checksum",
+    "pending": "Bản Windows Beta đang được chuẩn bị. Trang này sẽ tự cập nhật khi bộ cài được phát hành.",
+    "installTitle": "Hướng dẫn cài đặt",
+    "installSteps": [
+      "Tải bộ cài AIKINGBOT-…-setup.exe ở trên.",
+      "Mở tệp vừa tải. Bản beta chưa được ký số nên Windows SmartScreen có thể cảnh báo: chọn \"More info\" → \"Run anyway\".",
+      "AIKINGBOT cài vào tài khoản Windows của bạn và tự mở. Làm theo hướng dẫn chọn engine và đăng nhập model.",
+      "Để làm việc từ xa: Settings → Remote access, dán đường dẫn ghép nối từ server."
+    ],
+    "updateTitle": "Cập nhật",
+    "updateBody": "Từ bản beta có kênh cập nhật, AIKINGBOT tự kiểm tra phiên bản mới khi khởi động và mỗi giờ, tải nền rồi hiện nút khởi động lại để hoàn tất. Tài khoản, bot, skill và workspace được giữ nguyên. Bạn cũng có thể kiểm tra thủ công trong Settings → About.",
+    "verifyTitle": "Xác minh tệp",
+    "verifyBody": "Trong PowerShell, chạy lệnh sau và so sánh với mã SHA-256 hiển thị ở trên:"
+  },
+  "faq": {
+    "eyebrow": "Hỏi đáp",
+    "title": "Câu hỏi thường gặp",
+    "items": [
+      {
+        "q": "AIKINGBOT có mất phí không?",
+        "a": "Ứng dụng miễn phí trong giai đoạn beta. Chi phí AI do nhà cung cấp model tính: bạn dùng gói ChatGPT, Claude, Gemini, Grok đang có, hoặc API key trả theo mức dùng, hoặc model cục bộ miễn phí."
+      },
+      {
+        "q": "Tôi dùng được những model nào?",
+        "a": "AIKING Core dùng Claude qua API key Anthropic. Ứng dụng còn giữ các engine Claude, ChatGPT/Codex, Gemini, Grok, Mistral, Groq, Cerebras, MiniMax và endpoint tương thích OpenAI. Mỗi bot có thể dùng một model khác nhau."
+      },
+      {
+        "q": "Dữ liệu của tôi được lưu ở đâu?",
+        "a": "Trên máy của bạn, trong thư mục .aikingbot của tài khoản Windows. Khi dùng server AIKINGBOT, dữ liệu workspace từ xa nằm trên server đó. Nội dung chỉ được gửi tới nhà cung cấp model bạn chọn cho từng lượt trò chuyện."
+      },
+      {
+        "q": "Cần máy tính như thế nào?",
+        "a": "Windows 10 hoặc 11 bản 64-bit, khoảng 1 GB dung lượng trống và kết nối Internet để gọi model đám mây. Bản Linux (.deb, AppImage) cũng được build; macOS sẽ có sau."
+      },
+      {
+        "q": "Server AIKINGBOT dùng để làm gì?",
+        "a": "Server chạy cùng backend với ứng dụng desktop để bot làm việc liên tục 24/7, cho phép mở ứng dụng web từ trình duyệt, ghép nối nhiều thiết bị và chia sẻ workspace. Ứng dụng desktop vẫn dùng được độc lập không cần server."
+      },
+      {
+        "q": "Bot có tự ý chạy lệnh nguy hiểm không?",
+        "a": "Không. Công cụ có tác động cần bạn phê duyệt, công cụ nguy hiểm bị từ chối trừ khi bạn cho phép rõ ràng. Thiết bị từ xa phải ghép nối bằng mã một lần, có phân quyền và có thể thu hồi. Giọng nói không bao giờ tự phê duyệt công cụ."
+      },
+      {
+        "q": "Bản beta còn những giới hạn gì?",
+        "a": "Bộ cài chưa ký số nên Windows cảnh báo khi cài lần đầu. Giao diện bên trong ứng dụng hiện bằng tiếng Anh, tiếng Việt sẽ có sau. Gọi thoại cần cấu hình dịch vụ STT/TTS. Kết nối OAuth qua Composio cần tài khoản riêng. Hãy sao lưu workspace quan trọng."
+      },
+      {
+        "q": "Cập nhật có làm mất dữ liệu không?",
+        "a": "Không. Bản cập nhật chỉ thay chương trình, dữ liệu trong .aikingbot được giữ nguyên và tự chuyển đổi khi cần. Phiên bản cũ hơn sẽ từ chối mở dữ liệu của bản mới để tránh hỏng dữ liệu."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Sẵn sàng có đội AI của riêng bạn?",
+    "body": "Tải bản Windows Beta, kết nối model bạn đang dùng và giao việc đầu tiên trong vài phút.",
+    "primary": "Tải cho Windows",
+    "secondary": "Đọc hướng dẫn"
+  },
+  "footer": {
+    "tagline": "Đội AI Agent làm việc cho bạn.",
+    "product": "Sản phẩm",
+    "resources": "Tài nguyên",
+    "company": "AIKING",
+    "docs": "Hướng dẫn",
+    "github": "GitHub",
+    "checksums": "Checksum phát hành",
+    "status": "Trạng thái server",
+    "about": "AIKING Corp xây dựng công cụ AI cho doanh nghiệp và nhà sáng tạo Việt Nam.",
+    "contact": "Liên hệ",
+    "website": "aikingx.com",
+    "version": "Phiên bản",
+    "attribution": "Dựa trên OpenMausBot (Apache-2.0). Giấy phép bên thứ ba có trong bộ cài.",
+    "rights": "© 2026 AIKING. Bảo lưu mọi quyền."
+  },
+  "docs": {
+    "eyebrow": "Hướng dẫn",
+    "title": "Cài đặt, ghép nối và cập nhật AIKINGBOT",
+    "lead": "Hướng dẫn cho bản Windows Beta. Giao diện ứng dụng hiện bằng tiếng Anh nên tên mục được giữ nguyên.",
+    "toc": "Mục lục",
+    "sections": [
+      {
+        "id": "cai-dat",
+        "title": "1. Cài đặt trên Windows",
+        "paras": [
+          "Tải AIKINGBOT-<phiên bản>-setup.exe từ trang Tải về. Kiểm tra SHA-256 nếu cần (xem mục Xác minh).",
+          "Mở bộ cài. Vì bản beta chưa ký số, SmartScreen có thể hiện \"Windows protected your PC\": bấm \"More info\" rồi \"Run anyway\".",
+          "Bộ cài không cần quyền quản trị, cài vào tài khoản hiện tại và tạo lối tắt AIKINGBOT. Ứng dụng tự mở sau khi cài.",
+          "Bản portable (.zip): giải nén vào một thư mục và chạy AIKINGBOT.exe. Bản portable không tự cập nhật."
+        ]
+      },
+      {
+        "id": "ket-noi-model",
+        "title": "2. Kết nối model",
+        "paras": [
+          "Lần đầu mở, chọn engine: AIKING Core (cần API key Anthropic trong Settings → Connections) hoặc engine khác như Claude, ChatGPT/Codex, Gemini, Grok rồi đăng nhập gói của bạn.",
+          "Có thể thêm nhiều tài khoản và key; mỗi bot chọn model riêng trong phần cài đặt bot."
+        ]
+      },
+      {
+        "id": "ghep-noi",
+        "title": "3. Ghép nối với server AIKINGBOT",
+        "paras": [
+          "Quản trị viên server lấy mã ghép nối một lần (in trong log server khi khởi động, hoặc tạo trong Settings → Remote access của thiết bị đã ghép nối).",
+          "Trình duyệt: mở <app>/pair rồi nhập mã, hoặc mở trực tiếp đường dẫn <app>/pair#code=<mã>.",
+          "Ứng dụng desktop: Settings → Remote access → thêm server, dán đường dẫn mời aikingbot://pair… do server tạo. Mỗi thiết bị có quyền riêng và có thể thu hồi."
+        ]
+      },
+      {
+        "id": "cap-nhat",
+        "title": "4. Cập nhật phiên bản",
+        "paras": [
+          "Bộ cài có kênh cập nhật sẽ tự kiểm tra 15 giây sau khi mở và mỗi giờ. Khi có bản mới, ứng dụng tải nền, hiện tiến trình và nút Restart để cài.",
+          "Kiểm tra thủ công: Settings → About → Check for updates.",
+          "Dữ liệu trong %USERPROFILE%\\.aikingbot (bot, cuộc trò chuyện, skill, cài đặt) được giữ nguyên qua các bản cập nhật.",
+          "Bản 0.3.0-rc.1 chưa có kênh cập nhật mặc định: hãy cài đè bằng bộ cài mới một lần, các bản sau sẽ tự cập nhật."
+        ]
+      },
+      {
+        "id": "xac-minh",
+        "title": "5. Xác minh tệp tải về",
+        "paras": [
+          "PowerShell: Get-FileHash .\\AIKINGBOT-<phiên bản>-setup.exe -Algorithm SHA256",
+          "So sánh kết quả với mã SHA-256 trên trang Tải về hoặc tệp SHA256SUMS trong thư mục phát hành."
+        ]
+      },
+      {
+        "id": "su-co",
+        "title": "6. Xử lý sự cố",
+        "paras": [
+          "Không mở được ứng dụng: xem log tại %APPDATA%\\AIKINGBOT\\logs và gửi kèm khi báo lỗi.",
+          "Cập nhật lỗi: tải lại bộ cài mới nhất từ trang Tải về và cài đè; dữ liệu không bị ảnh hưởng.",
+          "Không ghép nối được: mã ghép nối chỉ dùng một lần và có hạn; tạo mã mới và đảm bảo dùng đúng địa chỉ HTTPS của server."
+        ]
+      }
+    ]
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "body": "Đường dẫn này không tồn tại hoặc đã được chuyển.",
+    "home": "Về trang chủ"
+  },
+  "release": {
+    "beta": "Beta",
+    "latest": "Mới nhất"
+  }
+}

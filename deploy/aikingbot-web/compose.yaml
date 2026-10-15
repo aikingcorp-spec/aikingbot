@@ -1,0 +1,45 @@
+# AIKINGBOT public website, downloads and update feed: one static Caddy behind
+# the VPS's Traefik. Content lives on the host (AIKING_WEB_ROOT) and is changed
+# only by scripts/publish-site.sh and scripts/publish-release.sh, which swap
+# files atomically, so this container never needs a restart for a release.
+#
+#   cp web.env.example web.env && $EDITOR web.env
+#   docker compose --env-file web.env up -d
+name: ${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}
+services:
+  web:
+    image: ${CADDY_IMAGE:-caddy:2.10.2}
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ["no-new-privileges:true"]
+    environment:
+      AIKING_APP_URL: ${AIKING_APP_URL:?set AIKING_APP_URL}
+    ports:
+      - "${AIKING_BIND_ADDRESS:-127.0.0.1}:${AIKING_WEB_PORT:-18090}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${AIKING_WEB_ROOT:?set AIKING_WEB_ROOT}:/srv/www:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}_default"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}.rule=Host(`${AIKING_WEB_HOST:?set AIKING_WEB_HOST}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}.entrypoints=${AIKING_TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}.tls.certresolver=${AIKING_TRAEFIK_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}.middlewares=${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}-hsts"
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}-hsts.headers.stsSeconds=31536000"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME:-aikingbot-web-staging}.loadbalancer.server.port=80"
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "10" }
+volumes:
+  caddy_data:
+  caddy_config:
