@@ -395,6 +395,10 @@ await step("avatar-upload-persists", async () => {
   await page.reload({ waitUntil: "domcontentloaded" });
   await composer.waitFor({ timeout: 120_000 });
   await page.locator(`[data-sidebar-bot-row="${id}"] img`).waitFor({ timeout: 30_000 });
+  await page.waitForFunction((botId) => {
+    const img = document.querySelector(`[data-sidebar-bot-row="${botId}"] img`);
+    return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+  }, id, { timeout: 30_000 });
   const loaded = await page.locator(`[data-sidebar-bot-row="${id}"] img`).evaluate((img) => img.complete && img.naturalWidth > 0);
   assert.equal(loaded, true, "The uploaded avatar image loads after a reload.");
 });
