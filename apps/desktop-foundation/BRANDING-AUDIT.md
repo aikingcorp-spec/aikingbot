@@ -48,3 +48,14 @@ the `OpenMausBot Speech.app` native helper bundle name (macOS build input); lega
 `server/local-computer.ts`; internal storage keys (`openmausbot.sidebar*`, `omb-*`), file/package formats
 (`openmaus.team`) and the health/protocol identifier `app: "openmausbot"` that clients and the CLI check.
 PostHog code remains but cannot start: the token is empty (see analytics above).
+
+Protocol and Cloud follow-ups (same pass):
+
+- `aikingbot:` is now also recognized where upstream compared or matched the scheme without the literal
+  `openmausbot://` text: package install links (`electron/package-link.mjs`, previously rejected every
+  `aikingbot://install` link), wrapped chat thread links (`src/lib/thread-refs.ts`) and the updater relaunch filter
+  for the organization deep link (`scripts/patch-organization-updater.mjs`, vendored updater bundle).
+- Packaged desktop exposes the upstream Cloud account/plan/move/lending bridges only with `AIKING_CLOUD_ORIGIN`
+  (`--aiking-cloud=1`); organization sign-in and company backups are unchanged. Covered by
+  `overrides/electron/aiking-cloud-gate.node-test.mjs` (in `security-checks.mjs`).
+- Electron node tests get the same product names; the full main-process suite (757 tests) passes and runs in CI.

@@ -72,6 +72,10 @@ jobs:
         run: node apps/desktop-foundation/compatibility.mjs
       - name: Desktop API, permissions, IPC and recovery
         run: node apps/desktop-foundation/security-checks.mjs
+      - name: Electron main-process suite
+        if: runner.os == 'Linux'
+        working-directory: .aikingbot-foundation/source
+        run: node --test electron/*.node-test.mjs
       - name: Production installer
         run: node apps/desktop-foundation/build.mjs
       - name: Packaged server isolation and workers

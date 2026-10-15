@@ -71,8 +71,38 @@ export function patchBranding(source) {
     if (after !== before) { writeFileSync(file, after); changes.push(`src/locales/${name}`); }
   }
 
-  // Desktop security tests run against the source directly (not through compatibility.mjs).
-  edit("electron/data-dir-lease.node-test.mjs", text => text.replace('error: "The OpenMausBot desktop lease delegation is invalid', 'error: "The AIKINGBOT desktop lease delegation is invalid'));
+  // Electron node tests run against the source directly (security-checks.mjs), not through compatibility.mjs:
+  // they get the same product names, and the Cloud bridge tests run with a configured AIKING Cloud.
+  for (const name of readdirSync(join(source, "electron"))) {
+    if (!name.endsWith(".node-test.mjs")) continue;
+    const file = join(source, "electron", name); const before = readFileSync(file, "utf8");
+    let after = rebrand(before);
+    if (name === "cloud-account-ipc.node-test.mjs" || name === "cloud-move.node-test.mjs") after = after.replaceAll('"--omb-company-desktop=1"', '"--omb-company-desktop=1", "--aiking-cloud=1"');
+    // Main's Cloud handlers and offers are additionally gated on AIKING_CLOUD_ORIGIN (shipping patches).
+    if (name === "cloud-account-ipc.node-test.mjs") after = after.replace("rendererOrigin: () => origin, environmentsState:", 'process: { env: { AIKING_CLOUD_ORIGIN: "https://cloud.example.test" } }, rendererOrigin: () => origin, environmentsState:');
+    if (name === "cloud-entry.node-test.mjs") after = after.replace("/return app\\.isPackaged && !desktopRemoteAccess && brandedBuild === false;/", "/return Boolean\\(process\\.env\\.AIKING_CLOUD_ORIGIN\\) && app\\.isPackaged && !desktopRemoteAccess && brandedBuild === false;/");
+    if (after !== before) { writeFileSync(file, after); changes.push(`electron/${name}`); }
+  }
+
+  // Upstream Cloud account/plan/move/lending surfaces exist only when an AIKING Cloud origin is configured;
+  // organization sign-in and company backups keep the packaged-desktop flag.
+  edit("electron/main.mjs", text => text.replace('...(app.isPackaged && !desktopRemoteAccess ? ["--omb-company-desktop=1"] : [])',
+    '...(app.isPackaged && !desktopRemoteAccess ? ["--omb-company-desktop=1", ...(process.env.AIKING_CLOUD_ORIGIN ? ["--aiking-cloud=1"] : [])] : [])'));
+  edit("electron/preload.cjs", text => {
+    const next = ["cloudAccount", "cloudMove", "cloudLending", "cloudPlan"].reduce((value, name) => value.replace(
+      `  ${name}: process.argv.includes("--omb-company-desktop=1") ? {`, `  ${name}: process.argv.includes("--omb-company-desktop=1") && process.argv.includes("--aiking-cloud=1") ? {`), text);
+    if (next.split("--aiking-cloud=1").length !== 5) throw new Error("Branding patch anchor changed: electron/preload.cjs cloud bridges");
+    return next;
+  });
+
+  // The aikingbot:// protocol (shipping patches) must also be recognized where upstream compares or matches it
+  // without the literal "openmausbot://" text: package install links and wrapped chat thread links.
+  edit("electron/package-link.mjs", text => text.replace('link.protocol !== "openmausbot:"', 'link.protocol !== "aikingbot:"'));
+  // The updater's relaunch must drop the organization deep link under its AIKINGBOT spelling too.
+  for (const path of ["scripts/patch-organization-updater.mjs", "electron/vendor/electron-updater.cjs"]) {
+    edit(path, text => text.replaceAll('arg !== "openmausbot://organization"', 'arg !== "aikingbot://organization"'));
+  }
+  edit("src/lib/thread-refs.ts", text => text.replace("(openmausbot:\\/\\/thread\\/", "(aikingbot:\\/\\/thread\\/"));
 
   // Upstream hosted admin portal: no default. Sign-in uses an operator-provided address.
   edit("src/components/OrganizationSettings.tsx", text => text
