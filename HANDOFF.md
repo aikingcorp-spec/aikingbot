@@ -3,6 +3,47 @@
 Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
+## Codex continuation — 2026-10-15
+
+**Shipping code pushed: `f55611826d5d6e09062349e8bed62203dac0dfa2` on `AIKINGBOT`.** The eight inherited local Claude commits
+(`81a7721` through `e1f445b`) are preserved, unchanged and pushed in order. New code commits:
+
+- `d824c2e`: managed Grok install remains reachable from browser/remote; verified Antigravity install continues into Google OAuth;
+  official Codex/Grok/Claude login pages open automatically; React effect replay cannot start duplicate automatic logins.
+- `f556118`: workspace membership config cache includes mode/UID/GID, not only timestamps; regression fixtures own their temporary
+  directories; full product/provider patch chain tested for LF/CRLF; packaged startup signals are reported immediately.
+
+Validation on VPS as `codex-tony` (source/Git/build ACL granted by owner; no system permission change):
+shipping regression **1215/1215**, targeted provider/auth **184/184** (included in shipping suite), Core **89/89**, full patch chain **3/3**;
+renderer/server/Core/shell typechecks pass. Desktop security **128 pass/1 skip**; Electron main-process **752 pass/5 skip**.
+Browser Core/Marketplace/group/routine E2E, Voice fixture and three UI tours pass. Packaged Core/MCP/approval/persistence and packaged
+server isolation/proxies/CLI/backup/restart pass. Standalone rc.2 server smoke **15/15**.
+
+Actual isolated managed dependency downloads/startup passed: Codex **0.162.1**, Claude Code **2.1.300**, Grok **1.0.52**.
+Pinned official Google Antigravity ACP **1.1.1** archive SHA-256, executable sizes, ACP initialize identity/version and shutdown pass.
+**No live provider OAuth/model reply or real microphone/STT/TTS/native realtime acceptance is claimed.**
+
+[Windows/Linux CI 38710665725](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38710665725) is in progress for the pushed code.
+The prior remote run `38690305447` failed the actual packaged desktop 403 check on both OSes; the eight Claude fixes were not in it.
+Current local packaged Linux renderer smoke is blocked *before renderer startup* by SUID sandbox helper ownership/mode on this VPS
+(kernel restricts unprivileged user namespaces). Sandbox was kept enabled; no kernel/ownership/system change was performed.
+CI already provisions the Linux runner sandbox. Physical Windows remains mandatory.
+
+Public staging health 200, unauthenticated pairing POST 403. Existing public rc.1 installer is present and its actual file/manifest hash
+matches: **251959193 bytes**, SHA-256 `c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9`, run **38678359992**, commit `8b98a36`.
+Range 0–99 returns 206. This differs from the historical run-17 artifact below. No new installer/feed or production deployment has occurred.
+The local development server bundle built while source was dirty is test evidence only; use clean exact-commit CI artifacts for publishing.
+
+Permanent changes remain in `apps/desktop-foundation/overrides/` and patch scripts. Generated source is freshly regenerated under
+`.aikingbot-foundation/source`; the previous generated directory/artifacts were preserved at `.aikingbot-foundation/source-claude-e1f445b`.
+An independent verification copy was used while build ACL was pending; canonical source remains this worktree.
+
+Next: finish exact-code Windows/Linux CI, inspect packaged mutation tests and artifacts, verify installer SHA-256, then qualify/publish
+staging/download/update paths. Do not overwrite rc.1 with a failed or unqualified build. Live account/provider and physical-device checks remain separate gates.
+Detailed evidence: [provider onboarding](docs/aikingbot/provider-onboarding-verification.md),
+[Capability Parity Matrix](docs/aikingbot/capability-parity-matrix.md),
+[physical Windows acceptance](docs/aikingbot/windows-acceptance.md).
+
 ## VPS staging + website song ngữ + downloads (2026-10-15)
 
 Bàn giao vận hành: [docs/aikingbot/vps-staging-handoff.md](docs/aikingbot/vps-staging-handoff.md). Website VI/EN: https://aikingbot.srv1866690.hstgr.cloud/ ; web app: https://aikingbot-app.srv1866690.hstgr.cloud/ ; source tại apps/website và deploy/aikingbot-web. Installer download và update feed chưa được publish trên VPS, cần kiểm thử beta thật.

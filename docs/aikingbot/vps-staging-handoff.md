@@ -3,6 +3,18 @@
 Cập nhật: 2026-10-15 ~05:20 UTC. VPS `srv1866690` (72.62.255.70, Ubuntu 24.04, 4 vCPU, 15 GB RAM, ~47 GB trống).
 Không chứa secret. Phiên làm việc dừng sớm theo yêu cầu (tiết kiệm token) — mục "Việc tiếp theo" là thứ tự đề xuất.
 
+## Kiểm tra tiếp nối 2026-10-15
+
+Tài liệu bên dưới giữ lịch sử triển khai ban đầu. Hiện `/downloads/release.json` đã được publish cho **rc.1**, CI run
+`38678359992`, commit `8b98a366a099fbfed71ba23208d6e2c64c271149`. File EXE thực tế: 251959193 bytes, SHA-256
+`c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9`; đã đối chiếu với manifest và HTTP Range trả 206.
+Đây không phải hash của artifact run 17. `/api/health` staging trả 200 và request pairing công khai chưa đăng nhập vẫn trả 403.
+Chưa thay installer/feed hay triển khai production trong phiên tiếp nối.
+
+Source tiếp nối giữ nguyên 8 commit Claude, bắt đầu tại `e1f445b`; provider continuation đầu tiên là `d824c2e`.
+Xem [provider onboarding verification](provider-onboarding-verification.md) và [capability parity matrix](capability-parity-matrix.md)
+để biết các gate mới. Runtime/dependency download thật đã được kiểm tra riêng; live OAuth/model reply và Windows vật lý vẫn cần nghiệm thu.
+
 ## 1. Đang chạy (đã kiểm chứng qua domain công khai)
 
 | Thành phần | URL / vị trí | Trạng thái |

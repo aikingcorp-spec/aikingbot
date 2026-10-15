@@ -3,6 +3,10 @@
 Updated 2026-10-15 (Claude takeover). `Working` means the stated local/fixture flow passed; it does not imply a paid provider
 or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundation/evidence/shipping/`.
 
+Current continuation evidence and exact limits are tracked in [Capability Parity Matrix](aikingbot/capability-parity-matrix.md) and
+[provider onboarding verification](aikingbot/provider-onboarding-verification.md). These newer entries qualify historical Working labels below;
+no current physical Windows, live OAuth/model response or real voice-call acceptance is implied.
+
 | Feature | Status | Evidence / remaining configuration |
 | --- | --- | --- |
 | Core streaming, MCP tools, approval/deny, cancel | Working | Real Core runtime and stdio/HTTP MCP; scripted offline model; Chromium UI E2E |
