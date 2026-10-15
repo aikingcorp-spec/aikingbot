@@ -17,7 +17,13 @@ Nhánh làm việc: **`AIKINGBOT`** (fast-forward từ `stage3/shipping-candidat
    `server-smoke.mjs` (15 kiểm tra), `deploy/aikingbot-server/` (Docker + Caddy edge sở hữu netns, mode sau proxy
    có sẵn hoặc tự TLS, systemd hardened, vhost nginx/Caddy, preflight/backup/restore/stack-check).
    Hướng dẫn: `docs/aikingbot/server-deployment.md` (gồm staging → production).
-3. `49245bf` — Sửa race E2E Windows: kiểm tra record Marketplace sau uninstall chờ ghi hàng đợi (≤15 s).
+3. `49245bf` — Sửa race E2E (Windows run 8 và Linux run 10 cùng gặp): kiểm tra record Marketplace sau uninstall
+   chờ ghi hàng đợi (≤15 s).
+4. `ddb95ff` — Test Voice qua adapter STT/TTS HTTP thật (OpenAI-compatible) + adapter lỗi không lộ body.
+5. Sửa bug thật do đổi protocol của Codex: link cài package `aikingbot://install` bị từ chối, link thread
+   `aikingbot://thread/…` dạng markdown không parse, updater relaunch không lọc deep link organization.
+   Cloud account/plan/move/lending chỉ hiện khi có `AIKING_CLOUD_ORIGIN`. Toàn bộ suite Electron main-process
+   750 pass/0 fail (Codex để lại 6 fail) và đã thêm vào CI Linux.
 
 CI:
 - Run 7 `38671558099` (`2dd6b48`): Linux xanh; Windows fail tour avatar (đã sửa ở `c9bea47`).
