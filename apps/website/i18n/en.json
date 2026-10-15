@@ -3,7 +3,7 @@
     "title": "AIKINGBOT — A team of AI agents working for you",
     "description": "AIKINGBOT is a desktop app that runs a team of AI agents on your computer: many models, a skill Marketplace, schedules, voice and remote work through your own server. Free Windows Beta.",
     "docsTitle": "Install and usage guide — AIKINGBOT",
-    "docsDescription": "Install AIKINGBOT on Windows, pair it with a server, update it and troubleshoot during the beta.",
+    "docsDescription": "Install AIKINGBOT on Windows, sign in with email, connect a model, update it and troubleshoot during the beta.",
     "notFoundTitle": "Page not found — AIKINGBOT"
   },
   "nav": {
@@ -73,11 +73,11 @@
       },
       "remote": {
         "title": "Remote work",
-        "body": "Pair computers, browsers and phones with an AIKINGBOT server using one-time codes. Per-device permissions, revocable at any time."
+        "body": "Sign in with your email to open your workspace on a computer or in a browser, no pairing code needed. Workspace owners invite members and set their role, and can revoke access at any time."
       },
       "voice": {
         "title": "Voice calls with bots",
-        "body": "Talk to a bot directly: choose microphone and speaker, interrupt naturally, reconnect automatically. Requires speech-to-text and text-to-speech services you configure."
+        "body": "Talk to your agents: pick a microphone and speaker, interrupt naturally, reconnect automatically. The app checks the engine, microphone and speech service first and tells you exactly what to connect if something is missing."
       }
     }
   },
@@ -91,7 +91,7 @@
       },
       "connect": {
         "title": "Connect",
-        "body": "Sign in with the AI plan you already use or add an API key. To work remotely, pair the app with an AIKINGBOT server."
+        "body": "Sign in with your email and a one-time code, pick your workspace, then press Connect to sign in to Codex, Claude Code or another engine with the provider's own account login."
       },
       "team": {
         "title": "Build your team",
@@ -125,8 +125,8 @@
     "installSteps": [
       "Download AIKINGBOT-…-setup.exe above.",
       "Open the file. The beta is not code-signed yet, so Windows SmartScreen may warn you: choose \"More info\" → \"Run anyway\".",
-      "AIKINGBOT installs for your Windows account and opens. Follow the steps to pick an engine and sign in to a model.",
-      "To work remotely: Settings → Remote access, then paste the pairing link from your server."
+      "AIKINGBOT installs for your Windows account and opens. Use it on this computer, or choose \"Sign in to your workspace\" to sign in with your email.",
+      "In your workspace, open Settings → AI and press Connect on an engine; the app installs what it needs and opens the provider's official sign-in page."
     ],
     "updateTitle": "Updates",
     "updateBody": "From the first beta with an update channel, AIKINGBOT checks for new versions at start-up and every hour, downloads in the background and shows a restart button to finish. Accounts, bots, skills and workspaces are kept. You can also check manually in Settings → About.",
@@ -195,7 +195,7 @@
   },
   "docs": {
     "eyebrow": "Guide",
-    "title": "Install, pair and update AIKINGBOT",
+    "title": "Install, sign in and update AIKINGBOT",
     "lead": "A guide for the Windows Beta. The app interface is in English, so menu names are quoted as they appear.",
     "toc": "Contents",
     "sections": [
@@ -218,12 +218,13 @@
         ]
       },
       {
-        "id": "pairing",
-        "title": "3. Pair with an AIKINGBOT server",
+        "id": "sign-in",
+        "title": "3. Sign in to your workspace with email",
         "paras": [
-          "The server administrator gets a one-time pairing code (printed in the server log at start-up, or created in Settings → Remote access on an already paired device).",
-          "Browser: open <app>/pair and enter the code, or open <app>/pair#code=<code> directly.",
-          "Desktop app: Settings → Remote access → add a server and paste the aikingbot://pair… invite link created by the server. Every device gets its own permissions and can be revoked."
+          "Desktop app: on the welcome screen choose \"Sign in to your workspace\" (or the workspace menu at the top → \"Sign in to my AIKINGBOT workspace…\"). Enter your email, open the message from AIKINGBOT and type the 8-character code.",
+          "Browser: open <app>, enter your email and the one-time code. A code works once within 10 minutes; check your spam folder if it has not arrived.",
+          "Email only proves who you are; the workspace owner decides who can enter and with which role (Settings → People). If you see \"not a member of this workspace\", ask the owner to invite your email.",
+          "Advanced / self-hosting / recovery: one-time pairing codes still work from Settings → Remote access or <app>/pair."
         ]
       },
       {
@@ -250,7 +251,7 @@
         "paras": [
           "The app does not open: collect the logs in %APPDATA%\\AIKINGBOT\\logs and attach them to your report.",
           "An update fails: download the latest installer from the Download section and install it over the current one; your data is not affected.",
-          "Pairing fails: pairing codes are single use and expire; create a new one and make sure you use the server's HTTPS address."
+          "Cannot sign in: email codes work once and expire after 10 minutes — choose \"Send a new code\". If you are told you are not a member, ask the workspace owner to invite your email."
         ]
       }
     ]

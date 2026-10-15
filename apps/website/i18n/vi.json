@@ -3,7 +3,7 @@
     "title": "AIKINGBOT — Đội AI Agent làm việc cho bạn",
     "description": "AIKINGBOT là ứng dụng desktop tạo đội AI Agent trên máy tính của bạn: nhiều model, Marketplace skill, lịch làm việc, giọng nói và làm việc từ xa qua server riêng. Bản Windows Beta miễn phí.",
     "docsTitle": "Hướng dẫn cài đặt và sử dụng — AIKINGBOT",
-    "docsDescription": "Cài AIKINGBOT trên Windows, ghép nối với server, cập nhật phiên bản và xử lý sự cố trong giai đoạn beta.",
+    "docsDescription": "Cài AIKINGBOT trên Windows, đăng nhập bằng email, kết nối model, cập nhật phiên bản và xử lý sự cố trong giai đoạn beta.",
     "notFoundTitle": "Không tìm thấy trang — AIKINGBOT"
   },
   "nav": {
@@ -73,11 +73,11 @@
       },
       "remote": {
         "title": "Làm việc từ xa",
-        "body": "Ghép nối máy tính, trình duyệt và điện thoại với server AIKINGBOT bằng mã một lần. Phân quyền theo thiết bị và thu hồi bất cứ lúc nào."
+        "body": "Đăng nhập bằng email để mở workspace của bạn trên máy tính hoặc trình duyệt, không cần mã ghép nối. Chủ workspace mời thành viên và phân quyền; có thể thu hồi bất cứ lúc nào."
       },
       "voice": {
         "title": "Gọi thoại với bot",
-        "body": "Nói chuyện trực tiếp với bot: chọn micro và loa, ngắt lời tự nhiên, tự kết nối lại. Cần dịch vụ nhận dạng và đọc giọng nói (STT/TTS) do bạn cấu hình."
+        "body": "Nói chuyện trực tiếp với bot: chọn micro và loa, ngắt lời tự nhiên, tự kết nối lại. Ứng dụng kiểm tra trước engine, micro và dịch vụ giọng nói, rồi chỉ rõ cần kết nối gì nếu còn thiếu."
       }
     }
   },
@@ -91,7 +91,7 @@
       },
       "connect": {
         "title": "Kết nối",
-        "body": "Đăng nhập gói AI bạn đang dùng hoặc nhập API key. Muốn làm việc từ xa, ghép nối ứng dụng với server AIKINGBOT."
+        "body": "Đăng nhập bằng email và mã một lần, chọn workspace, rồi bấm Connect để đăng nhập Codex, Claude Code hoặc engine khác bằng tài khoản chính thức của nhà cung cấp."
       },
       "team": {
         "title": "Tạo đội bot",
@@ -125,8 +125,8 @@
     "installSteps": [
       "Tải bộ cài AIKINGBOT-…-setup.exe ở trên.",
       "Mở tệp vừa tải. Bản beta chưa được ký số nên Windows SmartScreen có thể cảnh báo: chọn \"More info\" → \"Run anyway\".",
-      "AIKINGBOT cài vào tài khoản Windows của bạn và tự mở. Làm theo hướng dẫn chọn engine và đăng nhập model.",
-      "Để làm việc từ xa: Settings → Remote access, dán đường dẫn ghép nối từ server."
+      "AIKINGBOT cài vào tài khoản Windows của bạn và tự mở. Chọn dùng trên máy này, hoặc \"Sign in to your workspace\" để đăng nhập bằng email.",
+      "Trong workspace, vào Settings → AI để bấm Connect engine; ứng dụng tự cài thành phần cần thiết và mở trang đăng nhập chính thức của nhà cung cấp."
     ],
     "updateTitle": "Cập nhật",
     "updateBody": "Từ bản beta có kênh cập nhật, AIKINGBOT tự kiểm tra phiên bản mới khi khởi động và mỗi giờ, tải nền rồi hiện nút khởi động lại để hoàn tất. Tài khoản, bot, skill và workspace được giữ nguyên. Bạn cũng có thể kiểm tra thủ công trong Settings → About.",
@@ -195,7 +195,7 @@
   },
   "docs": {
     "eyebrow": "Hướng dẫn",
-    "title": "Cài đặt, ghép nối và cập nhật AIKINGBOT",
+    "title": "Cài đặt, đăng nhập và cập nhật AIKINGBOT",
     "lead": "Hướng dẫn cho bản Windows Beta. Giao diện ứng dụng hiện bằng tiếng Anh nên tên mục được giữ nguyên.",
     "toc": "Mục lục",
     "sections": [
@@ -218,12 +218,13 @@
         ]
       },
       {
-        "id": "ghep-noi",
-        "title": "3. Ghép nối với server AIKINGBOT",
+        "id": "dang-nhap",
+        "title": "3. Đăng nhập workspace bằng email",
         "paras": [
-          "Quản trị viên server lấy mã ghép nối một lần (in trong log server khi khởi động, hoặc tạo trong Settings → Remote access của thiết bị đã ghép nối).",
-          "Trình duyệt: mở <app>/pair rồi nhập mã, hoặc mở trực tiếp đường dẫn <app>/pair#code=<mã>.",
-          "Ứng dụng desktop: Settings → Remote access → thêm server, dán đường dẫn mời aikingbot://pair… do server tạo. Mỗi thiết bị có quyền riêng và có thể thu hồi."
+          "Ứng dụng desktop: ở màn chào mừng chọn \"Sign in to your workspace\" (hoặc menu workspace ở góc trên → \"Sign in to my AIKINGBOT workspace…\"). Nhập email, mở thư từ AIKINGBOT và nhập mã 8 ký tự.",
+          "Trình duyệt: mở <app>, nhập email và mã một lần. Mã dùng được một lần trong 10 phút; kiểm tra thư mục Spam nếu chưa thấy.",
+          "Email chỉ chứng minh bạn là ai; chủ workspace quyết định ai được vào và quyền gì (Settings → People). Nếu thấy \"not a member of this workspace\", hãy nhờ chủ workspace mời email của bạn.",
+          "Nâng cao / tự host / khôi phục: vẫn có thể ghép nối bằng mã một lần trong Settings → Remote access hoặc <app>/pair."
         ]
       },
       {
@@ -250,7 +251,7 @@
         "paras": [
           "Không mở được ứng dụng: xem log tại %APPDATA%\\AIKINGBOT\\logs và gửi kèm khi báo lỗi.",
           "Cập nhật lỗi: tải lại bộ cài mới nhất từ trang Tải về và cài đè; dữ liệu không bị ảnh hưởng.",
-          "Không ghép nối được: mã ghép nối chỉ dùng một lần và có hạn; tạo mã mới và đảm bảo dùng đúng địa chỉ HTTPS của server."
+          "Không đăng nhập được: mã email dùng một lần và hết hạn sau 10 phút — bấm \"Send a new code\". Nếu báo chưa là thành viên, nhờ chủ workspace mời email của bạn."
         ]
       }
     ]

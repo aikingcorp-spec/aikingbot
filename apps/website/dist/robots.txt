@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /updates/
+Sitemap: https://aikingbot.srv1866690.hstgr.cloud/sitemap.xml
