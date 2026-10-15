@@ -109,7 +109,7 @@
     "lead": "Bộ cài được phân phối trực tiếp từ server AIKINGBOT, kèm mã kiểm tra SHA-256 để bạn xác minh tệp.",
     "windows": "Windows 10/11 · 64-bit",
     "installer": "Bộ cài (.exe)",
-    "installerHint": "Khuyên dùng — tự cập nhật các bản sau",
+    "installerHint": "Khuyên dùng — cài đặt có hướng dẫn",
     "portable": "Bản portable (.zip)",
     "portableHint": "Giải nén và chạy, không cài đặt",
     "linux": "Linux",

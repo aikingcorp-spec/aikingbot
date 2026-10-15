@@ -1,3 +1,9 @@
+## Latest staging deployment — 2026-10-15 09:20 UTC
+
+Clean bundle `abb37980f93d` is deployed as `aikingbot-server:0.3.0-rc.2-abb3798`; app and website containers healthy. Bundle SHA-256: `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`.
+Data was backed up with the app stopped at `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/`; checksum verified. Prior image/release `0.3.0-rc.2-e1f445b` and private env remain available for rollback. Do not restore an older database over a running app.
+`server/current` points to `releases/0.3.0-rc.2-abb3798`; website points to `site/builds/20261015T091725Z-abb37980f93d`. Stack smoke passes; no production service or system permission changed. Existing rc.1 public installer is unchanged pending final Windows/Linux CI https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756 .
+
 # AIKINGBOT — Bàn giao VPS staging, website, downloads, updater
 
 Cập nhật: 2026-10-15 ~05:20 UTC. VPS `srv1866690` (72.62.255.70, Ubuntu 24.04, 4 vCPU, 15 GB RAM, ~47 GB trống).

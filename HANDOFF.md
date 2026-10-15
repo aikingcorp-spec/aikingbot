@@ -1,3 +1,17 @@
+## Staging deployed and Windows CRLF CI repair — 2026-10-15 09:20 UTC
+
+All eight Claude commits and continuation commits are pushed to `AIKINGBOT`; no history rewrite. `1a911ea` fixes Windows CRLF matching in the regression runner, preserving fixture line endings. A real CRLF config fixture rerun passed all 1215 tests / 54 files. CI run `38710665725` reached Linux installer build, but Windows stopped before executing regression tests because the new multiline config fixture was matched as LF only. Replacement exact-commit CI: https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756 (pending; do not count as passed).
+
+With explicit staging-administration permission, deployed clean bundle commit `abb37980f93ddd96b3bd78c7c1f74f6f8abe3978` (same runtime code as `f556118`; subsequent `1a911ea` changes only the regression runner):
+- Bundle SHA-256 `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`; manifest `dirty:false`.
+- App image `aikingbot-server:0.3.0-rc.2-abb3798`, healthy; current release `/srv/aikingbot-staging/server/releases/0.3.0-rc.2-abb3798`.
+- Consistent stopped-app backup `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/data.tar.gz`, 1.4 GB; checksum verified. Private backup also retains previous release/image, environment and public release pointer. Previous app image/release `0.3.0-rc.2-e1f445b` retained. No data restore was performed.
+- Website VI/EN built as `codex-tony` and atomically published to `site/builds/20261015T091725Z-abb37980f93d`. Existing rc.1 installer/feed preserved. Installer hint changed to guided installation: rc.1 has no default updater and must not be advertised as automatically updating.
+- Public stack check passes: health 200, branded UI, unauthenticated owner API 403, invalid Voice WebSocket ticket 403. Invalid pairing code `/api/pair` returns 401; forged-origin `/api/auth/pairing` returns 403. Both locales return 200. A fresh Chromium visit verifies real website Download/Open Web links and the rc.2 email sign-in form without renderer errors (no OTP submitted).
+- Only `aikingbot-app-staging` app service recreated and `aikingbot-web-staging` static artifact changed. Edge was not restarted. OpenBot production container remains running with its existing image; system permissions were not changed.
+
+Installer publication remains gated on successful exact-code CI and verified artifact hashes. Live provider OAuth/model responses, real speech and physical Windows upgrade remain unverified; use the acceptance document below.
+
 # HANDOFF — AIKING Core / AIKINGBOT v0.2
 
 Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.

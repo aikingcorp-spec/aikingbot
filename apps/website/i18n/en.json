@@ -109,7 +109,7 @@
     "lead": "Installers are served directly by the AIKINGBOT server, with a SHA-256 checksum so you can verify every file.",
     "windows": "Windows 10/11 · 64-bit",
     "installer": "Installer (.exe)",
-    "installerHint": "Recommended — updates itself from here on",
+    "installerHint": "Recommended — guided installation",
     "portable": "Portable (.zip)",
     "portableHint": "Unzip and run, no installation",
     "linux": "Linux",

@@ -8,7 +8,7 @@ The eight local Claude commits are preserved, in their original order. No reset,
 The packaged mutation failure in CI run [38690305447](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38690305447)
 was the renderer receiving 403 instead of the expected post-authorization 404, on both Windows and Linux.
 Claude's `81a7721` preserves the desktop capability header's wire spelling through branding and checks the Electron/server names match.
-The latest remote run predates all eight local commits; it is not evidence that the current checkout passes CI.
+That historical run predates all eight local commits; it is not evidence that the current checkout passes CI.
 
 The continuation uses existing official CLI/ACP drivers, not a replacement authentication service:
 
@@ -41,7 +41,7 @@ A browser attached to a remote host cannot receive that host's loopback callback
   These ran `--version`; they did not borrow the coding session's provider credentials or submit a paid model prompt.
 - Packaged Core → MCP → approval → persisted reply passed outside the checkout. Packaged server isolation, 13 proxies, MCP/CLI, encrypted backup, launcher and compile-cache restart passed.
 - Browser Core/Marketplace/multi-agent/routine functional E2E, Voice fixture and all three clean-profile UI tours passed; standalone server smoke passed all 15 checks.
-- [Windows/Linux CI run 38710665725](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38710665725) is running for pushed code commit `f55611826d5d6e09062349e8bed62203dac0dfa2`; do not count it as passed until completion.
+- Windows in run `38710665725` stopped before regression execution because the new multiline fixture match did not normalize CRLF. `1a911ea` repairs matching while preserving line endings. [Replacement Windows/Linux CI](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756) is pending; do not count it as passed.
 - Fresh Linux unpacked package built successfully. Packaged Electron launch on this VPS is blocked before renderer startup by the SUID sandbox helper lacking root ownership/mode 4755 with restricted user namespaces. No kernel/sandbox/ownership change was made; do not count this as a passed packaged renderer test. The existing CI Linux setup explicitly provisions its runner sandbox; fresh Windows remains a separate gate.
 - Regression logs use per-run temp roots. The Linux hook traversal fixture targets the hook's real `/tmp` boundary; a nested TMPDIR must not change what the security assertion exercises.
 
@@ -57,7 +57,7 @@ A browser attached to a remote host cannot receive that host's loopback callback
   `c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9`, matching the live release manifest.
   HTTP Range 0–99 returned 206 and Content-Range `bytes 0-99/251959193`.
   This is the run-16 artifact; do not confuse it with the different run-17 hash in historical HANDOFF tables.
-- No installer/feed replacement or production service change was made during these checks.
+- Clean rc.2 server bundle `abb37980f93d` and latest VI/EN website are now deployed to the two isolated AIKINGBOT staging projects after a checksum-verified consistent data backup. Both containers are healthy and public stack checks pass. No installer/feed replacement or production service change was made. See the newest VPS handoff block for paths and rollback image.
 
 ## Required remaining release gates
 
