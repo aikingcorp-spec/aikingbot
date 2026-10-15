@@ -1,7 +1,7 @@
 # Physical Windows acceptance — AIKINGBOT rc.2+
 
 Status: pending. This is an operator acceptance gate, not a claim that fixtures have passed on a physical PC.
-Use the exact installer whose CI commit, SHA-256 and domain URL are recorded in the release manifest. Current public rc.1 does not contain the continuation fixes.
+Use the exact installer whose CI commit, SHA-256 and domain URL are recorded in the release manifest. Current public V2 beta is rc.2 (packaging ec89ae8, Windows qualification 38720168034); physical acceptance below remains pending.
 Do not replace the working public installer with an unqualified build. Record OS version, installer version/commit, date, provider and pass/fail for every row.
 
 ## Fresh install: no Node/npm or developer terminal
@@ -47,9 +47,9 @@ This consumes the provider account's normal quota; offline fixtures do not satis
 ## Upgrade and revocation
 
 rc.1 has no default updater feed; qualify one manual installer upgrade to rc.2 while preserving the same user/profile.
-After rc.2, qualify a newer version through the AIKINGBOT HTTPS feed using Settings → Check for updates and the normal restart action.
+The rc.2 payload lacks app-update.yml; automatic download/install is not qualified. Use manual upgrades for this beta. After fixing installed updater configuration, qualify a newer version through Settings → Check for updates and the normal restart action.
 Before/after both upgrades compare agents, chat history, attachments, settings, workspace sessions, provider sign-ins, skills/MCP and backup access.
 Keep a safety backup and verify the documented rollback behavior. Do not mark automatic updating/data preservation accepted from unit tests alone.
-Sign out from the workspace and confirm immediate revocation, including an already-open remote client. Reopen and require the proper sign-in again.
+A prominent workspace logout UI is a known missing feature deferred to the big update. After it is implemented, sign out and confirm immediate revocation, including an already-open remote client. Reopen and require the proper sign-in again.
 
 Record failures and exact reproduction in HANDOFF; keep the release gate pending until the actual machine and provider checks pass.

@@ -1,6 +1,6 @@
 # Shipping feature matrix
 
-Updated 2026-10-15 (Claude takeover). `Working` means the stated local/fixture flow passed; it does not imply a paid provider
+Updated 2026-10-15 (V2 beta publication). `Working` means the stated local/fixture flow passed; it does not imply a paid provider
 or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundation/evidence/shipping/`.
 
 Current continuation evidence and exact limits are tracked in [Capability Parity Matrix](aikingbot/capability-parity-matrix.md) and
@@ -37,7 +37,9 @@ no current physical Windows, live OAuth/model response or real voice-call accept
 | Core guest confinement | Remaining Issues | Guest-confined turns still need another retained engine |
 | Voice after backend restart | Remaining Issues | Network reconnect resumes within the same server process; start a new call after server restart |
 | Linux installer, release identity and profile isolation | Working | Actual AppImage/DEB; packaged desktop/Core checks; own profile/protocol/updates; dependency licenses included |
-| Windows installer and CI artifacts | Current rc.2 pending CI | Historical rc.1 runs 38678359992 and 38680508700 green on Windows/Linux; setup.exe/zip/deb/AppImage + server bundle with SHA-256 in HANDOFF. Install on a physical Windows machine still to be qualified; unsigned |
+| Windows installer and CI artifacts | V2 beta published | rc.2 EXE from successful Windows qualification 38720168034; packaged mutation/npm test and all browser suites pass. Final NSIS runtime inspected; complete public HTTPS SHA-256 matches manifest, Range 206. Physical Windows install/OAuth/data preservation pending; unsigned |
+| Automatic updater | Remaining Issues | HTTPS feed hash/size and binary route verified, but installed app-update.yml is absent. Manual installer upgrade for this beta; real higher-version update and data preservation must be qualified |
+| Personal hosted workspace / execution sandbox per email | Deferred to big update | Current staging is a shared invited operator workspace. Fresh uninvited email is denied; tenant separation and prominent logout UI are not delivered |
 | Signed releases and macOS qualification | Remaining Issues | Certificates/notarization and actual macOS runner not supplied; Linux packages are unsigned |
 | Startup/reconnect/process recovery | Working | Packaged restart/worker smoke, bounded recovery tests, clean owner shutdown IPC; Vite cannot bypass cleanup |
 | Vietnamese interface | Remaining Issues | English complete; full Vietnamese localization not implemented |

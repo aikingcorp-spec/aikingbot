@@ -1,8 +1,14 @@
-## Latest staging deployment — 2026-10-15 09:20 UTC
+## Current publication — 2026-10-15 10:48 UTC
 
-Clean bundle `abb37980f93d` is deployed as `aikingbot-server:0.3.0-rc.2-abb3798`; app and website containers healthy. Bundle SHA-256: `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`.
-Data was backed up with the app stopped at `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/`; checksum verified. Prior image/release `0.3.0-rc.2-e1f445b` and private env remain available for rollback. Do not restore an older database over a running app.
-`server/current` points to `releases/0.3.0-rc.2-abb3798`; website points to `site/builds/20261015T091725Z-abb37980f93d`. Stack smoke passes; no production service or system permission changed. Existing rc.1 public installer is unchanged pending final Windows/Linux CI https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756 .
+V2 beta / rc.2 is published: [https://aikingbot.srv1866690.hstgr.cloud/downloads/0.3.0-rc.2/AIKINGBOT-0.3.0-rc.2-setup.exe](https://aikingbot.srv1866690.hstgr.cloud/downloads/0.3.0-rc.2/AIKINGBOT-0.3.0-rc.2-setup.exe), 278922909 bytes, SHA-256 `c393131e09d0e486dc008a0b27ca6dab338cd8ae614a780cbc4b337b4673bd0f`. Successful Windows qualification [38720168034](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38720168034); packaging `ec89ae8`, unchanged application `1a911ea`. Full public HTTPS file hash, Range 206, feed SHA-512/size and final NSIS Node/npm contents verified. No physical Windows/live OAuth/natural voice/data-preserving upgrade pass is claimed. Automatic updater is unqualified because installed app-update.yml is absent; manual upgrades for beta.
+
+App image `aikingbot-server:0.3.0-rc.2-abb3798`; bundle SHA-256 `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`. `server/current` → `releases/0.3.0-rc.2-abb3798`; website → `site/builds/20261015T104546Z-ec89ae8`. App/web healthy; public stack and Chromium journey smoke pass. OpenBot production retains its prior image/start time.
+
+Consistent data backup: `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/` (checksum verified). Prior app image/release rc.2-e1f445b retained. Release pointer/feed/previous-site backup: `/srv/aikingbot-staging/backups/release-before-rc2-38720168034/`. rc.1 immutable installer retained. Release rollback: `node deploy/aikingbot-web/scripts/publish-release.mjs rollback /srv/aikingbot-staging/web 0.3.0-rc.1`. Do not overwrite current app data from the old backup: user confirmed they were deleting/recreating test agents after deployment.
+
+Current web is a shared invited operator workspace, **not personal tenant sandboxes**; obvious logout UI remains missing. User deferred these and connector-warning reproduction to the big update. Fresh uninvited email was denied before sending OTP. No production/system permission changes. The historical deployment inventory below is superseded by this block and the current HANDOFF.
+
+## Historical deployment notes
 
 # AIKINGBOT — Bàn giao VPS staging, website, downloads, updater
 

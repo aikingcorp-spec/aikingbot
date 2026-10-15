@@ -1,81 +1,44 @@
-## Windows package gate caught missing npm — repair in progress
+# HANDOFF — AIKINGBOT V2 beta / 0.3.0-rc.2
 
-Qualification run `38716918900` confirmed the three authorized packaged mutations work on Windows and forged/external requests remain denied, then failed because `provider-runtime/bin/node_modules/npm/bin/npm-cli.js` was missing from the shipped package. Original rc.2 candidate is **not qualified and must not be published**. Node/npm copying at source preparation was insufficient. The builder now restores the complete runtime in `afterPack`, preserves licenses and actually executes packaged npm with an isolated PATH. The same check is added to the packaged desktop test.
+Current as of 2026-10-15 10:48 UTC. This section supersedes the historical handoff below. No secrets.
 
-To avoid recompiling an unchanged application, the repair workflow verifies original CI hashes, extracts the original portable application, adds the complete official Node/npm tree, builds a new NSIS installer/ZIP in CI, hashes the new installer, then runs packaged authorization/npm and the full browser suites. New installer bytes and build commit must replace the rejected original hash in any publication. Source guard permits only the named Windows packaging fixes and tests; application runtime remains the previously typechecked/regression-tested code. No original installer hash may be reused for the repaired output.
+## Published beta
 
-## V2 beta release scope and Windows qualification — 2026-10-15
+The user chose to ship V2 first and collect feedback for a later big update. The Windows installer is published at [https://aikingbot.srv1866690.hstgr.cloud/downloads/0.3.0-rc.2/AIKINGBOT-0.3.0-rc.2-setup.exe](https://aikingbot.srv1866690.hstgr.cloud/downloads/0.3.0-rc.2/AIKINGBOT-0.3.0-rc.2-setup.exe), **278922909 bytes**, SHA-256 `c393131e09d0e486dc008a0b27ca6dab338cd8ae614a780cbc4b337b4673bd0f`. A complete HTTPS download matches the CI manifest and the inspected NSIS payload; Range 0–99 returns 206. Website VI/EN now points to rc.2. The rc.1 installer remains available for rollback.
 
-User explicitly requested shipping the existing V2/rc.2 beta first and collecting feedback for a later big update. Personal per-account workspaces/execution sandboxes and a prominent workspace logout are **not implemented in this candidate**. The current VPS is a shared operator staging workspace, not a per-person hosting product. Two configured owner addresses have admin access; a fresh uninvited email request was verified to return 403 before any OTP is sent. Do not advertise personal tenant isolation. User reported a connector error with an otherwise successful model answer; exact provider/connector error remains to be captured.
+Packaging/qualification commit: `ec89ae87fc4800532f01fcc9ff370fa2999cb30a`; [Windows qualification 38720168034](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38720168034) **completed successfully**. Artifact `11966361509` ZIP digest: `6a37259ebc5ddff291c198811fdefa0732664633245ab8754fe7d97c417f2b3b`. Application runtime remains original CI commit `1a911eae55c2a17d0076dc20b6a16b7a1d296d7c`, build run `38712009756`: that run's complete Linux job passed; Windows regression/typechecks/security/build/packaged server/Core passed, but a catalog-render timing race failed the last browser tour. Do not call that original whole workflow green.
 
-Exact candidate runtime/build commit: `1a911eae55c2a17d0076dc20b6a16b7a1d296d7c`, original CI run `38712009756`.
-Linux passed the complete pipeline including actual packaged mutations and Docker stack. Windows passed regression, typechecks, security, installer build, packaged server and Core/MCP; its last 1000px browser tour raced the asynchronous catalog load (37/38, no renderer errors), preventing the packaged desktop step from running. The tour now waits for the eighth real card while retaining the original count assertion. A separate qualification workflow reuses the exact original hash-verified Windows EXE/portable ZIP, runs real packaged Electron authorization plus all browser E2E/tours, and uploads a single verified installer only on success. Its source guard refuses any candidate runtime change. Original failed run must not be reported as wholly green.
+The new CI verifies the original package hashes and unchanged application source, adds the complete official Node/npm runtime, tests the repaired unpacked Electron package, rebuilds NSIS in Windows CI, and passes all Chromium functional/Voice fixtures and all three UI tours. Actual Windows packaged Marketplace, provider and pairing mutations pass; forged/external requests remain denied. Packaged npm executes with an isolated PATH. Final NSIS archive inspection confirms Node, npm CLI, all npm dependencies and licenses (2383 npm tree files). The rejected original rc.2 installer hash must not be reused.
 
-Release remains pending that Windows qualification and verified publication. Fresh physical Windows, live provider OAuth, real speech and upgrade preservation are still unverified. User postponed the broader personal-workspace/logout work; retain it as a high-priority follow-up, not a completed capability.
+A parallel full rebuild at commit ec89ae8, [38720167843](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38720167843), has completed Linux successfully; Windows was still building at publication. It is not the published installer provenance and is not counted as fully green.
 
-## Staging deployed and Windows CRLF CI repair — 2026-10-15 09:20 UTC
+## Code and validation
 
-All eight Claude commits and continuation commits are pushed to `AIKINGBOT`; no history rewrite. `1a911ea` fixes Windows CRLF matching in the regression runner, preserving fixture line endings. A real CRLF config fixture rerun passed all 1215 tests / 54 files. CI run `38710665725` reached Linux installer build, but Windows stopped before executing regression tests because the new multiline config fixture was matched as LF only. Replacement exact-commit CI: https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756 (pending; do not count as passed).
+Branch `AIKINGBOT` preserves and has pushed all eight Claude commits unchanged: `81a7721`, `510c4f8`, `324b917`, `1d424bf`, `f9ee629`, `3a4a04c`, `8dd64bc`, `e1f445b`.
+Continuation: `d824c2e` provider login continuation; `f556118` permission cache/regression isolation; `1a911ea` CRLF fixture; `42f109b` catalog wait and qualification; `0d89c7d` complete packaged npm; `ec89ae8` fresh-profile packaged assertion/diagnostics and test-before-compression. No reset, rebase or history rewrite.
 
-With explicit staging-administration permission, deployed clean bundle commit `abb37980f93ddd96b3bd78c7c1f74f6f8abe3978` (same runtime code as `f556118`; subsequent `1a911ea` changes only the regression runner):
-- Bundle SHA-256 `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`; manifest `dirty:false`.
-- App image `aikingbot-server:0.3.0-rc.2-abb3798`, healthy; current release `/srv/aikingbot-staging/server/releases/0.3.0-rc.2-abb3798`.
-- Consistent stopped-app backup `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/data.tar.gz`, 1.4 GB; checksum verified. Private backup also retains previous release/image, environment and public release pointer. Previous app image/release `0.3.0-rc.2-e1f445b` retained. No data restore was performed. A later comparison found agent/workspace changes at 09:30–09:37; the user confirmed they were actively deleting/recreating test agents. These changes are not evidence of upgrade data loss, and no old data was restored over their current work. Physical Windows data preservation remains unverified.
-- Website VI/EN built as `codex-tony` and atomically published to `site/builds/20261015T091725Z-abb37980f93d`. Existing rc.1 installer/feed preserved. Installer hint changed to guided installation: rc.1 has no default updater and must not be advertised as automatically updating.
-- Public stack check passes: health 200, branded UI, unauthenticated owner API 403, invalid Voice WebSocket ticket 403. Invalid pairing code `/api/pair` returns 401; forged-origin `/api/auth/pairing` returns 403. Both locales return 200. A fresh Chromium visit verifies real website Download/Open Web links and the rc.2 email sign-in form without renderer errors (no OTP submitted).
-- Only `aikingbot-app-staging` app service recreated and `aikingbot-web-staging` static artifact changed. Edge was not restarted. OpenBot production container remains running with its existing image; system permissions were not changed.
+Local Linux shipping regression **1215/1215** (54 files), Core **89/89**, provider/auth **184/184** included; full LF/CRLF patch chain **3/3**; renderer/server/Core/shell typechecks pass. Desktop security **128 pass/1 skip**, Electron main-process **752 pass/5 skip**. Original Windows regression **1168 pass/47 platform skips**. Packaged server/Core/MCP/backup/restart, browser functional/Voice fixtures and three tours pass. Standalone server smoke **15/15**. Actual managed startup in isolated directories: Codex 0.162.1, Claude Code 2.1.300, Grok 1.0.52; official pinned Antigravity ACP 1.1.1 hash/size/real initialize/shutdown verified. These are not live OAuth or paid model tests.
 
-Installer publication remains gated on successful exact-code CI and verified artifact hashes. Live provider OAuth/model responses, real speech and physical Windows upgrade remain unverified; use the acceptance document below.
+## Staging and rollback
 
-# HANDOFF — AIKING Core / AIKINGBOT v0.2
+- Website: https://aikingbot.srv1866690.hstgr.cloud/ and `/en/`; app: https://aikingbot-app.srv1866690.hstgr.cloud/ . Fresh Chromium verifies both rc.2 Download/Open Web paths and the real email sign-in form with no renderer errors; no OTP submitted in this smoke.
+- App image `aikingbot-server:0.3.0-rc.2-abb3798`, clean bundle commit `abb37980f93ddd96b3bd78c7c1f74f6f8abe3978`, bundle SHA-256 `f7c4e6e5e2ec6e1587d213dd33a8f4fa40a8eb474c4d9ab78192d8615114cce6`. `server/current` → `releases/0.3.0-rc.2-abb3798`; image selection persisted in the private env without exposing it. Later commits change packaging/tests/docs, not the deployed server runtime.
+- Website `web/site/current` → `builds/20261015T104546Z-ec89ae8`. Static publication did not restart the web container.
+- Consistent stopped-app backup `/srv/aikingbot-staging/backups/pre-abb3798-20261015T091725Z/data.tar.gz` (~1.4 GB), checksum verified; previous app release/image `0.3.0-rc.2-e1f445b` retained. User confirmed agent deletions/recreations at 09:30–09:37 UTC were their testing. No old data was restored over their current work.
+- Release pointer/feed backup `/srv/aikingbot-staging/backups/release-before-rc2-38720168034/`, including `previous-site.txt`. Release rollback: `node deploy/aikingbot-web/scripts/publish-release.mjs rollback /srv/aikingbot-staging/web 0.3.0-rc.1` using the explicitly authorized staging administrator. Preserve current app data during rollback; never blindly restore the old database.
+- App/web healthy. Public stack smoke: health 200, branded UI, unauthenticated owner API 403, invalid Voice ticket 403. Invalid pairing code 401; forged pairing origin 403. OpenBot production retains its existing image/start time; no production or system permission changes.
 
-Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
-Không chứa secret.
+## Limits and next acceptance
 
-## Codex continuation — 2026-10-15
+This is an **unsigned beta**, not full product acceptance. Physical Windows installation, all four live provider OAuth/model task flows, natural microphone/STT/TTS/native realtime and data preservation through upgrade remain unverified. Use [Windows acceptance](docs/aikingbot/windows-acceptance.md).
 
-**Shipping code pushed: `f55611826d5d6e09062349e8bed62203dac0dfa2` on `AIKINGBOT`.** The eight inherited local Claude commits
-(`81a7721` through `e1f445b`) are preserved, unchanged and pushed in order. New code commits:
+The installed NSIS payload lacks `resources/app-update.yml`. HTTPS feed version/hash/size and binary route were verified, but automatic download/install is **not qualified**. Use manual installer upgrades for this beta; rc.1 also has no default updater. Fix builder-generated updater configuration and qualify a real higher-version, data-preserving update in the next release. Do not promise automatic updates.
 
-- `d824c2e`: managed Grok install remains reachable from browser/remote; verified Antigravity install continues into Google OAuth;
-  official Codex/Grok/Claude login pages open automatically; React effect replay cannot start duplicate automatic logins.
-- `f556118`: workspace membership config cache includes mode/UID/GID, not only timestamps; regression fixtures own their temporary
-  directories; full product/provider patch chain tested for LF/CRLF; packaged startup signals are reported immediately.
+Web staging remains a **shared invited operator workspace**, not a sandbox/workspace per email. Two explicit owners are configured, no wildcard; a fresh uninvited email OTP request returned 403 before sending mail. A prominent logout UI is missing. The user deferred personal workspaces/logout and the reported connector warning to the big update; see [V2 feedback](docs/aikingbot/v2-beta-feedback.md). Keep AIKINGBOT email identity separate from provider OAuth. No live provider result or natural voice call is claimed on the basis of fixtures.
 
-Validation on VPS as `codex-tony` (source/Git/build ACL granted by owner; no system permission change):
-shipping regression **1215/1215**, targeted provider/auth **184/184** (included in shipping suite), Core **89/89**, full patch chain **3/3**;
-renderer/server/Core/shell typechecks pass. Desktop security **128 pass/1 skip**; Electron main-process **752 pass/5 skip**.
-Browser Core/Marketplace/group/routine E2E, Voice fixture and three UI tours pass. Packaged Core/MCP/approval/persistence and packaged
-server isolation/proxies/CLI/backup/restart pass. Standalone rc.2 server smoke **15/15**.
+Detailed evidence: [provider onboarding](docs/aikingbot/provider-onboarding-verification.md), [Capability Parity Matrix](docs/aikingbot/capability-parity-matrix.md), [VPS handoff](docs/aikingbot/vps-staging-handoff.md).
 
-Actual isolated managed dependency downloads/startup passed: Codex **0.162.1**, Claude Code **2.1.300**, Grok **1.0.52**.
-Pinned official Google Antigravity ACP **1.1.1** archive SHA-256, executable sizes, ACP initialize identity/version and shutdown pass.
-**No live provider OAuth/model reply or real microphone/STT/TTS/native realtime acceptance is claimed.**
-
-[Windows/Linux CI 38710665725](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38710665725) is in progress for the pushed code.
-The prior remote run `38690305447` failed the actual packaged desktop 403 check on both OSes; the eight Claude fixes were not in it.
-Current local packaged Linux renderer smoke is blocked *before renderer startup* by SUID sandbox helper ownership/mode on this VPS
-(kernel restricts unprivileged user namespaces). Sandbox was kept enabled; no kernel/ownership/system change was performed.
-CI already provisions the Linux runner sandbox. Physical Windows remains mandatory.
-
-Public staging health 200, unauthenticated pairing POST 403. Existing public rc.1 installer is present and its actual file/manifest hash
-matches: **251959193 bytes**, SHA-256 `c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9`, run **38678359992**, commit `8b98a36`.
-Range 0–99 returns 206. This differs from the historical run-17 artifact below. No new installer/feed or production deployment has occurred.
-The local development server bundle built while source was dirty is test evidence only; use clean exact-commit CI artifacts for publishing.
-
-Permanent changes remain in `apps/desktop-foundation/overrides/` and patch scripts. Generated source is freshly regenerated under
-`.aikingbot-foundation/source`; the previous generated directory/artifacts were preserved at `.aikingbot-foundation/source-claude-e1f445b`.
-An independent verification copy was used while build ACL was pending; canonical source remains this worktree.
-
-Next: finish exact-code Windows/Linux CI, inspect packaged mutation tests and artifacts, verify installer SHA-256, then qualify/publish
-staging/download/update paths. Do not overwrite rc.1 with a failed or unqualified build. Live account/provider and physical-device checks remain separate gates.
-Detailed evidence: [provider onboarding](docs/aikingbot/provider-onboarding-verification.md),
-[Capability Parity Matrix](docs/aikingbot/capability-parity-matrix.md),
-[physical Windows acceptance](docs/aikingbot/windows-acceptance.md).
-
-## VPS staging + website song ngữ + downloads (2026-10-15)
-
-Bàn giao vận hành: [docs/aikingbot/vps-staging-handoff.md](docs/aikingbot/vps-staging-handoff.md). Website VI/EN: https://aikingbot.srv1866690.hstgr.cloud/ ; web app: https://aikingbot-app.srv1866690.hstgr.cloud/ ; source tại apps/website và deploy/aikingbot-web. Installer download và update feed chưa được publish trên VPS, cần kiểm thử beta thật.
+## Historical handoff (superseded by current status above)
 
 ## Claude tiếp quản — TRẠNG THÁI HIỆN TẠI (cập nhật 2026-10-15 ~03:40 UTC)
 

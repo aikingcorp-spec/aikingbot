@@ -41,7 +41,7 @@ A browser attached to a remote host cannot receive that host's loopback callback
   These ran `--version`; they did not borrow the coding session's provider credentials or submit a paid model prompt.
 - Packaged Core → MCP → approval → persisted reply passed outside the checkout. Packaged server isolation, 13 proxies, MCP/CLI, encrypted backup, launcher and compile-cache restart passed.
 - Browser Core/Marketplace/multi-agent/routine functional E2E, Voice fixture and all three clean-profile UI tours passed; standalone server smoke passed all 15 checks.
-- Windows in run `38710665725` stopped before regression execution because the new multiline fixture match did not normalize CRLF. `1a911ea` repairs matching while preserving line endings. [Replacement Windows/Linux CI](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38712009756) is pending; do not count it as passed.
+- Windows in run `38710665725` stopped before regression execution because the new multiline fixture match did not normalize CRLF. `1a911ea` repairs matching while preserving line endings. Original CI 38712009756 passed Linux fully; Windows passed regression/typechecks/security/build/server/Core, then failed a catalog-render race in the last browser tour. Separate qualification 38720168034 now passes the repaired package and all browser suites; see release evidence below.
 - Fresh Linux unpacked package built successfully. Packaged Electron launch on this VPS is blocked before renderer startup by the SUID sandbox helper lacking root ownership/mode 4755 with restricted user namespaces. No kernel/sandbox/ownership change was made; do not count this as a passed packaged renderer test. The existing CI Linux setup explicitly provisions its runner sandbox; fresh Windows remains a separate gate.
 - Regression logs use per-run temp roots. The Linux hook traversal fixture targets the hook's real `/tmp` boundary; a nested TMPDIR must not change what the security assertion exercises.
 
@@ -52,17 +52,14 @@ A browser attached to a remote host cannot receive that host's loopback callback
   real ACP initialize identity/version validation and process shutdown passed using an isolated temporary profile.
   This check did not authenticate Google or call a model. The registry now lists 1.4.0; updating all platform pins requires separately verified artifacts/protocol tests.
 - Staging `/api/health`: HTTP 200. Public unauthenticated POST `/api/auth/pairing`: HTTP 403.
-- Existing published Windows release remains rc.1, commit `8b98a366a099fbfed71ba23208d6e2c64c271149`, CI run `38678359992`.
-  `AIKINGBOT-0.3.0-rc.1-setup.exe`: 251959193 bytes; actual file SHA-256
-  `c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9`, matching the live release manifest.
-  HTTP Range 0–99 returned 206 and Content-Range `bytes 0-99/251959193`.
-  This is the run-16 artifact; do not confuse it with the different run-17 hash in historical HANDOFF tables.
-- Clean rc.2 server bundle `abb37980f93d` and latest VI/EN website are now deployed to the two isolated AIKINGBOT staging projects after a checksum-verified consistent data backup. Both containers are healthy and public stack checks pass. No installer/feed replacement or production service change was made. See the newest VPS handoff block for paths and rollback image.
+- Published Windows V2 beta is rc.2, packaging commit `ec89ae87fc4800532f01fcc9ff370fa2999cb30a`, successful [qualification 38720168034](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38720168034); unchanged application from commit `1a911eae55c2a17d0076dc20b6a16b7a1d296d7c`, original build 38712009756. Original failed Windows job is not reported as green.
+- Original rc.2 package lacked npm CLI. Qualification caught this; permanent `afterPack` now restores the complete official Node/npm tree, preserves licenses and executes npm with an isolated PATH. Windows CI repaired the verified original package, passed real packaged Electron authorized mutations/forged denials/npm execution, rebuilt NSIS, passed all Chromium functional/Voice fixture/tour checks, and uploaded qualified artifact `11966361509`.
+- Final EXE: **278922909 bytes**, SHA-256 `c393131e09d0e486dc008a0b27ca6dab338cd8ae614a780cbc4b337b4673bd0f`. Complete HTTPS public download matches manifest; HTTP Range returns 206. Final NSIS inspection confirms Node/npm CLI, 2383 npm tree files and licenses. rc.1 is retained for rollback; its old hash above in historical handoff must not be used for rc.2.
+- HTTPS Windows feed version/hash/size and its binary route match. NSIS installed payload lacks `app-update.yml`; automatic updater remains unqualified. Use manual installer upgrades for this beta.
+- Clean rc.2 server bundle `abb37980f93d` and VI/EN website `20261015T104546Z-ec89ae8` are deployed to the isolated AIKINGBOT staging projects. App/web healthy, public stack smoke and real Chromium Download/Open Web/email-form checks pass without JS errors. Production and system permissions unchanged.
 
-## Required remaining release gates
+## Remaining beta acceptance
 
-Run regenerated renderer/server/Core typechecks, full shipping regression/security, packaged server/Core/Electron,
-Windows/Linux CI for the final commit, and staging smoke. A successful runtime initialize or mocked OAuth UI test is not a live model acceptance test.
-Fresh physical Windows acceptance must cover no global Node/npm, all three authorized mutations, provider authorization,
-a real task reply, microphone/speaker/voice readiness, account restore/revocation and rc.1 → new installer data preservation.
-Do not publish a new installer until its exact commit's CI, hashes and applicable acceptance gates are recorded.
+The user explicitly chose to publish this unsigned V2 beta first and collect feedback. The release qualification above is automated evidence, not physical or live-provider acceptance. Fresh physical Windows must cover no global Node/npm, all three authorized mutations, provider authorization, a real task reply, microphone/speaker/voice readiness and manual rc.1 → rc.2 data preservation. Actual higher-version auto-update requires fixing the missing installed updater configuration first.
+
+Personal per-account hosted workspaces/execution sandboxes and a prominent logout UI remain deferred; current web staging is a shared invited operator workspace. A fresh uninvited email OTP request was denied with 403 before mail. User-reported connector warning remains to be reproduced. See [V2 feedback](v2-beta-feedback.md).

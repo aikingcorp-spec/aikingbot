@@ -19,3 +19,7 @@ User reported an AIKING-related connector error, while ordinary model answers st
 ## Acceptance still pending
 
 Physical Windows installation without global Node/npm; real OAuth and first task for each requested provider; natural speech and native realtime as separate modes; rc.1 manual upgrade and a later HTTPS-feed upgrade with data preservation. Current fixture/CI evidence does not replace these tests.
+
+## Automatic updater and physical upgrade
+
+The published rc.2 NSIS payload lacks resources/app-update.yml. Public feed/hash/size are valid but automatic download/install is not qualified. Fix builder-generated configuration, then verify a real higher version update and preservation of profiles, agents, chats, attachments, provider credentials, Skills/MCP and settings. Until then use manual installer upgrades after backup; do not promise automatic updating.
