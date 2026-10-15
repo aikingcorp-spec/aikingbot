@@ -15,6 +15,7 @@ on:
       - 'test/**'
       - 'apps/desktop-foundation/**'
       - 'package*.json'
+      - 'deploy/**'
       - '.github/workflows/shipping-candidate.yml'
 permissions:
   contents: read
@@ -83,6 +84,35 @@ jobs:
       - name: Packaged Electron startup and local API isolation
         if: runner.os == 'Linux'
         run: xvfb-run -a node apps/desktop-foundation/packaged-desktop.mjs
+      - name: Server bundle and standalone smoke
+        if: runner.os == 'Linux'
+        run: |
+          node apps/desktop-foundation/server-bundle.mjs
+          node apps/desktop-foundation/server-smoke.mjs
+      - name: Server Docker image and stack check
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          stage="$RUNNER_TEMP/aikingbot-server"; mkdir -p "$stage" "$RUNNER_TEMP/aikingbot-data"
+          tar -xzf .aikingbot-foundation/server-bundle/aikingbot-server-*-linux-x64.tar.gz -C "$stage" --strip-components=1
+          sudo chown 10001:10001 "$RUNNER_TEMP/aikingbot-data"
+          cd "$stage/deploy"
+          sed -e "s#^AIKING_DATA_ROOT=.*#AIKING_DATA_ROOT=$RUNNER_TEMP/aikingbot-data#" aikingbot.env.example > aikingbot.env
+          docker compose --env-file aikingbot.env up -d --build --wait --wait-timeout 300
+          for i in $(seq 1 60); do code=$(docker compose --env-file aikingbot.env logs aikingbot | grep -oE 'pairing code: +[A-Z0-9-]+' | tail -1 | awk '{print $3}'); [ -n "$code" ] && break; sleep 2; done
+          bash scripts/stack-check.sh http://127.0.0.1:18080 bot-staging.example.com "$code" | tee "$GITHUB_WORKSPACE/.aikingbot-foundation/evidence/shipping/server-docker-stack-check.txt"
+          docker compose --env-file aikingbot.env exec -T aikingbot sh -c 'test -x "$AGENT_BROWSER_EXECUTABLE_PATH" && git --version'
+          docker compose --env-file aikingbot.env down
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Linux'
+        with:
+          name: AIKINGBOT-server-linux-x64-${{ github.sha }}
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: error
+          path: |
+            .aikingbot-foundation/server-bundle/*.tar.gz
+            .aikingbot-foundation/server-bundle/SHA256SUMS
       - uses: actions/upload-artifact@v4
         if: always()
         with:

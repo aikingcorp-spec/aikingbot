@@ -1,0 +1,21 @@
+# Behind the host's TLS reverse proxy. The proxy must set X-Forwarded-For and
+# X-Forwarded-Proto (https) and keep the public Host. Requests from private
+# ranges (the host proxy over the Docker bridge) are trusted for those headers.
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+:80 {
+	encode zstd gzip
+	# Third-party webhooks carry their own per-hook secrets.
+	handle /hooks/* {
+		reverse_proxy 127.0.0.1:8800
+	}
+	handle {
+		# Includes the Voice WebSocket (/api/aiking/voice/sessions, /v1/voice/sessions) and SSE.
+		reverse_proxy 127.0.0.1:8799 {
+			flush_interval -1
+		}
+	}
+}

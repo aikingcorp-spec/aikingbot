@@ -10,11 +10,14 @@ Files: [`deploy/aikingbot-server/`](../../deploy/aikingbot-server/). Build tool:
 ```
 Internet ─TLS─▶ host reverse proxy (nginx/Caddy already on the VPS)  ─┐
                                                                        │ 127.0.0.1:18080
-                     ┌──────────── one network namespace ─────────────┴───┐
+                     ┌──── one network namespace, owned by the edge ──┴───┐
                      │ edge (Caddy :80)  ──▶  aikingbot 127.0.0.1:8799 API │
                      │                   └─▶  127.0.0.1:8800 /hooks/*      │
                      └───────── /data (bind mount AIKING_DATA_ROOT) ──────┘
 ```
+
+The edge container owns the namespace and the published port, so an app restart (crash, upgrade, backup) never
+detaches the proxy.
 
 The server only binds loopback. Every remote request reaches it through a proxy with `X-Forwarded-*` headers,
 which the server treats as remote: it needs a paired session. `OMB_LOOPBACK_TRUST=service` (the default here)
@@ -60,7 +63,13 @@ cp aikingbot.env.example aikingbot.env && chmod 600 aikingbot.env && $EDITOR aik
 mkdir -p /srv/aikingbot-staging/server-data && chown 10001:10001 /srv/aikingbot-staging/server-data
 docker compose --env-file aikingbot.env up -d --build
 docker compose --env-file aikingbot.env logs aikingbot | grep -i -A3 pair     # one-time admin code
+bash scripts/stack-check.sh http://127.0.0.1:18080 <public-host> <pairing-code>   # optional acceptance
 ```
+
+A new admin code is printed at every start of the app; each code is single use and expires. `stack-check.sh` with
+a code pairs a throwaway `stack-check` device (revoke it in Settings → Remote access) — omit the code to keep it for
+your browser. Build hosts behind a TLS-inspecting proxy pass its CA for the build only:
+`docker build --secret id=build_ca,src=/path/ca.crt …`.
 
 Add the host vhost from `proxy/nginx-aikingbot.conf` (or `proxy/Caddyfile.host-snippet`) for the staging hostname,
 reload the proxy, open `https://<host>/pair#code=…` and pair the admin browser/desktop. Further devices:
@@ -103,7 +112,8 @@ Voice never approves tools by itself; approvals stay in chat.
 
 ## Backup, restore, logs, upgrades
 
-- Backup: `deploy/scripts/backup.sh <data-root> <backup-dir> "<stop>" "<start>"` stops the app for a consistent copy,
+- Backup: `deploy/scripts/backup.sh <data-root> <backup-dir> "<stop>" "<start>"` (Docker: `docker compose … stop aikingbot`
+  / `start aikingbot`; systemd: `systemctl stop|start aikingbot-server`) stops the app for a consistent copy,
   writes `aikingbot-data-<UTC>.tar.gz` + `.sha256`, keeps 14. Schedule it daily (cron/systemd timer) and copy
   off-site encrypted. The app's own encrypted workspace backup (Settings → Backup) remains available.
 - Restore: `deploy/scripts/restore.sh <archive> <empty-dir>`, then point `AIKING_DATA_ROOT` at it. Test restores on staging.

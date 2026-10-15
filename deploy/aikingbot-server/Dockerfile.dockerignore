@@ -1,0 +1,7 @@
+*
+!duckdb
+!dist-server
+!dist
+!licenses
+!bundle-manifest.json
+!deploy/scripts/container-start.sh

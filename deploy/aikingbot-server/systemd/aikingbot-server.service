@@ -1,0 +1,43 @@
+# AIKINGBOT server without Docker. Install the bundle to /opt/aikingbot-server
+# (scripts/install-systemd.sh does this) and keep configuration in
+# /etc/aikingbot/aikingbot.env. Binds 127.0.0.1:${OMB_PORT}; put the host TLS
+# proxy in front (proxy/nginx-aikingbot.conf).
+[Unit]
+Description=AIKINGBOT server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aikingbot
+Group=aikingbot
+WorkingDirectory=/opt/aikingbot-server
+Environment=NODE_ENV=production
+Environment=AIKING_APP_DIR=/opt/aikingbot-server
+Environment=HOME=/var/lib/aikingbot
+Environment=OMB_DATA_DIR=/var/lib/aikingbot/.aikingbot
+Environment=OMB_STATIC_DIR=/opt/aikingbot-server/dist
+Environment=OMB_DUCKDB_DIR=/opt/aikingbot-server/duckdb
+Environment=OMB_PORT=18799
+Environment=OMB_WEBHOOK_PORT=18800
+EnvironmentFile=/etc/aikingbot/aikingbot.env
+ExecStart=/opt/aikingbot-server/deploy/scripts/container-start.sh
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillMode=mixed
+# Hardening: the data directory is the only writable path.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/aikingbot
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
