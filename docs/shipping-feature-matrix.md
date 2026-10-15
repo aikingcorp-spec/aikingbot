@@ -29,7 +29,8 @@ or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundati
 | Real remote workspace, hosted management | Requires Server | Deploy own server/TLS and pair/enroll; no production host changed |
 | Encrypted backup/restore | Working | Actual export/import, Core and Marketplace files restored; destination pairing identity preserved |
 | Avatars, themes, onboarding, settings, files/media UI | Working | Fresh-profile Chromium/Electron tours: dark/light 1440px and advanced 1000px; no renderer errors |
-| Core images / guest confinement | Remaining Issues | Choose another retained engine; Core rejects unsupported input explicitly |
+| Core image input | Working | PNG/JPEG/GIF/WebP (≤20, 5 MB each) reach the model for that turn; transcripts keep a note; driver + Core tests. Live vision replies need an Anthropic key |
+| Core guest confinement | Remaining Issues | Guest-confined turns still need another retained engine |
 | Voice after backend restart | Remaining Issues | Network reconnect resumes within the same server process; start a new call after server restart |
 | Linux installer, release identity and profile isolation | Working | Actual AppImage/DEB; packaged desktop/Core checks; own profile/protocol/updates; dependency licenses included |
 | Windows installer and CI artifacts | Remaining Issues | Windows/Linux CI running; Windows installer not yet claimed as verified |

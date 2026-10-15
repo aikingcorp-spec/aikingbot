@@ -24,6 +24,8 @@ Nhánh làm việc: **`AIKINGBOT`** (fast-forward từ `stage3/shipping-candidat
    `aikingbot://thread/…` dạng markdown không parse, updater relaunch không lọc deep link organization.
    Cloud account/plan/move/lending chỉ hiện khi có `AIKING_CLOUD_ORIGIN`. Toàn bộ suite Electron main-process
    750 pass/0 fail (Codex để lại 6 fail) và đã thêm vào CI Linux.
+6. AIKING Core nhận ảnh (PNG/JPEG/GIF/WebP, ≤20 ảnh, 5 MB/ảnh): ảnh chỉ gửi model trong lượt đó, transcript giữ ghi
+   chú thay cho bytes; composer cho dán ảnh với agent Core. `build-artifacts.json` ghi commit.
 
 CI:
 - Run 7 `38671558099` (`2dd6b48`): Linux xanh; Windows fail tour avatar (đã sửa ở `c9bea47`).
