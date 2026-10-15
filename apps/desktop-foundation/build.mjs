@@ -34,6 +34,7 @@ if (!options.has("--package-only")) {
     else throw new Error(`No desktop package target for ${process.platform}`);
   }
 }
+if (process.platform === "win32") run(join(repositoryRoot, "apps/desktop-foundation/prepare-provider-runtime.mjs"));
 const platform = { win32: "--win", linux: "--linux", darwin: "--mac" }[process.platform];
 if (!platform) throw new Error("Unsupported desktop platform");
 run("node_modules/electron-builder/cli.js", ["--config", "electron-builder.aiking.cjs", platform, ...(options.has("--dir") ? ["dir"] : []), "--x64", "--publish", "never"]);

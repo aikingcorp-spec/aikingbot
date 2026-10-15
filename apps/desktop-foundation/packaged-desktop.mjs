@@ -45,6 +45,22 @@ try {
   const endpoint = new URL("/api/aiking/marketplace/records", page.url());
   const denied = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "remove", listingId: "not-installed-fixture" }) });
   assert.equal(denied.status, 403, "Packaged API mutations require the desktop connection credential.");
+  // The real desktop renderer must get a private owner capability from Electron.
+  // The nonexistent provider returns 404 only after mutation authorization succeeds.
+  const ownerCheck = await page.evaluate(async () => {
+    const response = await fetch("/api/instances/unknown-aiking-smoke-provider/install", {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}",
+    });
+    return { status: response.status, result: await response.text() };
+  });
+  assert.equal(ownerCheck.status, 404, "The real desktop renderer was denied mutation access: " + ownerCheck.result.slice(0, 300));
+  if (process.platform === "win32") {
+    const runtimeDir = join(sourceRoot, "release", "win-unpacked", "resources", "provider-runtime", "bin");
+    assert.ok(existsSync(join(runtimeDir, "node.exe")), "Packaged Windows provider runtime lacks node.exe");
+    assert.ok(existsSync(join(runtimeDir, "npm.cmd")), "Packaged Windows provider runtime lacks npm.cmd");
+    assert.ok(existsSync(join(runtimeDir, "node_modules", "npm", "bin", "npm-cli.js")), "Packaged Windows provider runtime lacks npm-cli.js");
+  }
+
   assert.equal((await fetch(endpoint, { headers: { origin: "https://untrusted.example" } })).status, 403);
   assert.equal(await page.locator('[data-notice="product-hunt"]').count(), 0, "The packaged app must not promote an upstream launch.");
   await page.screenshot({ path: join(out, "packaged-desktop.png") });
