@@ -74,9 +74,11 @@ try {
   for (const [path, before, after] of expectations) {
     const file = join(sourceRoot, path);
     const original = readFileSync(file, "utf8");
-    assert.ok(original.includes(before), `Pinned branding expectation changed in ${path}`);
+    const normalized = original.replaceAll("\r\n", "\n");
+    assert.ok(normalized.includes(before), `Pinned branding expectation changed in ${path}`);
     if (!originals.has(file)) originals.set(file, original);
-    writeFileSync(file, original.replaceAll(before, after));
+    const adjusted = normalized.replaceAll(before, after);
+    writeFileSync(file, original.includes("\r\n") ? adjusted.replaceAll("\n", "\r\n") : adjusted);
   }
   execFileSync(process.execPath, [join(sourceRoot, "node_modules/vitest/vitest.mjs"), "run", ...tests, "--testTimeout=60000", "--reporter=default", "--reporter=json", `--outputFile.json=${join(out, "compatibility.json")}`], { cwd: sourceRoot, stdio: "inherit", env: {
     ...process.env, TMPDIR: suiteTemp, TMP: suiteTemp, TEMP: suiteTemp, NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost", "::1"].filter(Boolean).join(","),
