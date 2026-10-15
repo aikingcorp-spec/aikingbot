@@ -47,7 +47,7 @@ async function fixture(name, operation) {
         const info = JSON.parse(readFileSync(join(runtimeRoot, "offline-runtime.json"), "utf8"));
         ready = info.pid === child.pid && (await fetch(info.uiUrl, { signal: AbortSignal.timeout(1000) })).ok;
         if (ready && debugPort) ready = (await fetch(`http://127.0.0.1:${debugPort}/json/list`, { signal: AbortSignal.timeout(1000) }).then(r => r.json())).some(page => page.url.startsWith(info.uiUrl));
-      } catch {}
+      } catch { ready = false; }
       if (ready) break;
       if (Date.now() > deadline) throw new Error(`Fixture ${name} startup timed out`);
       await new Promise(resolve => setTimeout(resolve, 250));
