@@ -33,7 +33,7 @@ or physical device was tested. Stage 5 local evidence is in `.aikingbot-foundati
 | Core guest confinement | Remaining Issues | Guest-confined turns still need another retained engine |
 | Voice after backend restart | Remaining Issues | Network reconnect resumes within the same server process; start a new call after server restart |
 | Linux installer, release identity and profile isolation | Working | Actual AppImage/DEB; packaged desktop/Core checks; own profile/protocol/updates; dependency licenses included |
-| Windows installer and CI artifacts | Working (CI) | Run 38678359992 green on Windows/Linux; setup.exe/zip/deb/AppImage + server bundle with SHA-256 in HANDOFF. Install on a physical Windows machine still to be qualified; unsigned |
+| Windows installer and CI artifacts | Working (CI) | Runs 38678359992 and 38680508700 green on Windows/Linux; setup.exe/zip/deb/AppImage + server bundle with SHA-256 in HANDOFF. Install on a physical Windows machine still to be qualified; unsigned |
 | Signed releases and macOS qualification | Remaining Issues | Certificates/notarization and actual macOS runner not supplied; Linux packages are unsigned |
 | Startup/reconnect/process recovery | Working | Packaged restart/worker smoke, bounded recovery tests, clean owner shutdown IPC; Vite cannot bypass cleanup |
 | Vietnamese interface | Remaining Issues | English complete; full Vietnamese localization not implemented |

@@ -33,7 +33,7 @@ CI:
   (race ở trên, run 7 cùng bước đã pass → không phải lỗi product). Installer Windows build/upload được.
 - Run 10/14: fail do 2 race trong test (uninstall record, skill toggle) và cleanup thư mục tạm của server smoke —
   đã sửa (`49245bf`, `09cf355`). Run 9/11/12/13/15 bị hủy vì đã có commit mới hơn.
-- **Run 16 `38678359992` (`8b98a36`): xanh Windows + Linux** — bảng artifact bên dưới.
+- **Run 16 `38678359992` (`8b98a36`) và run 17 `38680508700` (`09cf355`): xanh Windows + Linux** — bảng artifact bên dưới.
 
 Kiểm chứng local (container Linux, Node 24.22.0 `/opt/node24`, root nên không chạy Electron):
 compatibility 1000 pass/1 skip; desktop security 124 pass/2 skip; Core `bun test` 87 pass; renderer + server
@@ -48,23 +48,22 @@ Chưa làm được / cần người vận hành:
   DNS + TLS cho hostname staging/production, (tuỳ chọn) feed update HTTPS, catalog Marketplace đã review.
 - Windows installer chưa cài thử trên máy thật; macOS chưa build. Tiếng Việt UI chưa có.
 
-### Release candidate xanh CI — run 16 `38678359992`, commit `8b98a366a099fbfed71ba23208d6e2c64c271149`
+### Release candidate xanh CI — run 17 `38680508700`, commit `09cf355bd028ef2d96b76eb508d4e846597e785c`
 
 Windows và Linux **đều pass toàn bộ** (tests, regression, security, Electron main-process 757, tours Chromium/Electron,
-installer, packaged server/Core/Electron, server bundle + smoke, Docker image đầy đủ + stack-check).
-Artifact giữ 14 ngày (hết hạn 2026-10-29); trang run: https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992
+installer, packaged server/Core/Electron, server bundle + smoke 15/15, Docker image đầy đủ + stack-check).
+Run trước đó 16 `38678359992` (`8b98a36`, cùng code app) cũng xanh. Artifact giữ 14 ngày (hết hạn 2026-10-29): https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700
 
 | File | Bytes | SHA-256 | Artifact |
 | --- | --- | --- | --- |
-| `AIKINGBOT-0.3.0-rc.1-setup.exe` | 251959193 | `c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9` | [installers-windows](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992/artifacts/11948550462) |
-| `AIKINGBOT-0.3.0-rc.1-x64.zip` (portable) | 354790657 | `a079baddd11bd6b6d16e97ddc12b2a86b0092a5f169fd6e93f3c5b7fb970b43e` | (cùng artifact trên) |
-| `AIKINGBOT-0.3.0-rc.1-amd64.deb` | 260943328 | `b53f35075c3f43346966a6a92f8b73a638a49d1ad575a58b404b5dd33f066167` | [installers-linux](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992/artifacts/11947574792) |
-| `AIKINGBOT-0.3.0-rc.1-x86_64.AppImage` | 307940213 | `da22d8bb18d6427addecf5c8a71d31ec21ab455257fe1e0a5fb6cfbff26337fc` | (cùng artifact trên) |
-| `aikingbot-server-0.3.0-rc.1-linux-x64.tar.gz` | — | `b7a5b12c3a0d3ce9843b9c636d11780d72ab6140e67217b09d586727d358f39c` | [server-linux-x64](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992/artifacts/11947354735) |
+| `AIKINGBOT-0.3.0-rc.1-setup.exe` | 251959192 | `8005e31b323798136f39c314c3be6fd7631d931f5c86cf1733af3e35725d12b9` | [installers-windows](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700/artifacts/11948114726) |
+| `AIKINGBOT-0.3.0-rc.1-x64.zip` (portable) | 354790657 | `4b31f31b5310ff65f558fd70ee0d388738ae768a50d795f88d3651a3a41452f3` | (cùng artifact) |
+| `AIKINGBOT-0.3.0-rc.1-amd64.deb` | 260941620 | `7e392538684b0c23d1bfb610339738be6d348b619b0f5c5a9ed70596676937a4` | [installers-linux](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700/artifacts/11948263498) |
+| `AIKINGBOT-0.3.0-rc.1-x86_64.AppImage` | 307940193 | `89dd47aeff188d98b650ceb6a1298927c88771d19ea1f880d3d748f4076ebcb6` | (cùng artifact) |
+| `aikingbot-server-0.3.0-rc.1-linux-x64.tar.gz` | — | `f81c37e77077f945b513ee26d68bfbaaf21930d7aa0319a83eee1202d7908714` | [server-linux-x64](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700/artifacts/11948343559) |
 
-Evidence: [linux](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992/artifacts/11947624680),
-[windows](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38678359992/artifacts/11948455589).
-Installer chưa ký (Windows SmartScreen sẽ cảnh báo). Commit sau `8b98a36` chỉ sửa test flaky (`09cf355`) và tài liệu.
+Evidence: [linux](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700/artifacts/11947998712), [windows](https://github.com/aikingcorp-spec/AIKINGX_Bot/actions/runs/38680508700/artifacts/11948384482).
+Installer chưa ký (Windows SmartScreen sẽ cảnh báo). Sau `09cf355` chỉ có commit tài liệu.
 
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
 
