@@ -1,4 +1,4 @@
-name: AIKINGBOT rc.2 existing Windows candidate qualification
+name: AIKINGBOT rc.2 repaired Windows candidate qualification
 on:
   push:
     branches: [AIKINGBOT]
@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euo pipefail
           git diff --name-only 1a911eae55c2a17d0076dc20b6a16b7a1d296d7c HEAD > candidate-diff.txt
-          node --input-type=module -e 'import fs from "node:fs"; const files=fs.readFileSync("candidate-diff.txt","utf8").trim().split(/\r?\n/).filter(Boolean); for (const p of files) if (!(p==="HANDOFF.md" || p.startsWith("docs/") || ["apps/website/i18n/vi.json","apps/website/i18n/en.json","apps/desktop-foundation/ui-tour.mjs",".github/workflows/qualify-windows-rc2.yml"].includes(p))) throw Error("Candidate runtime changed: "+p); console.log("Candidate runtime unchanged; qualification changes only:",files);'
+          node --input-type=module -e 'import fs from "node:fs"; const files=fs.readFileSync("candidate-diff.txt","utf8").trim().split(/\r?\n/).filter(Boolean); for (const p of files) if (!(p==="HANDOFF.md" || p.startsWith("docs/") || ["apps/website/i18n/vi.json","apps/website/i18n/en.json","apps/desktop-foundation/ui-tour.mjs","apps/desktop-foundation/packaged-desktop.mjs","apps/desktop-foundation/overrides/electron-builder.aiking.cjs","apps/desktop-foundation/overrides/aiking/packaged-provider-runtime.cjs",".github/workflows/qualify-windows-rc2.yml"].includes(p))) throw Error("Candidate runtime changed: "+p); console.log("Candidate runtime unchanged; qualification changes only:",files);'
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -67,7 +67,24 @@ jobs:
           }
           Copy-Item $manifestFile.FullName mirror/build-artifacts.json
           if (!(Test-Path .aikingbot-foundation/source/release/win-unpacked/AIKINGBOT.exe)) { throw 'Missing original packaged executable' }
-      - name: Packaged Electron authorization and provider runtime on original candidate
+      - name: Prepare complete Node/npm and repair original package resources
+        run: |
+          node apps/desktop-foundation/prepare-provider-runtime.mjs
+          node -e "require('./.aikingbot-foundation/source/aiking/packaged-provider-runtime.cjs').installPackagedProviderRuntime(require('path').resolve('.aikingbot-foundation/source/aiking/provider-runtime/bin'),require('path').resolve('.aikingbot-foundation/source/release/win-unpacked/resources'))"
+      - name: Build repaired Windows EXE and ZIP from unchanged packaged application
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/electron-builder/cli.js --config electron-builder.aiking.cjs --prepackaged release/win-unpacked --win nsis zip --x64 --publish never
+      - name: Hash newly built installer and record original application provenance
+        shell: pwsh
+        run: |
+          Remove-Item mirror/AIKINGBOT-0.3.0-rc.2-setup.exe
+          Copy-Item .aikingbot-foundation/source/release/AIKINGBOT-0.3.0-rc.2-setup.exe mirror/
+          $f = Get-Item mirror/AIKINGBOT-0.3.0-rc.2-setup.exe
+          $hash = (Get-FileHash $f.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $($f.Name)" | Set-Content mirror/SHA256SUMS -Encoding ascii
+          Copy-Item mirror/build-artifacts.json mirror/original-build-artifacts.json
+          @{ commit=$env:GITHUB_SHA; applicationCommit='1a911eae55c2a17d0076dc20b6a16b7a1d296d7c'; platform='win32'; architecture='x64'; version='0.3.0-rc.2'; builtAt=[DateTime]::UtcNow.ToString('o'); artifacts=@(@{name=$f.Name; bytes=$f.Length; sha256=$hash}) } | ConvertTo-Json -Depth 5 | Set-Content mirror/build-artifacts.json
+      - name: Packaged Electron authorization and provider runtime on repaired candidate
         run: node apps/desktop-foundation/packaged-desktop.mjs
       - name: Chromium dependencies
         working-directory: apps/desktop-foundation
@@ -77,10 +94,10 @@ jobs:
         run: node node_modules/vite/bin/vite.js build
       - name: All Chromium functional, Voice and UI tours with catalog wait
         run: node apps/desktop-foundation/verify-shipping.mjs
-      - name: Record qualification without rebuilding installer bytes
+      - name: Record qualification and repackaged installer provenance
         shell: pwsh
         run: |
-          @{ candidateCommit='1a911eae55c2a17d0076dc20b6a16b7a1d296d7c'; candidateRun='38712009756'; qualificationCommit=$env:GITHUB_SHA; qualificationRun=$env:GITHUB_RUN_ID; rebuilt=$false; packagedDesktopPassed=$true; chromiumPassed=$true; physicalWindowsVerified=$false; personalWorkspaceIsolationVerified=$false; liveProviderVerified=$false } | ConvertTo-Json | Set-Content mirror/qualification.json
+          @{ candidateCommit='1a911eae55c2a17d0076dc20b6a16b7a1d296d7c'; candidateRun='38712009756'; qualificationCommit=$env:GITHUB_SHA; qualificationRun=$env:GITHUB_RUN_ID; repackaged=$true; applicationRebuilt=$false; packagedDesktopPassed=$true; chromiumPassed=$true; physicalWindowsVerified=$false; personalWorkspaceIsolationVerified=$false; liveProviderVerified=$false } | ConvertTo-Json | Set-Content mirror/qualification.json
       - uses: actions/upload-artifact@v4
         with:
           name: AIKINGBOT-rc2-qualified-windows-installer

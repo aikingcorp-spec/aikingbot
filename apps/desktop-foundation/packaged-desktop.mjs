@@ -1,6 +1,6 @@
 // Copyright (c) 2026 AIKING.
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
@@ -76,6 +76,13 @@ try {
     assert.ok(existsSync(join(runtimeDir, "node.exe")), "Packaged Windows provider runtime lacks node.exe");
     assert.ok(existsSync(join(runtimeDir, "npm.cmd")), "Packaged Windows provider runtime lacks npm.cmd");
     assert.ok(existsSync(join(runtimeDir, "node_modules", "npm", "bin", "npm-cli.js")), "Packaged Windows provider runtime lacks npm-cli.js");
+    const npm = spawnSync(join(runtimeDir, "node.exe"), [join(runtimeDir, "node_modules/npm/bin/npm-cli.js"), "--version"], {
+      cwd: scratch, encoding: "utf8", timeout: 30000,
+      env: { SystemRoot: process.env.SystemRoot, PATH: runtimeDir, HOME: scratch, USERPROFILE: scratch, TEMP: scratch, TMP: scratch },
+    });
+    assert.equal(npm.error, undefined, "Packaged npm must launch without global Node/npm");
+    assert.equal(npm.status, 0, "Packaged npm failed: " + npm.stderr);
+    assert.match(npm.stdout.trim(), /^\d+\.\d+\.\d+$/);
   }
 
   assert.equal((await fetch(endpoint, { headers: { origin: "https://untrusted.example" } })).status, 403);

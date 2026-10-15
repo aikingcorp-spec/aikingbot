@@ -1,3 +1,9 @@
+## Windows package gate caught missing npm — repair in progress
+
+Qualification run `38716918900` confirmed the three authorized packaged mutations work on Windows and forged/external requests remain denied, then failed because `provider-runtime/bin/node_modules/npm/bin/npm-cli.js` was missing from the shipped package. Original rc.2 candidate is **not qualified and must not be published**. Node/npm copying at source preparation was insufficient. The builder now restores the complete runtime in `afterPack`, preserves licenses and actually executes packaged npm with an isolated PATH. The same check is added to the packaged desktop test.
+
+To avoid recompiling an unchanged application, the repair workflow verifies original CI hashes, extracts the original portable application, adds the complete official Node/npm tree, builds a new NSIS installer/ZIP in CI, hashes the new installer, then runs packaged authorization/npm and the full browser suites. New installer bytes and build commit must replace the rejected original hash in any publication. Source guard permits only the named Windows packaging fixes and tests; application runtime remains the previously typechecked/regression-tested code. No original installer hash may be reused for the repaired output.
+
 ## V2 beta release scope and Windows qualification — 2026-10-15
 
 User explicitly requested shipping the existing V2/rc.2 beta first and collecting feedback for a later big update. Personal per-account workspaces/execution sandboxes and a prominent workspace logout are **not implemented in this candidate**. The current VPS is a shared operator staging workspace, not a per-person hosting product. Two configured owner addresses have admin access; a fresh uninvited email request was verified to return 403 before any OTP is sent. Do not advertise personal tenant isolation. User reported a connector error with an otherwise successful model answer; exact provider/connector error remains to be captured.

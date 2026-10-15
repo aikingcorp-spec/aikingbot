@@ -15,6 +15,13 @@ config.extraResources.push({ from: "aiking/licenses", to: "licenses/AIKING-Core-
 // The app installs each provider on demand with explicit user consent and OAuth.
 if (process.platform === "win32") {
   config.extraResources.push({ from: "aiking/provider-runtime/bin", to: "provider-runtime/bin" });
+  const originalAfterPack = config.afterPack;
+  config.afterPack = async (context) => {
+    const { pathToFileURL } = require("node:url");
+    await (await import(pathToFileURL(path.resolve(__dirname, originalAfterPack)).href)).default(context);
+    const resources = context.packager.getResourcesDir(context.appOutDir);
+    require("./aiking/packaged-provider-runtime.cjs").installPackagedProviderRuntime(path.join(__dirname, "aiking/provider-runtime/bin"), resources);
+  };
 }
 
 config.mac.extendInfo.NSMicrophoneUsageDescription = "AIKINGBOT uses the microphone for voice calls and dictation.";
