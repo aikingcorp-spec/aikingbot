@@ -9,9 +9,10 @@ import { foundationRoot, repositoryRoot } from "./setup.mjs";
 import { patchIntegration } from "./integration-patches.mjs";
 import { patchShipping } from "./shipping-patches.mjs";
 import { patchProviderOnboarding } from "./provider-onboarding-patches.mjs";
+import { patchProduct, PRODUCT_PATCHED_FILES } from "./product-patches.mjs";
 
 const files = ["src/components/EngineSetup.tsx", "src/components/DeviceSignIn.tsx", "src/components/ClaudeSignIn.tsx", "package.json", "src/styles.css", "server/routes/desktop-viewer.ts", "server/config.ts", "server/contracts.ts", "server/index.ts", "server/skills.ts", "scripts/control-omb.ts", "electron/main.mjs", "electron/save-file.mjs", "electron/environments.cjs", "electron/startup-screen.mjs", "electron/cua.mjs", "electron/cua-linux-runtime.cjs", "electron/resources/speech-helper-Info.plist", "electron/companion-account-service.mjs", "electron/cloud-account.mjs", "electron/updater.mjs", "build/linux-after-install.sh", "build/linux-after-remove.sh", "build/linux-openmausbot-browser.apparmor", "scripts/after-pack.mjs", "scripts/bundle-server.mjs", "electron/save-file.node-test.mjs", "electron/server-supervisor.node-test.mjs", "scripts/linux-after-install.test.mjs"];
-files.push("src/lib/notices.ts");
+files.push("src/lib/notices.ts", ...PRODUCT_PATCHED_FILES.filter((path) => !files.includes(path)));
 const pin = JSON.parse(readFileSync(join(foundationRoot, "source.lock.json"))).commit;
 for (const ending of ["LF", "CRLF"]) it(`applies all pinned integration/shipping patches to ${ending} input`, () => {
   const target = mkdtempSync(join(tmpdir(), "aiking-patches-"));
@@ -23,7 +24,7 @@ for (const ending of ["LF", "CRLF"]) it(`applies all pinned integration/shipping
       text = text.replaceAll("\r\n", "\n"); if (ending === "CRLF") text = text.replaceAll("\n", "\r\n");
       const destination = join(target, path); mkdirSync(dirname(destination), { recursive: true }); writeFileSync(destination, text);
     }
-    patchIntegration(target); const pkg = JSON.parse(readFileSync(join(target, "package.json"))); patchShipping(target, pkg); patchProviderOnboarding(target);
+    patchIntegration(target); const pkg = JSON.parse(readFileSync(join(target, "package.json"))); patchShipping(target, pkg); patchProduct(target); patchProviderOnboarding(target);
     assert.equal(pkg.version, "0.3.0-rc.2");
     const config = readFileSync(join(target, "server/config.ts"), "utf8");
     assert.match(config, /aikingCore: \{ driver: "aiking-core"/); assert.ok(config.includes('join(homedir(), ".aikingbot")'));

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runtimeRoot, sourceRoot } from "./setup.mjs";
 // Native package fixtures model installed, shareable binaries and require a normal build umask.
@@ -20,6 +21,7 @@ const expectations = [
     ["src/components/EngineSetup.test.ts", "separate from MausBot Cloud and API billing", "separate from AIKINGBOT Cloud and API billing"],
     ["src/components/EngineSetup.test.ts", "on the computer running OpenMausBot", "on the computer running AIKINGBOT"],
     ["server/config.test.ts", "toBe(`OpenMaus keeps ${name}", "toBe(`AIKINGBOT keeps ${name}"],
+    ["server/config.test.ts", 'it.skipIf(process.platform === "win32")("sees a change of permissions or owner on the next call", () => {\n    writeSettled({ members: ["one@example.test"] });', 'it.skipIf(process.platform === "win32")("sees a change of permissions or owner on the next call", () => {\n    writeSettled({ members: ["one@example.test"] });\n    chmodSync(path, 0o644);'],
     ["src/components/EnginesSettings.test.ts", "bot(s) use this", "agent(s) use this"],
     ["src/components/EnginesSettings.test.ts", "Open API keys", "Open Connections"],
     ["src/components/EnginesSettings.test.ts", "open Settings → API keys on the computer running OpenMausBot", "open Settings → Connections on the computer running AIKINGBOT"],
@@ -32,6 +34,7 @@ const expectations = [
     ["server/people-invite.test.ts", '".openmausbot"', '".aikingbot"'],
     ["server/email-signin.test.ts", "/not on this server's sign-in list/", "/not a member of this workspace yet/"],
     ["server/people-invite.test.ts", "/not on this server's sign-in list/", "/not a member of this workspace yet/"],
+    ["scripts/linux-after-install.test.mjs", 'const escaped = path.join(fs.realpathSync(os.tmpdir()), "..", path.relative("/", root));', 'const escaped = path.join("/tmp", "..", path.relative("/", root));'],
     ["scripts/linux-after-install.test.mjs", 'it("reads numeric procfs sysctls without byte-at-a-time shell reads"', 'it.skipIf(!fs.existsSync("/proc/sys/kernel/core_uses_pid"))("reads numeric procfs sysctls without byte-at-a-time shell reads"'],
   ] : []),
 ];
@@ -61,9 +64,11 @@ const tests = [
   ] : []),
 ];
 const originals = new Map();
+// Each run owns its fixture logs, including when the previous operator used a different Unix account.
+const suiteTemp = mkdtempSync(join(tmpdir(), "aiking-shipping-tests-"));
 writeFileSync(join(out, "compatibility-fixture-adjustments.json"), `${JSON.stringify({
   expectedProduct: "AIKINGBOT", adjustments: expectations.map(([path, before, after]) => ({ path, before, after })),
-  reason: "Pinned tests expect upstream wording/profile/protocol. Anthropic reload includes Core. Use a standard 022 umask for native fixtures. Skip the procfs-only fixture when this container does not expose its read-only sysctl. The restart HTTP budget is 10 seconds. Allow 60 seconds per test: authenticated backup rejection cases perform multiple real password KDFs and exceeded 20 seconds under cloud CPU contention. Scheduler timings and assertions are unchanged.",
+  reason: "Pinned tests expect upstream wording/profile/protocol. Anthropic reload includes Core. Use a standard 022 umask for native fixtures. Skip the procfs-only fixture when this container does not expose its read-only sysctl. The permissions fixture explicitly starts at 0644 before testing a change to 0600: earlier secure config saves can already leave that mode in place. Fixture logs use a fresh per-run temporary root instead of another operator's /tmp directory. The restart HTTP budget is 10 seconds. Allow 60 seconds per test: authenticated backup rejection cases perform multiple real password KDFs and exceeded 20 seconds under cloud CPU contention. Scheduler timings and assertions are unchanged.",
 }, null, 2)}\n`);
 try {
   for (const [path, before, after] of expectations) {
@@ -74,8 +79,9 @@ try {
     writeFileSync(file, original.replaceAll(before, after));
   }
   execFileSync(process.execPath, [join(sourceRoot, "node_modules/vitest/vitest.mjs"), "run", ...tests, "--testTimeout=60000", "--reporter=default", "--reporter=json", `--outputFile.json=${join(out, "compatibility.json")}`], { cwd: sourceRoot, stdio: "inherit", env: {
-    ...process.env, NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost", "::1"].filter(Boolean).join(","),
+    ...process.env, TMPDIR: suiteTemp, TMP: suiteTemp, TEMP: suiteTemp, NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost", "::1"].filter(Boolean).join(","),
   } });
 } finally {
   for (const [file, original] of originals) writeFileSync(file, original);
+  rmSync(suiteTemp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 }

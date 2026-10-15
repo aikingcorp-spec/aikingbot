@@ -23,6 +23,10 @@ export function patchProduct(source) {
     ['import { useChatErrorClear } from "./chat-error";', 'import { useChatErrorClear } from "./chat-error";\nimport { friendlyAccessError } from "@/aiking/access-errors";'],
     ['    throw new ApiError(message, res.status, body);\n  }\n  return body;\n}', '    throw new ApiError(friendlyAccessError(res.status, message), res.status, body);\n  }\n  return body;\n}']);
 
+  // Permissions/ownership must invalidate cached workspace membership even on filesystems with coarse change times.
+  edit("server/config.ts",
+    ['stamp = `${file.ino}:${file.size}:${file.mtimeNs}:${file.ctimeNs}`;', 'stamp = `${file.ino}:${file.size}:${file.mtimeNs}:${file.ctimeNs}:${file.mode}:${file.uid}:${file.gid}`;']);
+
   // AIKING_ACCOUNT_API_URL selects the AIKINGBOT Auth API; without it the upstream control plane contract is unchanged.
   edit("server/account-signin.ts",
     ['import type { Scope } from "./sessions.ts";', 'import type { Scope } from "./sessions.ts";\nimport { accountApiOrigin, createAikingAccountClient } from "./aiking/account-api.ts";'],

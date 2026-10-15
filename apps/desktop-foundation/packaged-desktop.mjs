@@ -26,7 +26,7 @@ let browser; let ok = false; let failure; const errors = [];
 try {
   const deadline = Date.now() + 120000;
   for (;;) {
-    if (child.exitCode !== null) throw new Error(`Packaged desktop exited (${child.exitCode}): ${output.slice(-3000)}`);
+    if (child.exitCode !== null || child.signalCode !== null) throw new Error(`Packaged desktop exited (${child.signalCode || child.exitCode}): ${output.slice(-3000)}`);
     try { browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`); break; } catch {}
     if (Date.now() > deadline) throw new Error("Packaged desktop did not expose its owned debug endpoint");
     await new Promise(resolve => setTimeout(resolve, 300));
