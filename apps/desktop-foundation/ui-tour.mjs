@@ -239,14 +239,15 @@ await step("marketplace-skill-assign", async () => {
 
 await step("marketplace-skill-toggle-remove", async () => {
   const row = page.locator(`[data-skill-agent="${skillAgentId}"]`);
+  // The row updates as the request is sent; read the server until it has applied the change (bounded).
+  const skill = async () => (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills.find((entry) => entry.name === "campaign-brief");
+  const settled = async (check) => { for (const deadline = Date.now() + 15_000; !check(await skill()) && Date.now() < deadline;) await new Promise((resolve) => setTimeout(resolve, 250)); return skill(); };
   await row.getByRole("checkbox", { name: "Use for Skill QA" }).uncheck();
   await row.getByText("Off").waitFor({ timeout: 30_000 });
-  let listed = (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills;
-  assert.equal(listed.find((skill) => skill.name === "campaign-brief")?.enabled, false);
+  assert.equal((await settled((entry) => entry?.enabled === false))?.enabled, false);
   await row.getByRole("button", { name: "Remove from Skill QA" }).click();
   await row.getByRole("button", { name: "Add to Skill QA" }).waitFor({ timeout: 30_000 });
-  listed = (await fetch(`${info.apiUrl}/api/bots/${skillAgentId}/skills`).then((r) => r.json())).skills;
-  assert.equal(listed.some((skill) => skill.name === "campaign-brief"), false);
+  assert.equal(await settled((entry) => entry === undefined), undefined);
 });
 
 await step("marketplace-mcp-install-connected", async () => {

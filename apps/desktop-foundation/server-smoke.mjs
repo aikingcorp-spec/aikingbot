@@ -107,5 +107,6 @@ try {
   console.log(`server smoke: ${checks.length} checks passed`);
 } finally {
   if (server && server.exitCode === null) server.kill("SIGKILL");
-  rmSync(root, { recursive: true, force: true });
+  // `serve` stops its server child asynchronously; retry while the last writes settle.
+  rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
 }
