@@ -1,0 +1,97 @@
+name: AIKINGBOT rc.2 existing Windows candidate qualification
+on:
+  push:
+    branches: [AIKINGBOT]
+    paths: ['.github/workflows/qualify-windows-rc2.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qualify:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Ensure candidate runtime source is unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only 1a911eae55c2a17d0076dc20b6a16b7a1d296d7c HEAD > candidate-diff.txt
+          node --input-type=module -e 'import fs from "node:fs"; const files=fs.readFileSync("candidate-diff.txt","utf8").trim().split(/\r?\n/).filter(Boolean); for (const p of files) if (!(p==="HANDOFF.md" || p.startsWith("docs/") || ["apps/website/i18n/vi.json","apps/website/i18n/en.json","apps/desktop-foundation/ui-tour.mjs",".github/workflows/qualify-windows-rc2.yml"].includes(p))) throw Error("Candidate runtime changed: "+p); console.log("Candidate runtime unchanged; qualification changes only:",files);'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix apps/desktop-foundation --ignore-scripts
+      - run: node apps/desktop-foundation/setup.mjs
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38712009756
+          name: AIKINGBOT-installers-windows-1a911eae55c2a17d0076dc20b6a16b7a1d296d7c
+          github-token: ${{ github.token }}
+          path: candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 38712009756
+          name: AIKINGBOT-evidence-windows-1a911eae55c2a17d0076dc20b6a16b7a1d296d7c
+          github-token: ${{ github.token }}
+          path: candidate-evidence
+      - name: Verify original manifest and extract original portable package
+        shell: pwsh
+        run: |
+          $manifestFile = Get-ChildItem candidate-evidence -Recurse -Filter build-artifacts.json
+          if (@($manifestFile).Count -ne 1) { throw 'Expected one original build manifest' }
+          $manifest = Get-Content $manifestFile.FullName -Raw | ConvertFrom-Json
+          if ($manifest.commit -ne '1a911eae55c2a17d0076dc20b6a16b7a1d296d7c' -or $manifest.platform -ne 'win32' -or $manifest.version -ne '0.3.0-rc.2') { throw 'Wrong candidate provenance' }
+          New-Item -ItemType Directory -Force mirror | Out-Null
+          foreach ($entry in $manifest.artifacts) {
+            $file = Get-ChildItem candidate -Recurse -File | Where-Object Name -eq $entry.name
+            if (@($file).Count -ne 1 -or $file.Length -ne $entry.bytes) { throw "Wrong candidate size: $($entry.name)" }
+            if ((Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw "Wrong candidate hash: $($entry.name)" }
+            if ($entry.name -eq 'AIKINGBOT-0.3.0-rc.2-x64.zip') { Expand-Archive $file.FullName -DestinationPath .aikingbot-foundation/source/release/win-unpacked }
+            if ($entry.name -eq 'AIKINGBOT-0.3.0-rc.2-setup.exe') {
+              Copy-Item $file.FullName mirror/
+              "$($entry.sha256)  $($entry.name)" | Set-Content mirror/SHA256SUMS -Encoding ascii
+            }
+          }
+          Copy-Item $manifestFile.FullName mirror/build-artifacts.json
+          if (!(Test-Path .aikingbot-foundation/source/release/win-unpacked/AIKINGBOT.exe)) { throw 'Missing original packaged executable' }
+      - name: Packaged Electron authorization and provider runtime on original candidate
+        run: node apps/desktop-foundation/packaged-desktop.mjs
+      - name: Chromium dependencies
+        working-directory: apps/desktop-foundation
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium
+      - name: Build renderer fixture only
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/vite/bin/vite.js build
+      - name: All Chromium functional, Voice and UI tours with catalog wait
+        run: node apps/desktop-foundation/verify-shipping.mjs
+      - name: Record qualification without rebuilding installer bytes
+        shell: pwsh
+        run: |
+          @{ candidateCommit='1a911eae55c2a17d0076dc20b6a16b7a1d296d7c'; candidateRun='38712009756'; qualificationCommit=$env:GITHUB_SHA; qualificationRun=$env:GITHUB_RUN_ID; rebuilt=$false; packagedDesktopPassed=$true; chromiumPassed=$true; physicalWindowsVerified=$false; personalWorkspaceIsolationVerified=$false; liveProviderVerified=$false } | ConvertTo-Json | Set-Content mirror/qualification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AIKINGBOT-rc2-qualified-windows-installer
+          path: mirror/
+          compression-level: 0
+          retention-days: 14
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: AIKINGBOT-rc2-windows-qualification-evidence
+          path: .aikingbot-foundation/evidence/shipping/
+          include-hidden-files: true
+          retention-days: 14

@@ -188,6 +188,8 @@ let producerId = null;
 
 await step("marketplace-agents", async () => {
   await openMarket("Agents");
+  // The selected tab can render before the asynchronous catalog cards arrive.
+  await market().locator("[data-market-card]").nth(7).waitFor({ timeout: 15000 });
   assert.ok(await market().locator("[data-market-card]").count() >= 8);
 });
 
