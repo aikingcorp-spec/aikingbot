@@ -59,6 +59,10 @@ export function toAgents(input) {
 const ADDED = {
   "settings.group.connectors": "Connectors",
 };
+// AIKINGBOT wording for upstream keys: the first-run profile stays on this computer (no mailing list).
+const REWORDED = {
+  "onboarding.intro": "Agents that do real work on their own computer. Tell us your name and email to set up AIKINGBOT on this computer. They stay on this computer.",
+};
 
 const upstream = JSON.parse(readFileSync(source, "utf8"));
 const out = {};
@@ -68,7 +72,7 @@ for (const [key, value] of Object.entries(upstream)) {
   if (next !== value) changed += 1;
   out[key] = next;
 }
-Object.assign(out, ADDED);
+Object.assign(out, ADDED, REWORDED);
 mkdirSync(dirname(target), { recursive: true });
 writeFileSync(target, `${JSON.stringify(out, null, 2)}\n`);
 console.log(`Wrote ${target}: ${changed} of ${Object.keys(upstream).length} strings changed.`);

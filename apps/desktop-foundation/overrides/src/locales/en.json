@@ -1846,7 +1846,7 @@
   "approvalMode.customLocalOnly": "Custom approval must be changed in the local packaged desktop app",
   "approvalMode.customLocalOnlyDot": "Custom approval must be changed in the local packaged desktop app.",
   "onboarding.welcome": "Welcome to {app}",
-  "onboarding.intro": "Agents that do real work on their own computer. Tell us who you are and we’ll let you know when big things ship.",
+  "onboarding.intro": "Agents that do real work on their own computer. Tell us your name and email to set up AIKINGBOT on this computer. They stay on this computer.",
   "onboarding.name": "Your name",
   "onboarding.continue": "Continue",
   "onboarding.profile.error": "Couldn't save your details. Try again, or choose Maybe later.",
