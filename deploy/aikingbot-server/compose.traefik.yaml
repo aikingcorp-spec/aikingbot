@@ -1,0 +1,20 @@
+# Route a public hostname to the edge through a Traefik that already owns 80/443
+# on the VPS (docker provider, an ACME resolver and a "websecure" entrypoint).
+# The edge stays published on loopback for local checks; Traefik reaches it on
+# the project network, so no new host port is opened.
+#
+#   docker compose --env-file aikingbot.env -f compose.yaml -f compose.traefik.yaml up -d
+#
+# aikingbot.env: AIKING_TRAEFIK_HOST=<public hostname>; optional
+# AIKING_TRAEFIK_RESOLVER (default letsencrypt), AIKING_TRAEFIK_ENTRYPOINT (default websecure).
+services:
+  edge:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${COMPOSE_PROJECT_NAME:?set COMPOSE_PROJECT_NAME}_default"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${AIKING_TRAEFIK_HOST:?set AIKING_TRAEFIK_HOST}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=${AIKING_TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=${AIKING_TRAEFIK_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}-hsts"
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-hsts.headers.stsSeconds=31536000"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80"
