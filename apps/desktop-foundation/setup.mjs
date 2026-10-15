@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { patchIntegration } from "./integration-patches.mjs";
 import { patchShipping } from "./shipping-patches.mjs";
+import { patchBranding } from "./branding-patches.mjs";
 
 export const foundationRoot = dirname(fileURLToPath(import.meta.url));
 export const repositoryRoot = resolve(foundationRoot, "../..");
@@ -38,8 +39,9 @@ export function prepareSource() {
   pkg.productName = "AIKINGBOT";
   pkg.description = "AIKINGBOT desktop with Core, voice and agent teams, based on the Apache-2.0 OpenMausBot edition.";
   patchShipping(sourceRoot, pkg);
+  const branded = patchBranding(sourceRoot);
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
-  writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", edition: "oss", coreIntegrated: true }, null, 2)}\n`);
+  writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", brandedFiles: branded.length, edition: "oss", coreIntegrated: true }, null, 2)}\n`);
   console.log(`Prepared AIKINGBOT from ${lock.repository} @ ${actual}; enterprise/ excluded.`);
 }
 

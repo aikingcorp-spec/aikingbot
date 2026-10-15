@@ -14,10 +14,12 @@ const expectations = [
   ["src/lib/live-call-media.test.ts", "Live calls need a microphone, and this window can't use one. Open OpenMausBot at a secure https address to make the call.", "Live calls need a microphone, and this window can't use one. Open AIKINGBOT at a secure https address to make the call."],
   ["src/components/BrowserPanel.test.ts", "It goes only to the page. OpenMausBot does not keep, log or show it.", "It goes only to the page. AIKINGBOT does not keep, log or show it."],
   ["server/routines-startup.test.ts", "AbortSignal.timeout(2_000)", "AbortSignal.timeout(10_000)"],
+  ["server/routines.test.ts", 'error: "OpenMausBot restarted while this routine was running"', 'error: "AIKINGBOT restarted while this routine was running"'],
   ...(stage === "shipping" ? [
     ["src/components/EngineSetup.test.ts", "Open API keys", "Open Connections"],
     ["src/components/EngineSetup.test.ts", "separate from MausBot Cloud and API billing", "separate from AIKINGBOT Cloud and API billing"],
     ["src/components/EngineSetup.test.ts", "on the computer running OpenMausBot", "on the computer running AIKINGBOT"],
+    ["server/config.test.ts", "toBe(`OpenMaus keeps ${name}", "toBe(`AIKINGBOT keeps ${name}"],
     ["src/components/EnginesSettings.test.ts", "bot(s) use this", "agent(s) use this"],
     ["src/components/EnginesSettings.test.ts", "Open API keys", "Open Connections"],
     ["src/components/EnginesSettings.test.ts", "open Settings → API keys on the computer running OpenMausBot", "open Settings → Connections on the computer running AIKINGBOT"],

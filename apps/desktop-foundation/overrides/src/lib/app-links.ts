@@ -1,9 +1,10 @@
 export const APP_NAME = "AIKINGBOT";
 export const APP_REPOSITORY = "https://github.com/aikingcorp-spec/AIKINGX_Bot";
 export const UPSTREAM_REPOSITORY = "https://github.com/milind-soni/OpenMausBot";
-export const DOCS_URL = `${APP_REPOSITORY}/tree/main/docs`;
+export const DOCS_REF = "AIKINGBOT";
+export const DOCS_URL = `${APP_REPOSITORY}/tree/${DOCS_REF}/docs/aikingbot`;
 export const HELP_CENTER_URL = DOCS_URL;
-export const APPROVAL_LEVELS_URL = `${APP_REPOSITORY}/blob/main/docs/approval-levels.md`;
+export const APPROVAL_LEVELS_URL = `${APP_REPOSITORY}/blob/${DOCS_REF}/docs/aikingbot/approval-levels.md`;
 export const FEEDBACK_URL = `${APP_REPOSITORY}/issues`;
 export const RELEASES_URL = `${APP_REPOSITORY}/releases`;
 export const PRICING_URL = DOCS_URL;
