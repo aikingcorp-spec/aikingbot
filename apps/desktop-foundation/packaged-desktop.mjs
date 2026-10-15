@@ -1,0 +1,62 @@
+// Copyright (c) 2026 AIKING.
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createServer } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "playwright-core";
+import { runtimeRoot, sourceRoot } from "./setup.mjs";
+
+assert.notEqual(process.getuid?.(), 0, "Run the packaged desktop as an ordinary user.");
+const binary = process.env.AIKING_PACKAGE_EXECUTABLE || join(sourceRoot, "release", process.platform === "win32" ? "win-unpacked/AIKINGBOT.exe" : process.platform === "darwin" ? "mac/AIKINGBOT.app/Contents/MacOS/AIKINGBOT" : "linux-unpacked/aikingbot");
+assert.ok(existsSync(binary), "Build the desktop package first.");
+const scratch = mkdtempSync(join(tmpdir(), "aiking-desktop-package-"));
+const out = join(runtimeRoot, "evidence/shipping"); mkdirSync(out, { recursive: true });
+const portServer = createServer(); await new Promise(resolve => portServer.listen(0, "127.0.0.1", resolve));
+const port = portServer.address().port; await new Promise(resolve => portServer.close(resolve));
+const profile = join(scratch, "data"); mkdirSync(profile, { mode: 0o700 });
+const env = Object.fromEntries(["PATH", "SystemRoot", "DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS"].filter(key => process.env[key]).map(key => [key, process.env[key]]));
+const child = spawn(binary, [`--user-data-dir=${join(scratch, "electron")}`, `--remote-debugging-port=${port}`, "--remote-debugging-address=127.0.0.1"], {
+  cwd: scratch, env: { ...env, HOME: scratch, USERPROFILE: scratch, APPDATA: join(scratch, "AppData/Roaming"), LOCALAPPDATA: join(scratch, "AppData/Local"), XDG_CONFIG_HOME: join(scratch, ".config"), XDG_CACHE_HOME: join(scratch, ".cache"), OMB_DATA_DIR: profile },
+  stdio: ["ignore", "pipe", "pipe"],
+});
+let output = ""; child.stdout.on("data", chunk => { output += chunk; }); child.stderr.on("data", chunk => { output += chunk; });
+let browser; let ok = false; let failure; const errors = [];
+try {
+  const deadline = Date.now() + 120000;
+  for (;;) {
+    if (child.exitCode !== null) throw new Error(`Packaged desktop exited (${child.exitCode}): ${output.slice(-3000)}`);
+    try { browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`); break; } catch {}
+    if (Date.now() > deadline) throw new Error("Packaged desktop did not expose its owned debug endpoint");
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  const context = browser.contexts()[0]; let page;
+  while (Date.now() < deadline && !page) {
+    page = context.pages().find(page => /^http:\/\/127\.0\.0\.1:\d+\//.test(page.url()));
+    if (!page) await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  assert.ok(page, "The packaged app loaded its embedded server.");
+  page.on("pageerror", error => errors.push(error.message));
+  await page.getByRole("textbox", { name: /^Message / }).first().waitFor({ timeout: 120000 });
+  const skip = page.getByRole("button", { name: "Skip tour", exact: true }); if (await skip.isVisible()) await skip.click();
+  assert.equal(await page.evaluate(() => typeof window.require), "undefined");
+  assert.equal(await page.evaluate(() => typeof window.process), "undefined");
+  const endpoint = new URL("/api/aiking/marketplace/records", page.url());
+  const denied = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "remove", listingId: "not-installed-fixture" }) });
+  assert.equal(denied.status, 403, "Packaged API mutations require the desktop connection credential.");
+  assert.equal((await fetch(endpoint, { headers: { origin: "https://untrusted.example" } })).status, 403);
+  await page.screenshot({ path: join(out, "packaged-desktop.png") });
+  assert.deepEqual(errors, []); ok = true;
+  console.log("Packaged desktop booted with isolated data, renderer isolation and authenticated API.");
+} catch (error) { failure = String(error); throw error; }
+finally {
+  await browser?.close().catch(() => {});
+  if (child.exitCode === null && child.signalCode === null) {
+    const exited = new Promise(resolve => child.once("exit", resolve)); const timer = setTimeout(() => child.kill("SIGKILL"), 15000); child.kill("SIGTERM"); await exited; clearTimeout(timer);
+  }
+  const log = join(scratch, "electron/logs/server.log"); if (existsSync(log)) output += readFileSync(log, "utf8");
+  writeFileSync(join(out, "packaged-desktop.log"), output);
+  writeFileSync(join(out, "packaged-desktop.json"), JSON.stringify({ ok, failure, at: new Date().toISOString(), user: process.getuid?.(), sandboxDisabled: false, rendererErrors: errors, realProviderVerified: false }, null, 2));
+  rmSync(scratch, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+}

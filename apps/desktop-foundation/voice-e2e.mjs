@@ -46,7 +46,7 @@ server.on("connection", (socket) => {
   });
 });
 
-const out = join(runtimeRoot, "evidence/stage2/voice");
+const out = join(runtimeRoot, "evidence", process.env.AIKING_VERIFY_STAGE === "shipping" ? "shipping" : "stage2", "voice");
 mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.AIKING_CHROME || "/usr/bin/chromium", headless: true, args: [
   "--use-fake-device-for-media-stream",

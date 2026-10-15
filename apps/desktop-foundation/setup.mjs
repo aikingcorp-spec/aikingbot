@@ -1,8 +1,9 @@
 import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { patchIntegration } from "./integration-patches.mjs";
+import { patchShipping } from "./shipping-patches.mjs";
 
 export const foundationRoot = dirname(fileURLToPath(import.meta.url));
 export const repositoryRoot = resolve(foundationRoot, "../..");
@@ -36,18 +37,19 @@ export function prepareSource() {
   pkg.name = "aikingbot-foundation";
   pkg.productName = "AIKINGBOT";
   pkg.description = "AIKINGBOT desktop with Core, voice and agent teams, based on the Apache-2.0 OpenMausBot edition.";
+  patchShipping(sourceRoot, pkg);
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
   writeFileSync(join(runtimeRoot, "source-manifest.json"), `${JSON.stringify({ ...lock, branding: "AIKINGBOT", edition: "oss", coreIntegrated: true }, null, 2)}\n`);
   console.log(`Prepared AIKINGBOT from ${lock.repository} @ ${actual}; enterprise/ excluded.`);
 }
 
 export async function prepareCore() {
-  const { build } = await import(join(sourceRoot, "node_modules/esbuild/lib/main.js"));
+  const { build } = await import(pathToFileURL(join(sourceRoot, "node_modules/esbuild/lib/main.js")).href);
   await build({ entryPoints: [join(repositoryRoot, "src/desktop.ts")], outfile: join(sourceRoot, "aiking/core/index.mjs"), bundle: true,
     platform: "node", target: "node24", format: "esm", banner: { js: 'import { createRequire as aikingCreateRequire } from "node:module"; const require = aikingCreateRequire(import.meta.url);' } });
   const catalogModule = join(sourceRoot, "aiking/catalog-build.mjs");
   await build({ entryPoints: [join(foundationRoot, "overrides/src/aiking/marketplace/aiking-catalog.ts")], outfile: catalogModule, platform: "node", target: "node24", format: "esm", bundle: true });
-  const { AIKING_CATALOG } = await import(`${catalogModule}?build=${Date.now()}`);
+  const { AIKING_CATALOG } = await import(`${pathToFileURL(catalogModule).href}?build=${Date.now()}`);
   writeFileSync(join(sourceRoot, "aiking/catalog.json"), JSON.stringify(AIKING_CATALOG));
   await build({ stdin: { contents: 'import { catalogDocumentSchema } from "./src/aiking/marketplace/contract.ts"; export const decodeCatalog = value => catalogDocumentSchema.parse(value);', resolveDir: sourceRoot }, outfile: join(sourceRoot, "aiking/catalog-schema.mjs"), platform: "node", target: "node24", format: "esm", bundle: true });
 }
@@ -56,9 +58,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   prepareSource();
   if (!process.argv.includes("--source-only")) {
     const bin = process.env.AIKING_PNPM;
-    execFileSync(bin || (process.platform === "win32" ? "npx.cmd" : "npx"), bin
+    const windowsNpx = join(dirname(process.execPath), "node_modules/npm/bin/npx-cli.js");
+    const useNodeNpx = !bin && process.platform === "win32";
+    if (useNodeNpx && !existsSync(windowsNpx)) throw new Error("The Windows Node installation must include npm/npx.");
+    if (bin && process.platform === "win32" && /\.(cmd|bat)$/i.test(bin)) throw new Error("AIKING_PNPM on Windows must name an executable or JavaScript entry point.");
+    const useNodeBin = bin && /\.[cm]?js$/i.test(bin);
+    const args = bin
       ? ["install", "--frozen-lockfile", "--filter", "aikingbot-foundation"]
-      : ["--yes", lock.packageManager, "install", "--frozen-lockfile", "--filter", "aikingbot-foundation"], {
+      : ["--yes", lock.packageManager, "install", "--frozen-lockfile", "--filter", "aikingbot-foundation"];
+    execFileSync(useNodeNpx || useNodeBin ? process.execPath : bin || "npx", [...(useNodeNpx ? [windowsNpx] : useNodeBin ? [bin] : []), ...args], {
       cwd: sourceRoot, stdio: "inherit", env: { ...process.env, NODE_USE_ENV_PROXY: process.env.NODE_USE_ENV_PROXY || "1" },
     });
     execFileSync(process.execPath, ["aiking/assets.mjs"], { cwd: sourceRoot, stdio: "inherit" });

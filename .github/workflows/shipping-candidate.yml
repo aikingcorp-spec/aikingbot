@@ -1,0 +1,86 @@
+name: AIKINGBOT shipping candidate
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Desktop build target
+        type: choice
+        default: all
+        options: [all, windows, linux]
+  push:
+    branches: ['stage3/shipping-candidate']
+    tags: ['aikingbot-v*']
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'apps/desktop-foundation/**'
+      - 'package*.json'
+      - '.github/workflows/shipping-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.target == 'windows' && '[{"os":"windows-latest","platform":"windows"}]' || inputs.target == 'linux' && '[{"os":"ubuntu-latest","platform":"linux"}]' || '[{"os":"windows-latest","platform":"windows"},{"os":"ubuntu-latest","platform":"linux"}]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix apps/desktop-foundation --ignore-scripts
+      - run: node apps/desktop-foundation/setup.mjs
+      - run: bun test ./test
+      - run: npm run typecheck
+      - name: Renderer and server typecheck
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/typescript/bin/tsc -b
+      - name: Regression
+        env:
+          AIKING_VERIFY_STAGE: shipping
+        run: node apps/desktop-foundation/compatibility.mjs
+      - name: Desktop API, permissions, IPC and recovery
+        run: node apps/desktop-foundation/security-checks.mjs
+      - name: Production installer
+        run: node apps/desktop-foundation/build.mjs
+      - name: Packaged server isolation and workers
+        working-directory: .aikingbot-foundation/source
+        run: node scripts/smoke-packaged-server.mjs
+      - name: Packaged Core and MCP without checkout dependencies
+        run: node apps/desktop-foundation/packaged-core.mjs
+      - name: Chromium dependencies
+        working-directory: apps/desktop-foundation
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium
+      - name: Chromium Core, Marketplace, Voice and clean-profile tours
+        run: node apps/desktop-foundation/verify-shipping.mjs
+      - name: Electron sandbox on Ubuntu runner
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Electron clean-profile tours
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node apps/desktop-foundation/verify-shipping.mjs --electron
+      - name: Packaged Electron startup and local API isolation
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node apps/desktop-foundation/packaged-desktop.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: AIKINGBOT-${{ matrix.platform }}-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            .aikingbot-foundation/source/release/*.exe
+            .aikingbot-foundation/source/release/*.zip
+            .aikingbot-foundation/source/release/*.deb
+            .aikingbot-foundation/source/release/*.AppImage
+            .aikingbot-foundation/evidence/shipping/

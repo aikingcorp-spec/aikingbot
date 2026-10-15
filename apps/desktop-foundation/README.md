@@ -1,14 +1,16 @@
-# AIKINGBOT stage 1 desktop foundation
+# AIKINGBOT desktop 0.3.0-rc.1
 
-A complete application based on the Apache-2.0 OpenMausBot OSS edition, pinned at `93b3c24cdade51e362e443d2387a9f37eb7e115c`. The stack is React 19, Vite, Tailwind, Lucide, Electron and a Node 24 local harness. AIKING Core v0.2 remains separate in this stage.
+A complete application based on the Apache-2.0 OpenMausBot OSS edition, pinned at `93b3c24cdade51e362e443d2387a9f37eb7e115c`. React 19, Electron and Node 24 now integrate AIKING Core v0.2 alongside the retained original engines. Core, Marketplace, Voice local, groups and routines have offline end-to-end verification. See [shipping delivery](../../docs/stage-5-shipping-candidate.md) and [feature matrix](../../docs/shipping-feature-matrix.md) for actual platform/provider limits.
 
 ## Run
 
 Install Node.js 24 or newer, npm, Git and `tar`. Electron needs a desktop session on Linux. Use Git Bash or the system `tar` on Windows.
 
 ```sh
-git clone --branch AIKINGBOT --recurse-submodules https://github.com/aikingcorp-spec/AIKINGX_Bot.git
+git clone --branch stage3/shipping-candidate --recurse-submodules https://github.com/aikingcorp-spec/AIKINGX_Bot.git
 cd AIKINGX_Bot
+npm ci --ignore-scripts
+npm ci --prefix apps/desktop-foundation --ignore-scripts
 node apps/desktop-foundation/setup.mjs
 node apps/desktop-foundation/dev.mjs --desktop
 ```
@@ -29,10 +31,10 @@ In normal mode, select and authenticate a supported provider through Settings, o
 
 ## Offline verification
 
-This runs the **real app, API, store, queue and provider protocol** with the upstream deterministic test CLI. It uses a disposable profile and makes no model call. It is not an AIKING Core integration.
+This runs the real app, API, store and queue with a deterministic model. `--core` adds the real AIKING Core runtime with a clearly named offline model. Tool calls, approvals, persisted turns and Voice transport execute locally; STT/transcripts and tones are fixtures. No paid model or speech provider is called.
 
 ```sh
-node apps/desktop-foundation/dev.mjs --offline --desktop
+node apps/desktop-foundation/dev.mjs --offline --core --desktop
 ```
 
 Omit `--desktop` for a browser. The offline profile is removed when this owned stack stops; its screenshots and verification reports stay in `.aikingbot-foundation/evidence`.
@@ -60,7 +62,31 @@ cd .aikingbot-foundation/source
 node --experimental-strip-types aiking/verify-persistence.ts
 ```
 
-## Delivery evidence
+## Build and shipping regression
+
+```sh
+node apps/desktop-foundation/build.mjs
+# Run after the production UI build; each tour launches a fresh disposable stack.
+AIKING_VERIFY_STAGE=shipping node apps/desktop-foundation/compatibility.mjs
+node apps/desktop-foundation/security-checks.mjs
+node apps/desktop-foundation/packaged-core.mjs
+node apps/desktop-foundation/verify-shipping.mjs
+node apps/desktop-foundation/verify-shipping.mjs --electron
+node apps/desktop-foundation/packaged-desktop.mjs
+```
+
+Linux headless Electron commands need Xvfb/`DISPLAY` and an ordinary user with the sandbox enabled.
+`build.mjs` creates installers for the current host; Windows native preparation requires a Windows x64 host.
+The GitHub Actions shipping workflow supplies Windows/Linux runners. Outputs: `.aikingbot-foundation/source/release/`;
+SHA-256 manifest: `.aikingbot-foundation/evidence/shipping/build-artifacts.json`.
+`--reuse-native` reuses already prepared native bundles; `--package-only` packages existing compiled output for iterative packaging checks.
+For a clean build use the command without either flag.
+
+Installed data defaults to `~/.aikingbot` and its own Electron profile/app ID. Existing OpenMausBot/OpenBot data is not migrated.
+Automatic updates are disabled unless `AIKING_UPDATE_FEED` names an explicit HTTPS feed. Cloud sign-in requires `AIKING_CLOUD_ORIGIN`;
+managed account/Composio services require `OMB_CONTROL_PLANE_URL` / `OMB_COMPOSIO_BROKER_URL`. No upstream hosted service is selected by default.
+
+## Historical Stage 1 evidence
 
 Verified on 2026-10-14 with Node 24.19.0, pnpm 10.33.0 and Electron 43.7.9 from the frozen lockfile:
 
@@ -74,7 +100,7 @@ Verified on 2026-10-14 with Node 24.19.0, pnpm 10.33.0 and Electron 43.7.9 from 
 
 Artifacts are generated locally, not committed: `electron-{chat,workspace,settings,apps}.png`, `browser-{chat,workspace,settings,apps}.png`, `electron-verification.json`, `browser-verification.json` and `persistence.json`. JSON identifies offline verification and explicitly records that real provider calls, connector actions and Core integration were not verified. Screenshots show the running implementation.
 
-Signed installers, cross-platform native permissions, real remote/computer sessions, provider installations and external OAuth/actions remain unverified. Full latest OpenBot UI and feature parity is a later stage; the exact gaps are in the source comparison.
+This section records the original Stage 1 checks. Current build results, signing/platform limits and remaining server/credential work are in the shipping delivery and feature matrix linked above.
 
 ## Stage 2 interface
 
@@ -90,9 +116,9 @@ The tour writes one screenshot per screen and `<surface>-ui-tour.json` to `.aiki
 ## Voice and finalization checks
 
 The composer phone button opens Voice: select the microphone/speaker, then choose **Offline test (scripted)**
-or **AIKING Core voice server**. The offline service captures real microphone input and plays a scripted tone;
+or **Local backend** / **AIKING Core voice server**. The offline service captures real microphone input and plays a scripted tone;
 it does not perform speech recognition or call an AI provider. The Core option requires a protocol v1 server
-at `wss://…/v1/voice/sessions` (localhost `ws://` is accepted for testing). Existing realtime/turns provider calls
+at `wss://…/v1/voice/sessions` (localhost `ws://` is accepted for testing). Local backend uses the same authenticated host and needs server STT/TTS configuration; `--offline --core` supplies labeled fixtures. Existing realtime/turns provider calls
 remain under **Existing provider call options**. Group calls retain their existing provider flow.
 
 With an owned offline stack running:

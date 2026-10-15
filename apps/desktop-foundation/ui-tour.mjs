@@ -18,7 +18,8 @@ import { runtimeRoot } from "./setup.mjs";
 const info = JSON.parse(readFileSync(join(runtimeRoot, "offline-runtime.json"), "utf8"));
 assert.equal(info.mode, "offline-verification", "The tour requires an explicitly launched offline fixture.");
 assert.equal(new URL(info.uiUrl).hostname, "127.0.0.1");
-const out = join(runtimeRoot, "evidence", "stage2");
+const stage = process.env.AIKING_VERIFY_STAGE === "shipping" ? "shipping" : "stage2";
+const out = join(runtimeRoot, "evidence", stage, ...(stage === "shipping" ? ["ui-tour"] : []));
 mkdirSync(out, { recursive: true });
 
 const width = Number(process.env.AIKING_TOUR_WIDTH || 1440);
@@ -47,6 +48,10 @@ const surface = `${cdp ? "electron" : "browser"}${skin ? `-${skin}` : ""}${advan
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 if (!cdp) await page.goto(info.uiUrl, { waitUntil: "domcontentloaded", timeout: 120_000 });
+else if (skin) {
+  await page.evaluate(({ id, on }) => { localStorage.setItem("omb-skin", id); localStorage.setItem("omb-advanced-mode", on ? "1" : "0"); }, { id: skin, on: advanced });
+  await page.reload({ waitUntil: "domcontentloaded" });
+}
 
 const results = [];
 const settle = () => page.waitForTimeout(450);
@@ -461,14 +466,14 @@ await closeOverlays();
 const failed = results.filter((r) => !r.ok);
 const report = {
   ok: failed.length === 0 && errors.length === 0,
-  stage: 2,
+  stage,
   surface,
   viewport: { width, height },
   sourceCommit: info.sourceCommit,
   steps: results,
   rendererErrors: errors,
   realProviderVerified: false,
-  coreIntegrated: false,
+  coreIntegrated: info.coreIntegrated === true,
 };
 writeFileSync(join(out, `${surface}-ui-tour.json`), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify({ ok: report.ok, passed: results.length - failed.length, failed: failed.map((f) => f.name), rendererErrors: errors.length }, null, 2));

@@ -1,6 +1,6 @@
 # HANDOFF — AIKING Core / AIKINGBOT v0.2
 
-Cập nhật: 2026-10-14. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
+Cập nhật: 2026-10-15. Tài liệu này đủ để một coding agent tiếp tục mà không cần đọc lịch sử hội thoại.
 Không chứa secret.
 
 ## Overnight Stage 3 → 5 — `stage3/shipping-candidate`
@@ -18,6 +18,14 @@ Chưa gọi provider thật, API tính phí, hoặc truy cập VPS/dữ liệu p
   Chromium/Electron tour, security/platform checks, artifacts và checklist triển khai.
 - Mọi sửa đổi lâu dài ở overrides/patches; source sinh ở `.aikingbot-foundation/source/`.
 - Không dùng code OpenBot PolyForm; Apache source pin không đổi.
+
+Stage 5 checkpoint: đã thêm builder/Windows+Linux CI, icon ICO/ICNS/PNG, app ID/protocol/profile riêng,
+tắt upstream updater/account/Composio mặc định, sửa bundle ESM/`ws` bằng createRequire. Packaged server
+smoke và packaged Core/MCP/approval ngoài checkout đạt. Chromium 11 E2E + Voice 5 bước đạt;
+tour dark/light 37/37 và advanced 1000px 33 pass/4 skip đạt. Electron tour, compatibility cuối và
+installer cuối đang chạy; chưa đánh dấu Stage 5 gate đạt. Desktop security 124 pass/2 platform skip.
+Chi tiết/lệnh: [Stage 5](docs/stage-5-shipping-candidate.md). Tiếp tục kiểm tra logs, đóng gói bằng chứng,
+cập nhật kết quả thực tế, commit/push gate cuối. Không coi artifact từ lượt build cũ là bản bàn giao cuối.
 
 ## Stage 2 — UI/UX parity (nhánh `stage2/ui-parity`, 2026-10-14)
 

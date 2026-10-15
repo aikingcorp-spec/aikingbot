@@ -3,6 +3,8 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { runtimeRoot, sourceRoot } from "./setup.mjs";
+// Native package fixtures model installed, shareable binaries and require a normal build umask.
+process.umask(0o022);
 
 const stage = process.env.AIKING_VERIFY_STAGE ?? "stage2";
 assert.match(stage, /^[a-z0-9-]+$/);
@@ -22,6 +24,9 @@ const expectations = [
     ["src/components/EnginesSettings.test.ts", "Choose a different model provider for every bot", "Choose a different model provider for every agent"],
     ["src/components/ModelPicker.test.ts", 'threadId ? "thread" : "bot"', 'threadId ? "thread" : "agent"'],
     ["server/config.test.ts", 'expect(reloaded({ anthropic: { key: "a" } }, saved)).toEqual(["claude"]);', 'expect(reloaded({ anthropic: { key: "a" } }, saved)).toEqual(["aikingCore", "claude"]);'],
+    ["server/remote-sessions.test.ts", '".openmausbot"', '".aikingbot"'],
+    ["server/remote-sessions.test.ts", 'toBe("openmausbot:")', 'toBe("aikingbot:")'],
+    ["scripts/linux-after-install.test.mjs", 'it("reads numeric procfs sysctls without byte-at-a-time shell reads"', 'it.skipIf(!fs.existsSync("/proc/sys/kernel/core_uses_pid"))("reads numeric procfs sysctls without byte-at-a-time shell reads"'],
   ] : []),
 ];
 const tests = [
@@ -39,12 +44,14 @@ const tests = [
     "server/workspace-backup.test.ts", "server/workspace-backup-policy.test.ts", "server/workspace-backup-workflow.test.ts",
     "src/components/EngineSetup.test.ts", "src/components/EnginesSettings.test.ts", "src/components/ModelPicker.test.ts",
     "src/lib/create-configured-bot.test.ts", "server/redact.test.ts", "server/request-auth.test.ts",
+    "electron/aiking-updater.test.mjs", "electron/secure-credentials.test.mjs", "electron/secure-credential-state.test.mjs",
+    "scripts/linux-after-install.test.mjs",
   ] : []),
 ];
 const originals = new Map();
 writeFileSync(join(out, "compatibility-fixture-adjustments.json"), `${JSON.stringify({
   expectedProduct: "AIKINGBOT", adjustments: expectations.map(([path, before, after]) => ({ path, before, after })),
-  reason: "The pinned tests expect the upstream product/terminology. Anthropic key reload now includes Core. The restart fixture's 2-second HTTP budget repeatedly expires on this cloud executor; assertions and scheduler timings are unchanged.",
+  reason: "Pinned tests expect upstream wording/profile/protocol. Anthropic reload includes Core. Use a standard 022 umask for native fixtures. Skip the procfs-only fixture when this container does not expose its read-only sysctl. The restart HTTP budget is 10 seconds. Allow 60 seconds per test: authenticated backup rejection cases perform multiple real password KDFs and exceeded 20 seconds under cloud CPU contention. Scheduler timings and assertions are unchanged.",
 }, null, 2)}\n`);
 try {
   for (const [path, before, after] of expectations) {
@@ -54,7 +61,7 @@ try {
     if (!originals.has(file)) originals.set(file, original);
     writeFileSync(file, original.replaceAll(before, after));
   }
-  execFileSync(join(sourceRoot, "node_modules/.bin/vitest"), ["run", ...tests, "--reporter=default", "--reporter=json", `--outputFile.json=${join(out, "compatibility.json")}`], { cwd: sourceRoot, stdio: "inherit", env: {
+  execFileSync(process.execPath, [join(sourceRoot, "node_modules/vitest/vitest.mjs"), "run", ...tests, "--testTimeout=60000", "--reporter=default", "--reporter=json", `--outputFile.json=${join(out, "compatibility.json")}`], { cwd: sourceRoot, stdio: "inherit", env: {
     ...process.env, NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost", "::1"].filter(Boolean).join(","),
   } });
 } finally {

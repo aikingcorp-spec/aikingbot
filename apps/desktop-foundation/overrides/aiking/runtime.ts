@@ -33,10 +33,13 @@ async function close() {
   stopping = true;
   await stopChild(electron);
   if (offline && desktopProfile) rmSync(desktopProfile, { recursive: true, force: true });
-  await ui?.close();
-  if (previewUi) await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
   if (fixture) await fixture.close();
   else await stopChild(harness);
+  await ui?.close();
+  if (previewUi) {
+    previewUi.httpServer.closeAllConnections();
+    await new Promise<void>((resolve) => previewUi!.httpServer.close(() => resolve()));
+  }
 }
 
 const stop = () => { void close().then(() => process.exit(0)); };

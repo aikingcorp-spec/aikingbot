@@ -1,6 +1,6 @@
 # AIKING Core
 
-**AIKINGBOT stage 1:** the complete desktop foundation is in [apps/desktop-foundation](apps/desktop-foundation/README.md). It runs the selected OpenMausBot OSS application with AIKING branding. [Source comparison](docs/stage-1-source-comparison.md) and [the later Core integration plan](docs/stage-1-core-integration.md) describe the boundary. Core integration is not implemented in this stage.
+**AIKINGBOT desktop 0.3.0-rc.1:** React/Electron đã tích hợp Core, MCP, streaming, approvals, Voice local và Marketplace có persistence. Các engine OpenMausBot OSS vẫn được giữ. Xem [khởi chạy/build](apps/desktop-foundation/README.md), [feature matrix](docs/shipping-feature-matrix.md) và [bàn giao shipping](docs/stage-5-shipping-candidate.md). Provider thật và dịch vụ hosted cần cấu hình credentials/server; kiểm thử hiện tại dùng fixture offline.
 
 Lõi agent độc lập của AIKINGBOT.
 
@@ -62,7 +62,7 @@ tab Skills & MCP, lịch sử lưu SQLite và khôi phục sau restart. Báo cá
 
 ```bash
 bun install
-bun test             # 83 test: unit, vertical slice, pipeline demo, gateway AG-UI
+bun test             # Core: unit, vertical slice, pipeline demo, gateway AG-UI
 bun run typecheck
 bun run demo         # demo offline: ý tưởng → phân tích → chọn skill → brief → MCP tool → render job (có approval)
 bun run demo --deny  # như trên, operator từ chối render

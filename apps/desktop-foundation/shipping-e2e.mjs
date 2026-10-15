@@ -115,6 +115,37 @@ try {
     assert.ok(!(await api("/api/bots")).bots.some(bot => bot.id === installedAgent));
     assert.ok(!(await api("/api/aiking/marketplace/records")).records.some(record => record.listingId === "media-producer"));
   });
+  await page.getByRole("button", { name: "Close marketplace", exact: true }).click();
+  await step("core-group-multi-agent", async () => {
+    const peer = (await api("/api/bots", { name: "Core Group Peer", modelSelection: { instanceId: "aiking-core-test", model: "aiking-offline" } })).bot;
+    const group = (await api("/api/groups", { name: "Core shipping team", memberIds: [bot.id, peer.id], setup: { bulletin: "Offline Core group verification", defaultResponder: { kind: "everyone" } } })).group;
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.locator(`[data-sidebar-group-row="${group.id}"]`).click();
+    const input = page.getByRole("textbox", { name: /^Message Core shipping team/ });
+    await input.fill("Each agent: report your capabilities for this group.");
+    await page.getByRole("button", { name: "Send message", exact: true }).click();
+    await page.getByText(/AIKING Core completed/).nth(1).waitFor({ timeout: 60000 });
+    const deadline = Date.now() + 60000; let speakers = [];
+    do {
+      const stored = await api(`/api/threads/${group.threadId}/messages`);
+      const replies = stored.messages.filter(message => message.role === "bot" && /AIKING Core completed.*live AI provider\./s.test(message.text));
+      speakers = [...new Set(replies.map(message => message.from?.botId))].sort();
+      if (speakers.length < 2) await page.waitForTimeout(250);
+    } while (speakers.length < 2 && Date.now() < deadline);
+    assert.deepEqual(speakers, [bot.id, peer.id].sort());
+  });
+  await step("core-scheduled-run", async () => {
+    const routine = (await api("/api/routines", { name: "Core shipping once", botId: bot.id, prompt: "Report capabilities from the scheduler.", enabled: true, schedule: { type: "once", at: Date.now() + 2500 } })).routine;
+    const deadline = Date.now() + 60000; let run;
+    do {
+      run = (await api("/api/routines")).runs.find(run => run.routineId === routine.id && run.status === "completed");
+      if (!run) await page.waitForTimeout(500);
+    } while (!run && Date.now() < deadline);
+    assert.ok(run, "The actual scheduler completed a Core run.");
+    assert.equal(run.manual, false);
+    await page.getByRole("tab", { name: "Routines", exact: true }).click();
+    await page.getByText("Core shipping once", { exact: true }).first().waitFor();
+  });
   assert.deepEqual(errors, []); ok = true;
 } catch (error) { failure = String(error); await page.screenshot({ path: join(out, "shipping-failed.png") }).catch(() => {}); throw error; }
 finally {
