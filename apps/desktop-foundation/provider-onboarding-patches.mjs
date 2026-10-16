@@ -47,6 +47,16 @@ export function patchProviderOnboarding(source) {
     ['      if (next.phase === "succeeded") await refresh();',
       '      if (next.phase === "succeeded") await refresh();\n      else if (next.phase === "waiting") {\n        const link = claudeSignInLink(next.authorizationUrl);\n        if (link) await openExternalLink(link);\n      }'],
   ]);
+  // A device accessing a server remotely cannot complete the desktop-only PKCE localhost callback.
+  // Named Codex accounts on that host use the official CLI device authorization with a private
+  // CODEX_HOME per instance. The existing desktop ChatGPT-plan flow remains unchanged.
+  edit("server/routes/instances.ts", [
+    ['import { randomUUID } from "node:crypto";', 'import { randomUUID } from "node:crypto";\nimport { join } from "node:path";'],
+    ['import { persistableInstanceConfigs, saveConfig, withInstanceCli, type AppConfig } from "../config.ts";',
+      'import { DATA_DIR, persistableInstanceConfigs, saveConfig, withInstanceCli, type AppConfig } from "../config.ts";'],
+    ['        instances[instanceId] = { driver: "codex", displayName: parsed.data.displayName,\n          config: { authMode: "chatgpt-plan", ...(typeof cli === "string" && cli ? { cli } : {}) } };',
+      '        const remote = isProxied(req) || !isLoopbackHost(req.socket.remoteAddress);\n        instances[instanceId] = { driver: "codex", displayName: parsed.data.displayName,\n          ...(remote ? { environment: { CODEX_HOME: join(DATA_DIR, "providers", "codex-device", instanceId) } } : {}),\n          config: { ...(remote ? {} : { authMode: "chatgpt-plan" }), ...(typeof cli === "string" && cli ? { cli } : {}) } };'],
+  ]);
   edit("src/components/DeviceSignIn.tsx", [
     ['else if (browserPkce && next.phase === "waiting") {\n        const link = chatgptPlanLink(next.authorizationUrl);',
       'else if (next.phase === "waiting") {\n        const link = browserPkce ? chatgptPlanLink(next.authorizationUrl) : isDeviceSignInCode(provider, next.userCode) ? deviceSignInLink(provider, next.authorizationUrl, next.userCode) : null;'],
