@@ -51,11 +51,11 @@ export function patchProviderOnboarding(source) {
   // Named Codex accounts on that host use the official CLI device authorization with a private
   // CODEX_HOME per instance. The existing desktop ChatGPT-plan flow remains unchanged.
   edit("server/routes/instances.ts", [
-    ['import { randomUUID } from "node:crypto";', 'import { randomUUID } from "node:crypto";\nimport { join } from "node:path";'],
+    ['import { randomUUID } from "node:crypto";', 'import { randomUUID } from "node:crypto";\nimport { mkdirSync } from "node:fs";\nimport { join } from "node:path";'],
     ['import { persistableInstanceConfigs, saveConfig, withInstanceCli, type AppConfig } from "../config.ts";',
       'import { DATA_DIR, persistableInstanceConfigs, saveConfig, withInstanceCli, type AppConfig } from "../config.ts";'],
     ['        instances[instanceId] = { driver: "codex", displayName: parsed.data.displayName,\n          config: { authMode: "chatgpt-plan", ...(typeof cli === "string" && cli ? { cli } : {}) } };',
-      '        const remote = isProxied(req) || !isLoopbackHost(req.socket.remoteAddress);\n        instances[instanceId] = { driver: "codex", displayName: parsed.data.displayName,\n          ...(remote ? { environment: { CODEX_HOME: join(DATA_DIR, "providers", "codex-device", instanceId) } } : {}),\n          config: { ...(remote ? {} : { authMode: "chatgpt-plan" }), ...(typeof cli === "string" && cli ? { cli } : {}) } };'],
+      '        const remote = isProxied(req) || !isLoopbackHost(req.socket.remoteAddress);\n        const deviceHome = remote ? join(DATA_DIR, "providers", "codex-device", instanceId) : null;\n        if (deviceHome) mkdirSync(deviceHome, { recursive: true, mode: 0o700 });\n        instances[instanceId] = { driver: "codex", displayName: parsed.data.displayName,\n          ...(deviceHome ? { environment: { CODEX_HOME: deviceHome } } : {}),\n          config: { ...(remote ? {} : { authMode: "chatgpt-plan" }), ...(typeof cli === "string" && cli ? { cli } : {}) } };'],
   ]);
   edit("src/components/DeviceSignIn.tsx", [
     ['else if (browserPkce && next.phase === "waiting") {\n        const link = chatgptPlanLink(next.authorizationUrl);',
