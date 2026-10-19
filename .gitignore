@@ -11,3 +11,11 @@
 /zca-bridge/dist/
 /chatwoot/security_guard.py
 /settings.json
+
+# Private operator acceptance scripts may identify internal recipients.
+/verify_live*.py
+/verify_chatwoot_agents.py
+/verify_agents.py
+/verify_zca_delivery.mjs
+
+/zca-bridge/node_modules
