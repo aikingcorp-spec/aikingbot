@@ -1,0 +1,30 @@
+{
+  "status": "AIKINGBOT_LIVE_LISA_REAUTH_PENDING",
+  "generated_utc": "2026-10-19",
+  "aikingbot_url": "https://aikingbot-app.srv1866690.hstgr.cloud",
+  "agents": {
+    "lisa": {
+      "agent_id": "1fc1c1f2-a58d-4e96-9962-34fb8186f5fa",
+      "name": "Lisa Sale consultant",
+      "old_webhook_port": 3025
+    },
+    "aimie": {
+      "agent_id": "769f59b1-30bb-435f-8cdd-36351fa1a3fa",
+      "name": "Aimie Nguy\u1ec5n",
+      "old_webhook_port": 3026
+    }
+  },
+  "safety": {
+    "real_chatwoot_data_moved": true,
+    "webhook_traffic_switched": true,
+    "old_services_stopped": true,
+    "no_unverified_customer_messages": true,
+    "requires_authenticated_agent_session": true,
+    "requires_bidirectional_smoke_test": true
+  },
+  "live_service": "aikingbot-zalo.service",
+  "remaining": "Zalo account 1 (Lisa) expired before migration; owner QR login required",
+  "auth": "Separate official AIKINGBOT client-only paired sessions; no auth-store edits",
+  "authenticated_agent_sessions_configured": true,
+  "openbot_application_stopped": false
+}

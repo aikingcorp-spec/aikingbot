@@ -1,0 +1,13 @@
+/runtime/
+/secrets/
+/state/
+/business/
+/evidence/
+/checkpoints/
+/tools/
+*.log
+**/__pycache__/
+**/node_modules/
+/zca-bridge/dist/
+/chatwoot/security_guard.py
+/settings.json
