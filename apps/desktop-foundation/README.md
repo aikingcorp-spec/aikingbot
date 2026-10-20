@@ -143,3 +143,5 @@ The current nightly-labs OpenBot 0.39.1 source was cloned and inspected as the p
 - [Source comparison and decision](../../docs/stage-1-source-comparison.md)
 - [Planned Core v0.2 integration](../../docs/stage-1-core-integration.md)
 - [AIKING branding audit](BRANDING-AUDIT.md)
+
+Builds run on GitHub Actions: pushes to stage3/shipping-candidate produce draft installers.
