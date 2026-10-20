@@ -364,6 +364,12 @@ const en = {
   "engines.showFewer": "Show fewer providers",
   "engine.reason.notInstalled": "`{cli}` isn't installed, or isn't on this app's PATH. Install it for the user running AIKINGBOT or use Set CLI, then check again.",
   "engine.reason.notInstalledShort": "{name} isn't installed on this computer.",
+  "engines.bannerText": "No AI model is connected yet. Connect one so your agent can answer.",
+  "engines.bannerAction": "Connect a model",
+  "voice.reason.signIn": "Voice calls use your Codex sign-in with ChatGPT. Sign in to Codex in Settings → AI, then call again.",
+  "voice.reason.apiKey": "Voice calls need Codex signed in with a ChatGPT account, not an API key.",
+  "voice.reason.reread": "Codex sign-in could not be read. Sign in to Codex again in Settings → AI.",
+  "voice.reason.noCodex": "Codex is not available on this computer, so voice calls cannot start yet.",
   "composer.needsModel": "Connect an AI model before sending a message. Opening the model setup for you.",
   "welcome.signInIntro": "Sign in with your email to open your Servers. You get a one-time code by email; there is no password.",
   "welcome.signIn": "Sign in with email",
@@ -383,6 +389,15 @@ export function engineReason(text: string): string {
   if (missingCli) return at("engine.reason.notInstalled", { cli: missingCli[1] });
   const missing = /^(.+?) isn't installed on this computer\.?$/.exec(text);
   if (missing) return at("engine.reason.notInstalledShort", { name: missing[1] });
+  return text;
+}
+// The server explains why a call cannot start in English; show it in the person's language.
+export function voiceReason(text: string | undefined): string | undefined {
+  if (!text) return text;
+  if (text.startsWith("Sign in to Codex with your ChatGPT account")) return at("voice.reason.signIn");
+  if (text.startsWith("Realtime voice uses a ChatGPT sign-in")) return at("voice.reason.apiKey");
+  if (text.startsWith("Codex sign-in could not be read")) return at("voice.reason.reread");
+  if (text.startsWith("Codex could not be started")) return at("voice.reason.noCodex");
   return text;
 }
 export function at(key: AikingKey, params?: Record<string, string | number>): string {

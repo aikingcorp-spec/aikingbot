@@ -3,7 +3,7 @@
 // self-hosting / company-admin flows. Source of truth lives here and in overrides/, never in vendor/.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-export const DESKTOP_JOURNEY_PATCHED_FILES = ["src/components/SettingsModal.tsx", "src/components/EngineSetup.tsx", "src/components/DesktopWorkspaceSwitcher.tsx", "src/components/EnginesSettings.tsx", "src/components/Composer.tsx", "src/components/onboarding/beats/HelloBeat.tsx", "src/components/onboarding/WelcomeFlow.tsx", "server/index.ts", "server/enterprise.ts", "server/cli.ts", "src/components/ConnectedWorkspacesSettings.tsx", "src/components/RemoteComputerSection.tsx", "src/components/AboutDialog.tsx", "src/components/onboarding/reel/scenes/index.ts", "src/components/bot-settings/AccessSection.tsx", "src/components/TeamLibraryPanel.tsx", "src/components/onboarding/WelcomeGate.tsx", "electron/main.mjs", "electron/shared-computer-access.node-test.mjs", "src/pair/PairPage.tsx"];
+export const DESKTOP_JOURNEY_PATCHED_FILES = ["src/components/SettingsModal.tsx", "src/App.tsx", "src/components/EngineSetup.tsx", "src/components/DesktopWorkspaceSwitcher.tsx", "src/components/EnginesSettings.tsx", "src/components/Composer.tsx", "src/components/onboarding/beats/HelloBeat.tsx", "src/components/onboarding/WelcomeFlow.tsx", "server/index.ts", "server/enterprise.ts", "server/cli.ts", "src/components/ConnectedWorkspacesSettings.tsx", "src/components/RemoteComputerSection.tsx", "src/components/AboutDialog.tsx", "src/components/onboarding/reel/scenes/index.ts", "src/components/bot-settings/AccessSection.tsx", "src/components/TeamLibraryPanel.tsx", "src/components/onboarding/WelcomeGate.tsx", "electron/main.mjs", "electron/shared-computer-access.node-test.mjs", "src/pair/PairPage.tsx"];
 export function patchDesktopJourney(source) {
   const edit = (path, pairs) => {
     const file = join(source, path); let text = readFileSync(file, "utf8").replaceAll("\r\n", "\n");
@@ -136,6 +136,13 @@ export function patchDesktopJourney(source) {
       '    if (action === "connect") return true;\n    slog(`server action ${action}: asking for confirmation`);\n    const { response } = await dialog.showMessageBox(mainWindow, {'],
     ['    return response === 0;\n  },\n  create: createLocalEnvironment, select: switchEnvironment,',
       '    slog(`server action ${action}: confirmation answered (${response === 0 ? "continue" : "cancel"})`);\n    return response === 0;\n  },\n  create: createLocalEnvironment, select: switchEnvironment,'],
+  ]);
+  // With no model connected the whole chat area used to be replaced by a setup page, so nothing else could be used. Keep the
+  // chat and show a bar that opens the setup.
+  edit("src/App.tsx", [
+    ['import { NoEngines } from "@/components/NoEngines";', 'import { NoEngines } from "@/components/NoEngines";\nimport { NoModelBanner } from "@/aiking/NoModelBanner";'],
+    ['      ) : noEngines ? (\n        <NoEngines />\n      ) : group ? (', '      ) : noEngines && !bot && !group ? (\n        <NoEngines />\n      ) : group ? ('],
+    ['      ) : bot ? (\n        <ChatView bot={bot} />\n      ) : (', '      ) : bot ? (\n        noEngines ? (\n          <div className="flex h-full min-w-0 flex-1 flex-col bg-app">\n            <NoModelBanner />\n            <div className="min-h-0 flex-1"><ChatView bot={bot} /></div>\n          </div>\n        ) : <ChatView bot={bot} />\n      ) : ('],
   ]);
   // The original test names the protected folder "openmausbot"; the app's folder is now AIKINGBOT, so its other-case spellings
   // are "aikingbot" and "AikingBot". (This test only runs where the file system ignores case: Windows and macOS.)

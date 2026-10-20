@@ -29,8 +29,8 @@ const realtimeVoice = createRealtimeVoice({
     if (store.botByThread(thread)?.id !== bot.id) return null;
     return {
       botId: bot.id, threadId: thread, botName: bot.name, cwd: ensureTaskWorkspace(bot.id, thread),
-      // The realtime model is OpenAI's, reached through the agent's own Codex sign-in.
-      voiceSupported: registry.get(bot.modelSelection.instanceId)?.driverKind === "codex",
+      // The realtime relay is OpenAI's, reached through the Codex sign-in; whatever the agent asks for runs on the agent's own engine, so every agent can take a call.
+      voiceSupported: Boolean(registry.get(bot.modelSelection.instanceId)),
     };
   },
   // The call's request is an ordinary message of the agent's conversation: its engine, tools and approvals run

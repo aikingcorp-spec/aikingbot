@@ -2,7 +2,7 @@
 // One realtime call at a time, owned outside any dialog so the call survives closing it. Audio goes browser ↔
 // provider over WebRTC; the server only brokers the SDP and reports whether the agent is working.
 import { useSyncExternalStore } from "react";
-import { at } from "../strings";
+import { at, voiceReason } from "../strings";
 import { api, type Bot } from "@/state/store";
 
 export type RealtimeEvent =
@@ -177,7 +177,8 @@ export type AgentRealtimeStatus = { available: boolean; reason?: string; voices?
 /** This agent's call readiness, read fresh: its model can change at any time. */
 export async function agentRealtimeStatus(botId: string): Promise<AgentRealtimeStatus | { forbidden: true }> {
   try {
-    return await api<AgentRealtimeStatus>(`/api/aiking/realtime/status?botId=${encodeURIComponent(botId)}`);
+    const status = await api<AgentRealtimeStatus>(`/api/aiking/realtime/status?botId=${encodeURIComponent(botId)}`);
+    return status.reason ? { ...status, reason: voiceReason(status.reason) } : status;
   } catch (cause) {
     return (cause as { status?: number }).status === 403 ? { forbidden: true } : { available: false, reason: at("call.unavailableWorkspace") };
   }
@@ -199,7 +200,7 @@ export function realtimeStatus(): Promise<RealtimeStatus> {
       statusRequest = null;
       return (cause as { status?: number }).status === 403 ? { forbidden: true } : { available: false, reason: at("call.unavailableWorkspace") };
     })
-    .then((value) => { statusValue = value; statusListeners.forEach((listener) => listener()); return value; });
+    .then((value) => { if (!("forbidden" in value) && value.reason) value = { ...value, reason: voiceReason(value.reason) }; statusValue = value; statusListeners.forEach((listener) => listener()); return value; });
   return statusRequest;
 }
 
