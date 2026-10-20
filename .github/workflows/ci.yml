@@ -2,7 +2,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, "ci/**"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,6 +34,25 @@ jobs:
         run: node scripts/run-tests.mjs
       - name: Installer
         run: node scripts/build.mjs
+      - name: Check the built app (Windows)
+        if: runner.os == 'Windows'
+        run: node scripts/app-check.mjs apps/desktop/release/win-unpacked/AIKINGBOT.exe app-check-evidence
+      - name: Check the built app (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a env AIKING_CHECK_NO_SANDBOX=1 node scripts/app-check.mjs apps/desktop/release/linux-unpacked/aikingbot app-check-evidence
+      - name: Keep the evidence and the installer
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ runner.os }}
+          path: |
+            app-check-evidence
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.AppImage
+            apps/desktop/release/*.yml
+            apps/desktop/release/*.blockmap
+          if-no-files-found: warn
+          retention-days: 14
       - name: Server bundle and smoke
         if: runner.os == 'Linux'
         run: |
