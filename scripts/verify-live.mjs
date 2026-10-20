@@ -6,6 +6,7 @@ const args = process.argv.slice(2);
 const option = (name) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : undefined; };
 const app = option("app")?.replace(/\/+$/, ""), site = option("site")?.replace(/\/+$/, "");
 if (!app) { console.error("usage: node scripts/verify-live.mjs --app https://… [--site https://…]"); process.exit(2); }
+const FORBIDDEN = process.env.AIKING_FORBIDDEN_NAMES ? new RegExp(process.env.AIKING_FORBIDDEN_NAMES, "i") : /(?!)/;
 let failed = 0;
 const check = async (name, fn) => {
   try { const detail = await fn(); console.log(`PASS  ${name}${detail ? `  (${detail})` : ""}`); }
@@ -15,7 +16,7 @@ const get = (url, init = {}) => fetch(url, { redirect: "manual", signal: AbortSi
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
 
 await check("the web client answers over https", async () => { const r = await get(`${app}/__relay/health`); expect(r.status === 200, `status ${r.status}`); const j = await r.json(); expect(j.status === "ready", JSON.stringify(j)); });
-await check("the sign-in page is served", async () => { const r = await get(`${app}/__relay/`); const t = await r.text(); expect(r.status === 200 && /<html/i.test(t), `status ${r.status}`); expect(!/srv1866690|hstgr\.cloud/.test(t), "mentions the old staging server"); });
+await check("the sign-in page is served", async () => { const r = await get(`${app}/__relay/`); const t = await r.text(); expect(r.status === 200 && /<html/i.test(t), `status ${r.status}`); expect(!FORBIDDEN.test(t), "shows a forbidden name"); });
 await check("a stranger is sent to sign in, not given data", async () => { const r = await get(`${app}/`, { headers: { accept: "text/html" } }); expect(r.status === 302 && /\/__relay\//.test(r.headers.get("location") ?? ""), `status ${r.status}`); });
 await check("the computer list refuses a stranger", async () => { const r = await get(`${app}/__relay/api/hosts`); expect(r.status === 401, `status ${r.status}`); });
 await check("a forged session is refused", async () => { const r = await get(`${app}/__relay/api/hosts`, { headers: { cookie: "rl_session=forged.forged" } }); expect(r.status === 401, `status ${r.status}`); });

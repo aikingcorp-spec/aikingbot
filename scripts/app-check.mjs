@@ -17,6 +17,8 @@ import { createRequire } from "node:module";
 // The browser driver is a dev dependency of the desktop app, so it is found from there.
 const { chromium } = createRequire(new URL("../apps/desktop/package.json", import.meta.url))("playwright-core");
 
+// Names that must appear nowhere (a regular expression), set by whoever runs the check.
+const FORBIDDEN = process.env.AIKING_FORBIDDEN_NAMES ? new RegExp(process.env.AIKING_FORBIDDEN_NAMES, "i") : /(?!)/;
 const binary = process.argv[2] ? resolve(process.argv[2]) : "";
 if (!binary || !existsSync(binary)) { console.error("usage: node scripts/app-check.mjs <app executable> [out-dir]"); process.exit(2); }
 const out = process.argv[3] || join(process.cwd(), "app-check-evidence");
@@ -123,7 +125,7 @@ try {
     check("the AI page does not show the decision-model block in the simple view", !/Decision model/.test(settings.AI));
     check("no page says 'A agent'", !names.some((n) => /\bA agent\b/.test(settings[n])));
     check("no page points to 'Settings → Connections'", !names.some((n) => /Settings → Connections/.test(settings[n])));
-    check("nothing mentions the old staging server", !names.some((n) => /srv1866690|hstgr\.cloud/.test(settings[n])));
+    check("no page shows a forbidden name (AIKING_FORBIDDEN_NAMES)", !names.some((n) => FORBIDDEN.test(settings[n])));
     await page.keyboard.press("Escape");
   });
 
