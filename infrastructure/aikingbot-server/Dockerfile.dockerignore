@@ -6,3 +6,4 @@
 !bundle-manifest.json
 !package.json
 !deploy/scripts/container-start.sh
+!deploy/scripts/aiking-root
