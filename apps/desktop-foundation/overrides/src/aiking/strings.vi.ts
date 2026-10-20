@@ -357,6 +357,8 @@ export const vi: Record<string, string> = {
   "account.signInFailed": "Không bắt đầu được đăng nhập. Hãy kiểm tra kết nối rồi thử lại.",
   "engines.showAll": "Hiện tất cả nhà cung cấp (thêm {count})",
   "engines.showFewer": "Thu gọn danh sách",
+  "engine.reason.notInstalled": "`{cli}` chưa được cài, hoặc không nằm trong PATH của ứng dụng. Hãy cài cho người dùng đang chạy AIKINGBOT hoặc dùng Chọn CLI, rồi kiểm tra lại.",
+  "engine.reason.notInstalledShort": "{name} chưa được cài trên máy tính này.",
   "composer.needsModel": "Hãy kết nối một mô hình AI trước khi gửi tin nhắn. Mình đã mở phần thiết lập cho bạn.",
   "welcome.signInIntro": "Đăng nhập bằng email để vào các Server của bạn. Bạn nhận một mã dùng một lần qua email, không cần mật khẩu.",
   "welcome.signIn": "Đăng nhập bằng email",

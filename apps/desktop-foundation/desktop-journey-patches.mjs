@@ -3,7 +3,7 @@
 // self-hosting / company-admin flows. Source of truth lives here and in overrides/, never in vendor/.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-export const DESKTOP_JOURNEY_PATCHED_FILES = ["src/components/SettingsModal.tsx", "src/components/EnginesSettings.tsx", "src/components/Composer.tsx", "src/components/onboarding/beats/HelloBeat.tsx", "src/components/onboarding/WelcomeFlow.tsx", "server/index.ts", "server/enterprise.ts", "server/cli.ts", "src/components/ConnectedWorkspacesSettings.tsx", "src/components/RemoteComputerSection.tsx", "src/components/AboutDialog.tsx", "src/components/onboarding/reel/scenes/index.ts", "src/components/bot-settings/AccessSection.tsx", "src/components/TeamLibraryPanel.tsx", "src/components/onboarding/WelcomeGate.tsx", "electron/main.mjs", "electron/shared-computer-access.node-test.mjs", "src/pair/PairPage.tsx"];
+export const DESKTOP_JOURNEY_PATCHED_FILES = ["src/components/SettingsModal.tsx", "src/components/EngineSetup.tsx", "src/components/DesktopWorkspaceSwitcher.tsx", "src/components/EnginesSettings.tsx", "src/components/Composer.tsx", "src/components/onboarding/beats/HelloBeat.tsx", "src/components/onboarding/WelcomeFlow.tsx", "server/index.ts", "server/enterprise.ts", "server/cli.ts", "src/components/ConnectedWorkspacesSettings.tsx", "src/components/RemoteComputerSection.tsx", "src/components/AboutDialog.tsx", "src/components/onboarding/reel/scenes/index.ts", "src/components/bot-settings/AccessSection.tsx", "src/components/TeamLibraryPanel.tsx", "src/components/onboarding/WelcomeGate.tsx", "electron/main.mjs", "electron/shared-computer-access.node-test.mjs", "src/pair/PairPage.tsx"];
 export function patchDesktopJourney(source) {
   const edit = (path, pairs) => {
     const file = join(source, path); let text = readFileSync(file, "utf8").replaceAll("\r\n", "\n");
@@ -115,6 +115,27 @@ export function patchDesktopJourney(source) {
   edit("electron/main.mjs", [
     ['ipcMain.handle("workspaces:server-action", workspaceOnly(actOnServer));',
       'ipcMain.handle("workspaces:server-action", workspaceOnly(async (event, ...args) => {\n  const started = Date.now();\n  slog(`server action ${String(args[0])} started`);\n  const slow = setTimeout(() => slog(`server action ${String(args[0])} still running after 20s`), 20_000);\n  try { const result = await actOnServer(event, ...args); slog(`server action ${String(args[0])} finished in ${Date.now() - started}ms: ${JSON.stringify(result)}`); return result; }\n  catch (error) { slog(`server action ${String(args[0])} failed: ${error?.stack ?? error}`); throw error; }\n  finally { clearTimeout(slow); }\n}));'],
+  ]);
+  // Engine status text arrives from the server in English; translate the common "not installed" messages when shown.
+  edit("src/components/EngineSetup.tsx", [
+    ['{instance.snapshot.authenticationUnavailableReason ?? instance.snapshot.reason ?? t("engineSetup.noReason")}',
+      '{engineReason(instance.snapshot.authenticationUnavailableReason ?? instance.snapshot.reason ?? t("engineSetup.noReason"))}'],
+    ['        <p role="alert" className="mt-2 text-[12px] leading-relaxed text-danger">\n          {instance.snapshot.reason}',
+      '        <p role="alert" className="mt-2 text-[12px] leading-relaxed text-danger">\n          {engineReason(instance.snapshot.reason)}'],
+    ['import { t } from "@/lib/i18n";', 'import { t } from "@/lib/i18n";\nimport { engineReason } from "@/aiking/strings";'],
+  ]);
+  // The Server picker at the top of the sidebar names the built-in Server "This computer" in English.
+  edit("src/components/DesktopWorkspaceSwitcher.tsx", [
+    ['import { t } from "@/lib/i18n";', 'import { t } from "@/lib/i18n";\nimport { at } from "@/aiking/strings";'],
+    ['  const name = current?.name ?? (cloudHome ? t("cloudSetup.myCloud") : t("sidebar.servers"));',
+      '  const name = current?.local && current.name === "This computer" ? at("rail.local") : (current?.name ?? (cloudHome ? t("cloudSetup.myCloud") : t("sidebar.servers")));'],
+  ]);
+  // Creating a Server asks for a native confirmation first; record when it is shown and what was answered, so a hang can be placed.
+  edit("electron/main.mjs", [
+    ['    if (action === "connect") return true;\n    const { response } = await dialog.showMessageBox(mainWindow, {',
+      '    if (action === "connect") return true;\n    slog(`server action ${action}: asking for confirmation`);\n    const { response } = await dialog.showMessageBox(mainWindow, {'],
+    ['    return response === 0;\n  },\n  create: createLocalEnvironment, select: switchEnvironment,',
+      '    slog(`server action ${action}: confirmation answered (${response === 0 ? "continue" : "cancel"})`);\n    return response === 0;\n  },\n  create: createLocalEnvironment, select: switchEnvironment,'],
   ]);
   // The original test names the protected folder "openmausbot"; the app's folder is now AIKINGBOT, so its other-case spellings
   // are "aikingbot" and "AikingBot". (This test only runs where the file system ignores case: Windows and macOS.)

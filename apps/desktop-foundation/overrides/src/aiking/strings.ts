@@ -362,6 +362,8 @@ const en = {
   "account.signInFailed": "Could not start sign-in. Check your connection and try again.",
   "engines.showAll": "Show all providers ({count} more)",
   "engines.showFewer": "Show fewer providers",
+  "engine.reason.notInstalled": "`{cli}` isn't installed, or isn't on this app's PATH. Install it for the user running AIKINGBOT or use Set CLI, then check again.",
+  "engine.reason.notInstalledShort": "{name} isn't installed on this computer.",
   "composer.needsModel": "Connect an AI model before sending a message. Opening the model setup for you.",
   "welcome.signInIntro": "Sign in with your email to open your Servers. You get a one-time code by email; there is no password.",
   "welcome.signIn": "Sign in with email",
@@ -375,6 +377,14 @@ export const aikingEnglish: Readonly<Record<AikingKey, string>> = en;
 
 const packs: Record<string, Partial<Record<AikingKey, string>>> = { en, vi };
 
+// Engine status text comes from the server in English; show the person's language for the messages people actually meet.
+export function engineReason(text: string): string {
+  const missingCli = /^`([^`]+)` isn't installed, or isn't on this app's PATH/.exec(text);
+  if (missingCli) return at("engine.reason.notInstalled", { cli: missingCli[1] });
+  const missing = /^(.+?) isn't installed on this computer\.?$/.exec(text);
+  if (missing) return at("engine.reason.notInstalledShort", { name: missing[1] });
+  return text;
+}
 export function at(key: AikingKey, params?: Record<string, string | number>): string {
   const lang = activeLocale().split("-")[0] ?? "en";
   const template = packs[lang]?.[key] ?? en[key];
