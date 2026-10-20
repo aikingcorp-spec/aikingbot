@@ -1,9 +1,10 @@
 // Copyright (c) 2026 AIKING.
 // Uploads the relay Worker to Cloudflare through the API (no wrangler). Reads CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
 // from the environment, and the cookie-signing key from RELAY_COOKIE_KEY (created on first deploy, never printed).
-//   node deploy.mjs [--name aikingbot-relay] [--auth aikingbot-auth-staging]
+//   node deploy.mjs [--name aikingbot-relay] [--auth aikingbot-auth-staging] [--domain app.example.com]
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { cloudflare } from "../../scripts/cloudflare.mjs";
 
 const args = process.argv.slice(2);
 const option = (name, fallback) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : fallback; };
@@ -39,3 +40,5 @@ form.set("worker.mjs", new Blob([readFileSync(fileURLToPath(new URL("./worker.mj
 await call(`/workers/scripts/${name}`, { method: "PUT", body: form });
 await call(`/workers/scripts/${name}/subdomain`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ enabled: true, previews_enabled: false }) });
 console.log(`deployed https://${name}.${subdomain}.workers.dev`);
+const domain = option("domain");
+if (domain) { const attached = await cloudflare({ token, account }).attachDomain(name, domain); console.log(`serving https://${attached.hostname} (zone ${attached.zone})`); }

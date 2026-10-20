@@ -17,7 +17,19 @@ Web client and site (Cloudflare Workers) are tested with Miniflare:
 ```sh
 cd apps/web-remote && node --experimental-strip-types relay.lab-test.mjs   # needs miniflare and ws installed
 cd apps/site       && node site.lab-test.mjs
+node scripts/cloudflare.lab-test.mjs                                       # the shared Cloudflare helper, against a stand-in API
 ```
+
+Putting the web service and the site on the owner's domain (the domain must be an active zone in the Cloudflare account):
+
+```sh
+set -a; . <secrets>/cloudflare.env; . <secrets>/relay.env; set +a
+node scripts/go-live.mjs --domain example.com --dry-run      # checks the token, the zone, the Workers and the host names; changes nothing
+node scripts/go-live.mjs --domain example.com                # deploys the web service on app.example.com and the site, then runs the checks
+node scripts/verify-live.mjs --app https://app.example.com --site https://aikingbot-site.<account>.workers.dev   # the light check, any time
+```
+
+After the domain is live, change `DEFAULT_RELAY_URL` in `apps/desktop/server/aiking/relay.ts` and `appUrl`/`origin` in `apps/site/website/site.config.json` to the new addresses, then build the next release.
 
 Rules: every change reaches staging first, then a desktop build, then a release. Branches are `feature/*` or `fix/*`, changes land on
 `main` by pull request with the tests passing. Task notes and hand-offs do not belong in this repository.

@@ -3,13 +3,14 @@
 // feed) into the R2 bucket, then uploads the Worker that serves the bucket. Credentials come from the environment and are
 // never printed:  CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 //   node deploy.mjs --site-url https://… --app-url https://… [--downloads <web>/downloads --updates <web>/updates]
-//                   [--name aikingbot-site] [--bucket aikingbot-staging-sites] [--status-path /__relay/health]
+//                   [--domain www.example.com] [--name aikingbot-site] [--bucket aikingbot-staging-sites] [--status-path /__relay/health]
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { cloudflare } from "../../scripts/cloudflare.mjs";
 
 const args = process.argv.slice(2);
 const option = (name, fallback) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : fallback; };
@@ -57,4 +58,6 @@ try {
   await api(`/accounts/${account}/workers/scripts/${name}/subdomain`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ enabled: true, previews_enabled: false }) });
   const subdomain = (await api(`/accounts/${account}/workers/subdomain`)).subdomain;
   console.log(`deployed https://${name}.${subdomain}.workers.dev`);
+  const domain = option("domain");
+  if (domain) { const attached = await cloudflare({ token, account }).attachDomain(name, domain); console.log(`serving https://${attached.hostname} (zone ${attached.zone})`); }
 } finally { rmSync(work, { recursive: true, force: true }); }
