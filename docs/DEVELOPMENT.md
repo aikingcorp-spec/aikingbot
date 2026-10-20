@@ -29,7 +29,7 @@ node scripts/go-live.mjs --domain example.com                # deploys the web s
 node scripts/verify-live.mjs --app https://app.example.com --site https://aikingbot-site.<account>.workers.dev   # the light check, any time
 ```
 
-After the domain is live, change `DEFAULT_RELAY_URL` in `apps/desktop/server/aiking/relay.ts` and `appUrl`/`origin` in `apps/site/website/site.config.json` to the new addresses, then build the next release.
+After the domain is live, run `node scripts/set-addresses.mjs --app-url https://app.example.com`, the release gate, then build the next release.
 
 Rules: every change reaches staging first, then a desktop build, then a release. Branches are `feature/*` or `fix/*`, changes land on
 `main` by pull request with the tests passing. Task notes and hand-offs do not belong in this repository.
