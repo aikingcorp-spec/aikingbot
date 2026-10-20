@@ -166,8 +166,8 @@ describe("outward links", () => {
     expect(DOCS_URL).toBe("https://aikingbot.invalid/upstream");
   });
 
-  it("sends Send Feedback to the Discord community", () => {
-    expect(FEEDBACK_URL).toBe("https://discord.gg/9Wb8MEpXRs");
+  it("sends Send Feedback to the AIKING site", () => {
+    expect(FEEDBACK_URL).toBe("https://aikingx.com");
   });
 });
 

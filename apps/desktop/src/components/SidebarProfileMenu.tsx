@@ -11,13 +11,13 @@ import {
   Keyboard,
   LifeBuoy,
   Loader2,
+  MessageCircle,
   RefreshCw,
   Settings as SettingsIcon,
   Smartphone,
 } from "lucide-react";
 
 import { InitialsAvatar } from "./Avatar";
-import { DiscordIcon } from "./DiscordIcon";
 import { AboutDialog } from "./AboutDialog";
 import { PhoneAppDialog } from "./PhoneAppDialog";
 import { SidebarPopoverMenu, type SidebarMenuItem } from "./SidebarPopoverMenu";
@@ -272,7 +272,7 @@ export function profileMenuItems({
 }): SidebarMenuItem[] {
   const help: SidebarMenuItem[] = [
     { key: "help", label: t("sidebar.menu.help"), icon: <HelpCircle size={18} />, onSelect: onHelp },
-    { key: "feedback", label: t("sidebar.menu.feedback"), icon: <DiscordIcon size={17} />, onSelect: onFeedback },
+    { key: "feedback", label: t("sidebar.menu.feedback"), icon: <MessageCircle size={17} />, onSelect: onFeedback },
     {
       key: "shortcuts",
       label: t("sidebar.menu.shortcuts"),

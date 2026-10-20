@@ -387,6 +387,7 @@ import { botSkillTemplateSchema, newBotDefaultsSchema } from "./new-bot-defaults
 import { expandLearnTurnText, learnSource } from "./skill-learn.ts";
 import { connectedAppsForSetup, expandSetupTurnText, setupModeActive, setupSystemPrompt, type SetupConnectedApps } from "./setup-mode.ts";
 import type { SkillRequestCardData } from "../shared/skill-request.ts";
+import { buildVoiceBrief } from "./aiking/voice-brief.ts";
 import { checkSoulDrift, readSoulDrift, soulFile, writeSoulMirror } from "./bot-folder.ts";
 import {
   buildSystemPrompt,
@@ -14487,6 +14488,12 @@ const realtimeVoice = createRealtimeVoice({
     if (store.botByThread(thread)?.id !== bot.id) return null;
     return {
       botId: bot.id, threadId: thread, botName: bot.name, cwd: ensureTaskWorkspace(bot.id, thread),
+      brief: buildVoiceBrief({
+        botName: bot.name, title: bot.title, description: bot.description, soul: bot.soul, userName: cfg.profile?.name?.trim(),
+        now: Date.now(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        recent: store.activePath(thread).filter(message => message.role === "user" || message.role === "bot").slice(-8)
+          .map(message => ({ who: message.role === "user" ? "person" as const : "agent" as const, text: message.text ?? "" })),
+      }),
       // The realtime relay is OpenAI's, reached through the Codex sign-in; whatever the agent asks for runs on the agent's own engine, so every agent can take a call.
       voiceSupported: Boolean(registry.get(bot.modelSelection.instanceId)),
     };

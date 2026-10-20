@@ -97,6 +97,7 @@ export function WorkspaceRail() {
   const {directory,error:directoryError}=useServerDirectory();
   const [switching,setSwitching]=useState(false);
   const [switchError,setSwitchError]=useState("");
+  const [menu,setMenu]=useState<{id:string;name:string;x:number;y:number;status?:string}|null>(null);
   const changing=useRef(false);
   const live=useRef(true);
   useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
@@ -113,6 +114,21 @@ export function WorkspaceRail() {
   const discardServer=async(id:string)=>{
     if(!window.confirm(at("server.discardConfirm")))return;
     try{await discardFailedServer(id);}catch(cause){setSwitchError(cause instanceof Error?cause.message:at("workspace.switchFailed"));}
+  };
+  useEffect(()=>{
+    if(!menu)return;
+    const close=()=>setMenu(null);
+    const key=(event:KeyboardEvent)=>{if(event.key==="Escape")close();};
+    window.addEventListener("click",close);window.addEventListener("blur",close);window.addEventListener("keydown",key);
+    return()=>{window.removeEventListener("click",close);window.removeEventListener("blur",close);window.removeEventListener("keydown",key);};
+  },[menu]);
+  const removeServer=async(id:string,name:string,purge:boolean)=>{
+    if(!window.confirm(at(purge?"server.removeDataConfirm":"server.removeConfirm",{name})))return;
+    try{
+      const result=await window.ogb?.environments?.forget(id,purge);
+      if(result&&result.ok===false)throw new Error(at(result.error==="active"?"server.removeActive":"server.removeFailed"));
+      window.dispatchEvent(new Event("aiking:servers-changed"));
+    }catch(cause){setSwitchError(cause instanceof Error?cause.message:at("server.removeFailed"));}
   };
   useEffect(()=>{const show=()=>setOpen(true);window.addEventListener("aiking:workspaces",show);return()=>window.removeEventListener("aiking:workspaces",show);},[]);
   const { capabilities } = useDesktopCapabilities();
@@ -139,6 +155,7 @@ export function WorkspaceRail() {
           {entry.id===activeId&&<span aria-hidden="true" className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-ink"/>}
           <button type="button" data-server-tile={entry.id} aria-current={entry.id===activeId?"page":undefined}
             aria-label={entry.id==="local"?at("rail.local"):entry.name} title={(entry.id==="local"?at("rail.local"):entry.name)+" · "+at(entry.status==="provisioning"?"server.provisioning":entry.status==="failed"?"server.provisionFailed":entry.missing?"server.missing":entry.id===activeId?"server.connected":"server.saved")}
+            onContextMenu={event=>{event.preventDefault();setMenu({id:entry.id,name:entry.name,x:event.clientX,y:event.clientY,status:entry.status});}}
             disabled={switching||(entry.missing&&entry.status!=="failed")||Boolean(entry.status&&entry.status!=="ready"&&entry.status!=="failed")} onClick={()=>entry.status==="failed"?void discardServer(entry.id):void openServer(entry.id)}
             className="relative shrink-0 rounded-xl outline-none transition-transform duration-150 hover:scale-[1.04] focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-40">
             {entry.id==="local"||entry.id==="current"?<WorkspaceTile/>:<span aria-hidden="true" className="flex size-10 items-center justify-center rounded-xl bg-raised text-[14px] font-semibold text-ink">{entry.name.slice(0,2).toLocaleUpperCase()}</span>}
@@ -157,9 +174,30 @@ export function WorkspaceRail() {
         </button>
       </div>
       {(switchError||directoryError)&&<button type="button" data-server-error role="status" title={switchError||at("server.loadFailed")} aria-label={switchError||at("server.loadFailed")} className="mt-2 rounded px-2 text-[11px] text-danger" onClick={openWorkspacePanel}>!</button>}
+      {menu&&<ServerMenu menu={menu} activeId={activeId} onOpen={id=>void openServer(id)} onRemove={removeServer} onDiscard={id=>void discardServer(id)}/>}
       {browser && <BrowserSignOut />}
       {open && <WorkspacePanel directory={directory} onClose={()=>setOpen(false)}/>}
     </nav>
+  );
+}
+
+/** Right-click on a server tile: open, turn off (back to this computer), or remove it. The main server of this computer has nothing to remove. */
+function ServerMenu({menu,activeId,onOpen,onRemove,onDiscard}:{menu:{id:string;name:string;x:number;y:number;status?:string};activeId:string;onOpen:(id:string)=>void;onRemove:(id:string,name:string,purge:boolean)=>Promise<void>;onDiscard:(id:string)=>void}) {
+  const main=menu.id==="local"||menu.id==="current";
+  const active=menu.id===activeId;
+  const item="block w-full rounded-md px-3 py-1.5 text-left text-[13px] text-ink hover:bg-raised-hover";
+  return (
+    <div role="menu" data-server-menu style={{left:Math.min(menu.x,window.innerWidth-260),top:Math.min(menu.y,window.innerHeight-170)}} className="fixed z-50 w-[250px] rounded-lg border border-line bg-raised p-1 shadow-lg" onClick={event=>event.stopPropagation()}>
+      <div className="truncate px-3 py-1 text-[12px] font-semibold text-ink-secondary">{main?at("rail.local"):menu.name}</div>
+      {main?<p className="px-3 py-1.5 text-[12px] leading-snug text-ink-secondary">{at("server.menu.thisComputer")}</p>:<>
+        {menu.status==="failed"?<button role="menuitem" type="button" className={item} onClick={()=>onDiscard(menu.id)}>{at("server.menu.remove")}</button>:<>
+          {active?<button role="menuitem" type="button" data-server-off className={item} onClick={()=>onOpen("local")}>{at("server.menu.off")}</button>
+            :<button role="menuitem" type="button" className={item} onClick={()=>onOpen(menu.id)}>{at("server.menu.open")}</button>}
+          <button role="menuitem" type="button" data-server-remove className={item} onClick={()=>void onRemove(menu.id,menu.name,false)}>{at("server.menu.remove")}</button>
+          <button role="menuitem" type="button" className={item+" text-danger"} onClick={()=>void onRemove(menu.id,menu.name,true)}>{at("server.menu.removeData")}</button>
+        </>}
+      </>}
+    </div>
   );
 }
 

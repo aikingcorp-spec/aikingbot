@@ -75,6 +75,7 @@
     "server/aiking/account-api.test.ts",
     "server/aiking/account-workspaces.test.ts",
     "server/aiking/realtime-voice.test.ts",
+    "server/aiking/voice-brief.test.ts",
     "server/aiking/relay.test.ts",
     "server/aiking/desktop-account.test.ts",
     "server/mcp-oauth.test.ts",

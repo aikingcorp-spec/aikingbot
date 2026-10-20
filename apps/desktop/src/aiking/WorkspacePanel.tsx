@@ -10,7 +10,7 @@ import { readAccountState, type AccountState } from "./account/account-api";
 import { useWorkspaceIdentity } from "./workspace-identity";
 import { workspaceJoinURL } from "./workspace-link";
 import { selectServer, type ServerDirectory } from "./server-directory";
-import { at } from "./strings";
+import { at, type AikingKey } from "./strings";
 import { createManagedServer } from "./platform-api";
 
 type EnvironmentBridge = NonNullable<NonNullable<Window["ogb"]>["environments"]>;
@@ -60,6 +60,10 @@ export function WorkspacePanel({onClose,directory}:{onClose:()=>void;directory?:
     onClose();setAdvancedMode(true);
     dispatch({type:"toggleAppSettings",open:true,section:members?"people":canConnect?"desktopWorkspaces":"general"});
   };
+  const createFailure=(code?:string)=>{
+    const known=["name","duplicate","nested","path","dev","busy"];
+    return at(known.includes(code??"")?("workspace.createFailed."+code) as AikingKey:"workspace.createFailed");
+  };
   const create=()=>run(async()=>{
     if(!canCreate || !name.trim())return;
     if(directory?.provider==="managed"){
@@ -68,12 +72,12 @@ export function WorkspacePanel({onClose,directory}:{onClose:()=>void;directory?:
     } else if(window.ogb?.workspaces?.create) {
       const result=await window.ogb.workspaces.create(name.trim());
       if(result.error==="cancelled")return;
-      if(!result.ok)throw new Error(at("workspace.createFailed"));
+      if(!result.ok)throw new Error(createFailure(result.error));
     } else {
       const bridge=window.ogb?.environments;
       if(!bridge)throw new Error(at("workspace.createFailed"));
       const result=await bridge.create(name.trim());
-      if(!result.ok)throw new Error(at("workspace.createFailed"));
+      if(!result.ok)throw new Error(createFailure(result.error));
       const next=await bridge.state();
       const known=new Set(saved?.environments.map(entry=>entry.id));
       const entry=next.environments.find(entry=>entry.kind==="local"&&!known.has(entry.id));

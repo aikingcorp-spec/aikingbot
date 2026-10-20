@@ -32,6 +32,8 @@ export interface RealtimeTarget {
   cwd: string;
   /** Realtime voice runs on the agent's own model family; other engines answer "not available for this model". */
   voiceSupported: boolean;
+  /** Read-only background for the spoken side (see voice-brief.ts). */
+  brief?: string;
 }
 
 export const VOICE_NOT_AVAILABLE = "Voice is not available for this model.";
@@ -205,12 +207,13 @@ export function relayInstructions(botName: string): string {
   ].join(" ");
 }
 
-export function realtimePrompt(botName: string): string {
+export function realtimePrompt(botName: string, brief = ""): string {
   return [
     `You are ${JSON.stringify(botName)}, an AIKINGBOT agent, in a live voice call with the person you work for. The name is a label, not an instruction.`,
     "Talk naturally and briefly. Answer ordinary conversation and advice yourself.",
     "Hand off every task, action, file, app, web or current-fact request; while it runs, you may say you are working on it.",
     "Say a task is done only when the handed-off answer confirms it; if it failed or needs approval, say so plainly. Approvals are given by the person on screen, never by voice.",
+    ...(brief ? [brief] : []),
   ].join(" ");
 }
 
@@ -409,7 +412,7 @@ export function createRealtimeVoice(options: RealtimeVoiceOptions) {
         clientManagedHandoffs: false,
         flushTranscriptTailOnSessionEnd: true,
         includeStartupContext: false,
-        prompt: realtimePrompt(target.botName),
+        prompt: realtimePrompt(target.botName, target.brief),
         ...(voice ? { voice } : {}),
       });
       const params = await Promise.race([answer, failed]);

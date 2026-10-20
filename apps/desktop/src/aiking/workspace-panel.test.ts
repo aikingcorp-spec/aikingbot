@@ -83,8 +83,16 @@ it("uses bounded native creation on a remote Desktop renderer",async()=>{
  expect(create).toHaveBeenCalledExactlyOnceWith("B");expect(document.querySelector("[role=alert]")).toBeNull();
  expect(mocks.close).not.toHaveBeenCalled();
 });
+it("says why a create failed when the reason is known",async()=>{
+ const create=vi.fn(async()=>({ok:false,error:"duplicate"}));
+ vi.stubGlobal("ogb",{workspaces:{create}});
+ await act(async()=>root.render(createElement(WorkspacePanel,{onClose:mocks.close,directory:{activeId:"a",canCreate:true,servers:[]}})));
+ await click("[data-workspace-create]");await input("B");
+ await act(async()=>document.querySelector("form")!.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true})));
+ expect(document.querySelector("[role=alert]")?.textContent).toContain("folder already exists");
+});
 it("reports an unsuccessful create without inventing a server",async()=>{
- const create=vi.fn(async()=>({ok:false,error:"path"}));
+ const create=vi.fn(async()=>({ok:false,error:"create"}));
  vi.stubGlobal("ogb",{workspaces:{create}});
  await act(async()=>root.render(createElement(WorkspacePanel,{onClose:mocks.close,directory:{activeId:"a",canCreate:true,servers:[]}})));
  await click("[data-workspace-create]");await input("B");

@@ -7,7 +7,7 @@ export const SITE_URL = "https://aikingbot-site.aiking-corp.workers.dev";
 export const DOCS_URL = `${SITE_URL}/docs/`;
 export const HELP_CENTER_URL = DOCS_URL;
 export const APPROVAL_LEVELS_URL = DOCS_URL;
-export const FEEDBACK_URL = SITE_URL;
+export const FEEDBACK_URL = "https://aikingx.com";
 export const RELEASES_URL = SITE_URL;
 export const PRICING_URL = DOCS_URL;
 export function withSource(url: string, source: string): string {
