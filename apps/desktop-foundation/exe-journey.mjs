@@ -32,7 +32,7 @@ const child = spawn(binary, args, {
 let output = ""; child.stdout.on("data", chunk => { output += chunk; }); child.stderr.on("data", chunk => { output += chunk; });
 
 const report = { lang, at: new Date().toISOString(), binary: binary.replace(/[A-Za-z]:\\Users\\[^\\]+/, "C:\\Users\\<user>"), steps: [], findings: [], pageErrors: [] };
-const BRAND = /openmaus|open maus|open-maus/i;
+const BRAND = /open[ _-]?maus|(?<![A-Za-z])maus(?![a-z])|(?<![A-Za-z0-9])omb[-_.:]|(?<![A-Za-z0-9])OMB_/i;
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 let page; let index = 0;
 
@@ -226,7 +226,7 @@ try {
   const log = join(scratch, "electron/logs/server.log");
   if (existsSync(log)) {
     const text = readFileSync(log, "utf8"); report.serverLogTail = text.slice(-2500);
-    if (BRAND.test(text)) report.findings.push({ step: "server-log", kind: "brand", detail: (text.match(/.*openmaus.*/i) || [""])[0].slice(0, 160) });
+    if (BRAND.test(text)) report.findings.push({ step: "server-log", kind: "brand", detail: (text.match(new RegExp(`.*(${BRAND.source}).*`, "i")) || [""])[0].slice(0, 160) });
   }
   if (report.pageErrors.length) report.findings.push({ step: "renderer", kind: "page-errors", detail: report.pageErrors.slice(0, 5).join(" | ") });
   writeFileSync(join(out, "report.json"), JSON.stringify(report, null, 2));
