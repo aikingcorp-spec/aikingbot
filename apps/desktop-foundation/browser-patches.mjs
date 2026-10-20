@@ -144,6 +144,8 @@ export class BrowserActionFailedError extends BrowserLiveError {`]);
   edit("server/browser-engine.test.ts",
     ["import { removeTempDir } from \"./testing/cleanup.ts\";\n", "import { removeTempDir } from \"./testing/cleanup.ts\";\nimport { ownsBrowserViewport } from \"./browser-runtime.ts\";\n"],
     ["  agentBrowserIntegration,\n", "  agentBrowserIntegration,\n  managedBrowserLaunch,\n  windowsHeadedBrowser,\n"],
+    // These tests describe the headless default. A Windows machine with Chrome or Edge installed would otherwise start a headed launch.
+    ['import { afterEach, describe, expect, it, vi } from "vitest";\n', 'import { afterEach, describe, expect, it, vi } from "vitest";\n\nprocess.env.AIKING_BROWSER_HEADED = "0";\n'],
     [`  it("keeps saved state separate for different bots and never saves guest state", () => {`, `  it("runs the Chrome or Edge installed on Windows headed, so sites do not turn the agent away", () => {
     const root = mkdtempSync(join(tmpdir(), "win-browser-"));
     try {
