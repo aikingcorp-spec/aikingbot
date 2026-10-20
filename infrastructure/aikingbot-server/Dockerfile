@@ -1,6 +1,6 @@
 # AIKINGBOT server image. Build context: an unpacked server bundle produced by
-#   node apps/desktop-foundation/server-bundle.mjs
-# (see docs/aikingbot/server-deployment.md). The image holds no build tools:
+#   node scripts/server-bundle.mjs
+# (see docs/STAGING.md). The image holds no build tools:
 # the bundle is self-contained (dist-server + dist + DuckDB natives).
 #
 # The server binds 127.0.0.1 inside the container; Caddy shares the network
@@ -11,7 +11,7 @@
 #   docker build --secret id=build_ca,src=/path/ca.crt ...   (not stored in the image)
 FROM node:24-bookworm-slim AS runtime
 ARG WITH_BROWSER=1
-# git (agent CLIs) and the browser libraries. 0 only for minimal test images.
+# git (agent CLIs), the ssh client (the agents' single door to the host, see aiking-root) and the browser libraries. 0 only for minimal test images.
 ARG WITH_SYSTEM_PACKAGES=1
 ARG AGENT_BROWSER_VERSION=0.37.0
 RUN --mount=type=secret,id=build_ca,required=false \
@@ -19,7 +19,7 @@ RUN --mount=type=secret,id=build_ca,required=false \
     sed -i 's#http://deb.debian.org#https://deb.debian.org#g' /etc/apt/sources.list.d/debian.sources; \
     APT="apt-get -o Acquire::https::CAInfo=/run/secrets/build_ca"; fi \
   && if [ "$WITH_SYSTEM_PACKAGES" = "1" ]; then $APT update \
-  && $APT install -y --no-install-recommends ca-certificates git; fi \
+  && $APT install -y --no-install-recommends ca-certificates git openssh-client; fi \
   && if [ "$WITH_BROWSER" = "1" ]; then $APT install -y --no-install-recommends \
     libxcb-shm0 libx11-xcb1 libx11-6 libxcb1 libxext6 libxrandr2 \
     libxcomposite1 libxcursor1 libxdamage1 libxfixes3 libxi6 libgtk-3-0 \
@@ -65,10 +65,10 @@ COPY --chown=root:root licenses ./licenses
 COPY --chown=root:root bundle-manifest.json ./bundle-manifest.json
 COPY --chown=root:root package.json ./package.json
 COPY --chown=root:root deploy/scripts/container-start.sh /usr/local/bin/aikingbot-start
-RUN chmod 0755 /usr/local/bin/aikingbot-start && chmod -R go-w /app
+COPY --chown=root:root deploy/scripts/aiking-root /usr/local/bin/aiking-root
+RUN chmod 0755 /usr/local/bin/aikingbot-start /usr/local/bin/aiking-root && chmod -R go-w /app
 LABEL org.opencontainers.image.title="AIKINGBOT server" \
-      org.opencontainers.image.source="https://github.com/aikingcorp-spec/AIKINGX_Bot" \
-      org.opencontainers.image.licenses="Apache-2.0 AND LicenseRef-AIKING"
+      org.opencontainers.image.vendor="AIKING"
 VOLUME ["/data"]
 USER aiking
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \

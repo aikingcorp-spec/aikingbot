@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs a command as root on the VPS that hosts this server, through the one door the owner opened for the agents:
+#   container --ssh key--> host user "aikingbot-agent" --sudo--> root (every command is logged on the host).
+# The door is closed unless the owner created the key (/run/agent-root/id_ed25519) and the host user.
+#   aiking-root id
+#   aiking-root bash -lc 'cd /srv/aikingbot-staging/work && git status'
+KEY=/run/agent-root/id_ed25519
+[ -r "$KEY" ] || { echo "aiking-root: not enabled (no key at $KEY)" >&2; exit 78; }
+[ "$#" -gt 0 ] || { echo "usage: aiking-root <command> [args...]" >&2; exit 64; }
+cmd=""
+for arg in "$@"; do
+  quoted=$(printf '%s' "$arg" | sed "s/'/'\\\\''/g")
+  cmd="$cmd '$quoted'"
+done
+exec ssh -i "$KEY" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=8 \
+  -o UserKnownHostsFile=/run/agent-root/known_hosts -o StrictHostKeyChecking=yes -o HostKeyAlias=aiking-host \
+  aikingbot-agent@aiking-host "sudo -n$cmd"

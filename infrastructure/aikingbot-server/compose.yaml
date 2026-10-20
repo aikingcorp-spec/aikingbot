@@ -34,6 +34,10 @@ services:
       AIKING_STRICT_SERVICE_LOOPBACK: "1"
     volumes:
       - ${AIKING_DATA_ROOT:?set AIKING_DATA_ROOT to a dedicated host directory}:/data
+      # The key to the agents' single door to the host (aiking-root); absent or empty means the door is closed.
+      - ${AIKING_AGENT_ROOT_KEY_DIR:-/srv/aikingbot-staging/secrets/agent-root}:/run/agent-root:ro
+    extra_hosts:
+      - "aiking-host:host-gateway"
     logging:
       driver: json-file
       options: { max-size: "20m", max-file: "5" }
