@@ -364,7 +364,7 @@ export function EnginesSettings() {
       </div>
       <EngineSections instances={rows} renderEngine={(instance) => <EngineRow instance={instance} />} />
       {!advanced && everything.length > 6 && hidden > 0 && <button type="button" onClick={() => setShowAll((value) => !value)} className="ui-button w-fit self-start">{showAll ? at("engines.showFewer") : at("engines.showAll", { count: hidden })}</button>}
-      <CacheKeepWarmSettings />
+      {advanced && <CacheKeepWarmSettings />}
     </div>
   );
 }

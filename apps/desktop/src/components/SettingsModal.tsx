@@ -881,7 +881,7 @@ export function SettingsModal() {
       case "organization":
         return null;
       case "cloudAccount":
-        return remoteActive ? null : <><AikingAccountSettings /><RemoteAccessSettings /></>;
+        return remoteActive ? null : <><AikingAccountSettings />{window.ogb?.environments && <RemoteAccessSettings />}</>;
       case "general":
         return (
           <>
