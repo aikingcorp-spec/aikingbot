@@ -36,14 +36,15 @@ services:
       - ${AIKING_DATA_ROOT:?set AIKING_DATA_ROOT to a dedicated host directory}:/data
       # The key to the agents' single door to the host (aiking-root); absent or empty means the door is closed.
       - ${AIKING_AGENT_ROOT_KEY_DIR:-/srv/aikingbot-staging/secrets/agent-root}:/run/agent-root:ro
-    extra_hosts:
-      - "aiking-host:host-gateway"
     logging:
       driver: json-file
       options: { max-size: "20m", max-file: "5" }
   edge:
     image: ${CADDY_IMAGE:-caddy:2.10.2}
     restart: unless-stopped
+    # The edge owns the namespace the app shares, so the name of the host (for aiking-root) is set here.
+    extra_hosts:
+      - "aiking-host:host-gateway"
     ports:
       - "${AIKING_BIND_ADDRESS:-127.0.0.1}:${AIKING_HTTP_PORT:-18080}:80"
     volumes:
