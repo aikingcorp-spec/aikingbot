@@ -1,0 +1,8 @@
+# Overlay for the gateway cutover. Only the edge changes; Traefik labels, the shared
+# network, Signal/TURN and Server A data are untouched.
+services:
+  edge:
+    ports:
+      - "127.0.0.1:18891:8798"
+    volumes:
+      - /run/aikingbot-platform:/run/aikingbot-platform:ro

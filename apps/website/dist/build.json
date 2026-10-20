@@ -1,0 +1,14 @@
+{
+  "builtAt": "2026-10-15T07:57:16.604Z",
+  "origin": "https://aikingbot.srv1866690.hstgr.cloud",
+  "appUrl": "https://aikingbot-app.srv1866690.hstgr.cloud",
+  "release": null,
+  "locales": [
+    "vi",
+    "en"
+  ],
+  "screens": [
+    "chat",
+    "marketplace"
+  ]
+}

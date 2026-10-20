@@ -1,0 +1,14 @@
+{
+  "name": "@aiking/desktop-foundation-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "dev": "node dev.mjs",
+    "verify": "node verify.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.62.1"
+  }
+}

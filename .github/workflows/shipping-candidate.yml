@@ -1,0 +1,170 @@
+name: AIKINGBOT shipping candidate
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Desktop build target
+        type: choice
+        default: all
+        options: [all, windows, linux]
+  push:
+    branches: ['stage3/shipping-candidate', 'AIKINGBOT']
+    tags: ['aikingbot-v*']
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'apps/desktop-foundation/**'
+      - 'package*.json'
+      - 'deploy/**'
+      - '.github/workflows/shipping-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  desktop:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.target == 'windows' && '[{"os":"windows-latest","platform":"windows"}]' || inputs.target == 'linux' && '[{"os":"ubuntu-latest","platform":"linux"}]' || '[{"os":"windows-latest","platform":"windows"},{"os":"ubuntu-latest","platform":"linux"}]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix apps/desktop-foundation --ignore-scripts
+      - run: node apps/desktop-foundation/setup.mjs
+      - run: node --test apps/desktop-foundation/patches.node-test.mjs
+      - run: bun test ./test
+      - run: npm run typecheck
+      - name: Renderer typecheck
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/typescript/bin/tsc -b
+      - name: Server typecheck
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/typescript/bin/tsc -p tsconfig.server.json
+      - name: Chromium dependencies
+        working-directory: apps/desktop-foundation
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium
+      - name: UI bundle for Electron verification
+        if: runner.os == 'Linux'
+        working-directory: .aikingbot-foundation/source
+        run: node node_modules/vite/bin/vite.js build
+      - name: Electron sandbox on Ubuntu runner
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Electron clean-profile tours
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node apps/desktop-foundation/verify-shipping.mjs --electron
+      - name: Regression
+        env:
+          AIKING_VERIFY_STAGE: shipping
+        run: node apps/desktop-foundation/compatibility.mjs
+      - name: Desktop API, permissions, IPC and recovery
+        run: node apps/desktop-foundation/security-checks.mjs
+      - name: Electron main-process suite
+        if: runner.os == 'Linux'
+        working-directory: .aikingbot-foundation/source
+        run: node --test electron/*.node-test.mjs
+      - name: Production installer
+        run: node apps/desktop-foundation/build.mjs
+      - name: Packaged server isolation and workers
+        working-directory: .aikingbot-foundation/source
+        run: node scripts/smoke-packaged-server.mjs
+      - name: Packaged Core and MCP without checkout dependencies
+        run: node apps/desktop-foundation/packaged-core.mjs
+      - name: Chromium Core, Marketplace, Voice and clean-profile tours
+        run: node apps/desktop-foundation/verify-shipping.mjs
+      - name: Packaged Electron startup, local mutation authorization and portable provider runtime (Windows)
+        if: runner.os == 'Windows'
+        run: node apps/desktop-foundation/packaged-desktop.mjs
+      - name: Packaged Electron startup and local API isolation
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node apps/desktop-foundation/packaged-desktop.mjs
+      - name: Server bundle and standalone smoke
+        if: runner.os == 'Linux'
+        run: |
+          node apps/desktop-foundation/server-bundle.mjs
+          node apps/desktop-foundation/server-smoke.mjs
+      - name: No trace of the original product name in what ships
+        if: runner.os == 'Linux'
+        run: |
+          S=.aikingbot-foundation/source
+          node apps/desktop-foundation/trace-scan.mjs $S --allow node_modules
+          for bundle in .aikingbot-foundation/server-bundle/*/; do node apps/desktop-foundation/trace-scan.mjs "${bundle%/}" --allow node_modules; done
+      - name: Server Docker image and stack check
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          stage="$RUNNER_TEMP/aikingbot-server"; mkdir -p "$stage" "$RUNNER_TEMP/aikingbot-data"
+          tar -xzf .aikingbot-foundation/server-bundle/aikingbot-server-*-linux-x64.tar.gz -C "$stage" --strip-components=1
+          sudo chown 10001:10001 "$RUNNER_TEMP/aikingbot-data"
+          cd "$stage/deploy"
+          sed -e "s#^AIKING_DATA_ROOT=.*#AIKING_DATA_ROOT=$RUNNER_TEMP/aikingbot-data#" aikingbot.env.example > aikingbot.env
+          docker compose --env-file aikingbot.env up -d --build --wait --wait-timeout 300
+          for i in $(seq 1 60); do code=$(docker compose --env-file aikingbot.env logs aikingbot | grep -oE 'pairing code: +[A-Z0-9-]+' | tail -1 | awk '{print $3}'); [ -n "$code" ] && break; sleep 2; done
+          bash scripts/stack-check.sh http://127.0.0.1:18080 bot-staging.example.com "$code" | tee "$GITHUB_WORKSPACE/.aikingbot-foundation/evidence/shipping/server-docker-stack-check.txt"
+          docker compose --env-file aikingbot.env exec -T aikingbot sh -c 'test -x "$AGENT_BROWSER_EXECUTABLE_PATH" && git --version'
+          docker compose --env-file aikingbot.env down
+      - name: Attach installers to a private draft pre-release
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          files=(.aikingbot-foundation/source/release/*.exe .aikingbot-foundation/source/release/*.zip .aikingbot-foundation/source/release/*.deb .aikingbot-foundation/source/release/*.AppImage .aikingbot-foundation/server-bundle/*.tar.gz)
+          if [ ${#files[@]} -eq 0 ]; then echo "No installers were produced"; exit 0; fi
+          sums="$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"; : > "$sums"
+          for f in "${files[@]}"; do (cd "$(dirname "$f")" && sha256sum "$(basename "$f")") >> "$sums"; done
+          tag="ci-${{ matrix.platform }}-${GITHUB_SHA::7}"
+          gh release delete "$tag" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$tag" --draft --prerelease --target "$GITHUB_SHA" --title "CI candidate ${{ matrix.platform }} ${GITHUB_SHA::7} (job: $JOB_STATUS)" --notes "Private CI candidate for commit $GITHUB_SHA. Job status: $JOB_STATUS. Not a shipped release." "${files[@]}" "$sums"
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: runner.os == 'Linux'
+        with:
+          name: AIKINGBOT-server-linux-x64-${{ github.sha }}
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: error
+          path: |
+            .aikingbot-foundation/server-bundle/*.tar.gz
+            .aikingbot-foundation/server-bundle/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: always()
+        with:
+          name: AIKINGBOT-evidence-${{ matrix.platform }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          if-no-files-found: warn
+          path: .aikingbot-foundation/evidence/shipping/
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: always()
+        with:
+          name: AIKINGBOT-installers-${{ matrix.platform }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          path: |
+            .aikingbot-foundation/source/release/*.exe
+            .aikingbot-foundation/source/release/*.zip
+            .aikingbot-foundation/source/release/*.deb
+            .aikingbot-foundation/source/release/*.AppImage

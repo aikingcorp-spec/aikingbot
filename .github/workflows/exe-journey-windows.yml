@@ -1,0 +1,96 @@
+name: EXE journey review (Windows, report only)
+# Installs the PUBLIC Windows installer exactly as a person would, opens the installed app and walks the
+# first-run journey, saving a screenshot and the visible text of every screen. It never fails the build:
+# it produces evidence (a private draft pre-release) so the real EXE can be reviewed and later gated.
+on:
+  workflow_dispatch:
+  push:
+    branches: ['release/0.3.0-rc.3']
+    paths:
+      - '.github/workflows/exe-journey-windows.yml'
+      - 'apps/desktop-foundation/exe-journey.mjs'
+permissions:
+  contents: write
+jobs:
+  journey:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --prefix apps/desktop-foundation --ignore-scripts
+      - name: Electron main-process tests on Windows (these only ran on Linux before)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          git submodule update --init vendor/openmausbot
+          node apps/desktop-foundation/setup.mjs --source-only
+          Push-Location .aikingbot-foundation/source
+          $files = Get-ChildItem electron -Filter *.node-test.mjs | Where-Object Name -ne 'preload.node-test.mjs' | ForEach-Object { "electron/$($_.Name)" }
+          node --test @files 2>&1 | Tee-Object -FilePath "$env:GITHUB_WORKSPACE/electron-windows-tests.log" | Select-Object -Last 40
+          Pop-Location
+          $log = Get-Content "$env:GITHUB_WORKSPACE/electron-windows-tests.log"
+          "### Electron main-process tests on Windows" | Out-File $env:GITHUB_STEP_SUMMARY -Append
+          $log | Select-String -Pattern '^ℹ (tests|pass|fail|skipped)' | ForEach-Object { $_.Line } | Out-File $env:GITHUB_STEP_SUMMARY -Append
+          $log | Select-String -Pattern '^\s*✖' | Select-Object -First 40 | ForEach-Object { $_.Line } | Out-File $env:GITHUB_STEP_SUMMARY -Append
+      - name: Download the newest installer (latest CI candidate; public one if there is none)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = gh release list --limit 30 --json tagName,createdAt --jq '[.[] | select(.tagName | startswith("ci-windows-"))] | sort_by(.createdAt) | last | .tagName'
+          if ($tag) {
+            "using CI candidate $tag"
+            gh release download $tag --pattern "AIKINGBOT-*-setup.exe" --output setup.exe
+          } else {
+            Invoke-WebRequest -Uri "https://aikingbot.srv1866690.hstgr.cloud/downloads/latest/AIKINGBOT-setup.exe" -OutFile setup.exe
+          }
+          "installer sha256: $((Get-FileHash setup.exe -Algorithm SHA256).Hash)"
+      - name: Install silently like a person would
+        shell: pwsh
+        run: |
+          Start-Process -FilePath .\setup.exe -ArgumentList '/S' -Wait
+          Start-Sleep -Seconds 5
+          Get-Process -Name AIKINGBOT -ErrorAction SilentlyContinue | Stop-Process -Force
+          $exe = Get-ChildItem "$env:LOCALAPPDATA\Programs" -Recurse -Filter AIKINGBOT.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $exe) { throw "AIKINGBOT.exe was not installed" }
+          "AIKING_PACKAGE_EXECUTABLE=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "installed at $($exe.FullName)"
+      - name: Walk the journey (Vietnamese)
+        shell: pwsh
+        env:
+          AIKING_JOURNEY_LANG: vi
+        run: node apps/desktop-foundation/exe-journey.mjs journey-evidence
+      - name: Walk the account sign-in entry (Vietnamese)
+        shell: pwsh
+        env:
+          AIKING_JOURNEY_LANG: vi
+          AIKING_JOURNEY_MODE: signin
+        run: node apps/desktop-foundation/exe-journey.mjs journey-evidence
+      - name: Walk the journey (English)
+        shell: pwsh
+        env:
+          AIKING_JOURNEY_LANG: en
+        run: node apps/desktop-foundation/exe-journey.mjs journey-evidence
+      - name: Findings summary
+        if: always()
+        shell: bash
+        run: |
+          for l in vi vi-signin en; do [ -f "journey-evidence/$l/summary.md" ] && cat "journey-evidence/$l/summary.md" >> "$GITHUB_STEP_SUMMARY"; done
+          true
+      - name: Attach evidence to a private draft pre-release
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          [ -d journey-evidence ] || exit 0
+          [ -f electron-windows-tests.log ] && cp electron-windows-tests.log journey-evidence/
+          (cd journey-evidence && 7z a -tzip ../journey-evidence.zip . >/dev/null)
+          tag="exe-journey-${GITHUB_SHA::7}-${GITHUB_RUN_ID}"
+          gh release create "$tag" --draft --prerelease --target "$GITHUB_SHA" --title "EXE journey evidence ${GITHUB_SHA::7} (run $GITHUB_RUN_ID)" --notes "Screenshots and visible text from the installed Windows app. Report only." journey-evidence.zip

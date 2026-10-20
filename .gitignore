@@ -1,0 +1,6 @@
+node_modules/
+.aiking/
+*.log
+TASKS.md
+apps/shell/dist/
+.aikingbot-foundation/

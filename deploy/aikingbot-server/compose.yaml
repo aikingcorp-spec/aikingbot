@@ -1,0 +1,54 @@
+# AIKINGBOT server stack: the app and a Caddy edge in one network namespace.
+# The edge owns the namespace (and the published ports), so an app restart or
+# crash-restart never detaches the proxy from the app.
+# Default mode is "behind an existing reverse proxy" (staging on a shared VPS):
+# Caddy listens on plain HTTP and is published only on loopback, the host's
+# own TLS proxy forwards the public hostname to it. For a VPS with free 80/443
+# add compose.tls.yaml (Caddy obtains certificates itself).
+#
+#   cp aikingbot.env.example aikingbot.env && $EDITOR aikingbot.env
+#   docker compose --env-file aikingbot.env up -d --build
+#   docker compose --env-file aikingbot.env logs aikingbot | grep -A3 -i pair
+name: ${COMPOSE_PROJECT_NAME:-aikingbot-staging}
+services:
+  aikingbot:
+    build:
+      context: ${AIKING_BUNDLE_DIR:-..}
+      dockerfile: ${AIKING_DOCKERFILE:-deploy/Dockerfile}
+      args:
+        WITH_BROWSER: ${AIKING_WITH_BROWSER:-1}
+        WITH_SYSTEM_PACKAGES: ${AIKING_WITH_SYSTEM_PACKAGES:-1}
+    image: ${AIKING_IMAGE:-aikingbot-server:local}
+    restart: unless-stopped
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    shm_size: 512m
+    network_mode: service:edge
+    depends_on: [edge]
+    env_file: [aikingbot.env]
+    environment:
+      AIKING_PORT: "8799"
+      AIKING_WEBHOOK_PORT: "8800"
+      AIKING_DATA_DIR: /data/.aikingbot
+      AIKING_STRICT_SERVICE_LOOPBACK: "1"
+    volumes:
+      - ${AIKING_DATA_ROOT:?set AIKING_DATA_ROOT to a dedicated host directory}:/data
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
+  edge:
+    image: ${CADDY_IMAGE:-caddy:2.10.2}
+    restart: unless-stopped
+    ports:
+      - "${AIKING_BIND_ADDRESS:-127.0.0.1}:${AIKING_HTTP_PORT:-18080}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+volumes:
+  caddy_data:
+  caddy_config:

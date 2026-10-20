@@ -1,0 +1,46 @@
+name: AIKINGBOT standalone Windows installer for VPS mirror
+
+on:
+  push:
+    branches: [AIKINGBOT]
+    paths:
+      - '.github/workflows/repack-windows-rc1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  extract-installer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Download previously verified Windows CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38678359992
+          name: AIKINGBOT-installers-windows-8b98a366a099fbfed71ba23208d6e2c64c271149
+          github-token: ${{ github.token }}
+          path: ./verified
+
+      - name: Verify exact installer against release handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="$(find verified -type f -name 'AIKINGBOT-0.3.0-rc.1-setup.exe' -print -quit)"
+          test -n "$f" || { echo "Expected Windows installer missing"; exit 1; }
+          echo "c3bd03ecbd32d2dfd2569a6c741c735086eb9ea306396856e160a1196f885ff9  $f" | sha256sum --check --status
+          mkdir -p standalone
+          cp "$f" standalone/AIKINGBOT-0.3.0-rc.1-setup.exe
+          (cd standalone && sha256sum AIKINGBOT-0.3.0-rc.1-setup.exe > SHA256SUMS)
+          ls -lh standalone/
+
+      - name: Upload single installer for self-hosted mirror
+        uses: actions/upload-artifact@v4
+        with:
+          name: AIKINGBOT-rc1-windows-installer-only
+          path: standalone/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
