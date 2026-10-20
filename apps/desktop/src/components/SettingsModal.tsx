@@ -106,13 +106,13 @@ export type SimpleSettingsPage = {
 export const SIMPLE_PAGES: SimpleSettingsPage[] = [
   { id: "general", labelKey: "settings.section.general", icon: User, sections: ["general"] },
   { id: "appearance", labelKey: "settings.section.appearance", icon: Palette, sections: ["appearance"] },
-  { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines", "decisionModel"] },
+  { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines"] },
   { id: "connectors", labelKey: "settings.group.connectors", icon: Plug, sections: ["connections"] },
   { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["logins"] },
   { id: "account", labelKey: "settings.group.account", icon: CircleUser, sections: ["cloudAccount", "people", "activity"] },
 ];
 
-export const SIMPLE_HIDDEN_SECTIONS: readonly AppSettingsSection[] = ["usage", "backups", "experimental", "workspaces", "skills"];
+export const SIMPLE_HIDDEN_SECTIONS: readonly AppSettingsSection[] = ["decisionModel", "usage", "backups", "experimental", "workspaces", "skills"];
 
 export function simpleSettingsPages(
   available: ReadonlyArray<(typeof SECTIONS)[number]>,

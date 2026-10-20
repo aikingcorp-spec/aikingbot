@@ -5,16 +5,16 @@ import {beforeEach,afterEach,expect,it,vi} from "vitest";
 import {WorkspacePanel} from "./WorkspacePanel";
 import {MarketplaceButton} from "./WorkspaceChrome";
 import {setLocale} from "@/lib/i18n";
-const mocks=vi.hoisted(()=>({dispatch:vi.fn(),close:vi.fn(),admin:true}));
+const mocks=vi.hoisted(()=>({dispatch:vi.fn(),close:vi.fn(),admin:true,advanced:true}));
 vi.mock("@/state/store",()=>({useStore:()=>({dispatch:mocks.dispatch})}));
 vi.mock("@/lib/use-owner-or-admin",()=>({useOwnerOrAdmin:()=>mocks.admin}));
-vi.mock("@/lib/interface-mode",()=>({setAdvancedMode:vi.fn()}));
+vi.mock("@/lib/interface-mode",()=>({setAdvancedMode:vi.fn(),useAdvancedMode:()=>mocks.advanced}));
 vi.mock("@/lib/session",()=>({readSessionState:async()=>({kind:"session",scopes:mocks.admin?["admin"]:["client"]}),isOwnerOrAdmin:(value:{scopes:string[]})=>value.scopes.includes("admin")}));
 vi.mock("./workspace-identity",()=>({useWorkspaceIdentity:()=>({name:"Fixture workspace",local:false})}));
 vi.mock("./account/account-api",()=>({readAccountState:async()=>({account:{email:"person@example.test"},workspaces:[],devices:[]})}));
 let host:HTMLDivElement;let root:Root;
 beforeEach(()=>{
- vi.clearAllMocks();mocks.admin=true;setLocale("en");
+ vi.clearAllMocks();mocks.admin=true;mocks.advanced=true;setLocale("en");
  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT",true);vi.stubGlobal("ogb",undefined);
  host=document.createElement("div");document.body.append(host);root=createRoot(host);
 });
@@ -98,4 +98,12 @@ it("reports an unsuccessful create without inventing a server",async()=>{
  await click("[data-workspace-create]");await input("B");
  await act(async()=>document.querySelector("form")!.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true})));
  expect(document.querySelector("[role=alert]")?.textContent).toContain("Could not create this server");
+});
+
+it("keeps team wording and the members button out of the simple view",async()=>{
+ mocks.advanced=false;
+ await render();
+ expect(document.querySelector("[data-server-members]")).toBeNull();
+ expect(document.body.textContent).not.toContain("Workspaces organize");
+ expect(document.querySelector("[data-workspace-create]")).not.toBeNull();
 });

@@ -5,7 +5,7 @@ import { ArrowLeft, Check, ChevronRight, Loader2, Plus, RefreshCw, Settings, Use
 import { useModalDialog } from "@/hooks/use-modal-dialog";
 import { useStore } from "@/state/store";
 import { readSessionState, isOwnerOrAdmin } from "@/lib/session";
-import { setAdvancedMode } from "@/lib/interface-mode";
+import { setAdvancedMode, useAdvancedMode } from "@/lib/interface-mode";
 import { readAccountState, type AccountState } from "./account/account-api";
 import { useWorkspaceIdentity } from "./workspace-identity";
 import { workspaceJoinURL } from "./workspace-link";
@@ -30,6 +30,7 @@ export function WorkspacePanel({onClose,directory}:{onClose:()=>void;directory?:
   const [saved,setSaved]=useState<Saved|null>(null);
   const [account,setAccount]=useState<AccountState|null>(null);
   const [owner,setOwner]=useState<boolean|null>(null);
+  const advanced=useAdvancedMode();
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [provisionStatus,setProvisionStatus]=useState("");
@@ -121,8 +122,8 @@ export function WorkspacePanel({onClose,directory}:{onClose:()=>void;directory?:
           <button type="button" data-workspace-create data-available={canCreate} className={button+" flex items-center gap-3 py-3 text-left"} onClick={()=>setPage("create")}><Plus size={19}/><span className="flex-1"><strong className="block font-medium">{at("workspace.create")}</strong><span className="mt-1 block text-[12px] text-ink-secondary">{at(canCreate?"server.createSummary":directory?.provider==="managed"?"server.creationDenied":"server.desktopOnly")}</span></span><ChevronRight size={15}/></button>
           <button type="button" data-workspace-advanced className={button+" flex items-center gap-3 py-3 text-left"} onClick={()=>setPage("advanced")}><Settings size={19}/><span className="flex-1"><strong className="block font-medium">{at("server.advanced")}</strong><span className="mt-1 block text-[12px] text-ink-secondary">{at("server.advancedSummary")}</span></span><ChevronRight size={15}/></button>
         </div>
-        <p className="mt-4 text-[12px] leading-relaxed text-ink-secondary">{at("server.workspaceHint")}</p>
-        {owner&&<button type="button" data-server-members className={button+" mt-3"} onClick={()=>openSettings(true)}>{at("server.members")}</button>}
+        {advanced&&<p className="mt-4 text-[12px] leading-relaxed text-ink-secondary">{at("server.workspaceHint")}</p>}
+        {advanced&&owner&&<button type="button" data-server-members className={button+" mt-3"} onClick={()=>openSettings(true)}>{at("server.members")}</button>}
       </>:page==="create"&&!canCreate?<div data-server-unavailable className="space-y-3 rounded-xl bg-raised p-4 text-[13px] leading-relaxed">
         <p>{at(directory?.provider==="managed"?"server.creationDenied":"server.desktopOnly")}</p>{directory?.provider!=="managed"&&<p className="text-ink-secondary">{at("server.cloudUnavailable")}</p>}
         {nativeChooser&&<button type="button" className={button} onClick={()=>void run(async()=>{await window.ogb!.workspaces!.menu();})}>{at("server.nativeChooser")}</button>}

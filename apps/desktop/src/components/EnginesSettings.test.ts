@@ -243,7 +243,7 @@ describe("Settings → Engines → setup cards", () => {
 
     vi.stubGlobal("window", { ogb: { remoteClient: { active: true } } });
     const remote = renderToStaticMarkup(createElement(EnginesSettings));
-    expect(remote).toContain("open Settings → Connections on the computer running AIKINGBOT");
+    expect(remote).toContain("open Settings → Connectors on the computer running AIKINGBOT");
     expect(remote).not.toContain("Change key");
 
     vi.stubGlobal("window", {});
