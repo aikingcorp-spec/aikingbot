@@ -561,7 +561,7 @@ small{color:var(--dim)}
 const $=(s)=>document.querySelector(s),app=$("#app");
 const api=async(p,o={})=>{const r=await fetch("/__relay/api"+p,{method:o.method||"GET",headers:o.body?{"content-type":"application/json"}:{},body:o.body?JSON.stringify(o.body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(j.error||"error"),{status:r.status,data:j});return j};
 const msg={invalid_email:"Email chưa đúng.",invalid_request:"Mã chưa đúng định dạng.",account_service_unreachable:"Chưa kết nối được dịch vụ tài khoản. Thử lại sau ít phút.",too_many_attempts:"Thử quá nhiều lần. Đợi một lúc rồi thử lại.",invalid_code:"Mã không đúng hoặc đã hết hạn."};
-const say=(e)=>msg[e.message]||(e.status===429?"Bạn thử quá nhanh. Đợi một chút rồi thử lại.":e.status===401?"Mã không đúng hoặc đã hết hạn.":"Có lỗi, thử lại giúp mình.");
+const say=(e)=>msg[e.message]||(e.status===429?(e.data&&e.data.retryAfter?"Mã vừa được gửi rồi. Đợi "+e.data.retryAfter+" giây rồi thử lại.":"Bạn thử quá nhanh. Đợi một chút rồi thử lại."):e.status===401?"Mã không đúng hoặc đã hết hạn.":"Có lỗi, thử lại giúp mình.");
 const esc=(s)=>String(s).replace(/[&<>"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let email="",challengeId="";
 function login(){app.innerHTML='<h1>Đăng nhập AIKINGBOT</h1><p>Nhập email, mình sẽ gửi một mã dùng một lần.</p><input id="e" type="email" placeholder="ban@example.com" autocomplete="email"><button id="go">Gửi mã</button><p class="err" id="err"></p>';
