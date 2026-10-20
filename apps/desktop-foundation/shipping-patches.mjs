@@ -76,7 +76,7 @@ export function patchShipping(source, pkg) {
   edit("electron/save-file.node-test.mjs", text => text.replaceAll('".openmausbot"', '".aikingbot"'));
   edit("electron/server-supervisor.node-test.mjs", text => text.replaceAll(".openmausbot", ".aikingbot"));
   edit("scripts/linux-after-install.test.mjs", text => text.replaceAll("/opt/OpenMausBot", "/opt/AIKINGBOT").replaceAll("openmausbot-browser", "aikingbot-browser").replace('"linux-aikingbot-browser.apparmor"', '"linux-openmausbot-browser.apparmor"'));
-  pkg.version = "0.3.0-rc.3";
+  pkg.version = "0.3.0-rc.4";
   pkg.productName = "AIKINGBOT";
   pkg.homepage = "https://github.com/aikingcorp-spec/AIKINGX_Bot";
   pkg.repository = { type: "git", url: "https://github.com/aikingcorp-spec/AIKINGX_Bot.git" };

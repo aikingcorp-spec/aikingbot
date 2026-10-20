@@ -60,7 +60,7 @@ for (const ending of ["LF", "CRLF"]) it(`applies all pinned integration/shipping
     patchServerManagement(target);
     patchPlatform(target);
     patchDesktopJourney(target);
-    assert.equal(pkg.version, "0.3.0-rc.3");
+    assert.equal(pkg.version, "0.3.0-rc.4");
     // Settings follow the AIKINGBOT journey: the AIKING account replaces the company/admin sign-in, and the
     // command-line pairing of another machine is not offered on the simple Computers page.
     const settings = readFileSync(join(target, "src/components/SettingsModal.tsx"), "utf8");

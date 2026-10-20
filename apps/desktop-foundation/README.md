@@ -1,4 +1,4 @@
-# AIKINGBOT desktop 0.3.0-rc.3
+# AIKINGBOT desktop 0.3.0-rc.4
 
 A complete application based on the Apache-2.0 OpenMausBot OSS edition, pinned at `93b3c24cdade51e362e443d2387a9f37eb7e115c`. React 19, Electron and Node 24 now integrate AIKING Core v0.2 alongside the retained original engines. Core, Marketplace, Voice local, groups and routines have offline end-to-end verification. See [shipping delivery](../../docs/stage-5-shipping-candidate.md) and [feature matrix](../../docs/shipping-feature-matrix.md) for actual platform/provider limits.
 
