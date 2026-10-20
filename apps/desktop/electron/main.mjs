@@ -960,7 +960,7 @@ function cloudMenuSublabels() {
   const line = entry ? cloudMenuSublabel(cloudAccount?.state(), menuDate) : null;
   return entry && line ? { [entry.id]: line } : {};
 }
-const AIKING_WORKSPACE_ORIGIN = (() => { try { const url = new URL(process.env.AIKING_WORKSPACE_URL || "https://aikingbot-app.srv1866690.hstgr.cloud"); return url.protocol === "https:" && !url.username && !url.password ? url.origin : null; } catch { return null; } })();
+const AIKING_WORKSPACE_ORIGIN = (() => { try { const url = new URL(process.env.AIKING_WORKSPACE_URL || ""); return url.protocol === "https:" && !url.username && !url.password ? url.origin : null; } catch { return null; } })();
 function aikingWorkspaceOffer() {
   if (!AIKING_WORKSPACE_ORIGIN || desktopRemoteAccess || environmentsState.environments.some((entry) => entry.origin === AIKING_WORKSPACE_ORIGIN)) return {};
   return { onAikingWorkspace: () => void workspaceMenuAction(connectAikingWorkspace) };

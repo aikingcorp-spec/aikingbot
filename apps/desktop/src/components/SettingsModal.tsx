@@ -24,7 +24,7 @@ import { LoginsSettings } from "./LoginsSettings";
 import { RemoteComputerSection } from "./RemoteComputerSection";
 import { ConnectedWorkspacesSettings } from "./ConnectedWorkspacesSettings";
 import { AikingAccountSettings } from "@/aiking/AikingAccountSettings";
-import { WebAccessSettings } from "@/aiking/WebAccessSettings";
+import { RemoteAccessSettings } from "@/aiking/RemoteAccessSettings";
 import { ProSettingsCard } from "./ProIntroduction";
 import { Card, SettingRow, Switch } from "./SettingsPrimitives";
 import { SkillReviewSettings } from "./SkillReviewSettings";
@@ -881,7 +881,7 @@ export function SettingsModal() {
       case "organization":
         return null;
       case "cloudAccount":
-        return remoteActive ? null : <><AikingAccountSettings /><WebAccessSettings /></>;
+        return remoteActive ? null : <><AikingAccountSettings /><RemoteAccessSettings /></>;
       case "general":
         return (
           <>

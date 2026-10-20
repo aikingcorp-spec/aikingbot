@@ -209,3 +209,11 @@ export async function enrollWithAccount(relayUrl: string, accountToken: string, 
   if (typeof payload?.hostId !== "string" || typeof payload.token !== "string") throw new Error("invalid_response");
   return { hostId: payload.hostId, token: payload.token, name: typeof payload.name === "string" ? payload.name : name };
 }
+
+/** Tells the relay this computer is leaving (remote access turned off), so it drops off the person's list. Best effort. */
+export async function leaveRelay(relayUrl: string, hostId: string, token: string, fetchImpl: typeof fetch = fetch): Promise<boolean> {
+  try {
+    const response = await fetchImpl(new URL(`/__relay/api/hosts/self?host=${encodeURIComponent(hostId)}`, relayUrl), { method: "DELETE", headers: { authorization: `Bearer ${token}` }, redirect: "manual", signal: AbortSignal.timeout(8_000) });
+    return response.ok;
+  } catch { return false; }
+}

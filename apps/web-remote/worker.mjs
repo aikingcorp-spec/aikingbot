@@ -96,12 +96,19 @@ export default {
     if (url.pathname === "/__relay/connect") return connectHost(request, env, url);
     if (url.pathname === "/__relay/api/hosts/redeem" && request.method === "POST") return stub(env.INDEX, "index").fetch(new Request("https://do/redeem", { method: "POST", headers: { "content-type": "application/json", "x-ip": request.headers.get("cf-connecting-ip") ?? "" }, body: await request.text() }));
     if (url.pathname === "/__relay/api/hosts/enroll-account" && request.method === "POST") return enrollByAccount(request, env);
+    if (url.pathname === "/__relay/api/hosts/self" && request.method === "DELETE") {
+      const hostId = url.searchParams.get("host") ?? "";
+      if (!/^[A-Za-z0-9_-]{8,64}$/.test(hostId)) return fail(400, "invalid_host");
+      return stub(env.HOST, hostId).fetch(new Request("https://do/forget-self", { method: "POST", headers: { "x-host-token": (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "") } }));
+    }
     if (url.pathname.startsWith("/__relay/")) return relayPages(request, env, url);
 
     // Everything else belongs to the person's chosen computer.
     const session = await readSession(env, request);
     if (!session) return request.method === "GET" && acceptsHtml(request) ? Response.redirect(`${url.origin}/__relay/`, 302) : fail(401, "sign_in_required");
-    const hosts = await userHosts(env, session);
+    const state = await userState(env, session);
+    if (!state) return request.method === "GET" && acceptsHtml(request) ? Response.redirect(`${url.origin}/__relay/`, 302) : fail(401, "sign_in_required");
+    const hosts = state.hosts;
     const wanted = parseCookies(request.headers.get("cookie"))[HOST_COOKIE];
     const host = hosts.find((entry) => entry.id === wanted) ?? (hosts.length === 1 ? hosts[0] : null);
     if (!host) return request.method === "GET" && acceptsHtml(request) ? Response.redirect(`${url.origin}/__relay/`, 302) : fail(409, "choose_a_computer");
@@ -119,10 +126,14 @@ const acceptsHtml = (request) => (request.headers.get("accept") ?? "").includes(
 const sidOf = (socket) => { try { return socket.deserializeAttachment()?.sid ?? ""; } catch { return ""; } };
 const stub = (namespace, name) => namespace.get(namespace.idFromName(name));
 const userStub = (env, session) => stub(env.USER, `u:${session.u}`);
-async function userHosts(env, session) {
+/** The person's computers, or null when this sign-in was ended ("sign out everywhere" raises the epoch the cookie was made under). */
+async function userState(env, session) {
   const response = await userStub(env, session).fetch("https://do/hosts");
-  return response.ok ? (await response.json()).hosts : [];
+  if (!response.ok) return { hosts: [] };
+  const state = await response.json();
+  return (session.a ?? 0) === (state.epoch ?? 0) ? state : null;
 }
+async function userHosts(env, session) { return (await userState(env, session))?.hosts ?? []; }
 
 /** A computer whose app is already signed in to the AIKING account joins the relay with that sign-in: no second code. */
 async function enrollByAccount(request, env) {
@@ -157,7 +168,10 @@ async function relayPages(request, env, url) {
   if (request.method !== "GET" && request.method !== "HEAD" && origin && origin !== url.origin) return fail(403, "bad_origin");
   const session = await readSession(env, request);
   if (path === "/" || path === "/index.html") return new Response(PAGE, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
-  if (path === "/api/me") return json(session ? { signedIn: true, email: session.e } : { signedIn: false });
+  if (path === "/api/me") {
+    const live = session && (await userState(env, session));
+    return json(live ? { signedIn: true, email: session.e } : { signedIn: false });
+  }
   if (path === "/api/login/start" && request.method === "POST") {
     const body = await request.json().catch(() => ({}));
     const email = normalizeEmail(body.email);
@@ -175,15 +189,23 @@ async function relayPages(request, env, url) {
     if (!result.ok) return fail(result.status === 429 ? 429 : result.status === 401 || result.status === 400 ? 401 : 502, result.error);
     const user = result.payload?.user;
     if (typeof user?.id !== "string" || normalizeEmail(user.email) !== email) return fail(502, "invalid_response");
-    await stub(env.USER, `u:${user.id}`).fetch(new Request("https://do/init", { method: "POST", body: JSON.stringify({ uid: user.id, email }) }));
-    const value = await signSession(env, { u: user.id, e: email, x: Math.floor(Date.now() / 1000) + SESSION_SECONDS });
+    const init = await (await stub(env.USER, `u:${user.id}`).fetch(new Request("https://do/init", { method: "POST", body: JSON.stringify({ uid: user.id, email }) }))).json().catch(() => ({}));
+    const value = await signSession(env, { u: user.id, e: email, a: init.epoch ?? 0, x: Math.floor(Date.now() / 1000) + SESSION_SECONDS });
     const out = json({ ok: true });
     out.headers.append("set-cookie", cookie(SESSION_COOKIE, value, SESSION_SECONDS));
     // Readable by the page (not HttpOnly): the web app asks only for a name, because the email is already proven.
     out.headers.append("set-cookie", `rl_email=${encodeURIComponent(email)}; Path=/; Secure; SameSite=Lax; Max-Age=${SESSION_SECONDS}`);
     return out;
   }
-  if (!session) return fail(401, "sign_in_required");
+  if (!session || !(await userState(env, session))) return fail(401, "sign_in_required");
+  if (path === "/api/logout-all" && request.method === "POST") {
+    await userStub(env, session).fetch(new Request("https://do/revoke-sessions", { method: "POST" }));
+    const out = json({ ok: true });
+    out.headers.append("set-cookie", cookie(SESSION_COOKIE, "", 0));
+    out.headers.append("set-cookie", cookie(HOST_COOKIE, "", 0));
+    out.headers.append("set-cookie", "rl_email=; Path=/; Secure; SameSite=Lax; Max-Age=0");
+    return out;
+  }
   if (path === "/api/logout" && request.method === "POST") {
     const out = json({ ok: true });
     out.headers.append("set-cookie", cookie(SESSION_COOKIE, "", 0));
@@ -276,10 +298,15 @@ export class User {
     if (url.pathname === "/init" && request.method === "POST") {
       const { uid, email } = await request.json();
       await this.state.storage.put({ uid, email });
-      return json({ ok: true });
+      return json({ ok: true, epoch: (await this.state.storage.get("epoch")) ?? 0 });
+    }
+    if (url.pathname === "/revoke-sessions" && request.method === "POST") {
+      const epoch = ((await this.state.storage.get("epoch")) ?? 0) + 1;
+      await this.state.storage.put("epoch", epoch);
+      return json({ ok: true, epoch });
     }
     const hosts = (await this.state.storage.get("hosts")) ?? [];
-    if (url.pathname === "/hosts" && request.method === "GET") return json({ hosts });
+    if (url.pathname === "/hosts" && request.method === "GET") return json({ hosts, epoch: (await this.state.storage.get("epoch")) ?? 0 });
     if (url.pathname === "/hosts" && request.method === "POST") {
       const { id, name } = await request.json();
       if (hosts.length >= 20) return fail(409, "too_many_computers");
@@ -318,6 +345,16 @@ export class Host {
       return json({ ok: true });
     }
     if (url.pathname === "/status") return json({ online: Boolean(this.hostSocket()) });
+    if (url.pathname === "/forget-self") {
+      // The computer itself leaves (its owner turned remote access off): it proves who it is with its own token.
+      const config = await this.state.storage.get(["tokenHash", "ownerUid"]);
+      const presented = await sha256Hex(request.headers.get("x-host-token") ?? "");
+      if (!config.get("tokenHash") || !timingSafeEqual(config.get("tokenHash"), presented)) return fail(401, "invalid_host");
+      await this.env.USER.get(this.env.USER.idFromName(`u:${config.get("ownerUid")}`)).fetch(new Request(`https://do/hosts/${this.state.id.name}`, { method: "DELETE" })).catch(() => undefined);
+      await this.state.storage.deleteAll();
+      for (const socket of this.state.getWebSockets()) try { socket.close(1000, "left"); } catch { /* closed */ }
+      return json({ ok: true });
+    }
     if (url.pathname === "/connect") return this.accept(request);
     if (url.pathname.startsWith("/proxy/")) return this.proxy(request, url);
     return fail(404, "not_found");
@@ -532,10 +569,11 @@ function login(){app.innerHTML='<h1>Đăng nhập AIKINGBOT</h1><p>Nhập email,
 function codeStep(){app.innerHTML='<h1>Nhập mã</h1><p>Mã đã gửi tới '+esc(email)+'.</p><input id="c" inputmode="numeric" autocomplete="one-time-code" placeholder="Mã"><button id="go">Đăng nhập</button><button class="ghost" id="back">Đổi email</button><p class="err" id="err"></p>';
  $("#back").onclick=login;$("#go").onclick=async()=>{$("#go").disabled=true;$("#err").textContent="";try{await api("/login/verify",{method:"POST",body:{email,challengeId,code:$("#c").value}});hosts()}catch(e){$("#err").textContent=say(e);$("#go").disabled=false}}}
 async function hosts(){const r=await api("/hosts");const list=r.hosts.map((h)=>'<div class="row"><span class="dot '+(h.online?"on":"")+'"></span><b>'+esc(h.name)+'</b><button style="width:auto;margin:0" data-id="'+esc(h.id)+'" '+(h.online?"":"disabled")+'>'+(h.online?"Mở":"Đang tắt")+'</button></div>').join("");
- app.innerHTML='<h1>Máy của bạn</h1><p>Chat và tệp nằm trên máy bạn, trang này chỉ là cổng vào.</p>'+(list||'<p>Chưa có máy nào. Thêm máy đầu tiên bên dưới.</p>')+'<button class="ghost" id="add">Thêm máy mới</button><button class="ghost" id="out">Đăng xuất</button><div id="box"></div>';
+ app.innerHTML='<h1>Máy của bạn</h1><p>Chat và tệp nằm trên máy bạn, trang này chỉ là cổng vào.</p>'+(list||'<p>Chưa có máy nào. Cài AIKINGBOT trên máy của bạn, đăng nhập bằng đúng email này, rồi bật <b>Truy cập từ xa</b> trong Cài đặt. Máy sẽ hiện ở đây. (Hoặc dùng mã bên dưới.)</p>')+'<button class="ghost" id="add">Thêm máy mới</button><button class="ghost" id="out">Đăng xuất</button><button class="ghost" id="outall">Đăng xuất mọi thiết bị</button><div id="box"></div>';
  app.querySelectorAll("button[data-id]").forEach((b)=>b.onclick=async()=>{await api("/hosts/select",{method:"POST",body:{id:b.dataset.id}});location.href="/"});
  $("#add").onclick=async()=>{const c=await api("/hosts/code",{method:"POST"});$("#box").innerHTML='<p>Trên máy cần kết nối, mở AIKINGBOT → Cài đặt → Tài khoản → Dùng trên web, rồi nhập mã này trong 10 phút:</p><div class="code">'+c.code+'</div>'};
  $("#out").onclick=async()=>{await api("/logout",{method:"POST"});login()};
+ $("#outall").onclick=async()=>{if(confirm("Đăng xuất tài khoản này khỏi mọi trình duyệt và điện thoại?")){await api("/logout-all",{method:"POST"});login()}};
  if(r.hosts.some((h)=>h.online)){setTimeout(()=>{if(document.visibilityState==="visible")hosts().catch(()=>{})},15000)}}
 api("/me").then((m)=>m.signedIn?hosts():login()).catch(login);
 </script></body></html>`;

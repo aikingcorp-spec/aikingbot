@@ -8,7 +8,7 @@ config.artifactName = "AIKINGBOT-${version}-${arch}.${ext}";
 config.copyright = "Copyright © 2026 AIKING";
 // The packaged app must carry app-update.yml: electron-updater reads it (updaterCacheDirName) before every download,
 // and electron-builder only writes it when a publish provider is configured. `--publish never` still keeps uploads off.
-config.publish = [{ provider: "generic", url: process.env.AIKING_UPDATE_FEED_BUILD || "https://aikingbot.srv1866690.hstgr.cloud/updates/windows/" }];
+config.publish = [{ provider: "generic", url: process.env.AIKING_UPDATE_FEED_BUILD || "https://aikingbot-site.aiking-corp.workers.dev/updates/windows/" }];
 config.files.push("!electron/**/*.node-test.*");
 config.protocols = [{ name: "AIKINGBOT links", schemes: ["aikingbot"] }];
 config.extraResources.push({ from: "aiking/NOTICE.txt", to: "licenses/AIKINGBOT-NOTICE.txt" });

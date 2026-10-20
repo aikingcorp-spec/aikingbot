@@ -6,7 +6,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, wri
 import { dirname } from "node:path";
 import { randomBytes } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { enrollWithAccount, enrollWithRelay, startRelayConnector, type RelayConnector, type RelayConnectorOptions, type RelayState } from "./relay-connector.ts";
+import { enrollWithAccount, enrollWithRelay, leaveRelay, startRelayConnector, type RelayConnector, type RelayConnectorOptions, type RelayState } from "./relay-connector.ts";
 
 export const DEFAULT_RELAY_URL = "https://aikingbot-relay.aiking-corp.workers.dev";
 /** Added by the connector to every request it replays, so management calls arriving over the relay itself can be refused. */
@@ -23,6 +23,7 @@ export type RelayOptions = {
   /** The account sign-in of this computer, when it has one. */
   accountToken?: () => string | null;
   enrollAccount?: typeof enrollWithAccount;
+  leave?: typeof leaveRelay;
   connect?: (options: RelayConnectorOptions) => RelayConnector;
 };
 
@@ -38,6 +39,7 @@ export function createRelay(options: RelayOptions) {
   const relayUrl = (options.relayUrl || process.env.AIKING_RELAY_URL || DEFAULT_RELAY_URL).replace(/\/+$/, "");
   const enroll = options.enroll ?? enrollWithRelay;
   const enrollAccount = options.enrollAccount ?? enrollWithAccount;
+  const leave = options.leave ?? leaveRelay;
   const connect = options.connect ?? startRelayConnector;
   const nonce = randomBytes(16).toString("hex");
   let saved = read();
@@ -86,9 +88,12 @@ export function createRelay(options: RelayOptions) {
       log("relay joined with the account sign-in");
       return status();
     },
-    disconnect(): RelayStatus {
+    /** Remote access off: the computer leaves the relay (so the web no longer lists it), stops the link and forgets its credentials. */
+    async disconnect(): Promise<RelayStatus> {
+      const previous = saved;
       connector?.stop(); connector = null; saved = null;
       rmSync(options.file, { force: true });
+      if (previous) await leave(previous.relayUrl, previous.hostId, previous.token);
       return status();
     },
     async handle(ctx: { req: IncomingMessage; res: ServerResponse; path: string; method: string; json(res: ServerResponse, status: number, body: unknown): void; readBody(req: IncomingMessage): Promise<unknown> }): Promise<boolean> {
@@ -120,7 +125,7 @@ export function createRelay(options: RelayOptions) {
         }
         return true;
       }
-      if (path === "/api/aiking/relay" && method === "DELETE") { json(res, 200, this.disconnect()); return true; }
+      if (path === "/api/aiking/relay" && method === "DELETE") { json(res, 200, await this.disconnect()); return true; }
       json(res, 404, { error: "Unknown request." });
       return true;
     },

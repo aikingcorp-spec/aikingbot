@@ -56,7 +56,26 @@ describe("the web connection", () => {
     expect(f.started[0]!.token).toBe("secret-token");
   });
 
-  it("can be disconnected, which stops the link and forgets the credentials", async () => {
+  it("can be disconnected, which tells the relay it left, stops the link and forgets the credentials", async () => {
+    const dir = temp(); const leave = vi.fn(async () => true); const stops = vi.fn();
+    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "secret-token", name }), connect: () => ({ stop: stops, state: () => "online" as const }) });
+    await relay.enrollWith("ABCD-EFGH-JKLM", "Lan");
+    const result = await call(relay, "DELETE", "/api/aiking/relay");
+    expect(leave).toHaveBeenCalledWith(DEFAULT_RELAY_URL, "host-12345678", "secret-token");
+    expect(stops).toHaveBeenCalled();
+    expect(result.status).toBe(200);
+    expect(existsSync(join(dir, "relay.json"))).toBe(false);
+  });
+
+  it("is disconnected even when the relay cannot be told", async () => {
+    const dir = temp();
+    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave: async () => false, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "t", name }), connect: () => ({ stop: () => undefined, state: () => "online" as const }) });
+    await relay.enrollWith("ABCD-EFGH-JKLM", "Lan");
+    expect((await call(relay, "DELETE", "/api/aiking/relay")).payload).toMatchObject({ configured: false, state: "off" });
+    expect(existsSync(join(dir, "relay.json"))).toBe(false);
+  });
+
+  it("can be disconnected (old fixture)", async () => {
     const f = fixture(); const relay = f.make(); await relay.enrollWith("ABCD-EFGH-JKLM", "Lan");
     const result = await call(relay, "DELETE", "/api/aiking/relay");
     expect(result.status).toBe(200);

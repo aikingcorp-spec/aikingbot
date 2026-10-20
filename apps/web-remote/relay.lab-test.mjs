@@ -142,6 +142,25 @@ await check("a computer signed in to the account joins with that sign-in, no cod
   assert.equal((await fetch(`${relayUrl}/__relay/api/hosts/enroll-account`, { method: "POST", body: "{}" })).status, 401);
   await api(`/__relay/api/hosts/${host.hostId}`, { method: "DELETE", headers: { cookie: lanCookie } });
 });
+await check("sign out everywhere ends every earlier sign-in of that person, and a new sign-in works", async () => {
+  const other = await signIn("hocvien@example.com");
+  const second = await signIn("hocvien@example.com");
+  assert.equal((await api("/__relay/api/hosts", { headers: { cookie: other } })).status, 200);
+  assert.equal((await api("/__relay/api/hosts", { headers: { cookie: second } })).status, 200);
+  assert.equal((await api("/__relay/api/logout-all", { method: "POST", headers: { cookie: second } })).status, 200);
+  assert.equal((await api("/__relay/api/hosts", { headers: { cookie: other } })).status, 401);
+  assert.equal((await api("/__relay/api/hosts", { headers: { cookie: second } })).status, 401);
+  assert.equal((await (await api("/__relay/api/me", { headers: { cookie: other } })).json()).signedIn, false);
+  const fresh = await signIn("hocvien@example.com");
+  assert.equal((await api("/__relay/api/hosts", { headers: { cookie: fresh } })).status, 200);
+});
+await check("a computer can leave by itself with its own token, and then drops off the person's list", async () => {
+  const joined = await (await fetch(`${relayUrl}/__relay/api/hosts/enroll-account`, { method: "POST", headers: { authorization: "Bearer tok-lan@example.com", "content-type": "application/json" }, body: JSON.stringify({ name: "Sắp rời" }) })).json();
+  assert.equal((await fetch(`${relayUrl}/__relay/api/hosts/self?host=${joined.hostId}`, { method: "DELETE", headers: { authorization: "Bearer wrong" } })).status, 401);
+  assert.equal((await fetch(`${relayUrl}/__relay/api/hosts/self?host=${joined.hostId}`, { method: "DELETE", headers: { authorization: `Bearer ${joined.token}` } })).status, 200);
+  const list = await (await api("/__relay/api/hosts", { headers: { cookie: lanCookie } })).json();
+  assert.ok(!list.hosts.some((entry) => entry.id === joined.hostId));
+});
 await check("a computer that is not connected is reported offline and answers 503", async () => {
   const list = await (await api("/__relay/api/hosts", { headers: { cookie: lanCookie } })).json();
   assert.equal(list.hosts.length, 1); assert.equal(list.hosts[0].online, false);

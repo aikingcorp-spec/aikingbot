@@ -1,7 +1,7 @@
 {
-  "origin": "https://aikingbot.srv1866690.hstgr.cloud",
-  "appUrl": "https://aikingbot-app.srv1866690.hstgr.cloud",
-  "github": "https://github.com/aikingcorp-spec/AIKINGX_Bot",
+  "origin": "https://aikingbot-site.aiking-corp.workers.dev",
+  "appUrl": "https://aikingbot-relay.aiking-corp.workers.dev",
+  "github": "",
   "company": "https://aikingx.com",
   "contactEmail": "aiking.corp@gmail.com",
   "releaseManifest": "/downloads/release.json",

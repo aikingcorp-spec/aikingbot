@@ -10,7 +10,7 @@ import {
   type AccountState,
 } from "./account-api";
 
-const WEBSITE = "https://aikingbot.srv1866690.hstgr.cloud/";
+const WEBSITE = "https://aikingbot-site.aiking-corp.workers.dev/";
 const card = "mt-5 rounded-xl border border-hairline/40 bg-raised/40 p-5";
 const primary = "rounded-md bg-accent px-3.5 py-1.5 text-[13px] font-medium text-accent-ink disabled:opacity-50";
 const secondary = "rounded-md border border-hairline/50 px-3 py-1.5 text-[13px] text-ink hover:bg-raised disabled:opacity-50";
