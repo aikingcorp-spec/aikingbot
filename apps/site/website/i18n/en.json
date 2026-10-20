@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "AIKINGBOT — A team of AI agents working for you",
-    "description": "AIKINGBOT is a desktop app that runs a team of AI agents on your computer: many models, a skill Marketplace, schedules, voice and remote work through your own server. Free Windows Beta.",
+    "description": "AIKINGBOT is a desktop app that runs a team of AI agents on your own computer: many models, a skill Marketplace, schedules and voice. Open the web to control your computer remotely while it is on. Free Windows Beta.",
     "docsTitle": "Install and usage guide — AIKINGBOT",
     "docsDescription": "Install AIKINGBOT on Windows, sign in with email, connect a model, update it and troubleshoot during the beta.",
     "notFoundTitle": "Page not found — AIKINGBOT"
@@ -21,7 +21,7 @@
   "hero": {
     "badge": "Windows Beta",
     "title": "A team of AI agents working for you, right on your computer",
-    "lead": "AIKINGBOT turns AI agents into a team: every bot has its own role, tools and schedule. Use Claude, ChatGPT, Gemini, Grok or your own model, install skills from the Marketplace and follow the work from any device through an AIKINGBOT server.",
+    "lead": "AIKINGBOT turns AI agents into a team: every bot has its own role, tools and schedule. Use Claude, ChatGPT, Gemini, Grok or your own model and install skills from the Marketplace. Install the app on your computer, then open the web from your phone or another computer to give your bot team work while your computer is on.",
     "primary": "Download for Windows",
     "secondary": "Open web app",
     "note": "Free during the beta · Windows 10/11 64-bit · Your data stays on your machine"
@@ -29,7 +29,7 @@
   "preview": {
     "eyebrow": "The real interface",
     "title": "One workspace for your whole bot team",
-    "lead": "Captured from the AIKINGBOT staging server running today — not a mock-up.",
+    "lead": "Captured from the running AIKINGBOT app — not a mock-up.",
     "tabs": {
       "chat": "Chat & delegate",
       "marketplace": "Marketplace",
@@ -72,8 +72,8 @@
         "body": "Run a bot once or on a schedule: a Monday morning report, a daily trend scan, a weekend inbox digest."
       },
       "remote": {
-        "title": "Remote work",
-        "body": "Sign in with your email to open your workspace on a computer or in a browser, no pairing code needed. Workspace owners invite members and set their role, and can revoke access at any time."
+        "title": "Control it from the web",
+        "body": "Install the app on your computer and turn on Remote access in Settings. While the computer is on, sign in with the same email on the web and use your bot team on that very computer. Bots, files and chats stay on your computer; switching it off cuts the web off at once."
       },
       "voice": {
         "title": "Voice calls with bots",
@@ -87,11 +87,11 @@
     "steps": {
       "download": {
         "title": "Download",
-        "body": "Get the Windows installer straight from the AIKINGBOT server and install it in a minute, no administrator rights needed."
+        "body": "Get the Windows installer from this page and install it in a minute, no administrator rights needed."
       },
       "connect": {
         "title": "Connect",
-        "body": "Sign in with your email and a one-time code, pick your workspace, then press Connect to sign in to Codex, Claude Code or another engine with the provider's own account login."
+        "body": "Sign in with your email and a one-time code inside the app (only once), then sign in to Codex, Claude Code or another engine with the provider's own account login."
       },
       "team": {
         "title": "Build your team",
@@ -106,7 +106,7 @@
   "download": {
     "eyebrow": "Download",
     "title": "AIKINGBOT for Windows",
-    "lead": "Installers are served directly by the AIKINGBOT server, with a SHA-256 checksum so you can verify every file.",
+    "lead": "Installers are served directly from this page, with a SHA-256 checksum so you can verify every file.",
     "windows": "Windows 10/11 · 64-bit",
     "installer": "Installer (.exe)",
     "installerHint": "Recommended — guided installation",
@@ -147,19 +147,19 @@
       },
       {
         "q": "Where is my data stored?",
-        "a": "On your computer, in the .aikingbot folder of your Windows account. With an AIKINGBOT server, the remote workspace data lives on that server. Content is only sent to the model provider you choose for each conversation turn."
+        "a": "On your computer, in the .aikingbot folder of your Windows account. When you use the web, the page only passes requests to your computer; chats and files are not stored on the web service. Content is only sent to the model provider you choose for each conversation turn."
       },
       {
         "q": "What computer do I need?",
         "a": "Windows 10 or 11, 64-bit, about 1 GB of free disk space and an Internet connection for cloud models. Linux builds (.deb, AppImage) exist too; macOS comes later."
       },
       {
-        "q": "What is the AIKINGBOT server for?",
-        "a": "The server runs the same backend as the desktop app so bots keep working 24/7, lets you open the web app in a browser, pair several devices and share workspaces. The desktop app also works on its own without a server."
+        "q": "How do I control my computer from the web?",
+        "a": "Install the desktop app and sign in with your email, then turn on Remote access in Settings → Account. While your computer is on and the app is running, open the web app, sign in with the same email and pick your computer. If the computer is off, the web says it is offline. The desktop app works fine without the web."
       },
       {
         "q": "Can a bot run dangerous commands on its own?",
-        "a": "No. Tools with side effects need your approval, and dangerous tools are refused unless you explicitly allow them. Remote devices pair with one-time codes, get scoped permissions and can be revoked. Voice never approves a tool."
+        "a": "No. Tools with side effects need your approval, and dangerous tools are refused unless you explicitly allow them. The web only controls the computers of your own email account and cannot manage the computer's connection; you can turn Remote access off at any time. Voice never approves a tool."
       },
       {
         "q": "What are the beta limitations?",
@@ -185,7 +185,7 @@
     "docs": "Guide",
     "github": "GitHub",
     "checksums": "Release checksums",
-    "status": "Server status",
+    "status": "Service status",
     "about": "AIKING Corp builds AI tools for Vietnamese businesses and creators.",
     "contact": "Contact",
     "website": "aikingx.com",
@@ -213,18 +213,18 @@
         "id": "connect-models",
         "title": "2. Connect a model",
         "paras": [
-          "On first start, choose an engine: AIKING Core (needs an Anthropic API key in Settings → Connections) or another engine such as Claude, ChatGPT/Codex, Gemini or Grok, then sign in with your plan.",
+          "On first start, choose an engine: AIKING Core (needs an Anthropic API key in Settings → Connectors) or another engine such as Claude, ChatGPT/Codex, Gemini or Grok, then sign in with your plan.",
           "You can add several accounts and keys; each bot picks its own model in its settings."
         ]
       },
       {
         "id": "sign-in",
-        "title": "3. Sign in to your workspace with email",
+        "title": "3. Sign in and use it on the web",
         "paras": [
-          "Desktop app: on the welcome screen choose \"Sign in to your workspace\" (or the workspace menu at the top → \"Sign in to my AIKINGBOT workspace…\"). Enter your email, open the message from AIKINGBOT and type the 8-character code.",
-          "Browser: open <app>, enter your email and the one-time code. A code works once within 10 minutes; check your spam folder if it has not arrived.",
-          "Email only proves who you are; the workspace owner decides who can enter and with which role (Settings → People). If you see \"not a member of this workspace\", ask the owner to invite your email.",
-          "Advanced / self-hosting / recovery: one-time pairing codes still work from Settings → Remote access or <app>/pair."
+          "Desktop app: on first start, enter your email and the 8-character code sent by mail. You do this once; after that the app opens straight away.",
+          "Turn on remote access: Settings → Account → Remote access → switch it on. It is off by default.",
+          "Browser: open the web app, enter the same email and a one-time code (it works once within 10 minutes; check Spam if it has not arrived), then pick your computer from the list.",
+          "The web only works while your computer is on and the app is running. Switch Remote access off or quit the app and the web loses control at once."
         ]
       },
       {
@@ -251,7 +251,7 @@
         "paras": [
           "The app does not open: collect the logs in %APPDATA%\\AIKINGBOT\\logs and attach them to your report.",
           "An update fails: download the latest installer from the Download section and install it over the current one; your data is not affected.",
-          "Cannot sign in: email codes work once and expire after 10 minutes — choose \"Send a new code\". If you are told you are not a member, ask the workspace owner to invite your email."
+          "Cannot sign in: email codes work once and expire after 10 minutes — ask for a new code and check Spam."
         ]
       }
     ]

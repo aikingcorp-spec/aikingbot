@@ -1,7 +1,7 @@
 // Copyright (c) 2026 AIKING.
 // Puts the web service and the site on the owner's domain, then checks them. Run with --dry-run first: it only checks.
 //   set -a; . /srv/aikingbot-staging/.secrets/cloudflare.env; . /srv/aikingbot-staging/.secrets/relay.env; set +a
-//   node scripts/go-live.mjs --domain example.com [--app-host app] [--site-host www] [--dry-run]
+//   node scripts/go-live.mjs --domain example.com [--app-host app] [--site-host @|www] [--dry-run]   (@ = the bare domain)
 // Without --site-host the site stays on its workers.dev address. The signing key of the web service is kept (people stay signed in).
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -9,7 +9,7 @@ import { cloudflare } from "./cloudflare.mjs";
 
 const args = process.argv.slice(2);
 const option = (name, fallback) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : fallback; };
-const domain = option("domain")?.toLowerCase(), appHost = `${option("app-host", "app")}.${domain}`, siteHost = option("site-host") ? `${option("site-host")}.${domain}` : null;
+const domain = option("domain")?.toLowerCase(), appHost = `${option("app-host", "app")}.${domain}`, siteHost = option("site-host") ? (option("site-host") === "@" ? domain : `${option("site-host")}.${domain}`) : null;
 const dry = args.includes("--dry-run");
 const token = process.env.CLOUDFLARE_API_TOKEN;
 if (!domain || !token) { console.error("usage: node scripts/go-live.mjs --domain example.com [--app-host app] [--site-host www] [--dry-run]  (needs CLOUDFLARE_API_TOKEN)"); process.exit(2); }
