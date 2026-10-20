@@ -22,3 +22,14 @@ The owner creates the host user and key; without them the command says it is not
 
 Rules for agents: work in a git worktree on a `feature/*` or `fix/*` branch; never touch `/srv/aikingbot-staging/.secrets`, live data
 (`/srv/aikingbot-staging/data`) or other services on the host; land changes on `main` through a pull request with the tests passing.
+
+## Check the desktop app yourself
+
+`node scripts/app-check.mjs <app executable> [out-dir]` starts a built desktop app, signs in through the app's own first-run screen
+against a local stand-in for the account service (nothing real is contacted), walks the main screens and prints one line per check
+(`PASS` or `FAIL`). It exits with 1 when a check fails and writes `report.json` plus a screenshot per screen to the out-dir.
+
+- Build the app folder with `node scripts/build.mjs --dir`; the executable is `apps/desktop/release/linux-unpacked/aikingbot` (Windows: `win-unpacked\AIKINGBOT.exe`).
+- On a machine without a screen run it under `xvfb-run -a`; in a container add `AIKING_CHECK_NO_SANDBOX=1`.
+- When you change what a person sees, add a check to the script in the same change: one sentence, one assertion.
+- A passing run proves what the checks say. Look at the screenshots too: a screen can pass every check and still be confusing.
