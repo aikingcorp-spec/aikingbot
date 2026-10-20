@@ -1,0 +1,23 @@
+# AIKINGBOT gateway edge. Public :80 goes to the platform gateway (unix socket);
+# :8798 is the loopback-only private path to Server A for the gateway itself.
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+:80 {
+	# Server A webhooks keep their direct route; other Servers use /servers/<id>/hooks/ via the gateway.
+	handle /hooks/* {
+		reverse_proxy 127.0.0.1:8800
+	}
+	handle {
+		reverse_proxy unix//run/aikingbot-platform/http.sock {
+			flush_interval -1
+		}
+	}
+}
+:8798 {
+	reverse_proxy 127.0.0.1:8799 {
+		flush_interval -1
+	}
+}

@@ -1,0 +1,15 @@
+# Own TLS: Caddy terminates HTTPS for AIKING_DOMAIN on ports 80/443.
+# Use only when nothing else on the VPS binds 80/443.
+#   docker compose --env-file aikingbot.env -f compose.yaml -f compose.tls.yaml up -d
+services:
+  edge:
+    ports: !override
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      AIKING_DOMAIN: ${AIKING_DOMAIN:?set AIKING_DOMAIN}
+    volumes: !override
+      - ./Caddyfile.tls:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config

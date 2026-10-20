@@ -1,0 +1,11 @@
+AIKINGBOT desktop shipping candidate
+Copyright (c) 2026 AIKING.
+
+AIKING Core and the AIKING desktop integration are original AIKING code.
+AIKING Core rights remain reserved; no additional public source license is granted by this package.
+AIKINGBOT foundation: https://aikingbot.invalid/upstream
+Pinned source: 93b3c24cdade51e362e443d2387a9f37eb7e115c, Apache-2.0.
+The foundation LICENSE and NOTICE are included separately in this directory.
+Other bundled native components retain their own license files in their resource directories.
+Core production dependency licenses and their version inventory are in AIKING-Core-dependencies/.
+No OpenBot PolyForm Noncommercial source is included.

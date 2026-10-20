@@ -1,0 +1,101 @@
+# AIKINGBOT public website, downloads and desktop update feed.
+# /srv/www (read-only) holds:
+#   site/current/        website build (symlink, swapped atomically by publish-site.sh)
+#   downloads/           release.json, SHA256SUMS, index.html, <version>/..., latest -> <version>
+#   updates/windows/     latest.yml + installers for electron-updater (generic provider)
+# TLS terminates at the host proxy (Traefik); this server speaks plain HTTP.
+{
+	admin off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+(release_types) {
+	@exe path *.exe
+	header @exe Content-Type "application/vnd.microsoft.portable-executable"
+	header @exe Content-Disposition "attachment"
+	@zip path *.zip
+	header @zip Content-Type "application/zip"
+	header @zip Content-Disposition "attachment"
+	@deb path *.deb
+	header @deb Content-Type "application/vnd.debian.binary-package"
+	header @deb Content-Disposition "attachment"
+	@appimage path *.AppImage
+	header @appimage Content-Type "application/vnd.appimage"
+	header @appimage Content-Disposition "attachment"
+	@blockmap path *.blockmap
+	header @blockmap Content-Type "application/octet-stream"
+	@yml path *.yml
+	header @yml Content-Type "text/yaml; charset=utf-8"
+	@sums path */SHA256SUMS
+	header @sums Content-Type "text/plain; charset=utf-8"
+	header Access-Control-Allow-Origin "*"
+}
+
+:80 {
+	log {
+		output stdout
+		format json
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options DENY
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	redir /app {$AIKING_APP_URL} 302
+	redir /pair {$AIKING_APP_URL}/pair 302
+	redir /en /en/ 308
+	redir /downloads /downloads/ 308
+
+	# Release files: large, immutable per version, resumable (Range) and never compressed.
+	handle /downloads/* {
+		root * /srv/www
+		@mutable path /downloads/ /downloads/index.html /downloads/release.json /downloads/SHA256SUMS /downloads/latest/*
+		header @mutable Cache-Control "no-cache"
+		@versioned not path /downloads/ /downloads/index.html /downloads/release.json /downloads/SHA256SUMS /downloads/latest/*
+		header @versioned Cache-Control "public, max-age=31536000, immutable"
+		import release_types
+		file_server
+	}
+
+	handle /updates/* {
+		root * /srv/www
+		@feed path *.yml *.json
+		header @feed Cache-Control "no-cache"
+		@binary not path *.yml *.json
+		header @binary Cache-Control "public, max-age=31536000, immutable"
+		import release_types
+		file_server
+	}
+
+	handle {
+		root * /srv/www/site/current
+		encode zstd gzip
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@pages not path /assets/*
+		header @pages Cache-Control "no-cache"
+		header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
+		try_files {path} {path}/index.html
+		file_server
+	}
+
+	handle_errors 404 {
+		root * /srv/www/site/current
+		@en path /en/*
+		rewrite @en /en/404.html
+		@other not path /en/*
+		rewrite @other /404.html
+		header Cache-Control "no-cache"
+		file_server
+	}
+}

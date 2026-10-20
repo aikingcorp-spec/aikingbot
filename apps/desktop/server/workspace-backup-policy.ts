@@ -1,0 +1,55 @@
+import { parseStoredConfig } from "./config.ts";
+
+// Connection sections stay on the destination whole: a restored URL must never redirect an API key kept from that device.
+const PORTABLE_CONFIG_KEYS = [
+  "profile", "language", "budgets", "billing", "rooms", "threads",
+  "localVm", "features", "browserProfiles",
+] as const;
+
+export function portableWorkspaceConfig(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Invalid workspace configuration in backup.");
+  const config = parseStoredConfig(value as Parameters<typeof parseStoredConfig>[0]);
+  return Object.fromEntries(PORTABLE_CONFIG_KEYS.filter((key) => config[key] !== undefined).map((key) => [key, config[key]]));
+}
+
+// Computer sharing opens routes and a desktop connector here: a restore never turns it on or off.
+const DESTINATION_FEATURES = ["sharedComputers"] as const;
+
+export function restoredWorkspaceConfig(portable: unknown, destination: unknown): Record<string, unknown> {
+  if (!destination || typeof destination !== "object" || Array.isArray(destination)) throw new Error("Invalid destination workspace configuration; connections were not changed.");
+  const merged = { ...destination } as Record<string, unknown>;
+  for (const key of PORTABLE_CONFIG_KEYS) delete merged[key];
+  const restored = { ...merged, ...portableWorkspaceConfig(portable) };
+  const own = (destination as { features?: Record<string, unknown> }).features ?? {};
+  const features: Record<string, unknown> = { ...(restored.features as Record<string, unknown> | undefined) };
+  for (const key of DESTINATION_FEATURES) {
+    delete features[key];
+    if (own[key] !== undefined) features[key] = own[key];
+  }
+  if (Object.keys(features).length) restored.features = features;
+  else delete restored.features;
+  return restored;
+}
+
+export function excludedWorkspaceAuthPath(path: string): boolean {
+  if (/^command-allowlist\.json(?:$|\.\d+\.[0-9a-f-]+\.tmp$)/.test(path)) return true;
+  if (/^mcp-oauth\.json(?:$|\.\d+\.[0-9a-f-]+\.tmp$)/.test(path)) return true;
+  // Saved website logins and their key never leave the computer they were saved on.
+  if (/^(?:logins\.json\.enc|logins-key)(?:$|\.\d+\.[0-9a-f-]+\.tmp$)/.test(path)) return true;
+  return /^(?:(?:providers|caddy|chrome-profile|\.agent-browser)(?:\/|$)|workspace-credentials\.json$|external-runtimes\.json$|browser-engine-key$)/.test(path) ||
+    /^(?:config\.json|webhooks\.json|workspace-credentials\.json|external-runtimes\.json|browser-engine-key|sessions\.json|tunnel-account\.json)\.\d+(?:\.[0-9a-f-]+)?\.tmp$/.test(path) ||
+    /^(?:vm-home|vm-homes\/[^/]+)\/\.browser-profiles(?:\/|$)/.test(path);
+}
+
+export function redownloadedOrgLibraryPath(path: string): boolean {
+  return /^org-library\/(?:catalog\.json(?:\.[0-9a-f-]{36}\.tmp)?$|blobs(?:\/|$))/.test(path);
+}
+
+export function ephemeralWorkspaceTokenPath(path: string): boolean {
+  return /^(?:hook-tokens(?:\/|$)|sessions\.json\.open$)/.test(path);
+}
+
+/** Not a consistent snapshot while the engine holds it open (unflushed WAL), and reloadable from its sources. */
+export function liveDataEnginePath(path: string): boolean {
+  return /^bots\/[^/]+\/(?:data\.duckdb(?:\.wal)?$|data-tmp(?:\/|$))/.test(path);
+}

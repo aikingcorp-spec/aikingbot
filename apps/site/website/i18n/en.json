@@ -1,0 +1,268 @@
+{
+  "meta": {
+    "title": "AIKINGBOT — A team of AI agents working for you",
+    "description": "AIKINGBOT is a desktop app that runs a team of AI agents on your computer: many models, a skill Marketplace, schedules, voice and remote work through your own server. Free Windows Beta.",
+    "docsTitle": "Install and usage guide — AIKINGBOT",
+    "docsDescription": "Install AIKINGBOT on Windows, sign in with email, connect a model, update it and troubleshoot during the beta.",
+    "notFoundTitle": "Page not found — AIKINGBOT"
+  },
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "download": "Download",
+    "faq": "FAQ",
+    "docs": "Guide",
+    "openApp": "Open web app",
+    "downloadCta": "Download for Windows",
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  "hero": {
+    "badge": "Windows Beta",
+    "title": "A team of AI agents working for you, right on your computer",
+    "lead": "AIKINGBOT turns AI agents into a team: every bot has its own role, tools and schedule. Use Claude, ChatGPT, Gemini, Grok or your own model, install skills from the Marketplace and follow the work from any device through an AIKINGBOT server.",
+    "primary": "Download for Windows",
+    "secondary": "Open web app",
+    "note": "Free during the beta · Windows 10/11 64-bit · Your data stays on your machine"
+  },
+  "preview": {
+    "eyebrow": "The real interface",
+    "title": "One workspace for your whole bot team",
+    "lead": "Captured from the AIKINGBOT staging server running today — not a mock-up.",
+    "tabs": {
+      "chat": "Chat & delegate",
+      "marketplace": "Marketplace",
+      "settings": "Settings & connections"
+    },
+    "alt": {
+      "chat": "AIKINGBOT main screen with the bot list and a conversation",
+      "marketplace": "AIKINGBOT Marketplace with installable agents and skills",
+      "settings": "AIKINGBOT settings with model connections and remote access"
+    }
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "Everything an AI team needs to do real work",
+    "lead": "These capabilities ship in the beta. Items marked as needing setup require your own account or service.",
+    "needsSetup": "Needs setup",
+    "items": {
+      "team": {
+        "title": "AI agent teams",
+        "body": "Create bots with their own roles and group them to work on one task together. Each bot keeps its own history, working folder and tools."
+      },
+      "models": {
+        "title": "Many models and providers",
+        "body": "AIKING Core with Claude, plus the Claude, ChatGPT/Codex, Gemini, Grok, Mistral, Groq, Cerebras and MiniMax engines and any OpenAI-compatible endpoint — local models included."
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "body": "Install ready-made agents such as Media Producer, Ad Strategist, Trend Scout and Research Analyst, and skills for TikTok hooks, campaign briefs and meeting notes. Update or remove with one click."
+      },
+      "skills": {
+        "title": "Skills and plugins (MCP)",
+        "body": "Extend bots with reviewed skills and MCP servers over stdio, HTTP or SSE. Tools with side effects always wait for your approval."
+      },
+      "workspace": {
+        "title": "Workspace and files",
+        "body": "Bots work in the folder you choose and read or create files, images and documents. Encrypted backup restores the whole workspace on a new machine."
+      },
+      "schedule": {
+        "title": "Schedules",
+        "body": "Run a bot once or on a schedule: a Monday morning report, a daily trend scan, a weekend inbox digest."
+      },
+      "remote": {
+        "title": "Remote work",
+        "body": "Sign in with your email to open your workspace on a computer or in a browser, no pairing code needed. Workspace owners invite members and set their role, and can revoke access at any time."
+      },
+      "voice": {
+        "title": "Voice calls with bots",
+        "body": "Talk to your agents: pick a microphone and speaker, interrupt naturally, reconnect automatically. The app checks the engine, microphone and speech service first and tells you exactly what to connect if something is missing."
+      }
+    }
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "Four steps to a working bot team",
+    "steps": {
+      "download": {
+        "title": "Download",
+        "body": "Get the Windows installer straight from the AIKINGBOT server and install it in a minute, no administrator rights needed."
+      },
+      "connect": {
+        "title": "Connect",
+        "body": "Sign in with your email and a one-time code, pick your workspace, then press Connect to sign in to Codex, Claude Code or another engine with the provider's own account login."
+      },
+      "team": {
+        "title": "Build your team",
+        "body": "Pick agents from the Marketplace or create new bots, and give each one a model, skills and a working folder."
+      },
+      "work": {
+        "title": "Delegate",
+        "body": "Send a task, set a schedule or start a voice call. Follow progress, approve tools and get results right in the conversation."
+      }
+    }
+  },
+  "download": {
+    "eyebrow": "Download",
+    "title": "AIKINGBOT for Windows",
+    "lead": "Installers are served directly by the AIKINGBOT server, with a SHA-256 checksum so you can verify every file.",
+    "windows": "Windows 10/11 · 64-bit",
+    "installer": "Installer (.exe)",
+    "installerHint": "Recommended — guided installation",
+    "portable": "Portable (.zip)",
+    "portableHint": "Unzip and run, no installation",
+    "linux": "Linux",
+    "version": "Version",
+    "size": "Size",
+    "released": "Released",
+    "checksum": "SHA-256",
+    "copy": "Copy",
+    "copied": "Copied",
+    "allFiles": "All files and checksums",
+    "pending": "The Windows Beta is being prepared. This page updates itself once the installer is published.",
+    "installTitle": "Install",
+    "installSteps": [
+      "Download AIKINGBOT-…-setup.exe above.",
+      "Open the file. The beta is not code-signed yet, so Windows SmartScreen may warn you: choose \"More info\" → \"Run anyway\".",
+      "AIKINGBOT installs for your Windows account and opens. Use it on this computer, or choose \"Sign in to your workspace\" to sign in with your email.",
+      "In your workspace, open Settings → AI and press Connect on an engine; the app installs what it needs and opens the provider's official sign-in page."
+    ],
+    "updateTitle": "Updates",
+    "updateBody": "From the first beta with an update channel, AIKINGBOT checks for new versions at start-up and every hour, downloads in the background and shows a restart button to finish. Accounts, bots, skills and workspaces are kept. You can also check manually in Settings → About.",
+    "verifyTitle": "Verify the file",
+    "verifyBody": "In PowerShell, run the command below and compare it with the SHA-256 shown above:"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "q": "Does AIKINGBOT cost anything?",
+        "a": "The app is free during the beta. AI usage is billed by the model provider: use the ChatGPT, Claude, Gemini or Grok plan you already have, a pay-as-you-go API key, or a free local model."
+      },
+      {
+        "q": "Which models can I use?",
+        "a": "AIKING Core uses Claude through an Anthropic API key. The app also keeps the Claude, ChatGPT/Codex, Gemini, Grok, Mistral, Groq, Cerebras and MiniMax engines and OpenAI-compatible endpoints. Each bot can use a different model."
+      },
+      {
+        "q": "Where is my data stored?",
+        "a": "On your computer, in the .aikingbot folder of your Windows account. With an AIKINGBOT server, the remote workspace data lives on that server. Content is only sent to the model provider you choose for each conversation turn."
+      },
+      {
+        "q": "What computer do I need?",
+        "a": "Windows 10 or 11, 64-bit, about 1 GB of free disk space and an Internet connection for cloud models. Linux builds (.deb, AppImage) exist too; macOS comes later."
+      },
+      {
+        "q": "What is the AIKINGBOT server for?",
+        "a": "The server runs the same backend as the desktop app so bots keep working 24/7, lets you open the web app in a browser, pair several devices and share workspaces. The desktop app also works on its own without a server."
+      },
+      {
+        "q": "Can a bot run dangerous commands on its own?",
+        "a": "No. Tools with side effects need your approval, and dangerous tools are refused unless you explicitly allow them. Remote devices pair with one-time codes, get scoped permissions and can be revoked. Voice never approves a tool."
+      },
+      {
+        "q": "What are the beta limitations?",
+        "a": "The installer is not code-signed yet, so Windows warns on first install. The in-app interface is English for now; Vietnamese comes later. Voice calls need configured STT/TTS services. Composio OAuth connections need your own account. Back up important workspaces."
+      },
+      {
+        "q": "Will updating delete my data?",
+        "a": "No. An update replaces the program only; data in .aikingbot is kept and migrated when needed. An older version refuses to open data written by a newer one to avoid corruption."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready for your own AI team?",
+    "body": "Download the Windows Beta, connect the model you already use and hand over your first task in minutes.",
+    "primary": "Download for Windows",
+    "secondary": "Read the guide"
+  },
+  "footer": {
+    "tagline": "A team of AI agents working for you.",
+    "product": "Product",
+    "resources": "Resources",
+    "company": "AIKING",
+    "docs": "Guide",
+    "github": "GitHub",
+    "checksums": "Release checksums",
+    "status": "Server status",
+    "about": "AIKING Corp builds AI tools for Vietnamese businesses and creators.",
+    "contact": "Contact",
+    "website": "aikingx.com",
+    "version": "Version",
+    "attribution": "Third-party open-source licenses ship with the installer.",
+    "rights": "© 2026 AIKING. All rights reserved."
+  },
+  "docs": {
+    "eyebrow": "Guide",
+    "title": "Install, sign in and update AIKINGBOT",
+    "lead": "A guide for the Windows Beta. The app interface is in English, so menu names are quoted as they appear.",
+    "toc": "Contents",
+    "sections": [
+      {
+        "id": "install",
+        "title": "1. Install on Windows",
+        "paras": [
+          "Download AIKINGBOT-<version>-setup.exe from the Download section. Check its SHA-256 if you like (see Verify).",
+          "Open the installer. Because the beta is not code-signed, SmartScreen may show \"Windows protected your PC\": click \"More info\", then \"Run anyway\".",
+          "The installer needs no administrator rights, installs for the current account and creates an AIKINGBOT shortcut. The app opens when it finishes.",
+          "Portable (.zip): unzip into a folder and run AIKINGBOT.exe. The portable build does not update itself."
+        ]
+      },
+      {
+        "id": "connect-models",
+        "title": "2. Connect a model",
+        "paras": [
+          "On first start, choose an engine: AIKING Core (needs an Anthropic API key in Settings → Connections) or another engine such as Claude, ChatGPT/Codex, Gemini or Grok, then sign in with your plan.",
+          "You can add several accounts and keys; each bot picks its own model in its settings."
+        ]
+      },
+      {
+        "id": "sign-in",
+        "title": "3. Sign in to your workspace with email",
+        "paras": [
+          "Desktop app: on the welcome screen choose \"Sign in to your workspace\" (or the workspace menu at the top → \"Sign in to my AIKINGBOT workspace…\"). Enter your email, open the message from AIKINGBOT and type the 8-character code.",
+          "Browser: open <app>, enter your email and the one-time code. A code works once within 10 minutes; check your spam folder if it has not arrived.",
+          "Email only proves who you are; the workspace owner decides who can enter and with which role (Settings → People). If you see \"not a member of this workspace\", ask the owner to invite your email.",
+          "Advanced / self-hosting / recovery: one-time pairing codes still work from Settings → Remote access or <app>/pair."
+        ]
+      },
+      {
+        "id": "updates",
+        "title": "4. Updates",
+        "paras": [
+          "Installers with an update channel check 15 seconds after start-up and every hour. When a new version exists, the app downloads it in the background, shows progress and a Restart button to install.",
+          "Manual check: Settings → About → Check for updates.",
+          "Data in %USERPROFILE%\\.aikingbot (bots, conversations, skills, settings) is kept across updates.",
+          "0.3.0-rc.1 and 0.3.0-rc.2 cannot update themselves: install the newer installer over them once, and later versions update themselves."
+        ]
+      },
+      {
+        "id": "verify",
+        "title": "5. Verify downloads",
+        "paras": [
+          "PowerShell: Get-FileHash .\\AIKINGBOT-<version>-setup.exe -Algorithm SHA256",
+          "Compare the result with the SHA-256 on the Download section or the SHA256SUMS file in the release folder."
+        ]
+      },
+      {
+        "id": "troubleshooting",
+        "title": "6. Troubleshooting",
+        "paras": [
+          "The app does not open: collect the logs in %APPDATA%\\AIKINGBOT\\logs and attach them to your report.",
+          "An update fails: download the latest installer from the Download section and install it over the current one; your data is not affected.",
+          "Cannot sign in: email codes work once and expire after 10 minutes — choose \"Send a new code\". If you are told you are not a member, ask the workspace owner to invite your email."
+        ]
+      }
+    ]
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This address does not exist or has moved.",
+    "home": "Back to home"
+  },
+  "release": {
+    "beta": "Beta",
+    "latest": "Latest"
+  }
+}
