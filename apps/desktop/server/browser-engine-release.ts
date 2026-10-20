@@ -46,7 +46,7 @@ const RELEASES = new Map<string, AgentBrowserReleaseAsset>([
       // Retain the native-verified revision until its replacement is tested.
       target: "win32-x64", version: "0.36.0-aiking.1",
       asset: "agent-browser-win32-x64-0.36.0-aiking.1.exe",
-      url: "https://aikingbot-site.aiking-corp.workers.dev/downloads/vendor/agent-browser-win32-x64-0.36.0-aiking.1.exe",
+      url: "https://aikingxbot.com/downloads/vendor/agent-browser-win32-x64-0.36.0-aiking.1.exe",
       sha256: "33bee834f6a6072ec8688b0914726e0262874d758f69f27e8baf7eaac6b5ed15", bytes: 13806080,
     },
   ],

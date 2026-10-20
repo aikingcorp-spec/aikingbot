@@ -19,7 +19,7 @@ async function load(feed) {
 it("uses the self-hosted Windows feed by default, while non-Windows platforms remain opt-in", async () => {
   const { autoUpdater, state } = await load(undefined);
   if (process.platform === "win32") {
-    expect(autoUpdater.setFeedURL).toHaveBeenCalledExactlyOnceWith({ provider: "generic", url: "https://aikingbot-site.aiking-corp.workers.dev/updates/windows/" });
+    expect(autoUpdater.setFeedURL).toHaveBeenCalledExactlyOnceWith({ provider: "generic", url: "https://aikingxbot.com/updates/windows/" });
     expect(autoUpdater.checkForUpdates).toHaveBeenCalledOnce();
   } else {
     expect(fixture.load).not.toHaveBeenCalled();

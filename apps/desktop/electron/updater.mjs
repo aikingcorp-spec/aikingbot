@@ -94,7 +94,7 @@ export function startUpdater() {
   }
   // The coordinator starts each download itself, so it owns macOS staging and quiet failures.
   let feed;
-  try { feed = new URL(process.env.AIKING_UPDATE_FEED || "https://aikingbot-site.aiking-corp.workers.dev/updates/windows/"); } catch { setState({ status: "error", message: "Invalid AIKING update feed." }); return; }
+  try { feed = new URL(process.env.AIKING_UPDATE_FEED || "https://aikingxbot.com/updates/windows/"); } catch { setState({ status: "error", message: "Invalid AIKING update feed." }); return; }
   if (feed.protocol !== "https:" || feed.username || feed.password) { setState({ status: "error", message: "AIKING_UPDATE_FEED requires an HTTPS release feed." }); return; }
   autoUpdater.setFeedURL({ provider: "generic", url: feed.href });
   autoUpdater.autoDownload = false;

@@ -3,7 +3,7 @@ export const APP_REPOSITORY = "https://github.com/aikingcorp-spec/AIKINGX_Bot";
 export const UPSTREAM_REPOSITORY = "https://aikingbot.invalid/upstream";
 export const DOCS_REF = "AIKINGBOT";
 // The code repository is private, so people-facing links go to the public AIKINGBOT site.
-export const SITE_URL = "https://aikingbot-site.aiking-corp.workers.dev";
+export const SITE_URL = "https://aikingxbot.com";
 export const DOCS_URL = `${SITE_URL}/docs/`;
 export const HELP_CENTER_URL = DOCS_URL;
 export const APPROVAL_LEVELS_URL = DOCS_URL;

@@ -8,7 +8,7 @@ import { randomBytes } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enrollWithAccount, enrollWithRelay, leaveRelay, startRelayConnector, type RelayConnector, type RelayConnectorOptions, type RelayState } from "./relay-connector.ts";
 
-export const DEFAULT_RELAY_URL = "https://aikingbot-relay.aiking-corp.workers.dev";
+export const DEFAULT_RELAY_URL = "https://app.aikingxbot.com";
 /** Added by the connector to every request it replays, so management calls arriving over the relay itself can be refused. */
 export const RELAYED_HEADER = "x-aiking-relayed";
 
