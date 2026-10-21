@@ -32,6 +32,17 @@ describe("buildApplicationMenu", () => {
       }),
     );
 
+  it.each([
+    ["linux", { id: "l1", kind: "local", name: "Second", dataDir: "/home/lan/.aikingbot-second-1" }],
+    ["win32", { id: "l2", kind: "local", name: "Second", dataDir: "C:\\Users\\Lan\\.aikingbot-second-2" }],
+  ])("lists a server created on this computer, which has a folder and no address, on %s", (platform, local) => {
+    const template = build(platform, { environments: [...environments, local] });
+    const server = template.find((item) => item.label === "Server");
+    const entry = server.submenu.find((item) => item.label?.startsWith("Second"));
+    expect(entry.label).toBe("Second — on this computer");
+    expect(entry.checked).toBe(false);
+  });
+
   it("macOS app menu wires an explicit Preferences item to the settings callback", () => {
     const onOpenSettings = vi.fn();
     const template = build("darwin", { onOpenSettings });

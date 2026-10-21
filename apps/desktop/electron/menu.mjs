@@ -20,7 +20,7 @@ export function buildApplicationMenu({ environments, activeId, onSwitch, onAddFr
     submenu: [
       { label: "This computer", type: "radio", checked: !active, click: () => onSwitch("local") },
       ...environments.map((e) => ({
-        label: `${e.name} — ${Object.hasOwn(sublabels, e.id) ? sublabels[e.id] : new URL(e.origin).host}`,
+        label: `${e.name} — ${Object.hasOwn(sublabels, e.id) ? sublabels[e.id] : e.kind === "local" ? "on this computer" : new URL(e.origin).host}`,
         type: "radio",
         checked: e.id === activeId,
         click: () => onSwitch(e.id),

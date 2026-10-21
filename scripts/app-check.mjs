@@ -7,15 +7,14 @@
 //   (Linux without a screen: run it under `xvfb-run -a`, or set DISPLAY.)
 //
 // Environment: AIKING_CHECK_NO_SANDBOX=1 adds --no-sandbox (containers, CI).
-import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { createServer as createHttp } from "node:http";
-import { createServer as createNet } from "node:net";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createRequire } from "node:module";
-// The browser driver is a dev dependency of the desktop app, so it is found from there.
-const { chromium } = createRequire(new URL("../apps/desktop/package.json", import.meta.url))("playwright-core");
+// The browser driver is a dev dependency of the desktop app, so it is found from there. It starts the app itself, which also
+// lets the check answer the operating system's own confirmation boxes (the app asks before it creates or opens a server).
+const { _electron } = createRequire(new URL("../apps/desktop/package.json", import.meta.url))("playwright-core");
 
 // Names that must appear nowhere (a regular expression), set by whoever runs the check.
 const FORBIDDEN = process.env.AIKING_FORBIDDEN_NAMES ? new RegExp(process.env.AIKING_FORBIDDEN_NAMES, "i") : /(?!)/;
@@ -25,7 +24,6 @@ const out = process.argv[3] || join(process.cwd(), "app-check-evidence");
 mkdirSync(out, { recursive: true });
 const scratch = mkdtempSync(join(tmpdir(), "aiking-check-"));
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const freePort = async () => { const server = createNet(); await new Promise((r) => server.listen(0, "127.0.0.1", r)); const { port } = server.address(); await new Promise((r) => server.close(r)); return port; };
 
 // A stand-in for the account service: any address gets the same one-time code.
 const CODE = "ABCD-EFGH";
@@ -43,16 +41,12 @@ const auth = createHttp((req, res) => {
 });
 await new Promise((r) => auth.listen(0, "127.0.0.1", r));
 
-const port = await freePort();
 const pass = ["PATH", "SystemRoot", "DISPLAY", "XAUTHORITY", "DBUS_SESSION_BUS_ADDRESS", "APPIMAGE_EXTRACT_AND_RUN", "ComSpec", "PATHEXT", "WINDIR"];
 const env = Object.fromEntries(pass.filter((k) => process.env[k]).map((k) => [k, process.env[k]]));
-const args = [`--user-data-dir=${join(scratch, "electron")}`, `--remote-debugging-port=${port}`, "--remote-debugging-address=127.0.0.1", "--lang=en-US"];
+const args = [`--user-data-dir=${join(scratch, "electron")}`, "--lang=en-US"];
 if (process.env.AIKING_CHECK_NO_SANDBOX) args.push("--no-sandbox");
-const child = spawn(binary, args, {
-  cwd: scratch, stdio: ["ignore", "pipe", "pipe"],
-  env: { ...env, HOME: scratch, USERPROFILE: scratch, APPDATA: join(scratch, "AppData/Roaming"), LOCALAPPDATA: join(scratch, "AppData/Local"), XDG_CONFIG_HOME: join(scratch, ".config"), AIKING_ACCOUNT_API_URL: `http://127.0.0.1:${auth.address().port}`, ELECTRON_DISABLE_SANDBOX: "1" },
-});
-let output = ""; child.stdout.on("data", (c) => { output += c; }); child.stderr.on("data", (c) => { output += c; });
+const launchEnv = { ...env, HOME: scratch, USERPROFILE: scratch, APPDATA: join(scratch, "AppData/Roaming"), LOCALAPPDATA: join(scratch, "AppData/Local"), XDG_CONFIG_HOME: join(scratch, ".config"), AIKING_ACCOUNT_API_URL: `http://127.0.0.1:${auth.address().port}`, ELECTRON_DISABLE_SANDBOX: "1" };
+let electronApp; let output = "";
 
 const results = []; const settings = {}; let page; let shots = 0;
 const check = (name, ok, detail = "") => { results.push({ name, ok: Boolean(ok), detail: ok ? "" : String(detail).slice(0, 300) }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${ok || !detail ? "" : `  (${String(detail).slice(0, 120)})`}`); };
@@ -62,16 +56,13 @@ const shot = async (name) => page.screenshot({ path: join(out, `${String(++shots
 const step = async (name, fn) => { try { await fn(); } catch (error) { check(`${name} (the step itself ran)`, false, error.message); await shot(`${name.replace(/\W+/g, "-")}-failed`); } };
 const press = async (selector, options = {}) => page.locator(selector).first().click({ timeout: 6000, ...options });
 
-let browser;
 try {
+  electronApp = await _electron.launch({ executablePath: binary, args, env: launchEnv, cwd: scratch, timeout: 120_000 });
+  const child = electronApp.process(); child.stdout?.on("data", (c) => { output += c; }); child.stderr?.on("data", (c) => { output += c; });
+  // The operating system's confirmation boxes cannot be clicked from the page: answer "Continue" for the app.
+  await electronApp.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 0, checkboxChecked: false }); });
   const deadline = Date.now() + 120_000;
-  for (;;) {
-    if (child.exitCode !== null) throw new Error(`The app exited early (${child.exitCode}): ${output.slice(-800)}`);
-    try { browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`); break; } catch { /* starting */ }
-    if (Date.now() > deadline) throw new Error("The app never opened its debug port");
-    await wait(300);
-  }
-  while (Date.now() < deadline && !page) { page = browser.contexts()[0].pages().find((p) => /^http:\/\/127\.0\.0\.1:\d+\//.test(p.url())); if (!page) await wait(250); }
+  while (Date.now() < deadline && !page) { page = electronApp.windows().find((p) => /^http:\/\/127\.0\.0\.1:\d+\//.test(p.url())); if (!page) await wait(250); }
   if (!page) throw new Error("The app window never loaded its own server");
   const errors = []; page.on("pageerror", (e) => errors.push(String(e.message).slice(0, 200)));
   await page.setViewportSize({ width: 1280, height: 860 }).catch(() => {});
@@ -104,6 +95,42 @@ try {
     const dialog = await dialogText(); await shot("add-server");
     check("the add-server box offers join and create, without team wording", /Join a Server/.test(dialog) && /Create my Server/.test(dialog) && !/Manage members|Workspaces organize/.test(dialog), dialog);
     await page.keyboard.press("Escape");
+  });
+
+  await step("a second server", async () => {
+    page.on("dialog", (dialog) => { dialog.accept().catch(() => {}); });
+    await press("[data-server-add]"); await wait(500);
+    await press("[data-workspace-create]"); await wait(400);
+    await page.fill("[data-workspace-input]", "Second");
+    await shot("create-form");
+    await press('[data-workspace-panel] form button[type="submit"]');
+    // The app restarts its local runtime and opens the new server in this window.
+    const arrived = await Promise.race([
+      page.waitForSelector("[data-signin-email]", { timeout: 90_000 }).then(() => "sign-in"),
+      page.waitForFunction(() => document.querySelectorAll("[data-server-tile]").length >= 2, null, { timeout: 90_000 }).then(() => "app"),
+      page.waitForSelector('[data-workspace-panel] [role="alert"]', { timeout: 90_000 }).then(async () => `error: ${await page.locator('[data-workspace-panel] [role="alert"]').innerText()}`),
+    ]);
+    await shot("after-create");
+    check("creating a second server works and opens it", arrived === "app" || arrived === "sign-in", arrived);
+    check("the new server does not ask the person to sign in again", arrived === "app", "it shows the sign-in screen again");
+    if (arrived === "sign-in") {
+      await page.fill("[data-signin-email]", "check@example.test"); await press("[data-signin-send]");
+      await page.waitForSelector("[data-signin-code]", { timeout: 20_000 }); await page.fill("[data-signin-code]", CODE); await press("[data-signin-verify]");
+      await page.waitForSelector("[data-signin-name]", { timeout: 20_000 }); await page.fill("[data-signin-name]", "Tester"); await press("[data-signin-continue]");
+    }
+    await page.waitForFunction(() => document.querySelectorAll("[data-server-tile]").length >= 2, null, { timeout: 60_000 });
+    const tiles = await page.$$eval("[data-server-tile]", (nodes) => nodes.map((n) => n.getAttribute("aria-label")));
+    check("the rail now shows this computer and the new server", tiles.length === 2 && tiles.includes("Second"), tiles.join("|"));
+    await page.locator('[data-server-tile][aria-label="Second"]').first().click({ button: "right" });
+    await shot("second-server-menu");
+    await press("[data-server-off]");
+    await page.waitForFunction(() => document.querySelector('[data-server-tile][aria-current="page"]')?.getAttribute("aria-label") !== "Second", null, { timeout: 90_000 });
+    check("turning the second server off goes back to this computer", true);
+    await page.locator('[data-server-tile][aria-label="Second"]').first().click({ button: "right" });
+    await press("[data-server-remove]"); await wait(1500);
+    const left = await page.$$eval("[data-server-tile]", (nodes) => nodes.length);
+    check("removing the second server leaves only this computer", left === 1, String(left));
+    await shot("after-remove");
   });
 
   await step("menu", async () => {
@@ -147,7 +174,9 @@ try {
   const failed = results.filter((r) => !r.ok);
   writeFileSync(join(out, "report.json"), JSON.stringify({ at: new Date().toISOString(), passed: results.length - failed.length, failed: failed.length, results, appOutputTail: output.slice(-2000) }, null, 1));
   console.log(`\n${results.length - failed.length} passed, ${failed.length} failed. Evidence: ${out}`);
-  await browser?.close().catch(() => {}); child.kill(); auth.close();
+  // What the app wrote about itself: on a failure this is where the reason is.
+  for (const dir of [join(scratch, "AppData/Roaming/AIKINGBOT/logs"), join(scratch, ".config/AIKINGBOT/logs")]) if (existsSync(dir)) cpSync(dir, join(out, "app-logs"), { recursive: true });
+  await electronApp?.close().catch(() => {}); auth.close();
   process.exitCode = failed.length ? 1 : 0;
   setTimeout(() => process.exit(process.exitCode), 1500).unref();
 }

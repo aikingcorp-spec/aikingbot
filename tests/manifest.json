@@ -60,6 +60,7 @@
     "server/redact.test.ts",
     "server/request-auth.test.ts",
     "electron/aiking-updater.test.mjs",
+    "electron/menu.test.mjs",
     "electron/secure-credentials.test.mjs",
     "electron/secure-credential-state.test.mjs",
     "scripts/linux-after-install.test.mjs",
