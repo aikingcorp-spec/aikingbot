@@ -28,6 +28,8 @@ const bindings = [
   { type: "durable_object_namespace", name: "HOST", class_name: "Host" },
   { type: "plain_text", name: "AUTH_API", text: `https://${authScript}.${subdomain}.workers.dev` },
   { type: "service", name: "AUTH", service: authScript, environment: "production" },
+  // The web app's own files (see publish-webui.mjs): served from here instead of from the person's computer.
+  { type: "r2_bucket", name: "WEBUI", bucket_name: option("webui-bucket", "aikingbot-staging-sites") },
 ];
 // An existing deployment keeps its signing key (people stay signed in); a first deployment needs one.
 if (cookieKey) bindings.push({ type: "secret_text", name: "COOKIE_KEY", text: cookieKey });

@@ -5,7 +5,8 @@
 //   node --experimental-strip-types relay.lab-test.mjs
 import assert from "node:assert/strict";
 import { createHash, randomBytes } from "node:crypto";
-import { createServer } from "node:http";
+import { createServer, request as httpRequest } from "node:http";
+import { brotliCompressSync, brotliDecompressSync, gunzipSync, gzipSync } from "node:zlib";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { startRelayConnector, enrollWithRelay } from "../desktop/server/aiking/relay-connector.ts";
@@ -79,6 +80,7 @@ sockets.on("connection", (socket, req) => {
 const mf = new Miniflare({
   scriptPath: fileURLToPath(new URL("./worker.mjs", import.meta.url)), modules: true, compatibilityDate: "2026-08-01",
   durableObjects: { INDEX: "Index", USER: "User", HOST: "Host" },
+  r2Buckets: { WEBUI: "webui-test" },
   bindings: { AUTH_API: "https://auth.test", COOKIE_KEY: "test-cookie-key-with-enough-length" },
   outboundService: fakeAuth,
   port: 0, host: "127.0.0.1",
@@ -183,6 +185,47 @@ connector = connect(lanHost);
 await until(() => connector.state() === "online");
 const web = (path, init = {}) => api(path, { ...init, headers: { cookie: `${lanCookie}; rl_host=${lanHost.hostId}`, ...(init.headers ?? {}) } });
 
+await check("the web app's own files come from the edge: compressed, cached for a year, with no sign-in and no computer", async () => {
+  const bucket = await mf.getR2Bucket("WEBUI");
+  const source = Buffer.from("console.log('the web app');".repeat(50));
+  const bytes = (buffer) => new Uint8Array(buffer);
+  await bucket.put("webui/assets/app-abc123.js", bytes(source));
+  await bucket.put("webui/assets/app-abc123.js.br", bytes(brotliCompressSync(source)));
+  await bucket.put("webui/assets/app-abc123.js.gz", bytes(gzipSync(source)));
+  await bucket.put("webui/assets/logo-9f.png", new Uint8Array([9, 9]));
+  // node:http, not fetch: fetch decides its own Accept-Encoding and decodes the answer, and this checks the bytes as sent.
+  const asBrowser = (name, encoding, method = "GET") => new Promise((resolve, reject) => {
+    const request = httpRequest(`${relayUrl}/assets/${name}`, { method, headers: { "accept-encoding": encoding } }, (response) => {
+      const chunks = []; response.on("data", (chunk) => chunks.push(chunk));
+      response.on("end", () => resolve({ status: response.statusCode, headers: { get: (key) => response.headers[key.toLowerCase()] ?? null }, body: Buffer.concat(chunks) }));
+    }); request.on("error", reject); request.end();
+  });
+  const decoded = (answer) => { const encoding = answer.headers.get("content-encoding"); return encoding === "br" ? brotliDecompressSync(answer.body) : encoding === "gzip" ? gunzipSync(answer.body) : answer.body; };
+  // The local runtime shows a Worker only "gzip" of what the browser offered; on Cloudflare the full list is in request.cf. Either answer is right.
+  const compressed = await asBrowser("app-abc123.js", "gzip, deflate, br");
+  assert.equal(compressed.status, 200); assert.ok(["br", "gzip"].includes(compressed.headers.get("content-encoding")), String(compressed.headers.get("content-encoding")));
+  assert.ok(compressed.body.length < source.length / 5, "the answer is compressed");
+  assert.equal(decoded(compressed).toString(), source.toString());
+  assert.equal(compressed.headers.get("cache-control"), "public, max-age=31536000, immutable"); assert.equal(compressed.headers.get("x-relay-static"), "1");
+  assert.match(compressed.headers.get("content-type"), /javascript/); assert.equal(compressed.headers.get("vary"), "accept-encoding");
+  const gz = await asBrowser("app-abc123.js", "gzip");
+  assert.equal(gz.headers.get("content-encoding"), "gzip"); assert.equal(gunzipSync(gz.body).toString(), source.toString());
+  const plain = await asBrowser("app-abc123.js", "identity");
+  assert.equal(plain.headers.get("content-encoding"), null); assert.equal(plain.body.toString(), source.toString());
+  const image = await asBrowser("logo-9f.png", "br, gzip");
+  assert.equal(image.headers.get("content-encoding"), null); assert.equal(image.headers.get("content-type"), "image/png");
+  const head = await asBrowser("app-abc123.js", "gzip", "HEAD");
+  assert.equal(head.status, 200); assert.equal(head.body.length, 0);
+});
+await check("a file that is not published here, a path trick or a write is not served from the edge", async () => {
+  const missing = await api("/assets/not-published.js", { headers: { accept: "*/*" } });
+  assert.equal(missing.status, 401); assert.equal((await missing.json()).error, "sign_in_required");   // it goes on to the computer, which needs a sign-in
+  for (const path of ["/assets/..%2Fsecret.js", "/assets/%2e%2e/secret.js", "/assets/a/b.js", "/assets/app-abc123.js%00.png", "/assets/x.exe"]) {
+    const answer = await api(path); assert.notEqual(answer.headers.get("x-relay-static"), "1", path);
+  }
+  const write = await api("/assets/app-abc123.js", { method: "POST", body: "x", headers: { origin: relayUrl } });
+  assert.notEqual(write.headers.get("x-relay-static"), "1");
+});
 await check("a signed-in browser reaches the computer's own server", async () => {
   const response = await web("/hello");
   assert.equal(response.status, 200); assert.equal(await response.text(), "hello from the computer");

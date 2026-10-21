@@ -29,6 +29,13 @@ node scripts/go-live.mjs --domain example.com                # deploys the web s
 node scripts/verify-live.mjs --app https://app.example.com --site https://aikingbot-site.<account>.workers.dev   # the light check, any time
 ```
 
+The web app's own files are served by the relay from R2 (compressed, cached), not fetched from the person's computer. Publish them for
+every release, before or right after the installer goes out (an unpublished version still works, only slower):
+
+```sh
+node apps/web-remote/publish-webui.mjs --ui <folder that holds assets/>    # the installer's resources/ui, or the dist folder of a build
+```
+
 After the domain is live, run `node scripts/set-addresses.mjs --app-url https://app.example.com`, the release gate, then build the next release.
 
 Rules: every change reaches staging first, then a desktop build, then a release. Branches are `feature/*` or `fix/*`, changes land on

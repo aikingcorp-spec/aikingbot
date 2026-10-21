@@ -88,6 +88,36 @@ async function authCall(env, path, body) {
 }
 const normalizeEmail = (value) => (typeof value === "string" && /^[^\s@]{1,64}@[^\s@]{1,255}$/.test(value.trim()) ? value.trim().toLowerCase() : "");
 
+// ---------- the web app's own files ----------
+// The page a person opens is the same set of files for everyone (their names carry a hash of their content), so they are
+// served from here, compressed and cached, and never fetched from the person's computer over its slow upload line. Anything
+// not published here falls through to the computer, which stays the source of truth.
+const STATIC_TYPES = { js: "text/javascript; charset=utf-8", mjs: "text/javascript; charset=utf-8", css: "text/css; charset=utf-8", json: "application/json", map: "application/json", svg: "image/svg+xml", wasm: "application/wasm",
+  woff2: "font/woff2", woff: "font/woff", ttf: "font/ttf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif", ico: "image/x-icon", txt: "text/plain; charset=utf-8" };
+const COMPRESSIBLE = new Set(["js", "mjs", "css", "json", "map", "svg", "txt", "wasm"]);
+async function staticAsset(request, env, url) {
+  if (!env.WEBUI || (request.method !== "GET" && request.method !== "HEAD")) return null;
+  const match = /^\/assets\/([A-Za-z0-9._-]{1,200})$/.exec(url.pathname);
+  if (!match) return null;
+  const name = match[1], extension = name.split(".").pop().toLowerCase(), type = STATIC_TYPES[extension];
+  if (!type) return null;
+  // The runtime narrows the header it shows a Worker; the person's own list (with br) is in request.cf where Cloudflare provides it.
+  const accepted = request.cf?.clientAcceptEncoding ?? request.headers.get("accept-encoding") ?? "";
+  const tries = [];
+  if (COMPRESSIBLE.has(extension) && /\bbr\b/.test(accepted)) tries.push(["br", ".br"]);
+  if (COMPRESSIBLE.has(extension) && /\bgzip\b/.test(accepted)) tries.push(["gzip", ".gz"]);
+  tries.push([null, ""]);
+  for (const [encoding, suffix] of tries) {
+    const object = await env.WEBUI.get(`webui/assets/${name}${suffix}`);
+    if (!object) continue;
+    const headers = new Headers({ "content-type": type, "cache-control": "public, max-age=31536000, immutable", vary: "accept-encoding", "x-relay-static": "1", "content-length": String(object.size), etag: object.httpEtag });
+    if (encoding) headers.set("content-encoding", encoding);
+    // "manual": the bytes are already compressed; without it the runtime would compress them again for the header.
+    return new Response(request.method === "HEAD" ? null : await object.arrayBuffer(), { headers, encodeBody: "manual" });
+  }
+  return null;
+}
+
 // ---------- the Worker ----------
 export default {
   async fetch(request, env) {
@@ -102,6 +132,10 @@ export default {
       return stub(env.HOST, hostId).fetch(new Request("https://do/forget-self", { method: "POST", headers: { "x-host-token": (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "") } }));
     }
     if (url.pathname.startsWith("/__relay/")) return relayPages(request, env, url);
+
+    // The web app's own files come from here, before anything that needs a sign-in or a Durable Object.
+    const asset = await staticAsset(request, env, url);
+    if (asset) return asset;
 
     // Everything else belongs to the person's chosen computer. The connector on that computer rewrites the origin to its own
     // address, so a request from another site has to be refused here, before it is passed on.
