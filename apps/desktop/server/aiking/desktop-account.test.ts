@@ -28,6 +28,47 @@ async function call(account: ReturnType<typeof createDesktopAccount>, method: st
   return { handled, status, payload };
 }
 
+describe("one sign-in for the computer", () => {
+  it("adopts the sign-in an earlier version kept in the data folder, and signing out removes both", async () => {
+    const dir = temp(); const legacy = join(dir, "old-account.json"); const shared = join(dir, "shared", "account.json");
+    const f = fixture();
+    const first = createDesktopAccount({ file: legacy, client: f.client as never });
+    await call(first, "POST", "/api/aiking/account/otp", { email: "lan@example.test" });
+    await call(first, "POST", "/api/aiking/account/verify", { email: "lan@example.test", code: "ABCD-EFGH" });
+    const next = createDesktopAccount({ file: shared, legacyFile: legacy, client: f.client as never });
+    expect(next.status()).toEqual({ signedIn: true, email: "lan@example.test" });
+    expect(existsSync(shared)).toBe(true);
+    await call(next, "POST", "/api/aiking/account/logout");
+    expect(existsSync(shared)).toBe(false); expect(existsSync(legacy)).toBe(false);
+    expect(createDesktopAccount({ file: shared, legacyFile: legacy, client: f.client as never }).status()).toEqual({ signedIn: false });
+  });
+  it("a second server folder sees the same sign-in", async () => {
+    const dir = temp(); const shared = join(dir, "account.json"); const f = fixture();
+    const one = createDesktopAccount({ file: shared, legacyFile: join(dir, "a", "account.json"), client: f.client as never });
+    await call(one, "POST", "/api/aiking/account/otp", { email: "lan@example.test" });
+    await call(one, "POST", "/api/aiking/account/verify", { email: "lan@example.test", code: "ABCD-EFGH" });
+    expect(createDesktopAccount({ file: shared, legacyFile: join(dir, "b", "account.json"), client: f.client as never }).status().signedIn).toBe(true);
+  });
+});
+
+describe("signing out", () => {
+  it("ends the web access that was set up under the account, once, and still answers signed out", async () => {
+    const f = fixture(); const onSignOut = vi.fn();
+    const account = createDesktopAccount({ file: f.file, client: f.client as never, onSignOut });
+    await call(account, "POST", "/api/aiking/account/otp", { email: "lan@example.test" });
+    await call(account, "POST", "/api/aiking/account/verify", { email: "lan@example.test", code: "ABCD-EFGH" });
+    const out = await call(account, "POST", "/api/aiking/account/logout");
+    expect(out.payload).toEqual({ signedIn: false }); expect(onSignOut).toHaveBeenCalledTimes(1);
+  });
+  it("is not stopped by a hook that fails", async () => {
+    const f = fixture();
+    const account = createDesktopAccount({ file: f.file, client: f.client as never, onSignOut: () => { throw new Error("boom"); } });
+    await call(account, "POST", "/api/aiking/account/otp", { email: "lan@example.test" });
+    await call(account, "POST", "/api/aiking/account/verify", { email: "lan@example.test", code: "ABCD-EFGH" });
+    expect((await call(account, "POST", "/api/aiking/account/logout")).payload).toEqual({ signedIn: false });
+  });
+});
+
 describe("signing in on the desktop, inside the app", () => {
   it("starts signed out and ignores other paths", async () => {
     const f = fixture(); const account = f.make();

@@ -14,7 +14,7 @@ export const DEFAULT_ACCOUNT_API = "https://aikingbot-auth-staging.aiking-corp.w
 
 type Saved = { email: string; userId: string; token: string };
 type AccountClient = Pick<ReturnType<typeof createAikingAccountClient>, "requestOTP" | "verifyOTP" | "signOut">;
-export type DesktopAccountOptions = { file: string; baseURL?: string; client?: AccountClient; log?: (message: string) => void };
+export type DesktopAccountOptions = { file: string; /** Where an earlier version kept the sign-in (inside the data folder): adopted once, and removed at sign-out. */ legacyFile?: string; baseURL?: string; client?: AccountClient; log?: (message: string) => void; /** Runs after the person signed out: the web access they set up under that account ends with it. */ onSignOut?: () => void | Promise<void> };
 
 /** What a failed step says, in words and as a code the screen can translate. */
 function explain(error: unknown): { status: number; code: string; error: string } {
@@ -30,11 +30,19 @@ export function createDesktopAccount(options: DesktopAccountOptions) {
   const client: AccountClient = options.client ?? createAikingAccountClient({ baseURL: options.baseURL || process.env.AIKING_ACCOUNT_API_URL || DEFAULT_ACCOUNT_API });
   let saved = read();
 
-  function read(): Saved | null {
+  function readFrom(file: string): Saved | null {
     try {
-      const value = JSON.parse(readFileSync(options.file, "utf8")) as Partial<Saved>;
+      const value = JSON.parse(readFileSync(file, "utf8")) as Partial<Saved>;
       return typeof value.email === "string" && typeof value.userId === "string" && typeof value.token === "string" ? { email: value.email, userId: value.userId, token: value.token } : null;
     } catch { return null; }
+  }
+  function read(): Saved | null {
+    const current = readFrom(options.file);
+    if (current || !options.legacyFile) return current;
+    // One sign-in per computer, not per server folder: an earlier version's sign-in moves to the shared place.
+    const old = readFrom(options.legacyFile);
+    if (old) { try { write(old); } catch { /* read-only place: the sign-in still works for this run */ } }
+    return old;
   }
   function write(value: Saved) {
     mkdirSync(dirname(options.file), { recursive: true, mode: 0o700 });
@@ -77,7 +85,9 @@ export function createDesktopAccount(options: DesktopAccountOptions) {
         const token = saved?.token;
         saved = null;
         rmSync(options.file, { force: true });
+        if (options.legacyFile) rmSync(options.legacyFile, { force: true });
         if (token) await client.signOut(token).catch(() => undefined);
+        try { await options.onSignOut?.(); } catch (error) { log(`sign-out hook failed: ${(error as Error).message}`); }
         json(res, 200, status());
         return true;
       }

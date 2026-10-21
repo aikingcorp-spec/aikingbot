@@ -3,6 +3,8 @@
 // verification and the app carries on; the window never leaves this computer.
 import { useRef, useState } from "react";
 import { api, ApiError } from "@/state/store";
+import { useLanguageChoice } from "@/lib/language-preference";
+import { LanguagePicker } from "./LanguagePicker";
 import { at } from "./strings";
 
 type Step = "email" | "code" | "name";
@@ -21,7 +23,8 @@ const reason = (error: unknown): string => {
 };
 
 /** `onSignedIn` receives the verified email and the name the person gave (possibly empty). */
-export function DesktopSignIn({ onSignedIn, startAt = "email", askName = true }: { onSignedIn(email: string, name: string): void | Promise<void>; startAt?: Step; askName?: boolean }) {
+export function DesktopSignIn({ onSignedIn, startAt = "email", askName = true, intro = true }: { onSignedIn(email: string, name: string): void | Promise<void>; startAt?: Step; askName?: boolean; intro?: boolean }) {
+  useLanguageChoice();   // the card is redrawn in the new language the moment the person picks one
   const [step, setStep] = useState<Step>(startAt);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -41,14 +44,15 @@ export function DesktopSignIn({ onSignedIn, startAt = "email", askName = true }:
 
   if (step === "email") return (
     <form onSubmit={(event) => { event.preventDefault(); if (validEmail) void run(async () => { await post("otp", { email: email.trim() }); setCode(""); setStep("code"); }); }} className="flex flex-col items-stretch">
-      <p className="mt-1.5 text-center text-[14px] leading-relaxed text-ink-secondary">{at("welcome.signInIntro")}</p>
+      {intro && <p className="mt-1.5 text-center text-[14px] leading-relaxed text-ink-secondary">{at("welcome.signInIntro")}</p>}
       <input autoFocus type="email" autoComplete="email" aria-label={at("signin.emailLabel")} placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} className={field} data-signin-email />
       {error && <p role="alert" className="mt-3 text-[13px] text-danger">{error}</p>}
       <button type="submit" disabled={busy || !validEmail} className={primary} data-signin-send>{busy ? at("signin.sending") : at("signin.sendCode")}</button>
+      <LanguagePicker />
     </form>
   );
   if (step === "code") return (
-    <form onSubmit={(event) => { event.preventDefault(); if (code.trim().length >= 6) void run(async () => { await post("verify", { email: email.trim(), code: code.trim() }); if (askName) setStep("name"); else await onSignedIn(email.trim().toLowerCase(), ""); }); }} className="flex flex-col items-stretch">
+    <form onSubmit={(event) => { event.preventDefault(); if (code.trim().length >= 6) void run(async () => { await post("verify", { email: email.trim(), code: code.trim() }); window.dispatchEvent(new Event("aiking:account-changed")); if (askName) setStep("name"); else await onSignedIn(email.trim().toLowerCase(), ""); }); }} className="flex flex-col items-stretch">
       <p className="mt-1.5 text-center text-[14px] leading-relaxed text-ink-secondary">{at("signin.codeHint", { email: email.trim() })}</p>
       <input autoFocus inputMode="text" autoComplete="one-time-code" aria-label={at("signin.codeLabel")} placeholder="ABCD-EFGH" value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} className={`${field} text-center font-mono tracking-[0.15em]`} data-signin-code />
       {error && <p role="alert" className="mt-3 text-[13px] text-danger">{error}</p>}

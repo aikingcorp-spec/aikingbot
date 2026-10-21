@@ -1,7 +1,7 @@
 // Copyright (c) 2026 AIKING.
 import { useEffect, useState } from "react";
 import { Card } from "@/components/SettingsPrimitives";
-import { api } from "@/state/store";
+import { api, useStore } from "@/state/store";
 import { DesktopSignIn } from "./DesktopSignIn";
 import { platformEnabled } from "./platform-transport";
 import { at } from "./strings";
@@ -14,6 +14,7 @@ type Identity = { email: string } | null;
  * explains what an account adds and offers the sign-in the first-run screen already offers.
  */
 export function AikingAccountSettings() {
+  const { dispatch } = useStore();
   const hosted = platformEnabled();
   const desktop = !hosted && Boolean(window.ogb?.workspaces?.connectAiking);
   const [identity, setIdentity] = useState<Identity | "loading">("loading");
@@ -35,7 +36,7 @@ export function AikingAccountSettings() {
   const signOut = async () => {
     setBusy(true); setError("");
     try {
-      if (desktop) { await api("/api/aiking/account/logout", { method: "POST", body: "{}" }); setIdentity(null); setBusy(false); return; }
+      if (desktop) { await api("/api/aiking/account/logout", { method: "POST", body: "{}" }); setIdentity(null); setBusy(false); window.dispatchEvent(new Event("aiking:account-changed")); dispatch({ type: "toggleAppSettings", open: false }); return; }
       const response = await fetch("/api/platform/logout", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: "{}" });
       if (!response.ok) throw new Error("logout");
       location.assign("/");

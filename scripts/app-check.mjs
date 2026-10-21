@@ -79,6 +79,12 @@ try {
     // Only the sign-in card counts: the app behind it has words of its own (a banner, the server rail).
     const card = (await page.locator("[data-signin-email]").first().locator("xpath=ancestor::*[self::form or @role='dialog' or self::main][1]").innerText({ timeout: 4000 }).catch(async () => text())).replace(/\s+/g, " ");
     check("the first screen asks for an email, not for a server or an install", /email/i.test(card) && !/install (the )?desktop|remote server|connect to a server/i.test(card), card);
+    check("the first screen lets the person choose the language", await page.locator("[data-language-choice=vi]").count() > 0 && await page.locator("[data-language-choice=en]").count() > 0);
+    // The person picks Vietnamese: the sign-in card, the welcome tour and what comes after follow.
+    await press("[data-language-choice=vi]");
+    await page.waitForFunction(() => /Gửi mã/.test(document.querySelector("[data-signin-send]")?.textContent ?? ""), null, { timeout: 5000 }).catch(() => undefined);
+    check("choosing Tiếng Việt turns the sign-in screen Vietnamese", /Gửi mã/.test(await page.locator("[data-signin-send]").innerText()), await page.locator("[data-signin-send]").innerText());
+    await shot("sign-in-vi");
     await page.fill("[data-signin-email]", "check@example.test"); await press("[data-signin-send]");
     await page.waitForSelector("[data-signin-code]", { timeout: 20_000 });
     await page.fill("[data-signin-code]", CODE); await press("[data-signin-verify]");
@@ -88,7 +94,12 @@ try {
     await page.waitForSelector("[data-workspace-rail]", { timeout: 30_000 });
     check("the person lands in the app on this computer", page.url().startsWith(origin), page.url());
     await wait(1500);
-    const skip = page.getByRole("button", { name: /skip tour/i }); if (await skip.count()) await skip.first().click().catch(() => {});
+    const tour = await text(); await shot("welcome-tour-vi");
+    check("the welcome tour is in Vietnamese", /Mỗi cuộc trò chuyện là một agent thật|Bỏ qua hướng dẫn/.test(tour), tour.slice(-260));
+    const skip = page.getByRole("button", { name: /Bỏ qua hướng dẫn|skip tour/i }); if (await skip.count()) await skip.first().click().catch(() => {});
+    // The rest of the checks read English: switch back the way a person would after a change of mind.
+    await page.evaluate(() => { localStorage.setItem("aiking-language", "en"); window.dispatchEvent(new StorageEvent("storage", { key: "aiking-language", storageArea: localStorage })); });
+    await wait(800);
     await shot("home");
   });
 
@@ -215,6 +226,27 @@ try {
     const account = await probe("/api/aiking/account/status"); check("the app knows it is signed in", account.s === 200 && /"signedIn":true/.test(account.t), account.t);
     const relay = await probe("/api/aiking/relay/status"); check("Remote access is off by default", relay.s === 200 && /"configured":false/.test(relay.t), relay.t);
     check("the page raised no script errors", errors.length === 0, errors.join(" | "));
+  });
+  await step("sign out", async () => {
+    await page.getByRole("button", { name: "Tester", exact: true }).first().click({ timeout: 6000 });
+    await page.getByRole("menuitem", { name: /Settings/ }).first().click({ timeout: 6000 });
+    // Advanced mode (left on by the walk-through) names this page "AIKINGBOT Cloud".
+    const accountPage = page.locator('[role="dialog"]').getByRole("button", { name: /^(Account|AIKINGBOT Cloud)$/ }).first();
+    await accountPage.click({ timeout: 6000 });
+    await page.locator('[role="dialog"]').getByRole("button", { name: "Sign out", exact: true }).first().click({ timeout: 6000 });
+    await page.waitForSelector("[data-account-gate] [data-signin-email]", { timeout: 15_000 });
+    await shot("signed-out");
+    const gate = (await page.locator("[data-account-gate]").innerText()).replace(/\s+/g, " ");
+    check("signing out takes the person back to the sign-in screen", /sign in/i.test(gate), gate);
+    const status = await page.evaluate(async () => (await fetch("/api/aiking/account/status")).json());
+    check("the app no longer has the account", status.signedIn === false, JSON.stringify(status));
+    await page.fill("[data-account-gate] [data-signin-email]", "second@example.test"); await press("[data-account-gate] [data-signin-send]");
+    await page.waitForSelector("[data-account-gate] [data-signin-code]", { timeout: 20_000 });
+    await page.fill("[data-account-gate] [data-signin-code]", CODE); await press("[data-account-gate] [data-signin-verify]");
+    await page.waitForSelector("[data-account-gate]", { state: "detached", timeout: 20_000 });
+    const again = await page.evaluate(async () => (await fetch("/api/aiking/account/status")).json());
+    check("signing in again, with another email, brings the app back", again.signedIn === true && again.email === "second@example.test", JSON.stringify(again));
+    await shot("signed-in-again");
   });
 } catch (error) {
   check("the app could be checked", false, error.message);
