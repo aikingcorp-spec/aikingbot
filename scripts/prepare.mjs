@@ -55,7 +55,8 @@ export async function embed() {
   writeFileSync(join(licenseRoot, "inventory.json"), JSON.stringify(inventory, null, 2));
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
+// Compared as file URLs: on Windows a path (D:\a\x) never equals a URL pathname (/D:/a/x), and the script would quietly do nothing.
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   if (!process.argv.includes("--embed")) install();
   await embed();
 }

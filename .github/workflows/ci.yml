@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - uses: oven-sh/setup-bun@v2
+      # The installer step asks for pnpm by name, so it has to be on the PATH.
+      - run: npm install --global pnpm@10.33.0
       - run: node scripts/prepare.mjs
       - name: Core
         run: |
