@@ -52,6 +52,9 @@ const local = createServer((req, res) => {
   req.on("end", () => {
     const body = Buffer.concat(chunks);
     seen.push({ method: req.method, url: req.url, headers: req.headers, bytes: body.length });
+    if (req.url === "/write") { if (req.headers["x-test-owner"] !== "desktop-secret") { res.statusCode = 403; res.setHeader("content-type", "application/json"); return res.end(JSON.stringify({ error: "forbidden: this change must come from the desktop app or a paired device" })); } res.setHeader("content-type", "application/json"); return res.end(JSON.stringify({ changed: true, bytes: body.length })); }
+    if (req.url === "/bigjson") { const text = JSON.stringify({ bots: Array.from({ length: 400 }, (_, n) => ({ id: n, name: `agent ${n}`, soul: "word ".repeat(30) })) }); res.setHeader("content-type", "application/json"); res.setHeader("content-length", Buffer.byteLength(text)); return res.end(text); }
+    if (req.url === "/smalljson") { res.setHeader("content-type", "application/json"); return res.end('{"a":1}'); }
     if (req.url.startsWith("/api/bots")) { res.setHeader("content-type", "text/plain"); return res.end(req.url); }
     if (req.url === "/hello") { res.setHeader("content-type", "text/plain"); return res.end("hello from the computer"); }
     if (req.url === "/headers") { res.setHeader("content-type", "application/json"); return res.end(JSON.stringify(req.headers)); }
@@ -99,7 +102,7 @@ const enroll = async (cookie, name = "Máy của Lan") => {
   const code = (await (await api("/__relay/api/hosts/code", { method: "POST", headers: { cookie } })).json()).code;
   return { code, ...(await enrollWithRelay(relayUrl, code, name)) };
 };
-const connect = (host) => startRelayConnector({ relayUrl, hostId: host.hostId, token: host.token, target: { host: "127.0.0.1", port: localPort }, log: () => undefined, pingMs: 500, silenceMs: 5000 });
+const connect = (host) => startRelayConnector({ relayUrl, hostId: host.hostId, token: host.token, target: { host: "127.0.0.1", port: localPort }, log: () => undefined, ownerHeader: () => ({ name: "x-test-owner", value: "desktop-secret" }), pingMs: 500, silenceMs: 5000 });
 const until = async (condition, ms = 8000) => { const end = Date.now() + ms; while (Date.now() < end) { if (await condition()) return; await new Promise((r) => setTimeout(r, 50)); } throw new Error("timed out"); };
 
 let lan, lanHost, lanCookie, connector;
@@ -244,6 +247,32 @@ await check("the first page of data over the relay is lighter: the latest 40 mes
   assert.equal(await (await web("/api/bots?messages=30&x=1")).text(), "/api/bots?messages=30&x=1");
   assert.equal(await (await web("/api/bots")).text(), "/api/bots");
   assert.equal(await (await web("/api/bots/abc/tasks/t1?messages=200")).text(), "/api/bots/abc/tasks/t1?messages=200");
+});
+await check("a change made on the web reaches the computer as the owner's own (the desktop owner header), and only from the relay's marked owner", async () => {
+  const done = await web("/write", { method: "POST", body: "hi", headers: { origin: relayUrl } });
+  assert.equal(done.status, 200); assert.equal((await done.json()).changed, true);
+  // a browser cannot give itself the mark: the relay sets x-relay-owner from the sign-in, and the connector reads it
+  const seenByLocal = seen.filter((entry) => entry.url === "/write").at(-1);
+  assert.equal(seenByLocal.headers["x-test-owner"], "desktop-secret"); assert.equal(seenByLocal.headers["x-relay-owner"], undefined);
+  // a browser that sends the header itself gets nothing extra: the relay decides who is the owner
+  const forged = await web("/write", { method: "POST", body: "hi", headers: { origin: relayUrl, "x-test-owner": "desktop-secret" } });
+  assert.equal(forged.status, 200);   // the connector's own header replaces whatever the browser sent, so a forged value never decides anything
+});
+await check("a big JSON answer is compressed on the computer, passed on intact, and small or already-encoded answers are left alone", async () => {
+  const asBrowser = (path, encoding) => new Promise((resolve, reject) => {
+    const request = httpRequest(`${relayUrl}${path}`, { headers: { cookie: `${lanCookie}; rl_host=${lanHost.hostId}`, "accept-encoding": encoding } }, (response) => {
+      const chunks = []; response.on("data", (chunk) => chunks.push(chunk)); response.on("end", () => resolve({ status: response.statusCode, headers: response.headers, body: Buffer.concat(chunks) }));
+    }); request.on("error", reject); request.end();
+  });
+  const plain = await asBrowser("/bigjson", "identity");
+  assert.equal(plain.headers["content-encoding"], undefined, "identity request: " + plain.headers["content-encoding"]); assert.ok(plain.body.length > 50_000, "plain size " + plain.body.length);
+  const gz = await asBrowser("/bigjson", "gzip, deflate");
+  assert.equal(gz.headers["content-encoding"], "gzip", "gzip request: " + gz.headers["content-encoding"]); assert.ok(gz.body.length < plain.body.length / 5, `${gz.body.length} vs ${plain.body.length}`);
+  assert.equal(gunzipSync(gz.body).toString(), plain.body.toString());
+  assert.match(String(gz.headers.vary), /accept-encoding/i);
+  const small = await asBrowser("/smalljson", "gzip");
+  // A small answer is left as it is by the connector; Cloudflare's own edge may still compress it, so only the content is checked.
+  assert.equal((small.headers["content-encoding"] === "gzip" ? gunzipSync(small.body) : small.body).toString(), '{"a":1}');
 });
 await check("the local server sees itself as the origin, and never sees the relay's cookies", async () => {
   const headers = await (await web("/headers", { headers: { origin: relayUrl, referer: `${relayUrl}/x`, "x-forwarded-for": "1.2.3.4", "x-forwarded-proto": "https", via: "1.1 x", cookie: `${lanCookie}; rl_host=${lanHost.hostId}; theme=dark` } })).json();

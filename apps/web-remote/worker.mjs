@@ -455,7 +455,7 @@ export class Host {
     const arm = () => { clearTimeout(entry.timer); entry.timer = setTimeout(() => this.finish(id, new Error("timeout")), REQUEST_TIMEOUT_MS); };
     entry.arm = arm; arm();
     this.pending.set(id, entry);
-    try { host.send(JSON.stringify({ t: "req", id, method: request.method, path, headers })); } catch { this.pending.delete(id); return offline(); }
+    try { host.send(JSON.stringify({ t: "req", id, method: request.method, path, headers, owner: true })); } catch { this.pending.delete(id); return offline(); }
     void this.pump(host, id, request);
     try {
       const head = await responded;
@@ -467,7 +467,8 @@ export class Host {
         else if (name.toLowerCase() === "set-cookie") for (const one of [].concat(value)) out.append("set-cookie", one.replace(/;\s*Domain=[^;]*/i, ""));
         else out.set(name, [].concat(value).join(", "));
       }
-      return new Response(head.status === 204 || head.status === 304 ? null : head.body ?? readable, { status: head.status, headers: out });
+      // "manual": an answer the computer compressed is passed on as it is (the runtime would otherwise compress it again for its header).
+      return new Response(head.status === 204 || head.status === 304 ? null : head.body ?? readable, { status: head.status, headers: out, encodeBody: "manual" });
     } catch (error) {
       this.pending.delete(id);
       // Which request the computer left unanswered and for how long: what a person (or whoever helps) needs to find the cause.
@@ -511,7 +512,7 @@ export class Host {
     server.binaryType = "arraybuffer"; // newer compatibility dates default to Blob, which cannot be read synchronously
     this.browserSockets.set(id, { server, opened: false, sid: sidOf(host) });
     const protocols = (request.headers.get("sec-websocket-protocol") ?? "").split(",").map((part) => part.trim()).filter(Boolean);
-    try { host.send(JSON.stringify({ t: "wopen", id, path, headers, protocols })); } catch { return offline(); }
+    try { host.send(JSON.stringify({ t: "wopen", id, path, headers, protocols, owner: true })); } catch { return offline(); }
     server.addEventListener("message", async (event) => {
       const target = this.hostSocket();
       if (!target) return server.close(1011, "computer_offline");

@@ -2,6 +2,7 @@
 // Connects this computer OUT to the AIKINGBOT web relay so its owner can use it from a browser. The relay passes the
 // browser's requests here as frames; this module replays them against the server on this machine (loopback only) and
 // sends the answers back. Nothing is opened to the network and nothing is stored by the relay.
+import { createGzip } from "node:zlib";
 import { request as httpRequest, type IncomingMessage, type ClientRequest } from "node:http";
 
 export type RelayState = "off" | "connecting" | "online";
@@ -15,6 +16,12 @@ export type RelayConnectorOptions = {
   webSocket?: typeof WebSocket;
   /** Added to every replayed request and socket, so the server can tell relayed requests from local ones. */
   markHeader?: { name: string; value: string };
+  /**
+   * What lets a request the relay brings in count as the owner's own: the desktop app's owner header. It is added only to
+   * requests the relay marked as coming from the signed-in owner (x-relay-owner), and read at each request because the app
+   * receives its token after the server has started. Without it every change a person makes on the web is refused.
+   */
+  ownerHeader?: () => { name: string; value: string } | null;
   pingMs?: number;
   silenceMs?: number;
 };
@@ -28,6 +35,16 @@ const SAFE_PATH = /^\/(?!\/)[^\r\n\u0000]*$/;
 // The server treats a request carrying these as one that came through a proxy and refuses it local trust. The relay has already
 // authenticated the person, so the request is replayed as the local one it is.
 const PROXY_HEADERS = /^(x-forwarded-|forwarded$|x-real-ip$|via$|cf-|x-relay-)/;
+const COMPRESSIBLE_TYPE = /^(?:application\/(?:json|javascript|xml)|text\/(?!event-stream)|image\/svg\+xml)/i;
+const COMPRESS_MIN_BYTES = 4096;
+/** Whether the relay marked this request as coming from the signed-in owner: it sets `owner` itself, after it checked the sign-in, and a browser cannot. */
+const fromOwner = (frame: Frame) => frame.owner === true;
+function worthCompressing(method: string, response: IncomingMessage): boolean {
+  if (method === "HEAD" || response.statusCode !== 200 || response.headers["content-encoding"]) return false;
+  if (/no-transform/i.test(String(response.headers["cache-control"] ?? ""))) return false;
+  const length = Number(response.headers["content-length"]);
+  return Number.isFinite(length) && length >= COMPRESS_MIN_BYTES && COMPRESSIBLE_TYPE.test(String(response.headers["content-type"] ?? ""));
+}
 const FORWARD_SOCKET_HEADERS = new Set(["cookie", "user-agent", "accept-language", "authorization", "x-forwarded-for"]);
 
 type Frame = { t: string; id?: string; [key: string]: unknown };
@@ -131,21 +148,33 @@ export function startRelayConnector(options: RelayConnectorOptions): RelayConnec
     }
     headers.host = `${options.target.host}:${options.target.port}`;
     if (options.markHeader) headers[options.markHeader.name] = options.markHeader.value;
+    const owner = fromOwner(frame) ? options.ownerHeader?.() : null;
+    if (owner) headers[owner.name] = owner.value;
+    const acceptsGzip = /\bgzip\b/i.test(String((frame.headers as Record<string, unknown> | undefined)?.["accept-encoding"] ?? ""));
     const outgoing = httpRequest({ host: options.target.host, port: options.target.port, method, path, headers }, (response: IncomingMessage) => {
       const answer: Record<string, string | string[]> = {};
       for (const [name, value] of Object.entries(response.headers)) if (value !== undefined) answer[name] = value;
+      // A big answer of known length that is text goes up the person's (slow) upload line compressed: the sign-in screen's first
+      // data is 2.5 MB of JSON. Streams (no length, event streams) are left alone so nothing waits for a buffer to fill.
+      const compress = acceptsGzip && worthCompressing(method, response);
+      if (compress) {
+        delete answer["content-length"]; answer["content-encoding"] = "gzip";
+        answer.vary = [String(answer.vary ?? ""), "accept-encoding"].filter(Boolean).join(", ");
+      }
       send({ t: "res", id, status: response.statusCode ?? 502, headers: answer });
       let sent = 0;
-      response.on("data", (chunk: Buffer) => {
+      const source: NodeJS.ReadableStream = compress ? response.pipe(createGzip({ level: 6 })) : response;
+      source.on("data", (chunk: Buffer) => {
         sent += chunk.length;
         for (let i = 0; i < chunk.length; i += CHUNK_BYTES) send({ t: "data", id, b: chunk.subarray(i, i + CHUNK_BYTES).toString("base64") });
         if (socket && socket.bufferedAmount > BACKPRESSURE_BYTES) {
-          response.pause();
-          const timer = setInterval(() => { if (!socket || socket.bufferedAmount < BACKPRESSURE_BYTES / 2) { clearInterval(timer); response.resume(); } }, 50);
+          source.pause();
+          const timer = setInterval(() => { if (!socket || socket.bufferedAmount < BACKPRESSURE_BYTES / 2) { clearInterval(timer); source.resume(); } }, 50);
         }
       });
-      response.on("end", () => { requests.delete(id); send({ t: "end", id, n: sent }); });
-      response.on("error", () => { requests.delete(id); send({ t: "err", id, message: "response_error" }); });
+      source.on("end", () => { requests.delete(id); send({ t: "end", id, n: sent }); });
+      source.on("error", () => { requests.delete(id); send({ t: "err", id, message: "response_error" }); });
+      if (compress) response.on("error", () => { requests.delete(id); send({ t: "err", id, message: "response_error" }); });
     });
     outgoing.on("error", (error) => { requests.delete(id); send({ t: "err", id, message: (error as NodeJS.ErrnoException).code ?? "request_error" }); });
     requests.set(id, outgoing);
@@ -159,6 +188,8 @@ export function startRelayConnector(options: RelayConnectorOptions): RelayConnec
       if (typeof value === "string" && !/[\r\n]/.test(value) && FORWARD_SOCKET_HEADERS.has(name.toLowerCase())) headers[name.toLowerCase()] = value;
     }
     if (options.markHeader) headers[options.markHeader.name] = options.markHeader.value;
+    const socketOwner = fromOwner(frame) ? options.ownerHeader?.() : null;
+    if (socketOwner) headers[socketOwner.name] = socketOwner.value;
     const protocols = Array.isArray(frame.protocols) ? (frame.protocols as unknown[]).filter((value): value is string => typeof value === "string" && /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/.test(value)) : [];
     let peer: WebSocket;
     try { peer = new WS(`ws://${options.target.host}:${options.target.port}${path}`, { protocols, headers } as never) as WebSocket; }

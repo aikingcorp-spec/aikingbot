@@ -345,7 +345,7 @@ export interface ResolveOptions {
 const CLI_OWNER_HEADER = "x-aikingbot-cli-owner";
 const CLI_OWNER_ROUTE = /^\/api\/auth\/pairing$/;
 
-const DESKTOP_OWNER_HEADER = "x-aikingbot-desktop-owner";
+export const DESKTOP_OWNER_HEADER = "x-aikingbot-desktop-owner";
 
 function mutatingPublicRoute(method: string, path: string): boolean {
   const upper = method.toUpperCase();

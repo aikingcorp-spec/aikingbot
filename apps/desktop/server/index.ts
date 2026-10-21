@@ -518,6 +518,7 @@ import { allowedScopes, createEmailSignIn, parseAllowList } from "./account-sign
 import { ProviderAuthSessions } from "./provider-auth-sessions.ts";
 import {
   clearSessionCookie,
+  DESKTOP_OWNER_HEADER,
   isLoopbackHost,
   isProxied,
   labelFromUserAgent,
@@ -14529,7 +14530,7 @@ sessions.onSessionRevoked(owner => realtimeVoice.revokeOwner(owner));
 // The link to the web relay starts with the server (when this computer was connected) and retries until the relay answers.
 // Signing in on the desktop happens inside the app (email + one-time code), so the window never leaves this computer.
 const desktopAccount = DESKTOP_MANAGED ? createDesktopAccount({ file: join(DATA_DIR, "aiking", "account.json"), log: line => console.log(`account: ${line}`) }) : null;
-const webRelay = createRelay({ file: join(DATA_DIR, "aiking", "relay.json"), port: PORT, accountToken: () => desktopAccount?.token() ?? null, log: line => console.log(`web relay: ${line}`) });
+const webRelay = createRelay({ file: join(DATA_DIR, "aiking", "relay.json"), port: PORT, accountToken: () => desktopAccount?.token() ?? null, ownerHeader: () => desktopMutationToken ? { name: DESKTOP_OWNER_HEADER, value: desktopMutationToken } : null, log: line => console.log(`web relay: ${line}`) });
 const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
   let url: URL;
   try {

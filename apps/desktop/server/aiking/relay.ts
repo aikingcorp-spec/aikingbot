@@ -25,6 +25,8 @@ export type RelayOptions = {
   enrollAccount?: typeof enrollWithAccount;
   leave?: typeof leaveRelay;
   connect?: (options: RelayConnectorOptions) => RelayConnector;
+  /** The owner header of this desktop app, for requests the relay brings in for the signed-in owner. */
+  ownerHeader?: RelayConnectorOptions["ownerHeader"];
 };
 
 const MESSAGES: Record<string, [number, string]> = {
@@ -62,7 +64,7 @@ export function createRelay(options: RelayOptions) {
   function start() {
     connector?.stop(); connector = null;
     if (!saved) return;
-    connector = connect({ relayUrl: saved.relayUrl, hostId: saved.hostId, token: saved.token, target: { host: "127.0.0.1", port: options.port }, log, markHeader: { name: RELAYED_HEADER, value: nonce } });
+    connector = connect({ relayUrl: saved.relayUrl, hostId: saved.hostId, token: saved.token, target: { host: "127.0.0.1", port: options.port }, log, markHeader: { name: RELAYED_HEADER, value: nonce }, ownerHeader: options.ownerHeader });
   }
   const status = (): RelayStatus => ({ configured: Boolean(saved), state: connector?.state() ?? "off", ...(saved?.name ? { name: saved.name } : {}), relayUrl: saved?.relayUrl ?? relayUrl, canJoinWithAccount: Boolean(options.accountToken?.()) });
 

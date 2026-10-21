@@ -27,6 +27,13 @@ async function call(relay: ReturnType<typeof createRelay>, method: string, path:
 }
 
 describe("the web connection", () => {
+  it("hands the owner header on to the connector, so changes made on the web are the owner's own", () => {
+    const seen: Array<unknown> = [];
+    const ownerHeader = () => ({ name: "x-owner", value: "token" });
+    const relay = createRelay({ file: join(temp(), "relay.json"), port: 1, ownerHeader, connect: (options) => { seen.push(options.ownerHeader); return { state: () => "online", stop: () => undefined } as never; },
+      enroll: async () => ({ hostId: "h", token: "t", name: "n" }) });
+    return relay.enrollWith("ABCD-EFGH", "n").then(() => { expect(seen.at(-1)).toBe(ownerHeader); relay.stop(); });
+  });
   it("is off until a code is entered, and ignores other paths", async () => {
     const f = fixture(); const relay = f.make();
     expect(relay.status()).toEqual({ configured: false, state: "off", relayUrl: DEFAULT_RELAY_URL, canJoinWithAccount: false });
