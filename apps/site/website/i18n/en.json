@@ -159,7 +159,7 @@
       },
       {
         "q": "Can a bot run dangerous commands on its own?",
-        "a": "No. Tools with side effects need your approval, and dangerous tools are refused unless you explicitly allow them. The web only controls the computers of your own email account and cannot manage the computer's connection; you can turn Remote access off at any time. Voice never approves a tool."
+        "a": "By default an agent works on your computer without asking each time (Full access), like an assistant you trust. You can switch any agent to \"Ask me first\" or \"Decide for me\" in the agent's settings: then tools with side effects need your approval and dangerous tools are refused unless you explicitly allow them. The web only controls the computers of your own email account and cannot manage the computer's connection; you can turn Remote access off at any time. Voice never approves a tool."
       },
       {
         "q": "What are the beta limitations?",

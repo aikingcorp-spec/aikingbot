@@ -159,7 +159,7 @@
       },
       {
         "q": "Bot có tự ý chạy lệnh nguy hiểm không?",
-        "a": "Không. Công cụ có tác động cần bạn phê duyệt, công cụ nguy hiểm bị từ chối trừ khi bạn cho phép rõ ràng. Web chỉ điều khiển máy của đúng tài khoản email của bạn và không quản lý được kết nối của máy; bạn có thể tắt Truy cập từ xa bất cứ lúc nào. Giọng nói không bao giờ tự phê duyệt công cụ."
+        "a": "Mặc định agent làm việc luôn không hỏi lại (Full access) trên máy của bạn, giống như một trợ lý bạn tin tưởng. Bạn có thể chuyển từng agent sang \"Hỏi trước\" hoặc \"Tự quyết\" trong cài đặt của agent: khi đó công cụ có tác động cần bạn phê duyệt, công cụ nguy hiểm bị từ chối trừ khi bạn cho phép rõ ràng. Web chỉ điều khiển máy của đúng tài khoản email của bạn và không quản lý được kết nối của máy; bạn có thể tắt Truy cập từ xa bất cứ lúc nào. Giọng nói không bao giờ tự phê duyệt công cụ."
       },
       {
         "q": "Bản beta còn những giới hạn gì?",
