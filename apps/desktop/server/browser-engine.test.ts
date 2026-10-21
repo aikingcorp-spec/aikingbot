@@ -879,6 +879,8 @@ describe("what a bot gets", () => {
       const launch = agentBrowserIntegration({ binaryPath: "C:\app\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", env });
       expect(launch.env).toMatchObject({ AGENT_BROWSER_HEADED: "1", AGENT_BROWSER_ARGS: "--disable-blink-features=AutomationControlled", AGENT_BROWSER_EXECUTABLE_PATH: edge });
       expect(launch.env.AGENT_BROWSER_HEADLESS).toBeUndefined();
+      // Chrome reports a 1280×720 page while its window is smaller (and Windows scales it); the server sets the page size.
+      expect(ownsBrowserViewport(launch.env)).toBe(true);
       expect(agentBrowserIntegration({ binaryPath: "C:\app\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", headless: true, env }).env).toMatchObject({ AGENT_BROWSER_HEADLESS: "1", AGENT_BROWSER_HEADED: "0" });
       expect(JSON.parse(managedBrowserLaunch(env, "win32"))).toEqual({ headed: true, args: "--disable-blink-features=AutomationControlled", executablePath: edge });
     } finally { removeTempDir(root); }

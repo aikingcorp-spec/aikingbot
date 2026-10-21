@@ -588,6 +588,8 @@ export function agentBrowserIntegration(input: {
       // installed on the machine runs headed instead, without the automation flag.
       env.AGENT_BROWSER_HEADED = "1";
       env.AGENT_BROWSER_ARGS = VIRTUAL_DISPLAY_ARGS;
+      // The window is the person's own Chrome window: the page size is the server's to set, or the live view's clicks drift.
+      env.AIKING_BROWSER_OWNS_VIEWPORT = "1";
       env.AGENT_BROWSER_EXECUTABLE_PATH = sourceEnv.AGENT_BROWSER_EXECUTABLE_PATH?.trim() || windowsHeadedBrowser(sourceEnv, input.platform)!;
     } else if (input.headless !== false || displayless) {
       env.AGENT_BROWSER_HEADLESS = "1";

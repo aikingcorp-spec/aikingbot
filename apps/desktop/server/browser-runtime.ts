@@ -46,8 +46,10 @@ export function attachesToChrome(env: NodeJS.ProcessEnv): boolean {
   return Boolean(env.AGENT_BROWSER_CDP || env.AGENT_BROWSER_AUTO_CONNECT);
 }
 
+/** A headed Chrome without a page size of its own (the one installed on Windows) reports 1280×720 while its page is the
+ * window minus the toolbar, so the live view's clicks land too far right and down: the page size has to be set here too. */
 export function ownsBrowserViewport(env: NodeJS.ProcessEnv): boolean {
-  return (env.AGENT_BROWSER_HEADLESS === "1" || (env.AGENT_BROWSER_HEADED === "1" && env.AIKING_BROWSER_VIRTUAL_DISPLAY === "1")) && !attachesToChrome(env);
+  return (env.AGENT_BROWSER_HEADLESS === "1" || (env.AGENT_BROWSER_HEADED === "1" && (env.AIKING_BROWSER_VIRTUAL_DISPLAY === "1" || env.AIKING_BROWSER_OWNS_VIEWPORT === "1"))) && !attachesToChrome(env);
 }
 
 export class TransportError extends Error {}

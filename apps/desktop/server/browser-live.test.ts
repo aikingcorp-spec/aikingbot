@@ -106,6 +106,10 @@ describe("browser viewer protocol boundary", () => {
     expect(normalizeBrowserLiveMessage({ type: "tabs", tabs: [{ tabId: "t1", title: "Page", url: "https://user:secret@example.com/", active: true, targetId: "private" }] })).toEqual({ type: "tabs", tabs: [{ tabId: "t1", title: "Page", url: "https://example.com/", active: true }] });
     expect(normalizeBrowserLiveMessage({ type: "status", connected: true, engine: "private" })).not.toHaveProperty("engine");
   });
+  it("keeps a frame whose size is fractional, as Chrome reports it on a scaled screen", () => {
+    const kept = normalizeBrowserLiveMessage({ ...frame, metadata: { ...frame.metadata, deviceWidth: 1282.4, deviceHeight: 715.2 } });
+    expect(kept).toMatchObject({ type: "frame", metadata: { deviceWidth: 1282.4, deviceHeight: 715.2 } });
+  });
   it("rejects corrupt, oversized and non-image frames", () => {
     for (const patch of [{ seq: -1 }, { seq: 1.5 }, { data: "<script>" }, { data: "/9j/" + "A".repeat(3 * 1024 * 1024) }, { metadata: { deviceWidth: 100000, deviceHeight: 100000 } }]) {
       expect(normalizeBrowserLiveMessage({ ...frame, ...patch })).toBeNull();

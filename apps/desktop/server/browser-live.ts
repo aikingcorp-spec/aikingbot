@@ -112,7 +112,8 @@ export function normalizeBrowserLiveMessage(value: unknown): ObjectValue | null 
       || !text(message.data, MAX_FRAME) || !/^(?:\/9j\/|iVBORw0KGgo)/.test(message.data)
       || !/^[A-Za-z0-9+/]*={0,2}$/.test(message.data)) return null;
   const meta = object(message.metadata);
-  if (!meta || !integer(meta.deviceWidth, 1, 8192) || !integer(meta.deviceHeight, 1, 8192)
+  // Chrome reports fractional sizes when the screen is scaled (1282.4 at 125%): they are valid, not a damaged frame.
+  if (!meta || !number(meta.deviceWidth, 1, 8192) || !number(meta.deviceHeight, 1, 8192)
       || meta.deviceWidth * meta.deviceHeight > 16_777_216) return null;
   return { type: "frame", seq: message.seq, data: message.data, format: message.data.startsWith("/9j/") ? "jpeg" : "png",
     metadata: { deviceWidth: meta.deviceWidth, deviceHeight: meta.deviceHeight,
