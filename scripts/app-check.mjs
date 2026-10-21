@@ -76,7 +76,9 @@ try {
   await step("first run", async () => {
     await page.waitForSelector("[data-signin-email]", { timeout: 90_000 });
     await shot("sign-in");
-    check("the first screen asks for an email, not for a server or an install", /email/i.test(await text()) && !/install|remote server|connect.*server/i.test(await text()), await text());
+    // Only the sign-in card counts: the app behind it has words of its own (a banner, the server rail).
+    const card = (await page.locator("[data-signin-email]").first().locator("xpath=ancestor::*[self::form or @role='dialog' or self::main][1]").innerText({ timeout: 4000 }).catch(async () => text())).replace(/\s+/g, " ");
+    check("the first screen asks for an email, not for a server or an install", /email/i.test(card) && !/install (the )?desktop|remote server|connect to a server/i.test(card), card);
     await page.fill("[data-signin-email]", "check@example.test"); await press("[data-signin-send]");
     await page.waitForSelector("[data-signin-code]", { timeout: 20_000 });
     await page.fill("[data-signin-code]", CODE); await press("[data-signin-verify]");
