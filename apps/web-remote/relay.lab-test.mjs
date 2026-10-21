@@ -52,6 +52,7 @@ const local = createServer((req, res) => {
   req.on("end", () => {
     const body = Buffer.concat(chunks);
     seen.push({ method: req.method, url: req.url, headers: req.headers, bytes: body.length });
+    if (req.url.startsWith("/api/bots")) { res.setHeader("content-type", "text/plain"); return res.end(req.url); }
     if (req.url === "/hello") { res.setHeader("content-type", "text/plain"); return res.end("hello from the computer"); }
     if (req.url === "/headers") { res.setHeader("content-type", "application/json"); return res.end(JSON.stringify(req.headers)); }
     if (req.url === "/echo") { res.setHeader("content-type", "application/octet-stream"); return res.end(body); }
@@ -237,6 +238,12 @@ await check("a write from another site is refused before it reaches the computer
   assert.equal(own.status, 200); assert.equal(await own.text(), "x");
   const read = await web("/hello", { headers: { origin: "https://evil.example" } });
   assert.equal(read.status, 200);
+});
+await check("the first page of data over the relay is lighter: the latest 40 messages, not 200; other asks are left alone", async () => {
+  assert.equal(await (await web("/api/bots?messages=200")).text(), "/api/bots?messages=40");
+  assert.equal(await (await web("/api/bots?messages=30&x=1")).text(), "/api/bots?messages=30&x=1");
+  assert.equal(await (await web("/api/bots")).text(), "/api/bots");
+  assert.equal(await (await web("/api/bots/abc/tasks/t1?messages=200")).text(), "/api/bots/abc/tasks/t1?messages=200");
 });
 await check("the local server sees itself as the origin, and never sees the relay's cookies", async () => {
   const headers = await (await web("/headers", { headers: { origin: relayUrl, referer: `${relayUrl}/x`, "x-forwarded-for": "1.2.3.4", "x-forwarded-proto": "https", via: "1.1 x", cookie: `${lanCookie}; rl_host=${lanHost.hostId}; theme=dark` } })).json();

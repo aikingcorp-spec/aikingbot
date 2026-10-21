@@ -118,6 +118,22 @@ async function staticAsset(request, env, url) {
   return null;
 }
 
+// ---------- the first page of data ----------
+// Opening the web app asks the computer for the latest 200 messages of every agent in one answer (2.5 MB for 18 agents, sent
+// uncompressed over the person's upload line). Over the relay the first answer carries the latest 40; the answer says which
+// agents have older messages, and the app loads those when asked, as it does for any long conversation.
+const FIRST_PAGE_MESSAGES = 40;
+function searchFor(url, method) {
+  if (method === "GET" && url.pathname === "/api/bots") {
+    const wanted = Number(url.searchParams.get("messages"));
+    if (Number.isFinite(wanted) && wanted > FIRST_PAGE_MESSAGES) {
+      const next = new URLSearchParams(url.searchParams); next.set("messages", String(FIRST_PAGE_MESSAGES));
+      return `?${next.toString()}`;
+    }
+  }
+  return url.search;
+}
+
 // ---------- the Worker ----------
 export default {
   async fetch(request, env) {
@@ -152,7 +168,7 @@ export default {
     if (!host) return request.method === "GET" && acceptsHtml(request) ? Response.redirect(`${url.origin}/__relay/`, 302) : fail(409, "choose_a_computer");
     const headers = new Headers(request.headers);
     headers.set("x-relay-owner", session.u);
-    const answer = await stub(env.HOST, host.id).fetch(new Request(`https://do/proxy${url.pathname}${url.search}`, { method: request.method, headers, body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body, duplex: "half", redirect: "manual" }));
+    const answer = await stub(env.HOST, host.id).fetch(new Request(`https://do/proxy${url.pathname}${searchFor(url, request.method)}`, { method: request.method, headers, body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body, duplex: "half", redirect: "manual" }));
     if (answer.headers.get("x-relay-offline") && request.method === "GET" && acceptsHtml(request)) {
       return new Response(OFFLINE_PAGE.replace("{{name}}", escapeHtml(host.name)), { status: 503, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "retry-after": "5" } });
     }
@@ -433,7 +449,7 @@ export class Host {
       write: (bytes) => { try { controller.enqueue(bytes); } catch { /* browser went away */ } },
       close: () => { try { controller.close(); } catch { /* already ended */ } },
       abort: (error) => { try { controller.error(error); } catch { /* already ended */ } },
-      headersReady: null, timer: null, done: false, sid: sidOf(host), received: 0,
+      headersReady: null, timer: null, done: false, sid: sidOf(host), received: 0, startedAt: Date.now(),
     };
     const responded = new Promise((resolve, reject) => { entry.headersReady = { resolve, reject }; });
     const arm = () => { clearTimeout(entry.timer); entry.timer = setTimeout(() => this.finish(id, new Error("timeout")), REQUEST_TIMEOUT_MS); };
@@ -454,7 +470,9 @@ export class Host {
       return new Response(head.status === 204 || head.status === 304 ? null : head.body ?? readable, { status: head.status, headers: out });
     } catch (error) {
       this.pending.delete(id);
-      return fail(error?.message === "timeout" ? 504 : 502, error?.message === "timeout" ? "computer_timeout" : "computer_error");
+      // Which request the computer left unanswered and for how long: what a person (or whoever helps) needs to find the cause.
+      const where = { request: `${request.method} ${path.split("?")[0].slice(0, 80)}`, waitedSeconds: Math.round((Date.now() - entry.startedAt) / 1000) };
+      return error?.message === "timeout" ? fail(504, "computer_timeout", where) : fail(502, "computer_error", where);
     }
   }
 
