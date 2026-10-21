@@ -103,7 +103,11 @@ export default {
     }
     if (url.pathname.startsWith("/__relay/")) return relayPages(request, env, url);
 
-    // Everything else belongs to the person's chosen computer.
+    // Everything else belongs to the person's chosen computer. The connector on that computer rewrites the origin to its own
+    // address, so a request from another site has to be refused here, before it is passed on.
+    const callerOrigin = request.headers.get("origin");
+    if (callerOrigin && callerOrigin !== url.origin && !["GET", "HEAD"].includes(request.method)) return fail(403, "bad_origin");
+    if (callerOrigin && callerOrigin !== url.origin && (request.headers.get("upgrade") ?? "").toLowerCase() === "websocket") return fail(403, "bad_origin");
     const session = await readSession(env, request);
     if (!session) return request.method === "GET" && acceptsHtml(request) ? Response.redirect(`${url.origin}/__relay/`, 302) : fail(401, "sign_in_required");
     const state = await userState(env, session);

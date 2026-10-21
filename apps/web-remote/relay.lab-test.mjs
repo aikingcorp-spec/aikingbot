@@ -187,6 +187,14 @@ await check("a signed-in browser reaches the computer's own server", async () =>
   const response = await web("/hello");
   assert.equal(response.status, 200); assert.equal(await response.text(), "hello from the computer");
 });
+await check("a write from another site is refused before it reaches the computer; the web app's own writes go through", async () => {
+  const foreign = await web("/echo", { method: "POST", body: "x", headers: { origin: "https://evil.example" } });
+  assert.equal(foreign.status, 403); assert.equal((await foreign.json()).error, "bad_origin");
+  const own = await web("/echo", { method: "POST", body: "x", headers: { origin: relayUrl } });
+  assert.equal(own.status, 200); assert.equal(await own.text(), "x");
+  const read = await web("/hello", { headers: { origin: "https://evil.example" } });
+  assert.equal(read.status, 200);
+});
 await check("the local server sees itself as the origin, and never sees the relay's cookies", async () => {
   const headers = await (await web("/headers", { headers: { origin: relayUrl, referer: `${relayUrl}/x`, "x-forwarded-for": "1.2.3.4", "x-forwarded-proto": "https", via: "1.1 x", cookie: `${lanCookie}; rl_host=${lanHost.hostId}; theme=dark` } })).json();
   assert.equal(headers.origin, `http://127.0.0.1:${localPort}`);
