@@ -22,7 +22,7 @@ if (!account) {
 }
 const root = fileURLToPath(new URL("../", import.meta.url));
 const cf = cloudflare({ token, account });
-const say = (ok, text) => console.log(`${ok ? "OK   " : "STOP "} ${text}`);
+const say = (ok, text) => { console.log(`${ok ? "OK   " : "STOP "} ${text}`); return ok; };
 const stop = (text) => { say(false, text); process.exit(1); };
 
 // 1. Everything the deploy needs, checked before anything is changed.
@@ -32,7 +32,7 @@ if (!zone) stop(`${domain} is not in this Cloudflare account yet. Add it, point 
 if (zone.status !== "active") stop(`${zone.name} is "${zone.status}", not active. The name servers are not pointing at Cloudflare yet.`);
 say(true, `${zone.name} is active in this Cloudflare account`);
 const scripts = (await cf.api(`/accounts/${account}/workers/scripts`)).map((script) => script.id);
-for (const needed of ["aikingbot-relay", "aikingbot-site", "aikingbot-auth-staging"]) say(scripts.includes(needed), `the Worker ${needed} exists`) || (process.exitCode = 1);
+for (const needed of ["aikingbot-relay", "aikingbot-site", "aikingbot-auth-staging"]) if (!say(scripts.includes(needed), `the Worker ${needed} exists`)) process.exitCode = 1;
 if (process.exitCode) stop("a Worker is missing");
 for (const host of [appHost, siteHost].filter(Boolean)) {
   const records = await cf.api(`/zones/${zone.id}/dns_records?name=${encodeURIComponent(host)}`).catch(() => []);
