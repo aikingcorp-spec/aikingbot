@@ -65,6 +65,11 @@ try {
   while (Date.now() < deadline && !page) { page = electronApp.windows().find((p) => /^http:\/\/127\.0\.0\.1:\d+\//.test(p.url())); if (!page) await wait(250); }
   if (!page) throw new Error("The app window never loaded its own server");
   const errors = []; page.on("pageerror", (e) => errors.push(String(e.message).slice(0, 200)));
+  // Everything that goes wrong in the background while the checks and the walk-through run.
+  const trouble = { console: [], requests: [], http: [] };
+  page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) trouble.console.push(m.text().slice(0, 200)); });
+  page.on("requestfailed", (r) => trouble.requests.push(`${r.method()} ${r.url().replace(/^https?:\/\/[^/]+/, "").slice(0, 100)} ${r.failure()?.errorText ?? ""}`));
+  page.on("response", (r) => { if (r.status() >= 500) trouble.http.push(`${r.status()} ${r.request().method()} ${r.url().replace(/^https?:\/\/[^/]+/, "").slice(0, 100)}`); });
   await page.setViewportSize({ width: 1280, height: 860 }).catch(() => {});
   const origin = new URL(page.url()).origin;
 
@@ -131,6 +136,8 @@ try {
     const left = await page.$$eval("[data-server-tile]", (nodes) => nodes.length);
     check("removing the second server leaves only this computer", left === 1, String(left));
     await shot("after-remove");
+    // Switching servers restarts the local runtime, so connections drop on purpose; count trouble from here on.
+    trouble.console.length = 0; trouble.requests.length = 0; trouble.http.length = 0; errors.length = 0;
   });
 
   await step("menu", async () => {
@@ -160,6 +167,45 @@ try {
     const body = await text();
     check("a first agent is waiting with a greeting", /What would you like me to do\?/.test(body), body.slice(0, 200));
     check("the chat box is there and ready", await page.getByRole("button", { name: /send message/i }).count() > 0);
+  });
+
+  await step("walk-through", async () => {
+    const seen = {};
+    const looksBroken = (t) => (t.match(/(something went wrong|unexpected error|could not (load|reach|save)|failed to|unavailable|undefined|\[object Object\]|NaN\b|Internal Server Error)/gi) ?? []);
+    const pick = async (name) => { const button = page.getByRole("button", { name, exact: true }).first(); if (await button.count()) return button.click({ timeout: 4000 }); return page.getByRole("tab", { name, exact: true }).first().click({ timeout: 4000 }); };
+    const skipped = [];
+    const visit = async (label, open, optional = false) => { try { await open(); await wait(900); const t = await text(); seen[label] = looksBroken(t); await shot(`walk-${label.replace(/\W+/g, "-")}`); } catch (error) { if (optional) { skipped.push(label); seen[label] = []; } else seen[label] = [`could not open: ${String(error.message).split("\n")[0].slice(0, 80)}`]; } };
+    const close = async () => { await page.keyboard.press("Escape"); await wait(300); await page.keyboard.press("Escape"); await wait(300); await page.locator("[data-server-tile]").first().click({ timeout: 3000 }).catch(() => {}); await wait(500); };
+    for (const name of ["Marketplace", "Routines", "Apps"]) { await visit(name, () => pick(name)); await close(); }
+    await visit("New or share", () => page.getByRole("button", { name: "New or share", exact: true }).first().click({ timeout: 4000 })); await close();
+    await visit("agent profile", () => page.getByRole("button", { name: /^Open .* profile$/ }).first().click({ timeout: 4000 }));
+    for (const tab of ["Details", "Memory", "Library", "Skills", "Vault"]) await visit(`agent ${tab}`, () => pick(tab));
+    await close();
+    // advanced mode: every settings section and every agent tab
+    await page.getByRole("button", { name: "Tester", exact: true }).first().click({ timeout: 4000 }).catch(() => {});
+    await page.getByRole("menuitem", { name: /Settings/ }).first().click({ timeout: 4000 }).catch(() => {});
+    await page.locator('[role="dialog"]').getByRole("button", { name: "General", exact: true }).first().click({ timeout: 4000 }).catch(() => {});
+    await page.locator('[role="dialog"]').getByRole("switch").first().click({ timeout: 4000 }).catch(() => {});
+    await wait(800);
+    const sections = await page.locator('[role="dialog"] nav button, [role="dialog"] aside button').evaluateAll((nodes) => nodes.map((n) => (n.textContent || "").trim()).filter((t) => t && t.length < 30 && !/^(Share|Edit|Save|Replay|Check|Export|Remove|Sign out)/.test(t)));
+    for (const name of [...new Set(sections)]) await visit(`settings ${name}`, () => page.locator('[role="dialog"]').getByRole("button", { name, exact: true }).first().click({ timeout: 3000 }));
+    await close();
+    await page.getByRole("button", { name: /^Open .* profile$/ }).first().click({ timeout: 4000 }).catch(() => {});
+    await wait(800);
+    for (const tab of ["Overview", "Identity", "Soul", "Skills", "Memory", "Routines", "Access", "Model", "Permissions", "Voice & alerts", "History", "Usage"]) await visit(`agent tab ${tab}`, () => pick(tab), true);
+    await close();
+    const broken = Object.entries(seen).filter(([, found]) => found.length);
+    check(`the walk-through opened ${Object.keys(seen).length} screens`, Object.keys(seen).length >= 12, Object.keys(seen).length);
+    if (skipped.length) console.log(`note: not reachable from the small profile panel, skipped: ${skipped.join(", ")}`);
+    check("no screen shows an error message or a raw value (undefined, NaN, [object Object])", broken.length === 0, broken.map(([k, v]) => `${k}: ${v.join(",")}`).join(" | "));
+    check("nothing failed in the background (script errors, failed requests, server errors)", errors.length + trouble.console.length + trouble.requests.length + trouble.http.length === 0, [...errors, ...trouble.console, ...trouble.requests, ...trouble.http].slice(0, 4).join(" | "));
+  });
+
+  await step("first message without a model", async () => {
+    const box = page.getByPlaceholder(/^Message /).first();
+    await box.fill("hello"); await box.press("Enter"); await wait(2500);
+    const body = await text(); await shot("message-without-model");
+    check("a first message without an AI model gives the person a way forward, not silence", /no AI model yet|Settings → AI/i.test(body) && !/provider instance ""/.test(body), body.slice(0, 260));
   });
 
   await step("api", async () => {

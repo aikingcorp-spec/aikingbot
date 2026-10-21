@@ -363,7 +363,7 @@ export function createBotMessageRoutes(deps: BotMessageRouteDeps): RouteHandler 
       const rerunSelection = turnSelection(bot.id, bot.threadId) ?? bot.modelSelection;
       if (!registry.get(rerunSelection.instanceId)) {
         return json(res, 409, {
-          error: `provider instance "${rerunSelection.instanceId}" is unavailable — pick another model in settings`,
+          error: rerunSelection.instanceId ? `provider instance "${rerunSelection.instanceId}" is unavailable — pick another model in settings` : "This agent has no AI model yet. Open Settings → AI to sign in to one, then choose it for this agent.",
         });
       }
       const rerunInstance = registry.get(rerunSelection.instanceId)!;

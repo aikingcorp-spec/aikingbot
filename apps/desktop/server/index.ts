@@ -8769,7 +8769,7 @@ async function startTurn(
   if (!instance) {
     if (removedComputerInstanceIds(cfg.instances).has(bot.modelSelection.instanceId)) void retryComputerEngineMove();
     throw Object.assign(
-      new Error(`provider instance "${bot.modelSelection.instanceId}" is unavailable — pick another model in settings`),
+      new Error(bot.modelSelection.instanceId ? `provider instance "${bot.modelSelection.instanceId}" is unavailable — pick another model in settings` : "This agent has no AI model yet. Open Settings → AI to sign in to one, then choose it for this agent."),
       { status: 409 },
     );
   }
