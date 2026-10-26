@@ -177,6 +177,9 @@ export function GuidedTour() {
 
   if (!active || !step) return null;
   if (window.ogb?.remoteClient?.active === true) return null;
+  // The Marketplace is a modal over everything: pause (not end) the tour while the person has it open, unless
+  // this beat is the one that points into it. Otherwise the bubble sat on top of the Marketplace cards.
+  if (state.pluginsOpen && step.id !== "tour.apps-panel") return null;
 
   const { current, total } = stepNumber(step);
   const closing = step.id === "tour.done";
