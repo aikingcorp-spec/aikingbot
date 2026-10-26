@@ -267,7 +267,7 @@ describe("Apps pop-up", () => {
   it("is titled Apps and shows app tiles and the MCP servers section on one view", () => {
     const { html } = render();
     expect(html).toContain(">Apps</h2>");
-    expect(html).toContain("Connect an app or your own MCP server once. Then choose which bots may use it.");
+    expect(html).toContain("Connect an app or your own MCP server once. Then choose which agents may use it.");
     expect(html).toContain("glass-surface");
     expect(html).toContain("@container");
     expect(html).toContain("grid grid-cols-1 items-start gap-x-6 gap-y-1 @xl:grid-cols-2");
@@ -365,7 +365,7 @@ describe("Apps pop-up", () => {
     expect(html).toContain("Showing what was connected last time");
     fixture.overrides.set(7, false);
     ({ html } = render());
-    expect(html).toContain("Not every bot can use these apps.");
+    expect(html).toContain("Not every agent can use these apps.");
     expect(html).toContain("Allow scout");
   });
 
