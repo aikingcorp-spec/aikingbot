@@ -55,7 +55,8 @@ function matches(listing: Listing, query: CatalogQuery): boolean {
   if (!text) return true;
   // An agent is also found by the skills it ships with ("tiktok" finds the agent with the TikTok hook writer).
   const pinned = listing.kind === "agent" ? listing.skills.map((pin) => pin.id.replaceAll("-", " ")) : [];
-  return [listing.name, listing.summary, listing.category, listing.publisher.name, ...listing.tags, ...pinned]
+  const translated = Object.values(listing.locales ?? {}).flatMap((text) => [text.summary ?? "", text.category ?? ""]);
+  return [listing.name, listing.summary, listing.category, listing.publisher.name, ...listing.tags, ...pinned, ...translated]
     .some((field) => field.toLowerCase().includes(text));
 }
 
@@ -65,7 +66,13 @@ function page<K extends ListingKind>(listings: Listing[], query: CatalogQuery & 
     .filter((listing) => matches(listing, query))
     .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || a.name.localeCompare(b.name));
   const categories = [...new Set(ofKind.map((listing) => listing.category))].sort((a, b) => a.localeCompare(b));
-  return { items, categories, total: items.length };
+  const categoryLabels: Record<string, Record<string, string>> = {};
+  for (const listing of ofKind) {
+    for (const [lang, text] of Object.entries(listing.locales ?? {})) {
+      if (text.category) (categoryLabels[listing.category] ??= {})[lang] ??= text.category;
+    }
+  }
+  return { items, categories, total: items.length, categoryLabels };
 }
 
 /** The catalog bundled with the app. */

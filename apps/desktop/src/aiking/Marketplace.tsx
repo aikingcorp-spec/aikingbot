@@ -20,6 +20,7 @@ import { APP_LOGOS } from "./app-logos";
 import type { AgentListing, AppListing, CatalogPage, InstallStatus, Listing, ListingKind, SkillListing } from "./marketplace/contract";
 import { catalogSource } from "./marketplace/sources";
 import { useCatalog } from "./marketplace/use-catalog";
+import { categoryLabel, listingCategory, listingSummary } from "./marketplace/localize";
 import { ALERT_BOX, ALERT_BUTTON, CatalogLoadError } from "./marketplace/CatalogLoadError";
 import { OfficialConnect, signInOfficial } from "./marketplace/OfficialConnect";
 import {
@@ -141,7 +142,7 @@ export function Marketplace() {
       >
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-hairline px-6">
           {detail ? (
-            <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
+            <nav aria-label={at("market.breadcrumb")} className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
               <button type="button" onClick={() => setDetail(null)} className="text-ink-secondary hover:text-ink">{at("market.back")}</button>
               <ChevronRight size={14} aria-hidden="true" className="text-ink-tertiary" />
               <span className="truncate text-ink">{detailListing?.name ?? ""}</span>
@@ -194,7 +195,7 @@ export function Marketplace() {
                   onClick={() => setFilterOpen((open) => !open)}
                   className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium", category ? "bg-raised text-ink" : "text-ink-secondary hover:bg-raised hover:text-ink")}
                 >
-                  <ListFilter size={14} aria-hidden="true" />{category ?? at("market.filter")}
+                  <ListFilter size={14} aria-hidden="true" />{category ? categoryLabel(category, page) : at("market.filter")}
                 </button>
                 {filterOpen && page && (
                   <div role="menu" aria-label={at("market.filter")} className="animate-pop-in absolute right-0 top-full z-10 mt-1 w-52 rounded-xl border border-hairline bg-menu p-1 shadow-xl">
@@ -208,7 +209,7 @@ export function Marketplace() {
                         className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] text-ink hover:bg-raised"
                       >
                         <span className="w-4">{category === candidate && <Check size={13} aria-hidden="true" />}</span>
-                        {candidate ?? at("market.allCategories")}
+                        {candidate ? categoryLabel(candidate, page) : at("market.allCategories")}
                       </button>
                     ))}
                   </div>
@@ -324,7 +325,7 @@ function ListingMeta({ listing }: { listing: Listing }) {
   return (
     <dl className="flex flex-col gap-4 border-hairline md:border-l md:pl-6">
       <Meta term={at("market.creator")} value={<span className="inline-flex items-center gap-1">{listing.publisher.name}{listing.publisher.verified && <Check size={12} aria-label={at("market.verified")} className="text-success" />}</span>} />
-      <Meta term={at("market.category")} value={listing.category} />
+      <Meta term={at("market.category")} value={listingCategory(listing)} />
       <Meta term={at("market.version")} value={listing.version} />
       {listing.tags.length > 0 && <Meta term={at("market.tags")} value={listing.tags.join(", ")} />}
     </dl>
@@ -393,8 +394,8 @@ function AgentGrid({ page, query, revision, onChanged, onOpen, onClose }: {
                 : <OutlineButton label={`${at("market.add")} ${listing.name}`} disabled={busy !== null} onClick={() => void add(listing)}>
                   {busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{busy === listing.id ? at("market.adding") : at("market.add")}
                 </OutlineButton>}
-              description={listing.summary}
-              meta={<span className="flex items-center gap-1.5">{listing.publisher.name} · {listing.category}{status.state === "installed" && <> · <StatusPill status={status} /></>}</span>}
+              description={listingSummary(listing)}
+              meta={<span className="flex items-center gap-1.5">{listing.publisher.name} · {listingCategory(listing)}{status.state === "installed" && <> · <StatusPill status={status} /></>}</span>}
             />
           );
         })}
@@ -455,7 +456,7 @@ function AgentDetail({ listing, revision, onChanged, onClose }: { listing: Agent
         <AikingAvatar color={listing.look.color} bodyId={listing.look.body} state={normalizeState(listing.look.expression) ?? "idle"} size={48} animated={false} />
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}<StatusPill status={status} /></h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {installedBot ? (
@@ -551,8 +552,8 @@ function SkillGrid({ page, query, revision, onOpen }: { page: CatalogPage<SkillL
             label={`${listing.name}, ${at("market.details")}`}
             onOpen={() => onOpen(listing.id)}
             action={count > 0 ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count })}</span> : <OutlineButton label={`${at("market.add")} ${listing.name}`} onClick={() => onOpen(listing.id)}><Plus size={14} aria-hidden="true" />{at("market.add")}</OutlineButton>}
-            description={listing.summary}
-            meta={`${listing.publisher.name} · ${listing.category} · ${at("market.version")} ${listing.version}`}
+            description={listingSummary(listing)}
+            meta={`${listing.publisher.name} · ${listingCategory(listing)} · ${at("market.version")} ${listing.version}`}
           />
         );
       })}
@@ -590,7 +591,7 @@ function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; 
         <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-raised text-ink-secondary"><Sparkles size={22} aria-hidden="true" /></span>
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{holders && <StatusPill status={skillStatus(listing, holders)} />}</h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
         </div>
       </div>
       {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
@@ -607,7 +608,7 @@ function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; 
                       <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{bot.name}</span>
                       {held ? (
                         <>
-                          <OutlineButton label={`Update ${listing.name} for ${bot.name}`} disabled={busy !== null} onClick={() => void act(bot.id, () => updateSkill(listing, bot.id, bot.threadId))}><RefreshCw size={13} aria-hidden="true" />{at("market.update")}</OutlineButton>
+                          <OutlineButton label={at("market.updateSkillFor", { name: listing.name, bot: bot.name })} disabled={busy !== null} onClick={() => void act(bot.id, () => updateSkill(listing, bot.id, bot.threadId))}><RefreshCw size={13} aria-hidden="true" />{at("market.update")}</OutlineButton>
                           <label className="flex items-center gap-2 text-[12px] text-ink-secondary">
                             <input
                               type="checkbox"
@@ -737,8 +738,8 @@ function AppGrid({ page, query, revision, onChanged, onOpen }: { page: CatalogPa
                 label={`${listing.name}, ${at("market.details")}`}
                 onOpen={() => onOpen(listing.id)}
                 action={action}
-                description={listing.summary}
-                meta={<span className="flex items-center gap-1.5">{official ? `${listing.category} · Official` : mcp ? at("market.mcpServer") : listing.category}{(status.state === "error" || (mcp && status.state === "needs-setup")) && <> · <StatusPill status={status} /></>}</span>}
+                description={listingSummary(listing)}
+                meta={<span className="flex items-center gap-1.5">{official ? `${listingCategory(listing)} · ${at("market.official")}` : mcp ? at("market.mcpServer") : listingCategory(listing)}{(status.state === "error" || (mcp && status.state === "needs-setup")) && <> · <StatusPill status={status} /></>}</span>}
               />
             );
           })}
@@ -788,7 +789,7 @@ function AppDetail({ listing, revision, onChanged, onBrowse }: { listing: AppLis
         <AppIcon listing={listing} size={48} />
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{status && <StatusPill status={status} />}</h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
           {detail && <p data-status-detail className="mt-1 text-[12.5px] text-ink-tertiary">{detail}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">

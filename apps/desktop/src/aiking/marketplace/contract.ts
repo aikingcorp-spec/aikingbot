@@ -28,6 +28,11 @@ const listingBase = {
   featured: z.boolean().optional(),
   installs: z.number().int().nonnegative().optional(),
   updatedAt: z.string().optional(),
+  /** Text in other languages, by language code ("vi"). `category` stays the canonical filter key; this is only its label. */
+  locales: z.record(z.string().regex(/^[a-z]{2}$/), z.object({
+    summary: z.string().min(1).max(200).optional(),
+    category: z.string().min(1).max(40).optional(),
+  })).optional(),
 };
 
 export const skillListingSchema = z.object({
@@ -110,7 +115,8 @@ export type ListingKind = Listing["kind"];
 export type CatalogDocument = z.infer<typeof catalogDocumentSchema>;
 
 export type CatalogQuery = { kind: ListingKind; text?: string; category?: string | null; featuredOnly?: boolean };
-export type CatalogPage<T extends Listing = Listing> = { items: T[]; categories: string[]; total: number };
+/** `categoryLabels` gives a category's label per language, taken from the listings that use it. */
+export type CatalogPage<T extends Listing = Listing> = { items: T[]; categories: string[]; total: number; categoryLabels?: Record<string, Record<string, string>> };
 
 /** Where listings come from: the bundled catalog now, AIKING Core later. */
 export interface CatalogSource {
