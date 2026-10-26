@@ -19,6 +19,8 @@ import { at } from "./strings";
 import { APP_LOGOS } from "./app-logos";
 import type { AgentListing, AppListing, CatalogPage, InstallStatus, Listing, ListingKind, SkillListing } from "./marketplace/contract";
 import { catalogSource } from "./marketplace/sources";
+import { useCatalog } from "./marketplace/use-catalog";
+import { ALERT_BOX, ALERT_BUTTON, CatalogLoadError } from "./marketplace/CatalogLoadError";
 import { OfficialConnect, signInOfficial } from "./marketplace/OfficialConnect";
 import {
   agentStatus, appStatus, removeAgent, installAgent, installMcp, installSkill, loadAppsState, setSkillEnabled, skillHolders,
@@ -29,27 +31,6 @@ import { useShowThreads } from "@/lib/thread-preferences";
 type Detail = { kind: ListingKind; id: string } | null;
 const KIND_OF_TAB: Record<MarketplaceTab, ListingKind> = { agents: "agent", apps: "app", skills: "skill" };
 
-// A result is only valid for the request that produced it: kind, query and
-// category travel with the page/error, so a page loaded for another tab can
-// never reach the current tab's grid (not even for one render).
-type CatalogResult<K extends ListingKind> = { key: string; page: CatalogPage<Extract<Listing, { kind: K }>> | null; error: string };
-
-function useCatalog<K extends ListingKind>(kind: K, text: string, category: string | null) {
-  const key = JSON.stringify([kind, text, category]);
-  const [result, setResult] = useState<CatalogResult<K>>({ key, page: null, error: "" });
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    let alive = true;
-    catalogSource().list({ kind, text, category })
-      .then((page) => alive && setResult({ key, page, error: "" }))
-      .catch(() => alive && setResult({ key, page: null, error: "failed" }));
-    return () => { alive = false; };
-  }, [key, attempt]);
-  const current = result.key === key ? result : null;
-  const retry = useCallback(() => { setResult((prev) => ({ ...prev, key: "" })); setAttempt((n) => n + 1); }, []);
-  return { page: current?.page ?? null, error: current?.error ?? "", retry };
-}
-
 // Local boundary: a render error inside the grid shows Retry/Close instead of
 // unmounting the whole app. The message is fixed text; the error is not shown.
 class GridBoundary extends Component<{ resetKey: string; onRetry: () => void; onClose: () => void; children: ReactNode }, { failed: boolean }> {
@@ -59,11 +40,11 @@ class GridBoundary extends Component<{ resetKey: string; onRetry: () => void; on
   render() {
     if (!this.state.failed) return this.props.children;
     return (
-      <div role="alert" className="rounded-xl bg-danger/10 px-3 py-3 text-[12.5px] text-danger">
+      <div role="alert" className={ALERT_BOX}>
         <p>{at("market.crashed")}</p>
         <div className="mt-2 flex gap-2">
-          <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>{at("market.retry")}</button>
-          <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={this.props.onClose}>{at("market.close")}</button>
+          <button type="button" className={ALERT_BUTTON} onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>{at("market.retry")}</button>
+          <button type="button" className={ALERT_BUTTON} onClick={this.props.onClose}>{at("market.close")}</button>
         </div>
       </div>
     );
@@ -113,7 +94,7 @@ export function Marketplace() {
   }, [state.pluginsSurface]);
 
   const kind = KIND_OF_TAB[tab];
-  const { page, error, retry } = useCatalog(kind, query, category);
+  const { page, error, retrying, retry } = useCatalog(kind, query, category);
   // Retry unmounts the focused button; park focus on the dialog so keyboard and screen-reader users keep their place.
   const retryKeepFocus = () => { dialogRef.current?.focus(); retry(); };
   const chooseTab = (next: MarketplaceTab) => {
@@ -235,15 +216,7 @@ export function Marketplace() {
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
-              {error ? (
-                <div role="alert" className="rounded-xl bg-danger/10 px-3 py-3 text-[12.5px] text-danger">
-                  <p>{at("market.loadFailed")}</p>
-                  <div className="mt-2 flex gap-2">
-                    <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={retryKeepFocus}>{at("market.retry")}</button>
-                    <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={close}>{at("market.close")}</button>
-                  </div>
-                </div>
-              )
+              {error ? <CatalogLoadError error={error} retrying={retrying} onRetry={retry} onClose={close} />
                 : !page ? <Spinner />
                   : <GridBoundary resetKey={JSON.stringify([kind, query, category])} onRetry={retryKeepFocus} onClose={close}>{tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
                     : tab === "skills" ? <SkillGrid page={page as CatalogPage<SkillListing>} query={query} revision={revision} onOpen={(id) => setDetail({ kind: "skill", id })} />

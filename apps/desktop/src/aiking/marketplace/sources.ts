@@ -8,6 +8,27 @@ import {
 
 export class CatalogDecodeError extends Error {}
 export class CatalogTimeoutError extends Error {}
+/** The server answered, but not with a catalog; `status` drives the reason people are shown. */
+export class CatalogHttpError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) { super(message); this.status = status; }
+}
+
+/** Why a catalog load failed, in the terms people are shown (never the raw message). */
+export type CatalogErrorKind = "unavailable" | "timeout" | "network" | "invalid" | "failed";
+export type CatalogFailure = { kind: CatalogErrorKind; status?: number };
+
+export function classifyCatalogError(error: unknown, online = typeof navigator === "undefined" ? true : navigator.onLine !== false): CatalogFailure {
+  if (error instanceof CatalogTimeoutError) return { kind: "timeout" };
+  if (error instanceof CatalogHttpError) {
+    const { status } = error;
+    return { kind: status >= 500 || status === 429 || status === 408 ? "unavailable" : "failed", status };
+  }
+  if (error instanceof CatalogDecodeError || error instanceof SyntaxError) return { kind: "invalid" };
+  // fetch() rejects with a TypeError when the request never got an answer (offline, DNS, refused).
+  if (!online || error instanceof TypeError) return { kind: "network" };
+  return { kind: "failed" };
+}
 /** A hung server must not leave the grid on a spinner forever; 8s is above a slow link's round trip and below "the app froze". */
 export const CATALOG_TIMEOUT_MS = 8_000;
 
@@ -96,7 +117,7 @@ export class HttpCatalogSource implements CatalogSource {
   private document: Promise<CatalogDocument> | null = null;
   private load() {
     this.document ??= this.withDeadline(new URL("v1/catalog", this.base), async (response) => {
-        if (!response.ok) throw new Error(`${this.id}: catalog request failed with ${response.status}`);
+        if (!response.ok) throw new CatalogHttpError(`${this.id}: catalog request failed with ${response.status}`, response.status);
         return decodeCatalog(await response.json(), this.id);
       })
       .catch((error) => {
@@ -111,7 +132,7 @@ export class HttpCatalogSource implements CatalogSource {
   async get(id: string) {
     return this.withDeadline(new URL(`v1/catalog/listings/${encodeURIComponent(id)}`, this.base), async (response) => {
       if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`${this.id}: listing request failed with ${response.status}`);
+      if (!response.ok) throw new CatalogHttpError(`${this.id}: listing request failed with ${response.status}`, response.status);
       const parsed = listingSchema.safeParse(await response.json());
       if (!parsed.success) throw new CatalogDecodeError(`${this.id}: listing ${id} is invalid`);
       return parsed.data;
