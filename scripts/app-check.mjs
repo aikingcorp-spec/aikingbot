@@ -60,7 +60,11 @@ try {
   electronApp = await _electron.launch({ executablePath: binary, args, env: launchEnv, cwd: scratch, timeout: 120_000 });
   const child = electronApp.process(); child.stdout?.on("data", (c) => { output += c; }); child.stderr?.on("data", (c) => { output += c; });
   // The operating system's confirmation boxes cannot be clicked from the page: answer "Continue" for the app.
-  await electronApp.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 0, checkboxChecked: false }); });
+  // Wait for the first window before the first evaluate: evaluating during startup lost its promise on CI
+  // ("Resulting promise was garbage collected"). One retry covers the same race if it still happens.
+  await electronApp.firstWindow({ timeout: 120_000 }).catch(() => undefined);
+  const stubDialogs = () => electronApp.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 0, checkboxChecked: false }); });
+  await stubDialogs().catch(async (error) => { console.log(`retrying the dialog stub once: ${String(error?.message ?? error).slice(0, 120)}`); await wait(500); await stubDialogs(); });
   const deadline = Date.now() + 120_000;
   while (Date.now() < deadline && !page) { page = electronApp.windows().find((p) => /^http:\/\/127\.0\.0\.1:\d+\//.test(p.url())); if (!page) await wait(250); }
   if (!page) throw new Error("The app window never loaded its own server");
