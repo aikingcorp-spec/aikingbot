@@ -117,8 +117,10 @@ export function connectorSetupNotice(state: {
   stale: boolean;
   setup: ConnectorSetup | undefined;
   remoteClient: boolean;
+  // The catalog answer carries configured/setup; until it arrives (or fails) those are defaults, not facts.
+  catalog: "loading" | "ready" | "error";
 }): { key: LocaleKey; tone: "info" | "warning" } | null {
-  if (state.configured || state.stale) return null;
+  if (state.catalog === "loading" || state.configured || state.stale) return null;
   if (state.setup === "needs-setup") {
     return { key: state.remoteClient ? "connectors.setupNeededRemote" : "connectors.setupNeeded", tone: "info" };
   }
@@ -314,6 +316,8 @@ export function PluginsPanel({ embedded = false, query }: { embedded?: boolean; 
   const [whopConnected, setWhopConnected] = useState<boolean | null>(null);
   const [whopRefresh, setWhopRefresh] = useState(0);
   const [category, setCategory] = useState<string | null>(null);
+  // Last on purpose: the render tests seed hook state by call index.
+  const [catalogPhase, setCatalogPhase] = useState<"loading" | "ready" | "error">("loading");
 
   const pollTimers = useRef(new Map<string, ReturnType<typeof setInterval>>());
   const statusGenerations = useRef(new Map<string, number>());
@@ -426,9 +430,11 @@ export function PluginsPanel({ embedded = false, query }: { embedded?: boolean; 
         setConfigured(Boolean(r.configured));
         setMode(r.mode ?? "unavailable");
         setSetup(r.setup);
+        setCatalogPhase("ready");
       })
       .catch((e) => {
         if (!alive) return;
+        setCatalogPhase("error");
         setError(e.message);
       });
     return () => {
@@ -586,7 +592,7 @@ export function PluginsPanel({ embedded = false, query }: { embedded?: boolean; 
   const connectedCount = Object.values(status).filter((service) => service.connected || service.accounts?.length).length + Number(whopConnected === true);
   const connectedEmptyCopy = connectedInventoryCopy(inventoryPhase);
   const close = () => dispatch({ type: "togglePlugins", open: false });
-  const setupNotice = connectorSetupNotice({ configured, stale, setup, remoteClient });
+  const setupNotice = connectorSetupNotice({ configured, stale, setup, remoteClient, catalog: catalogPhase });
   const botsWithoutApps = hasUsableConnectedApps(configured, inventoryPhase, stale, status)
     ? botsMissingConnectedApps(state.bots, state.instances)
     : [];

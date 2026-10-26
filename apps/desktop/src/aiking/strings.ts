@@ -45,6 +45,9 @@ const en = {
   "market.skillsHint": "Skills teach an agent a repeatable job. Turn one on for an agent from its profile.",
   "market.noMatch": "Nothing matches “{query}”.",
   "market.empty": "Nothing here yet.",
+  "market.crashed": "This section could not be displayed.",
+  "market.retry": "Retry",
+  "market.loadFailed": "The catalog could not be loaded.",
   "market.creator": "Creator",
   "market.category": "Category",
   "market.engine": "Engine",
@@ -435,6 +438,8 @@ const en = {
   "welcome.signIn": "Sign in with email",
   "server.operationFailed": "Server operation failed: {code}.",
   "server.provisionFailed": "Provisioning failed",
+  "bot.executionUnverified": "Your approval, memory or model change could not be confirmed, so this work was not started. Please reload and check it.",
+  "bot.savedUnverified": "Your change was saved, but the latest state could not be confirmed. Please reload.",
 } as const;
 
 export type AikingKey = keyof typeof en;

@@ -20,7 +20,7 @@ import {
   FolderPlus,
   Library,
   Loader2,
-  MessageSquarePlus,
+  MessageCirclePlus,
   MoreHorizontal,
   Pencil,
   PanelLeftClose,
@@ -2290,7 +2290,7 @@ export function Sidebar({ open, onClose, collapseToIcons = false }: {
                   }}
                   className="flex w-full items-center gap-3 px-3.5 py-2 text-left text-[14px] text-ink hover:bg-raised/70"
                 >
-                  <MessageSquarePlus size={16} className="text-ink-secondary" />
+                  <MessageCirclePlus size={16} className="text-ink-secondary" />
                   {t("sidebar.newChat.title")}
                 </button>
                 <button

@@ -3190,7 +3190,7 @@ ipcMain.handle("desktop:capabilities", async (event) =>
   }),
 );
 
-async function saveWorkspaceCredential(name, value) {
+async function saveWorkspaceCredential(name, value, cardContext) {
   const patchFor = CREDENTIAL_PATCH[name];
   if (!patchFor || typeof value !== "string") {
     throw new Error("Unsupported credential");
@@ -3208,7 +3208,8 @@ async function saveWorkspaceCredential(name, value) {
         { "content-type": "application/json" },
         { packaged: app.isPackaged, token: desktopMutationToken },
       ),
-      body: JSON.stringify(patchFor(secret)),
+      // A card write names its claim: the server checks it against its own record before it saves, and records the commit.
+      body: JSON.stringify(cardContext ? { ...patchFor(secret), credentialCard: cardContext } : patchFor(secret)),
     });
     const body = await response.json().catch(() => null);
     if (!response.ok) throw new Error(body?.error || `Could not save credential (HTTP ${response.status})`);
@@ -3227,8 +3228,48 @@ async function saveWorkspaceCredential(name, value) {
   );
 }
 
-ipcMain.handle("credential:set", localOnly("credential:set", (_event, name, value) =>
-  saveWorkspaceCredential(name, value),
+// A card submit is admitted by the server (live, unexpired, same bot/thread/target) before the write; a failed write releases the claim.
+async function cardCall(card, action, extra) {
+  const response = await fetch(
+    `http://127.0.0.1:${SERVER_PORT}/api/bots/${encodeURIComponent(card.botId)}/secret-cards/${encodeURIComponent(card.messageId)}/${action}`,
+    {
+      method: "POST",
+      headers: desktopServerHeaders(
+        { "content-type": "application/json" },
+        { packaged: app.isPackaged, token: desktopMutationToken },
+      ),
+      body: JSON.stringify({ threadId: card.threadId, ...extra }),
+    },
+  );
+  const body = await response.json().catch(() => null);
+  return { ok: response.ok, body };
+}
+
+async function saveCardCredential(name, value, card) {
+  const valid = card && [card.botId, card.threadId, card.messageId].every((part) => typeof part === "string" && part);
+  if (!valid) throw new Error("credential-refused:missing");
+  const claim = await cardCall(card, "claim", { target: name });
+  if (!claim.ok || typeof claim.body?.claimId !== "string") {
+    throw new Error(`credential-refused:${typeof claim.body?.code === "string" ? claim.body.code : "missing"}`);
+  }
+  const claimId = claim.body.claimId;
+  try {
+    const status = await saveWorkspaceCredential(name, value, {
+      botId: card.botId,
+      threadId: card.threadId,
+      messageId: card.messageId,
+      target: name,
+      claimId,
+    });
+    return { ...status, claimId };
+  } catch (error) {
+    await cardCall(card, "release", { claimId }).catch(() => {});
+    throw error;
+  }
+}
+
+ipcMain.handle("credential:set", localOnly("credential:set", (_event, name, value, card) =>
+  card === undefined ? saveWorkspaceCredential(name, value) : saveCardCredential(name, value, card),
 ));
 
 ipcMain.handle("approvals:set-trusted-mode", localOnly("approvals:set-trusted-mode", (_event, botId, mode, options) => {

@@ -50,13 +50,19 @@ import {
 import { createApprovalModeSupport } from "./harness-capabilities.ts";
 import { escapeAttribute } from "../src/lib/composer-attachments.ts";
 import {
+  CREDENTIAL_REFUSAL_MESSAGES,
+  CREDENTIAL_REMOTE_DENIED_MESSAGE,
+  type CredentialCardContext,
+  CREDENTIAL_REQUEST_TTL_MS,
   CREDENTIAL_TARGETS,
+  credentialCardAdmission,
   credentialResumeOutcome,
   credentialIsConfigured,
   isPendingCredentialRequest,
   isCredentialTargetId,
   type CredentialTargetId,
 } from "../shared/credential-request.ts";
+import { SecretCardGate, isRelayedRequest, relayedPhoneProvideDenied } from "./credential-admission.ts";
 import { isPendingSignInRequest, normalizeSignInSite, signInFallbackText, signInOutcome, signInResumePrompt } from "../shared/sign-in-request.ts";
 
 import { createRoomTurnLevels } from "./room-turn-level.ts";
@@ -612,6 +618,8 @@ import { createStatusRoutes } from "./routes/status.ts";
 import { findAntigravityLeftovers, removeAntigravityLeftovers } from "./drivers/antigravity-temp.ts";
 import { createLiveRoutes } from "./routes/live.ts";
 import { createUsageRoutes } from "./routes/usage.ts";
+import { createCallTraceRecorder } from "./call-trace-recorder.ts";
+import { createCallTraceRoutes } from "./routes/call-traces.ts";
 import { createBotMessageRoutes } from "./routes/bot-messages.ts";
 import { createThreadRoutes } from "./routes/threads.ts";
 import { withScopeHint } from "./connector-scope-hint.ts";
@@ -13143,6 +13151,46 @@ function phoneSecretSubmissionKey(threadId: string, messageId: string, requestKe
   return `${threadId}:${messageId}:${requestKey}`;
 }
 
+// In-memory only: a restart forgets claims, so this stops concurrent submits, not a replay after a crash.
+const secretCardGate = new SecretCardGate(() => randomUUID());
+
+/** Who holds a claim: the owner (desktop or local fallback) or one signed-in session. A phone has its own principal. */
+function secretPrincipal(auth: { kind: string; session?: { id: string } }): string {
+  return auth.kind === "session" && auth.session ? `session:${auth.session.id}` : "owner";
+}
+
+/** Write path of a desktop/fallback card: the claim, card, target and principal are checked here, and the commit is recorded here. */
+const credentialCardWrites = {
+  begin(context: CredentialCardContext, principal: string): boolean {
+    const message = secretMessage(context.botId, context.threadId, context.messageId);
+    const card = message?.secret;
+    if (!message || !card || card.target !== context.target) return false;
+    if (card.provided === true || card.dismissed === true || card.superseded === true || card.stopped === true) return false;
+    const cardKey = phoneSecretSubmissionKey(context.threadId, message.id, card.requestKey);
+    if (phoneSecretSubmissions.has(cardKey)) return false;
+    return secretCardGate.beginWrite(cardKey, context.claimId, context.target, principal);
+  },
+  end(context: CredentialCardContext, saved: boolean): void {
+    const message = secretMessage(context.botId, context.threadId, context.messageId);
+    if (!message?.secret) return;
+    const cardKey = phoneSecretSubmissionKey(context.threadId, message.id, message.secret.requestKey);
+    secretCardGate.endWrite(cardKey, context.claimId, saved);
+  },
+};
+
+/** A claim is worth keeping only while its card exists and is not terminal (dismissed, superseded, stopped or provided). */
+function secretCardUsable(botId: string, threadId: string, messageId: string): boolean {
+  const card = secretMessage(botId, threadId, messageId)?.secret;
+  return card !== undefined && card.provided !== true && card.dismissed !== true && card.superseded !== true && card.stopped !== true;
+}
+
+/** Admission for a first credential write: the card must be live, unsettled and unexpired. */
+function secretCardRefusal(message: Message): { reason: keyof typeof CREDENTIAL_REFUSAL_MESSAGES; error: string } | null {
+  const admission = credentialCardAdmission(message.secret, message.at, Date.now());
+  if (admission.ok) return null;
+  return { reason: admission.reason, error: CREDENTIAL_REFUSAL_MESSAGES[admission.reason].en };
+}
+
 function credentialDesktopHandoff(label: string): string {
   return `Securely provide the ${label} from AIKINGBOT on your phone or computer. It is never added to chat.`;
 }
@@ -13236,7 +13284,18 @@ async function provideSecretFromPhone(
     return recovered;
   }
 
+  // A first submit is admitted only on a live card; the recovery branches above stay status-only after expiry.
+  const refusal = secretCardRefusal(message);
+  if (refusal) throw new PhoneSecretError(refusal.error, 409);
   const submissionKey = phoneSecretSubmissionKey(context.threadId, context.messageId, context.requestKey);
+  const phoneClaim = secretCardGate.claim(
+    submissionKey,
+    context.target,
+    `phone:${authenticatedDeviceId}`,
+    () => secretMessage(context.botId, context.threadId, context.messageId) !== null,
+  );
+  if (!phoneClaim.ok) throw new PhoneSecretError(CREDENTIAL_REFUSAL_MESSAGES.busy.en, 409);
+  try {
   await phoneSecretSubmissions.run({
     cardKey: submissionKey,
     botId: context.botId,
@@ -13263,10 +13322,15 @@ async function provideSecretFromPhone(
     store.patchMessage(context.threadId, current.id, {
       secret: { ...current.secret, phoneOperationId: operationId },
     });
+    secretCardGate.commit(submissionKey, phoneClaim.claimId);
     if (!resumeSecretCard(context.botId, context.threadId, context.messageId, "provided")) {
       throw new PhoneSecretError("This credential request is no longer available", 409);
     }
   });
+  } catch (error) {
+    secretCardGate.release(submissionKey, phoneClaim.claimId);
+    throw error;
+  }
   const settled = currentSecretState(context.botId, context.threadId, context.messageId);
   if (!settled) throw new PhoneSecretError("This credential request is no longer available", 409);
   return settled;
@@ -14244,6 +14308,9 @@ ROUTES.push(createLoginRoutes({
     },
   },
 }));
+const callTraceRecorder = createCallTraceRecorder();
+bus.subscribe((event: RuntimeEvent) => { try { callTraceRecorder.observe(event); } catch { /* tracing never affects a turn */ } });
+ROUTES.push(createCallTraceRoutes({ recorder: callTraceRecorder }));
 ROUTES.push(createUsageRoutes({
   dataDir: DATA_DIR,
   prices: operatorPrices,
@@ -14278,6 +14345,7 @@ ROUTES.push(createAntigravityAccountRoutes({
   },
 }));
 ROUTES.push(createConfigRoutes({
+  credentialCardWrites,
   store, cfg, registry, sessions, browserCleanup, browserLive, browserRuntime, usedBrowserSessions, decider,
   sharedComputers, sharedComputerControl,
   hostedModels: Boolean(hostedModels),
@@ -16576,7 +16644,7 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
           return json(res, 200, { alreadyConfigured: true, label: target.label });
         }
         // A later request supersedes pending cards; the fresh card is appended FIRST, so a failed save leaves the prior cards actionable.
-        const reason = typeof body.reason === "string" ? body.reason.trim().slice(0, 240) : "";
+        // `reason` stays in the tool signature but is never stored on or shown by the trusted card.
         const message = store.appendMessage(fromThreadId, {
           role: "bot",
           kind: "secret",
@@ -16585,10 +16653,11 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
           secret: {
             target: credentialId,
             label: target.label,
-            description: `${reason ? `${target.description} ${reason}` : target.description} ${from.name} can use it but never read it back.`,
+            description: target.description,
             placeholder: target.placeholder,
             helpUrl: target.helpUrl,
             requestKey: randomUUID(),
+            expiresAt: Date.now() + CREDENTIAL_REQUEST_TTL_MS,
           },
         });
         for (const prior of store.activePath(fromThreadId)) {
@@ -17655,6 +17724,10 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
     // An HPKE envelope bound to the paired device, bot, task, card and target; only the embedded Electron server holds the key to open it.
     m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/provide$/);
     if (m && method === "POST") {
+      // A relayed request without the secret companion proof never reaches the bridge, however it forges identity headers.
+      if (relayedPhoneProvideDenied(req, auth.kind === "loopback" && auth.companion === true)) {
+        return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      }
       if (req.headers["x-aikingbot-companion"] !== "1") {
         return json(res, 403, { error: "Secure phone entry must come from a paired phone" });
       }
@@ -17679,6 +17752,38 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       return json(res, 200, state);
     }
 
+    // Admission before the write: the desktop claims the card here, then saves, then reports provided (or releases on failure).
+    m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/(claim|release)$/);
+    if (m && method === "POST") {
+      if (isRelayedRequest(req)) return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      const body = await readBody(req);
+      const threadId = String(body.threadId ?? "");
+      const message = secretMessage(m[1], threadId, m[2]);
+      if (!message?.secret) return json(res, 404, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      const cardKey = phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey);
+      if (m[3] === "release") {
+        const claimId = typeof body.claimId === "string" ? body.claimId : "";
+        return json(res, 200, { released: secretCardGate.release(cardKey, claimId) });
+      }
+      if (phoneSecretSubmissions.has(cardKey)) {
+        return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "busy" });
+      }
+      if (body.target !== message.secret.target) {
+        return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      }
+      const refusal = secretCardRefusal(message);
+      if (refusal) return json(res, 409, { error: refusal.error, code: refusal.reason });
+      const claimBotId = m[1];
+      const claim = secretCardGate.claim(
+        cardKey,
+        message.secret.target,
+        secretPrincipal(auth),
+        () => secretCardUsable(claimBotId, threadId, message.id),
+      );
+      if (!claim.ok) return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "busy" });
+      return json(res, 200, { claimId: claim.claimId });
+    }
+
     // Desktop credential cards never send the credential through this route: Electron saves it to the OS-backed store first.
     m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/(provided|resume|dismiss)$/);
     if (m && method === "POST") {
@@ -17686,13 +17791,25 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       const threadId = String(body.threadId ?? "");
       const message = secretMessage(m[1], threadId, m[2]);
       if (!message?.secret) return json(res, 404, { error: "no such credential request" });
-      if (phoneSecretSubmissions.has(
-        phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey),
-      )) {
+      const cardKey = phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey);
+      if (phoneSecretSubmissions.has(cardKey)) {
         return json(res, 409, { error: "this credential is currently being saved from a phone" });
       }
       if (m[3] === "provided") {
+        // A claimed write may finish after the TTL; without a claim this is a first submit and needs a live card, and a settled card stays status-only.
+        const claimId = typeof body.claimId === "string" ? body.claimId : "";
+        // A claim alone attests nothing: only the write path commits it. A settled card stays status-only.
+        const claimed = claimId !== "" && secretCardGate.committed(cardKey, claimId);
+        if (!claimed && message.secret.provided !== true) {
+          const refusal = secretCardRefusal(message);
+          if (refusal) return json(res, 409, { error: refusal.error, code: refusal.reason });
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "claim" });
+        }
         if (message.secret.dismissed) return json(res, 409, { error: "this credential request was dismissed" });
+        // Stop is terminal even after a committed write: the saved credential stays, but the card is not marked provided and nothing resumes. A card already provided stays status-only.
+        if (message.secret.stopped === true && message.secret.provided !== true) {
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.stopped.en, code: "stopped" });
+        }
         if (message.secret.superseded) return json(res, 409, { error: "this credential request was superseded by a newer one" });
         if (!credentialIsConfigured(cfg, message.secret.target)) {
           return json(res, 409, { error: `${message.secret.label} was not saved yet` });
@@ -17705,6 +17822,10 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
         return json(res, 200, state);
       }
       if (m[3] === "resume") {
+        // A Stopped card is never revived by a resume request; an already resumed card stays status-only.
+        if (message.secret.stopped === true && message.secret.resumed !== true) {
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.stopped.en, code: "stopped" });
+        }
         if (message.secret.superseded) return json(res, 409, { error: "this credential request was superseded by a newer one" });
         const outcome = credentialResumeOutcome(message.secret);
         if (!outcome) {

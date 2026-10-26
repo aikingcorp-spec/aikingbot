@@ -108,7 +108,7 @@ export const SIMPLE_PAGES: SimpleSettingsPage[] = [
   { id: "appearance", labelKey: "settings.section.appearance", icon: Palette, sections: ["appearance"] },
   { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines"] },
   { id: "connectors", labelKey: "settings.group.connectors", icon: Plug, sections: ["connections"] },
-  { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["logins"] },
+  { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["companion", "logins"] },
   { id: "account", labelKey: "settings.group.account", icon: CircleUser, sections: ["cloudAccount", "people", "activity"] },
 ];
 

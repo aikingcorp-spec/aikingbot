@@ -3,7 +3,7 @@
 // (marketplace/installer.ts). Layout follows the OpenBot 0.39 reference
 // screenshots; the code is original. "All connectors" embeds the upstream
 // connector panel, so Composio sign-in and MCP management behave as before.
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
   AlertTriangle, Check, ChevronRight, CircleDot, FolderOpen, ListFilter, Loader2, Plus, RefreshCw, Search, Sparkles, Trash2, Wrench, X,
@@ -29,17 +29,45 @@ import { useShowThreads } from "@/lib/thread-preferences";
 type Detail = { kind: ListingKind; id: string } | null;
 const KIND_OF_TAB: Record<MarketplaceTab, ListingKind> = { agents: "agent", apps: "app", skills: "skill" };
 
+// A result is only valid for the request that produced it: kind, query and
+// category travel with the page/error, so a page loaded for another tab can
+// never reach the current tab's grid (not even for one render).
+type CatalogResult<K extends ListingKind> = { key: string; page: CatalogPage<Extract<Listing, { kind: K }>> | null; error: string };
+
 function useCatalog<K extends ListingKind>(kind: K, text: string, category: string | null) {
-  const [page, setPage] = useState<CatalogPage<Extract<Listing, { kind: K }>> | null>(null);
-  const [error, setError] = useState("");
+  const key = JSON.stringify([kind, text, category]);
+  const [result, setResult] = useState<CatalogResult<K>>({ key, page: null, error: "" });
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let alive = true;
     catalogSource().list({ kind, text, category })
-      .then((result) => alive && (setPage(result), setError("")))
-      .catch((cause) => alive && setError(cause instanceof Error ? cause.message : String(cause)));
+      .then((page) => alive && setResult({ key, page, error: "" }))
+      .catch(() => alive && setResult({ key, page: null, error: "failed" }));
     return () => { alive = false; };
-  }, [kind, text, category]);
-  return { page, error };
+  }, [key, attempt]);
+  const current = result.key === key ? result : null;
+  const retry = useCallback(() => { setResult((prev) => ({ ...prev, key: "" })); setAttempt((n) => n + 1); }, []);
+  return { page: current?.page ?? null, error: current?.error ?? "", retry };
+}
+
+// Local boundary: a render error inside the grid shows Retry/Close instead of
+// unmounting the whole app. The message is fixed text; the error is not shown.
+class GridBoundary extends Component<{ resetKey: string; onRetry: () => void; onClose: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidUpdate(prev: { resetKey: string }) { if (prev.resetKey !== this.props.resetKey && this.state.failed) this.setState({ failed: false }); }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div role="alert" className="rounded-xl bg-danger/10 px-3 py-3 text-[12.5px] text-danger">
+        <p>{at("market.crashed")}</p>
+        <div className="mt-2 flex gap-2">
+          <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>{at("market.retry")}</button>
+          <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={this.props.onClose}>{at("market.close")}</button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export function Marketplace() {
@@ -85,7 +113,9 @@ export function Marketplace() {
   }, [state.pluginsSurface]);
 
   const kind = KIND_OF_TAB[tab];
-  const { page, error } = useCatalog(kind, query, category);
+  const { page, error, retry } = useCatalog(kind, query, category);
+  // Retry unmounts the focused button; park focus on the dialog so keyboard and screen-reader users keep their place.
+  const retryKeepFocus = () => { dialogRef.current?.focus(); retry(); };
   const chooseTab = (next: MarketplaceTab) => {
     setDetail(null);
     setQuery("");
@@ -205,11 +235,19 @@ export function Marketplace() {
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
-              {error ? <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>
+              {error ? (
+                <div role="alert" className="rounded-xl bg-danger/10 px-3 py-3 text-[12.5px] text-danger">
+                  <p>{at("market.loadFailed")}</p>
+                  <div className="mt-2 flex gap-2">
+                    <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={retryKeepFocus}>{at("market.retry")}</button>
+                    <button type="button" className="rounded-lg px-2.5 py-1 hover:bg-raised" onClick={close}>{at("market.close")}</button>
+                  </div>
+                </div>
+              )
                 : !page ? <Spinner />
-                  : tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
+                  : <GridBoundary resetKey={JSON.stringify([kind, query, category])} onRetry={retryKeepFocus} onClose={close}>{tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
                     : tab === "skills" ? <SkillGrid page={page as CatalogPage<SkillListing>} query={query} revision={revision} onOpen={(id) => setDetail({ kind: "skill", id })} />
-                      : <AppGrid page={page as CatalogPage<AppListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "app", id })} />}
+                      : <AppGrid page={page as CatalogPage<AppListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "app", id })} />}</GridBoundary>}
             </div>
           </div>
         )}

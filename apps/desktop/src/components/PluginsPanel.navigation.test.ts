@@ -53,6 +53,7 @@ const CARDS = 0;
 const CONFIGURED = 3;
 const STATUS = 6;
 const PHASE = 13;
+const CATALOG = 21; // catalogPhase: the last useState of PluginsPanel
 
 type Node = ReactElement<{ children?: ReactNode; "aria-pressed"?: boolean; "data-apps-filter"?: string; onClick?: () => void; [key: string]: unknown }>;
 function nodes(value: ReactNode): Node[] {
@@ -90,6 +91,7 @@ beforeEach(() => {
     [CONFIGURED, true],
     [STATUS, { slack: { connected: true, accounts: [{ id: "ca_1", status: "ACTIVE" }] } }],
     [PHASE, "ready"],
+    [CATALOG, "ready"],
   ]);
 });
 afterEach(() => vi.unstubAllGlobals());

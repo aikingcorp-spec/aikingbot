@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { ExternalLink, KeyRound, Loader2, LockKeyhole, RefreshCw, X } from "lucide-react";
 
-import { credentialConfigPatch, credentialResumeOutcome } from "../../shared/credential-request";
+import { credentialConfigPatch, credentialErrorText, credentialResumeErrorText, credentialResumeOutcome, trustedCredentialCopy } from "../../shared/credential-request";
+import { activeLocale } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 import { api, useStore, type ConfigStatus, type Message } from "@/state/store";
 import { ASK_FIELD, ASK_PRIMARY_BUTTON, ASK_QUIET_BUTTON, AskCard, AskSettledLine, returnFocusToComposer } from "./AskCard";
@@ -19,13 +20,18 @@ export function SecretRequestCard({
 }) {
   const { dispatch } = useStore();
   const secret = message.secret!;
+  // Title and description come from the registry only; older cards stored agent-supplied text.
+  const trusted = trustedCredentialCopy(secret.target);
+  // Only fixed, localized text is ever shown: never a backend, stored or thrown message.
+  const refusalText = (caught: unknown) => credentialErrorText(caught, activeLocale());
+  const [claimId, setClaimId] = useState<string | null>(null);
   const remoteClient = window.ogb?.remoteClient?.active === true;
   const [value, setValue] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedLocally, setSavedLocally] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const endpoint = `/api/bots/${encodeURIComponent(botId)}/secret-cards/${encodeURIComponent(message.id)}`;
-  const error = localError ?? secret.error;
+  const error = localError ?? (secret.error ? credentialResumeErrorText(secret.error, activeLocale()) : undefined);
   const outcome = credentialResumeOutcome(secret);
   const provided = outcome === "provided";
   const declined = outcome === "dismissed";
@@ -41,7 +47,7 @@ export function SecretRequestCard({
       : "Saved securely. Your bot will continue when its current turn settles."
     : declined
       ? "You chose not to provide this credential. AIKINGBOT could not resume the bot yet."
-      : secret.description;
+      : trusted.description;
   const footerLabel = stopped
     ? "Stopped"
     : declined
@@ -54,10 +60,11 @@ export function SecretRequestCard({
 
   if (declined && (secret.resumed || !error)) return null;
 
-  const notifyProvided = async () => {
+  // The claim is passed in by the save that just made it: state set in the same tick is not yet visible here.
+  const notifyProvided = async (activeClaim: string | null) => {
     await api(`${endpoint}/provided`, {
       method: "POST",
-      body: JSON.stringify({ threadId }),
+      body: JSON.stringify({ threadId, ...(activeClaim ? { claimId: activeClaim } : {}) }),
     });
   };
 
@@ -71,7 +78,7 @@ export function SecretRequestCard({
         body: JSON.stringify({ threadId }),
       });
     } catch (error) {
-      setLocalError(error instanceof Error ? error.message : String(error));
+      setLocalError(credentialResumeErrorText(error, activeLocale()));
     } finally {
       setSaving(false);
     }
@@ -83,22 +90,46 @@ export function SecretRequestCard({
     setSaving(true);
     setLocalError(null);
     try {
+      let activeClaim = claimId;
       if (!savedLocally) {
         const next = value.trim();
-        const status: ConfigStatus = window.ogb?.setCredential
-          ? await window.ogb.setCredential(secret.target, next)
-          : await api("/api/config", {
+        let status: ConfigStatus;
+        if (window.ogb?.setCredential) {
+          // Electron admits the card (live, unexpired, this bot/thread/target) before it writes.
+          const saved = await window.ogb.setCredential(secret.target, next, { botId, threadId, messageId: message.id });
+          activeClaim = saved.claimId ?? null;
+          setClaimId(activeClaim);
+          status = saved;
+        } else {
+          // Fallback: claim first, so admission precedes the write; release if the write fails.
+          const claim = await api<{ claimId: string }>(`${endpoint}/claim`, {
+            method: "POST",
+            body: JSON.stringify({ threadId, target: secret.target }),
+          });
+          try {
+            status = await api("/api/config", {
               method: "PUT",
-              body: JSON.stringify(credentialConfigPatch(secret.target, next)),
+              // The card context makes this the server-checked card write, not a plain Settings save.
+              body: JSON.stringify({
+                ...credentialConfigPatch(secret.target, next),
+                credentialCard: { botId, threadId, messageId: message.id, target: secret.target, claimId: claim.claimId },
+              }),
             });
+          } catch (failure) {
+            await api(`${endpoint}/release`, { method: "POST", body: JSON.stringify({ threadId, claimId: claim.claimId }) }).catch(() => {});
+            throw failure;
+          }
+          activeClaim = claim.claimId;
+          setClaimId(activeClaim);
+        }
         dispatch({ type: "configStatus", config: status });
         setValue("");
         setSavedLocally(true);
       }
-      await notifyProvided();
+      await notifyProvided(activeClaim);
       returnFocusToComposer();
     } catch (error) {
-      setLocalError(error instanceof Error ? error.message : String(error));
+      setLocalError(refusalText(error));
     } finally {
       setSaving(false);
     }
@@ -113,8 +144,8 @@ export function SecretRequestCard({
 
   if (superseded) {
     return (
-      <AskSettledLine icon={<X size={13} />} ariaLabel={secret.label}>
-        <span className="text-ink-secondary" title={description}>{secret.label}</span>
+      <AskSettledLine icon={<X size={13} />} ariaLabel={trusted.label}>
+        <span className="text-ink-secondary" title={description}>{trusted.label}</span>
         <span> · Superseded by a newer request</span>
       </AskSettledLine>
     );
@@ -122,8 +153,8 @@ export function SecretRequestCard({
 
   if (stopped && !provided) {
     return (
-      <AskSettledLine icon={<X size={13} />} ariaLabel={secret.label}>
-        <span className="text-ink-secondary" title={secret.description}>{secret.label}</span>
+      <AskSettledLine icon={<X size={13} />} ariaLabel={trusted.label}>
+        <span className="text-ink-secondary" title={trusted.description}>{trusted.label}</span>
         <span> · Stopped</span>
       </AskSettledLine>
     );
@@ -138,7 +169,7 @@ export function SecretRequestCard({
     ) : undefined;
     return (
       <AskSettledLine
-        ariaLabel={secret.label}
+        ariaLabel={trusted.label}
         icon={secret.resumed || stopped
           ? undefined
           : declined
@@ -149,7 +180,7 @@ export function SecretRequestCard({
         action={retry}
         detail={error && <p role="alert" className="ms-[19px] mt-1 text-[12px] text-danger">{error}</p>}
       >
-        <span className="text-ink-secondary" title={description}>{provided ? `${secret.label} saved securely` : secret.label}</span>
+        <span className="text-ink-secondary" title={description}>{provided ? `${trusted.label} saved securely` : trusted.label}</span>
         <span className={declined ? "text-danger" : undefined}> · {footerLabel}</span>
       </AskSettledLine>
     );
@@ -157,9 +188,9 @@ export function SecretRequestCard({
 
   return (
     <AskCard
-      ariaLabel={secret.label}
+      ariaLabel={trusted.label}
       icon={<KeyRound size={15} />}
-      title={secret.label}
+      title={trusted.label}
       explanation={description}
       onDismiss={dismiss}
       dismissLabel="Not now"
@@ -178,9 +209,9 @@ export function SecretRequestCard({
               dir="ltr"
               value={value}
               onChange={(event) => setValue(event.target.value)}
-              placeholder={secret.placeholder}
+              placeholder={trusted.placeholder}
               disabled={saving || savedLocally}
-              aria-label={secret.label}
+              aria-label={trusted.label}
               className={cn(ASK_FIELD, "min-w-[10rem] flex-1")}
             />
             <button type="submit" disabled={saving || (!value.trim() && !savedLocally)} className={ASK_PRIMARY_BUTTON}>
@@ -193,7 +224,7 @@ export function SecretRequestCard({
               <LockKeyhole size={11} /> Stored securely by AIKINGBOT and never added to chat.
             </span>
             <a
-              href={secret.helpUrl}
+              href={trusted.helpUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-accent-text hover:underline"

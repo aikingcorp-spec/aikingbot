@@ -12,7 +12,7 @@ import { denyReason as companionDenial, isCompanionNotice } from "../companion/s
 export type LoopbackTrust = "owner" | "service";
 
 export type RequestAuth =
-  | { kind: "loopback"; scopes: readonly Scope[]; trust?: "service" }
+  | { kind: "loopback"; scopes: readonly Scope[]; trust?: "service"; companion?: true }
   | { kind: "session"; session: SessionRecord; via: "bearer" | "cookie" | "ticket"; scopes: readonly Scope[] };
 
 export interface RequestAuthResult {
@@ -312,7 +312,7 @@ export function requiredScope(method: string, path: string, features: { sharedCo
 }
 
 /** A client may change how a bot looks, never what it may do. */
-const CLIENT_BOT_PATCH_FIELDS = new Set(["unread", "pinned", "pinnedMessageId", "color", "mascotExpression", "mascotBody"]);
+const CLIENT_BOT_PATCH_FIELDS = new Set(["unread", "pinned", "pinnedMessageId", "color", "mascotExpression", "mascotBody", "mascotLook"]);
 export function clientBotPatchViolation(body: unknown): string | null {
   if (!body || typeof body !== "object" || Array.isArray(body)) return "body";
   for (const key of Object.keys(body)) if (!CLIENT_BOT_PATCH_FIELDS.has(key)) return key;
@@ -425,7 +425,8 @@ export function resolveRequestAuth(req: IncomingMessage, options: ResolveOptions
         !/^[\w-]{1,128}$/.test(headerValue(req.headers["x-aikingbot-companion-device"]) ?? "") ||
         (companionDenial({ path, method, authenticated: true }) && !isCompanionNotice(method, path))
       ) return deny(403, "forbidden: invalid companion request");
-      return { auth: { kind: "loopback", scopes: LOOPBACK_SCOPES }, status: 401, error: "" };
+      // Proven by the secret relay token, never by the forgeable identity headers.
+      return { auth: { kind: "loopback", scopes: LOOPBACK_SCOPES, companion: true }, status: 401, error: "" };
     }
     if (
       options.loopbackMutationToken !== undefined &&

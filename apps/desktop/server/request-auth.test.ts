@@ -174,6 +174,13 @@ describe("resolveRequestAuth", () => {
       ["GET", "/api/events"], ["PATCH", "/api/bots/b/profile"],
       ["GET", "/api/bots/b/browser/live"], ["POST", "/api/bots/b/browser/action"],
     ]) expect(check(method, path).auth?.kind, path).toBe("loopback");
+    // F3: only the secret relay token proves a companion; the identity headers alone never do.
+    const proven = check("POST", "/api/bots/b/secret-cards/card/provide").auth;
+    expect(proven).toMatchObject({ kind: "loopback", companion: true });
+    expect((resolveRequestAuth(request({ host: "127.0.0.1:8799", "x-aikingbot-companion": "1", "x-aikingbot-companion-device": "phone-1", "x-aikingbot-desktop-owner": "desktop-secret" }, "POST"), {
+      sessions, cookieName, streamPath: "/api/events", url: new URL("/api/bots/b/read", "http://localhost"),
+      loopbackMutationToken: "desktop-secret", companionMutationToken: "relay-secret",
+    }).auth as { companion?: true } | null)?.companion).toBeUndefined();
     for (const [method, path] of [
       ["POST", "/api/bots/b/browser/live"], ["GET", "/api/bots/b/browser/action"],
       ["POST", "/api/bots/b/browser/restart"],

@@ -1,4 +1,4 @@
-import { CalendarDays, Network, Puzzle, Zap } from "lucide-react";
+import { Blocks, CalendarDays, Network, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
@@ -74,7 +74,7 @@ export function SidebarAppsButton() {
         state.pluginsOpen ? "bg-raised text-accent" : "text-ink-secondary hover:bg-raised/50 hover:text-ink",
       )}
     >
-      <Puzzle size={18} />
+      <Blocks size={18} />
     </button>
   );
 }
@@ -122,7 +122,7 @@ export function SidebarFooterNav({
         tourId="nav-apps"
         iconsOnly={iconsOnly}
         active={state.pluginsOpen}
-        icon={(active) => <Puzzle size={iconSize} className={tone(active)} />}
+        icon={(active) => <Blocks size={iconSize} className={tone(active)} />}
         onClick={() => dispatch({ type: "togglePlugins", open: true })}
       />}
       {advanced && (

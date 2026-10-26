@@ -1,4 +1,5 @@
 import { parseBotPackage, type BotPackageDefinition, type BotPackagePlaybook, type BotPackageSkill, type ParsedBotPackage } from "./bot-package.ts";
+import { portableMascotLook } from "../shared/mascot-look.ts";
 import type { DefaultsPreset, PublishedLibrary } from "./presets.ts";
 import type { PublishedTeam } from "./published-teams.ts";
 import { nextPatchRelease } from "./published-teams.ts";
@@ -207,6 +208,8 @@ export function createBotPackageExport(input: {
     const appearance: BotPackageDefinition["agents"][number]["appearance"] = { color: bot.color };
     if (bot.mascotExpression) appearance.mascotExpression = bot.mascotExpression;
     if (bot.mascotBody) appearance.mascotBody = bot.mascotBody;
+    const look = portableMascotLook(bot.mascotLook);
+    if (look) appearance.mascotLook = look;
     const agent: BotPackageDefinition["agents"][number] = {
       key: idToKey.get(bot.id)!,
       name: bot.name,
@@ -564,6 +567,8 @@ export function createTeamPackageExport(input: TeamExportInput): TeamExportResul
     const appearance: PackageAgent["appearance"] = { color: bot.color };
     if (bot.mascotExpression) appearance.mascotExpression = bot.mascotExpression;
     if (bot.mascotBody) appearance.mascotBody = bot.mascotBody;
+    const look = portableMascotLook(bot.mascotLook);
+    if (look) appearance.mascotLook = look;
     const offered = input.avatars?.[bot.id];
     if (offered !== undefined) {
       const crop = bot.avatarCrop === "rounded" || bot.avatarCrop === "square" ? bot.avatarCrop : "circle";

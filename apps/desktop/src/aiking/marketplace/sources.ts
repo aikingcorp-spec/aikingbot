@@ -7,6 +7,9 @@ import {
 } from "./contract";
 
 export class CatalogDecodeError extends Error {}
+export class CatalogTimeoutError extends Error {}
+/** A hung server must not leave the grid on a spinner forever; 8s is above a slow link's round trip and below "the app froze". */
+export const CATALOG_TIMEOUT_MS = 8_000;
 
 export function decodeCatalog(raw: unknown, origin: string): CatalogDocument {
   const parsed = catalogDocumentSchema.safeParse(raw);
@@ -70,13 +73,29 @@ export class BundledCatalogSource implements CatalogSource {
  */
 export class HttpCatalogSource implements CatalogSource {
   readonly id: string;
-  constructor(private readonly base: string, private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis)) {
+  constructor(
+    private readonly base: string,
+    private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis),
+    private readonly timeoutMs = CATALOG_TIMEOUT_MS,
+  ) {
     this.id = `http:${new URL(base).host}`;
+  }
+  /** Request plus body read share one deadline; the timer is always cleared. */
+  private async withDeadline<T>(url: URL, read: (response: Response) => Promise<T>): Promise<T> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    try {
+      return await read(await this.fetcher(url, { signal: controller.signal }));
+    } catch (error) {
+      if (controller.signal.aborted) throw new CatalogTimeoutError(`${this.id}: request timed out after ${this.timeoutMs}ms`);
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }
   private document: Promise<CatalogDocument> | null = null;
   private load() {
-    this.document ??= this.fetcher(new URL("v1/catalog", this.base))
-      .then(async (response) => {
+    this.document ??= this.withDeadline(new URL("v1/catalog", this.base), async (response) => {
         if (!response.ok) throw new Error(`${this.id}: catalog request failed with ${response.status}`);
         return decodeCatalog(await response.json(), this.id);
       })
@@ -90,12 +109,13 @@ export class HttpCatalogSource implements CatalogSource {
     return page((await this.load()).listings, query);
   }
   async get(id: string) {
-    const response = await this.fetcher(new URL(`v1/catalog/listings/${encodeURIComponent(id)}`, this.base));
-    if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`${this.id}: listing request failed with ${response.status}`);
-    const parsed = listingSchema.safeParse(await response.json());
-    if (!parsed.success) throw new CatalogDecodeError(`${this.id}: listing ${id} is invalid`);
-    return parsed.data;
+    return this.withDeadline(new URL(`v1/catalog/listings/${encodeURIComponent(id)}`, this.base), async (response) => {
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error(`${this.id}: listing request failed with ${response.status}`);
+      const parsed = listingSchema.safeParse(await response.json());
+      if (!parsed.success) throw new CatalogDecodeError(`${this.id}: listing ${id} is invalid`);
+      return parsed.data;
+    });
   }
 }
 

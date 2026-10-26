@@ -114,6 +114,31 @@ describe("mascotBody", () => {
   });
 });
 
+describe("mascotLook (v3, parallel to the legacy mascot fields)", () => {
+  const look = { v: 3, shape: "cloud", color: "#F97316", face: "wink", acc: "beret" } as const;
+
+  it("accepts a whitelisted v3 look and leaves a legacy-only patch untouched", () => {
+    expect(parseBotProfilePatch({ mascotLook: look } as never, true)).toEqual({ ok: true, patch: { mascotLook: look } });
+    expect(parseBotProfilePatch({ mascotBody: "blob" } as never, true)).toEqual({ ok: true, patch: { mascotBody: "blob" } });
+  });
+
+  it("null clears the v3 look so the legacy mascot renders again", () => {
+    expect(parseBotProfilePatch({ mascotLook: null } as never, true)).toEqual({ ok: true, patch: { mascotLook: null } });
+  });
+
+  it.each([
+    ["shape", { ...look, shape: "star" }],
+    ["face", { ...look, face: "angry" }],
+    ["acc", { ...look, acc: "crown" }],
+    ["color", { ...look, color: "#123456" }],
+    ["version", { ...look, v: 2 }],
+    ["extra key", { ...look, glow: true }],
+    ["not an object", "cloud"],
+  ])("rejects an unknown %s", (_name, value) => {
+    expect(parseBotProfilePatch({ mascotLook: value } as never, true).ok).toBe(false);
+  });
+});
+
 describe("soul (standing instructions)", () => {
   it("accepts soul on both the strict and broad boundaries", () => {
     expect(parseBotProfilePatch({ soul: "Be brief." }, true)).toEqual({ ok: true, patch: { soul: "Be brief." } });

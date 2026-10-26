@@ -16,7 +16,7 @@ import {
   Download,
   Gauge,
   ListChecks,
-  Monitor,
+  PanelsTopLeft,
   MoreHorizontal,
   Pin,
   RefreshCw,
@@ -179,7 +179,7 @@ function useChatRows(): ChatRows {
 }
 
 const drawnBot = (bot: Bot) =>
-  [bot.id, bot.name, bot.hidden, bot.color, bot.mascotBody, bot.mascotExpression, bot.avatarUrl, bot.avatarCrop, bot.avatarZoom, bot.avatarFocusX, bot.avatarFocusY].join("\u0001");
+  [bot.id, bot.name, bot.hidden, bot.color, bot.mascotBody, JSON.stringify(bot.mascotLook ?? null), bot.mascotExpression, bot.avatarUrl, bot.avatarCrop, bot.avatarZoom, bot.avatarFocusX, bot.avatarFocusY].join("\u0001");
 
 function useDrawnBots(bots: readonly Bot[]): readonly Bot[] {
   const signature = bots.map(drawnBot).join("\u0002");
@@ -1320,7 +1320,7 @@ export function ChatView({ bot: profile }: { bot: Bot }) {
             )}
             title={t("chat.computer")} aria-label={busy && place === "browser" ? `${t("chat.computer")}, ${t("place.live")}` : t("chat.computer")}
           >
-            <Monitor size={16} />{busy && place === "browser" && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-success" data-testid="computer-button-live" />}
+            <PanelsTopLeft size={16} />{busy && place === "browser" && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-success" data-testid="computer-button-live" />}
           </button>
           <ChatHeaderMenu key={`menu:${bot.threadId}`} bot={bot} messages={messages} findOpen={findOpen} onFind={() => setFindOpen((open) => !open)} />
         </div>

@@ -1,6 +1,7 @@
 // Release (r) and written (w) hashes per part. The value shapes are frozen: change nothing here without a new stamp version.
 import { createHash } from "node:crypto";
 
+import type { MascotLook } from "../shared/mascot-look.ts";
 import { canonicalJson, decodeBase64 } from "../shared/package-format.ts";
 import type {
   PackageAgent,
@@ -33,6 +34,8 @@ export interface LookValue {
   color: string;
   mascotExpression: string | null;
   mascotBody: string | null;
+  /** Present only when a look exists, so hashes of looks recorded before mascotLook stay unchanged. */
+  mascotLook?: MascotLook;
   avatar: string | null;
   crop: string | null;
 }
@@ -43,6 +46,7 @@ export function releaseLook(appearance: PackageAgent["appearance"]): LookValue {
     color: appearance.color,
     mascotExpression: appearance.mascotExpression ?? null,
     mascotBody: appearance.mascotBody ?? null,
+    ...(appearance.mascotLook ? { mascotLook: appearance.mascotLook } : {}),
     avatar: bytes ? sha256Hex(bytes) : null,
     crop: appearance.avatar?.crop ?? null,
   };

@@ -40,6 +40,9 @@ export const vi: Record<string, string> = {
   "market.skillsHint": "Kỹ năng dạy agent một công việc lặp lại. Hãy bật một kỹ năng cho agent từ hồ sơ của nó.",
   "market.noMatch": "Không có mục nào khớp với “{query}”.",
   "market.empty": "Chưa có gì ở đây.",
+  "market.crashed": "Không thể hiển thị mục này.",
+  "market.retry": "Thử lại",
+  "market.loadFailed": "Không thể tải danh mục.",
   "market.creator": "Người tạo",
   "market.category": "Danh mục",
   "market.engine": "Engine",
@@ -430,4 +433,6 @@ export const vi: Record<string, string> = {
   "welcome.signIn": "Đăng nhập bằng email",
   "server.operationFailed": "Thao tác Server thất bại: {code}.",
   "server.provisionFailed": "Cấp phát thất bại",
+  "bot.executionUnverified": "Chưa xác nhận được thay đổi quyền duyệt, bộ nhớ hoặc mô hình nên chưa bắt đầu công việc. Hãy tải lại và kiểm tra.",
+  "bot.savedUnverified": "Đã lưu thay đổi nhưng chưa xác nhận trạng thái mới nhất. Hãy tải lại.",
 };

@@ -7,7 +7,10 @@ import { useStore } from "@/state/store";
 import { BOT_ROLES, type BotRole } from "@/lib/bot-roles";
 import { AIKING_COLORS, AIKING_COLOR_NAMES, type AikingColor } from "@/lib/mascot";
 import { AikingAvatar } from "@/components/Avatar";
+import { MascotLookAvatar } from "@/components/MascotLookAvatar";
+import { MascotLookPicker } from "@/components/BotProfileAvatarCard";
 import { cn } from "@/lib/cn";
+import type { MascotLook } from "../../shared/mascot-look";
 import { MASCOT_BODIES, MASCOT_BODY_IDS, type MascotBodyId } from "../../shared/mascot-bodies";
 import { createAgent, loadAgentDefaults, LocalAutoApprovalNeedsConsent, type AgentDefaults } from "./agent-install";
 import { requestFullAgentDialog, seedNewAgentPatch, takeSeededPatch, takeSeededRole } from "./marketplace-state";
@@ -25,6 +28,8 @@ export function NewAgentScreen() {
   const [job, setJob] = useState("");
   const [color, setColor] = useState<AikingColor>("teal");
   const [body, setBody] = useState<MascotBodyId>("squircle");
+  // Optional v3 look; null keeps the classic mascot chosen by the color and shape rows above.
+  const [look, setLook] = useState<MascotLook | null>(null);
   const [role, setRole] = useState<BotRole | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -76,6 +81,7 @@ export function NewAgentScreen() {
     soul: role?.soul ?? (job.trim() ? `You help with: ${job.trim()}` : ""),
     color,
     mascotBody: body,
+    ...(look ? { mascotLook: look } : {}),
   });
 
   const create = async () => {
@@ -105,7 +111,7 @@ export function NewAgentScreen() {
   return (
     <main data-new-agent-screen className="relative flex h-full min-w-0 flex-1 flex-col bg-app">
       <header className="flex h-10 shrink-0 items-center gap-2 bg-[var(--color-chrome)] px-3">
-        <AikingAvatar color={color} bodyId={body} size={18} animated={false} />
+        {look ? <MascotLookAvatar look={look} size={18} /> : <AikingAvatar color={color} bodyId={body} size={18} animated={false} />}
         <h1 className="text-[14px] font-medium text-ink">{at("newAgent.title")}</h1>
         <button type="button" onClick={close} aria-label={at("newAgent.close")} className="ml-auto flex size-7 items-center justify-center rounded-md text-ink-secondary hover:bg-raised hover:text-ink">
           <X size={15} />
@@ -117,7 +123,7 @@ export function NewAgentScreen() {
           onSubmit={(event) => { event.preventDefault(); void create(); }}
         >
           <div className="flex justify-center">
-            <AikingAvatar color={color} bodyId={body} state="idle" size={64} label={name || at("newAgent.title")} />
+            {look ? <MascotLookAvatar look={look} size={64} /> : <AikingAvatar color={color} bodyId={body} state="idle" size={64} label={name || at("newAgent.title")} />}
           </div>
           <div role="radiogroup" aria-label={at("newAgent.color")} className="mt-6 flex flex-wrap justify-center gap-2">
             {AIKING_COLOR_NAMES.map((candidate) => (
@@ -154,6 +160,7 @@ export function NewAgentScreen() {
               </button>
             ))}
           </div>
+          <MascotLookPicker look={look} disabled={saving} onChange={setLook} />
           <label className="mt-6 text-[12px] font-medium text-ink">
             {at("newAgent.name")}<span aria-hidden="true" className="text-danger"> *</span>
             <input
