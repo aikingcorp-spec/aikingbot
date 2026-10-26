@@ -2928,7 +2928,7 @@
   "vm.setup.step4Recreate": "Thay máy ảo cũ hơn hoặc không an toàn",
   "vm.setup.step4": "Tạo và khởi động Local VM",
   "vm.setup.applePort": "Apple container yêu cầu một cổng máy chủ cụ thể nên AIKINGBOT sẽ không đoán hay mở một cổng. Hãy cài hoặc khởi động Docker hoặc Podman để có các cổng loopback động an toàn theo từng agent.",
-  "vm.setup.recreate": "Xóa và tạo lại",
+  "vm.setup.recreate": "Tạo lại",
   "vm.setup.prepareFirst": "Hãy chuẩn bị màn hình nền Cua đã ghim ở trên trước khi thay máy ảo này.",
   "vm.setup.start": "Khởi động Local VM",
   "vm.stopped.idle": "Đã dừng do không hoạt động để tiết kiệm tài nguyên. Tệp và ứng dụng đã cài của bạn vẫn ở đây.",

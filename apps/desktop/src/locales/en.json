@@ -2928,7 +2928,7 @@
   "vm.setup.step4Recreate": "Replace the older or unsafe VM",
   "vm.setup.step4": "Create and start the Local VM",
   "vm.setup.applePort": "Apple container requires an explicit host port, so AIKINGBOT will not guess or expose one. Install or start Docker or Podman for safe per-bot dynamic loopback ports.",
-  "vm.setup.recreate": "Delete and recreate",
+  "vm.setup.recreate": "Recreate",
   "vm.setup.prepareFirst": "Prepare the pinned Cua desktop above before replacing this VM.",
   "vm.setup.start": "Start Local VM",
   "vm.stopped.idle": "Stopped after inactivity to save resources. Your files and installed apps are still here.",

@@ -123,8 +123,8 @@ describe("computer inventory request wiring", () => {
       setLocale("vi");
       expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirmDestructive)).not.toBeNull();
       expect(ogbConfirm).toHaveBeenLastCalledWith(expect.any(String), { confirm: "Xóa", cancel: "Hủy" });
-      await confirmDestructive("x", "Xóa và tạo lại");
-      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Xóa và tạo lại", cancel: "Hủy" });
+      await confirmDestructive("x", "Tạo lại");
+      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Tạo lại", cancel: "Hủy" });
       setLocale("en");
       await confirmDestructive("x");
       expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Delete", cancel: "Cancel" });
