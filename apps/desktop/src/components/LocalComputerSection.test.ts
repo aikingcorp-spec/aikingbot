@@ -20,6 +20,7 @@ import {
   cloudComputerInventoryState,
   computerInventoryRequest,
   confirmComputerAction,
+  confirmDestructive,
   localVmInventoryState,
   parseLocalVmIdleTimeoutMinutes,
   reconcileCloudInventoryPayload,
@@ -77,9 +78,9 @@ describe("computer inventory request wiring", () => {
     }
   });
 
-  it("does not expose a destructive request when confirmation is cancelled", () => {
+  it("does not expose a destructive request when confirmation is cancelled", async () => {
     const confirm = vi.fn(() => false);
-    const request = confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
+    const request = await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
 
     expect(request).toBeNull();
     expect(confirm).toHaveBeenCalledOnce();
@@ -88,13 +89,40 @@ describe("computer inventory request wiring", () => {
     );
   });
 
-  it("builds the exact confirmed Local VM, Boat, and VPS lifecycle requests", () => {
+  it("VM Delete Cancel (async native dialog) sends no request", async () => {
+    const confirm = vi.fn(async () => false);
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm)).toBeNull();
+    expect(await confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm)).toBeNull();
+    expect(confirm).toHaveBeenCalledTimes(2);
+  });
+
+  it("treats a dismissed or failed confirmation dialog as Cancel", async () => {
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), () => Promise.reject(new Error("closed")))).toBeNull();
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), () => { throw new Error("closed"); })).toBeNull();
+  });
+
+  it("VM Delete confirms through the parented native dialog, not window.confirm", async () => {
+    const ogbConfirm = vi.fn(async () => false);
+    const windowConfirm = vi.fn(() => true);
+    vi.stubGlobal("window", { ogb: { confirm: ogbConfirm }, confirm: windowConfirm });
+    try {
+      expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirmDestructive)).toBeNull();
+      expect(ogbConfirm).toHaveBeenCalledOnce();
+      expect(windowConfirm).not.toHaveBeenCalled();
+      vi.stubGlobal("window", { confirm: windowConfirm });
+      expect(await confirmDestructive("x")).toBe(true);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("builds the exact confirmed Local VM, Boat, and VPS lifecycle requests", async () => {
     const confirm = vi.fn(() => true);
-    const local = confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
-    const cloudDelete = confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm);
-    const cloudSleep = confirmComputerAction(cloudComputerActionPlan("sleep", ownedCloudComputer), confirm);
+    const local = await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
+    const cloudDelete = await confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm);
+    const cloudSleep = await confirmComputerAction(cloudComputerActionPlan("sleep", ownedCloudComputer), confirm);
     const vpsName = "aikingbot-vps-current-123456abcdef";
-    const vps = confirmComputerAction(vpsComputerRemovePlan({
+    const vps = await confirmComputerAction(vpsComputerRemovePlan({
       name: vpsName,
       state: "running",
       ownerBotId: "current-owner",

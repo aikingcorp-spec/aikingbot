@@ -336,12 +336,29 @@ export function vpsComputerRemovePlan(instance: VpsComputerInventoryInstance): C
   };
 }
 
-export function confirmComputerAction(
+type ConfirmFn = (message: string) => boolean | Promise<boolean>;
+
+/**
+ * Destructive computer actions confirm through the parented native dialog (cancelId set, so Cancel and
+ * Escape both resolve false). Bare window.confirm() is unparented in Electron and could not be dismissed.
+ */
+export function confirmDestructive(message: string): Promise<boolean> {
+  const confirm: ConfirmFn = window.ogb?.confirm ? window.ogb.confirm : (m) => window.confirm(m);
+  return Promise.resolve().then(() => confirm(message)).then((ok) => ok === true, () => false);
+}
+
+export async function confirmComputerAction(
   plan: ComputerActionPlan,
-  confirm: (message: string) => boolean,
-): ComputerApiRequest | null {
-  if (plan.confirmation !== null && !confirm(plan.confirmation)) return null;
-  return plan.request;
+  confirm: ConfirmFn,
+): Promise<ComputerApiRequest | null> {
+  if (plan.confirmation === null) return plan.request;
+  let ok = false;
+  try {
+    ok = (await confirm(plan.confirmation)) === true;
+  } catch {
+    ok = false;
+  }
+  return ok ? plan.request : null;
 }
 
 export function VpsComputersCard({
@@ -1105,7 +1122,7 @@ export function LocalComputerSection() {
     return body as Status;
   };
 
-  const confirmAction = (message: string) => window.ogb?.confirm ? window.ogb.confirm(message) : window.confirm(message);
+  const confirmAction = confirmDestructive;
 
   const act = async (action: Action) => {
     if (pending !== null || actionController.current) return;
@@ -1184,9 +1201,9 @@ export function LocalComputerSection() {
       setInventoryError(t("vm.unmanagedError"));
       return;
     }
-    const request = confirmComputerAction(
+    const request = await confirmComputerAction(
       perBotLocalVmDeletePlan(instance),
-      (message) => window.confirm(message),
+      confirmDestructive,
     );
     if (!request) return;
     setDeletingBotId(instance.botId);
@@ -1205,9 +1222,9 @@ export function LocalComputerSection() {
   };
 
   const actOnCloudComputer = async (action: CloudAction, instance: CloudComputerInventoryInstance) => {
-    const request = confirmComputerAction(
+    const request = await confirmComputerAction(
       cloudComputerActionPlan(action, instance),
-      (message) => window.confirm(message),
+      confirmDestructive,
     );
     if (!request) return;
     setCloudPending({ boxId: instance.boxId, action });
@@ -1290,9 +1307,9 @@ export function LocalComputerSection() {
 
   const removeVpsComputer = async (instance: VpsComputerInventoryInstance) => {
     const shortId = vpsComputerShortId(instance.name);
-    const request = confirmComputerAction(
+    const request = await confirmComputerAction(
       vpsComputerRemovePlan(instance),
-      (message) => window.confirm(message),
+      confirmDestructive,
     );
     if (!request) return;
     setVpsRemovingName(instance.name);
