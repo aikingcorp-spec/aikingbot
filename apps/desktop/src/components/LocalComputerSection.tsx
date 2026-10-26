@@ -342,8 +342,10 @@ type ConfirmFn = (message: string) => boolean | Promise<boolean>;
  * Destructive computer actions confirm through the parented native dialog (cancelId set, so Cancel and
  * Escape both resolve false). Bare window.confirm() is unparented in Electron and could not be dismissed.
  */
-export function confirmDestructive(message: string): Promise<boolean> {
-  const confirm: ConfirmFn = window.ogb?.confirm ? window.ogb.confirm : (m) => window.confirm(m);
+export function confirmDestructive(message: string, confirmLabel: string = t("common.delete")): Promise<boolean> {
+  const labels = { confirm: confirmLabel, cancel: t("common.cancel") };
+  const ogb = window.ogb;
+  const confirm: ConfirmFn = ogb?.confirm ? (m) => ogb.confirm(m, labels) : (m) => window.confirm(m);
   return Promise.resolve().then(() => confirm(message)).then((ok) => ok === true, () => false);
 }
 
@@ -1122,7 +1124,7 @@ export function LocalComputerSection() {
     return body as Status;
   };
 
-  const confirmAction = confirmDestructive;
+  const confirmAction = (message: string, label?: string) => confirmDestructive(message, label);
 
   const act = async (action: Action) => {
     if (pending !== null || actionController.current) return;
@@ -1132,7 +1134,7 @@ export function LocalComputerSection() {
     setError(null);
     try {
       if (action === "remove" && !(await confirmAction(t("vm.confirm.deleteShared")))) return;
-      if (action === "recreate" && !(await confirmAction(t("vm.confirm.recreate")))) return;
+      if (action === "recreate" && !(await confirmAction(t("vm.confirm.recreate"), t("vm.setup.recreate")))) return;
       let result: Status;
       if (action === "recreate") {
         await post("remove", controller.signal);

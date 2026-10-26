@@ -116,6 +116,24 @@ describe("computer inventory request wiring", () => {
     }
   });
 
+  it("native Delete dialog gets localized Xóa/Hủy labels (Cancel stays the default in main)", async () => {
+    const ogbConfirm = vi.fn(async () => true);
+    vi.stubGlobal("window", { ogb: { confirm: ogbConfirm }, confirm: vi.fn() });
+    try {
+      setLocale("vi");
+      expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirmDestructive)).not.toBeNull();
+      expect(ogbConfirm).toHaveBeenLastCalledWith(expect.any(String), { confirm: "Xóa", cancel: "Hủy" });
+      await confirmDestructive("x", "Xóa và tạo lại");
+      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Xóa và tạo lại", cancel: "Hủy" });
+      setLocale("en");
+      await confirmDestructive("x");
+      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Delete", cancel: "Cancel" });
+    } finally {
+      setLocale("en");
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("builds the exact confirmed Local VM, Boat, and VPS lifecycle requests", async () => {
     const confirm = vi.fn(() => true);
     const local = await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);

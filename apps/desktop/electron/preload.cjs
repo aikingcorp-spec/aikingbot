@@ -356,7 +356,7 @@ const bridge = {
     revoke: id => ipcRenderer.invoke("sharing:revoke", id),
     activity: id => ipcRenderer.invoke("sharing:activity", id),
   },
-  confirm: message => ipcRenderer.invoke("dialog:confirm", message),
+  confirm: (message, labels) => ipcRenderer.invoke("dialog:confirm", message, labels),
 };
 
 contextBridge.exposeInMainWorld(

@@ -189,7 +189,8 @@ const __APP_VERSION__: string;
         /** This computer's own record of what that server's bots did here, newest first. */
         activity(id: string): Promise<DesktopLendingActivity[]>;
       };
-      confirm(message: string): Promise<boolean>;
+      /** Parented native confirm. Labels are localized by the renderer; Cancel (index 1) stays the default. */
+      confirm(message: string, labels?: { confirm?: string; cancel?: string }): Promise<boolean>;
       getCapabilities(): Promise<DesktopCapabilities>;
       onCapabilitiesChanged(cb: (capabilities: DesktopCapabilities) => void): () => void;
       remoteClient?: {

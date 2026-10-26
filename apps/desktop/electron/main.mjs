@@ -3091,12 +3091,16 @@ ipcMain.handle("lending:stop", localWorkspaceOnly("lending:stop", async () => {
 }));
 
 // window.confirm() has no parent window, so (tiling) window managers cannot center it over the app.
-ipcMain.handle("dialog:confirm", localWorkspaceOnly("dialog:confirm", async (_event, message) => {
+ipcMain.handle("dialog:confirm", localWorkspaceOnly("dialog:confirm", async (_event, message, labels) => {
   if (typeof message !== "string" || !message.trim() || message.length > 4096 || !mainWindow || mainWindow.isDestroyed()) return false;
+  // Optional renderer-localized button labels; anything malformed falls back to the English defaults.
+  const named = labels && typeof labels === "object" ? labels : {};
+  const confirmLabel = (value, fallback) => typeof value === "string" && value.trim() && value.length <= 40 ? value.trim() : fallback;
   const { response } = await dialog.showMessageBox(mainWindow, {
     type: "warning",
     message,
-    buttons: ["OK", "Cancel"],
+    // Index 1 is always Cancel: defaultId/cancelId keep Enter and Escape on the safe choice.
+    buttons: [confirmLabel(named.confirm, "OK"), confirmLabel(named.cancel, "Cancel")],
     defaultId: 1,
     cancelId: 1,
   });
