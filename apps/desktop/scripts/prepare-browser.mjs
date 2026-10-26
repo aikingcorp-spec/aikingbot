@@ -11,6 +11,7 @@ import { isAbsolute, join, relative, resolve, sep, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { browserBundlePaths, browserBundleSpec } from "../server/browser-bundle-release.ts";
 import { executableTarget } from "./prepare-cloudflared.mjs";
+import { extractZip } from "./extract-zip.mjs";
 
 export const BROWSER_LICENSE_FILES = [
   "agent-browser-LICENSE.txt", "LICENSE-axe-core.txt", "LICENSE-axe-core-THIRD-PARTY.txt", "README.md",
@@ -145,6 +146,8 @@ export async function releaseBytes(asset, cacheDirectory) {
 export function browserExtractionCommand(archive, directory, { platform = process.platform, systemRoot = process.env.SystemRoot ?? "C:\\Windows" } = {}) {
   // Git Bash places GNU tar (no ZIP support) on PATH. Windows ships bsdtar;
   // address that exact executable instead of whichever tar appears first.
+  // Linux extracts in-process (no system unzip on minimal build hosts); macOS keeps unzip for framework symlinks.
+  if (platform === "linux") return null;
   return platform === "win32"
     ? { file: win32.join(systemRoot, "System32", "tar.exe"), args: ["-xf", archive, "-C", directory] }
     : { file: "unzip", args: ["-q", archive, "-d", directory] };
@@ -152,6 +155,10 @@ export function browserExtractionCommand(archive, directory, { platform = proces
 
 function extract(archive, directory) {
   const command = browserExtractionCommand(archive, directory);
+  if (!command) {
+    try { extractZip(archive, directory); } catch (error) { throw new Error(`Browser archive extraction failed: ${error.message}`); }
+    return;
+  }
   const result = spawnSync(command.file, command.args, {
     encoding: "utf8", windowsHide: true, timeout: 120_000,
   });
