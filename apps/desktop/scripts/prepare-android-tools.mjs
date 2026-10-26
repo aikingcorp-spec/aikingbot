@@ -1,6 +1,6 @@
 // Stage Google's official Android Platform Tools beside the packaged app so
 // USB phone support works on a clean machine without Homebrew or an SDK.
-import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -36,11 +36,12 @@ try {
     // but git-bash puts GNU tar (cannot read .zip) ahead of it on PATH, so
     // name the System32 binary absolutely — it extracts zips and understands
     // C:\ paths from any shell. unzip is the fallback for the rare Windows
-    // without System32 tar, and the norm everywhere else.
+    // without System32 tar, and the norm everywhere else; build hosts without
+    // unzip fall back to python3's zipfile, then bsdtar.
     const systemTar = join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe");
     const extractors = process.platform === "win32"
       ? [[systemTar, ["-xf", zip, "-C", extraction]], ["unzip", ["-q", zip, "-d", extraction]]]
-      : [["unzip", ["-q", zip, "-d", extraction]]];
+      : [["unzip", ["-q", zip, "-d", extraction]], ["python3", ["-m", "zipfile", "-e", zip, extraction]], ["bsdtar", ["-xf", zip, "-C", extraction]]];
     // spawnSync leaves stdout/stderr undefined when the binary itself is
     // missing (ENOENT) — report result.error instead of crashing on .trim().
     const describeFailure = (r) => r.error?.message ?? (`${r.stderr || r.stdout || ""}`.trim() || `exit status ${r.status}`);
@@ -52,6 +53,10 @@ try {
     }
     if (result.status !== 0) throw new Error(`could not extract Android Platform Tools: ${describeFailure(result)}`);
     cpSync(join(extraction, "platform-tools"), staged, { recursive: true });
+    // python3's zipfile (the fallback on hosts without unzip) drops the exec bit.
+    if (process.platform !== "win32") {
+      for (const name of readdirSync(staged)) if (!name.includes(".")) chmodSync(join(staged, name), 0o755);
+    }
   }
 
   const adb = join(staged, process.platform === "win32" ? "adb.exe" : "adb");

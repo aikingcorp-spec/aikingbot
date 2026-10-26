@@ -6,7 +6,6 @@ dist-native/
 dist-companion/
 release/
 apps/desktop/aiking/core/index.mjs
-apps/desktop/aiking/catalog.json
 apps/desktop/aiking/catalog-build.mjs
 apps/desktop/aiking/catalog-schema.mjs
 apps/desktop/aiking/licenses/

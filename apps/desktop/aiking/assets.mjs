@@ -1,10 +1,15 @@
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync as writeAlways, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const svg = readFileSync(join(root, "public/app-icon.svg"), "utf8");
+// The icon set is committed (Owner-approved artwork, hand-checked per size), so
+// this only fills in a file that is missing; it never overwrites the approved set.
+// Set AIKING_REGENERATE_ICONS=1 to rebuild every size from public/app-icon.svg.
+const regenerate = process.env.AIKING_REGENERATE_ICONS === "1";
+const writeFileSync = (file, data) => { if (regenerate || !existsSync(file)) writeAlways(file, data); };
 const png = size => new Resvg(svg, { fitTo: { mode: "width", value: size } }).render().asPng();
 for (const [file, size] of [["electron/resources/app-icon.png", 256], ["public/apple-touch-icon.png", 180], ["public/app-icon-192.png", 192], ["public/app-icon-512.png", 512]]) {
   const target = join(root, file);
