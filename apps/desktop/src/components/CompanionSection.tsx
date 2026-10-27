@@ -21,6 +21,10 @@ import {
 } from "./PhoneSetupFlow";
 import { companionPairingMode } from "../lib/phone-setup";
 import { revealPhonePairing } from "../lib/phone-pairing";
+import {
+  PhonePairingComingSoonEntry,
+  phonePairingSupported,
+} from "./PhonePairingComingSoon";
 import { ConnectionDetail } from "./ConnectionDetail";
 import { Card, Switch } from "./SettingsPrimitives";
 import { brand } from "../lib/brand";
@@ -210,7 +214,17 @@ export function CompanionSection({ profileEmail = "", focusRequest = 0 }: { prof
               )}
             </div>
           )}
-          <PhoneSetupFlowView controller={c} variant="settings" />
+          {phonePairingSupported() ? (
+            <PhoneSetupFlowView controller={c} variant="settings" />
+          ) : (
+            <div className="mt-3">
+              <PhonePairingComingSoonEntry
+                title={t("phone.pairing.entryTitle")}
+                detail={t("phone.pairing.entryDetail")}
+                actionLabel={t("phone.pairing.showCode")}
+              />
+            </div>
+          )}
         </Card>
       </div>
 

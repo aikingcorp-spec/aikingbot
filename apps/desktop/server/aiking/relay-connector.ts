@@ -24,13 +24,24 @@ export type RelayConnectorOptions = {
   ownerHeader?: () => { name: string; value: string } | null;
   pingMs?: number;
   silenceMs?: number;
+  /**
+   * WebRTC P2P signaling (rc8 §9.1). When the relay forwards a `signal` frame, this runs.
+   * Slice A: optional hook only; Electron host / peer session wires this later.
+   */
+  onSignal?: (frame: Record<string, unknown>) => void;
 };
-export type RelayConnector = { stop(): void; state(): RelayState };
+export type RelayConnector = {
+  stop(): void;
+  state(): RelayState;
+  /** Send a host→viewer signal frame on the relay WebSocket (no-op when offline). */
+  sendSignal(frame: Record<string, unknown>): void;
+};
 
 const MAX_REQUESTS = 200;
 const MAX_SOCKETS = 50;
 const CHUNK_BYTES = 192 * 1024;
 const BACKPRESSURE_BYTES = 4 * 1024 * 1024;
+// eslint-disable-next-line no-control-regex -- path must not carry CR/LF/NUL past the proxy
 const SAFE_PATH = /^\/(?!\/)[^\r\n\u0000]*$/;
 // The server treats a request carrying these as one that came through a proxy and refuses it local trust. The relay has already
 // authenticated the person, so the request is replayed as the local one it is.
@@ -130,6 +141,10 @@ export function startRelayConnector(options: RelayConnectorOptions): RelayConnec
         return;
       }
       case "wclose": { const peer = sockets.get(id); sockets.delete(id); try { peer?.close(typeof frame.code === "number" && frame.code >= 1000 && frame.code < 5000 && frame.code !== 1005 && frame.code !== 1006 ? frame.code : 1000); } catch { /* closed */ } return; }
+      case "signal": {
+        if (typeof options.onSignal === "function") options.onSignal(frame);
+        return;
+      }
       default: return;
     }
   }
@@ -208,6 +223,10 @@ export function startRelayConnector(options: RelayConnectorOptions): RelayConnec
   connect();
   return {
     state: () => state,
+    sendSignal(frame: Record<string, unknown>) {
+      if (!frame || typeof frame !== "object") return;
+      send({ ...frame, t: "signal", from: "host" });
+    },
     stop() {
       stopped = true; state = "off";
       clearTimeout(retry); clearInterval(ping);

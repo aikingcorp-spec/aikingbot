@@ -12,6 +12,8 @@ import { AIKING_COLORS, type AikingColor, type AikingMotion, type AikingState } 
 import type { CursorAvatarHandle } from "./CursorAvatar";
 import { avatarCropRadius, botAvatarProfile, clampAvatarFocus, clampAvatarZoom, type BotAvatarCrop } from "../../shared/bot-avatar";
 import type { MascotBodyId } from "../../shared/mascot-bodies";
+import { resolveMascotLook, type MascotLook } from "../../shared/mascot-look";
+import { MascotLookAvatar } from "./MascotLookAvatar";
 
 export const EYE_SCALE = 1.12;
 export const MOUTH_WEIGHT = 11;
@@ -231,6 +233,8 @@ export type BotAvatarProps = Omit<AikingAvatarProps, "color" | "gradient"> & {
     avatarFocusX?: number;
     avatarFocusY?: number;
     mascotBody?: MascotBodyId | null;
+    /** Versioned v3 look. Drawn instead of the legacy mascot whenever it is valid; legacy fields stay the fallback. */
+    mascotLook?: MascotLook | null;
   };
 };
 
@@ -262,6 +266,9 @@ export function BotAvatar({ bot, size = 44, label, readable = false, ...mascotPr
   });
 
   if (outcome !== "flatImage") {
+    const look = resolveMascotLook(bot.mascotLook);
+    // The v3 look is a flat drawing with no task state: it does not borrow expressions or motion from the legacy mascot.
+    if (look) return <MascotLookAvatar look={look} size={size} label={label ?? bot.name} />;
     return (
       <AikingAvatar
         bodyId={bot.mascotBody ?? undefined}

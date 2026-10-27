@@ -1,7 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ConfigStatus } from "@/state/store";
+import { setLocale } from "@/lib/i18n";
 import { WorkspacesSection, WorkspacesTable, workspacesAvailable, type FleetView } from "./WorkspacesSection";
 
 const fixture = vi.hoisted(() => ({ config: null as ConfigStatus | null }));
@@ -9,13 +10,17 @@ vi.mock("@/state/store", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/state/store")>(),
   useStore: () => ({ state: { config: fixture.config }, dispatch: () => {} }),
 }));
-afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => setLocale("en"));
+afterEach(() => {
+  setLocale("en");
+  vi.unstubAllGlobals();
+});
 
 function config(features: string[], fleet: boolean): ConfigStatus {
   return {
     composio: { configured: false }, box: { configured: false }, vps: { configured: false, sshAlias: "" },
     rooms: { turnTimeoutMinutes: 30 }, localVm: { mode: "shared", maxInstances: 1 },
-    edition: { edition: features.length ? "enterprise" : "oss", features }, fleet: { available: fleet },
+    edition: { edition: features.length ? "enterprise" : "oss", features }, fleet: fleet ? { available: true } : { available: false, reason: "no-agent", fix: "run fleet init" },
   } as ConfigStatus;
 }
 
@@ -37,12 +42,36 @@ describe("workspaces section", () => {
     expect(html).not.toContain("<button");
     expect(html).not.toContain(">Running<");
   });
-  it("appears only with the admin entitlement and a fleet agent on this server", () => {
-    expect(workspacesAvailable(config([], true))).toBe(false);
-    expect(workspacesAvailable(config(["admin"], false))).toBe(false);
-    expect(workspacesAvailable(config(["admin"], true))).toBe(true);
-    fixture.config = config(["admin"], false);
-    expect(renderToStaticMarkup(createElement(WorkspacesSection, { load: async () => fleet }))).toBe("");
+  it("appears for open-source and enterprise once fleet status is reported, and shows why when unavailable", () => {
+    // Behaviour change: OSS no longer hides Workspaces behind the admin entitlement.
+    expect(workspacesAvailable(config([], true))).toBe(true);
+    expect(workspacesAvailable(config([], false))).toBe(true);
+    expect(workspacesAvailable(config(["admin"], false))).toBe(true);
+    expect(workspacesAvailable(null)).toBe(false);
+    fixture.config = config([], false);
+    const blocked = renderToStaticMarkup(createElement(WorkspacesSection, { load: async () => fleet }));
+    expect(blocked).toContain("Team servers are configured but the agent is not running.");
+    expect(blocked).toContain("Start the team-server agent service as root on the host.");
+    expect(blocked).not.toContain("no-agent");
+  });
+
+  it("shows fully Vietnamese reason and fix lines with no raw codes or English in VI locale", () => {
+    setLocale("vi");
+    fixture.config = {
+      ...config([], false),
+      fleet: {
+        available: false,
+        reason: "no-entitlement",
+        fix: "install the enterprise layer (AIKING_ENTERPRISE_DIR) and set AIKING_LICENSE_KEY, then restart",
+      },
+    } as ConfigStatus;
+    const html = renderToStaticMarkup(createElement(WorkspacesSection, { load: async () => fleet }));
+    expect(html).toContain("Chưa cài lớp doanh nghiệp hoặc thiếu giấy phép.");
+    expect(html).toContain("Cài lớp doanh nghiệp và đặt khóa giấy phép, rồi khởi động lại.");
+    expect(html).not.toContain("no-entitlement");
+    expect(html).not.toMatch(/install the enterprise layer/i);
+    expect(html).not.toContain("AIKING_ENTERPRISE_DIR");
+    expect(html).not.toContain("AIKING_LICENSE_KEY");
   });
 
   it("lists workspaces with their state, this month's cost and billable, and the actions that fit", () => {

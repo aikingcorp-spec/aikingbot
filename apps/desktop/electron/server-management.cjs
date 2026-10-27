@@ -28,6 +28,7 @@ function createServerActions({ readState, allowed, packaged, companion, confirm,
       if (!entry) throw new Error("Unknown server.");
       value = entry.id; label = entry.name;
     } else if (action === "create") {
+      // eslint-disable-next-line no-control-regex -- reject ASCII controls in server display names
       if (!packaged() || typeof input !== "string" || !input.trim() || input.trim().length > 60 || /[\u0000-\u001f\u007f]/.test(input)) throw new Error("Invalid server name.");
       value = input.trim(); label = value;
     } else {

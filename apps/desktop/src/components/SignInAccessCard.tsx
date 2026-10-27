@@ -9,6 +9,8 @@ import { Card } from "./SettingsPrimitives";
 export interface SignInLists {
   admins: string[];
   members: string[];
+  /** Max invited seats (admins+members except owner). Default 5 when omitted. */
+  inviteLimit?: number;
 }
 
 export function normalizeAccessEntry(raw: string): string | null {
@@ -21,11 +23,13 @@ export function normalizeAccessEntry(raw: string): string | null {
 export function withEntry(lists: SignInLists, entry: string, role: "admin" | "member"): SignInLists {
   const admins = lists.admins.filter((item) => item !== entry);
   const members = lists.members.filter((item) => item !== entry);
-  return role === "admin" ? { admins: [...admins, entry], members } : { admins, members: [...members, entry] };
+  const next = role === "admin" ? { admins: [...admins, entry], members } : { admins, members: [...members, entry] };
+  return lists.inviteLimit === undefined ? next : { ...next, inviteLimit: lists.inviteLimit };
 }
 
 export function withoutEntry(lists: SignInLists, entry: string): SignInLists {
-  return { admins: lists.admins.filter((item) => item !== entry), members: lists.members.filter((item) => item !== entry) };
+  const next = { admins: lists.admins.filter((item) => item !== entry), members: lists.members.filter((item) => item !== entry) };
+  return lists.inviteLimit === undefined ? next : { ...next, inviteLimit: lists.inviteLimit };
 }
 
 const input = "w-full rounded-md border border-hairline/40 bg-inset px-3 py-2 text-[14px] text-ink outline-none focus:border-accent-border";
@@ -45,7 +49,7 @@ export function SignInAccessCard() {
     try {
       const config = await api("/api/config");
       const current = config?.signIn;
-      setLists({ admins: Array.isArray(current?.admins) ? current.admins : [], members: Array.isArray(current?.members) ? current.members : [] });
+      setLists({ admins: Array.isArray(current?.admins) ? current.admins : [], members: Array.isArray(current?.members) ? current.members : [], inviteLimit: typeof current?.inviteLimit === "number" ? current.inviteLimit : undefined });
       const domain = await api("/api/settings/custom-domain").catch(() => null);
       setPublicUrl(typeof domain?.publicUrl === "string" ? domain.publicUrl : null);
     } catch (e) {

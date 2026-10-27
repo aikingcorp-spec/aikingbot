@@ -20,6 +20,7 @@ import {
   cloudComputerInventoryState,
   computerInventoryRequest,
   confirmComputerAction,
+  confirmDestructive,
   localVmInventoryState,
   parseLocalVmIdleTimeoutMinutes,
   reconcileCloudInventoryPayload,
@@ -77,9 +78,9 @@ describe("computer inventory request wiring", () => {
     }
   });
 
-  it("does not expose a destructive request when confirmation is cancelled", () => {
+  it("does not expose a destructive request when confirmation is cancelled", async () => {
     const confirm = vi.fn(() => false);
-    const request = confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
+    const request = await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
 
     expect(request).toBeNull();
     expect(confirm).toHaveBeenCalledOnce();
@@ -88,13 +89,58 @@ describe("computer inventory request wiring", () => {
     );
   });
 
-  it("builds the exact confirmed Local VM, Boat, and VPS lifecycle requests", () => {
+  it("VM Delete Cancel (async native dialog) sends no request", async () => {
+    const confirm = vi.fn(async () => false);
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm)).toBeNull();
+    expect(await confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm)).toBeNull();
+    expect(confirm).toHaveBeenCalledTimes(2);
+  });
+
+  it("treats a dismissed or failed confirmation dialog as Cancel", async () => {
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), () => Promise.reject(new Error("closed")))).toBeNull();
+    expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), () => { throw new Error("closed"); })).toBeNull();
+  });
+
+  it("VM Delete confirms through the parented native dialog, not window.confirm", async () => {
+    const ogbConfirm = vi.fn(async () => false);
+    const windowConfirm = vi.fn(() => true);
+    vi.stubGlobal("window", { ogb: { confirm: ogbConfirm }, confirm: windowConfirm });
+    try {
+      expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirmDestructive)).toBeNull();
+      expect(ogbConfirm).toHaveBeenCalledOnce();
+      expect(windowConfirm).not.toHaveBeenCalled();
+      vi.stubGlobal("window", { confirm: windowConfirm });
+      expect(await confirmDestructive("x")).toBe(true);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("native Delete dialog gets localized Xóa/Hủy labels (Cancel stays the default in main)", async () => {
+    const ogbConfirm = vi.fn(async () => true);
+    vi.stubGlobal("window", { ogb: { confirm: ogbConfirm }, confirm: vi.fn() });
+    try {
+      setLocale("vi");
+      expect(await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirmDestructive)).not.toBeNull();
+      expect(ogbConfirm).toHaveBeenLastCalledWith(expect.any(String), { confirm: "Xóa", cancel: "Hủy" });
+      await confirmDestructive("x", "Tạo lại");
+      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Tạo lại", cancel: "Hủy" });
+      setLocale("en");
+      await confirmDestructive("x");
+      expect(ogbConfirm).toHaveBeenLastCalledWith("x", { confirm: "Delete", cancel: "Cancel" });
+    } finally {
+      setLocale("en");
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("builds the exact confirmed Local VM, Boat, and VPS lifecycle requests", async () => {
     const confirm = vi.fn(() => true);
-    const local = confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
-    const cloudDelete = confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm);
-    const cloudSleep = confirmComputerAction(cloudComputerActionPlan("sleep", ownedCloudComputer), confirm);
+    const local = await confirmComputerAction(perBotLocalVmDeletePlan(cloudVm), confirm);
+    const cloudDelete = await confirmComputerAction(cloudComputerActionPlan("delete", ownedCloudComputer), confirm);
+    const cloudSleep = await confirmComputerAction(cloudComputerActionPlan("sleep", ownedCloudComputer), confirm);
     const vpsName = "aikingbot-vps-current-123456abcdef";
-    const vps = confirmComputerAction(vpsComputerRemovePlan({
+    const vps = await confirmComputerAction(vpsComputerRemovePlan({
       name: vpsName,
       state: "running",
       ownerBotId: "current-owner",
@@ -168,7 +214,7 @@ describe("Local VM inventory UI", () => {
     expect(markup).toContain("Current destination: Cloud");
     expect(markup).toContain("Current destination: Off");
     expect(markup).toContain("In use");
-    expect(markup).toContain("Stop this bot&#x27;s turn before deleting its desktop.");
+    expect(markup).toContain("Stop this agent&#x27;s turn before deleting its desktop.");
     expect(markup).toContain("disabled=\"\"");
     expect(markup).not.toMatch(/viewer_url|workspace_path|password=/);
   });
@@ -269,9 +315,9 @@ describe("cloud computer inventory UI", () => {
     });
 
     expect(markup).toContain("Research");
-    expect(markup).toContain("Owned by this bot");
+    expect(markup).toContain("Owned by this agent");
     expect(markup).toContain("Orphaned computer");
-    expect(markup).toContain("Its bot no longer exists");
+    expect(markup).toContain("Its agent no longer exists");
     expect(markup).toContain("Running");
     expect(markup).toContain("Sleeping");
     expect(markup).toContain("ogb-current0-a1b2c3");
@@ -282,7 +328,7 @@ describe("cloud computer inventory UI", () => {
     const markup = renderCard({ instances: [{ ...ownedCloudComputer, inUse: true }] });
 
     expect(markup).toContain("In use");
-    expect(markup).toContain("Stop this bot&#x27;s work before changing its computer.");
+    expect(markup).toContain("Stop this agent&#x27;s work before changing its computer.");
     expect(markup.match(/disabled=""/g)).toHaveLength(2);
   });
 
@@ -295,18 +341,18 @@ describe("cloud computer inventory UI", () => {
   it("keeps disconnected, unavailable, and empty states distinct", () => {
     const disconnected = renderCard({ configured: false });
     expect(disconnected).toContain("Boat is not connected");
-    expect(disconnected).not.toContain("No AIKING-managed cloud computers found");
+    expect(disconnected).not.toContain("No AIKINGBOT-managed cloud computers found");
 
     const unavailable = renderCard({ unavailableReason: "boat.dev is unavailable" });
     expect(unavailable).toContain("boat.dev is unavailable");
-    expect(unavailable).not.toContain("No AIKING-managed cloud computers found");
+    expect(unavailable).not.toContain("No AIKINGBOT-managed cloud computers found");
 
     const endpointFailure = renderCard({ configured: null, unavailableReason: "Computer inventory could not load" });
     expect(endpointFailure).toContain("Computer inventory could not load");
     expect(endpointFailure).not.toContain("Boat is not connected");
 
     const empty = renderCard();
-    expect(empty).toContain("No AIKING-managed cloud computers found");
+    expect(empty).toContain("No AIKINGBOT-managed cloud computers found");
   });
 
   it("uses honest state labels", () => {
@@ -476,9 +522,9 @@ describe("VPS computer inventory UI", () => {
 
     expect(markup).toContain("SSH host: production-vps");
     expect(markup).toContain("Research");
-    expect(markup).toContain("Owned by this bot");
+    expect(markup).toContain("Owned by this agent");
     expect(markup).toContain("Orphaned VPS computer · ID ef123456");
-    expect(markup).toContain("Its bot no longer exists");
+    expect(markup).toContain("Its agent no longer exists");
     expect(markup).toContain("Running");
     expect(markup).toContain("Stopped");
     expect(markup).not.toMatch(new RegExp(`${ownedVps.name}|${orphanName}|containerId|VNC_PW|password`));
@@ -493,7 +539,7 @@ describe("VPS computer inventory UI", () => {
     const markup = renderCard({ instances: [{ ...ownedVps, inUse: true }] });
 
     expect(markup).toContain("In use");
-    expect(markup).toContain("Stop this bot&#x27;s work before removing its VPS computer.");
+    expect(markup).toContain("Stop this agent&#x27;s work before removing its VPS computer.");
     expect(markup).toContain("disabled=\"\"");
   });
 
@@ -506,7 +552,7 @@ describe("VPS computer inventory UI", () => {
   it("keeps disconnected, unavailable, and empty states distinct", () => {
     expect(renderCard({ configured: false, sshAlias: null })).toContain("VPS is not configured");
     expect(renderCard({ unavailableReason: "SSH host cannot be reached" })).toContain("SSH host cannot be reached");
-    expect(renderCard()).toContain("No AIKING-managed VPS computers found");
+    expect(renderCard()).toContain("No AIKINGBOT-managed VPS computers found");
   });
 
   it("uses honest status labels", () => {

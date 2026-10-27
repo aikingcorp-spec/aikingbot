@@ -2,7 +2,7 @@
 // (`<restore key>-<session>.json.enc`, cli/src/native/state.rs: AES-256-GCM under SHA-256 of the key text, 12-byte nonce
 // first, 16-byte tag last); signing out clears both. The key stays in this server process; no bot or page ever sees it.
 import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -63,6 +63,27 @@ export function encryptBrowserState(text: string, key: string): Buffer {
   const cipher = createCipheriv("aes-256-gcm", stateKey(key), nonce);
   const body = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
   return Buffer.concat([nonce, body, cipher.getAuthTag()]);
+}
+
+/** Re-seal every `.json.enc` agent-browser state file under `directory` with `nextKey`. Skips files that fail to open. */
+export function reencryptAgentBrowserStates(directory: string, previousKey: string, nextKey: string): number {
+  if (!existsSync(directory)) return 0;
+  let count = 0;
+  const walk = (dir: string): void => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) { walk(path); continue; }
+      if (!entry.name.endsWith(".json.enc")) continue;
+      try {
+        writeState(path, readState(path, previousKey), nextKey);
+        count++;
+      } catch {
+        // Leave a bad file alone so an operator can inspect it.
+      }
+    }
+  };
+  walk(directory);
+  return count;
 }
 
 function isCookie(value: unknown): value is Cookie {

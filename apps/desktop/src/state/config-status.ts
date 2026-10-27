@@ -23,8 +23,10 @@ export interface ConfigStatus {
     features: string[];
     license?: { expiresAt: string; expiresInDays: number; graceEndsAt?: string };
   };
-  /** a fleet agent exists on this server (Settings → Workspaces) */
-  fleet?: { available: boolean };
+  /** a fleet agent exists on this server (Settings → Workspaces). When unavailable, `reason`/`fix` explain why. */
+  fleet?: { available: boolean; reason?: string; fix?: string };
+  /** Where vault data keys live. `banner` is set while the OS keychain is not in use. */
+  vault?: { backend: "keychain" | "secret-tool" | "fallback"; banner?: string };
   budgets?: { monthlyUsd?: number; warnAtPercent?: number };
   billing?: { currency?: string; prices?: Record<string, { inputPerMillion: number; outputPerMillion: number; cachedInputPerMillion?: number }> };
   composio: { configured: boolean; mode?: "managed" | "self-hosted" | "unavailable" };

@@ -21,6 +21,11 @@ import { ChatProtocolError, ChatReasoningDetails, ChatToolCalls, object, type Ch
 import { appendNative } from "./native.ts";
 import { classifyError, computeBackoff, interruptibleDelay, RETRY_MAX_ATTEMPTS } from "./retry.ts";
 import { classifyContinuable, writeTurnHandoff } from "../turn-continuation.ts";
+import { modelProfile } from "../harness/model-profile.ts";
+import { HARNESS_SEARCH_TOOL, ToolRouter } from "../harness/tool-router.ts";
+import { PROMPT_BUDGET_TOKENS, estimateTokens, measurePromptBudget, type PromptBudget } from "../harness/prompt-budget.ts";
+import { CLIMBING_KINDS, classifyToolError, ladderNote } from "../harness/error-ladder.ts";
+import { createVerifyState, observeTool, owesReadBack, verifyReport, VERIFY_NUDGE } from "../harness/verify-after-act.ts";
 import { KEY_REJECTED_REASON, keyRejected, noteKeyAccepted, noteKeyRejected, rejectsKey } from "../key-rejections.ts";
 
 export interface OpenAIChatMessage {
@@ -36,6 +41,7 @@ export interface OpenAIChatMessage {
 interface Usage {
   input: number;
   output: number;
+  cachedInput?: number;
 }
 
 interface Completion {
@@ -127,7 +133,8 @@ interface RuntimeOptions<Config> {
 
 const usageFrom = (usage: CompletionJson["usage"]): Usage | null =>
   usage
-    ? { input: usage.prompt_tokens ?? 0, output: usage.completion_tokens ?? 0 }
+    ? { input: usage.prompt_tokens ?? 0, output: usage.completion_tokens ?? 0,
+      ...(typeof usage.prompt_tokens_details?.cached_tokens === "number" ? { cachedInput: usage.prompt_tokens_details.cached_tokens } : {}) }
     : null;
 
 const completionUsage = (json: CompletionJson) => json.usage ?? json.x_groq?.usage;
@@ -585,6 +592,11 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
       const denials: string[] = [];
       const seenCalls = new Set<string>();
       let nudged = false;
+      const calls: Array<{ input: number; output: number; cachedInput?: number; retries: number }> = [];
+      let retries = 0;
+      let promptBudget: PromptBudget | undefined;
+      const verify = createVerifyState();
+      let router: ToolRouter | undefined;
       try {
         const parsed = parseToolScope(turn.toolScope);
         if (!parsed.ok) throw new Error(parsed.error);
@@ -596,12 +608,22 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
         if (questionAllowed && !tools.definitions.some((definition) => definition.function.name === ASK_USER_TOOL)) {
           tools.definitions.push(ASK_USER_TOOL_DEFINITION);
         }
+        // 1.2/1.7: the tier caps what is listed; the rest stays mounted and is reached through search_tools.
+        const profile = modelProfile(model, options.models().options);
+        const systemText = messages.filter((message) => message.role === "system").map((message) => typeof message.content === "string" ? message.content : "").join("\n");
+        // 1.1: listed tools may use what the system prompt leaves of the budget, for every round of the turn.
+        const maxToolTokens = Math.max(0, PROMPT_BUDGET_TOKENS - estimateTokens(systemText));
+        router = new ToolRouter(tools.definitions, profile.maxTools, { maxToolTokens });
         for (let round = 0; round < MAX_CHAT_ROUNDS; round++) {
           abort.signal.throwIfAborted();
             // Between rounds, never inside a tool batch.
           const parked = turnEntry.asides.splice(0);
           if (parked.length) messages.push({ role: "user", content: parked.join("\n\n") });
-          native("out", options.nativeLog.outgoing(turn, messages, model, tools.definitions));
+          const listed = tools.definitions.length ? router.visible() : tools.definitions;
+          // The worst round is what the turn reports, not only the first.
+          const measured = measurePromptBudget(systemText, listed);
+          if (!promptBudget || measured.totalTokens > promptBudget.totalTokens) promptBudget = measured;
+          native("out", options.nativeLog.outgoing(turn, messages, model, listed));
           let attempt = 0;
           let completion: Completion;
           for (;;) {
@@ -628,7 +650,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
                 streamed = true;
                 if (streamKind === "assistant_text") answerStreamed = true;
                 delta(text, streamKind);
-              }, tools.definitions);
+              }, tools.definitions.length && router ? router.visible() : tools.definitions);
               delta("", "assistant_text", true);
               delta("", "reasoning_text", true);
               break;
@@ -645,6 +667,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
               if (error instanceof RejectedToolCallError) {
                 native("in", { refused: "tool_use_failed", attempt: attempt + 1, error: error.refusal });
                 if (!answerStreamed && !abort.signal.aborted && attempt < RETRY_MAX_ATTEMPTS - 1) {
+                  retries += 1;
                   emit({ ...base(turn.threadId, turnId), type: "turn.retrying", attempt: ++attempt, delayMs: 0, reason: "tool_use_failed" });
                   continue;
                 }
@@ -655,12 +678,14 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
                   error instanceof UnsupportedChatToolsError && verdict.reason === "invalid_request") {
                 optionalQuestionOnly = false;
                 tools.definitions.length = 0;
+                router = new ToolRouter(tools.definitions, profile.maxTools, { maxToolTokens });
                 continue;
               }
               // Once a call has been handled, never replay it through a turn retry.
               if (options.retryScale === undefined || abort.signal.aborted || streamed || seenCalls.size ||
                   error instanceof ChatProtocolError || !verdict.transient || attempt >= RETRY_MAX_ATTEMPTS - 1) throw error;
               const delayMs = computeBackoff(attempt++);
+              retries += 1;
               emit({ ...base(turn.threadId, turnId), type: "turn.retrying", attempt, delayMs, reason: verdict.reason });
               await interruptibleDelay(delayMs * options.retryScale, abort.signal).promise;
               abort.signal.throwIfAborted();
@@ -668,8 +693,10 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
           }
           native("in", options.nativeLog.incoming(completion));
           if (completion.usage) {
+            calls.push({ ...completion.usage, retries: attempt });
             usage.input += completion.usage.input;
             usage.output += completion.usage.output;
+            if (completion.usage.cachedInput !== undefined) usage.cachedInput = (usage.cachedInput ?? 0) + completion.usage.cachedInput;
             hasUsage = true;
             emit({ ...base(turn.threadId, turnId), type: "thread.token-usage.updated", ...usage });
           }
@@ -685,6 +712,12 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
             if (options.nudgeAnnouncedAction && !nudged && tools.definitions.length && announcesAction(completion.text)) {
               nudged = true;
               messages.push({ role: "assistant", content: completion.text }, { role: "user", content: NUDGE_ANNOUNCED_ACTION });
+              continue;
+            }
+            // 1.8: a send, submit or write is read back before the turn may end on it.
+            if (turn.harness?.verifyAfterAct && !verify.nudged && !toolFailed && owesReadBack(verify)) {
+              verify.nudged = true;
+              messages.push({ role: "assistant", content: completion.text }, { role: "user", content: VERIFY_NUDGE });
               continue;
             }
             if (toolFailed) {
@@ -711,6 +744,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
             abort.signal.throwIfAborted();
             let result: ChatToolResult;
             let started = false;
+            let gateDenied = false;
             let fatal: Error | undefined;
             try {
               let args: unknown;
@@ -718,7 +752,13 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
               catch { throw new ChatProtocolError("tool arguments are not complete JSON"); }
               if (!object(args)) throw new ChatProtocolError("tool arguments must be a JSON object");
               const inputPreview = preview(args);
-              if (call.function.name === ASK_USER_TOOL) {
+              if (router.routed && call.function.name === HARNESS_SEARCH_TOOL && !router.isMounted(HARNESS_SEARCH_TOOL)) {
+                emit({ ...base(turn.threadId, turnId), type: "item.started", itemType: "tool", itemId: call.id,
+                  title: HARNESS_SEARCH_TOOL, ...(inputPreview ? { input: inputPreview } : {}),
+                });
+                started = true;
+                result = await router.search(args as Record<string, unknown>);
+              } else if (call.function.name === ASK_USER_TOOL) {
                 if (!questionAllowed || !allowsTool(scope, { kind: "native", name: ASK_USER_TOOL })) throw new Error("Tool selection excludes this tool");
                 // A question goes before the gate: Full would auto-run an unanswered ask, Ask would show Allow/Deny.
                 const questions = parseAskQuestions(args);
@@ -741,6 +781,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
                 }
               } else {
                 tools.validate(call.function.name, args);
+                router.enable(call.function.name);
                 const shown = tools.view(call.function.name, args as Record<string, unknown>);
                 const shownPreview = shown.input === args ? inputPreview : preview(shown.input);
                 // This runtime has no provider reviewer, so Full access is honoured here.
@@ -767,6 +808,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
                   }
                 } else {
                   denials.push(shown.title);
+                  gateDenied = true;
                   result = { ok: false, text: "Permission denied or expired; the tool was not executed." };
                 }
               }
@@ -780,8 +822,16 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
             const text = safeText(result.text);
             const output = preview({ ok: result.ok, result: text });
             emit({ ...base(turn.threadId, turnId), type: "item.completed", itemType: "tool", itemId: call.id, ok: result.ok, output });
-            if (!result.ok) toolFailed = true;
-            messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify({ ok: result.ok, result: text }) });
+            let typedNote = "";
+            if (!result.ok) {
+              // 1.4: a capability gap climbs the ladder; a person's "no" and real failures still end the turn.
+              // The in-app approval gate's "no" always ends the turn; a tool's own refusal text is classified.
+              const typed = turn.harness?.errorLadder && !gateDenied ? classifyToolError(call.function.name, text) : undefined;
+              if (typed && typed.recoverable && typed.next && CLIMBING_KINDS.includes(typed.kind)) typedNote = ladderNote(typed);
+              else toolFailed = true;
+            }
+            observeTool(verify, call.function.name, result.ok);
+            messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify({ ok: result.ok, result: text + typedNote }) });
             screenshotParts.push(...chatToolImages(call.id, result.images));
             abort.signal.throwIfAborted();
             if (fatal) throw fatal;
@@ -826,6 +876,9 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
         emit({ ...base(turn.threadId, turnId), type: "turn.completed", ok, stopReason, cost: null,
           ...(hasUsage && (options.includeUsageInCompleted || seenCalls.size) ? { usage } : {}),
           ...(denials.length ? { denials } : {}),
+          ...(calls.length ? { calls, retries } : {}),
+          ...(promptBudget ? { promptBudget: { ...promptBudget, routed: router?.routed ?? false, evicted: router?.evicted().length ?? 0 } } : {}),
+          ...(verifyReport(verify) ? { verification: verifyReport(verify) } : {}),
         });
         resolveDone();
       }

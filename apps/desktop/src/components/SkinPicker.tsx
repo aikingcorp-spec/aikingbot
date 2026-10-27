@@ -2,8 +2,13 @@
 // subtree.
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { at, type AikingKey } from "@/aiking/strings";
 import { SKINS, applySkin, readSkin, type SkinId } from "@/lib/skins";
 import { cn } from "@/lib/cn";
+
+function skinTagline(id: SkinId): string {
+  return at(`skin.tagline.${id}` as AikingKey);
+}
 
 function Miniature({ skin }: { skin: SkinId }) {
   return (
@@ -54,7 +59,7 @@ export function SkinPicker() {
   );
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3">
       {SKINS.map((skin) => {
         const selected = skin.id === active;
         return (
@@ -78,7 +83,7 @@ export function SkinPicker() {
               <div className="min-w-0 flex-1">
                 <div className="text-[13px] font-medium text-ink">{skin.name}</div>
                 <div className="mt-0.5 text-[11px] leading-snug text-ink-secondary">
-                  {skin.tagline}
+                  {skinTagline(skin.id)}
                 </div>
               </div>
               {selected && <Check size={13} className="mt-0.5 shrink-0 text-accent-text" />}

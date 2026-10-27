@@ -2146,5 +2146,7 @@
   "room.holds.resume": "Відновити {name}",
   "room.holds.stop": "Зупинити {name}",
   "room.holds.stopTitle": "Зупинити лише {name}; решта кімнати працює далі",
-  "room.holds.avatarHeld": "{name} — призупинено (зупинено вами)"
+  "room.holds.avatarHeld": "{name} — призупинено (зупинено вами)",
+  "workspaces.unavailable": "Team servers cannot be created here ({reason}).",
+  "workspaces.unavailableFix": "Fix: {fix}"
 }

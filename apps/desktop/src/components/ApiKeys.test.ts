@@ -87,7 +87,7 @@ describe("provider key rows", () => {
     expect(own).not.toContain("Included with your Cloud plan");
   });
 
-  it("warns about per-token billing only while the Anthropic key runs every Claude bot", () => {
+  it("warns about per-token billing only while the Anthropic key runs every Claude agent", () => {
     const withAnthropic = (everyClaudeBot: boolean) => vi.spyOn(store, "useStore").mockReturnValue({
       state: { ...store.initialState, config: { ...store.initialState.config, anthropic: { configured: true, everyClaudeBot } } as store.ConfigStatus },
       dispatch: vi.fn(),
@@ -97,8 +97,8 @@ describe("provider key rows", () => {
     });
     withAnthropic(false);
     const off = render(createElement(AnthropicEveryClaudeBot));
-    expect(off).toContain("Use this key for every Claude bot");
-    expect(off).toContain("Signed-in Claude bots stay on their plan");
+    expect(off).toContain("Use this key for every Claude agent");
+    expect(off).toContain("Signed-in Claude agents stay on their plan");
     expect(off).not.toContain("instead of a Claude login");
     withAnthropic(true);
     expect(render(createElement(AnthropicEveryClaudeBot))).toContain("instead of a Claude login");

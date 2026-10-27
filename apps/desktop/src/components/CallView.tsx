@@ -27,6 +27,7 @@ import { track } from "@/lib/analytics";
 import { useDesktopCapabilities } from "./DesktopCapabilities";
 import { callCapabilityHelp, type CallCapabilityHelp } from "@/lib/call-capability";
 import { VoiceSetupDialog } from "./VoiceSetupDialog";
+import { CallOverlayShell } from "./CallOverlayShell";
 
 type Phase = "listening" | "sending" | "working" | "speaking";
 const CALL_ENDPOINT_MS = 850;
@@ -445,14 +446,20 @@ export function CallOverlay({ bot }: { bot: Bot }) {
   const media = useLiveMedia();
   const onLiveCall = media.botId === bot.id && isLiveCallRunning(media.phase);
   if (!active || onLiveCall) return null;
+  // Floating, non-blocking chrome — chat stays usable (pointer-events pass through the root).
+  // TODO(Mai v9): voice-call-listening / working / speaking surfaces.
   return (
-    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 bg-app/95 backdrop-blur-sm">
-      <Call key="turns" bot={bot} />
-    </div>
+    <CallOverlayShell
+      title={bot.name}
+      status={t("call.overlay.floating")}
+      onHangUp={() => endCall(bot.id)}
+    >
+      <Call key="turns" bot={bot} floating />
+    </CallOverlayShell>
   );
 }
 
-function Call({ bot }: { bot: Bot }) {
+function Call({ bot, floating = false }: { bot: Bot; floating?: boolean }) {
   const { dispatch } = useStore();
   const speech = useSpeech();
   const initialPhase: Phase = bot.busy ? "working" : "listening";
@@ -762,25 +769,30 @@ function Call({ bot }: { bot: Bot }) {
 
   return (
     <>
-      <button
-        onClick={() => endCall(bot.id)}
-        aria-label="Hang up"
-        className="absolute right-5 top-5 rounded-md p-2 text-ink-secondary hover:bg-raised hover:text-ink"
-      >
-        <X size={18} />
-      </button>
+      {!floating && (
+        <button
+          onClick={() => endCall(bot.id)}
+          aria-label={t("call.live.hangUp")}
+          className="absolute right-5 top-5 rounded-md p-2 text-ink-secondary hover:bg-raised hover:text-ink"
+        >
+          <X size={18} />
+        </button>
+      )}
 
-      <BotAvatar bot={bot} state={mascotState} size={220} animated trackPointer />
+      <BotAvatar bot={bot} state={mascotState} size={floating ? 48 : 220} animated trackPointer />
 
       <div className="flex flex-col items-center gap-1.5 text-center">
-        <div className="text-[20px] font-medium text-ink">{bot.name}</div>
-        <div className="flex items-center gap-2 text-[13.5px] text-ink-secondary">
+        <div className={floating ? "text-[15px] font-semibold text-ink" : "text-[20px] font-medium text-ink"}>{bot.name}</div>
+        <div className={cn("flex items-center gap-2 text-ink-secondary", floating ? "gap-1.5 text-[12px]" : "text-[13.5px]")}>
+          {floating && phase === "listening" && (
+            <span className="size-[7px] rounded-full bg-accent" aria-hidden="true" />
+          )}
           {(phase === "working" || phase === "sending") && <Loader2 size={13} className="animate-spin" />}
           {status}
         </div>
       </div>
 
-      <div className="min-h-[3.5rem] max-w-[560px] px-6 text-center text-[15px] leading-relaxed text-ink">
+      <div className={cn("text-center text-ink", floating ? "min-h-0 max-w-full px-1 text-[12.5px] leading-snug text-ink-secondary" : "min-h-[3.5rem] max-w-[560px] px-6 text-[15px] leading-relaxed")}>
         {phase === "listening" ? (
           heard || (
             <span className="text-ink-secondary">
@@ -805,30 +817,34 @@ function Call({ bot }: { bot: Bot }) {
       )}
       {speech.error && <div className="max-w-[420px] text-center text-[12.5px] text-danger">{speech.error}</div>}
 
-      <div className="flex items-center gap-3">
-        {speaker.isSpeaking() && (
+      {!floating && (
+        <div className="flex items-center gap-3">
+          {speaker.isSpeaking() && (
+            <button
+              onClick={() => {
+                sayGeneration.current += 1;
+                speaker.stop();
+                listen();
+              }}
+              className="rounded-full border border-hairline/50 px-4 py-2 text-[13.5px] text-ink hover:bg-raised"
+            >
+              Interrupt
+            </button>
+          )}
           <button
-            onClick={() => {
-              sayGeneration.current += 1;
-              speaker.stop();
-              listen();
-            }}
-            className="rounded-full border border-hairline/50 px-4 py-2 text-[13.5px] text-ink hover:bg-raised"
+            onClick={() => endCall(bot.id)}
+            className="flex items-center gap-2 rounded-full bg-danger px-5 py-2.5 text-[14px] font-medium text-white hover:brightness-110"
           >
-            Interrupt
+            <PhoneOff size={16} /> Hang up
           </button>
-        )}
-        <button
-          onClick={() => endCall(bot.id)}
-          className="flex items-center gap-2 rounded-full bg-danger px-5 py-2.5 text-[14px] font-medium text-white hover:brightness-110"
-        >
-          <PhoneOff size={16} /> Hang up
-        </button>
-      </div>
+        </div>
+      )}
 
-      <div className="text-[11.5px] text-ink-tertiary">
-        Hold Control + Option to talk · Space interrupts · Esc hangs up
-      </div>
+      {!floating && (
+        <div className="text-[11.5px] text-ink-tertiary">
+          Hold Control + Option to talk · Space interrupts · Esc hangs up
+        </div>
+      )}
     </>
   );
 }

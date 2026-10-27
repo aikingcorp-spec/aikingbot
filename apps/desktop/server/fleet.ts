@@ -1,6 +1,8 @@
 // Many client workspaces on one Linux server, each its own OS user and `aikingbot@<slug>` service. This module only plans:
 // it renders files and fixed argument lists as steps, and never builds a shell command string.
 import { posix } from "node:path";
+import { assertInviteLimitAllows, resolveInviteLimit } from "./invite-limit.ts";
+export { assertInviteLimitAllows, countInvites, DEFAULT_INVITE_LIMIT, inviteOwner, resolveInviteLimit } from "./invite-limit.ts";
 
 const { join } = posix;
 
@@ -489,19 +491,34 @@ export function applySignIn(configText: string, action: "add" | "remove", email:
   let raw: Record<string, unknown> = {};
   const parsed: unknown = JSON.parse(configText || "{}");
   if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) raw = { ...(parsed as Record<string, unknown>) };
-  const current = raw.signIn && typeof raw.signIn === "object" ? (raw.signIn as { admins?: unknown; members?: unknown }) : {};
+  const current = raw.signIn && typeof raw.signIn === "object"
+    ? (raw.signIn as { admins?: unknown; members?: unknown; inviteLimit?: unknown })
+    : {};
   const list = (value: unknown) => (Array.isArray(value) ? value.map((item) => String(item).trim().toLowerCase()).filter(Boolean) : []);
   const without = (items: string[]) => items.filter((item) => item !== entry);
-  const admins = without(list(current.admins));
-  const members = without(list(current.members));
+  const prevAdmins = list(current.admins);
+  const prevMembers = list(current.members);
+  const admins = without(prevAdmins);
+  const members = without(prevMembers);
+  const inviteLimit = resolveInviteLimit(current.inviteLimit);
+  const signInPayload = (adminsList: string[], membersList: string[]) => {
+    const payload: { admins: string[]; members: string[]; inviteLimit?: number } = { admins: adminsList, members: membersList };
+    // Persist a custom limit when already set; otherwise leave the default implicit.
+    if (current.inviteLimit !== undefined) payload.inviteLimit = inviteLimit;
+    return payload;
+  };
   if (action === "remove") {
-    if (admins.length + members.length === list(current.admins).length + list(current.members).length) throw new Error(`${entry} is not on the list`);
+    if (admins.length + members.length === prevAdmins.length + prevMembers.length) throw new Error(`${entry} is not on the list`);
     if (!admins.length) throw new Error("a workspace needs at least one admin; add another admin first");
-    return { config: `${JSON.stringify({ ...raw, signIn: { admins, members } }, null, 2)}\n`, summary: `${entry} was removed from the allow-list; existing email sessions are rechecked against the remaining entries` };
+    return { config: `${JSON.stringify({ ...raw, signIn: signInPayload(admins, members) }, null, 2)}\n`, summary: `${entry} was removed from the allow-list; existing email sessions are rechecked against the remaining entries` };
   }
   const next = chatOnly ? { admins, members: [...members, entry] } : { admins: [...admins, entry], members };
   if (!next.admins.length) throw new Error("a workspace needs at least one admin; add another admin first");
-  return { config: `${JSON.stringify({ ...raw, signIn: next }, null, 2)}\n`, summary: `${entry} can sign in with an emailed code (${chatOnly ? "chat and approvals" : "full access"})` };
+  assertInviteLimitAllows(
+    { admins: prevAdmins, members: prevMembers, inviteLimit },
+    { admins: next.admins, members: next.members, inviteLimit },
+  );
+  return { config: `${JSON.stringify({ ...raw, signIn: signInPayload(next.admins, next.members) }, null, 2)}\n`, summary: `${entry} can sign in with an emailed code (${chatOnly ? "chat and approvals" : "full access"})` };
 }
 
 function shellQuote(value: string): string {

@@ -460,14 +460,24 @@ const TOOL_DEFINITIONS = [
   {
     name: "request_credential",
     description:
-      "Ask the user for a supported API key through AIKINGBOT's secure credential flow. The desktop app and a freshly QR-paired mobile app show a secure entry card; older mobile pairings show how to pair again or finish on the computer. Never claim a secure field opened unless this request succeeds, and never ask the user to paste a secret into chat. The secret is saved by the desktop app and is never returned to you. After calling this tool, end the turn; AIKINGBOT resumes the task after the user saves or declines.",
+      "Ask the user for a supported API key or a custom secret through AIKINGBOT's secure credential flow. The desktop app and a freshly QR-paired mobile app show a secure entry card; older mobile pairings show how to pair again or finish on the computer. Never claim a secure field opened unless this request succeeds, and never ask the user to paste a secret into chat. The secret is saved by the desktop app and is never returned to you — for credential_id custom you only receive {stored:true, ref:\"secret:custom/<name>\"}. After calling this tool, end the turn; AIKINGBOT resumes the task after the user saves or declines.",
     inputSchema: {
       type: "object",
       properties: {
         credential_id: {
           type: "string",
           enum: Object.keys(CREDENTIAL_TARGETS),
-          description: "The credential the current task requires.",
+          description: "The credential the current task requires. Use custom for any other key or password.",
+        },
+        name: {
+          type: "string",
+          pattern: "^[a-z0-9_-]{1,40}$",
+          description: "Required when credential_id is custom: a short slug stored as secret:custom/<name>.",
+        },
+        label: {
+          type: "string",
+          maxLength: 60,
+          description: "Required when credential_id is custom: short untrusted label shown on the card as requested by the bot.",
         },
         reason: {
           type: "string",
@@ -475,6 +485,46 @@ const TOOL_DEFINITIONS = [
         },
       },
       required: ["credential_id"],
+    },
+  },
+  {
+    name: "request_connect",
+    description:
+      "Ask the person to connect a service they added to AIKINGBOT but have not signed in to yet (listed under unconnected services). They get a card in this chat: one click signs in, or the card takes the service's API key securely. Never send them to Settings and never ask for a key in chat. After calling it, end your turn; AIKINGBOT resumes you once it is connected.",
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        server: { type: "string", minLength: 1, maxLength: 32, description: "The added service's name, such as notion." },
+        header: { type: "string", maxLength: 64, description: "Only for an API-key service: the header it reads the key from. Default Authorization." },
+        reason: { type: "string", maxLength: 240, description: "One short sentence on what the connection is for." },
+      },
+      required: ["server"],
+    },
+  },
+  {
+    name: "marketplace_search",
+    description:
+      "Search AIKINGBOT's app catalog for a service the task needs that is not connected yet, by name or by what it does (Vietnamese or English). Returns matches with their slug and whether each is connected.",
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: { query: { type: "string", minLength: 1, maxLength: 200, description: "The service or the job, such as notion or bảng tính." } },
+      required: ["query"],
+    },
+  },
+  {
+    name: "marketplace_install",
+    description:
+      "Offer the person an \"Install and connect\" card in this chat for one catalog app from marketplace_search. Their click installs and signs in; you never see the login. After calling it, end your turn; AIKINGBOT resumes you once it is connected.",
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        slug: { type: "string", minLength: 1, maxLength: 64, description: "The slug from marketplace_search." },
+        reason: { type: "string", maxLength: 240, description: "One short sentence on what the app is for." },
+      },
+      required: ["slug"],
     },
   },
   {

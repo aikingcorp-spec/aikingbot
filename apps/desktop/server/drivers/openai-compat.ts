@@ -1,6 +1,7 @@
 // Transcript-replay driver for OpenRouter, Groq, Together, llama.cpp, and
 // other endpoints that speak the OpenAI chat-completions contract.
 import type { ModelCatalog, ProviderDriver } from "../contracts.ts";
+import { frozenModelOptions, frozenProviderIdForApiUrl, loadFrozenCatalog } from "../model-catalog/frozen.ts";
 import { createOpenAIChatRuntime } from "./openai-chat.ts";
 
 const DRIVER_KIND = "openai-compat";
@@ -47,6 +48,31 @@ export interface OpenAICompatConfig {
   model?: string;
   provider?: string;
   managedModels?: string[];
+}
+
+
+/** Official models from the frozen models.dev snapshot for this OpenAI-compatible URL. */
+function frozenSeedForUrl(url: string, catalogKind: "openai" | undefined): ModelCatalog | undefined {
+  try {
+    loadFrozenCatalog();
+  } catch {
+    return undefined;
+  }
+  const providerId = catalogKind === "openai" ? "openai" : frozenProviderIdForApiUrl(url);
+  if (!providerId) return undefined;
+  const options = frozenModelOptions(providerId).map((option) => ({
+    id: option.id,
+    label: option.label,
+    // openai-compat (non-OpenAI) rails show only custom-flagged options in the picker.
+    ...(catalogKind === "openai" ? {} : { custom: true as const }),
+    ...(option.provider ? { provider: option.provider } : {}),
+  }));
+  if (!options.length) return undefined;
+  const fallback = catalogKind === "openai" ? OPENAI_MODELS : DEFAULT_MODELS;
+  const defaultId = options.some((option) => option.id === fallback.default)
+    ? fallback.default
+    : options[0]!.id;
+  return { default: defaultId, options };
 }
 
 function isOpenRouterUrl(url: string): boolean {
@@ -115,7 +141,8 @@ export const OpenAICompatDriver: ProviderDriver<OpenAICompatConfig> = {
     const missingKey = !ownKeyVariable || OWN_KEY_ENVS.has(config.apiKeyEnv)
       ? "No API key — open Settings → API keys."
       : `no API key — set ${config.apiKeyEnv} or add it to the instance config`;
-    const seeded = config.catalog === "openai" ? OPENAI_MODELS : DEFAULT_MODELS;
+    const seeded = frozenSeedForUrl(config.url, config.catalog)
+      ?? (config.catalog === "openai" ? OPENAI_MODELS : DEFAULT_MODELS);
     let catalog: ModelCatalog = config.managedModels
       ? { default: config.managedModels[0], options: config.managedModels.map(id => ({ id, label: id })) }
       : config.model

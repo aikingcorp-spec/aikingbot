@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SkillsLibrarySkillWire } from "../../shared/wire.ts";
 import { skillsLibraryEnabled, type AppConfig } from "../config.ts";
 import { botSkillTemplateSchema } from "../new-bot-defaults.ts";
+import { listRegistry, lookupRegistry } from "../skill-registry.ts";
 import { fetchSkillFromSource } from "../skill-fetch.ts";
 import { installLibrarySkill, listLibrarySkills, readLibrarySkillFile, readSkillLibraryIndex, setLibrarySkillReviewState } from "../skill-library.ts";
 import {
@@ -90,6 +91,18 @@ export function createBotSkillsRoutes(deps: BotSkillsRouteDeps): RouteHandler {
       return json(res, 200, { ok: true });
     }
 
+    // Registry view: metadata from the index only; the body is read lazily, sha-verified, and withheld for a disabled skill.
+    if (method === "GET" && path === "/api/skills-library/registry") {
+      if (!skillsLibraryEnabled(cfg)) return json(res, 404, { error: "skills library is not enabled" });
+      return json(res, 200, { skills: listRegistry() });
+    }
+    m = path.match(/^\/api\/skills-library\/registry\/([a-z0-9-]+)$/);
+    if (m && method === "GET") {
+      if (!skillsLibraryEnabled(cfg)) return json(res, 404, { error: "skills library is not enabled" });
+      const found = lookupRegistry(m[1]!);
+      if (!found) return json(res, 404, { error: "no such skill" });
+      return json(res, found.integrity === "failed" ? 409 : 200, found);
+    }
     m = path.match(/^\/api\/skills-library$/);
     if (m && method === "GET") {
       if (!skillsLibraryEnabled(cfg)) return json(res, 404, { error: "skills library is not enabled" });

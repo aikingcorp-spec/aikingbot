@@ -8,6 +8,7 @@ import type { CommandAllowlistCandidate } from "./command-allowlist.ts";
 import type { TurnDigest } from "./digest.ts";
 import type { BotAvatarCrop } from "./bot-avatar.ts";
 import type { MascotBodyId } from "./mascot-bodies.ts";
+import type { MascotLook } from "./mascot-look.ts";
 import type { CredentialTargetId } from "./credential-request.ts";
 import type { TeamSetupRequest } from "./team-setup.ts";
 import type { RoutineRequestCardData } from "./routine-request.ts";
@@ -257,6 +258,8 @@ export interface WireBot {
   color: AikingColor;
   mascotExpression?: AikingExpression | null;
   mascotBody?: MascotBodyId | null;
+  /** Versioned v3 look; absent or invalid means the legacy mascot above. */
+  mascotLook?: MascotLook | null;
   /** App-owned attachment served as this bot's custom profile image;
    * always present on the wire, null when the bot has none. */
   avatarUrl: string | null;
@@ -636,16 +639,22 @@ export interface ConnectorCardData {
   /** Stop ended the turn this card paused: it offers no action, and a
    * connection made afterwards is kept but continues nothing. */
   stopped?: boolean;
+  /** 2.1 request_connect: an added MCP service. The card signs in (OAuth, in the person's own session) or takes its API key inline. */
+  mcp?: { server: string; auth: "oauth" | "api-key"; header: string };
 }
 
 export interface SecretRequestCardData {
-  /** Fixed allowlisted credential id; never an arbitrary config path. */
+  /** Fixed allowlisted credential id, or `custom` for a vault secret. */
   target: CredentialTargetId;
   label: string;
   description: string;
   placeholder: string;
   helpUrl: string;
+  /** Present when target is `custom`: vault slug under custom/<name>. */
+  customName?: string;
   requestKey: string;
+  /** Server-issued time after which the card accepts no first submit. */
+  expiresAt?: number;
   phoneOperationId?: string;
   provided?: boolean;
   dismissed?: boolean;

@@ -1,6 +1,8 @@
 import { ArrowRight, Loader2 } from "lucide-react";
 
+import { at, type AikingKey } from "@/aiking/strings";
 import { cn } from "@/lib/cn";
+import { botBubbleClass, msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 import { routineDateTime } from "@/lib/routine-display";
 import { t } from "@/lib/i18n";
 import type { RoutineRunCardData } from "../../shared/routine-run";
@@ -8,31 +10,27 @@ import type { Message } from "@/state/store";
 
 const DETAIL_LIMIT = 280;
 
+type ToneCopy = { labelKey: AikingKey; tone: string };
+
 const COPY = {
-  queued: { label: "Queued", tone: "text-ink-secondary" },
-  running: { label: "Running", tone: "text-accent" },
-  waiting: { label: "Waiting", tone: "text-warning" },
-  completed: { label: "Completed", tone: "text-ink-secondary" },
-  failed: { label: "Failed", tone: "text-danger" },
-  cancelled: { label: "Cancelled", tone: "text-ink-secondary" },
-  missed: { label: "Missed", tone: "text-danger" },
-} satisfies Record<
-  RoutineRunCardData["status"],
-  { label: string; tone: string }
->;
+  queued: { labelKey: "chat.column.routineQueued", tone: "text-ink-secondary" },
+  running: { labelKey: "chat.column.routineRunning", tone: "text-accent" },
+  waiting: { labelKey: "chat.column.routineWaiting", tone: "text-warning" },
+  completed: { labelKey: "chat.column.routineCompleted", tone: "text-ink-secondary" },
+  failed: { labelKey: "chat.column.routineFailed", tone: "text-danger" },
+  cancelled: { labelKey: "chat.column.routineCancelled", tone: "text-ink-secondary" },
+  missed: { labelKey: "chat.column.routineMissed", tone: "text-danger" },
+} satisfies Record<RoutineRunCardData["status"], ToneCopy>;
 
 const GOAL_COPY = {
   completed: COPY.completed,
-  "needs-input": { label: "Needs your input", tone: "text-warning" },
-  blocked: { label: "Blocked", tone: "text-danger" },
-  "limit-reached": { label: "Turn limit reached", tone: "text-warning" },
-  paused: { label: "Paused", tone: "text-warning" },
-  stopped: { label: "Stopped", tone: "text-ink-secondary" },
+  "needs-input": { labelKey: "chat.column.routineNeedsInput", tone: "text-warning" },
+  blocked: { labelKey: "chat.column.routineBlocked", tone: "text-danger" },
+  "limit-reached": { labelKey: "chat.column.routineLimitReached", tone: "text-warning" },
+  paused: { labelKey: "chat.column.routinePaused", tone: "text-warning" },
+  stopped: { labelKey: "chat.column.routineStopped", tone: "text-ink-secondary" },
   failed: COPY.failed,
-} satisfies Record<
-  NonNullable<RoutineRunCardData["goalStatus"]>,
-  { label: string; tone: string }
->;
+} satisfies Record<NonNullable<RoutineRunCardData["goalStatus"]>, ToneCopy>;
 
 function compactDetail(value: string | undefined): string {
   const clean = value?.replace(/\s+/g, " ").trim() ?? "";
@@ -59,28 +57,30 @@ export function RoutineRunCard({
   if (!run) {
     const fallback = compactDetail(message.text);
     return fallback ? (
-      <div className="w-fit max-w-[min(42rem,88%)] rounded-2xl bg-card px-4 py-2.5 text-[14px] leading-relaxed text-ink">
+      <div className={cn(botBubbleClass, "rounded-2xl bg-card px-4 py-2.5 text-[14px] leading-relaxed text-ink")}>
         {fallback}
       </div>
     ) : null;
   }
 
-  const copy = run.goalStatus
+  const copy: ToneCopy = run.goalStatus
     ? GOAL_COPY[run.goalStatus]
     : run.status === "queued" && run.deferredAt != null
-      ? { label: "Deferred: target busy", tone: "text-warning" }
+      ? { labelKey: "chat.column.routineDeferred", tone: "text-warning" }
       : COPY[run.status];
+  const label = at(copy.labelKey);
   const detail = compactDetail(
     run.status === "failed" || run.status === "missed"
       ? (run.error ?? run.summary)
       : (run.summary ?? run.error),
   );
-  const actionLabel = run.goalStatus === "needs-input" ? "Review" : "Open run";
+  const actionLabel = run.goalStatus === "needs-input" ? at("chat.column.routineReview") : at("chat.column.routineOpen");
 
   return (
+    <div className={msgCardOuterClass}>
     <section
-      aria-label={`${run.routineName} routine run: ${copy.label}`}
-      className="w-full max-w-[680px] rounded-xl border border-hairline/45 bg-card px-4 py-3"
+      aria-label={`${run.routineName} routine run: ${label}`}
+      className={cn(msgCardInnerClass, "rounded-xl border border-hairline/45 bg-card px-4 py-3")}
     >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
@@ -88,7 +88,7 @@ export function RoutineRunCard({
             <h3 className="truncate text-[14px] font-semibold text-ink">{run.routineName}</h3>
             <span aria-live="polite" className={cn("inline-flex items-center gap-1 text-[11.5px] font-semibold", copy.tone)}>
               {run.status === "running" && !run.goalStatus && <Loader2 aria-hidden="true" className="size-3 animate-spin" />}
-              {copy.label}
+              {label}
             </span>
           </div>
           <time dateTime={new Date(run.scheduledFor ?? message.at).toISOString()} className="mt-0.5 block text-[11.5px] text-ink-secondary">
@@ -118,5 +118,6 @@ export function RoutineRunCard({
         )}
       </div>
     </section>
+    </div>
   );
 }

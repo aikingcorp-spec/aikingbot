@@ -1621,7 +1621,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "es": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -3225,7 +3227,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "fr": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -4829,7 +4833,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "hi": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -6433,7 +6439,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "ja": {
       "whop.description": "1a07cf04ef17029448d3781415cbac16d54e66b821907a40d94e0e6349710e70",
@@ -10487,7 +10495,9 @@
       "error.plain.notFound": "bcbdb6c01d36cba08d7f123685ccd0e1243967d5b498cd8615cb01897bea05c3",
       "error.plain.tooLarge": "6698badb14fdf95c744bb7cfde5cbb4c999833ac9043597f1ec009348a7cbc80",
       "error.plain.server": "4bb75b0940538f075b027ef80f4e2b8b176d9499f54137b5148ce54b0fe16d75",
-      "error.plain.generic": "4def98c892406e31099ba18e5d6a60db12420dd723a27a5ab77235d20adb0beb"
+      "error.plain.generic": "4def98c892406e31099ba18e5d6a60db12420dd723a27a5ab77235d20adb0beb",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "pt-br": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -12107,7 +12117,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "zh": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -14658,7 +14670,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "zh-tw": {
       "whop.description": "1a07cf04ef17029448d3781415cbac16d54e66b821907a40d94e0e6349710e70",
@@ -18494,7 +18508,9 @@
       "place.view.ccSignIn.lineMyCloud": "6355755039d6f4bc1a8ff134a46e7b29ff8c0f9a45da01340d4c39001303afa2",
       "computer.files.homeFolder": "6772da558a23e28185deb8d4bb7cdb20ae916f13a03eca9a9e5c0d4deffd4944",
       "computer.files.changeDefaultFolder": "d849aca289a009020a597abaf279d8db449aca92344e9d91485cf1cf0aadc144",
-      "computer.files.pinnedFolderHint": "b69c3a6863aa1de63d33f31fcd2ec1b43df5dab08c1a8dd931aec171adff9885"
+      "computer.files.pinnedFolderHint": "b69c3a6863aa1de63d33f31fcd2ec1b43df5dab08c1a8dd931aec171adff9885",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     },
     "uk": {
       "pro.fromPrice": "a48a04a457d60b08b54fc83e7a6c4584ffedb1e23621859084900c8521a3af7b",
@@ -20644,7 +20660,9 @@
       "room.holds.resume": "05f2dae7f5838c7161c94772fc285127afd6de3e26ccbb1b59fb041a8add27cd",
       "room.holds.stop": "300c88bb31db226580ea35a28b2e930ddb05f328b4e6a63601850a6643b882df",
       "room.holds.stopTitle": "839bb3d62635029c1a325673b80f91cb1f16f55ef6179bb37d54f65b634cfa90",
-      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73"
+      "room.holds.avatarHeld": "f11b17aba2842c436d93b02f138b32041eaed0abed7ce03e68e8aefbf671fe73",
+      "workspaces.unavailable": "030ac8a30fff9aead37754cb6676008a92c95f4a915aaf4dd3c1a19f1bce22d9",
+      "workspaces.unavailableFix": "bf9e1d99ddd2133fa3dcdd28b259a254061f34aea39419ac1bc5a025fb810d4f"
     }
   }
 }

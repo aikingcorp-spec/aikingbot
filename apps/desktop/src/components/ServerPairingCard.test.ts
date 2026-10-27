@@ -35,9 +35,13 @@ describe("pairing devices from a hosted server's settings", () => {
     expect(pairingBlockedReason({ kind: "unauthenticated", error: "pair" })).toBeNull();
     const html = renderToStaticMarkup(createElement(ServerPairingCard, { initialSession: chatOnly }));
     expect(html).toContain("data-server-pairing-chat-only");
-    expect(html).toContain("aikingbot pair");
+    expect(html).toContain("chat and approvals only");
+    expect(html).not.toContain("aikingbot pair");
     expect(html).not.toContain("Create pairing code");
     const admin = renderToStaticMarkup(createElement(ServerPairingCard, { initialSession: { ...chatOnly, scopes: ["admin", "client"] } }));
+    // Phone pairing is gated Sắp có: banner shows, create still renders but actions open Coming soon.
+    expect(admin).toContain("data-server-pairing-soon");
+    expect(admin).toContain("Phone pairing is not supported in this build");
     expect(admin).toContain("Create pairing code");
     expect(admin).not.toContain("data-server-pairing-chat-only");
     expect(admin).toMatch(/<button[^>]*data-phone-pairing-action[^>]*>Create pairing code<\/button>/);
@@ -79,3 +83,12 @@ describe("pairing devices from a hosted server's settings", () => {
     expect(shownDevices(devices, false).map((device) => device.id)).toEqual(["a", "b"]);
   });
 });
+
+  it("marks phone pairing as coming soon and keeps the create control from pairing", () => {
+    const admin = { kind: "session" as const, id: "s", label: "Mac", scopes: ["admin", "client"], expiresAt: 1 };
+    const html = renderToStaticMarkup(createElement(ServerPairingCard, { initialSession: admin }));
+    expect(html).toContain("data-server-pairing-soon");
+    expect(html).toContain("data-phone-pairing-soon");
+    expect(html).toContain("Create pairing code");
+  });
+

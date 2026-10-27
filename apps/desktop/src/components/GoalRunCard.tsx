@@ -7,24 +7,26 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { at } from "@/aiking/strings";
 import { cn } from "@/lib/cn";
+import { botBubbleClass, msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 import type { Message } from "@/state/store";
 import type { GroupGoalRunCardData } from "../../shared/group-goal-run";
 
 const DETAIL_LIMIT = 280;
 
 const COPY = {
-  working: { label: "Working", tone: "text-accent", border: "border-accent/30" },
-  completed: { label: "Completed", tone: "text-success", border: "border-success/30" },
-  "needs-input": { label: "Needs your input", tone: "text-warning", border: "border-warning/35" },
-  blocked: { label: "Blocked", tone: "text-warning", border: "border-warning/35" },
-  "limit-reached": { label: "Turn limit reached", tone: "text-warning", border: "border-warning/35" },
-  paused: { label: "Paused", tone: "text-warning", border: "border-warning/35" },
-  stopped: { label: "Stopped", tone: "text-ink-secondary", border: "border-hairline/45" },
-  failed: { label: "Failed", tone: "text-danger", border: "border-danger/35" },
+  working: { labelKey: "chat.column.goalWorking" as const, tone: "text-accent", border: "border-accent/30" },
+  completed: { labelKey: "chat.column.goalCompleted" as const, tone: "text-success", border: "border-success/30" },
+  "needs-input": { labelKey: "chat.column.goalNeedsInput" as const, tone: "text-warning", border: "border-warning/35" },
+  blocked: { labelKey: "chat.column.goalBlocked" as const, tone: "text-warning", border: "border-warning/35" },
+  "limit-reached": { labelKey: "chat.column.goalLimitReached" as const, tone: "text-warning", border: "border-warning/35" },
+  paused: { labelKey: "chat.column.goalPaused" as const, tone: "text-warning", border: "border-warning/35" },
+  stopped: { labelKey: "chat.column.goalStopped" as const, tone: "text-ink-secondary", border: "border-hairline/45" },
+  failed: { labelKey: "chat.column.goalFailed" as const, tone: "text-danger", border: "border-danger/35" },
 } satisfies Record<
   GroupGoalRunCardData["status"],
-  { label: string; tone: string; border: string }
+  { labelKey: "chat.column.goalWorking" | "chat.column.goalCompleted" | "chat.column.goalNeedsInput" | "chat.column.goalBlocked" | "chat.column.goalLimitReached" | "chat.column.goalPaused" | "chat.column.goalStopped" | "chat.column.goalFailed"; tone: string; border: string }
 >;
 
 function compact(value: string | undefined, limit: number): string {
@@ -57,41 +59,46 @@ export function GoalRunCard({ message }: { message: Message }) {
   if (!run) {
     const fallback = compact(message.text, DETAIL_LIMIT);
     return fallback ? (
-      <div className="w-fit max-w-[min(42rem,88%)] rounded-2xl bg-card px-4 py-2.5 text-[14px] leading-relaxed text-ink">
+      <div className={cn(botBubbleClass, "rounded-2xl bg-card px-4 py-2.5 text-[14px] leading-relaxed text-ink")}>
         {fallback}
       </div>
     ) : null;
   }
 
   const copy = COPY[run.status];
+  const label = at(copy.labelKey);
   const goal = compact(run.goal, 180);
   const detail = compact(run.detail, DETAIL_LIMIT);
   const turns = run.status === "working"
-    ? `Turn ${Math.min(run.turnCount + 1, run.maxTurns)} of ${run.maxTurns}`
-    : `${run.turnCount} ${run.turnCount === 1 ? "turn" : "turns"}`;
+    ? at("chat.column.goalTurnOf", { current: Math.min(run.turnCount + 1, run.maxTurns), max: run.maxTurns })
+    : run.turnCount === 1
+      ? at("chat.column.goalTurnOne")
+      : at("chat.column.goalTurns", { count: run.turnCount });
 
   return (
-    <section
-      aria-label={`Goal run: ${copy.label}`}
-      className={cn("w-full max-w-[680px] rounded-2xl border bg-card px-3.5 py-3 shadow-sm", copy.border)}
-    >
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-inset">
-          <StatusIcon status={run.status} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            <h3 className="truncate text-[13.5px] font-semibold text-ink">{goal || "Group goal"}</h3>
-            <span aria-live="polite" className={cn("text-[11.5px] font-medium", copy.tone)}>
-              {copy.label}
-            </span>
+    <div className={msgCardOuterClass}>
+      <section
+        aria-label={`Goal run: ${label}`}
+        className={cn(msgCardInnerClass, "rounded-2xl border bg-card px-3.5 py-3 shadow-sm", copy.border)}
+      >
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-inset">
+            <StatusIcon status={run.status} />
           </div>
-          {detail && <p className="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-ink-secondary">{detail}</p>}
-          <p className="mt-1 text-[11.5px] text-ink-tertiary">
-            {run.coordinatorName} coordinating · {turns}
-          </p>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <h3 className="truncate text-[13.5px] font-semibold text-ink">{goal || at("chat.column.goalFallback")}</h3>
+              <span aria-live="polite" className={cn("text-[11.5px] font-medium", copy.tone)}>
+                {label}
+              </span>
+            </div>
+            {detail && <p className="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-ink-secondary">{detail}</p>}
+            <p className="mt-1 text-[11.5px] text-ink-tertiary">
+              {at("chat.column.goalCoordinating", { name: run.coordinatorName, turns })}
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

@@ -163,7 +163,7 @@ describe("call modes", () => {
     expect(render(createElement(CallButton, { bot }))).not.toContain("Pro plan");
   });
 
-  it("leaves a Live call to the call bar and covers the chat only for Take turns", async () => {
+  it("leaves a Live call to the call bar and floats Take turns without a blocking backdrop", async () => {
     vi.stubGlobal("window", { ogb: { speechStop: vi.fn(async () => {}) } });
     configureLiveMedia({ getUserMedia: () => new Promise<MediaStream>(() => {}) });
     void startLiveCall({ botId: bot.id, threadId: bot.threadId });
@@ -173,6 +173,10 @@ describe("call modes", () => {
     configureLiveMedia({ getUserMedia: () => Promise.reject(new Error("no microphone")) });
     await startLiveCall({ botId: bot.id, threadId: bot.threadId });
     startCall(bot.id);
-    expect(render(createElement(CallOverlay, { bot }))).toContain("backdrop-blur-sm");
+    const overlay = render(createElement(CallOverlay, { bot }));
+    expect(overlay).toContain('data-call-overlay-root="1"');
+    expect(overlay).toContain("pointer-events-none");
+    expect(overlay).toContain("pointer-events-auto");
+    expect(overlay).not.toContain("backdrop-blur-sm");
   });
 });

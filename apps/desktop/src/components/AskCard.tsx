@@ -1,5 +1,6 @@
 import type { KeyboardEvent, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 import { Check, X } from "lucide-react";
 
 export function AskCard({
@@ -30,13 +31,14 @@ export function AskCard({
   onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
 }) {
   return (
+    <div className={msgCardOuterClass}>
     <div
       role="group"
       aria-label={ariaLabel}
       data-tour={tour}
       data-ask-card="pending"
       onKeyDown={onKeyDown}
-      className="w-full max-w-[600px] rounded-3xl bg-composer px-4 py-3 text-start ring-1 ring-composer-ring"
+      className={cn(msgCardInnerClass, "rounded-3xl bg-composer px-4 py-3 text-start ring-1 ring-composer-ring")}
     >
       <div className={cn("flex min-w-0 gap-2", plain ? "items-start" : "items-center")}>
         {icon && <span aria-hidden="true" className="flex shrink-0 text-accent-text">{icon}</span>}
@@ -70,6 +72,7 @@ export function AskCard({
       {children && <div className={plain ? "mt-3" : "mt-2.5"}>{children}</div>}
       {footer && <div className="mt-3 flex flex-wrap items-center justify-end gap-2">{footer}</div>}
     </div>
+    </div>
   );
 }
 
@@ -87,11 +90,12 @@ export function AskSettledLine({
   ariaLabel?: string;
 }) {
   return (
+    <div className={msgCardOuterClass}>
     <div
       role="group"
       aria-label={ariaLabel}
       data-ask-card="settled"
-      className="w-full max-w-[600px] text-start text-[12.5px] text-ink-tertiary"
+      className={cn(msgCardInnerClass, "text-start text-[12.5px] text-ink-tertiary")}
     >
       <div className="flex min-w-0 items-center gap-1.5">
         <span aria-hidden="true" className="flex shrink-0">
@@ -101,6 +105,7 @@ export function AskSettledLine({
         {action}
       </div>
       {detail}
+    </div>
     </div>
   );
 }

@@ -2,11 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import {
   CREDENTIAL_TARGETS,
+  FIXED_CREDENTIAL_TARGET_IDS,
   credentialConfigPatch,
+  credentialGateTarget,
   credentialIsConfigured,
   credentialResumeOutcome,
+  isCustomCredentialName,
   isPendingCredentialRequest,
   isCredentialTargetId,
+  parseCustomCredentialLabel,
   type CredentialConfig,
   type CredentialTargetId,
 } from "../shared/credential-request.ts";
@@ -28,13 +32,15 @@ describe("credential request allowlist", () => {
     expect(isCredentialTargetId({ toString: () => "xaiApiKey" })).toBe(false);
   });
 
-  it("maps each id to a fixed config location", () => {
-    expect(MAPPINGS.map(([id]) => id).sort()).toEqual(Object.keys(CREDENTIAL_TARGETS).sort());
+  it("maps each fixed id to a fixed config location", () => {
+    expect(MAPPINGS.map(([id]) => id).sort()).toEqual([...FIXED_CREDENTIAL_TARGET_IDS].sort());
     for (const [id, patch] of MAPPINGS) {
       expect(credentialConfigPatch(id, "secret")).toEqual(patch);
       expect(credentialIsConfigured(patch, id)).toBe(true);
       expect(credentialIsConfigured({}, id)).toBe(false);
     }
+    expect(() => credentialConfigPatch("custom", "secret")).toThrow(/vault/i);
+    expect(credentialIsConfigured({}, "custom")).toBe(false);
   });
 
   it("checks configured state without exposing values", () => {
@@ -42,7 +48,9 @@ describe("credential request allowlist", () => {
     expect(credentialIsConfigured({ tts: { key: "" } }, "ttsKey")).toBe(false);
     expect(credentialIsConfigured({ tts: { fishKey: "secret" } }, "fishAudioKey")).toBe(true);
     expect(credentialIsConfigured({ tts: { fishKey: "" } }, "fishAudioKey")).toBe(false);
-    expect(Object.keys(CREDENTIAL_TARGETS)).toHaveLength(6);
+    expect(FIXED_CREDENTIAL_TARGET_IDS).toHaveLength(6);
+    expect(Object.keys(CREDENTIAL_TARGETS)).toHaveLength(7);
+    expect(isCredentialTargetId("custom")).toBe(true);
   });
 
   // The key becomes OPENCODE_API_KEY, which only OpenCode Zen and Go read: the
@@ -70,5 +78,27 @@ describe("credential request allowlist", () => {
     expect(credentialResumeOutcome({ dismissed: true })).toBe("dismissed");
     expect(credentialResumeOutcome({})).toBeNull();
     expect(credentialResumeOutcome({ provided: true, dismissed: true })).toBeNull();
+  });
+
+  it("validates custom credential name and label", () => {
+    expect(isCustomCredentialName("zapier_webhook")).toBe(true);
+    expect(isCustomCredentialName("Bad Name")).toBe(false);
+    expect(isCustomCredentialName("")).toBe(false);
+    expect(isCustomCredentialName("a".repeat(41))).toBe(false);
+    expect(parseCustomCredentialLabel("  Zapier key  ")).toBe("Zapier key");
+    expect(parseCustomCredentialLabel("")).toBeNull();
+    expect(parseCustomCredentialLabel("x".repeat(80))!.length).toBe(60);
+    expect(credentialGateTarget("custom", "zapier")).toBe("custom/zapier");
+    expect(credentialGateTarget("xaiApiKey")).toBe("xaiApiKey");
+  });
+
+  it("supersedes custom cards only for the same name", () => {
+    const card = {
+      kind: "secret",
+      secret: { target: "custom" as const, customName: "zapier" },
+      from: { botId: "atlas" },
+    };
+    expect(isPendingCredentialRequest(card, "custom", "atlas", true, "zapier")).toBe(true);
+    expect(isPendingCredentialRequest(card, "custom", "atlas", true, "other")).toBe(false);
   });
 });

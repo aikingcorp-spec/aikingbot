@@ -5,8 +5,9 @@ import { loadBrand } from "../brand.ts";
 import { browserEngineStatus, ensureChrome, installAgentBrowserBinary, resolveAgentBrowserBinary } from "../browser-engine.ts";
 import { DATA_DIR, EVENTS_DIR, NATIVE_DIR, instanceConfigs, type AppConfig } from "../config.ts";
 import { boundRetentionDays, decisionsCsv, readDecisionRange, readDecisions } from "../decision-log.ts";
-import { editionForMembers, editionStatus, entitled } from "../enterprise.ts";
+import { editionForMembers, editionStatus } from "../enterprise.ts";
 import { fleetAvailable, fleetRequest, fleetSocketPath } from "../fleet-client.ts";
+import { sharedOssFleet } from "../oss-fleet.ts";
 import { noteKeyAccepted, noteKeyRejected } from "../key-rejections.ts";
 import type { OutboundCounts } from "../outbound-counts.ts";
 import { loadPlanUsage, planAccountsFromInstances } from "../plan-usage.ts";
@@ -68,27 +69,77 @@ export function createStatusRoutes(deps: StatusRouteDeps): RouteHandler {
       }
       return json(res, 202, { installing: true });
     }
-    // Admin scope plus the `admin` entitlement; the socket's own permissions decide whether this workspace may drive the agent.
+    // Admin scope (request-auth). Prefer the host fleet agent socket when present; otherwise the
+    // open-source local/container fleet (no licence). No entitlement gate on this path.
     const fleetRoute = /^\/api\/fleet(?:\/(workspaces(?:\/([a-z0-9-]+)(?:\/(users|suspend|resume))?)?|upgrade))?$/.exec(path);
     if (fleetRoute) {
-      if (!entitled("admin")) return json(res, 403, { error: "Workspaces need an enterprise licence with the admin feature." });
       const socket = fleetSocketPath();
-      if (!fleetAvailable(socket)) return json(res, 404, { error: "No fleet agent on this server. Run `aikingbot fleet init --domain … --operator <this user>` as root." });
       const [, resource, slug, sub] = fleetRoute;
-      let forward: { method: string; path: string; body?: unknown } | null = null;
-      if (method === "GET" && !resource) forward = { method: "GET", path: "/workspaces" };
-      else if (method === "POST" && resource === "workspaces") forward = { method: "POST", path: "/workspaces", body: await readBody(req, 256 * 1024) };
-      else if (method === "POST" && resource === "upgrade") forward = { method: "POST", path: "/upgrade" };
-      else if (slug && method === "POST" && (sub === "users" || sub === "suspend" || sub === "resume")) forward = { method: "POST", path: `/workspaces/${slug}/${sub}`, ...(sub === "users" ? { body: await readBody(req, 8192) } : {}) };
-      else if (slug && method === "DELETE" && !sub) forward = { method: "DELETE", path: `/workspaces/${slug}`, body: await readBody(req, 8192) };
-      if (!forward) return json(res, 405, { error: "no such fleet operation" });
       res.setHeader("cache-control", "no-store");
-      try {
-        const reply = await fleetRequest(socket, forward.method, forward.path, forward.body);
-        return json(res, reply.status, reply.body ?? {});
-      } catch (error) {
-        return json(res, 502, { error: error instanceof Error ? error.message : String(error) });
+      if (fleetAvailable(socket)) {
+        let forward: { method: string; path: string; body?: unknown } | null = null;
+        if (method === "GET" && !resource) forward = { method: "GET", path: "/workspaces" };
+        else if (method === "POST" && resource === "workspaces") forward = { method: "POST", path: "/workspaces", body: await readBody(req, 256 * 1024) };
+        else if (method === "POST" && resource === "upgrade") forward = { method: "POST", path: "/upgrade" };
+        else if (slug && method === "POST" && (sub === "users" || sub === "suspend" || sub === "resume")) forward = { method: "POST", path: `/workspaces/${slug}/${sub}`, ...(sub === "users" ? { body: await readBody(req, 8192) } : {}) };
+        else if (slug && method === "DELETE" && !sub) forward = { method: "DELETE", path: `/workspaces/${slug}`, body: await readBody(req, 8192) };
+        if (!forward) return json(res, 405, { error: "no such fleet operation" });
+        try {
+          const reply = await fleetRequest(socket, forward.method, forward.path, forward.body);
+          return json(res, reply.status, reply.body ?? {});
+        } catch (error) {
+          return json(res, 502, { error: error instanceof Error ? error.message : String(error) });
+        }
       }
+      const local = sharedOssFleet();
+      if (!local) {
+        return json(res, 503, {
+          error: "No fleet available on this server. Set AIKING_FLEET_ROOT to a writable directory (container-local isolation), or run `aikingbot fleet init --domain … --operator <this user>` as root on the host and mount its socket.",
+        });
+      }
+      if (method === "GET" && !resource) return json(res, 200, local.list());
+      if (method === "POST" && resource === "workspaces") {
+        const body = await readBody(req, 256 * 1024);
+        const result = local.create({
+          slug: typeof body?.slug === "string" ? body.slug : "",
+          admins: Array.isArray(body?.admins) ? body.admins.map(String) : [],
+          members: Array.isArray(body?.members) ? body.members.map(String) : [],
+          ...(typeof body?.cap === "number" ? { cap: body.cap } : {}),
+          ...(typeof body?.anthropicKey === "string" ? { anthropicKey: body.anthropicKey } : {}),
+          ...(typeof body?.anthropicUrl === "string" ? { anthropicUrl: body.anthropicUrl } : {}),
+        });
+        return json(res, result.status, result.body);
+      }
+      if (method === "POST" && resource === "upgrade") {
+        const result = local.upgrade();
+        return json(res, result.status, result.body);
+      }
+      if (slug && method === "POST" && sub === "users") {
+        const body = await readBody(req, 8192);
+        const action = body?.action === "remove" ? "remove" : body?.action === "add" ? "add" : null;
+        if (!action) return json(res, 400, { error: "action must be add or remove" });
+        const result = local.users({
+          slug,
+          action,
+          email: typeof body?.email === "string" ? body.email : "",
+          chatOnly: body?.chatOnly === true,
+        });
+        return json(res, result.status, result.body);
+      }
+      if (slug && method === "POST" && sub === "suspend") {
+        const result = local.suspend(slug);
+        return json(res, result.status, result.body);
+      }
+      if (slug && method === "POST" && sub === "resume") {
+        const result = local.resume(slug);
+        return json(res, result.status, result.body);
+      }
+      if (slug && method === "DELETE" && !sub) {
+        const body = await readBody(req, 8192);
+        const result = local.remove(slug, body?.keepData === true);
+        return json(res, result.status, result.body);
+      }
+      return json(res, 405, { error: "no such fleet operation" });
     }
 
     if (method === "GET" && path === "/api/edition") {

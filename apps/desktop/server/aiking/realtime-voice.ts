@@ -7,6 +7,7 @@
 // changes how the answer is returned), so that thread is a read-only relay: no shell, MCP, apps or web, one
 // `ask_agent` tool. `ask_agent` sends the request into the agent's own AIKINGBOT conversation, where it runs as an
 // ordinary turn with the agent's engine, tools and approvals, visible in chat; the relay speaks the agent's answer.
+import { voiceTurn } from "../harness/quota-failover.ts";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
@@ -278,8 +279,14 @@ class RealtimeCall {
   since(after: number): RealtimeEvent[] { return this.events.filter((event) => event.seq > after); }
 }
 
+/** 1.12: what the server hands back once realtime is out of quota: the step call (dictation → agent turn → TTS with failover). */
+export const STEP_FALLBACK_MESSAGE = "Realtime voice is out of quota; using step-by-step voice (speech → agent → TTS).";
+export type StepHandoff = { fallback: "step"; botId: string; threadId: string; stages: readonly ["stt", "llm", "tts"] };
+
 export function createRealtimeVoice(options: RealtimeVoiceOptions) {
   const calls = new Map<string, RealtimeCall>();
+  // Sticky for this server: once realtime's quota is gone every later call goes straight to step speech (no switching back).
+  const fallback = { realtimeExhausted: false };
   const maxCalls = options.maxCalls ?? 2;
   const log = options.log ?? (() => {});
   let voices: { list: string[]; at: number } | null = null;
@@ -403,6 +410,8 @@ export function createRealtimeVoice(options: RealtimeVoiceOptions) {
       const failed = rpc.waitFor("thread/realtime/error", (params) => params.threadId === call.codexThreadId).then((params) => {
         throw new Error(text(params.message, 300) || "Codex could not start realtime voice.");
       });
+      // Both waiters reject when the start request fails and the app server is stopped; neither may go unhandled.
+      answer.catch(() => undefined);
       failed.catch(() => undefined);
       await rpc.request("thread/realtime/start", {
         threadId: call.codexThreadId,
@@ -443,6 +452,7 @@ export function createRealtimeVoice(options: RealtimeVoiceOptions) {
       const target = botId ? options.resolveTarget(botId, undefined) : null;
       const agent = target ? { supported: target.voiceSupported, voice: options.voices.get(target.botId) ?? "" } : undefined;
       if (agent && !agent.supported) return { available: false, reason: VOICE_NOT_AVAILABLE, provider: "codex" as const, transport: "webrtc" as const, voices, agent };
+      if (fallback.realtimeExhausted) return { available: false, reason: STEP_FALLBACK_MESSAGE, fallback: "step" as const, provider: "codex" as const, transport: "webrtc" as const, voices, ...(agent ? { agent } : {}) };
       return { ...account, provider: "codex" as const, transport: "webrtc" as const, voices, ...(agent ? { agent } : {}) };
     },
     start,
@@ -489,7 +499,16 @@ export function createRealtimeVoice(options: RealtimeVoiceOptions) {
         if (active.some((call) => call.owner === owner)) { json(res, 409, { error: "You already have a realtime call. Hang it up first." }); return true; }
         if (active.length >= maxCalls) { json(res, 429, { error: "Too many realtime calls are running in this workspace. Try again shortly." }); return true; }
         try {
-          json(res, 201, await start(owner, target, body.sdp, voice, picked.source));
+          // Realtime first; out of quota, the turn and every later one run as step speech, chosen here on the server.
+          const sdp = body.sdp;
+          const step = (heard: StepHandoff) => Promise.resolve(heard);
+          const turn = await voiceTurn<string, StepHandoff, { id: string; sdp: string } | StepHandoff>(
+            sdp, fallback, (offer) => start(owner, target, offer, voice, picked.source),
+            { stt: async () => ({ fallback: "step", botId: target.botId, threadId: target.threadId, stages: ["stt", "llm", "tts"] }), llm: step, tts: step },
+            (notice) => log(`realtime voice: ${notice.message}`),
+          );
+          if (turn.via === "pipeline") json(res, 409, { error: STEP_FALLBACK_MESSAGE, ...turn.audio });
+          else json(res, 201, turn.audio);
         } catch (error) {
           json(res, 502, { error: error instanceof Error ? error.message : "Codex could not start realtime voice." });
         }

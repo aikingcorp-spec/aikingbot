@@ -35,6 +35,7 @@ import { UsageSection } from "./UsageSection";
 import { SkillsSection } from "./SkillsSection";
 import { LicenseExpiryBanner } from "./LicenseExpiryBanner";
 import { WorkspacesSection, workspacesAvailable } from "./WorkspacesSection";
+import { at } from "@/aiking/strings";
 import { SkinPicker } from "./SkinPicker";
 import { FONT_IDS, applyFont, readFont, type FontId } from "@/lib/fonts";
 import { setColorUserBubbles, useColorUserBubbles } from "@/lib/user-bubble-preference";
@@ -84,7 +85,7 @@ export const SECTIONS: Array<{
   { id: "decisionModel", group: "ai", labelKey: "settings.section.decisionModel", icon: Zap, keywords: ["decision", "jev", "typesafe", "routing", "auto", "rooms", "who answers"] },
   { id: "skills", group: "ai", labelKey: "settings.section.skills", icon: BookOpen, keywords: ["skills", "library", "assign", "agent skills", "skill md"] },
   { id: "desktopWorkspaces", group: "computers", labelKey: "settings.section.desktopWorkspaces", icon: Building2, keywords: ["workspace", "cloud", "hosted", "vps", "server", "servers", "connect", "pair", "switch", "local"] },
-  { id: "computer", group: "computers", labelKey: "settings.section.computer", icon: Monitor, keywords: ["vm", "virtual", "desktop", "browser", "built-in browser", "profiles", "browser profiles"] },
+  { id: "computer", group: "computers", labelKey: "settings.section.computer", icon: Monitor, keywords: ["vm", "virtual", "virtual machine", "local vm", "máy ảo", "may ao", "desktop", "browser", "built-in browser", "profiles", "browser profiles"] },
   { id: "logins", group: "computers", labelKey: "settings.section.logins", icon: LockKeyhole, keywords: ["logins", "login", "passwords", "password", "sign in", "2fa", "one-time code", "totp", "fill_login", "1password", "vault"] },
   { id: "cloudAccount", group: "account", labelKey: "settings.section.cloudAccount", icon: User, keywords: ["cloud", "account", "personal", "sign in", "pro", "subscription", "billing"] },
   { id: "organization", group: "account", labelKey: "settings.section.organization", icon: Building2, keywords: ["company", "organization", "organisation", "sign in", "enroll", "managed", "models", "disconnect"] },
@@ -108,11 +109,12 @@ export const SIMPLE_PAGES: SimpleSettingsPage[] = [
   { id: "appearance", labelKey: "settings.section.appearance", icon: Palette, sections: ["appearance"] },
   { id: "ai", labelKey: "settings.group.ai", icon: Sparkles, sections: ["engines"] },
   { id: "connectors", labelKey: "settings.group.connectors", icon: Plug, sections: ["connections"] },
-  { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["logins"] },
-  { id: "account", labelKey: "settings.group.account", icon: CircleUser, sections: ["cloudAccount", "people", "activity"] },
+  { id: "computers", labelKey: "settings.group.computers", icon: Monitor, sections: ["companion", "computer", "logins"] },
+  { id: "account", labelKey: "settings.group.account", icon: CircleUser, sections: ["cloudAccount", "organization", "people", "activity"] },
 ];
 
-export const SIMPLE_HIDDEN_SECTIONS: readonly AppSettingsSection[] = ["decisionModel", "usage", "backups", "experimental", "workspaces", "skills"];
+// 7.3: the Local VM ("computer") is on Computers in Simple mode; only manual server setup stays Advanced.
+export const SIMPLE_HIDDEN_SECTIONS: readonly AppSettingsSection[] = ["decisionModel", "usage", "backups", "experimental", "workspaces", "skills", "desktopWorkspaces"];
 
 export function simpleSettingsPages(
   available: ReadonlyArray<(typeof SECTIONS)[number]>,
@@ -139,7 +141,7 @@ export function revealSettingsBlock(
   scroller.querySelector(`[data-settings-block="${section}"]`)?.scrollIntoView?.({ block: "start" });
 }
 
-function simplePageMatches(page: SimpleSettingsPage, query: string): boolean {
+export function simplePageMatches(page: SimpleSettingsPage, query: string): boolean {
   if (!query) return true;
   if (t(page.labelKey).toLowerCase().includes(query)) return true;
   return page.sections.some((id) => {
@@ -919,7 +921,7 @@ export function SettingsModal() {
       case "appearance":
         return (
           <>
-            <Card title={t("settings.skin.title")} subtitle={t("settings.skin.subtitle")}>
+            <Card title={t("settings.skin.title")} subtitle={at("skin.picker.hint")}>
               <SkinPicker />
             </Card>
             {remoteActive && <AdvancedModeRow />}

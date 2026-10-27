@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   allocatePort,
   applySignIn,
+  countInvites,
+  DEFAULT_INVITE_LIMIT,
   assertSlug,
   caddySite,
   createPlan,
@@ -116,6 +118,26 @@ describe("rendered files", () => {
     expect(JSON.parse(demoted.config).signIn).toEqual({ admins: ["bob@acme.test"], members: ["ada@example.test"] });
     expect(() => applySignIn(demoted.config, "add", "bob@acme.test", true)).toThrow("at least one admin");
     expect(() => applySignIn(demoted.config, "remove", "bob@acme.test", false)).toThrow("at least one admin");
+  });
+  it("enforces the invite limit (owner excluded; @domain counts as 1)", () => {
+    let config = JSON.stringify({ signIn: { admins: ["owner@x"], members: [] } });
+    for (let i = 1; i <= DEFAULT_INVITE_LIMIT; i++) {
+      config = applySignIn(config, "add", `u${i}@x`, true).config;
+    }
+    expect(countInvites(["owner@x"], Array.from({ length: DEFAULT_INVITE_LIMIT }, (_, i) => `u${i + 1}@x`))).toBe(DEFAULT_INVITE_LIMIT);
+    expect(() => applySignIn(config, "add", "extra@x", true)).toThrow("invite limit reached (5)");
+    // Raising the limit via config text, then adds succeed until 7.
+    config = JSON.stringify({ signIn: { ...JSON.parse(config).signIn, inviteLimit: 7 } });
+    config = applySignIn(config, "add", "u6@x", true).config;
+    config = applySignIn(config, "add", "u7@x", true).config;
+    expect(() => applySignIn(config, "add", "u8@x", true)).toThrow("invite limit reached (7)");
+    config = applySignIn(config, "remove", "u7@x", false).config;
+    config = applySignIn(config, "add", "back@x", true).config;
+    expect(JSON.parse(config).signIn.members).toContain("back@x");
+    // @domain counts as one seat.
+    let domainConfig = JSON.stringify({ signIn: { admins: ["owner@x"], members: [], inviteLimit: 1 } });
+    domainConfig = applySignIn(domainConfig, "add", "@acme.test", true).config;
+    expect(() => applySignIn(domainConfig, "add", "other@x", true)).toThrow("invite limit reached (1)");
   });
 });
 

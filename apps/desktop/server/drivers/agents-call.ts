@@ -727,21 +727,66 @@ export async function callTool(name: string, args: Json, context: ToolCallContex
       return { text: "request_credential needs a supported credential_id.", isError: true };
     }
     const reason = typeof args.reason === "string" ? args.reason.trim().slice(0, 240) : "";
+    const customName = typeof args.name === "string" ? args.name.trim() : "";
+    const customLabel = typeof args.label === "string" ? args.label.trim() : "";
+    if (credentialId === "custom") {
+      if (!/^[a-z0-9_-]{1,40}$/u.test(customName)) {
+        return { text: "request_credential with credential_id custom needs name: a slug of 1–40 chars [a-z0-9_-].", isError: true };
+      }
+      if (!customLabel || customLabel.length > 60) {
+        return { text: "request_credential with credential_id custom needs label: 1–60 characters shown on the card.", isError: true };
+      }
+    }
     const r = await api("/api/internal/request-credential", {
       method: "POST",
       body: JSON.stringify({
         fromBotId: BOT_ID,
         fromThreadId: THREAD_ID,
         credentialId,
+        ...(credentialId === "custom" ? { name: customName, label: customLabel } : {}),
         ...(reason ? { reason } : {}),
       }),
     });
     if (r.alreadyConfigured) {
+      if (credentialId === "custom" && typeof r.ref === "string") {
+        return { text: JSON.stringify({ stored: true, ref: r.ref }) };
+      }
       return { text: `${r.label ?? CREDENTIAL_TARGETS[credentialId].label} is already configured. Continue the task.` };
     }
     return {
       text: `A secure ${r.label ?? CREDENTIAL_TARGETS[credentialId].label} request is ready. The desktop app and a freshly QR-paired mobile app show its secure entry card; older mobile pairings explain how to pair again or finish on the computer. End this turn; AIKINGBOT will resume the task after the user saves or declines. Never ask them to paste the key into chat.`,
     };
+  }
+  if (name === "request_connect") {
+    const server = typeof args.server === "string" ? args.server.trim() : "";
+    if (!server) return { text: "request_connect needs server: the added service's name, such as notion.", isError: true };
+    const header = typeof args.header === "string" && args.header.trim() ? args.header.trim() : undefined;
+    const reason = typeof args.reason === "string" ? args.reason.trim().slice(0, 240) : "";
+    const r = await api("/api/internal/request-connect", {
+      method: "POST",
+      body: JSON.stringify({ fromBotId: BOT_ID, fromThreadId: THREAD_ID, server, ...(header ? { header } : {}), ...(reason ? { reason } : {}) }),
+    });
+    if (r.connected) return { text: `${r.server ?? server} is already connected. Continue the task with its tools.` };
+    return {
+      text: `${server} has a connect card in this chat (${r.auth === "api-key" ? "it takes the API key securely" : "one click signs in"}). Your turn ends now: say in one short line that you are waiting for them to connect it, then stop. Never ask for a key or password in chat.`,
+    };
+  }
+  if (name === "marketplace_search") {
+    const query = typeof args.query === "string" ? args.query.trim() : "";
+    if (!query) return { text: "marketplace_search needs query.", isError: true };
+    const r = await api("/api/internal/marketplace-search", { method: "POST", body: JSON.stringify({ fromBotId: BOT_ID, fromThreadId: THREAD_ID, query }) });
+    return { text: typeof r.text === "string" ? r.text : "The catalog did not answer." };
+  }
+  if (name === "marketplace_install") {
+    const slug = typeof args.slug === "string" ? args.slug.trim() : "";
+    if (!slug) return { text: "marketplace_install needs slug from marketplace_search.", isError: true };
+    const reason = typeof args.reason === "string" ? args.reason.trim().slice(0, 240) : "";
+    const r = await api("/api/internal/marketplace-install", {
+      method: "POST",
+      body: JSON.stringify({ fromBotId: BOT_ID, fromThreadId: THREAD_ID, slug, ...(reason ? { reason } : {}) }),
+    });
+    if (r.connected) return { text: `${r.label ?? slug} is already connected. Continue the task with its tools.` };
+    return { text: `An "Install and connect" card for ${r.label ?? slug} is in this chat. Your turn ends now: say in one short line that you are waiting for them, then stop.` };
   }
   if (name === "request_sign_in") {
     const site = typeof args.site === "string" ? args.site.trim() : "";

@@ -1600,5 +1600,7 @@
   "room.holds.resume": "Reprendre {name}",
   "room.holds.stop": "Arrêter {name}",
   "room.holds.stopTitle": "Arrêter seulement {name} ; le reste du salon continue",
-  "room.holds.avatarHeld": "{name} — en pause (arrêté par vous)"
+  "room.holds.avatarHeld": "{name} — en pause (arrêté par vous)",
+  "workspaces.unavailable": "Team servers cannot be created here ({reason}).",
+  "workspaces.unavailableFix": "Fix: {fix}"
 }

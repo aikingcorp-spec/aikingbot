@@ -1,6 +1,6 @@
 // Build the bundled model catalog snapshot from models.dev.
 //
-//   node scripts/build-model-catalog.mjs --input api.json --commit <sha> --updated-at <ISO time>
+//   node scripts/build-model-catalog.mjs --input api.json --commit <sha> --updated-at <ISO time> [--fetched-at <ISO time>]
 //   node scripts/build-model-catalog.mjs --commit <sha> --updated-at <ISO time>   (fetches models.dev/api.json)
 //   node scripts/build-model-catalog.mjs --check                                   (verifies the committed file)
 //
@@ -13,6 +13,7 @@
 // {file:…} anywhere in its config.
 //
 // Output is one model per line so a refresh reads as a per-model diff.
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -29,12 +30,19 @@ export const MODELS_DEV_REPOSITORY = "https://github.com/anomalyco/models.dev";
 export const MAX_GZIP_BYTES = 150 * 1024;
 const MAX_INPUT_BYTES = 20 * 1024 * 1024;
 
-export function buildCatalogDocument(raw, { commit, updatedAt, licenseText, onDrop } = {}) {
+export function providersSha256(providers) {
+  return createHash("sha256").update(JSON.stringify(providers), "utf8").digest("hex");
+}
+
+export function buildCatalogDocument(raw, { commit, updatedAt, fetchedAt, licenseText, onDrop } = {}) {
   if (!commit || !/^[0-9a-f]{7,40}$/.test(commit)) throw new Error("--commit must be the models.dev commit the data came from");
   const time = new Date(updatedAt ?? "");
   if (!updatedAt || Number.isNaN(time.getTime())) throw new Error("--updated-at must be an ISO time (the commit time)");
+  const fetched = new Date(fetchedAt ?? updatedAt ?? "");
+  if (Number.isNaN(fetched.getTime())) throw new Error("--fetched-at must be an ISO time");
   const providers = trimModelsDevCatalog(raw, { onDrop });
   if (!Object.keys(providers).length) throw new Error("the input held no usable providers");
+  const packed = packCatalog(providers);
   return {
     schema: MODEL_CATALOG_SCHEMA,
     updatedAt: time.toISOString(),
@@ -43,10 +51,12 @@ export function buildCatalogDocument(raw, { commit, updatedAt, licenseText, onDr
       url: MODELS_DEV_API,
       repository: MODELS_DEV_REPOSITORY,
       commit,
+      fetchedAt: fetched.toISOString(),
+      sha256: providersSha256(packed),
       license: "MIT",
       licenseText,
     },
-    providers: packCatalog(providers),
+    providers: packed,
   };
 }
 
@@ -82,6 +92,10 @@ export function snapshotProblems(input) {
   if (doc?.schema !== MODEL_CATALOG_SCHEMA) problems.push(`schema must be ${MODEL_CATALOG_SCHEMA}`);
   if (Number.isNaN(new Date(doc?.updatedAt ?? "").getTime())) problems.push("updatedAt must be an ISO time");
   if (!doc?.source?.commit) problems.push("source.commit is missing");
+  if (!doc?.source?.url) problems.push("source.url is missing");
+  if (Number.isNaN(new Date(doc?.source?.fetchedAt ?? "").getTime())) problems.push("source.fetchedAt must be an ISO time");
+  if (!/^[0-9a-f]{64}$/.test(doc?.source?.sha256 ?? "")) problems.push("source.sha256 must be a 64-char lowercase hex digest");
+  else if (doc?.source?.sha256 !== providersSha256(doc.providers)) problems.push("source.sha256 does not match the providers payload");
   if (!doc?.source?.licenseText?.includes("Permission is hereby granted")) problems.push("source.licenseText must hold the full MIT permission notice");
   if (containsBrace(doc?.providers)) problems.push("a provider or model contains { or }");
   if (JSON.stringify(packCatalog(trimModelsDevCatalog(unpackCatalog(doc?.providers)))) !== JSON.stringify(doc?.providers)) problems.push("providers are not in trimmed form; rebuild the snapshot");
@@ -105,6 +119,7 @@ async function main() {
       input: { type: "string" },
       commit: { type: "string" },
       "updated-at": { type: "string" },
+      "fetched-at": { type: "string" },
       out: { type: "string" },
       check: { type: "boolean" },
     },
@@ -126,6 +141,7 @@ async function main() {
   const doc = buildCatalogDocument(JSON.parse(text), {
     commit: values.commit,
     updatedAt: values["updated-at"],
+    fetchedAt: values["fetched-at"] ?? values["updated-at"],
     licenseText: toLf(readFileSync(LICENSE_PATH, "utf8")),
     onDrop: (drop) => drops.push(drop),
   });
@@ -140,6 +156,7 @@ async function main() {
   const braceModels = drops.filter((drop) => drop.reason === "brace" && drop.model).length;
   const invalid = drops.filter((drop) => drop.reason === "invalid").map((drop) => drop.model ? `${drop.provider}/${drop.model}` : drop.provider);
   console.log(`model catalog: ${stats.providers} providers, ${stats.models} models`);
+  console.log(`  source ${doc.source.url} fetchedAt ${doc.source.fetchedAt} sha256 ${doc.source.sha256}`);
   console.log(`  dropped for { or }: providers ${braceProviders.join(", ") || "none"}; ${braceModels} models`);
   if (invalid.length) console.log(`  dropped as malformed: ${invalid.join(", ")}`);
   console.log(`  ${serialized.length} bytes, ${gzipSync(serialized).length} gzipped → ${out}`);

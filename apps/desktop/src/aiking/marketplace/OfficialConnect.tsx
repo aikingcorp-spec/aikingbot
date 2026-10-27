@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Copy, ExternalLink, Loader2 } from "lucide-react";
 import type { AppListing } from "./contract";
 import { at } from "../strings";
+import { officialProviderSteps } from "./official-steps";
 import { connectOfficial, disconnectOfficial, officialRedirectUri, officialSignInStatus, type AppsState } from "./installer";
 
 type Official = Extract<AppListing["connector"], { type: "official" }>;
@@ -70,7 +71,7 @@ export function OfficialConnect({ listing, apps, connected, onChanged, onComposi
         <div className="space-y-2" data-official-app-setup>
           {connector.provider && (
             <ol className="list-decimal space-y-1 pl-5 text-ink-secondary">
-              {connector.provider.steps.map((step) => <li key={step}>{step}</li>)}
+              {officialProviderSteps(listing.id, connector.provider.steps).map((step) => <li key={step}>{step}</li>)}
             </ol>
           )}
           <div className="flex flex-wrap items-center gap-2">

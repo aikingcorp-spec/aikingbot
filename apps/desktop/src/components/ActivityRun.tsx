@@ -6,6 +6,7 @@ import type { Message } from "@/state/store";
 import { describeRun } from "@/lib/activity-runs";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
+import { msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 
 export function ActivityRun({
   messages,
@@ -23,9 +24,10 @@ export function ActivityRun({
   const running = messages.some((step) => step.kind === "activity" && step.tool && step.tool.ok === undefined);
   const done = messages.filter((step) => step.kind !== "activity" || !step.tool || step.tool.ok !== undefined).length;
   return (
+    <div className={msgCardOuterClass}>
     <section
       data-activity-run=""
-      className="w-full max-w-[448px] self-start overflow-hidden rounded-[14px] border border-hairline bg-app"
+      className={cn(msgCardInnerClass, "self-start overflow-hidden rounded-[14px] border border-hairline bg-app")}
     >
       <button
         type="button"
@@ -43,5 +45,6 @@ export function ActivityRun({
       </button>
       {open && <div className="flex flex-col gap-1 border-t border-hairline px-2 py-2">{children}</div>}
     </section>
+    </div>
   );
 }

@@ -64,6 +64,7 @@ describe("pinned desktop browser preparation", () => {
   it("uses Windows' ZIP-capable system tar instead of Git Bash's GNU tar", () => {
     expect(browserExtractionCommand("a.zip", "out", { platform: "win32", systemRoot: "D:\\Windows" })).toEqual({ file: "D:\\Windows\\System32\\tar.exe", args: ["-xf", "a.zip", "-C", "out"] });
     expect(browserExtractionCommand("a.zip", "out", { platform: "darwin" })).toEqual({ file: "unzip", args: ["-q", "a.zip", "-d", "out"] });
+    expect(browserExtractionCommand("a.zip", "out", { platform: "linux" })).toBeNull();
   });
 
   it("repairs a tampered cache by re-downloading and fails closed on a bad download", async () => {

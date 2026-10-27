@@ -3,7 +3,7 @@
 // (marketplace/installer.ts). Layout follows the OpenBot 0.39 reference
 // screenshots; the code is original. "All connectors" embeds the upstream
 // connector panel, so Composio sign-in and MCP management behave as before.
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Component, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
   AlertTriangle, Check, ChevronRight, CircleDot, FolderOpen, ListFilter, Loader2, Plus, RefreshCw, Search, Sparkles, Trash2, Wrench, X,
@@ -19,27 +19,39 @@ import { at } from "./strings";
 import { APP_LOGOS } from "./app-logos";
 import type { AgentListing, AppListing, CatalogPage, InstallStatus, Listing, ListingKind, SkillListing } from "./marketplace/contract";
 import { catalogSource } from "./marketplace/sources";
+import { useCatalog } from "./marketplace/use-catalog";
+import { categoryLabel, listingCategory, listingSummary } from "./marketplace/localize";
+import { ALERT_BOX, ALERT_BUTTON, CatalogLoadError } from "./marketplace/CatalogLoadError";
 import { OfficialConnect, signInOfficial } from "./marketplace/OfficialConnect";
+import { OFFICIAL_APPS } from "./marketplace/official-apps";
 import {
   agentStatus, appStatus, removeAgent, installAgent, installMcp, installSkill, loadAppsState, setSkillEnabled, skillHolders,
   skillStatus, testMcp, uninstallMcp, uninstallSkill, updateAgent, updateSkill, type AgentSkillState, type AppsState,
 } from "./marketplace/installer";
 import { useShowThreads } from "@/lib/thread-preferences";
+import { PanelBoundary } from "@/components/PanelBoundary";
 
 type Detail = { kind: ListingKind; id: string } | null;
 const KIND_OF_TAB: Record<MarketplaceTab, ListingKind> = { agents: "agent", apps: "app", skills: "skill" };
 
-function useCatalog<K extends ListingKind>(kind: K, text: string, category: string | null) {
-  const [page, setPage] = useState<CatalogPage<Extract<Listing, { kind: K }>> | null>(null);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let alive = true;
-    catalogSource().list({ kind, text, category })
-      .then((result) => alive && (setPage(result), setError("")))
-      .catch((cause) => alive && setError(cause instanceof Error ? cause.message : String(cause)));
-    return () => { alive = false; };
-  }, [kind, text, category]);
-  return { page, error };
+// Local boundary: a render error inside the grid shows Retry/Close instead of
+// unmounting the whole app. The message is fixed text; the error is not shown.
+class GridBoundary extends Component<{ resetKey: string; onRetry: () => void; onClose: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidUpdate(prev: { resetKey: string }) { if (prev.resetKey !== this.props.resetKey && this.state.failed) this.setState({ failed: false }); }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div role="alert" className={ALERT_BOX}>
+        <p>{at("market.crashed")}</p>
+        <div className="mt-2 flex gap-2">
+          <button type="button" className={ALERT_BUTTON} onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>{at("market.retry")}</button>
+          <button type="button" className={ALERT_BUTTON} onClick={this.props.onClose}>{at("market.close")}</button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export function Marketplace() {
@@ -85,7 +97,9 @@ export function Marketplace() {
   }, [state.pluginsSurface]);
 
   const kind = KIND_OF_TAB[tab];
-  const { page, error } = useCatalog(kind, query, category);
+  const { page, error, retrying, retry } = useCatalog(kind, query, category);
+  // Retry unmounts the focused button; park focus on the dialog so keyboard and screen-reader users keep their place.
+  const retryKeepFocus = () => { dialogRef.current?.focus(); retry(); };
   const chooseTab = (next: MarketplaceTab) => {
     setDetail(null);
     setQuery("");
@@ -130,7 +144,7 @@ export function Marketplace() {
       >
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-hairline px-6">
           {detail ? (
-            <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
+            <nav aria-label={at("market.breadcrumb")} className="flex min-w-0 items-center gap-2 text-[14px] font-semibold">
               <button type="button" onClick={() => setDetail(null)} className="text-ink-secondary hover:text-ink">{at("market.back")}</button>
               <ChevronRight size={14} aria-hidden="true" className="text-ink-tertiary" />
               <span className="truncate text-ink">{detailListing?.name ?? ""}</span>
@@ -145,11 +159,11 @@ export function Marketplace() {
 
         {detail ? (
           detailListing ? (
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6"><PanelBoundary name="marketplace-detail" resetKey={`${detailListing.kind}:${detailListing.id}`}>
               {detailListing.kind === "agent" && <AgentDetail listing={detailListing} revision={revision} onChanged={bump} onClose={close} />}
               {detailListing.kind === "skill" && <SkillDetail listing={detailListing} revision={revision} onChanged={bump} />}
               {detailListing.kind === "app" && <AppDetail listing={detailListing} revision={revision} onChanged={bump} onBrowse={() => { setDetail(null); }} />}
-            </div>
+            </PanelBoundary></div>
           ) : detailError ? <p role="alert" className="p-6 text-danger">{detailError}</p> : <div className="flex flex-1 items-center justify-center"><Loader2 size={16} className="animate-spin text-ink-secondary" /></div>
         ) : (
           <div className="flex min-h-0 flex-1 flex-col">
@@ -183,7 +197,7 @@ export function Marketplace() {
                   onClick={() => setFilterOpen((open) => !open)}
                   className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-medium", category ? "bg-raised text-ink" : "text-ink-secondary hover:bg-raised hover:text-ink")}
                 >
-                  <ListFilter size={14} aria-hidden="true" />{category ?? at("market.filter")}
+                  <ListFilter size={14} aria-hidden="true" />{category ? categoryLabel(category, page) : at("market.filter")}
                 </button>
                 {filterOpen && page && (
                   <div role="menu" aria-label={at("market.filter")} className="animate-pop-in absolute right-0 top-full z-10 mt-1 w-52 rounded-xl border border-hairline bg-menu p-1 shadow-xl">
@@ -197,7 +211,7 @@ export function Marketplace() {
                         className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] text-ink hover:bg-raised"
                       >
                         <span className="w-4">{category === candidate && <Check size={13} aria-hidden="true" />}</span>
-                        {candidate ?? at("market.allCategories")}
+                        {candidate ? categoryLabel(candidate, page) : at("market.allCategories")}
                       </button>
                     ))}
                   </div>
@@ -205,11 +219,11 @@ export function Marketplace() {
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
-              {error ? <p role="alert" className="rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>
+              {error ? <CatalogLoadError error={error} retrying={retrying} onRetry={retry} onClose={close} />
                 : !page ? <Spinner />
-                  : tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
+                  : <GridBoundary resetKey={JSON.stringify([kind, query, category])} onRetry={retryKeepFocus} onClose={close}>{tab === "agents" ? <AgentGrid page={page as CatalogPage<AgentListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "agent", id })} onClose={close} />
                     : tab === "skills" ? <SkillGrid page={page as CatalogPage<SkillListing>} query={query} revision={revision} onOpen={(id) => setDetail({ kind: "skill", id })} />
-                      : <AppGrid page={page as CatalogPage<AppListing>} query={query} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "app", id })} />}
+                      : <AppGrid page={page as CatalogPage<AppListing>} query={query} category={category} onSelectCategory={setCategory} revision={revision} onChanged={bump} onOpen={(id) => setDetail({ kind: "app", id })} />}</GridBoundary>}
             </div>
           </div>
         )}
@@ -234,15 +248,18 @@ function EmptyState({ query }: { query: string }) {
   );
 }
 
-export function MarketCard({ icon, title, action, description, meta, onOpen, label }: {
-  icon: ReactNode; title: string; action?: ReactNode; description: string; meta?: ReactNode; onOpen?: () => void; label?: string;
+export function MarketCard({ icon, title, action, description, meta, onOpen, label, badge }: {
+  icon: ReactNode; title: string; action?: ReactNode; description: string; meta?: ReactNode; onOpen?: () => void; label?: string; badge?: ReactNode;
 }) {
   return (
     <div data-market-card className={cn("group relative flex min-h-[150px] min-w-0 flex-col rounded-[14px] border border-hairline bg-[color-mix(in_srgb,var(--color-raised)_55%,var(--color-app))] p-4 transition-colors", onOpen && "hover:border-ink/15 hover:bg-raised")}>
       {onOpen && <button type="button" onClick={onOpen} aria-label={label ?? title} className="absolute inset-0 rounded-[14px] outline-none focus-visible:ring-2 focus-visible:ring-focus" />}
       <div className="flex min-h-8 items-center gap-3">
         {icon}
-        <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-ink">{title}</span>
+        <span className="flex min-w-0 flex-1 items-center gap-1.5">
+          <span className="truncate text-[14px] font-semibold text-ink">{title}</span>
+          {badge}
+        </span>
         {action && <span className="relative z-[1] shrink-0">{action}</span>}
       </div>
       <p className="mt-3 line-clamp-2 text-[13px] leading-[18px] text-ink/85">{description}</p>
@@ -300,6 +317,15 @@ export function StatusPill({ status }: { status: InstallStatus }) {
   );
 }
 
+
+export function OfficialBadge() {
+  return (
+    <span data-official-badge className="inline-flex h-5 shrink-0 items-center rounded-full bg-success/10 px-2 text-[10.5px] font-semibold tracking-[0.02em] text-success">
+      {at("market.official")}
+    </span>
+  );
+}
+
 function Meta({ term, value }: { term: string; value: ReactNode }) {
   return (
     <div>
@@ -310,12 +336,19 @@ function Meta({ term, value }: { term: string; value: ReactNode }) {
 }
 
 function ListingMeta({ listing }: { listing: Listing }) {
+  const official = listing.kind === "app" && listing.connector.type === "official";
   return (
     <dl className="flex flex-col gap-4 border-hairline md:border-l md:pl-6">
-      <Meta term={at("market.creator")} value={<span className="inline-flex items-center gap-1">{listing.publisher.name}{listing.publisher.verified && <Check size={12} aria-label={at("market.verified")} className="text-success" />}</span>} />
-      <Meta term={at("market.category")} value={listing.category} />
-      <Meta term={at("market.version")} value={listing.version} />
-      {listing.tags.length > 0 && <Meta term={at("market.tags")} value={listing.tags.join(", ")} />}
+      <Meta term={at("market.category")} value={listingCategory(listing)} />
+      {official
+        ? <Meta term={at("market.source")} value={at("market.official")} />
+        : (
+          <>
+            <Meta term={at("market.creator")} value={<span className="inline-flex items-center gap-1">{listing.publisher.name}{listing.publisher.verified && <Check size={12} aria-label={at("market.verified")} className="text-success" />}</span>} />
+            <Meta term={at("market.version")} value={listing.version} />
+            {listing.tags.length > 0 && <Meta term={at("market.tags")} value={listing.tags.join(", ")} />}
+          </>
+        )}
     </dl>
   );
 }
@@ -382,8 +415,8 @@ function AgentGrid({ page, query, revision, onChanged, onOpen, onClose }: {
                 : <OutlineButton label={`${at("market.add")} ${listing.name}`} disabled={busy !== null} onClick={() => void add(listing)}>
                   {busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{busy === listing.id ? at("market.adding") : at("market.add")}
                 </OutlineButton>}
-              description={listing.summary}
-              meta={<span className="flex items-center gap-1.5">{listing.publisher.name} · {listing.category}{status.state === "installed" && <> · <StatusPill status={status} /></>}</span>}
+              description={listingSummary(listing)}
+              meta={<span className="flex items-center gap-1.5">{listing.publisher.name} · {listingCategory(listing)}{status.state === "installed" && <> · <StatusPill status={status} /></>}</span>}
             />
           );
         })}
@@ -444,7 +477,7 @@ function AgentDetail({ listing, revision, onChanged, onClose }: { listing: Agent
         <AikingAvatar color={listing.look.color} bodyId={listing.look.body} state={normalizeState(listing.look.expression) ?? "idle"} size={48} animated={false} />
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}<StatusPill status={status} /></h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {installedBot ? (
@@ -540,8 +573,8 @@ function SkillGrid({ page, query, revision, onOpen }: { page: CatalogPage<SkillL
             label={`${listing.name}, ${at("market.details")}`}
             onOpen={() => onOpen(listing.id)}
             action={count > 0 ? <span className="inline-flex h-8 items-center gap-1 text-[12.5px] text-success"><Check size={13} aria-hidden="true" />{at("market.skillOn", { count })}</span> : <OutlineButton label={`${at("market.add")} ${listing.name}`} onClick={() => onOpen(listing.id)}><Plus size={14} aria-hidden="true" />{at("market.add")}</OutlineButton>}
-            description={listing.summary}
-            meta={`${listing.publisher.name} · ${listing.category} · ${at("market.version")} ${listing.version}`}
+            description={listingSummary(listing)}
+            meta={`${listing.publisher.name} · ${listingCategory(listing)} · ${at("market.version")} ${listing.version}`}
           />
         );
       })}
@@ -579,7 +612,7 @@ function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; 
         <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-raised text-ink-secondary"><Sparkles size={22} aria-hidden="true" /></span>
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{holders && <StatusPill status={skillStatus(listing, holders)} />}</h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
         </div>
       </div>
       {error && <p role="alert" className="mt-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
@@ -596,7 +629,7 @@ function SkillDetail({ listing, revision, onChanged }: { listing: SkillListing; 
                       <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{bot.name}</span>
                       {held ? (
                         <>
-                          <OutlineButton label={`Update ${listing.name} for ${bot.name}`} disabled={busy !== null} onClick={() => void act(bot.id, () => updateSkill(listing, bot.id, bot.threadId))}><RefreshCw size={13} aria-hidden="true" />{at("market.update")}</OutlineButton>
+                          <OutlineButton label={at("market.updateSkillFor", { name: listing.name, bot: bot.name })} disabled={busy !== null} onClick={() => void act(bot.id, () => updateSkill(listing, bot.id, bot.threadId))}><RefreshCw size={13} aria-hidden="true" />{at("market.update")}</OutlineButton>
                           <label className="flex items-center gap-2 text-[12px] text-ink-secondary">
                             <input
                               type="checkbox"
@@ -654,7 +687,7 @@ function useAppsState(revision: number) {
   return { apps, reload };
 }
 
-function AppGrid({ page, query, revision, onChanged, onOpen }: { page: CatalogPage<AppListing>; query: string; revision: number; onChanged: () => void; onOpen: (id: string) => void }) {
+function AppGrid({ page, query, category, onSelectCategory, revision, onChanged, onOpen }: { page: CatalogPage<AppListing>; query: string; category: string | null; onSelectCategory: (category: string | null) => void; revision: number; onChanged: () => void; onOpen: (id: string) => void }) {
   const { dispatch } = useStore();
   const { apps } = useAppsState(revision);
   const [busy, setBusy] = useState<string | null>(null);
@@ -693,6 +726,49 @@ function AppGrid({ page, query, revision, onChanged, onOpen }: { page: CatalogPa
     setConnectQuery(listing.name);
     requestAnimationFrame(() => allRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
+  const browsing = !query.trim() && !category;
+  const popular = browsing ? OFFICIAL_APPS : [];
+  const officialIds = useMemo(() => new Set(OFFICIAL_APPS.map((listing) => listing.id)), []);
+  // Mai browse-all: Phổ biến chips on top, then category samples (catalog apps, not the official chips) with Xem tất cả.
+  const categoryRows = useMemo(() => {
+    if (!browsing || !apps) return [];
+    const catalog = page.items.filter((listing) => !officialIds.has(listing.id));
+    const SAMPLE = 3;
+    return page.categories
+      .map((key) => {
+        const items = catalog.filter((listing) => listing.category === key);
+        return items.length ? { key, items: items.slice(0, SAMPLE) } : null;
+      })
+      .filter((row): row is { key: string; items: AppListing[] } => row !== null);
+  }, [apps, browsing, officialIds, page.categories, page.items]);
+  const renderAppCard = (listing: AppListing) => {
+    if (!apps) return null;
+    const status = appStatus(listing, apps);
+    const mcp = listing.connector.type === "mcp";
+    const official = listing.connector.type === "official";
+    const action = official
+      ? status.state === "connected" ? <StatusPill status={status} />
+        : <OutlineButton label={`${at("market.connect")} ${listing.name}`} disabled={busy !== null} onClick={() => void connectOfficialApp(listing)}>{busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : null}{at("market.connect")}</OutlineButton>
+      : mcp
+      ? status.state === "available"
+        ? <OutlineButton label={`${at("market.install")} ${listing.name}`} disabled={busy !== null} onClick={() => void install(listing)}>{busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{at("market.install")}</OutlineButton>
+        : <StatusPill status={status} />
+      : status.state === "connected" ? <StatusPill status={status} />
+        : <OutlineButton label={`${at("market.connect")} ${listing.name}`} onClick={() => connect(listing)}>{at("market.connect")}</OutlineButton>;
+    return (
+      <MarketCard
+        key={listing.id}
+        icon={<AppIcon listing={listing} />}
+        title={listing.name}
+        badge={official ? <OfficialBadge /> : undefined}
+        label={`${listing.name}, ${at("market.details")}`}
+        onOpen={() => onOpen(listing.id)}
+        action={action}
+        description={listingSummary(listing)}
+        meta={<span className="flex items-center gap-1.5">{mcp ? at("market.mcpServer") : listingCategory(listing)}{(status.state === "error" || (mcp && status.state === "needs-setup")) && <> · <StatusPill status={status} /></>}</span>}
+      />
+    );
+  };
   return (
     <>
       {error && <p role="alert" className="mb-3 rounded-xl bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
@@ -702,36 +778,56 @@ function AppGrid({ page, query, revision, onChanged, onOpen }: { page: CatalogPa
           <button type="button" onClick={() => { dispatch({ type: "togglePlugins", open: false }); dispatch({ type: "toggleAppSettings", open: true, section: "connections" }); }} className="font-medium text-ink underline underline-offset-2">{at("market.openSettings")}</button>
         </p>
       )}
-      <h3 className="mb-2.5 text-[14px] font-semibold text-ink">{at("market.catalogApps")}</h3>
-      {page.items.length === 0 ? <EmptyState query={query} /> : !apps ? <Spinner /> : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {page.items.map((listing) => {
-            const status = appStatus(listing, apps);
-            const mcp = listing.connector.type === "mcp";
-            const official = listing.connector.type === "official";
-            const action = official
-              ? status.state === "connected" ? <StatusPill status={status} />
-                : <OutlineButton label={`${at("market.connect")} ${listing.name}`} disabled={busy !== null} onClick={() => void connectOfficialApp(listing)}>{busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : null}{at("market.connect")}</OutlineButton>
-              : mcp
-              ? status.state === "available"
-                ? <OutlineButton label={`${at("market.install")} ${listing.name}`} disabled={busy !== null} onClick={() => void install(listing)}>{busy === listing.id ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}{at("market.install")}</OutlineButton>
-                : <StatusPill status={status} />
-              : status.state === "connected" ? <StatusPill status={status} />
-                : <OutlineButton label={`${at("market.connect")} ${listing.name}`} onClick={() => connect(listing)}>{at("market.connect")}</OutlineButton>;
-            return (
-              <MarketCard
+      {popular.length > 0 && (
+        <div data-popular-apps className="mb-5">
+          <div className="mb-1.5 flex items-center gap-2">
+            <h3 className="flex-1 text-[12px] font-semibold text-ink-secondary">{at("market.popular")}</h3>
+            <span className="text-[11.5px] text-ink-tertiary">{at("market.composioCount")} · {at("market.composioSource")}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {popular.map((listing) => (
+              <button
                 key={listing.id}
-                icon={<AppIcon listing={listing} />}
-                title={listing.name}
-                label={`${listing.name}, ${at("market.details")}`}
-                onOpen={() => onOpen(listing.id)}
-                action={action}
-                description={listing.summary}
-                meta={<span className="flex items-center gap-1.5">{official ? `${listing.category} · Official` : mcp ? at("market.mcpServer") : listing.category}{(status.state === "error" || (mcp && status.state === "needs-setup")) && <> · <StatusPill status={status} /></>}</span>}
-              />
-            );
-          })}
+                type="button"
+                onClick={() => onOpen(listing.id)}
+                className="inline-flex h-8 items-center gap-2 rounded-[10px] border border-hairline bg-app px-3 text-[12.5px] font-medium text-ink hover:bg-raised"
+              >
+                <AppIcon listing={listing} size={18} />
+                {listing.name}
+                <OfficialBadge />
+                <span className="text-ink-tertiary">+</span>
+              </button>
+            ))}
+          </div>
         </div>
+      )}
+      {!apps ? <Spinner /> : browsing && categoryRows.length > 0 ? (
+        <div data-catalog-categories className="space-y-5">
+          {categoryRows.map((row) => (
+            <section key={row.key} data-catalog-category={row.key}>
+              <div className="mb-2 flex items-center gap-2">
+                <h3 className="flex-1 text-[12px] font-semibold text-ink-secondary">{categoryLabel(row.key, page)}</h3>
+                <button
+                  type="button"
+                  onClick={() => onSelectCategory(row.key)}
+                  className="text-[12px] font-medium text-accent-text hover:underline"
+                >
+                  {at("market.seeAll")}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {row.items.map((listing) => renderAppCard(listing))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : page.items.length === 0 ? <EmptyState query={query} /> : (
+        <>
+          <h3 className="mb-2.5 text-[14px] font-semibold text-ink">{category ? categoryLabel(category, page) : at("market.catalogApps")}</h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {page.items.map((listing) => renderAppCard(listing))}
+          </div>
+        </>
       )}
       <div ref={allRef} className="mt-8 scroll-mt-2 border-t border-hairline pt-6">
         <h3 className="mb-3 text-[14px] font-semibold text-ink">{at("market.allConnectors")}</h3>
@@ -745,9 +841,12 @@ function AppDetail({ listing, revision, onChanged, onBrowse }: { listing: AppLis
   const { apps, reload } = useAppsState(revision);
   const [busy, setBusy] = useState<"install" | "test" | "remove" | null>(null);
   const [error, setError] = useState("");
+  const [choice, setChoice] = useState<"official" | "composio">("official");
+  const [confirmed, setConfirmed] = useState(false);
   const status = apps ? appStatus(listing, apps) : null;
   const server = listing.connector.type === "mcp" ? listing.connector.server : null;
   const official = listing.connector.type === "official";
+  const showChoice = official && status?.state !== "connected" && !confirmed;
   const run = async (kind: "install" | "test" | "remove") => {
     setBusy(kind);
     setError("");
@@ -776,8 +875,12 @@ function AppDetail({ listing, revision, onChanged, onBrowse }: { listing: AppLis
       <div className="flex flex-wrap items-start gap-4">
         <AppIcon listing={listing} size={48} />
         <div className="min-w-0 flex-1">
-          <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink">{listing.name}{status && <StatusPill status={status} />}</h3>
-          <p className="mt-1 text-[13px] text-ink-secondary">{listing.summary}</p>
+          <h3 className="flex flex-wrap items-center gap-2 text-[18px] font-semibold text-ink">
+            {listing.name}
+            {official ? <OfficialBadge /> : null}
+            {status && <StatusPill status={status} />}
+          </h3>
+          <p className="mt-1 text-[13px] text-ink-secondary">{listingSummary(listing)}</p>
           {detail && <p data-status-detail className="mt-1 text-[12.5px] text-ink-tertiary">{detail}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -795,7 +898,65 @@ function AppDetail({ listing, revision, onChanged, onBrowse }: { listing: AppLis
       <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,1fr)_220px]">
         <section>
           <h4 className="mb-2 text-[14px] font-semibold text-ink">{at("market.howItConnects")}</h4>
-          {official && apps ? (
+          {showChoice ? (
+            <div data-connect-choice className="space-y-2">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={choice === "official"}
+                onClick={() => setChoice("official")}
+                className={cn(
+                  "flex w-full items-start gap-3 rounded-[12px] border px-3.5 py-3 text-left",
+                  choice === "official" ? "border-accent bg-accent/10" : "border-hairline bg-app hover:bg-raised",
+                )}
+              >
+                <span
+                  className={cn(
+                    "mt-0.5 size-[18px] shrink-0 rounded-full border-2 bg-app",
+                    choice === "official" ? "border-[5px] border-accent" : "border-hairline",
+                  )}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0">
+                  <span className="block text-[13.5px] font-semibold text-ink">{at("official.choiceOfficial")}</span>
+                  <span className="mt-0.5 block text-[12px] leading-[1.4] text-ink-secondary">{at("official.choiceOfficialHint", { name: listing.name })}</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={choice === "composio"}
+                onClick={() => setChoice("composio")}
+                disabled={!apps?.composioConfigured}
+                className={cn(
+                  "flex w-full items-start gap-3 rounded-[12px] border px-3.5 py-3 text-left disabled:opacity-50",
+                  choice === "composio" ? "border-accent bg-accent/10" : "border-hairline bg-app hover:bg-raised",
+                )}
+              >
+                <span
+                  className={cn(
+                    "mt-0.5 size-[18px] shrink-0 rounded-full border-2 bg-app",
+                    choice === "composio" ? "border-[5px] border-accent" : "border-hairline",
+                  )}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0">
+                  <span className="block text-[13.5px] font-semibold text-ink">{at("official.choiceComposio")}</span>
+                  <span className="mt-0.5 block text-[12px] leading-[1.4] text-ink-secondary">{at("official.choiceComposioHint")}</span>
+                </span>
+              </button>
+              <div className="pt-1">
+                <PrimaryButton
+                  onClick={() => {
+                    if (choice === "composio") onBrowse();
+                    else setConfirmed(true);
+                  }}
+                >
+                  {at("market.connectName", { name: listing.name })}
+                </PrimaryButton>
+              </div>
+            </div>
+          ) : official && apps && (status?.state === "connected" || confirmed) ? (
             <OfficialConnect listing={listing} apps={apps} connected={status?.state === "connected"} onChanged={() => { onChanged(); void reload(); }} onComposio={apps.composioConfigured ? onBrowse : undefined} />
           ) : server ? (
             <pre className="overflow-auto whitespace-pre-wrap rounded-xl bg-raised px-4 py-3 font-mono text-[12px] leading-[19px] text-ink/85">

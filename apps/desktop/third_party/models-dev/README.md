@@ -1,6 +1,6 @@
 # models.dev
 
-`server/model-catalog/models-dev.snapshot.json` is a trimmed copy of the
+`server/model-catalog/models-dev.snapshot.json` is a trimmed, **frozen** copy of the
 models.dev catalog (`https://models.dev/api.json`), MIT License, Copyright (c)
 2025 models.dev. The full license text is in [LICENSE](LICENSE) and inside the
 snapshot itself (`source.licenseText`).
@@ -9,8 +9,13 @@ snapshot itself (`source.licenseText`).
   `7f91a155297c92203cc1111dac7f0ca42d478f22` (2026-09-30T05:32:26Z). The
   `api.json` used was checked to be identical in content to the catalog that
   commit generates.
+- Provenance in the snapshot `source` block: `url`, `fetchedAt`, `sha256`
+  (SHA-256 of `JSON.stringify(providers)`), `commit`, and `license` / `licenseText`.
 - Built with `node scripts/build-model-catalog.mjs --input api.json --commit
   <sha> --updated-at <commit time>`; `--check` verifies the committed file.
 - Trimmed to the provider index and current, tool-calling, text-input models.
   Any provider or model whose strings contain `{` or `}` is left out, because
   OpenCode expands `{env:…}` and `{file:…}` anywhere in its configuration.
+- Runtime loaders: `server/model-catalog/frozen.ts` (bundled snapshot only, no
+  network) for the model picker's show-all / search path; `catalog.ts`
+  (`ModelCatalogStore`) may still refresh a writable cache when fetch is enabled.

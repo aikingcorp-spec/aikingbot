@@ -25,7 +25,26 @@ export interface FleetView {
 }
 
 export function workspacesAvailable(config: ConfigStatus | null | undefined): boolean {
-  return config?.edition?.features?.includes("admin") === true && config?.fleet?.available === true;
+  // Open-source and enterprise both show Workspaces; config.fleet.available + reason explain create blockers.
+  return config?.fleet !== undefined;
+}
+
+/** Reason codes from the server stay in logs/API; the UI maps them to locale strings only. */
+const FLEET_REASON_CODES = [
+  "no-entitlement",
+  "container",
+  "not-initialized",
+  "no-agent",
+  "socket-denied",
+  "missing-tools",
+] as const;
+
+export type FleetReasonCode = (typeof FLEET_REASON_CODES)[number] | "unknown";
+
+export function fleetReasonCode(reason: string | undefined): FleetReasonCode {
+  return (FLEET_REASON_CODES as readonly string[]).includes(reason ?? "")
+    ? (reason as (typeof FLEET_REASON_CODES)[number])
+    : "unknown";
 }
 
 const fetchFleet = (): Promise<FleetView> => api("/api/fleet");
@@ -243,13 +262,24 @@ export function WorkspacesSection({ load = fetchFleet }: { load?: () => Promise<
   };
 
   if (!workspacesAvailable(state.config)) return null;
+  const fleetStatus = state.config?.fleet;
+  const blocked = fleetStatus?.available !== true;
   return (
     <div className="flex flex-col gap-5">
       <Card title={t("workspaces.title")} subtitle={t("workspaces.subtitle")}>
+        {blocked && (() => {
+          const code = fleetReasonCode(fleetStatus?.reason);
+          return (
+            <div role="alert" className="mb-3 rounded-xl border border-danger/40 bg-danger/5 p-3 text-[13px] text-ink">
+              <p className="font-medium">{t(`workspaces.reason.${code}`)}</p>
+              <p className="mt-1 text-[12px] text-ink-secondary">{t(`workspaces.fix.${code}`)}</p>
+            </div>
+          );
+        })()}
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <button type="button" onClick={() => void refresh()} disabled={loading || busy !== null} className="flex items-center gap-1 text-[12px] text-ink-secondary hover:text-ink disabled:opacity-50"><RefreshCw size={12} className={cn(loading && "animate-spin")} />{t("workspaces.refresh")}</button>
-          <button type="button" onClick={() => setCreating((value) => !value)} disabled={busy !== null} className="ml-auto flex items-center gap-1.5 rounded-lg border border-hairline/40 px-3 py-1.5 text-[12px] text-ink-secondary hover:bg-raised/50 hover:text-ink disabled:opacity-50"><Plus size={13} />{t("workspaces.new")}</button>
-          <button type="button" onClick={() => void upgrade()} disabled={busy !== null || !fleet?.workspaces.length} className="rounded-lg border border-hairline/40 px-3 py-1.5 text-[12px] text-ink-secondary hover:bg-raised/50 hover:text-ink disabled:opacity-50">{busy === "*" ? t("workspaces.working") : t("workspaces.upgradeAll")}</button>
+          <button type="button" onClick={() => setCreating((value) => !value)} disabled={busy !== null || blocked} className="ml-auto flex items-center gap-1.5 rounded-lg border border-hairline/40 px-3 py-1.5 text-[12px] text-ink-secondary hover:bg-raised/50 hover:text-ink disabled:opacity-50"><Plus size={13} />{t("workspaces.new")}</button>
+          <button type="button" onClick={() => void upgrade()} disabled={busy !== null || blocked || !fleet?.workspaces.length} className="rounded-lg border border-hairline/40 px-3 py-1.5 text-[12px] text-ink-secondary hover:bg-raised/50 hover:text-ink disabled:opacity-50">{busy === "*" ? t("workspaces.working") : t("workspaces.upgradeAll")}</button>
         </div>
         {creating && fleet && <div className="mb-4 rounded-xl border border-hairline/40 p-3"><NewWorkspaceForm domain={fleet.domain} disabled={busy !== null} onCreated={(lines, created) => { setCreating(false); setLog(lines); setInviteLink(`https://${created.slug}.${fleet.domain}/pair?email=${encodeURIComponent(created.admin)}`); void refresh(); }} /></div>}
         {inviteLink && <div className="mb-4"><CopyLink link={inviteLink} /></div>}

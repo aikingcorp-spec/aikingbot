@@ -6,7 +6,7 @@ import { WorkspacePanel } from "./WorkspacePanel";
 import { selectServer, useServerDirectory } from "./server-directory";
 import { discardFailedServer } from "./platform-api";
 import { openWorkspacePanel, useWorkspaceIdentity } from "./workspace-identity";
-import { ChevronsUpDown, LogOut, Plus, Puzzle } from "lucide-react";
+import { Blocks, ChevronsUpDown, LogOut, Plus } from "lucide-react";
 import { useStore } from "@/state/store";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/i18n";
@@ -31,23 +31,9 @@ export function WorkspaceOrb({ size = 18, className }: { size?: number; classNam
   );
 }
 
-/** The workspace tile in the rail: a rounded square with the AIKING gradient. */
+/** App identity in the existing workspace tile; the surface supplies its one mask. */
 function WorkspaceTile() {
-  return (
-    <span
-      aria-hidden="true"
-      className="relative block size-10 overflow-hidden rounded-xl"
-      style={{
-        background:
-          "radial-gradient(circle at 70% 25%, rgba(232,255,246,0.9) 0 6%, transparent 30%), radial-gradient(circle at 20% 80%, #0b6b50 0, transparent 60%), linear-gradient(140deg, #6ee7c0 0%, #1fb488 45%, #0b3d2e 100%)",
-      }}
-    >
-      <svg viewBox="0 0 40 40" className="absolute inset-0 size-full" fill="none">
-        <path d="M20 9 30 27H10Z" stroke="rgba(4,38,26,0.75)" strokeWidth="2.6" strokeLinejoin="round" />
-        <path d="M16 22h8M20 27v4" stroke="rgba(4,38,26,0.75)" strokeWidth="2.2" strokeLinecap="round" />
-      </svg>
-    </span>
-  );
+  return <img aria-hidden="true" alt="" src="/app-icon-192.png" width={40} height={40} className="relative block size-10 rounded-xl" />;
 }
 
 export function WorkspaceTitle({ cloudHome }: { cloudHome: boolean }) {
@@ -72,7 +58,7 @@ export function MarketplaceButton() {
       title={at("sidebar.marketplace")}
       className="flex size-8 items-center justify-center rounded-md text-ink-secondary hover:bg-raised hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
     >
-      <Puzzle size={17} strokeWidth={1.8} />
+      <Blocks size={17} strokeWidth={1.8} />
     </button>
   );
 }

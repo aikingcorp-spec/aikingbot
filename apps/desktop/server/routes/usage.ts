@@ -4,6 +4,7 @@ import {
   parseUsageRange,
   readUsage,
   summarizeUsage,
+  topSources,
   usageCsv,
   USAGE_GROUPINGS,
   type UsageGroupBy,
@@ -19,6 +20,12 @@ export interface UsageRouteDeps {
 
 export function createUsageRoutes(deps: UsageRouteDeps): RouteHandler {
   return async ({ res, url, path, method, json }) => {
+    if (method === "GET" && path === "/api/usage/top-sources") {
+      const now = new Date();
+      const rows = readUsage(deps.dataDir, { from: new Date(now.getTime() - 7 * 24 * 60 * 60_000), to: now });
+      res.setHeader("cache-control", "no-store");
+      return json(res, 200, { days: 7, sources: topSources(rows, now) });
+    }
     if (!(method === "GET" && (path === "/api/usage" || path === "/api/usage.csv"))) return PASS;
     const range = parseUsageRange(url.searchParams.get("from"), url.searchParams.get("to"));
     if (!range) return json(res, 400, { error: "from and to must be YYYY-MM-DD, from no later than to, at most a year apart" });

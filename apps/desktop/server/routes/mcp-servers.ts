@@ -8,6 +8,7 @@ import { isLoopbackHost, isProxied, provesSameOrigin, requestOrigin } from "../r
 import type { SessionRegistry } from "../sessions.ts";
 import type { BusyFlag } from "./config.ts";
 import { PASS, type RouteHandler } from "./table.ts";
+import { withApiKey } from "../request-connect.ts";
 
 export interface McpServerRouteDeps {
   cfg: Pick<AppConfig, "mcpServers">;
@@ -175,6 +176,32 @@ export function createMcpServerRoutes(deps: McpServerRouteDeps): RouteHandler {
         if (refused.length) return json(res, 403, { error: `${mcpPolicyRefusal(refused[0]!, parsed.servers[refused[0]!] as object)} Not approved: ${refused.join(", ")}.`, code: "managed_policy" });
         persistMcpServers({ ...current, ...parsed.servers });
         return json(res, 201, { ...mcpServerResponse(), added: names });
+      } finally {
+        mcpConfigBusy.set(false);
+      }
+    }
+
+    // 2.1: the request_connect card's inline secret form. The person's own session sets one header; the value is never echoed.
+    const apiKeyRoute = /^\/api\/mcp\/servers\/([a-z][a-z0-9_-]{0,31})\/api-key$/.exec(path);
+    if (apiKeyRoute && method === "POST") {
+      if (!String(req.headers["content-type"] ?? "").toLowerCase().startsWith("application/json")) {
+        return json(res, 415, { error: "content-type must be application/json" });
+      }
+      res.setHeader("Cache-Control", "no-store");
+      if (mcpConfigBusy.get()) return json(res, 409, { error: "MCP servers are already being updated." });
+      mcpConfigBusy.set(true);
+      try {
+        const name = apiKeyRoute[1];
+        const current = cfg.mcpServers ?? {};
+        if (!Object.hasOwn(current, name)) return json(res, 404, { error: "MCP server not found." });
+        const body = await readBody(req, 8_192);
+        const header = typeof body?.header === "string" ? body.header : "Authorization";
+        const next = withApiKey(current[name], header, body?.value);
+        if ("error" in next) return json(res, 400, { error: next.error });
+        const refusal = mcpPolicyRefusal(name, next.server);
+        if (refusal) return json(res, 403, { error: refusal });
+        persistMcpServers({ ...current, [name]: next.server });
+        return json(res, 200, { ok: true });
       } finally {
         mcpConfigBusy.set(false);
       }

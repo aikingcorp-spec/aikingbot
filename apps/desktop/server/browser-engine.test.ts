@@ -32,6 +32,7 @@ import {
   resolveAgentBrowserBinary,
   setBrowserViewport,
 } from "./browser-engine.ts";
+import { resetVaultKeyIoForTests, setVaultKeyIoForTests } from "./vault-key.ts";
 import { AGENT_BROWSER_VERSION, agentBrowserReleaseUrl, agentBrowserReleaseVersion, resolveAgentBrowserReleaseAsset } from "./browser-engine-release.ts";
 import { browserBundlePaths, browserBundleSpec, SUPPORTED_BROWSER_TARGETS } from "./browser-bundle-release.ts";
 import { removeTempDir } from "./testing/cleanup.ts";
@@ -871,17 +872,17 @@ describe("what a bot gets", () => {
     try {
       const edge = join(root, "Microsoft", "Edge", "Application", "msedge.exe");
       mkdirSync(join(root, "Microsoft", "Edge", "Application"), { recursive: true }); writeFileSync(edge, "");
-      const env = { PATH: "C:\Windows", ProgramFiles: root };
+      const env = { PATH: "C:\\Windows", ProgramFiles: root };
       expect(windowsHeadedBrowser(env, "win32")).toBe(edge);
       expect(windowsHeadedBrowser(env, "linux")).toBeUndefined();
       expect(windowsHeadedBrowser({ ...env, AIKING_BROWSER_HEADED: "0" }, "win32")).toBeUndefined();
-      expect(windowsHeadedBrowser({ PATH: "C:\Windows", ProgramFiles: join(root, "none") }, "win32")).toBeUndefined();
-      const launch = agentBrowserIntegration({ binaryPath: "C:\app\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", env });
+      expect(windowsHeadedBrowser({ PATH: "C:\\Windows", ProgramFiles: join(root, "none") }, "win32")).toBeUndefined();
+      const launch = agentBrowserIntegration({ binaryPath: "C:\\app\\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", env });
       expect(launch.env).toMatchObject({ AGENT_BROWSER_HEADED: "1", AGENT_BROWSER_ARGS: "--disable-blink-features=AutomationControlled", AGENT_BROWSER_EXECUTABLE_PATH: edge });
       expect(launch.env.AGENT_BROWSER_HEADLESS).toBeUndefined();
       // Chrome reports a 1280×720 page while its window is smaller (and Windows scales it); the server sets the page size.
       expect(ownsBrowserViewport(launch.env)).toBe(true);
-      expect(agentBrowserIntegration({ binaryPath: "C:\app\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", headless: true, env }).env).toMatchObject({ AGENT_BROWSER_HEADLESS: "1", AGENT_BROWSER_HEADED: "0" });
+      expect(agentBrowserIntegration({ binaryPath: "C:\\app\\agent-browser.exe", session: "s", encryptionKey: "k", platform: "win32", arch: "x64", headless: true, env }).env).toMatchObject({ AGENT_BROWSER_HEADLESS: "1", AGENT_BROWSER_HEADED: "0" });
       expect(JSON.parse(managedBrowserLaunch(env, "win32"))).toEqual({ headed: true, args: "--disable-blink-features=AutomationControlled", executablePath: edge });
     } finally { removeTempDir(root); }
   });
@@ -929,17 +930,30 @@ describe("what a bot gets", () => {
     expect(browserSessionId("b", "x".repeat(200))).toHaveLength(96);
   });
 
-  it("makes one encryption key per data dir, private, and reuses it", () => {
+  it("makes one encryption key in the vault outside the data dir, reuses it, and migrates a legacy file", () => {
     const dataDir = mkdtempSync(join(tmpdir(), "aiking-engine-key-"));
-    scratch.push(dataDir);
-    const key = browserEngineEncryptionKey(dataDir);
-    expect(key).toMatch(/^[0-9a-f]{64}$/u);
-    expect(browserEngineEncryptionKey(dataDir)).toBe(key);
-    if (posix) expect(statSync(join(dataDir, "browser-engine-key")).mode & 0o777).toBe(0o600);
-    writeFileSync(join(dataDir, "browser-engine-key"), "garbage\n");
-    const fresh = browserEngineEncryptionKey(dataDir);
-    expect(fresh).toMatch(/^[0-9a-f]{64}$/u);
-    expect(fresh).not.toBe(key);
-    mkdirSync(join(dataDir, "unused"));
+    const vaultDir = mkdtempSync(join(tmpdir(), "aiking-vault-"));
+    scratch.push(dataDir, vaultDir);
+    resetVaultKeyIoForTests();
+    setVaultKeyIoForTests(undefined);
+    const previousVault = process.env.AIKING_VAULT_DIR;
+    const previousBackend = process.env.AIKING_VAULT_BACKEND;
+    process.env.AIKING_VAULT_DIR = vaultDir;
+    process.env.AIKING_VAULT_BACKEND = "fallback";
+    try {
+      const key = browserEngineEncryptionKey(dataDir);
+      expect(key).toMatch(/^[0-9a-f]{64}$/u);
+      expect(browserEngineEncryptionKey(dataDir)).toBe(key);
+      expect(existsSync(join(dataDir, "browser-engine-key"))).toBe(false);
+      if (posix) expect(statSync(join(vaultDir, "browser-engine.key")).mode & 0o777).toBe(0o600);
+      // Legacy file is migrated away once the vault already holds the key.
+      writeFileSync(join(dataDir, "browser-engine-key"), `${key}\n`);
+      expect(browserEngineEncryptionKey(dataDir)).toBe(key);
+      expect(existsSync(join(dataDir, "browser-engine-key"))).toBe(false);
+    } finally {
+      if (previousVault === undefined) delete process.env.AIKING_VAULT_DIR; else process.env.AIKING_VAULT_DIR = previousVault;
+      if (previousBackend === undefined) delete process.env.AIKING_VAULT_BACKEND; else process.env.AIKING_VAULT_BACKEND = previousBackend;
+      resetVaultKeyIoForTests();
+    }
   });
 });

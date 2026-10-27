@@ -71,6 +71,8 @@ export interface InstanceConfig {
   enabled?: boolean;
   /** Picker group over the driver's default: an `openai-compat` instance on a provider's own key is "api". */
   access?: EngineAccess;
+  /** 3.4: adjust this account's declared capability list. */
+  capabilities?: { add?: string[]; remove?: string[] };
   config?: unknown;
 }
 
@@ -121,6 +123,8 @@ export interface SendTurnInput {
   mentionTurn?: boolean;
   /** The bot will likely browse, so a driver may load browser tools up front rather than behind tool search. */
   preloadBrowserTools?: boolean;
+  /** Harness policies a request-per-turn driver applies: 1.8 read-back before "done", 1.4 the capability ladder. */
+  harness?: { verifyAfterAct?: boolean; errorLadder?: boolean };
   /** Per-bot integrations the driver may hand to the agent as tools. */
   integrations?: {
     /** A harness-owned stdio bridge to Composio, so connection requests become trusted chat cards. */

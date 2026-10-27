@@ -17,6 +17,7 @@ import type { McpServerSpec } from "./contracts.ts";
 import { isRemoteMcpServer, parseStoredMcpServer } from "./mcp-registry.ts";
 import { parseJson, schemaIssue, type JsonObject, type JsonValue } from "./schema.ts";
 import { deciderConfigSchema, type DeciderConfig } from "./decider/config.ts";
+import { assertInviteLimitAllows, resolveInviteLimit } from "./invite-limit.ts";
 
 const optionalText = z.string().optional();
 const SSH_ALIAS = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/;
@@ -290,6 +291,8 @@ const instanceConfigSchema = z.object({
   environment: z.record(z.string(), z.string()).optional(),
   enabled: z.boolean().optional(),
   access: z.enum(["subscription", "custom", "api"]).optional(),
+  /** 3.4: adjust this account's declared capability list. */
+  capabilities: z.object({ add: z.array(z.string().max(40)).max(20).optional(), remove: z.array(z.string().max(40)).max(20).optional() }).strict().optional(),
   config: z.json().optional(),
 });
 const instanceConfigMapSchema = z.record(z.string(), instanceConfigSchema);
@@ -333,7 +336,7 @@ const appConfigSchema = z.object({
   /** Set only by the verified domain endpoint, never by a config patch. */
   customDomain: z.string().optional(),
   /** Who may sign in with an emailed code: addresses or `@domain` entries; admins get every scope, members chat only. */
-  signIn: z.object({ admins: z.array(z.string().max(320)).max(500).optional(), members: z.array(z.string().max(320)).max(5000).optional() }).optional(),
+  signIn: z.object({ admins: z.array(z.string().max(320)).max(500).optional(), members: z.array(z.string().max(320)).max(5000).optional(), inviteLimit: z.number().int().min(0).max(5000).optional() }).optional(),
   defaultModelSelection: defaultModelSelectionSchema.optional(),
   automaticRecovery: automaticRecoverySchema.optional(),
   cacheKeepWarm: cacheKeepWarmSchema.optional(),
@@ -403,6 +406,8 @@ const appConfigSchema = z.object({
       .optional(),
     model: optionalText,
     fishModel: z.enum(FISH_TTS_MODELS).optional(),
+    /** Voice per fallback provider; a provider here is used only after the one before it runs out of quota. */
+    fallbackVoices: z.partialRecord(z.enum(["elevenlabs", "fish", "chatterbox", "xai"]), z.string().trim().min(1).max(200)).optional(),
   }).optional(),
   decider: deciderConfigSchema.optional(),
   /** Live calls: a GPT-Live OpenAI project key kept apart from every other OpenAI key; `voice` is a GPT-Live voice. */
@@ -477,7 +482,7 @@ const jsonObjectSchema = z.record(z.string(), z.json());
 
 export interface AppConfig {
   customDomain?: string;
-  signIn?: { admins?: string[]; members?: string[] };
+  signIn?: { admins?: string[]; members?: string[]; inviteLimit?: number };
   /** Preferred selection for newly created bots; existing bots keep theirs. */
   defaultModelSelection?: ModelSelection;
   /** Off by default; one backup attempt only before any work starts. */
@@ -512,7 +517,7 @@ export interface AppConfig {
   /** A named host from the user's SSH config. Authentication stays with SSH. */
   vps?: { sshAlias?: string };
   opencodeGo?: { apiKey?: string; providerKeys?: Record<string, string> };
-  tts?: { key?: string; fishKey?: string; voice?: string; provider?: "elevenlabs" | "fish" | "system" | "chatterbox" | "xai"; baseUrl?: string; model?: string; fishModel?: FishTtsModel };
+  tts?: { key?: string; fishKey?: string; voice?: string; provider?: "elevenlabs" | "fish" | "system" | "chatterbox" | "xai"; baseUrl?: string; model?: string; fishModel?: FishTtsModel; fallbackVoices?: Partial<Record<"elevenlabs" | "fish" | "chatterbox" | "xai", string>> };
   decider?: DeciderConfig;
   imageGen?: ImageGenerationConfig;
   live?: { key?: string; voice?: string; readTypedReplies?: boolean; idleMinutes?: number };
@@ -1112,7 +1117,20 @@ export function saveConfig(
   if (checkedPatch.vps !== undefined) disk.vps = normalizeVpsConfig(checkedPatch.vps);
   if (checkedPatch.language !== undefined) disk.language = checkedPatch.language;
   if (checkedPatch.customDomain !== undefined) disk.customDomain = checkedPatch.customDomain;
-  if (checkedPatch.signIn !== undefined) disk.signIn = checkedPatch.signIn;
+  if (checkedPatch.signIn !== undefined) {
+    const previous = disk.signIn && typeof disk.signIn === "object" ? disk.signIn as { admins?: string[]; members?: string[]; inviteLimit?: number } : {};
+    const next = {
+      admins: checkedPatch.signIn.admins ?? previous.admins,
+      members: checkedPatch.signIn.members ?? previous.members,
+      inviteLimit: resolveInviteLimit(checkedPatch.signIn.inviteLimit ?? previous.inviteLimit),
+    };
+    assertInviteLimitAllows(previous, next);
+    disk.signIn = {
+      ...(checkedPatch.signIn.admins !== undefined ? { admins: checkedPatch.signIn.admins } : previous.admins ? { admins: previous.admins } : {}),
+      ...(checkedPatch.signIn.members !== undefined ? { members: checkedPatch.signIn.members } : previous.members ? { members: previous.members } : {}),
+      inviteLimit: next.inviteLimit,
+    };
+  }
   // Replace the section so clearing a backup cannot revive the old selection.
   if (checkedPatch.automaticRecovery !== undefined) disk.automaticRecovery = checkedPatch.automaticRecovery;
   if (checkedPatch.cacheKeepWarm !== undefined) disk.cacheKeepWarm = checkedPatch.cacheKeepWarm;

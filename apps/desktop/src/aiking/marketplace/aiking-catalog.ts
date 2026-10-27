@@ -2,7 +2,7 @@
 // 2026.10.1). Written for AIKINGBOT; decoded through contract.ts like any
 // remote catalog. Stage 3 serves the same document from AIKING Core.
 
-import { OFFICIAL_APPS } from "./official-apps";
+import { OFFICIAL_APPS, appLocales } from "./official-apps";
 
 const AIKING = { id: "aiking", name: "AIKING", verified: true };
 
@@ -250,21 +250,23 @@ Quote the transcript when a decision is ambiguous. Never assign an owner who did
       kind: "app", id: "aiking-toolbox", version: "1.0.0", name: "AIKING Toolbox",
       summary: "Local MCP tools: word count, slugify and aspect-ratio sizes. Runs on this computer, no account.",
       category: "Developer tools", tags: ["mcp", "local"], publisher: AIKING, featured: true, installs: 0,
+      locales: appLocales("Công cụ MCP cục bộ: đếm từ, tạo slug và tính kích thước theo tỉ lệ khung hình. Chạy trên máy này, không cần tài khoản.", "Developer tools"),
       connector: { type: "mcp", server: { type: "stdio", name: "aiking-toolbox", command: "node", args: ["-e", TOOLBOX_SERVER] } },
     },
     {
       kind: "app", id: "filesystem-mcp", version: "1.0.0", name: "Filesystem",
       summary: "Read and write files in a folder you choose (MCP reference server, needs npx and network on first run).",
+      locales: appLocales("Đọc và ghi tệp trong thư mục bạn chọn (máy chủ MCP tham chiếu, lần đầu chạy cần npx và mạng).", "Developer tools"),
       category: "Developer tools", tags: ["mcp", "files"], publisher: { id: "mcp", name: "Model Context Protocol", verified: true }, installs: 0,
       connector: { type: "mcp", server: { type: "stdio", name: "filesystem", command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem", "."] } },
     },
     ...OFFICIAL_APPS,
     ...[
-      ["figma", "Figma", "Frames, comments and design files", "Design"],
-      ["reddit", "Reddit", "Search posts and communities", "Research"],
-      ["youtube", "YouTube", "Search videos and read details", "Research"],
-    ].map(([slug, name, summary, category]) => ({
-      kind: "app", id: slug, version: "1.0.0", name, summary, category, tags: ["composio"], logo: slug,
+      ["figma", "Figma", "Frames, comments and design files", "Design", "Khung, bình luận và tệp thiết kế"],
+      ["reddit", "Reddit", "Search posts and communities", "Research", "Tìm bài đăng và cộng đồng"],
+      ["youtube", "YouTube", "Search videos and read details", "Research", "Tìm video và xem thông tin chi tiết"],
+    ].map(([slug, name, summary, category, summaryVi]) => ({
+      kind: "app", id: slug, version: "1.0.0", name, summary, category, locales: appLocales(summaryVi, category), tags: ["composio"], logo: slug,
       publisher: { id: "composio", name: "Composio", verified: true }, installs: 0,
       connector: { type: "composio", slug },
     })),

@@ -672,7 +672,7 @@ describe("the model picker in Simple mode", () => {
     pane(opened)!.props.onProvider(blocked);
     const list = region(menu(render(forBot).html), "data-simple-models", "data-simple-effort-band");
     expect(list).toContain("Managed by Acme");
-    expect(list).toContain("Bots cannot use this model provider while this computer is connected to Acme.");
+    expect(list).toContain("Agents cannot use this model provider while this computer is connected to Acme.");
     expect(list).not.toContain("needs to be set up");
     expect(list).not.toContain("data-simple-set-up");
     expect(fixture.refreshModels).not.toHaveBeenCalled();
@@ -787,7 +787,7 @@ describe("a thread's picker and its bot's model", () => {
     const opened = open(scout(null));
     expect(followRow(opened)!.props.follows).toBe(true);
     expect(pane(opened)!.props.botModelId).toBe("claude-opus-5-5");
-    expect(region(menu(opened.html), "data-simple-models")).toContain("(bot&#x27;s model)");
+    expect(region(menu(opened.html), "data-simple-models")).toContain("(agent&#x27;s model)");
     expect(render(scout(null)).nodes.find((node) => node.props["data-tour"] === "model")!.props.title).toContain("Uses Scout's model");
     pickFollow(opened);
     expect(fixture.dispatch).not.toHaveBeenCalled();
@@ -797,7 +797,7 @@ describe("a thread's picker and its bot's model", () => {
     fixture.bots = [];
     const opened = open(bot());
     expect(followRow(opened)).toBeUndefined();
-    expect(menu(opened.html)).not.toContain("(bot&#x27;s model)");
+    expect(menu(opened.html)).not.toContain("(agent&#x27;s model)");
   });
 
   it("right after a pick changes the bot's model, says how many threads keep their own, until it opens again", () => {

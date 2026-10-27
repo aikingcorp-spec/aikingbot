@@ -7,6 +7,30 @@ import {
 } from "./contract";
 
 export class CatalogDecodeError extends Error {}
+export class CatalogTimeoutError extends Error {}
+/** The server answered, but not with a catalog; `status` drives the reason people are shown. */
+export class CatalogHttpError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) { super(message); this.status = status; }
+}
+
+/** Why a catalog load failed, in the terms people are shown (never the raw message). */
+export type CatalogErrorKind = "unavailable" | "timeout" | "network" | "invalid" | "failed";
+export type CatalogFailure = { kind: CatalogErrorKind; status?: number };
+
+export function classifyCatalogError(error: unknown, online = typeof navigator === "undefined" ? true : navigator.onLine !== false): CatalogFailure {
+  if (error instanceof CatalogTimeoutError) return { kind: "timeout" };
+  if (error instanceof CatalogHttpError) {
+    const { status } = error;
+    return { kind: status >= 500 || status === 429 || status === 408 ? "unavailable" : "failed", status };
+  }
+  if (error instanceof CatalogDecodeError || error instanceof SyntaxError) return { kind: "invalid" };
+  // fetch() rejects with a TypeError when the request never got an answer (offline, DNS, refused).
+  if (!online || error instanceof TypeError) return { kind: "network" };
+  return { kind: "failed" };
+}
+/** A hung server must not leave the grid on a spinner forever; 8s is above a slow link's round trip and below "the app froze". */
+export const CATALOG_TIMEOUT_MS = 8_000;
 
 export function decodeCatalog(raw: unknown, origin: string): CatalogDocument {
   const parsed = catalogDocumentSchema.safeParse(raw);
@@ -31,7 +55,8 @@ function matches(listing: Listing, query: CatalogQuery): boolean {
   if (!text) return true;
   // An agent is also found by the skills it ships with ("tiktok" finds the agent with the TikTok hook writer).
   const pinned = listing.kind === "agent" ? listing.skills.map((pin) => pin.id.replaceAll("-", " ")) : [];
-  return [listing.name, listing.summary, listing.category, listing.publisher.name, ...listing.tags, ...pinned]
+  const translated = Object.values(listing.locales ?? {}).flatMap((text) => [text.summary ?? "", text.category ?? ""]);
+  return [listing.name, listing.summary, listing.category, listing.publisher.name, ...listing.tags, ...pinned, ...translated]
     .some((field) => field.toLowerCase().includes(text));
 }
 
@@ -41,7 +66,13 @@ function page<K extends ListingKind>(listings: Listing[], query: CatalogQuery & 
     .filter((listing) => matches(listing, query))
     .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || a.name.localeCompare(b.name));
   const categories = [...new Set(ofKind.map((listing) => listing.category))].sort((a, b) => a.localeCompare(b));
-  return { items, categories, total: items.length };
+  const categoryLabels: Record<string, Record<string, string>> = {};
+  for (const listing of ofKind) {
+    for (const [lang, text] of Object.entries(listing.locales ?? {})) {
+      if (text.category) (categoryLabels[listing.category] ??= {})[lang] ??= text.category;
+    }
+  }
+  return { items, categories, total: items.length, categoryLabels };
 }
 
 /** The catalog bundled with the app. */
@@ -70,14 +101,30 @@ export class BundledCatalogSource implements CatalogSource {
  */
 export class HttpCatalogSource implements CatalogSource {
   readonly id: string;
-  constructor(private readonly base: string, private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis)) {
+  constructor(
+    private readonly base: string,
+    private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis),
+    private readonly timeoutMs = CATALOG_TIMEOUT_MS,
+  ) {
     this.id = `http:${new URL(base).host}`;
+  }
+  /** Request plus body read share one deadline; the timer is always cleared. */
+  private async withDeadline<T>(url: URL, read: (response: Response) => Promise<T>): Promise<T> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    try {
+      return await read(await this.fetcher(url, { signal: controller.signal }));
+    } catch (error) {
+      if (controller.signal.aborted) throw new CatalogTimeoutError(`${this.id}: request timed out after ${this.timeoutMs}ms`);
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }
   private document: Promise<CatalogDocument> | null = null;
   private load() {
-    this.document ??= this.fetcher(new URL("v1/catalog", this.base))
-      .then(async (response) => {
-        if (!response.ok) throw new Error(`${this.id}: catalog request failed with ${response.status}`);
+    this.document ??= this.withDeadline(new URL("v1/catalog", this.base), async (response) => {
+        if (!response.ok) throw new CatalogHttpError(`${this.id}: catalog request failed with ${response.status}`, response.status);
         return decodeCatalog(await response.json(), this.id);
       })
       .catch((error) => {
@@ -90,12 +137,13 @@ export class HttpCatalogSource implements CatalogSource {
     return page((await this.load()).listings, query);
   }
   async get(id: string) {
-    const response = await this.fetcher(new URL(`v1/catalog/listings/${encodeURIComponent(id)}`, this.base));
-    if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`${this.id}: listing request failed with ${response.status}`);
-    const parsed = listingSchema.safeParse(await response.json());
-    if (!parsed.success) throw new CatalogDecodeError(`${this.id}: listing ${id} is invalid`);
-    return parsed.data;
+    return this.withDeadline(new URL(`v1/catalog/listings/${encodeURIComponent(id)}`, this.base), async (response) => {
+      if (response.status === 404) return null;
+      if (!response.ok) throw new CatalogHttpError(`${this.id}: listing request failed with ${response.status}`, response.status);
+      const parsed = listingSchema.safeParse(await response.json());
+      if (!parsed.success) throw new CatalogDecodeError(`${this.id}: listing ${id} is invalid`);
+      return parsed.data;
+    });
   }
 }
 

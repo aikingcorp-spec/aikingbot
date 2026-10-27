@@ -13,7 +13,7 @@ export function ToolActivity({ tool, place = null }: { tool: NonNullable<Message
   const failed = tool.ok === false;
   const status = tool.ok === undefined ? t("toolDetail.running") : failed ? t("toolDetail.failed") : t("toolDetail.completed");
   return (
-    <details onToggle={(event) => setExpanded(event.currentTarget.open)} className="group/tool w-fit max-w-full rounded-xl border border-hairline/40 bg-panel text-[13px] open:w-[min(38rem,100%)]" data-testid="tool-activity">
+    <details onToggle={(event) => setExpanded(event.currentTarget.open)} className="group/tool w-fit max-w-[560px] rounded-xl border border-hairline/40 bg-panel text-[13px] open:w-full" data-testid="tool-activity">
       <summary
         role="button"
         aria-expanded={expanded}

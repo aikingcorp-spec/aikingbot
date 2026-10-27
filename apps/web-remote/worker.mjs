@@ -11,8 +11,10 @@
 // Frames between the relay and a computer are JSON text:
 //   relay -> computer   req {id,method,path,headers} · body {id,b} (base64) · bend {id} · cancel {id}
 //                       wopen {id,path,headers,protocols} · wmsg {id,text|b} · wclose {id,code}
+//                       signal {sid,kind,from,sdp?,candidate?,path?}   (WebRTC P2P; tiny)
 //   computer -> relay   res {id,status,headers} · data {id,b} · end {id} · err {id,message}
 //                       wopened {id,protocol} · werr {id,message} · wmsg {id,text|b} · wclose {id,code}
+//                       signal {…}  (forwarded to the owner's signal socket)
 
 const SESSION_COOKIE = "rl_session";
 const HOST_COOKIE = "rl_host";
@@ -48,6 +50,42 @@ function timingSafeEqual(a, b) {
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
+
+// ---------- WebRTC ICE / TURN REST (rc8 §9.1; no paid TURN) ----------
+const DEFAULT_STUN = [
+  { urls: "stun:stun.l.google.com:19302" },
+  { urls: "stun:stun.cloudflare.com:3478" },
+];
+async function mintTurnRest(secret, username, ttlSec, nowSec = Math.floor(Date.now() / 1000)) {
+  const safeUser = String(username || "anon").trim().replace(/[^A-Za-z0-9_@.-]/g, "").slice(0, 120) || "anon";
+  const expiresAt = nowSec + Math.max(60, Math.min(Number(ttlSec) || 600, 86_400));
+  const turnUser = `${expiresAt}:${safeUser}`;
+  const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
+  const mac = await crypto.subtle.sign("HMAC", key, encoder.encode(turnUser));
+  const credential = btoa(String.fromCharCode(...new Uint8Array(mac)));
+  return { username: turnUser, credential, expiresAt };
+}
+async function icePayload(env, username) {
+  const iceServers = DEFAULT_STUN.map((server) => ({ ...server }));
+  const uris = String(env.AIKING_TURN_URIS ?? "").split(",").map((u) => u.trim()).filter(Boolean);
+  const secret = String(env.AIKING_TURN_SECRET ?? "").trim();
+  const enabled = env.AIKING_REMOTE_P2P === "1" || env.AIKING_REMOTE_P2P === "true";
+  if (!enabled) return { p2p: false, iceServers, turn: false };
+  if (!uris.length || !secret) return { p2p: true, iceServers, turn: false };
+  const ttl = Number(env.AIKING_TURN_TTL_SEC) || 600;
+  const minted = await mintTurnRest(secret, username, ttl);
+  iceServers.push({ urls: uris, username: minted.username, credential: minted.credential });
+  return { p2p: true, iceServers, turn: true, expiresAt: minted.expiresAt };
+}
+function isSignalFrame(value) {
+  if (!value || typeof value !== "object") return false;
+  if (value.t !== "signal") return false;
+  if (typeof value.sid !== "string" || value.sid.length < 4 || value.sid.length > 128) return false;
+  if (!["hello", "offer", "answer", "ice", "bye", "path"].includes(value.kind)) return false;
+  if (value.from !== "viewer" && value.from !== "host") return false;
+  return true;
+}
+
 async function hmacKey(secret) { return crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]); }
 async function signSession(env, payload) {
   const body = b64u(encoder.encode(JSON.stringify(payload)));
@@ -178,6 +216,14 @@ export default {
 const escapeHtml = (text) => String(text).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
 const acceptsHtml = (request) => (request.headers.get("accept") ?? "").includes("text/html");
 const sidOf = (socket) => { try { return socket.deserializeAttachment()?.sid ?? ""; } catch { return ""; } };
+const socketKind = (state, socket) => {
+  try {
+    const tags = typeof state.getTags === "function" ? state.getTags(socket) : [];
+    if (tags?.includes("signal")) return "signal";
+    if (tags?.includes("host")) return "host";
+  } catch { /* older runtime */ }
+  try { return socket.deserializeAttachment()?.kind === "signal" ? "signal" : "host"; } catch { return "host"; }
+};
 const stub = (namespace, name) => namespace.get(namespace.idFromName(name));
 const userStub = (env, session) => stub(env.USER, `u:${session.u}`);
 /** The person's computers, or null when this sign-in was ended ("sign out everywhere" raises the epoch the cookie was made under). */
@@ -284,6 +330,32 @@ async function relayPages(request, env, url) {
     const hosts = await userHosts(env, session);
     if (!hosts.some((host) => host.id === body.id)) return fail(404, "unknown_computer");
     return json({ ok: true }, 200, { "set-cookie": cookie(HOST_COOKIE, body.id, SESSION_SECONDS) });
+  }
+  if (path === "/api/ice" && request.method === "GET") {
+    const hosts = await userHosts(env, session);
+    const wanted = parseCookies(request.headers.get("cookie"))[HOST_COOKIE];
+    const host = hosts.find((entry) => entry.id === wanted) ?? (hosts.length === 1 ? hosts[0] : null);
+    if (!host) return fail(409, "choose_a_computer");
+    return json(await icePayload(env, session.u));
+  }
+  if (path === "/api/signal" && request.method === "POST") {
+    const hosts = await userHosts(env, session);
+    const wanted = parseCookies(request.headers.get("cookie"))[HOST_COOKIE];
+    const host = hosts.find((entry) => entry.id === wanted) ?? (hosts.length === 1 ? hosts[0] : null);
+    if (!host) return fail(409, "choose_a_computer");
+    const body = await request.json().catch(() => null);
+    if (!isSignalFrame(body)) return fail(400, "invalid_signal");
+    const headers = new Headers({ "content-type": "application/json", "x-relay-owner": session.u });
+    return stub(env.HOST, host.id).fetch(new Request("https://do/signal", { method: "POST", headers, body: JSON.stringify(body) }));
+  }
+  if (path === "/api/signal/ws" && request.method === "GET") {
+    if ((request.headers.get("upgrade") ?? "").toLowerCase() !== "websocket") return fail(426, "websocket_required");
+    const hosts = await userHosts(env, session);
+    const wanted = parseCookies(request.headers.get("cookie"))[HOST_COOKIE];
+    const host = hosts.find((entry) => entry.id === wanted) ?? (hosts.length === 1 ? hosts[0] : null);
+    if (!host) return fail(409, "choose_a_computer");
+    const headers = new Headers({ upgrade: "websocket", "x-relay-owner": session.u });
+    return stub(env.HOST, host.id).fetch(new Request("https://do/signal/ws", { headers }));
   }
   const forget = /^\/api\/hosts\/([A-Za-z0-9_-]{8,64})$/.exec(path);
   if (forget && request.method === "DELETE") {
@@ -410,8 +482,34 @@ export class Host {
       return json({ ok: true });
     }
     if (url.pathname === "/connect") return this.accept(request);
+    if (url.pathname === "/signal" && request.method === "POST") return this.forwardSignal(request);
+    if (url.pathname === "/signal/ws") return this.acceptSignal(request);
     if (url.pathname.startsWith("/proxy/")) return this.proxy(request, url);
     return fail(404, "not_found");
+  }
+
+  async forwardSignal(request) {
+    const owner = await this.state.storage.get("ownerUid");
+    if (!owner || request.headers.get("x-relay-owner") !== owner) return fail(403, "not_your_computer");
+    const host = this.hostSocket();
+    if (!host) return offline();
+    const body = await request.json().catch(() => null);
+    if (!isSignalFrame(body)) return fail(400, "invalid_signal");
+    // Viewer → host: stamp from=viewer so the computer never trusts a forged role.
+    const frame = { ...body, t: "signal", from: "viewer" };
+    try { host.send(JSON.stringify(frame)); } catch { return offline(); }
+    return json({ ok: true });
+  }
+
+  async acceptSignal(request) {
+    const owner = await this.state.storage.get("ownerUid");
+    if (!owner || request.headers.get("x-relay-owner") !== owner) return fail(403, "not_your_computer");
+    if ((request.headers.get("upgrade") ?? "").toLowerCase() !== "websocket") return fail(426, "websocket_required");
+    for (const old of this.state.getWebSockets("signal")) try { old.close(1000, "replaced"); } catch { /* closed */ }
+    const pair = new WebSocketPair();
+    pair[1].serializeAttachment({ sid: randomToken(8), kind: "signal" });
+    this.state.acceptWebSocket(pair[1], ["signal"]);
+    return new Response(null, { status: 101, webSocket: pair[0] });
   }
 
   async accept(request) {
@@ -528,11 +626,26 @@ export class Host {
     return new Response(null, { status: 101, webSocket: client });
   }
 
-  // Frames from the computer.
+  // Frames from the computer (or the owner's signal socket).
   webSocketMessage(socket, message) {
     if (typeof message !== "string") return;
     let frame;
     try { frame = JSON.parse(message); } catch { return; }
+    if (socketKind(this.state, socket) === "signal") {
+      if (!isSignalFrame(frame)) return;
+      const host = this.hostSocket();
+      if (!host) return;
+      try { host.send(JSON.stringify({ ...frame, t: "signal", from: "viewer" })); } catch { /* offline */ }
+      return;
+    }
+    if (frame.t === "signal") {
+      if (!isSignalFrame(frame)) return;
+      const out = JSON.stringify({ ...frame, t: "signal", from: "host" });
+      for (const peer of this.state.getWebSockets("signal")) {
+        try { peer.send(out); } catch { /* closed */ }
+      }
+      return;
+    }
     const id = frame.id;
     const entry = this.pending.get(id);
     switch (frame.t) {
@@ -591,6 +704,11 @@ export class Host {
   /** Everything that was riding on a computer's socket ends with it; a reconnected computer never answers its predecessor's calls. */
   dropFor(socket) {
     const sid = sidOf(socket);
+    if (socketKind(this.state, socket) === "host") {
+      for (const peer of this.state.getWebSockets("signal")) {
+        try { peer.close(1011, "computer_disconnected"); } catch { /* closed */ }
+      }
+    }
     for (const [id, entry] of [...this.pending]) if (entry.sid === sid) this.finish(id, new Error("computer_disconnected"));
     for (const [id, peer] of [...this.browserSockets]) if (peer.sid === sid) { try { peer.server.close(1011, "computer_disconnected"); } catch { /* closed */ } this.browserSockets.delete(id); }
   }

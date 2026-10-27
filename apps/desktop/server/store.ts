@@ -19,6 +19,7 @@ import { newId, type ModelSelection } from "./contracts.ts";
 import { pickBotName } from "./names.ts";
 import { redactSecretsInText } from "./redact.ts";
 import { AVATAR_FOCUS_CENTER, AVATAR_ZOOM_MIN, botAvatarProfile, clampAvatarFocus, clampAvatarZoom } from "../shared/bot-avatar.ts";
+import { mascotLookSchema, portableMascotLook, resolveMascotLook } from "../shared/mascot-look.ts";
 import { approvalModeFor, isApprovalMode, modelSwitchNeedsAsk, type ApprovalMode } from "../shared/approval-mode.ts";
 import { lastChangeRequestUrl } from "../shared/thread-link.ts";
 import { REMOVED_COMPUTER_DRIVER, type ComputerEngineMove } from "./computer-engine-removal.ts";
@@ -621,6 +622,17 @@ export class Store {
           botsMigrated = true;
         } else if (b.avatarZoom !== zoom) {
           b.avatarZoom = zoom;
+          botsMigrated = true;
+        }
+      }
+      if (b.mascotLook !== undefined && b.mascotLook !== null) {
+        // Persisted data is untrusted: keep a v3 look only in canonical form, otherwise fall back to the legacy mascot.
+        const look = resolveMascotLook(b.mascotLook);
+        if (!look) {
+          delete b.mascotLook;
+          botsMigrated = true;
+        } else if (!mascotLookSchema.safeParse(b.mascotLook).success) {
+          b.mascotLook = look;
           botsMigrated = true;
         }
       }
@@ -1531,7 +1543,7 @@ export class Store {
     profile: Partial<
       Pick<
         BotRecord,
-        "name" | "title" | "description" | "soul" | "color" | "mascotExpression" | "mascotBody" | "modelSelection" | "section" | "cwd" | "visibility" | "toolScope"
+        "name" | "title" | "description" | "soul" | "color" | "mascotExpression" | "mascotBody" | "mascotLook" | "modelSelection" | "section" | "cwd" | "visibility" | "toolScope"
       >
     > = {},
     opts: {
@@ -1555,6 +1567,7 @@ export class Store {
       color: profile.color ?? COLORS[this.bots.length % COLORS.length],
       ...(profile.mascotExpression ? { mascotExpression: profile.mascotExpression } : {}),
       ...(profile.mascotBody ? { mascotBody: profile.mascotBody } : {}),
+      ...(portableMascotLook(profile.mascotLook) ? { mascotLook: portableMascotLook(profile.mascotLook) } : {}),
       // Restricted from its first frame: no one else is ever told it exists.
       ...(profile.visibility && profile.visibility !== "everyone" ? { visibility: structuredClone(profile.visibility) } : {}),
       ...(toolScope.scope ? { toolScope: toolScope.scope } : {}),

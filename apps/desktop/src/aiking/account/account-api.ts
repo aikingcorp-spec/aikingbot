@@ -3,7 +3,7 @@
 
 import { at } from "../strings";
 
-export interface AccountWorkspace { id: string; name: string; role: "owner" | "member"; current: boolean }
+export interface AccountWorkspace { id: string; name: string; role: "owner" | "member"; current: boolean; url?: string }
 export interface AccountDevice { id: string; name: string; platform: string; appVersion: string; linkedAt: number; lastSeenAt: number; online: boolean }
 export interface AccountState {
   account: { email: string };

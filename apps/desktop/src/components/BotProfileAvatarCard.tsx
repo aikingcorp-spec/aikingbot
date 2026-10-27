@@ -23,15 +23,98 @@ import {
   type BotAvatarCrop,
 } from "../../shared/bot-avatar";
 import { MASCOT_BODIES, MASCOT_BODY_IDS } from "../../shared/mascot-bodies";
+import {
+  DEFAULT_MASCOT_LOOK,
+  MASCOT_LOOK_ACCESSORIES,
+  MASCOT_LOOK_COLORS,
+  MASCOT_LOOK_FACES,
+  MASCOT_LOOK_SHAPES,
+  resolveMascotLook,
+  type MascotLook,
+} from "../../shared/mascot-look";
+import { mascotLookLabel } from "@/lib/mascot-look-labels";
+import { MascotLookAvatar } from "./MascotLookAvatar";
 import { BotAvatar, AikingAvatar } from "./Avatar";
 import { AvatarImageGenerator } from "./AvatarImageGenerator";
 import { useOrganizationBranding } from "@/lib/use-organization-branding";
 
 type AvatarPatch = Partial<
-  Pick<Bot, "avatarCrop" | "avatarUrl" | "avatarZoom" | "avatarFocusX" | "avatarFocusY" | "color" | "mascotExpression" | "mascotBody">
+  Pick<Bot, "avatarCrop" | "avatarUrl" | "avatarZoom" | "avatarFocusX" | "avatarFocusY" | "color" | "mascotExpression" | "mascotBody" | "mascotLook">
 >;
 
 const FRAME_SIZE = 168;
+
+const LOOK_BUTTON =
+  "flex items-center justify-center rounded-lg py-1.5 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-accent-border disabled:opacity-50";
+
+/** Customizer for the v3 look. Every pick writes the whole versioned config, starting from the default look for a bot that has none. */
+export function MascotLookPicker({
+  look,
+  disabled,
+  onChange,
+}: {
+  look: unknown;
+  disabled: boolean;
+  onChange: (look: MascotLook | null) => void;
+}) {
+  const saved = resolveMascotLook(look);
+  const current: MascotLook = saved ?? DEFAULT_MASCOT_LOOK;
+  const choose = <K extends "shape" | "face" | "acc" | "color">(field: K, value: MascotLook[K]) =>
+    onChange({ ...current, [field]: value });
+  const group = <K extends "shape" | "face" | "acc" | "color">(
+    field: K,
+    options: readonly MascotLook[K][],
+    cols: string,
+    label: (value: MascotLook[K]) => string,
+  ) => (
+    <div role="group" aria-label={mascotLookLabel.group(field)}>
+      <div className="mb-2 mt-4 text-[12px] font-medium uppercase tracking-[0.08em] text-ink-secondary">
+        {mascotLookLabel.group(field)}
+      </div>
+      <div className={cn("grid gap-1.5", cols)}>
+        {options.map((value) => {
+          const pressed = saved !== null && saved[field] === value;
+          const name = label(value);
+          return (
+            <button
+              key={value}
+              type="button"
+              disabled={disabled}
+              aria-pressed={pressed}
+              aria-label={`${mascotLookLabel.group(field)}: ${name}`}
+              title={name}
+              onClick={() => choose(field, value)}
+              className={cn(LOOK_BUTTON, pressed ? "bg-control text-ink" : "text-ink-secondary hover:bg-control/60")}
+            >
+              <MascotLookAvatar look={{ ...current, [field]: value }} size={34} />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+  return (
+    <div role="group" aria-label={mascotLookLabel.word("customize")} data-mascot-look-picker>
+      <div className="mb-1 mt-5 flex items-center justify-between gap-2 border-t border-hairline/40 pt-3">
+        <span className="text-[13px] font-medium text-ink">{mascotLookLabel.word("customize")}</span>
+        {saved && (
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onChange(null)}
+            className="rounded-md px-2 py-1 text-[12.5px] text-ink-secondary hover:bg-control hover:text-ink focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-accent-border disabled:opacity-50"
+          >
+            {mascotLookLabel.word("reset")}
+          </button>
+        )}
+      </div>
+      {group("shape", MASCOT_LOOK_SHAPES, "grid-cols-6", mascotLookLabel.shape)}
+      {group("face", MASCOT_LOOK_FACES, "grid-cols-6", mascotLookLabel.face)}
+      {group("acc", MASCOT_LOOK_ACCESSORIES, "grid-cols-7", mascotLookLabel.acc)}
+      {group("color", MASCOT_LOOK_COLORS, "grid-cols-9", mascotLookLabel.color)}
+    </div>
+  );
+}
 
 function AvatarFraming({
   bot,
@@ -145,6 +228,7 @@ export function BotProfileAvatarCard({
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const crop = bot.avatarCrop ?? "mascot";
+  const hasLook = resolveMascotLook(bot.mascotLook) !== null;
   const cropRef = useRef(crop);
   cropRef.current = crop;
   const busy = uploading || generating || savingConnection;
@@ -218,7 +302,7 @@ export function BotProfileAvatarCard({
         <span className="rounded-lg bg-control px-3 py-1.5 text-[14px] font-medium text-ink">Avatar</span>
         <button
           disabled={busy}
-          onClick={() => onPatch({ avatarCrop: "mascot", color: "green", mascotExpression: null, mascotBody: "cursor" })}
+          onClick={() => onPatch({ avatarCrop: "mascot", color: "green", mascotExpression: null, mascotBody: "cursor", mascotLook: null })}
           className="rounded-md px-2 py-1.5 text-[13px] text-ink-secondary hover:bg-control hover:text-ink disabled:opacity-50"
         >
           Reset mascot
@@ -303,6 +387,8 @@ export function BotProfileAvatarCard({
 
         {crop === "mascot" && (
           <>
+            {!hasLook && (
+            <>
             <div className="mb-2 mt-4 text-[12px] font-medium uppercase tracking-[0.08em] text-ink-secondary">
               Expression
             </div>
@@ -325,6 +411,8 @@ export function BotProfileAvatarCard({
                 </button>
               ))}
             </div>
+            </>
+            )}
 
             <div className="mb-2 mt-4 text-[12px] font-medium uppercase tracking-[0.08em] text-ink-secondary">
               Color
@@ -348,6 +436,8 @@ export function BotProfileAvatarCard({
               ))}
             </div>
 
+            {!hasLook && (
+            <>
             <div className="mb-2 mt-4 text-[12px] font-medium uppercase tracking-[0.08em] text-ink-secondary">
               Body
             </div>
@@ -371,6 +461,10 @@ export function BotProfileAvatarCard({
                 </button>
               ))}
             </div>
+            </>
+            )}
+
+            <MascotLookPicker look={bot.mascotLook} disabled={busy} onChange={(mascotLook) => onPatch({ mascotLook })} />
           </>
         )}
 

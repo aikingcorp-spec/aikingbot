@@ -2,6 +2,18 @@ import { z } from "zod";
 
 import type { McpServerSpec, RemoteMcpSpec, StdioMcpSpec } from "./contracts.ts";
 
+/** Optional vault resolver for `secret:custom/<name>` values in MCP env/headers. Set by the server boot.
+ * Kept free of secret-refs imports so config → mcp-registry never pulls the vault/browser cycle. */
+let resolveCustomSecretRef: ((ref: string) => string | null) | null = null;
+export function setCustomSecretRefResolver(resolver: ((ref: string) => string | null) | null): void {
+  resolveCustomSecretRef = resolver;
+}
+
+const CUSTOM_SECRET_REF_RE = /^secret:custom\/[a-z0-9_-]{1,40}$/u;
+function isCustomSecretRef(value: string): boolean {
+  return CUSTOM_SECRET_REF_RE.test(value);
+}
+
 /** One config.json `mcpServers` entry: the block Claude Code, Cursor and Claude Desktop write. */
 export interface StoredStdioMcpServer extends StdioMcpSpec {
   enabled: boolean;
@@ -181,9 +193,15 @@ function resolveSecrets(
       const kept = saved?.[key];
       if (kept === undefined) return { ok: false, error: `No saved value exists for ${key}.` };
       values[key] = kept;
-    } else {
-      values[key] = value;
+      continue;
     }
+    if (typeof value === "string" && isCustomSecretRef(value)) {
+      const resolved = resolveCustomSecretRef?.(value) ?? null;
+      if (resolved === null) return { ok: false, error: `Secret ref ${value} is not configured.` };
+      values[key] = resolved;
+      continue;
+    }
+    values[key] = value;
   }
   return { ok: true, values };
 }

@@ -65,6 +65,13 @@ export type RuntimeEvent = RuntimeEventBase &
          * one figure the harness accumulates. thread.token-usage.updated means
          * something different per driver and must never be summed. */
         usage?: { input: number; output: number; cachedInput?: number };
+        /** 5.3: one row per model call of this turn, as the provider reported it; `retries` counts resends before it landed. */
+        calls?: Array<{ input: number; output: number; cachedInput?: number; retries: number }>;
+        retries?: number;
+        /** 1.1: what the first request carried before any conversation (estimated tokens). */
+        promptBudget?: { systemTokens: number; toolTokens: number; toolCount: number; totalTokens: number; withinBudget: boolean; routed: boolean; evicted?: number };
+        /** 1.8: whether the last send/submit/write was read back before the reply. */
+        verification?: { acted: number; verified: boolean; unverified?: string };
       }
     | {
         /** A resumable terminal: the turn exhausted its model/tool budget and

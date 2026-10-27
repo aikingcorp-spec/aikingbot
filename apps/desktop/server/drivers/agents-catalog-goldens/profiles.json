@@ -1,7 +1,7 @@
 {
   "default": {
-    "bytes": 55164,
-    "sha256": "7190201f2910253cb8536249e74894bd14d9fc291e58713f670d7dfc2ebb7c49",
+    "bytes": 57566,
+    "sha256": "b27bc89dbb70e8cbc8cb66244e5830e92edabaf314b4fcbed3e9c4bbfffea815",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -25,6 +25,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -42,8 +45,8 @@
     ]
   },
   "voice": {
-    "bytes": 55905,
-    "sha256": "1c0c8fc8f8b4ea9aac4b7f4b830b7d2c502a4a3a0dacf8fd201cfeddea41028e",
+    "bytes": 58307,
+    "sha256": "6f13a79f478f7ee0414380a8d9c718f10b7f4feab941a8ce913b76e605d9a321",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -67,6 +70,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -85,8 +91,8 @@
     ]
   },
   "shared": {
-    "bytes": 56909,
-    "sha256": "747eb7184edf3c39c3e073cad920531903479ebe0dced51ad8412694d0386926",
+    "bytes": 59311,
+    "sha256": "196ccf948b0f208cc68da0553de8764214d88aeb76225b1dc92077d1288f66f6",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -112,6 +118,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -129,8 +138,8 @@
     ]
   },
   "shared+voice": {
-    "bytes": 57650,
-    "sha256": "e652bff6b2a7c217a988e63d9c8bb80bb789720e789496449a83dd2c1b6bfaa5",
+    "bytes": 60052,
+    "sha256": "94b68c2c0931b459db6f788b465d1721815997f5b7fb94c27680d988616757af",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -156,6 +165,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -174,8 +186,8 @@
     ]
   },
   "skills": {
-    "bytes": 57217,
-    "sha256": "4bb1a456508f530af96d365bd4401b3afd9bb191f62b8fc1597563adeef18b08",
+    "bytes": 59619,
+    "sha256": "5062d9259ef200f5b31c2ca51757e74ec21c190444d33eec8a9b789b6649e114",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -199,6 +211,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -218,8 +233,8 @@
     ]
   },
   "skills+voice": {
-    "bytes": 57958,
-    "sha256": "f63e1a3ba7ec10cb5ae18bc9d2c2b15831c800a39fa9da69e5bff3ddda36a257",
+    "bytes": 60360,
+    "sha256": "1f5882a6c318c86016eae3c7257775e78403045f4ef3d56409baa9cd14d222bd",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -243,6 +258,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -263,8 +281,8 @@
     ]
   },
   "skills+shared": {
-    "bytes": 58962,
-    "sha256": "6f2f26670b681d2f217bc3c7632afb0a663c67ffff6cb20dcf759a66b9f0c89a",
+    "bytes": 61364,
+    "sha256": "bf4d7f3c94fc841a9bb7a9261610736404dadc715f9fb2e2e0b324e7debce830",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -290,6 +308,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -309,8 +330,8 @@
     ]
   },
   "skills+shared+voice": {
-    "bytes": 59703,
-    "sha256": "7d2cc30941e2fb3fab57d5ff911d56db8d9c3ccb83d696806c63793a850f199b",
+    "bytes": 62105,
+    "sha256": "0b2f9a938d5a703f9b1bc02bf78847f0d022f08601eb6247f0245062b03bfafc",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -336,6 +357,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -356,8 +380,8 @@
     ]
   },
   "non-chief": {
-    "bytes": 45514,
-    "sha256": "83758688a9f2db91dd5c24091a2c2142bf6182f470b8ce62e4c259016c0ce379",
+    "bytes": 47916,
+    "sha256": "6c38fd40dc49ff0a829deb7eb4dc9598c592263c5e0972e55b1cb592c6187496",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -375,6 +399,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -391,8 +418,8 @@
     ]
   },
   "voice+non-chief": {
-    "bytes": 46255,
-    "sha256": "46248f67adc16e22bc0d0abeed03f6e8dbbee30a5df273edf6169547d54b3a67",
+    "bytes": 48657,
+    "sha256": "9c00c77af04349931dc6a62a77259d34410e2f1b643959be954d5502b44d5af6",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -410,6 +437,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -427,8 +457,8 @@
     ]
   },
   "shared+non-chief": {
-    "bytes": 47259,
-    "sha256": "9ce1be6c89fa9d7721aa0af25de3fe07cd7f68877465866c55e316a5f166d31a",
+    "bytes": 49661,
+    "sha256": "baedc3676fe2d8b0809bbc73857d5eaaf21c5ab960359aaba0c666ee08dd6f88",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -448,6 +478,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -464,8 +497,8 @@
     ]
   },
   "shared+voice+non-chief": {
-    "bytes": 48000,
-    "sha256": "51b62825135b9986fcaec4f5dfd2a4a95a1971e7822fd9953dd62646afff0524",
+    "bytes": 50402,
+    "sha256": "0f2c857c36fdfd207f4f088b64370dc3ad6a5eaddf09cd964ec52e9828e2e1b9",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -485,6 +518,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -502,8 +538,8 @@
     ]
   },
   "skills+non-chief": {
-    "bytes": 47567,
-    "sha256": "5d83069e9d0b824cb268affb89cc9219a5a6baf67f6777a7c62bd3d583b610fd",
+    "bytes": 49969,
+    "sha256": "f16724371a4a3b2e2d7288b2c207bd737f3591047df3ac38e022f2d036aa1676",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -521,6 +557,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -539,8 +578,8 @@
     ]
   },
   "skills+voice+non-chief": {
-    "bytes": 48308,
-    "sha256": "9148e3b45c4ac9c2554e5e2a698c611f59dbfa299734b6b8bd0d707fff5df134",
+    "bytes": 50710,
+    "sha256": "c7cd680cc460d722a2cb9f66aa4682c28aa0993daf3da29247145c14a657d254",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -558,6 +597,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -577,8 +619,8 @@
     ]
   },
   "skills+shared+non-chief": {
-    "bytes": 49312,
-    "sha256": "acaca6b8800064b021c564a164558fcfb1d2ca565298659505820545c6a2c55b",
+    "bytes": 51714,
+    "sha256": "21676d0efadfed943b479a3fba946ea84ba0ab3a2b585afb4f8654fc76e2c271",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -598,6 +640,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",
@@ -616,8 +661,8 @@
     ]
   },
   "skills+shared+voice+non-chief": {
-    "bytes": 50053,
-    "sha256": "78bb1b7643d668667cba9995b1f4bd3b8489f2c09c27971150f539c52cdbc292",
+    "bytes": 52455,
+    "sha256": "40126ec8f006219e030a50ceec298815dd78895ddd919d4b8c2281cd65b868d0",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -637,6 +682,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -656,8 +704,8 @@
     ]
   },
   "skills+shared+voice+cloud-home": {
-    "bytes": 58758,
-    "sha256": "f513f6be1caed3b7a9ae642ad83ac8b8b7497599cb0f942e3ef6b8f8373582d7",
+    "bytes": 61160,
+    "sha256": "98fbec12a489ad0d1178a99bcbc6f862bee51cab0379ef0bb929536943a738ae",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -682,6 +730,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -702,8 +753,8 @@
     ]
   },
   "skills+shared+voice+non-chief+cloud-home": {
-    "bytes": 49108,
-    "sha256": "b154c553d8388c85461da3e13856f51fb16f99415a5b96f588aea368aa33907c",
+    "bytes": 51510,
+    "sha256": "b0b4f30ebaccb96059284878a4f4219b6c52b1f8d934affc36ed763a3a2a32fb",
     "tools": [
       "tool_result_read",
       "list_shared_computers",
@@ -722,6 +773,9 @@
       "update_widget",
       "post_to_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "send_voice_note",
@@ -741,8 +795,8 @@
     ]
   },
   "default+legacy-switches": {
-    "bytes": 55164,
-    "sha256": "7190201f2910253cb8536249e74894bd14d9fc291e58713f670d7dfc2ebb7c49",
+    "bytes": 57566,
+    "sha256": "b27bc89dbb70e8cbc8cb66244e5830e92edabaf314b4fcbed3e9c4bbfffea815",
     "tools": [
       "tool_result_read",
       "list_room_targets",
@@ -766,6 +820,9 @@
       "create_room",
       "manage_room",
       "request_credential",
+      "request_connect",
+      "marketplace_search",
+      "marketplace_install",
       "request_sign_in",
       "fill_login",
       "memory_update",

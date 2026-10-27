@@ -1600,5 +1600,7 @@
   "room.holds.resume": "Reanudar a {name}",
   "room.holds.stop": "Detener a {name}",
   "room.holds.stopTitle": "Detener solo a {name}; el resto de la sala sigue",
-  "room.holds.avatarHeld": "{name}: en pausa (detenido por ti)"
+  "room.holds.avatarHeld": "{name}: en pausa (detenido por ti)",
+  "workspaces.unavailable": "Team servers cannot be created here ({reason}).",
+  "workspaces.unavailableFix": "Fix: {fix}"
 }

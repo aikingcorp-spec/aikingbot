@@ -190,6 +190,12 @@ export class McpOAuthManager {
   private readonly flows = new Map<string, Flow>();
   private readonly starting = new Map<string, StartingFlow>();
   private readonly refreshing = new Map<string, Promise<string | null>>();
+  /**
+   * Grant generation per server name, in this manager only. It moves, before any await, whenever the
+   * grant is detached (forget, sign-out, new sign-in, needs-sign-in). An in-flight refresh or revoke
+   * answers for the generation it started in and never mutates a later one.
+   */
+  private readonly generations = new Map<string, number>();
   private readonly clients: (name: string, url: string) => McpOAuthClientConfig | undefined;
 
   /** `clients` is read when needed: an app's secret is never copied into this store. */
@@ -215,7 +221,18 @@ export class McpOAuthManager {
     return record.state === "signed-in" && record.tokens ? "signed-in" : "needs-sign-in";
   }
 
+  private generation(name: string): number {
+    return this.generations.get(name) ?? 0;
+  }
+
+  /** Detach the current grant: later answers for the old one are stale and the old pending refresh is no longer shared. */
+  private advance(name: string): void {
+    this.generations.set(name, this.generation(name) + 1);
+    this.refreshing.delete(name);
+  }
+
   markNeedsSignIn(name: string, url: string): void {
+    this.advance(name);
     const { tokens: _dropped, ...rest } = this.store.get(name, url) ?? { url };
     this.store.put(name, { ...rest, url, state: "needs-sign-in" });
   }
@@ -301,15 +318,18 @@ export class McpOAuthManager {
   async signOut(name: string, url: string): Promise<void> {
     this.cancel(name);
     const record = this.store.get(name, url);
+    // Detach before the network wait: a sign-in finishing meanwhile owns its own entry, and the revoke below only needs this copy.
+    this.advance(name);
+    this.store.delete(name);
     const token = record?.tokens?.refresh ?? record?.tokens?.access;
     if (record?.revocationEndpoint && token) {
       await postForm(record.revocationEndpoint, { token }, this.recordClient(name, record) ?? undefined).catch(() => undefined);
     }
-    this.store.delete(name);
   }
 
   forget(name: string): void {
     this.cancel(name);
+    this.advance(name);
     this.flows.delete(name);
     this.store.delete(name);
   }
@@ -321,7 +341,9 @@ export class McpOAuthManager {
     if (!tokens.expiresAt || tokens.expiresAt > Date.now() + REFRESH_MARGIN_MS) return Promise.resolve(tokens.access);
     const pending = this.refreshing.get(name);
     if (pending) return pending;
-    const refreshed = this.refresh(name, record).finally(() => this.refreshing.delete(name));
+    const refreshed: Promise<string | null> = this.refresh(name, record, this.generation(name)).finally(() => {
+      if (this.refreshing.get(name) === refreshed) this.refreshing.delete(name);
+    });
     this.refreshing.set(name, refreshed);
     return refreshed;
   }
@@ -332,7 +354,28 @@ export class McpOAuthManager {
     this.flows.clear();
   }
 
-  private async refresh(name: string, record: McpOAuthRecord): Promise<string | null> {
+  /**
+   * True while this manager has not detached the grant and the stored entry is still the one this
+   * refresh started from. The store comparison also catches a write made straight to the store file
+   * (another process, or a test) when it changes any token field or the client; an entry recreated
+   * with byte-identical content cannot be told apart and is outside this check.
+   */
+  private sameGrant(name: string, record: McpOAuthRecord, generation: number): boolean {
+    if (generation !== this.generation(name)) return false;
+    const current = this.store.get(name, record.url);
+    const a = current?.tokens;
+    const b = record.tokens;
+    return current !== undefined && current.state === "signed-in" && a !== undefined && b !== undefined
+      && a.access === b.access && a.refresh === b.refresh && a.expiresAt === b.expiresAt && a.scope === b.scope
+      && current.clientId === record.clientId && current.tokenEndpoint === record.tokenEndpoint;
+  }
+
+  private currentAccess(name: string, url: string): string | null {
+    const current = this.store.get(name, url);
+    return current?.state === "signed-in" ? current.tokens?.access ?? null : null;
+  }
+
+  private async refresh(name: string, record: McpOAuthRecord, generation: number): Promise<string | null> {
     const tokens = record.tokens!;
     const stillValid = tokens.expiresAt !== undefined && tokens.expiresAt > Date.now();
     const client = this.recordClient(name, record);
@@ -349,18 +392,21 @@ export class McpOAuthManager {
         resource: record.url,
       }, client);
     } catch {
+      if (!this.sameGrant(name, record, generation)) return this.currentAccess(name, record.url);
       return stillValid ? tokens.access : null;
     }
     const next = answer.status >= 200 && answer.status < 300 ? tokensFrom(answer.body, tokens) : null;
     if (!next) {
       const dead = (answer.status === 400 || answer.status === 401)
         && (answer.body.error === "invalid_grant" || answer.body.error === "invalid_client");
+      // a refresh answer only speaks for the grant it was sent with: a later sign-in keeps its own
+      if (!this.sameGrant(name, record, generation)) return this.currentAccess(name, record.url);
       if (!dead) return stillValid ? tokens.access : null;
       this.markNeedsSignIn(name, record.url);
       return null;
     }
-    // the entry may have been removed or re-pointed while this was in flight
-    if (!this.store.get(name, record.url)) return null;
+    // the entry may have been removed, re-pointed or signed in again while this was in flight
+    if (!this.sameGrant(name, record, generation)) return this.currentAccess(name, record.url);
     this.store.put(name, { ...record, state: "signed-in", tokens: next });
     return next.access;
   }
@@ -576,6 +622,7 @@ export class McpOAuthManager {
         }
         return DISCARDED;
       }
+      this.advance(flow.name);
       this.store.put(flow.name, {
         url: flow.url,
         state: "signed-in",

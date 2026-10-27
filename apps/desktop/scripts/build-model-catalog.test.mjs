@@ -26,7 +26,17 @@ describe("model catalog snapshot", () => {
     expect(snapshotProblems(committed)).toEqual([]);
     expect(gzipSync(toLf(committed)).length).toBeLessThanOrEqual(MAX_GZIP_BYTES);
     const doc = JSON.parse(committed);
-    expect(doc.source).toMatchObject({ name: "models.dev", commit: "7f91a155297c92203cc1111dac7f0ca42d478f22", license: "MIT", licenseText });
+    expect(doc.source).toMatchObject({
+      name: "models.dev",
+      url: "https://models.dev/api.json",
+      commit: "7f91a155297c92203cc1111dac7f0ca42d478f22",
+      license: "MIT",
+      licenseText,
+      fetchedAt: "2026-09-30T05:32:26.000Z",
+    });
+    expect(doc.source.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(Object.keys(doc.providers)).toHaveLength(220);
+    expect(Object.values(doc.providers).reduce((n, p) => n + Object.keys(p.models).length, 0)).toBe(6859);
   });
 
   it("is checked out with LF on every platform", () => {
@@ -55,6 +65,9 @@ describe("buildCatalogDocument", () => {
   it("trims, drops braces, reports each drop and round-trips through the serializer", () => {
     const drops = [];
     const doc = buildCatalogDocument(raw, { commit: "7f91a15", updatedAt: "2026-09-30T05:32:26Z", licenseText, onDrop: (drop) => drops.push(drop) });
+    expect(doc.source.fetchedAt).toBe("2026-09-30T05:32:26.000Z");
+    expect(doc.source.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(doc.source.url).toBe("https://models.dev/api.json");
     expect(Object.keys(doc.providers)).toEqual(["good"]);
     expect(doc.providers.good.api).toBe("https://api.good.example/v1");
     expect(doc.providers.good.models).toEqual({ "m-1": { name: "M 1", reasoning: false, attachment: false, modalities: { input: ["text"] }, cost: { input: 1, output: 2 } } });

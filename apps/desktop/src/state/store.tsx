@@ -20,6 +20,7 @@ import { approvalModeFor, type ApprovalMode } from "../../shared/approval-mode";
 import { desktopCapabilitiesNow } from "@/lib/desktop";
 import { sameModelSelection } from "../../shared/thread-model";
 import type { MascotBodyId } from "../../shared/mascot-bodies";
+import { portableMascotLook, type MascotLook } from "../../shared/mascot-look";
 import type { QuestionRequestCardData } from "../../shared/ask-question";
 import type { ProfileRequestCardData } from "../../shared/profile-request";
 import type { ModelRequestCardData } from "../../shared/model-request";
@@ -48,6 +49,7 @@ import { speaker } from "@/lib/tts";
 import { roleProfilePatch, type BotRole } from "@/lib/bot-roles";
 import { t } from "@/lib/i18n";
 import { createBotPatchQueue, type BotUpdatePatch } from "./bot-patch-queue";
+import { throwIfExecutionUnverified, unverifiedSaveNotice } from "./bot-patch-notice";
 import { useChatErrorClear } from "./chat-error";
 import { friendlyAccessError } from "@/aiking/access-errors";
 import { openLiveEvents, publishLiveFrame, publishMissedFrames } from "@/lib/live-events";
@@ -117,6 +119,8 @@ export interface ConnectorCardData {
   dismissed?: boolean;
   resumed?: boolean;
   stopped?: boolean;
+  /** 2.1 request_connect: an added MCP service signed in or keyed from the card. */
+  mcp?: { server: string; auth: "oauth" | "api-key"; header: string };
 }
 
 export interface SecretRequestCardData {
@@ -303,6 +307,7 @@ export interface Bot {
   color: AikingColor;
   mascotExpression?: string | null;
   mascotBody?: MascotBodyId | null;
+  mascotLook?: MascotLook | null;
   avatarUrl?: string | null;
   avatarCrop?: BotAvatarCrop;
   avatarZoom?: number;
@@ -478,7 +483,7 @@ export type { BrowserEngineSummary, BrowserProfile, ConfigStatus, ManagedPolicyS
 // A section left out here is wiped from state.config whenever a config frame lands.
 export type ConfigStatusFrame = Pick<
   ConfigStatus,
-  "xai" | "mistral" | "cerebras" | "groq" | "meta" | "anthropic" | "openai" | "openrouter" | "openaiCompat" | "fleet" | "composio" | "box" | "vps" | "rooms" | "mcp" | "threads" | "automaticRecovery" | "cacheKeepWarm" | "localVm" | "opencodeGo" | "tts" | "decider" | "imageGen" | "live" | "profile" | "language" | "features" | "onboarding" | "browserEngine" | "browserProfiles" | "edition" | "budgets" | "billing" | "managedPolicy" | "cloudHome"
+  "xai" | "mistral" | "cerebras" | "groq" | "meta" | "anthropic" | "openai" | "openrouter" | "openaiCompat" | "fleet" | "vault" | "composio" | "box" | "vps" | "rooms" | "mcp" | "threads" | "automaticRecovery" | "cacheKeepWarm" | "localVm" | "opencodeGo" | "tts" | "decider" | "imageGen" | "live" | "profile" | "language" | "features" | "onboarding" | "browserEngine" | "browserProfiles" | "edition" | "budgets" | "billing" | "managedPolicy" | "cloudHome"
 >;
 
 export function configStatusFromFrame(frame: ConfigStatusFrame): ConfigStatus {
@@ -493,6 +498,7 @@ export function configStatusFromFrame(frame: ConfigStatusFrame): ConfigStatus {
     openrouter: frame.openrouter,
     openaiCompat: frame.openaiCompat,
     fleet: frame.fleet,
+    vault: frame.vault,
     composio: frame.composio,
     box: frame.box,
     vps: frame.vps,
@@ -2489,6 +2495,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         onError: (error) => {
           rawDispatch({ type: "error", message: error.message });
         },
+        // Saved but the latest state could not be confirmed: same error banner the rejection path uses, no forced reload.
+        onUnconverged: (_botId, info) => {
+          const message = unverifiedSaveNotice(info);
+          if (message) rawDispatch({ type: "error", message });
+        },
       }),
     [],
   );
@@ -2527,6 +2538,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const defaultWrites = [...taskWrites.values()].filter((write) => write.updatesDefault && expectedBots.some((bot) => bot.id === write.botId));
       await Promise.all([taskWrite, ...defaultWrites.map((write) => write.execution), ...expectedBots.map(async (expected) => {
         const persisted = await botPatchQueue.flush(expected.id);
+        // A known-unconfirmed approval/memory/model save must not start work, even when the cached snapshot happens to match.
+        throwIfExecutionUnverified(botPatchQueue, expected.id);
         if (!persisted) return;
         const expectedSelection = expected.modelSelection;
         if (
@@ -2975,6 +2988,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             computer: source.computer,
             cloudBackend: source.cloudBackend,
             autoStartVps: source.autoStartVps,
+            ...(portableMascotLook(source.mascotLook) ? { mascotLook: portableMascotLook(source.mascotLook) } : {}),
             avatarUrl: source.avatarUrl,
             avatarCrop: source.avatarCrop,
             avatarZoom: source.avatarZoom,
@@ -3521,6 +3535,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             bot.unread = botShowsUnread(bot);
             fetch(`/api/bots/${bot.id}/read`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ threadId: shown }) }).catch(() => {});
           }
+          botPatchQueue.observe(bot);
           rawDispatch({
             type: "botPatched",
             bot: withTaskWrites({ ...bot, ...botPatchQueue.overlayFor(bot.id) }),

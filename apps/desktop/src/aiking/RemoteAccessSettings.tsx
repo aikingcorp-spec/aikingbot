@@ -6,19 +6,42 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, Switch } from "@/components/SettingsPrimitives";
 import { api } from "@/state/store";
 import { DesktopSignIn } from "./DesktopSignIn";
-import { at } from "./strings";
+import { at, type AikingKey } from "./strings";
 
 type Status = { configured: boolean; state: "off" | "connecting" | "online"; name?: string; relayUrl: string; canJoinWithAccount?: boolean };
+type P2pStatus = {
+  enabled: boolean;
+  path: "p2p" | "turn" | "relay";
+  switching?: boolean;
+  pending?: number;
+};
+
 const relayEmail = () => { try { return decodeURIComponent(/(?:^|;\s*)rl_email=([^;]*)/.exec(document.cookie)?.[1] ?? ""); } catch { return ""; } };
+
+function p2pStatusKey(p2p: P2pStatus | null): AikingKey | null {
+  if (!p2p?.enabled) return null;
+  if (p2p.switching) return "remote.p2p.switchingToRelay";
+  if (p2p.path === "p2p") return "remote.p2p.onP2p";
+  if (p2p.path === "turn") return "remote.p2p.onTurn";
+  return "remote.p2p.onRelay";
+}
 
 export function RemoteAccessSettings() {
   const viaWeb = relayEmail();
   const [status, setStatus] = useState<Status | null>(null);
+  const [p2p, setP2p] = useState<P2pStatus | null>(null);
   const [name, setName] = useState(() => at("web.defaultName"));
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
-  const load = useCallback(async () => { try { setStatus(await api<Status>("/api/aiking/relay/status")); } catch { /* unavailable */ } }, []);
+  const load = useCallback(async () => {
+    try { setStatus(await api<Status>("/api/aiking/relay/status")); } catch { /* unavailable */ }
+    try {
+      setP2p(await api<P2pStatus>("/api/aiking/remote/p2p/status"));
+    } catch {
+      setP2p(null);
+    }
+  }, []);
   useEffect(() => {
     if (viaWeb) return;
     void load();
@@ -48,6 +71,7 @@ export function RemoteAccessSettings() {
   };
   const stateText = !status.configured ? at("web.statusOff")
     : status.state === "online" ? at("web.online", { name: status.name ?? "" }) : at("web.connecting", { name: status.name ?? "" });
+  const transportKey = status.configured ? p2pStatusKey(p2p) : null;
 
   return (
     <Card title={at("web.title")} subtitle={at("web.subtitle")}>
@@ -55,6 +79,15 @@ export function RemoteAccessSettings() {
         <div className="min-w-0">
           <div className="text-[15px] font-medium text-ink">{at("web.toggleLabel")}</div>
           <div className="mt-0.5 text-[13px] text-ink-secondary" data-remote-state={status.configured ? status.state : "off"}>{stateText}</div>
+          {transportKey && (
+            <div
+              className="mt-1 text-[13px] text-ink-secondary"
+              data-remote-p2p-path={p2p?.path}
+              data-remote-p2p-switching={p2p?.switching ? "1" : "0"}
+            >
+              {at(transportKey)}
+            </div>
+          )}
         </div>
         <Switch checked={status.configured} disabled={busy} aria-label={at("web.toggleLabel")} data-remote-toggle onClick={toggle} />
       </div>

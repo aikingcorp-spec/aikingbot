@@ -14,6 +14,7 @@ import { AgentVoices, createRealtimeVoice, spawnCodexAppServer } from "./aiking/
 import { createRelay } from "./aiking/relay.ts";
 import { createDesktopAccount } from "./aiking/desktop-account.ts";
 import { AccountDirectory, accountCookieName, createAccountRoutes, type AccountWorkspace } from "./aiking/account-workspaces.ts";
+import { fleetAccountWorkspaces } from "./aiking/fleet-account-workspaces.ts";
 import { accountApiOrigin } from "./aiking/account-api.ts";
 import { registerBinaryEnginesDir } from "./aiking/binary-engines.ts";
 import { ToolResults, TOOL_RESULT_MAX_CHARS } from "./tool-results.ts";
@@ -50,13 +51,24 @@ import {
 import { createApprovalModeSupport } from "./harness-capabilities.ts";
 import { escapeAttribute } from "../src/lib/composer-attachments.ts";
 import {
+  CREDENTIAL_REFUSAL_MESSAGES,
+  CREDENTIAL_REMOTE_DENIED_MESSAGE,
+  CREDENTIAL_CUSTOM_PHONE_DENIED_MESSAGE,
+  type CredentialCardContext,
+  CREDENTIAL_REQUEST_TTL_MS,
   CREDENTIAL_TARGETS,
+  credentialCardAdmission,
+  credentialGateTarget,
   credentialResumeOutcome,
   credentialIsConfigured,
+  isCustomCredentialName,
   isPendingCredentialRequest,
   isCredentialTargetId,
+  parseCustomCredentialLabel,
   type CredentialTargetId,
 } from "../shared/credential-request.ts";
+import { CustomSecretStore, formatCustomSecretRef } from "./secret-refs.ts";
+import { SecretCardGate, isRelayedRequest, relayedPhoneProvideDenied } from "./credential-admission.ts";
 import { isPendingSignInRequest, normalizeSignInSite, signInFallbackText, signInOutcome, signInResumePrompt } from "../shared/sign-in-request.ts";
 
 import { createRoomTurnLevels } from "./room-turn-level.ts";
@@ -203,7 +215,10 @@ import type { PriceList } from "./prices.ts";
 import type { RequestAuth } from "./request-auth.ts";
 import { onKeyRejectionChange } from "./key-rejections.ts";
 import { assertWithinBudget, noteSpend, spendAlertText, spendState, takeSpendAlert } from "./spend.ts";
-import { fleetAvailable, fleetSocketPath } from "./fleet-client.ts";
+import { fleetAvailable, fleetMemberships, fleetSocketPath } from "./fleet-client.ts";
+import { sharedOssFleet } from "./oss-fleet.ts";
+import { diagnoseFleet, hostFleetProbe } from "./fleet-doctor.ts";
+import { revokeVaultDataKey, rotateVaultDataKey, vaultStatus } from "./vault-key.ts";
 import { entitled } from "./enterprise.ts";
 import { HOSTED_CONTRACT_HEADER, HOSTED_CONTRACT_METADATA, HOSTED_CONTRACT_VERSION } from "./hosted-contract.ts";
 import { describeSpawnFailure, execCli } from "./procs.ts";
@@ -226,6 +241,7 @@ import {
   isRemoteMcpServer,
   listMcpServers,
   parseStoredMcpServer,
+  setCustomSecretRefResolver,
 } from "./mcp-registry.ts";
 import { MCP_OAUTH_CALLBACK_PATH, McpOAuthManager, mcpOAuthRedirectUri, withMcpSignIn, withoutPendingSignIn } from "./mcp-oauth.ts";
 import {
@@ -381,6 +397,11 @@ import {
   stageSkillWrite,
   undoSkillWrite,
 } from "./skills.ts";
+import { accountCapabilities, engineRosterPrompt, type RoutableTeammate } from "./engine-capabilities.ts";
+import { connectGapsPrompt, pendingSignInServices } from "./connect-gaps.ts";
+import { connectCardText, mcpCardConnected, planConnect } from "./request-connect.ts";
+import { SLUG as MARKETPLACE_SLUG, marketplaceSearchText, searchMarketplace } from "./marketplace-search.ts";
+import { loadSkillMap, matchSkills, skillHint } from "./skill-map.ts";
 import { fetchSkillFromSource } from "./skill-fetch.ts";
 import { pickBotName } from "./names.ts";
 import { botSkillTemplateSchema, newBotDefaultsSchema } from "./new-bot-defaults.ts";
@@ -426,7 +447,7 @@ import { ROUTINE_RESTARTED, RoutineManager, type RoutineRun, type RoutineRunOn, 
 import { CalendarCallManager, type CalendarCall } from "./calendar-calls.ts";
 import { BUILT_IN_BROWSER_SYSTEM_PROMPT } from "./browser-engine.ts";
 import { BROWSER_CONTROL_REFUSAL, BrowserRuntime, attachesToChrome, browserRuntimeEnv, formatBrowserTiming } from "./browser-runtime.ts";
-import { listSignedInSites, signOutOfSites } from "./browser-sites.ts";
+import { listSignedInSites, reencryptAgentBrowserStates, signOutOfSites } from "./browser-sites.ts";
 import { HeldSecrets, LoginStore } from "./login-store.ts";
 import { OnePasswordLogins, sdkOnePasswordClient, type OnePasswordSdk } from "./onepassword.ts";
 import { nativeRequire } from "./data/engine.ts";
@@ -434,6 +455,7 @@ import { fillLogin, type FillCandidate } from "./login-fill.ts";
 import { relayFrame, relayInsertText } from "./browser-relay.ts";
 import { browserEvidence, browserSteps, stepContext } from "./browser-steps.ts";
 import { parseLoginFields, parseTotpField, createLoginRoutes } from "./routes/logins.ts";
+import { createVaultRoutes } from "./routes/vault.ts";
 import { savedLoginResumePrompt } from "../shared/logins.ts";
 import { BrowserLive } from "./browser-live.ts";
 import {
@@ -612,6 +634,9 @@ import { createStatusRoutes } from "./routes/status.ts";
 import { findAntigravityLeftovers, removeAntigravityLeftovers } from "./drivers/antigravity-temp.ts";
 import { createLiveRoutes } from "./routes/live.ts";
 import { createUsageRoutes } from "./routes/usage.ts";
+import { createModelCatalogRoutes } from "./routes/model-catalog.ts";
+import { createCallTraceRecorder } from "./call-trace-recorder.ts";
+import { createCallTraceRoutes } from "./routes/call-traces.ts";
 import { createBotMessageRoutes } from "./routes/bot-messages.ts";
 import { createThreadRoutes } from "./routes/threads.ts";
 import { withScopeHint } from "./connector-scope-hint.ts";
@@ -714,7 +739,12 @@ const threadStarters = new ThreadStarters(join(DATA_DIR, "thread-starters.json")
 const commandAllowlist = new CommandAllowlistStore(join(DATA_DIR, "command-allowlist.json"));
 // Every saved login value is scrubbed from whatever a bot or a transcript can read.
 const logins = new LoginStore({ dataDir: DATA_DIR });
-const heldSecrets = new HeldSecrets(logins);
+const customSecrets = new CustomSecretStore({ dataDir: DATA_DIR });
+setCustomSecretRefResolver((ref) => customSecrets.resolve(ref));
+const heldSecrets = new HeldSecrets({
+  get version() { return logins.version + customSecrets.version; },
+  secretValues: () => [...logins.secretValues(), ...customSecrets.secretValues()],
+});
 addHeldSecretScrubber((text) => heldSecrets.scrub(text));
 const onePassword = new OnePasswordLogins({
   token: () => logins.onePasswordToken(),
@@ -773,11 +803,27 @@ const emailSignIn = createEmailSignIn({
   allow: signInAllowList,
   openIdentity: AIKING_OPEN_ACCOUNTS,
 });
-const accountWorkspaceList = (email: string): AccountWorkspace[] => {
-  const scopes = allowedScopes(email, signInAllowList());
-  if (!scopes) return [];
+const accountWorkspaceList = async (email: string): Promise<AccountWorkspace[]> => {
   const name = process.env.AIKING_WORKSPACE_NAME?.trim() || environmentDescriptor({ environmentId: ENVIRONMENT_ID, desktopManaged: DESKTOP_MANAGED }).label;
-  return [{ id: ENVIRONMENT_ID, name, role: scopes.includes("admin") ? "owner" : "member", current: true }];
+  const localScopes = allowedScopes(email, signInAllowList());
+  const local: AccountWorkspace[] = localScopes
+    ? [{ id: ENVIRONMENT_ID, name, role: localScopes.includes("admin") ? "owner" : "member", current: true }]
+    : [];
+  if (fleetAvailable()) {
+    try {
+      const { workspaces } = await fleetMemberships();
+      const fleet = fleetAccountWorkspaces(email, workspaces, { currentId: ENVIRONMENT_ID, currentName: name });
+      if (fleet.length) return fleet;
+    } catch {
+      // Fleet agent down: try open-source local memberships, else this server alone.
+    }
+  }
+  const oss = sharedOssFleet();
+  if (oss) {
+    const fleet = fleetAccountWorkspaces(email, oss.memberships().workspaces, { currentId: ENVIRONMENT_ID, currentName: name });
+    if (fleet.length) return fleet;
+  }
+  return local;
 };
 const accountRoutes = createAccountRoutes({
   directory: new AccountDirectory(join(DATA_DIR, "aiking", "account-directory.json")),
@@ -1569,6 +1615,14 @@ function operatorPrices(): PriceList | null {
   return entitled("billing") && cfg.billing?.prices && Object.keys(cfg.billing.prices).length ? cfg.billing.prices : null;
 }
 
+/** 5.2 / 5.3: per-call usage and retries from a request-per-turn engine's turn.completed. */
+function usageDetailOf(event: { calls?: Array<{ input: number; output: number; cachedInput?: number; retries?: number }>; retries?: number }): Pick<UsageRow, "calls" | "retries"> {
+  return {
+    ...(Array.isArray(event.calls) && event.calls.length ? { calls: event.calls } : {}),
+    ...(typeof event.retries === "number" && event.retries > 0 ? { retries: event.retries } : {}),
+  };
+}
+
 function bookTurnUsage(row: Omit<UsageRow, "at" | "costSource">, tokensReported = true, notificationThreadId = row.threadId): void {
   const cost = tokensReported || row.costUsd !== null ? ledgerCost(row, operatorPrices()) : { costUsd: null };
   const booked = { ...row, ...cost, at: new Date().toISOString() };
@@ -1621,6 +1675,30 @@ function resyncOpenCodeProviderKeys(): void {
 await registry.load(providerConfigs(), decorateHostedProvider);
 const bundledSkills = loadBundledSkills();
 const availableSkills = () => mergeSkills(bundledSkills, loadUserSkills(join(DATA_DIR, "skills")));
+const skillMap = loadSkillMap();
+/** 3.4: the capability list of the engine account a bot runs on, plus what the app's own surfaces add. */
+const teammateCapabilities = (peer: BotRecord): RoutableTeammate => {
+  const instance = registry.get(peer.modelSelection.instanceId);
+  const caps = instance?.adapter.capabilities;
+  return {
+    id: peer.id,
+    name: peer.name,
+    capabilities: accountCapabilities(instance?.driverKind ?? "", cfg.instances?.[peer.modelSelection.instanceId]?.capabilities, {
+      browser: caps?.browserMcp === true && builtInBrowserEnabled(cfg) && peer.browser !== false,
+      computer: Boolean(peer.computer),
+    }),
+  };
+};
+/** 1.3: a one-line "load skill X" hint from the shipped skill map, naming only skills this bot has enabled. */
+const skillMapHint = (bot: BotRecord, message: string): string => {
+  if (!skillMap) return "";
+  try {
+    const names = [...listBotSkills(bot).filter((skill) => skill.enabled).map((skill) => skill.name), ...bundledSkills.map((skill) => skill.manifest.id)];
+    return skillHint(matchSkills(skillMap, message, names));
+  } catch {
+    return "";
+  }
+};
 
 const listBotSkills = (bot: BotRecord) =>
   skillsLibraryEnabled(cfg) ? resolveBotSkills(bot.id, bot.assignedSkills) : listSkills(bot.id);
@@ -2201,9 +2279,22 @@ const teamSetupDecisionText = (request: TeamSetupRequest): string => {
 };
 const connectionUpdateText = (labels: readonly string[]): string =>
   `AIKINGBOT connection update: the user securely connected ${labels.join(", ")}. Continue the task that paused for this connection. Do not ask them to connect it again.`;
-const credentialUpdateText = (label: string, outcome: "provided" | "dismissed"): string => outcome === "provided"
-  ? `AIKINGBOT credential update: the user securely provided ${label}. Continue the task that paused for it. You do not receive the secret and must not ask them to paste it into chat.`
-  : `AIKINGBOT credential update: the user declined to provide ${label}. Continue without it if possible, or briefly explain the limitation. Do not ask them to paste it into chat.`;
+const credentialUpdateText = (label: string, outcome: "provided" | "dismissed", ref?: string): string => {
+  if (outcome === "provided" && ref) {
+    return `AIKINGBOT credential update: ${JSON.stringify({ stored: true, ref })}. Continue the task that paused for it. You do not receive the secret value — use the ref server-side only. Never ask them to paste it into chat.`;
+  }
+  return outcome === "provided"
+    ? `AIKINGBOT credential update: the user securely provided ${label}. Continue the task that paused for it. You do not receive the secret and must not ask them to paste it into chat.`
+    : `AIKINGBOT credential update: the user declined to provide ${label}. Continue without it if possible, or briefly explain the limitation. Do not ask them to paste it into chat.`;
+};
+
+/** Fixed targets check config; custom checks the vault by name. */
+function secretTargetConfigured(secret: { target: CredentialTargetId; customName?: string }): boolean {
+  if (secret.target === "custom") {
+    return Boolean(secret.customName && customSecrets.has(secret.customName));
+  }
+  return credentialIsConfigured(cfg, secret.target);
+}
 
 /** In a room (`memberId`) only this member's cards: one member's park never swallows another's. */
 function resumableCards(threadId: string, since: number, memberId?: string): Array<{ id: string; waits: string }> {
@@ -2369,6 +2460,8 @@ function settleDirectFollowup(generation: string | undefined, outcome: DirectTur
 // A running conversation keeps its exact bot settings: another thread or a changed default must not retarget its tools.
 const directTurnBots = new Map<string, BotRecord>();
 const turnPromptBytes = new Map<string, { stable: number; volatile: number }>();
+/** 5.1: threads whose current turn was spoken, so their usage counts as voice. */
+const spokenTurnThreads = new Set<string>();
 let providerFleetReloading = false;
 const turnResources = new TurnResources();
 const sharedComputerControl = new SharedComputerControl(turnResources, () => store.bots.some(bot => botComputerControlSnapshot(bot.id).held));
@@ -5949,6 +6042,7 @@ const memoryUpkeep = createMemoryUpkeep({
           ...(usage.cachedInput !== undefined ? { cachedInput: usage.cachedInput } : {}),
           costUsd: usage.costUsd ?? null,
           trigger: { kind: "bot", botId: bot.id },
+          source: "summary",
         }, usage.input !== undefined && usage.output !== undefined, bot.threadId) });
       },
     } : {};
@@ -6190,6 +6284,7 @@ const skillReview = createSkillReview({
           ...(usage.cachedInput !== undefined ? { cachedInput: usage.cachedInput } : {}),
           costUsd: usage.costUsd ?? null,
           trigger: { kind: "bot", botId: bot.id },
+          source: "summary",
         }, usage.input !== undefined && usage.output !== undefined, bot.threadId) });
       },
     };
@@ -7757,6 +7852,8 @@ bus.subscribe((event: RuntimeEvent) => {
             : internal
               ? { kind: "bot", ...(settledTask?.openedBy?.botId ? { botId: settledTask.openedBy.botId } : {}) }
               : turnTriggers.get(event.threadId) ?? { kind: "owner" },
+          source: routineRun ? "routine" : internal ? "bot" : spokenTurnThreads.delete(event.threadId) ? "voice" : "chat",
+          ...usageDetailOf(event),
         });
         const digestSettled = completedTurnId ? scheduleTurnDigest({
             botId: bot.id,
@@ -7822,6 +7919,8 @@ bus.subscribe((event: RuntimeEvent) => {
           trigger: routineRun
             ? { kind: "routine", routineId: routineRun.routineId, label: routineRun.routineName }
             : turnTriggers.get(event.threadId) ?? { kind: "owner" },
+          source: routineRun ? "routine" : spokenTurnThreads.delete(event.threadId) ? "voice" : "chat",
+          ...usageDetailOf(event),
         });
         void flushUsageLedger(DATA_DIR).then(() => {
           groupUsageReader.refresh();
@@ -8807,6 +8906,7 @@ async function startTurn(
   const turnLineIds = new Set(opts?.excludeMessageIds ?? []);
   const spoken = opts?.via === "call" || opts?.userMessage?.via === "call" ||
     (turnLineIds.size > 0 && store.messagesFor(threadId).some((message) => turnLineIds.has(message.id) && message.via === "call"));
+  if (spoken) spokenTurnThreads.add(threadId); else spokenTurnThreads.delete(threadId);
   console.error(turnStartLogLine({
     botId, text: resolvedImages.text, images: turnImages.length, depth: commsDepth, card: Boolean(opts?.cardContinuation), spoken,
   }));
@@ -9528,7 +9628,9 @@ async function startTurn(
         { id: "skills", label: "Skills index", text: privateWorkspace ? skillsSystemPrompt(bot.id, skillsLibraryEnabled(cfg) ? (store.bot(bot.id)?.assignedSkills ?? bot.assignedSkills) : undefined) : "" },
         { id: "skill-instructions", label: "Skill instructions", text: skillInstructions },
         { id: "playbooks", label: "Playbooks", text: packagePlaybooks },
+        { id: "connect", label: "Unconnected services", text: connectGapsPrompt(pendingSignInServices(engineMcpServers(bot), mcpOAuth)) },
         { id: "webhook", label: "Webhook provenance", text: opts?.automationSource === "webhook" ? WEBHOOK_PROMPT : "" },
+        { id: "engine-roster", label: "Teammate capabilities", text: integrations.agents ? engineRosterPrompt((bot.chiefOfStaff ? reachablePeers(store.bots, bot) : sectionPeers).map(teammateCapabilities)) : "" },
         { id: "mentions", label: "Mentions", text: tagged.length ? `The user named these existing teammates: ${tagged.map(b => `${peerName(b.name)} (${b.id})`).join(", ")}. Use coordinate_bots when their contribution is needed; do not substitute native helper agents for these bots.` : "" },
       ]);
       turnPromptBytes.set(threadId, { stable: Buffer.byteLength(prompt.stable), volatile: Buffer.byteLength(prompt.volatile) });
@@ -9550,7 +9652,7 @@ async function startTurn(
         botId: bot.id,
         startupRecovery: cfg.automaticRecovery?.enabled === true &&
           (opts?.automaticRecoveryIndex ?? 0) < ((liveBot ?? bot).fallback?.length || (cfg.automaticRecovery.backup ? 1 : 0)),
-        text: withTurnClock(clock, withRecalled(recalled, dispatchContext.turnText)),
+        text: withTurnClock(clock, withRecalled([recalled, privateWorkspace ? skillMapHint(bot, resolvedImages.text) : ""].filter(Boolean).join("\n\n"), dispatchContext.turnText)),
         ...(recalled ? { recalled } : {}),
         images: turnImages,
         approvalMode: approvalModeForTurn(bot, commsDepth > 0, threadId),
@@ -9570,6 +9672,7 @@ async function startTurn(
         mentionTurn: tagged.length > 0,
         integrations,
         ...(integrations.browser && browserIsThePlace(plan) ? { preloadBrowserTools: true } : {}),
+        harness: { verifyAfterAct: true, errorLadder: true },
         mcpFromUserConfig: claudeUserMcpEnabled(cfg) && !managedPolicy.restrictsMcp(),
         mcpCallTimeoutMs: mcpCallTimeoutMinutes(cfg) * 60_000,
         cwd,
@@ -11705,6 +11808,7 @@ async function runClaimedGroupMemberTurn(
         cwd,
         integrations,
         ...(integrations.browser && browserIsThePlace(roomPlan) ? { preloadBrowserTools: true } : {}),
+        harness: { verifyAfterAct: true, errorLadder: true },
         mcpFromUserConfig: claudeUserMcpEnabled(cfg) && !managedPolicy.restrictsMcp(),
         mcpCallTimeoutMs: mcpCallTimeoutMinutes(cfg) * 60_000,
         ...(instance.instanceId === readyBot.modelSelection.instanceId
@@ -13143,6 +13247,47 @@ function phoneSecretSubmissionKey(threadId: string, messageId: string, requestKe
   return `${threadId}:${messageId}:${requestKey}`;
 }
 
+// In-memory only: a restart forgets claims, so this stops concurrent submits, not a replay after a crash.
+const secretCardGate = new SecretCardGate(() => randomUUID());
+
+/** Who holds a claim: the owner (desktop or local fallback) or one signed-in session. A phone has its own principal. */
+function secretPrincipal(auth: { kind: string; session?: { id: string } }): string {
+  return auth.kind === "session" && auth.session ? `session:${auth.session.id}` : "owner";
+}
+
+/** Write path of a desktop/fallback card: the claim, card, target and principal are checked here, and the commit is recorded here. */
+const credentialCardWrites = {
+  begin(context: CredentialCardContext, principal: string): boolean {
+    const message = secretMessage(context.botId, context.threadId, context.messageId);
+    const card = message?.secret;
+    if (!message || !card || card.target !== context.target) return false;
+    if (card.provided === true || card.dismissed === true || card.superseded === true || card.stopped === true) return false;
+    const cardKey = phoneSecretSubmissionKey(context.threadId, message.id, card.requestKey);
+    if (phoneSecretSubmissions.has(cardKey)) return false;
+    const gateTarget = credentialGateTarget(card.target, card.customName);
+    return secretCardGate.beginWrite(cardKey, context.claimId, gateTarget, principal);
+  },
+  end(context: CredentialCardContext, saved: boolean): void {
+    const message = secretMessage(context.botId, context.threadId, context.messageId);
+    if (!message?.secret) return;
+    const cardKey = phoneSecretSubmissionKey(context.threadId, message.id, message.secret.requestKey);
+    secretCardGate.endWrite(cardKey, context.claimId, saved);
+  },
+};
+
+/** A claim is worth keeping only while its card exists and is not terminal (dismissed, superseded, stopped or provided). */
+function secretCardUsable(botId: string, threadId: string, messageId: string): boolean {
+  const card = secretMessage(botId, threadId, messageId)?.secret;
+  return card !== undefined && card.provided !== true && card.dismissed !== true && card.superseded !== true && card.stopped !== true;
+}
+
+/** Admission for a first credential write: the card must be live, unsettled and unexpired. */
+function secretCardRefusal(message: Message): { reason: keyof typeof CREDENTIAL_REFUSAL_MESSAGES; error: string } | null {
+  const admission = credentialCardAdmission(message.secret, message.at, Date.now());
+  if (admission.ok) return null;
+  return { reason: admission.reason, error: CREDENTIAL_REFUSAL_MESSAGES[admission.reason].en };
+}
+
 function credentialDesktopHandoff(label: string): string {
   return `Securely provide the ${label} from AIKINGBOT on your phone or computer. It is never added to chat.`;
 }
@@ -13169,7 +13314,10 @@ function resumeSecretCard(botId: string, threadId: string, messageId: string, ou
   const message = secretMessage(botId, threadId, messageId);
   if (!message?.secret) return false;
   if (message.secret.resumed) return true;
-  const resumed = answerCardNode(threadId, messageId, credentialUpdateText(message.secret.label, outcome));
+  const ref = outcome === "provided" && message.secret.target === "custom" && message.secret.customName
+    ? formatCustomSecretRef(message.secret.customName)
+    : undefined;
+  const resumed = answerCardNode(threadId, messageId, credentialUpdateText(message.secret.label, outcome, ref));
   store.patchMessage(threadId, message.id, {
     secret: {
       ...message.secret,
@@ -13188,6 +13336,9 @@ async function provideSecretFromPhone(
   const owner = connectorThread(context.botId, context.threadId);
   const message = secretMessage(context.botId, context.threadId, context.messageId);
   if (!owner || !message?.secret) throw new PhoneSecretError("No such credential request", 404);
+  if (message.secret.target === "custom") {
+    throw new PhoneSecretError(CREDENTIAL_CUSTOM_PHONE_DENIED_MESSAGE.en, 409);
+  }
   if (message.secret.dismissed) throw new PhoneSecretError("This credential request was dismissed", 409);
   if (message.secret.superseded) throw new PhoneSecretError("This credential request was superseded by a newer one", 409);
   assertPhoneSecretRequestMatches(context, authenticatedDeviceId, {
@@ -13203,7 +13354,7 @@ async function provideSecretFromPhone(
   }
   // Recording the winning operation precedes completing the card, so an exact retry repairs a crash without writing the credential again.
   if (message.secret.phoneOperationId === operationId && !message.secret.provided) {
-    if (!credentialIsConfigured(cfg, message.secret.target)) {
+    if (!secretTargetConfigured(message.secret)) {
       throw new PhoneSecretError(`${message.secret.label} is no longer configured`, 409);
     }
     if (!resumeSecretCard(context.botId, context.threadId, context.messageId, "provided")) {
@@ -13220,7 +13371,7 @@ async function provideSecretFromPhone(
         409,
       );
     }
-    if (!credentialIsConfigured(cfg, message.secret.target)) {
+    if (!secretTargetConfigured(message.secret)) {
       throw new PhoneSecretError(`${message.secret.label} is no longer configured`, 409);
     }
     if (!message.secret.resumed && !resumeSecretCard(
@@ -13236,7 +13387,18 @@ async function provideSecretFromPhone(
     return recovered;
   }
 
+  // A first submit is admitted only on a live card; the recovery branches above stay status-only after expiry.
+  const refusal = secretCardRefusal(message);
+  if (refusal) throw new PhoneSecretError(refusal.error, 409);
   const submissionKey = phoneSecretSubmissionKey(context.threadId, context.messageId, context.requestKey);
+  const phoneClaim = secretCardGate.claim(
+    submissionKey,
+    context.target,
+    `phone:${authenticatedDeviceId}`,
+    () => secretMessage(context.botId, context.threadId, context.messageId) !== null,
+  );
+  if (!phoneClaim.ok) throw new PhoneSecretError(CREDENTIAL_REFUSAL_MESSAGES.busy.en, 409);
+  try {
   await phoneSecretSubmissions.run({
     cardKey: submissionKey,
     botId: context.botId,
@@ -13256,17 +13418,22 @@ async function provideSecretFromPhone(
       throw new PhoneSecretError("This credential request was superseded by a newer one", 409);
     }
     // Electron acknowledges only after credentials.bin and the config update both commit; keep this assertion so no handler resumes first.
-    if (!credentialIsConfigured(cfg, current.secret.target)) {
+    if (!secretTargetConfigured(current.secret)) {
       throw new PhoneSecretError(`${current.secret.label} was not saved yet`, 409);
     }
     // Persist the winning envelope id before completing the card, so a new sealed value is never reported as the saved one.
     store.patchMessage(context.threadId, current.id, {
       secret: { ...current.secret, phoneOperationId: operationId },
     });
+    secretCardGate.commit(submissionKey, phoneClaim.claimId);
     if (!resumeSecretCard(context.botId, context.threadId, context.messageId, "provided")) {
       throw new PhoneSecretError("This credential request is no longer available", 409);
     }
   });
+  } catch (error) {
+    secretCardGate.release(submissionKey, phoneClaim.claimId);
+    throw error;
+  }
   const settled = currentSecretState(context.botId, context.threadId, context.messageId);
   if (!settled) throw new PhoneSecretError("This credential request is no longer available", 409);
   return settled;
@@ -13597,7 +13764,15 @@ function configStatus() {
     anthropic: { configured: Boolean(cfg.anthropic?.key), everyClaudeBot: cfg.anthropic?.everyClaudeBot !== false },
     openai: { configured: Boolean(cfg.openai?.key) },
     openrouter: { configured: Boolean(cfg.openrouter?.key) },
-    fleet: { available: fleetAvailable(fleetSocketPath()) },
+    fleet: (() => {
+      const diagnosis = diagnoseFleet(hostFleetProbe(editionStatus().features, fleetSocketPath()));
+      return {
+        available: diagnosis.available,
+        ...(diagnosis.reason ? { reason: diagnosis.reason } : {}),
+        ...(diagnosis.fix ? { fix: diagnosis.fix } : {}),
+      };
+    })(),
+    vault: vaultStatus(),
     edition: editionForSettings(editionStatus()),
     budgets: {
       ...(cfg.budgets?.monthlyUsd !== undefined ? { monthlyUsd: cfg.budgets.monthlyUsd } : {}),
@@ -14244,6 +14419,30 @@ ROUTES.push(createLoginRoutes({
     },
   },
 }));
+ROUTES.push(createVaultRoutes({
+  status: () => vaultStatus(),
+  rotate: (purpose) => {
+    if (purpose === "logins") {
+      logins.rotateEncryptionKey();
+      return;
+    }
+    if (purpose === "custom-secrets") {
+      customSecrets.rotateEncryptionKey();
+      return;
+    }
+    const { previous, next } = rotateVaultDataKey("browser-engine");
+    if (previous) {
+      reencryptAgentBrowserStates(join(homedir(), ".agent-browser"), previous, next);
+    }
+  },
+  revoke: (purpose) => revokeVaultDataKey(purpose),
+  removeLogin: (id) => logins.remove(id),
+  removeCustomSecret: (name) => customSecrets.remove(name),
+}));
+const callTraceRecorder = createCallTraceRecorder();
+bus.subscribe((event: RuntimeEvent) => { try { callTraceRecorder.observe(event); } catch { /* tracing never affects a turn */ } });
+ROUTES.push(createCallTraceRoutes({ recorder: callTraceRecorder }));
+ROUTES.push(createModelCatalogRoutes());
 ROUTES.push(createUsageRoutes({
   dataDir: DATA_DIR,
   prices: operatorPrices,
@@ -14278,6 +14477,7 @@ ROUTES.push(createAntigravityAccountRoutes({
   },
 }));
 ROUTES.push(createConfigRoutes({
+  credentialCardWrites,
   store, cfg, registry, sessions, browserCleanup, browserLive, browserRuntime, usedBrowserSessions, decider,
   sharedComputers, sharedComputerControl,
   hostedModels: Boolean(hostedModels),
@@ -16572,31 +16772,125 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
         }
         const credentialId: CredentialTargetId = body.credentialId;
         const target = CREDENTIAL_TARGETS[credentialId];
-        if (credentialIsConfigured(cfg, credentialId)) {
+        let customName: string | undefined;
+        let cardLabel: string = target.label;
+        let cardDescription: string = target.description;
+        if (credentialId === "custom") {
+          if (!isCustomCredentialName(body.name)) {
+            return json(res, 400, { error: "custom credential needs name: 1–40 chars [a-z0-9_-]" });
+          }
+          const label = parseCustomCredentialLabel(body.label);
+          if (!label) {
+            return json(res, 400, { error: "custom credential needs label: 1–60 characters" });
+          }
+          const name = body.name;
+          customName = name;
+          cardLabel = label;
+          cardDescription = `Requested by the bot (${name}). Stored in the vault; the bot only receives a reference.`;
+          if (customSecrets.has(name)) {
+            return json(res, 200, {
+              alreadyConfigured: true,
+              label: cardLabel,
+              ref: formatCustomSecretRef(name),
+            });
+          }
+        } else if (credentialIsConfigured(cfg, credentialId)) {
           return json(res, 200, { alreadyConfigured: true, label: target.label });
         }
         // A later request supersedes pending cards; the fresh card is appended FIRST, so a failed save leaves the prior cards actionable.
-        const reason = typeof body.reason === "string" ? body.reason.trim().slice(0, 240) : "";
+        // `reason` stays in the tool signature but is never stored on or shown by the trusted card.
         const message = store.appendMessage(fromThreadId, {
           role: "bot",
           kind: "secret",
-          text: credentialDesktopHandoff(target.label),
+          text: credentialDesktopHandoff(cardLabel),
           ...(owner.group ? { from: { botId: from.id, name: from.name, color: from.color } } : {}),
           secret: {
             target: credentialId,
-            label: target.label,
-            description: `${reason ? `${target.description} ${reason}` : target.description} ${from.name} can use it but never read it back.`,
+            label: cardLabel,
+            description: cardDescription,
             placeholder: target.placeholder,
             helpUrl: target.helpUrl,
+            ...(customName ? { customName } : {}),
             requestKey: randomUUID(),
+            expiresAt: Date.now() + CREDENTIAL_REQUEST_TTL_MS,
           },
         });
         for (const prior of store.activePath(fromThreadId)) {
           if (prior.id === message.id) continue;
-          if (!prior.secret || !isPendingCredentialRequest(prior, credentialId, from.id, Boolean(owner.group))) continue;
+          if (!prior.secret || !isPendingCredentialRequest(prior, credentialId, from.id, Boolean(owner.group), customName)) continue;
           store.patchMessage(fromThreadId, prior.id, { secret: { ...prior.secret, superseded: true } });
         }
-        return json(res, 201, { messageId: message.id, label: target.label });
+        return json(res, 201, { messageId: message.id, label: cardLabel, ...(customName ? { ref: formatCustomSecretRef(customName) } : {}) });
+      }
+      if (method === "POST" && path === "/api/internal/marketplace-search") {
+        const body = await readInternalBody();
+        const query = typeof body.query === "string" ? body.query.trim().slice(0, 200) : "";
+        if (!query) return json(res, 400, { error: "marketplace_search needs query: the service or task, such as notion or bảng tính." });
+        if (!composio.configured(cfg)) return json(res, 409, { error: "The app catalog is not available on this AIKINGBOT." });
+        const [{ cards }, connected] = await Promise.all([composio.listToolkits(cfg), composio.connectedServiceSlugs(cfg).catch(() => [] as readonly string[])]);
+        const hits = searchMarketplace(cards, query, new Set(connected));
+        return json(res, 200, { hits, text: marketplaceSearchText(query, hits) });
+      }
+      if (method === "POST" && path === "/api/internal/marketplace-install") {
+        const body = await readInternalBody();
+        const threadId = internalCapability.threadId;
+        const owner = connectorThread(internalSender.id, threadId);
+        if (!owner) return json(res, 403, { error: "source conversation does not belong to sender" });
+        const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
+        if (!MARKETPLACE_SLUG.test(slug)) return json(res, 400, { error: "marketplace_install needs slug from marketplace_search." });
+        if (!composio.configured(cfg)) return json(res, 409, { error: "The app catalog is not available on this AIKINGBOT." });
+        if (owner.bot.connectorScopes && !owner.bot.connectorScopes.apps[slug]) {
+          return json(res, 403, { error: `${owner.bot.name} has not been given access to ${slug}; the person can allow it under the bot's Access settings` });
+        }
+        const toolkit = await composio.toolkitCard(cfg, slug);
+        requireActiveInternalCapability();
+        if ((await composio.connectionStatus(cfg, [slug]).catch(() => ({} as Record<string, { connected?: boolean }>)))[slug]?.connected) {
+          return json(res, 200, { connected: true, label: toolkit.label });
+        }
+        const existing = store.messagesFor(threadId).find(({ connector }) => connector !== undefined && connector.slug === slug && !connector.mcp
+          && !connector.resumed && !connector.dismissed && !connector.stopped && connector.status !== "connected");
+        if (existing) return json(res, 200, { messageId: existing.id, label: toolkit.label });
+        const reason = typeof body.reason === "string" ? body.reason.trim().slice(0, 240) : "";
+        const message = store.appendMessage(threadId, {
+          role: "bot",
+          kind: "connector",
+          text: connectorCardText(toolkit.label),
+          ...(owner.group ? { from: { botId: owner.bot.id, name: owner.bot.name, color: owner.bot.color } } : {}),
+          connector: {
+            slug, label: toolkit.label,
+            description: reason || toolkit.blurb || `Install and connect ${toolkit.label} so the bot can continue`,
+            status: "required", resumeKey: `market:${slug}:${randomUUID()}`,
+          },
+        });
+        return json(res, 201, { messageId: message.id, label: toolkit.label });
+      }
+      if (method === "POST" && path === "/api/internal/request-connect") {
+        const body = await readInternalBody();
+        const threadId = internalCapability.threadId;
+        const owner = connectorThread(internalSender.id, threadId);
+        if (!owner) return json(res, 403, { error: "source conversation does not belong to sender" });
+        const plan = planConnect(body.server, cfg.mcpServers ?? {}, (name, serverUrl) => mcpOAuth.authState(name, serverUrl), body.header);
+        if ("error" in plan) return json(res, 400, { error: plan.error });
+        if ("connected" in plan) return json(res, 200, { connected: true, server: plan.server });
+        const existing = store.messagesFor(threadId).find(({ connector }) => connector?.mcp?.server === plan.card.server
+          && !connector.resumed && !connector.dismissed && !connector.stopped && connector.status !== "connected");
+        if (existing) return json(res, 200, { messageId: existing.id, auth: plan.card.auth });
+        const reason = typeof body.reason === "string" ? body.reason.trim().slice(0, 240) : "";
+        const message = store.appendMessage(threadId, {
+          role: "bot",
+          kind: "connector",
+          text: connectCardText(plan.card.server, plan.card.auth),
+          ...(owner.group ? { from: { botId: internalSender.id, name: internalSender.name, color: internalSender.color } } : {}),
+          connector: {
+            slug: `mcp-${plan.card.server}`,
+            label: plan.card.server,
+            description: reason || `Connect ${plan.card.server} so ${internalSender.name} can continue`,
+            status: "required",
+            resumeKey: `mcp:${plan.card.server}:${randomUUID()}`,
+            mcp: plan.card,
+          },
+        });
+        return json(res, 201, { messageId: message.id, auth: plan.card.auth });
       }
       if (method === "POST" && path === "/api/internal/request-sign-in") {
         const body = await readInternalBody();
@@ -16621,7 +16915,10 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
           return json(res, 403, { error: "voice notes are turned off for this bot" });
         }
         try {
-          const audio = await tts.speak(cfg, text, voiceBot.voice);
+          const voiceThread = internalCapability.threadId;
+          const audio = await tts.speakWithFailover(cfg, text, voiceBot.voice, (notice) => {
+            store.appendMessage(voiceThread, { role: "bot", kind: "activity", tool: { name: `notice: ${notice.message}`, ok: true } });
+          });
           // Synthesis can outlive its turn: re-check before saving, so the clip never parks onto a later turn.
           requireActiveInternalCapability();
           const turnId = liveTurnByThread.get(internalCapability.threadId);
@@ -17583,7 +17880,7 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       // A hard ceiling, so an arbitrary local request cannot turn the hosted voice account into an unbounded billable job.
       if (text.length > 500) return json(res, 413, { error: "voice utterances are limited to 500 characters" });
       try {
-        const audio = await tts.speak(cfg, text, typeof body.voiceId === "string" ? body.voiceId : undefined);
+        const audio = await tts.speakWithFailover(cfg, text, typeof body.voiceId === "string" ? body.voiceId : undefined, (notice) => console.warn(`[tts] ${notice.message}`));
         res.writeHead(200, {
           "content-type": audio.mime,
           "content-length": String(audio.bytes.byteLength),
@@ -17655,6 +17952,10 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
     // An HPKE envelope bound to the paired device, bot, task, card and target; only the embedded Electron server holds the key to open it.
     m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/provide$/);
     if (m && method === "POST") {
+      // A relayed request without the secret companion proof never reaches the bridge, however it forges identity headers.
+      if (relayedPhoneProvideDenied(req, auth.kind === "loopback" && auth.companion === true)) {
+        return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      }
       if (req.headers["x-aikingbot-companion"] !== "1") {
         return json(res, 403, { error: "Secure phone entry must come from a paired phone" });
       }
@@ -17679,6 +17980,74 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       return json(res, 200, state);
     }
 
+
+    // Vault write for target=custom: claim first (desktop), then store here, then /provided.
+    m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/store-custom$/);
+    if (m && method === "POST") {
+      if (isRelayedRequest(req)) return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      const body = await readBody(req);
+      const threadId = String(body.threadId ?? "");
+      const claimId = typeof body.claimId === "string" ? body.claimId : "";
+      const value = typeof body.value === "string" ? body.value : "";
+      const message = secretMessage(m[1], threadId, m[2]);
+      if (!message?.secret || message.secret.target !== "custom" || !message.secret.customName) {
+        return json(res, 404, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      }
+      const cardKey = phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey);
+      const context: CredentialCardContext = {
+        botId: m[1],
+        threadId,
+        messageId: message.id,
+        target: "custom",
+        claimId,
+      };
+      const principal = secretPrincipal(auth);
+      if (!credentialCardWrites.begin(context, principal)) {
+        return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "busy" });
+      }
+      try {
+        const { ref } = customSecrets.put(message.secret.customName, value);
+        credentialCardWrites.end(context, true);
+        return json(res, 200, { stored: true, ref, claimId });
+      } catch (error) {
+        credentialCardWrites.end(context, false);
+        secretCardGate.release(cardKey, claimId);
+        return json(res, 400, { error: error instanceof Error ? error.message : "could not store custom secret" });
+      }
+    }
+
+    // Admission before the write: the desktop claims the card here, then saves, then reports provided (or releases on failure).
+    m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/(claim|release)$/);
+    if (m && method === "POST") {
+      if (isRelayedRequest(req)) return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      const body = await readBody(req);
+      const threadId = String(body.threadId ?? "");
+      const message = secretMessage(m[1], threadId, m[2]);
+      if (!message?.secret) return json(res, 404, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      const cardKey = phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey);
+      if (m[3] === "release") {
+        const claimId = typeof body.claimId === "string" ? body.claimId : "";
+        return json(res, 200, { released: secretCardGate.release(cardKey, claimId) });
+      }
+      if (phoneSecretSubmissions.has(cardKey)) {
+        return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "busy" });
+      }
+      if (body.target !== message.secret.target) {
+        return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      }
+      const refusal = secretCardRefusal(message);
+      if (refusal) return json(res, 409, { error: refusal.error, code: refusal.reason });
+      const claimBotId = m[1];
+      const claim = secretCardGate.claim(
+        cardKey,
+        credentialGateTarget(message.secret.target, message.secret.customName),
+        secretPrincipal(auth),
+        () => secretCardUsable(claimBotId, threadId, message.id),
+      );
+      if (!claim.ok) return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "busy" });
+      return json(res, 200, { claimId: claim.claimId });
+    }
+
     // Desktop credential cards never send the credential through this route: Electron saves it to the OS-backed store first.
     m = path.match(/^\/api\/bots\/([\w-]+)\/secret-cards\/([\w-]+)\/(provided|resume|dismiss)$/);
     if (m && method === "POST") {
@@ -17686,15 +18055,27 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       const threadId = String(body.threadId ?? "");
       const message = secretMessage(m[1], threadId, m[2]);
       if (!message?.secret) return json(res, 404, { error: "no such credential request" });
-      if (phoneSecretSubmissions.has(
-        phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey),
-      )) {
+      const cardKey = phoneSecretSubmissionKey(threadId, message.id, message.secret.requestKey);
+      if (phoneSecretSubmissions.has(cardKey)) {
         return json(res, 409, { error: "this credential is currently being saved from a phone" });
       }
       if (m[3] === "provided") {
+        // A claimed write may finish after the TTL; without a claim this is a first submit and needs a live card, and a settled card stays status-only.
+        const claimId = typeof body.claimId === "string" ? body.claimId : "";
+        // A claim alone attests nothing: only the write path commits it. A settled card stays status-only.
+        const claimed = claimId !== "" && secretCardGate.committed(cardKey, claimId);
+        if (!claimed && message.secret.provided !== true) {
+          const refusal = secretCardRefusal(message);
+          if (refusal) return json(res, 409, { error: refusal.error, code: refusal.reason });
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "claim" });
+        }
         if (message.secret.dismissed) return json(res, 409, { error: "this credential request was dismissed" });
+        // Stop is terminal even after a committed write: the saved credential stays, but the card is not marked provided and nothing resumes. A card already provided stays status-only.
+        if (message.secret.stopped === true && message.secret.provided !== true) {
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.stopped.en, code: "stopped" });
+        }
         if (message.secret.superseded) return json(res, 409, { error: "this credential request was superseded by a newer one" });
-        if (!credentialIsConfigured(cfg, message.secret.target)) {
+        if (!secretTargetConfigured(message.secret)) {
           return json(res, 409, { error: `${message.secret.label} was not saved yet` });
         }
         if (!resumeSecretCard(m[1], threadId, message.id, "provided")) {
@@ -17705,12 +18086,16 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
         return json(res, 200, state);
       }
       if (m[3] === "resume") {
+        // A Stopped card is never revived by a resume request; an already resumed card stays status-only.
+        if (message.secret.stopped === true && message.secret.resumed !== true) {
+          return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.stopped.en, code: "stopped" });
+        }
         if (message.secret.superseded) return json(res, 409, { error: "this credential request was superseded by a newer one" });
         const outcome = credentialResumeOutcome(message.secret);
         if (!outcome) {
           return json(res, 409, { error: "this credential request is not ready to resume" });
         }
-        if (outcome === "provided" && !credentialIsConfigured(cfg, message.secret.target)) {
+        if (outcome === "provided" && !secretTargetConfigured(message.secret)) {
           return json(res, 409, { error: `${message.secret.label} is no longer configured` });
         }
         if (!resumeSecretCard(m[1], threadId, message.id, outcome)) {
@@ -17737,6 +18122,17 @@ const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
       const message = connectorMessage(m[1], threadId, m[2]);
       if (!message?.connector) return json(res, 404, { error: "no such connection request" });
       const connector = message.connector;
+      // 2.1: MCP cards sign in through /api/mcp/servers/:name/sign-in or /api-key from the person's own session; only status is read here.
+      if (connector.mcp && (m[3] === "authorize" || m[3] === "status")) {
+        if (m[3] === "authorize") return json(res, 400, { error: "this connection signs in from its card" });
+        const connected = mcpCardConnected(connector.mcp, cfg.mcpServers?.[connector.mcp.server], (name, serverUrl) => mcpOAuth.authState(name, serverUrl));
+        const pending = connector.status === "authorizing" || url.searchParams.get("started") === "1";
+        store.patchMessage(threadId, message.id, {
+          connector: { ...connector, status: connected ? "connected" : pending ? "authorizing" : connector.status, error: undefined },
+        });
+        if (connected) maybeResumeConnectors(threadId, connector.resumeKey);
+        return json(res, 200, { connected, pending: !connected && pending, status: connected ? "active" : "not_connected" });
+      }
       if (m[3] === "authorize" && method === "POST") {
         store.patchMessage(threadId, message.id, {
           connector: { ...connector, status: "authorizing", error: undefined, dismissed: false },

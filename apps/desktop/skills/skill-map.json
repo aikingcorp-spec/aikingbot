@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "AIKINGBOT skill map: intent → skill, with Vietnamese and English keywords. Shipped with the app; a hint names only a skill the bot has.",
+  "intents": [
+    { "intent": "control an Android phone", "skills": ["phone-harness"], "keywords": ["điện thoại", "android", "adb", "usb debugging", "my phone", "ứng dụng di động", "mobile app"] },
+    { "intent": "write a verification skill", "skills": ["create-verification-skill"], "keywords": ["skill kiểm tra", "verification skill", "kiểm thử ứng dụng", "verify app"] },
+    { "intent": "write a short-form video script", "skills": ["viral-short-form-script", "scriptwriter"], "keywords": ["kịch bản", "tiktok", "reels", "shorts", "video ngắn", "script"] },
+    { "intent": "make a poster or key visual", "skills": ["ai-poster-factory", "poster", "visual-design"], "keywords": ["poster", "áp phích", "key visual", "banner", "ảnh quảng cáo"] },
+    { "intent": "generate a video", "skills": ["google-flow-video", "video-generation"], "keywords": ["tạo video", "dựng video", "generate video", "google flow"] },
+    { "intent": "voice-over", "skills": ["elevenlabs-vo", "voice-over"], "keywords": ["lồng tiếng", "giọng đọc", "voice over", "voiceover", "elevenlabs"] },
+    { "intent": "build a slide deck", "skills": ["slides", "pptx", "office-pptx"], "keywords": ["slide", "thuyết trình", "powerpoint", "pptx", "deck"] },
+    { "intent": "work with spreadsheets", "skills": ["xlsx", "spreadsheet"], "keywords": ["bảng tính", "excel", "xlsx", "google sheets", "csv"] },
+    { "intent": "write or edit a document", "skills": ["docx", "document"], "keywords": ["văn bản", "tài liệu word", "docx", "hợp đồng", "báo cáo"] },
+    { "intent": "research the web", "skills": ["web-research", "research"], "keywords": ["nghiên cứu", "tra cứu", "tìm hiểu", "research", "so sánh"] },
+    { "intent": "schedule and calendar", "skills": ["scheduling", "calendar"], "keywords": ["lịch họp", "đặt lịch", "cuộc họp", "calendar", "meeting"] },
+    { "intent": "shop or compare prices", "skills": ["shopping"], "keywords": ["mua", "giá", "so sánh giá", "đặt hàng", "shopee", "lazada", "buy"] }
+  ]
+}

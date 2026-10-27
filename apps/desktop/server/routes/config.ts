@@ -1,4 +1,12 @@
 import * as boat from "../boat.ts";
+import {
+  CREDENTIAL_REFUSAL_MESSAGES,
+  CREDENTIAL_REMOTE_DENIED_MESSAGE,
+  configPatchIsExactlyCredential,
+  parseCredentialCardContext,
+  type CredentialCardContext,
+} from "../../shared/credential-request.ts";
+import { relayedCredentialWriteDenied } from "../credential-admission.ts";
 import { boatCreateRecoverySnapshot, retireDeletedBoatCreate } from "../boat-create-idempotency.ts";
 import { boatDeletionSnapshot } from "../boat-delete-journal.ts";
 import { browserEngineStatus, browserSessionId, closeBrowserSession } from "../browser-engine.ts";
@@ -51,7 +59,14 @@ export type ModelSelectionCheck = { ok: true; selection: ModelSelection } | { ok
 
 export type ConfigStatus = Record<string, unknown>;
 
+/** The server-side write path of a credential card: the card context is checked before the store is touched, and the commit is reported from here. */
+export interface CredentialCardWriteGuard {
+  begin(context: CredentialCardContext, principal: string): boolean;
+  end(context: CredentialCardContext, saved: boolean): void;
+}
+
 export interface ConfigRouteDeps {
+  credentialCardWrites?: CredentialCardWriteGuard;
   store: Pick<Store, "bots" | "patchBot" | "clearVoiceSelections">;
   cfg: AppConfig;
   registry: Pick<ProviderRegistry, "get">;
@@ -106,7 +121,22 @@ export function createConfigRoutes(deps: ConfigRouteDeps): RouteHandler {
     }
     if ((method === "PUT" || method === "PATCH") && path === "/api/config") {
       const body = await readBody(req);
-      if (hostedModels && ["instances", "anthropic", "openai", "openrouter", "openaiCompat", "xai", "mistral", "cerebras", "groq", "meta", "opencodeGo"].some(key => Object.hasOwn(body, key))) return json(res, 403, { error: HOSTED_PROVIDER_SETTINGS_ERROR });
+      // Before any parse or side effect. Relayed callers keep ordinary settings but cannot write a card credential.
+      if (relayedCredentialWriteDenied(req, body, url.searchParams.get("secretStorage"))) {
+        return json(res, 403, { error: CREDENTIAL_REMOTE_DENIED_MESSAGE.en, code: "local_only" });
+      }
+      if (hostedModels && ["instances"
+, "anthropic", "openai", "openrouter", "openaiCompat", "xai", "mistral", "cerebras", "groq", "meta", "opencodeGo"].some(key => Object.hasOwn(body, key))) return json(res, 403, { error: HOSTED_PROVIDER_SETTINGS_ERROR });
+      // A card write carries its context beside the patch; the context is never part of the saved settings.
+      let cardContext: CredentialCardContext | null = null;
+      if (Object.hasOwn(body, "credentialCard")) {
+        cardContext = parseCredentialCardContext(body.credentialCard);
+        delete body.credentialCard;
+        if (!cardContext || !configPatchIsExactlyCredential(body, cardContext.target)) {
+          return json(res, 400, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+        }
+        if (!deps.credentialCardWrites) return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.missing.en, code: "missing" });
+      }
       const patch = parseConfigPatch(body);
       if (CLOUD_HOME && (patch.signIn?.admins?.length || patch.signIn?.members?.length)) {
         return json(res, 403, { error: CLOUD_PERSONAL_REFUSAL, code: "cloud_personal" });
@@ -486,7 +516,16 @@ export function createConfigRoutes(deps: ConfigRouteDeps): RouteHandler {
       let configWriteCommitted = false;
       const enginesBefore = engineLaunches(providerConfigs());
       const externalSecretStorage = url.searchParams.get("secretStorage") === "external";
+      let cardWriteBegun = false;
       try {
+        if (cardContext) {
+          const principal = auth.kind === "session" ? `session:${auth.session.id}` : "owner";
+          // Same card, claim, target and principal as the admitted claim, before anything is written.
+          if (!deps.credentialCardWrites!.begin(cardContext, principal)) {
+            return json(res, 409, { error: CREDENTIAL_REFUSAL_MESSAGES.busy.en, code: "claim" });
+          }
+          cardWriteBegun = true;
+        }
         // Before the provider commit, so a failed write never leaves a foreign voice id to speak.
         if (changingVoiceProvider) store.clearVoiceSelections();
         if (externalSecretStorage) {
@@ -505,16 +544,19 @@ export function createConfigRoutes(deps: ConfigRouteDeps): RouteHandler {
           if (persisted.live?.key !== undefined) persisted.live.key = "";
           saveConfig(persisted);
           configWriteCommitted = true;
+          if (cardContext && cardWriteBegun) { deps.credentialCardWrites!.end(cardContext, true); cardWriteBegun = false; }
           syncCredentialEnv(patch);
           Object.assign(cfg, loadConfig());
         } else {
           saveConfig(patch);
           configWriteCommitted = true;
+          if (cardContext && cardWriteBegun) { deps.credentialCardWrites!.end(cardContext, true); cardWriteBegun = false; }
           // loadConfig prefers env over the file for credentials, so the env must follow the save.
           syncCredentialEnv(patch);
           Object.assign(cfg, loadConfig());
         }
       } catch (error) {
+        if (cardContext && cardWriteBegun) { deps.credentialCardWrites!.end(cardContext, false); cardWriteBegun = false; }
         if (configWriteCommitted) {
           for (const request of browserCleanupRequests) {
             const committed = browserCleanup.commit(request);

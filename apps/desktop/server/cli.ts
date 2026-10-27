@@ -34,6 +34,7 @@ import { runServiceCommand } from "./service-cli.ts";
 import { runFleetCommand, type FleetInput } from "./fleet-cli.ts";
 import { startFleetAgent } from "./fleet-agent.ts";
 import { fleetLayout } from "./fleet.ts";
+import { diagnoseFleet, formatFleetDiagnosis, hostFleetProbe } from "./fleet-doctor.ts";
 import { explainTailscaleFailure, tailscaleServe, tailscaleServeOff, tailscaleStatus, type TailscaleStatus } from "./tailscale.ts";
 import { defaultSetupIo, SetupCancelled, type SetupIo } from "./cli-prompts.ts";
 import { HEADLESS_VERB_NAMES, USAGE } from "./cli-usage.ts";
@@ -82,8 +83,8 @@ export interface CliOptions {
   email?: string;
   /** `browser install [--with-deps]` */
   browserAction?: "install" | "status";
-  /** `fleet init|create|list|users|suspend|resume|delete|upgrade|agent` */
-  fleetAction?: FleetInput["action"] | "agent";
+  /** `fleet init|create|list|users|suspend|resume|delete|upgrade|agent|doctor` */
+  fleetAction?: FleetInput["action"] | "agent" | "doctor";
   operator?: string;
   socket?: string;
   group?: string;
@@ -168,7 +169,7 @@ export function parseArgs(argv: string[], env: NodeJS.ProcessEnv = process.env):
       else if (options.command === "service" && !options.serviceAction && (arg === "install" || arg === "uninstall")) options.serviceAction = arg;
       else if (options.command === "browser" && (arg === "install" || arg === "status")) options.browserAction = arg;
       else if (options.command === "browser" && arg === "--with-deps") options.withDeps = true;
-      else if (options.command === "fleet" && !options.fleetAction && ["init", "create", "list", "users", "suspend", "resume", "delete", "upgrade", "agent"].includes(arg)) options.fleetAction = arg as FleetInput["action"] | "agent";
+      else if (options.command === "fleet" && !options.fleetAction && ["init", "create", "list", "users", "suspend", "resume", "delete", "upgrade", "agent", "doctor"].includes(arg)) options.fleetAction = arg as FleetInput["action"] | "agent" | "doctor";
       else if (options.command === "fleet" && options.fleetAction && !["init", "list", "upgrade", "agent"].includes(options.fleetAction) && !options.slug && !arg.startsWith("--")) options.slug = arg;
       else if (options.command === "fleet" && arg === "--operator") options.operator = value();
       else if (options.command === "fleet" && arg === "--socket") options.socket = value();
@@ -199,7 +200,7 @@ export function parseArgs(argv: string[], env: NodeJS.ProcessEnv = process.env):
   if (options.local && (options.tailscale || options.tunnel || options.publicUrl)) return { error: "--local cannot be combined with a remote-access option" };
   if (options.command === "browser" && !options.browserAction) return { error: "browser needs an action: install or status" };
   if (options.command === "fleet") {
-    if (!options.fleetAction) return { error: "fleet needs one of: init --domain HOST [--operator USER], create NAME --admin EMAIL, list, users NAME add|remove EMAIL, suspend NAME, resume NAME, delete NAME --yes, upgrade, agent" };
+    if (!options.fleetAction) return { error: "fleet needs one of: init --domain HOST [--operator USER], create NAME --admin EMAIL, list, users NAME add|remove EMAIL, suspend NAME, resume NAME, delete NAME --yes, upgrade, agent, doctor" };
     if (["create", "users", "suspend", "resume", "delete"].includes(options.fleetAction) && !options.slug) return { error: `fleet ${options.fleetAction} needs a workspace name` };
     if (options.fleetAction === "users" && !options.fleetUserAction) return { error: "fleet users needs: NAME add|remove EMAIL [--chat-only]" };
     if (options.cap !== undefined && (!Number.isFinite(options.cap) || options.cap < 0)) return { error: "--cap must be a dollar amount of 0 or more" };
@@ -1082,6 +1083,13 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
         node: process.execPath,
       }, { log: (line) => console.log(line), error: (line) => console.error(line) });
     case "fleet":
+      if (options.fleetAction === "doctor") {
+        const { editionStatus } = await import("./enterprise.ts");
+        const { fleetSocketPath } = await import("./fleet-client.ts");
+        const diagnosis = diagnoseFleet(hostFleetProbe(editionStatus().features, fleetSocketPath()));
+        for (const line of formatFleetDiagnosis(diagnosis)) console.log(line);
+        return diagnosis.available ? 0 : 1;
+      }
       if (options.fleetAction === "agent") {
         const layout = fleetLayout();
         await startFleetAgent({

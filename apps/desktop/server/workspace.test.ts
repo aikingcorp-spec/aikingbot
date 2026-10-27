@@ -429,8 +429,10 @@ describe("workspace", () => {
     const memory = loadMemory(BOT);
     expect(memory).toMatchObject({ truncated: true, lines: MEMORY_MAX_LINES + 50 });
     const managed = memorySystemPrompt(BOT, { managedWrites: true });
-    expect(managed).toContain(`[MEMORY.md is ${MEMORY_MAX_LINES + 50} lines and ${memory!.bytes} bytes; only the first ${MEMORY_MAX_LINES} lines / ${MEMORY_MAX_BYTES} bytes are shown above.]`);
-    expect(managed).toContain(`It is shown to you at the start of every session, up to ${MEMORY_MAX_LINES} lines / 24 KB.`);
+    // rc8 1.9: only the ≤ 1.5 KB core rides in the prompt; the rest is recalled per message.
+    expect(managed).toMatch(new RegExp(`\\[MEMORY\\.md is ${MEMORY_MAX_LINES + 50} lines and ${memory!.bytes} bytes; only its first (\\d+) bytes \\(the core\\) are shown above\\.`));
+    expect(Number(/only its first (\d+) bytes/.exec(managed)![1])).toBeLessThanOrEqual(1536);
+    expect(managed).toContain("Its first 1.5 KB (the core: keep the most important facts at the top) is shown every turn");
     expect(managed).not.toContain("archive");
     expect(managed).not.toContain("Consolidate");
     expect(managed).not.toContain("short and curated");

@@ -1,7 +1,7 @@
 {
   "name": "aikingbot-foundation",
   "private": true,
-  "version": "0.3.0-rc.6",
+  "version": "0.3.0-rc.8",
   "description": "AIKINGBOT workspace for AI agents, tools and collaboration.",
   "homepage": "https://github.com/aikingcorp-spec/AIKINGX_Bot",
   "repository": {
@@ -60,7 +60,8 @@
     "build:cua:linux": "node scripts/prepare-cua-linux.mjs",
     "build:cua:linux:offline": "node scripts/prepare-cua-linux.mjs --offline",
     "build:updater": "node scripts/bundle-updater.mjs",
-    "package:prepare": "pnpm build && pnpm build:server && pnpm build:companion && pnpm build:updater && pnpm build:android-tools && pnpm build:cloudflared && pnpm build:browser && pnpm build:duckdb",
+    "build:embedded": "node scripts/prepare-embedded.mjs",
+    "package:prepare": "pnpm build:embedded && pnpm build && pnpm build:server && pnpm build:companion && pnpm build:updater && pnpm build:android-tools && pnpm build:cloudflared && pnpm build:browser && pnpm build:duckdb",
     "package:mac": "pnpm package:prepare && pnpm build:speech && pnpm build:cua && electron-builder --config electron-builder.aiking.cjs --mac --publish never",
     "package:win": "pnpm package:prepare && pnpm build:cua:win && electron-builder --config electron-builder.aiking.cjs --win --publish never",
     "package:linux": "pnpm package:prepare && pnpm build:cua:linux && electron-builder --config electron-builder.aiking.cjs --linux --x64 --publish never",
@@ -81,7 +82,8 @@
     "control-plane:test": "pnpm --filter @aikingbot/control-plane test",
     "control-plane:dry-run": "pnpm --filter @aikingbot/control-plane dry-run",
     "aikingbot": "node --experimental-strip-types server/aikingbot.ts",
-    "control:aikingbot": "node --experimental-strip-types scripts/control-aiking.ts"
+    "control:aikingbot": "node --experimental-strip-types scripts/control-aiking.ts",
+    "test:remote-p2p": "node shared/remote-p2p-peer.chrome.mjs"
   },
   "dependencies": {
     "@1password/sdk": "0.5.0",

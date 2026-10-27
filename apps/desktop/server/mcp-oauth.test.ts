@@ -685,3 +685,137 @@ describe("mcpCallbackOrigin", () => {
     expect(mcpCallbackOrigin(null, [])).toBeNull();
   });
 });
+
+describe("a refresh that outlives its sign-in", () => {
+  const stored = () => JSON.parse(readFileSync(join(dir, "mcp-oauth.json"), "utf8")).servers.docs;
+  function barrier() {
+    let reached!: () => void;
+    let release!: () => void;
+    const arrived = new Promise<void>((resolve) => { reached = resolve; });
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    return { arrived, release, hold: async () => { reached(); await gate; } };
+  }
+  async function signIn() {
+    const started = await manager.start("docs", mcp.url);
+    await approve(started);
+    await settled("docs", started.flowId);
+  }
+
+  it("does not overwrite a newer sign-in of the same URL after forget and sign-in again", async () => {
+    const gate = barrier();
+    let first = true;
+    await setup({ expiresIn: 60, beforeRefresh: () => { if (!first) return Promise.resolve(); first = false; return gate.hold(); } });
+    await signIn();
+    const old = stored().tokens;
+    const stale = manager.accessToken("docs", mcp.url);
+    await gate.arrived;
+    manager.forget("docs");
+    await signIn();
+    const fresh = stored().tokens;
+    expect(fresh.refresh).not.toBe(old.refresh);
+    gate.release();
+    const result = await stale;
+    expect(stored().tokens).toEqual(fresh);
+    expect(result).toBe(fresh.access);
+    expect(stored().state).toBe("signed-in");
+  });
+
+  it("does not resurrect a deleted entry, and a dead old grant does not sign out the new one", async () => {
+    const gate = barrier();
+    await setup({ expiresIn: 60, beforeRefresh: gate.hold });
+    await signIn();
+    const pending = manager.accessToken("docs", mcp.url);
+    await gate.arrived;
+    manager.forget("docs");
+    gate.release();
+    expect(await pending).toBeNull();
+    expect(stored()).toBeUndefined();
+  });
+
+  it("keeps the new tokens when the old grant is refused after a new sign-in", async () => {
+    const gate = barrier();
+    await setup({ expiresIn: 60, rejectRefresh: true, beforeRefresh: gate.hold });
+    await signIn();
+    const stale = manager.accessToken("docs", mcp.url);
+    await gate.arrived;
+    manager.forget("docs");
+    await signIn();
+    const fresh = stored().tokens;
+    gate.release();
+    await stale;
+    expect(stored().state).toBe("signed-in");
+    expect(stored().tokens).toEqual(fresh);
+  });
+
+  it("still stores the refreshed tokens when nothing changed meanwhile", async () => {
+    await setup({ expiresIn: 60 });
+    await signIn();
+    const before = stored().tokens;
+    const token = await manager.accessToken("docs", mcp.url);
+    expect(stored().tokens.access).toBe(token);
+    expect(stored().tokens.refresh).not.toBe(before.refresh);
+  });
+
+  it("survives a store restart: a second manager on the same file sees only the new tokens", async () => {
+    const gate = barrier();
+    let first = true;
+    await setup({ expiresIn: 60, beforeRefresh: () => { if (!first) return Promise.resolve(); first = false; return gate.hold(); } });
+    await signIn();
+    const stale = manager.accessToken("docs", mcp.url);
+    await gate.arrived;
+    manager.forget("docs");
+    await signIn();
+    const fresh = stored().tokens;
+    gate.release();
+    await stale;
+    const restarted = new McpOAuthManager({ file: join(dir, "mcp-oauth.json"), clients: () => undefined });
+    expect(restarted.authState("docs", mcp.url)).toBe("signed-in");
+    expect(stored().tokens).toEqual(fresh);
+    restarted.dispose();
+  });
+});
+
+describe('refresh and sign-out vs a newer grant',()=>{
+ const file=()=>join(dir,'mcp-oauth.json');
+ const current=()=>JSON.parse(readFileSync(file(),'utf8')).servers.docs;
+ function barrier(){let hit!:()=>void,release!:()=>void;const arrived=new Promise<void>(r=>hit=r),wait=new Promise<void>(r=>release=r);return{arrived,release,hold:async()=>{hit();await wait;}};}
+ async function login(){const s=await manager.start('docs',mcp.url);await approve(s);expect((await settled('docs',s.flowId)).phase).toBe('succeeded');}
+ for(const dead of [false,true])it('a store entry recreated with the same token bytes and a new scope and expiry survives the old '+(dead?'dead-grant':'success')+' answer',async()=>{
+  const gate=barrier();let pending:Promise<string|null>|undefined;
+  try{
+   await setup({expiresIn:60,rejectRefresh:dead,beforeRefresh:gate.hold});await login();const old=current();
+   pending=manager.accessToken('docs',mcp.url);await gate.arrived;
+   manager.forget('docs');
+   // Recreated through the real store with the same token bytes but a new consent scope and expiry.
+   const {McpOAuthStore}=await import('./mcp-oauth-store.ts');
+   const newEntry={...old,tokens:{...old.tokens,scope:'new-local-consent',expiresAt:Date.now()+3600000}};
+   new McpOAuthStore(file()).put('docs',newEntry);
+   const before=JSON.stringify(current());gate.release();await pending;
+   const after=current();const preserved=JSON.stringify(after)===before;
+   expect(preserved).toBe(true);
+  }finally{gate.release();await pending?.catch(()=>{});}
+ });
+ it('signOut waiting for revoke must not erase completed new signIn',async()=>{
+  const gate=barrier();let pending:Promise<void>|undefined;
+  try{
+   await setup({beforeRevoke:gate.hold});await login();
+   pending=manager.signOut('docs',mcp.url);await gate.arrived;
+   await login();const fresh=JSON.stringify(current());expect(current().state).toBe('signed-in');
+   gate.release();await pending;expect(oauth.counts.revoke).toBe(1);const after=current();const preserved=JSON.stringify(after)===fresh;
+   expect(preserved).toBe(true);
+  }finally{gate.release();await pending?.catch(()=>{});}
+ });
+ it('old promise finally cannot delete new refresh reservation',async()=>{
+  const a=barrier(),b=barrier();let n=0,pOld:Promise<string|null>|undefined,pNew:Promise<string|null>|undefined;
+  try{
+   await setup({expiresIn:60,beforeRefresh:()=>++n===1?a.hold():n===2?b.hold():Promise.resolve()});await login();
+   pOld=manager.accessToken('docs',mcp.url);await a.arrived;manager.forget('docs');await login();
+   pNew=manager.accessToken('docs',mcp.url);await b.arrived;
+   a.release();await pOld;
+   const same=manager.accessToken('docs',mcp.url)===pNew;
+   const calls=oauth.counts.refresh;
+   b.release();await pNew;
+   expect(same).toBe(true);expect(calls).toBe(2);
+  }finally{a.release();b.release();await Promise.allSettled([pOld,pNew].filter(Boolean) as Promise<unknown>[]);}
+ });
+});

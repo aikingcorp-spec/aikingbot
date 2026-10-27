@@ -4,6 +4,7 @@ import { Brain, Check, Loader2, Plus, Trash2, X } from "lucide-react";
 
 import { api } from "@/state/store";
 import { cn } from "@/lib/cn";
+import { at } from "@/aiking/strings";
 
 type Kind = "person" | "place" | "decision" | "term";
 
@@ -135,17 +136,16 @@ export function TeamMemoryDialog({ section, label, onClose }: { section: string;
             <div className="flex items-center gap-2">
               <Brain size={19} className="text-accent" />
               <h2 id="team-memory-title" className="text-[20px] font-semibold tracking-[-0.01em] text-ink">
-                {label} team memory
+                {at("team.map.memoryTitle", { name: label })}
               </h2>
             </div>
             <p className="mt-1.5 max-w-[560px] text-[12.5px] leading-relaxed text-ink-secondary">
-              People, places, decisions and terms every bot in this section shares. Every bot proposal waits for an
-              admin&apos;s review before it is shared. Your own additions are shared immediately. Edit or remove anything.
+              {at("team.map.memoryIntro")}
             </p>
           </div>
           <button
             onClick={onClose}
-            aria-label="Close team memory"
+            aria-label={at("team.map.memoryClose")}
             className="flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-secondary hover:bg-raised hover:text-ink"
           >
             <X size={19} />
@@ -155,14 +155,14 @@ export function TeamMemoryDialog({ section, label, onClose }: { section: string;
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 sm:px-8">
           {entries === null && !error && (
             <div className="flex min-h-[200px] items-center justify-center text-ink-secondary">
-              <Loader2 size={20} className="animate-spin" aria-label="Loading team memory" />
+              <Loader2 size={20} className="animate-spin" aria-label={at("team.map.memoryLoading")} />
             </div>
           )}
           {error && <div className="mb-3 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-[12px] text-danger">{error}</div>}
 
           {proposed.length > 0 && (
             <section className="mb-5 rounded-xl border border-accent/30 bg-accent/5 p-3">
-              <h3 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-accent">Waiting for you</h3>
+              <h3 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-accent">{at("team.map.memoryWaiting")}</h3>
               <ul className="mt-2 space-y-2">
                 {proposed.map((entry) => (
                   <li key={entry.id} className="flex items-start gap-3 text-[13px]">
@@ -178,14 +178,14 @@ export function TeamMemoryDialog({ section, label, onClose }: { section: string;
                       disabled={busyId !== null}
                       className="flex shrink-0 items-center gap-1 rounded-md bg-accent px-2.5 py-1 text-[12px] font-medium text-white disabled:opacity-50"
                     >
-                      <Check size={12} /> Remember
+                      <Check size={12} /> {at("team.map.memoryRemember")}
                     </button>
                     <button
                       onClick={() => void remove(entry)}
                       disabled={busyId !== null}
                       className="shrink-0 rounded-md px-2 py-1 text-[12px] text-ink-secondary hover:text-ink disabled:opacity-50"
                     >
-                      Skip
+                      {at("team.map.memorySkip")}
                     </button>
                   </li>
                 ))}
@@ -195,7 +195,7 @@ export function TeamMemoryDialog({ section, label, onClose }: { section: string;
 
           {entries !== null && entries.filter((entry) => entry.status === "accepted").length === 0 && proposed.length === 0 && (
             <div className="rounded-xl bg-inset px-4 py-6 text-center text-[13px] text-ink-secondary">
-              Nothing shared yet. Review what bots propose as they learn who is who and where things live, or add one yourself below.
+              {at("team.map.memoryEmpty")}
             </div>
           )}
 
@@ -285,7 +285,7 @@ export function TeamMemoryDialog({ section, label, onClose }: { section: string;
                   {busyId === "new" ? "Adding…" : "Add"}
                 </button>
                 <button onClick={() => setAdding(false)} className="text-[12.5px] text-ink-secondary hover:text-ink">
-                  Cancel
+                  {at("team.map.contextCancel")}
                 </button>
               </div>
             </div>

@@ -1,7 +1,8 @@
 // Recall rides in front of the turn's message, never the system prompt; fence markers are neutralised so a note cannot close the block.
-import { recallMessages, recallTerms, type MemoryHit, type RecallHit } from "./message-db.ts";
+import { recallMessages, recallTerms, recentMessages, type MemoryHit, type RecallHit } from "./message-db.ts";
 import { parseTopicHeader, readTopicHead, topicBody, topicWords } from "./memory-topics.ts";
-import { listMemoryTopics, memoryDate, readMemoryTopic, searchMemoryFiles, workspaceDir } from "./workspace.ts";
+import { listMemoryTopics, MEMORY_CORE_BYTES, memoryCore, memoryDate, readMemoryText, readMemoryTopic, searchMemoryFiles, workspaceDir } from "./workspace.ts";
+import { foldedTerms, foldVietnamese } from "./vi-fold.ts";
 import { withoutExpired } from "./memory-entries.ts";
 import { join } from "node:path";
 
@@ -144,9 +145,12 @@ export function conversationPassages(input: RecallInput, query: string): RecallP
   } catch {
     return [];
   }
-  return hits
-    .filter((hit) => enoughMatches(query, hit.snippet))
-    .slice(0, CONVERSATION_HITS)
+  const exact = hits.filter((hit) => enoughMatches(query, hit.snippet)).slice(0, CONVERSATION_HITS);
+  const taken = new Set(exact.map((hit) => hit.messageId));
+  const folded = exact.length < CONVERSATION_HITS
+    ? foldedConversationHits(input.threadIds, query).filter((hit) => !taken.has(hit.messageId)).slice(0, CONVERSATION_HITS - exact.length)
+    : [];
+  return [...exact, ...folded]
     .map((hit) => ({
       source: "conversation" as const,
       label: input.label(hit.threadId),
@@ -155,11 +159,73 @@ export function conversationPassages(input: RecallInput, query: string): RecallP
     }));
 }
 
+const FOLDED_SCAN = 400;
+
+/** 1.9: the FTS index (unicode61) keeps đ and some stacked marks, so "da nang" misses "Đà Nẵng"; score recent messages by folded-term overlap instead. */
+export function foldedConversationHits(threadIds: readonly string[], query: string): RecallHit[] {
+  const terms = [...new Set(recallTerms(query).flatMap((term) => foldedTerms(term)))];
+  if (!terms.length || !threadIds.length) return [];
+  const need = terms.length < MIN_TERMS_FOR_TWO ? 1 : 2;
+  let recent: RecallHit[] = [];
+  try {
+    recent = recentMessages(threadIds, {}, FOLDED_SCAN);
+  } catch {
+    return [];
+  }
+  return recent
+    .map((hit) => {
+      const words = foldedTerms(hit.snippet);
+      return { hit, score: terms.filter((term) => words.some((word) => sameWord(term, word))).length };
+    })
+    .filter((entry) => entry.score >= need)
+    .sort((a, b) => b.score - a.score || b.hit.at - a.hit.at)
+    .slice(0, CONVERSATION_HITS)
+    .map((entry) => entry.hit);
+}
+
+const FOLDED_LINE_CHARS = 400;
+
+/** 1.9: top-k lines by folded-term overlap, so a query typed without diacritics still finds a note written with them; MEMORY.md's core is already in the prompt. */
+export function foldedMemoryPassages(botId: string, query: string, limit = MEMORY_HITS): RecallPassage[] {
+  const terms = [...new Set(recallTerms(query).flatMap((term) => foldedTerms(term)))];
+  if (!terms.length) return [];
+  const need = terms.length < MIN_TERMS_FOR_TWO ? 1 : 2;
+  const files: Array<{ label: string; text: string }> = [];
+  try {
+    const memory = withoutExpired(readMemoryText(join(workspaceDir(botId), "MEMORY.md")), memoryDate()).text;
+    const core = memoryCore(memory, MEMORY_CORE_BYTES);
+    if (core.cut) files.push({ label: "MEMORY.md", text: memory.slice(core.text.length) });
+  } catch {}
+  try {
+    for (const topic of listMemoryTopics(botId)) {
+      if (topic.name === "archive.md") continue;
+      const body = topicBody(withoutExpired(readMemoryTopic(botId, topic.name) ?? "", memoryDate()).text);
+      if (body) files.push({ label: `memory/${topic.name}`, text: body });
+    }
+  } catch {}
+  const scored: Array<RecallPassage & { score: number }> = [];
+  for (const file of files) {
+    for (const line of file.text.split("\n")) {
+      const trimmed = line.trim();
+      if (trimmed.length < 3) continue;
+      const words = foldedTerms(trimmed);
+      const score = terms.filter((term) => words.some((word) => sameWord(term, word))).length;
+      if (score < need) continue;
+      scored.push({ source: "memory", label: file.label, snippet: trimmed.length > FOLDED_LINE_CHARS ? `${trimmed.slice(0, FOLDED_LINE_CHARS)}…` : trimmed, score });
+    }
+  }
+  return scored.sort((a, b) => b.score - a.score).slice(0, limit).map(({ score: _score, ...passage }) => passage);
+}
+
 export function buildRecall(input: RecallInput): RecallResult | null {
   const query = recallQuery(input.message);
   if (!query) return null;
   const topics = topicPassages(input.botId, query);
   const named = new Set(topics.map((passage) => passage.label));
-  const notes = [...topics, ...memoryPassages(input.botId, query).filter((passage) => !named.has(passage.label))].slice(0, MEMORY_HITS);
+  const exact = memoryPassages(input.botId, query).filter((passage) => !named.has(passage.label));
+  const seen = new Set([...topics, ...exact].map((passage) => foldVietnamese(passage.snippet)));
+  const folded = foldedMemoryPassages(input.botId, query).filter((passage) => !named.has(passage.label) &&
+    ![...seen].some((snippet) => snippet.includes(foldVietnamese(passage.snippet))));
+  const notes = [...topics, ...exact, ...folded].slice(0, MEMORY_HITS);
   return renderRecall([...notes, ...conversationPassages(input, query)]);
 }

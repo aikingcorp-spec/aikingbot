@@ -238,7 +238,9 @@ const bridge = {
       throw new Error(message.replace(/^Error invoking remote method '[^']*':\s*(?:Error:\s*)?/, ""));
     }),
   revealInFolder: (filePath) => ipcRenderer.invoke("desktop:reveal-file", filePath),
-  setCredential: (name, value) => ipcRenderer.invoke("credential:set", name, value),
+  setCredential: (name, value, card) => card === undefined
+    ? ipcRenderer.invoke("credential:set", name, value)
+    : ipcRenderer.invoke("credential:set", name, value, card),
 
   updater: {
     check: () => ipcRenderer.invoke("update:check"),
@@ -354,7 +356,7 @@ const bridge = {
     revoke: id => ipcRenderer.invoke("sharing:revoke", id),
     activity: id => ipcRenderer.invoke("sharing:activity", id),
   },
-  confirm: message => ipcRenderer.invoke("dialog:confirm", message),
+  confirm: (message, labels) => ipcRenderer.invoke("dialog:confirm", message, labels),
 };
 
 contextBridge.exposeInMainWorld(

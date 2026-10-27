@@ -1,11 +1,11 @@
 // The bots' browser engine, agent-browser. Fail closed with a reason a person can act on, never a silently browserless bot.
 import { execFile, spawn } from "node:child_process";
-import { createHash, randomBytes } from "node:crypto";
+import { createDecipheriv, createHash, randomBytes } from "node:crypto";
 import { chmodSync, constants, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 
-import { writeFileAtomic } from "./atomic.ts";
+import { vaultDataKey } from "./vault-key.ts";
 import { DATA_DIR } from "./config.ts";
 import { browserBundlePaths } from "./browser-bundle-release.ts";
 import { browserProcessesRunning, browserProcessTree, stopBrowserProcesses } from "./browser-processes.ts";
@@ -496,18 +496,48 @@ export function ensureChrome(binaryPath: string, options: { withDeps?: boolean; 
   });
 }
 
-/** agent-browser's key for saved session state at rest; made once, mode 0600. */
-export function browserEngineEncryptionKey(dataDir = DATA_DIR): string {
-  const file = join(dataDir, KEY_FILE);
+function canDecryptEncFile(path: string, key: string): boolean {
   try {
-    const existing = readFileSync(file, "utf8").trim();
-    if (/^[0-9a-f]{64}$/u.test(existing)) return existing;
+    const data = readFileSync(path);
+    if (data.length < 29) return false;
+    const material = createHash("sha256").update(key).digest();
+    const decipher = createDecipheriv("aes-256-gcm", material, data.subarray(0, 12));
+    decipher.setAuthTag(data.subarray(data.length - 16));
+    decipher.update(data.subarray(12, data.length - 16));
+    decipher.final();
+    return true;
   } catch {
+    return false;
   }
-  const key = randomBytes(32).toString("hex");
-  mkdirSync(dataDir, { recursive: true });
-  writeFileAtomic(file, `${key}\n`, { mode: 0o600 });
-  return key;
+}
+
+function verifyBrowserEngineKey(_dataDir: string, key: string): boolean {
+  const home = process.env.HOME || homedir();
+  const roots = [
+    join(home, ".agent-browser", "state"),
+    join(home, ".agent-browser", "sessions"),
+  ];
+  const enc: string[] = [];
+  for (const root of roots) {
+    if (!existsSync(root)) continue;
+    const walk = (dir: string): void => {
+      for (const name of readdirSync(dir)) {
+        const path = join(dir, name);
+        try {
+          if (statSync(path).isDirectory()) walk(path);
+          else if (name.endsWith(".json.enc")) enc.push(path);
+        } catch { /* skip */ }
+      }
+    };
+    walk(root);
+  }
+  if (enc.length === 0) return true;
+  return enc.every((path) => canDecryptEncFile(path, key));
+}
+
+/** agent-browser's key for saved session state at rest. Lives in the vault (OS keychain / secret-tool / fallback outside DATA_DIR), never beside the ciphertext. */
+export function browserEngineEncryptionKey(dataDir = DATA_DIR): string {
+  return vaultDataKey("browser-engine", join(dataDir, KEY_FILE), (key) => verifyBrowserEngineKey(dataDir, key));
 }
 
 export function browserEngineStatus(options: BrowserLookupOptions = {}): BrowserEngineStatus {

@@ -5,6 +5,7 @@ import * as elevenlabs from "./elevenlabs.ts";
 import * as grok from "./grok.ts";
 import * as fish from "./fish.ts";
 import * as systemVoices from "./system-voices.ts";
+import { FailoverPool, type FailoverNotice } from "../harness/quota-failover.ts";
 
 export type VoiceProvider = "elevenlabs" | "fish" | "system" | "chatterbox" | "xai";
 
@@ -143,5 +144,35 @@ export function speak(cfg: AppConfig, text: string, voiceId?: string, run?: syst
   if (!voice) throw new NoVoiceConfigured("voice");
   return elevenlabs.synthesize(text, voice, credential.token, credential.api);
 }
+
+const FALLBACK_ORDER = ["elevenlabs", "fish", "xai", "chatterbox"] as const;
+
+/** The primary provider, then every other configured one that has a fallback voice, in a fixed order. */
+export function voiceChain(cfg: AppConfig, voiceId?: string): Array<{ id: VoiceProvider; voice?: string }> {
+  const primary = voiceProvider(cfg);
+  const chain: Array<{ id: VoiceProvider; voice?: string }> = [{ id: primary, ...(voiceId ? { voice: voiceId } : {}) }];
+  for (const provider of FALLBACK_ORDER) {
+    const voice = cfg.tts?.fallbackVoices?.[provider];
+    if (provider === primary || !voice) continue;
+    if (!providerConfigured({ ...cfg, tts: { ...cfg.tts, provider } })) continue;
+    chain.push({ id: provider, voice });
+  }
+  return chain;
+}
+
+let latestNotify: ((notice: FailoverNotice) => void) | undefined;
+const pools = new Map<string, FailoverPool<{ id: VoiceProvider; voice?: string }>>();
+
+/** speak(), but an out-of-quota provider hands over to the next configured one and later calls stay there. */
+export function speakWithFailover(cfg: AppConfig, text: string, voiceId?: string, notify?: (notice: FailoverNotice) => void, run?: systemVoices.Runner) {
+  const chain = voiceChain(cfg, voiceId);
+  const key = JSON.stringify(chain);
+  let pool = pools.get(key);
+  if (!pool) { pool = new FailoverPool("tts", chain, (notice) => latestNotify?.(notice)); pools.set(key, pool); }
+  latestNotify = notify;
+  return pool.run(async (account) => speak({ ...cfg, tts: { ...cfg.tts, provider: account.id } }, text, account.voice, run));
+}
+
+export function resetVoiceFailover(): void { pools.clear(); }
 
 export type { Voice } from "./elevenlabs.ts";

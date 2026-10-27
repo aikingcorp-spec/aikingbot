@@ -41,4 +41,7 @@ config.linux.synopsis = "Desktop AI agents, voice and collaboration";
 config.linux.desktop.entry.Name = "AIKINGBOT";
 config.linux.desktop.entry.Comment = "Desktop AI agents, voice and collaboration";
 config.linux.extraResources = config.linux.extraResources.map(resource => resource.to === "aikingbot-browser.apparmor" ? { ...resource, to: "aikingbot-browser.apparmor" } : resource);
+// Windows ProductVersion: electron-builder's default squashes "0.3.0-rc.8" to "0.3.0.0" while the fixed
+// version reads 0.3.0.8. Pin both to the same 4-part number (prerelease counter as the 4th part).
+config.extraMetadata = { ...config.extraMetadata, shortVersionWindows: require("./aiking/windows-version.cjs").windowsVersion(require("./package.json").version) };
 module.exports = config;

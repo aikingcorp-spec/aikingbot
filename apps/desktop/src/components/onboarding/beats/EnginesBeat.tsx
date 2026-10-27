@@ -31,7 +31,7 @@ function StatusPill({ ready }: { ready: boolean }) {
 function SkeletonRow({ index }: { index: number }) {
   return (
     <div className="animate-rise flex items-center gap-3 px-3.5 py-3" style={staggerIndex(index)} aria-hidden="true">
-      <span className="size-[18px] rounded-md bg-raised" />
+      <span className="size-12 shrink-0 rounded-xl border border-hairline/30 bg-raised" />
       <span className="h-3 w-32 rounded bg-raised" />
       <span className="ml-auto h-4 w-14 rounded-full bg-raised" />
     </div>
@@ -156,8 +156,8 @@ export function EnginesBeat({
                 <div key={instance.instanceId} className="animate-rise" style={staggerIndex(i)}>
                   {ok ? (
                     <div className="flex items-center gap-3 px-3.5 py-3">
-                      <span className="flex size-[18px] shrink-0 items-center justify-center">
-                        <InstanceProviderMark instance={instance} size={18} />
+                      <span aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-hairline/30 bg-panel">
+                        <InstanceProviderMark instance={instance} size={28} />
                       </span>
                       <div className="flex min-w-0 flex-1 items-baseline gap-2">
                         <span className="truncate text-[13.5px] font-medium text-ink">{instance.displayName}</span>
@@ -172,8 +172,8 @@ export function EnginesBeat({
                       aria-expanded={expanded === instance.instanceId}
                       className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-raised/40"
                     >
-                      <span className="flex size-[18px] shrink-0 items-center justify-center">
-                        <InstanceProviderMark instance={instance} size={18} />
+                      <span aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-hairline/30 bg-panel">
+                        <InstanceProviderMark instance={instance} size={28} />
                       </span>
                       <div className="flex min-w-0 flex-1 items-baseline gap-2">
                         <span className="truncate text-[13.5px] font-medium text-ink">{instance.displayName}</span>

@@ -12,6 +12,7 @@ import type { Routine, RoutineInput, RoutineManager } from "./routines.ts";
 import type { SkillListing, SkillPackageStamp } from "./skills.ts";
 import type { BotRecord, GroupRecord, InstalledPackageMetadata, Store } from "./store.ts";
 import { importedMemberProfile, type ParsedTeamManifest, type TeamManifestMember } from "./team-manifest.ts";
+import { portableMascotLook } from "../shared/mascot-look.ts";
 import { takeImportName } from "../shared/import-name.ts";
 import { decodeBase64, type PackageAgent, type PackageDocument, type PackageTrust } from "../shared/package-format.ts";
 import type { BotVisibility, ModelSelection } from "../shared/wire.ts";
@@ -131,6 +132,7 @@ export function memberFromAgent(agent: PackageAgent): TeamManifestMember {
       color: agent.appearance.color,
       ...(agent.appearance.mascotExpression ? { mascotExpression: agent.appearance.mascotExpression } : {}),
       ...(agent.appearance.mascotBody ? { mascotBody: agent.appearance.mascotBody } : {}),
+      ...(agent.appearance.mascotLook ? { mascotLook: agent.appearance.mascotLook } : {}),
     },
   };
 }
@@ -360,6 +362,7 @@ function runImport(source: ImportSource, options: PackageImportOptions, deps: Pa
             color: written.color,
             mascotExpression: written.mascotExpression ?? null,
             mascotBody: written.mascotBody ?? null,
+            ...(portableMascotLook(written.mascotLook) ? { mascotLook: portableMascotLook(written.mascotLook) } : {}),
             avatar: avatarHash,
             crop: written.avatarCrop ?? null,
           },

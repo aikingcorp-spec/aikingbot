@@ -36,7 +36,7 @@ export async function createAgent(blueprint: AgentBlueprint, base?: AgentDefault
   const draft = new BotCreationDraft(
     {
       profile: { ...defaults.profile, ...blueprint.profile },
-      memory: { ...defaults.memory, ...(blueprint.memory ?? {}) },
+      memory: { ...defaults.memory, ...blueprint.memory },
       skills: [...defaults.skills, ...(blueprint.skills ?? [])],
       routines: [...defaults.routines, ...(blueprint.routines ?? [])],
     },

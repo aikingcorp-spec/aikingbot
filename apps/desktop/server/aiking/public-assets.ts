@@ -10,6 +10,7 @@ const unavailable=()=>new Error("Public asset unavailable");
 export function readPublicAsset(directory:string,path:string):Buffer {
  let decoded:string;
  try{decoded=decodeURIComponent(path);}catch{throw unavailable();}
+ // eslint-disable-next-line no-control-regex -- public paths must not include ASCII controls
  if(!decoded.startsWith("/") || decoded.includes("\\") || /[\x00-\x1f\x7f]/.test(decoded) ||
     decoded.split("/").some(part=>part.startsWith(".")))throw unavailable();
  const root=realpathSync(directory);

@@ -43,3 +43,38 @@ export function fleetRequest(socketPath: string, method: string, path: string, b
     req.end();
   });
 }
+
+export interface FleetMembershipRow {
+  slug: string;
+  host: string;
+  status: string;
+  signIn: { admins: string[]; members: string[] };
+}
+
+/** Read-only membership snapshot from the fleet agent (host only). */
+export async function fleetMemberships(socketPath = fleetSocketPath()): Promise<{ domain: string; workspaces: FleetMembershipRow[] }> {
+  const reply = await fleetRequest(socketPath, "GET", "/workspaces/memberships", undefined, 15_000);
+  if (reply.status !== 200 || !reply.body || typeof reply.body !== "object") {
+    throw new Error(typeof (reply.body as { error?: string })?.error === "string"
+      ? (reply.body as { error: string }).error
+      : "fleet agent could not list workspace memberships");
+  }
+  const body = reply.body as { domain?: unknown; workspaces?: unknown };
+  const workspaces = Array.isArray(body.workspaces) ? body.workspaces : [];
+  return {
+    domain: typeof body.domain === "string" ? body.domain : "",
+    workspaces: workspaces.flatMap((row) => {
+      if (!row || typeof row !== "object") return [];
+      const r = row as Record<string, unknown>;
+      if (typeof r.slug !== "string" || typeof r.host !== "string") return [];
+      const signIn = r.signIn && typeof r.signIn === "object" ? r.signIn as { admins?: unknown; members?: unknown } : {};
+      const list = (value: unknown) => (Array.isArray(value) ? value.map((item) => String(item).trim().toLowerCase()).filter(Boolean) : []);
+      return [{
+        slug: r.slug,
+        host: r.host,
+        status: typeof r.status === "string" ? r.status : "running",
+        signIn: { admins: list(signIn.admins), members: list(signIn.members) },
+      }];
+    }),
+  };
+}

@@ -5,11 +5,14 @@ import { createServer, type IncomingMessage, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 
 export interface FakeOAuthOptions {
+  beforeRevoke?: () => Promise<void>;
   /** seconds until an access token expires (default 3600) */
   expiresIn?: number;
   /** Deterministic barriers for cancellation/revocation races. */
   beforeRegister?: () => Promise<void>;
   beforeToken?: () => Promise<void>;
+  /** Held after a refresh request arrives, before the server answers. */
+  beforeRefresh?: () => Promise<void>;
   /** omit registration_endpoint from the metadata */
   noRegistration?: boolean;
   /** refuse to register a client for a redirect URI this matches */
@@ -177,6 +180,7 @@ export async function startFakeOAuth(options: FakeOAuthOptions = {}): Promise<Fa
         }
         if (form.get("grant_type") === "refresh_token") {
           counts.refresh += 1;
+          await options.beforeRefresh?.();
           if (options.refreshStatus) return json(res, options.refreshStatus, { error: "slow_down" });
           const token = form.get("refresh_token") ?? "";
           if (options.rejectRefresh || !refresh.has(token)) return json(res, 400, { error: "invalid_grant" });
@@ -189,6 +193,7 @@ export async function startFakeOAuth(options: FakeOAuthOptions = {}): Promise<Fa
         counts.revoke += 1;
         const form = new URLSearchParams(await readBody(req));
         if (!authenticate(req, form)) return json(res, 401, { error: "invalid_client" });
+        await options.beforeRevoke?.();
         access.delete(form.get("token") ?? "");
         refresh.delete(form.get("token") ?? "");
         res.writeHead(200).end();

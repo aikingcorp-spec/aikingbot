@@ -33,7 +33,6 @@ import { ShareTeamDialog } from "./ShareTeamDialog";
 import { OrgLibraryTab } from "./TeamLibraryPanelOrg";
 import { MAX_TEAM_BACKUP_BYTES, TEAM_BACKUP_EXCLUSIONS } from "../../shared/team-backup";
 import { takeImportName } from "../../shared/import-name";
-const COMMUNITY_TEAMS_REPOSITORY = "https://aikingbot.invalid/upstream";
 
 interface TeamCatalogEntry {
   slug: string;
@@ -645,17 +644,7 @@ export function TeamLibraryPanel({
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            {false && !pending && (
-              <button
-                onClick={() => void openExternal(catalog?.repositoryUrl ?? COMMUNITY_TEAMS_REPOSITORY)}
-                className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-[12.5px] text-ink-secondary hover:bg-raised hover:text-ink"
-                title="Open the community templates repository"
-              >
-                <Github size={16} />
-                <span className="max-sm:hidden">Community repo</span>
-                <ExternalLink size={12} />
-              </button>
-            )}
+
             <button
               onClick={onClose}
               disabled={importing}

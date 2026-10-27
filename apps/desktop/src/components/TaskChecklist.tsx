@@ -6,6 +6,7 @@ import { useId, useState } from "react";
 import { ChevronDown, Check, LoaderCircle } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
+import { msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 import { planProgress, type ConversationPlan, type ConversationPlanStatus } from "../../shared/conversation-plan";
 
 function TaskMark({ status }: { status: ConversationPlanStatus }) {
@@ -31,7 +32,8 @@ export function TaskChecklist({ plan, defaultOpen = true }: { plan: Conversation
   // A closed list names the work that runs, so the person can see the agent go on.
   const headline = !open && active ? active.activeText ?? active.text : t("chat.tasks.title");
   return (
-    <section data-task-checklist="" data-complete={complete ? "" : undefined} className="w-full max-w-[448px] self-start overflow-hidden rounded-[14px] border border-hairline bg-app">
+    <div className={msgCardOuterClass}>
+    <section data-task-checklist="" data-complete={complete ? "" : undefined} className={cn(msgCardInnerClass, "self-start overflow-hidden rounded-[14px] border border-hairline bg-app")}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -67,5 +69,6 @@ export function TaskChecklist({ plan, defaultOpen = true }: { plan: Conversation
         </ol>
       )}
     </section>
+    </div>
   );
 }

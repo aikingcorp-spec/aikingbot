@@ -16,7 +16,7 @@ function fixture(extra: { enroll?: (url: string, code: string, name: string) => 
   const started: RelayConnectorOptions[] = [];
   const stops = vi.fn();
   const enroll = vi.fn(extra.enroll ?? (async (_url: string, _code: string, name: string) => ({ hostId: "host-12345678", token: "secret-token", name })));
-  const make = () => createRelay({ file: join(dir, "relay.json"), port: 18799, enroll, connect: (options) => { started.push(options); return { stop: stops, state: () => "online" as const }; } });
+  const make = () => createRelay({ file: join(dir, "relay.json"), port: 18799, enroll, connect: (options) => { started.push(options); return { stop: stops, state: () => "online" as const, sendSignal: () => undefined }; } });
   return { dir, file: join(dir, "relay.json"), started, stops, enroll, make };
 }
 async function call(relay: ReturnType<typeof createRelay>, method: string, path: string, body?: unknown, headers: Record<string, string> = {}) {
@@ -30,7 +30,7 @@ describe("the web connection", () => {
   it("hands the owner header on to the connector, so changes made on the web are the owner's own", () => {
     const seen: Array<unknown> = [];
     const ownerHeader = () => ({ name: "x-owner", value: "token" });
-    const relay = createRelay({ file: join(temp(), "relay.json"), port: 1, ownerHeader, connect: (options) => { seen.push(options.ownerHeader); return { state: () => "online", stop: () => undefined } as never; },
+    const relay = createRelay({ file: join(temp(), "relay.json"), port: 1, ownerHeader, connect: (options) => { seen.push(options.ownerHeader); return { state: () => "online" as const, stop: () => undefined, sendSignal: () => undefined }; },
       enroll: async () => ({ hostId: "h", token: "t", name: "n" }) });
     return relay.enrollWith("ABCD-EFGH", "n").then(() => { expect(seen.at(-1)).toBe(ownerHeader); relay.stop(); });
   });
@@ -65,7 +65,7 @@ describe("the web connection", () => {
 
   it("can be disconnected, which tells the relay it left, stops the link and forgets the credentials", async () => {
     const dir = temp(); const leave = vi.fn(async () => true); const stops = vi.fn();
-    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "secret-token", name }), connect: () => ({ stop: stops, state: () => "online" as const }) });
+    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "secret-token", name }), connect: () => ({ stop: stops, state: () => "online" as const, sendSignal: () => undefined }) });
     await relay.enrollWith("ABCD-EFGH-JKLM", "Lan");
     const result = await call(relay, "DELETE", "/api/aiking/relay");
     expect(leave).toHaveBeenCalledWith(DEFAULT_RELAY_URL, "host-12345678", "secret-token");
@@ -76,7 +76,7 @@ describe("the web connection", () => {
 
   it("is disconnected even when the relay cannot be told", async () => {
     const dir = temp();
-    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave: async () => false, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "t", name }), connect: () => ({ stop: () => undefined, state: () => "online" as const }) });
+    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, leave: async () => false, enroll: async (_u, _c, name) => ({ hostId: "host-12345678", token: "t", name }), connect: () => ({ stop: () => undefined, state: () => "online" as const, sendSignal: () => undefined }) });
     await relay.enrollWith("ABCD-EFGH-JKLM", "Lan");
     expect((await call(relay, "DELETE", "/api/aiking/relay")).payload).toMatchObject({ configured: false, state: "off" });
     expect(existsSync(join(dir, "relay.json"))).toBe(false);
@@ -120,7 +120,7 @@ describe("the web connection", () => {
     const dir = temp(); const started: RelayConnectorOptions[] = [];
     const enrollAccount = vi.fn(async (_url: string, token: string, name: string) => ({ hostId: "host-from-account", token: `relay-for-${token}`, name }));
     let signedIn: string | null = null;
-    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, accountToken: () => signedIn, enrollAccount, connect: (options) => { started.push(options); return { stop: () => undefined, state: () => "online" as const }; } });
+    const relay = createRelay({ file: join(dir, "relay.json"), port: 18799, accountToken: () => signedIn, enrollAccount, connect: (options) => { started.push(options); return { stop: () => undefined, state: () => "online" as const, sendSignal: () => undefined }; } });
     expect(relay.status().canJoinWithAccount).toBe(false);
     expect((await call(relay, "POST", "/api/aiking/relay/enroll-account", { name: "Laptop" })).status).toBe(401);
     signedIn = "account-session";
@@ -141,3 +141,97 @@ describe("the web connection", () => {
     try { expect(fixture().make().status().relayUrl).toBe("https://relay.example.vn"); } finally { vi.unstubAllEnvs(); }
   });
 });
+
+describe("remote P2P inbox/outbox (rc8 §9.1 slice B)", () => {
+  it("returns 404 for p2p routes when the flag is off", async () => {
+    const f = fixture();
+    const relay = createRelay({
+      file: f.file, port: 18799, remoteP2p: false,
+      enroll: f.enroll,
+      connect: (options) => { f.started.push(options); return { stop: f.stops, state: () => "online" as const, sendSignal: () => undefined }; },
+    });
+    const result = await call(relay, "GET", "/api/aiking/remote/p2p/status");
+    expect(result.handled).toBe(true);
+    expect(result.status).toBe(404);
+    relay.stop();
+  });
+
+  it("queues onSignal frames into inbox and drains them", async () => {
+    const f = fixture();
+    const sent: unknown[] = [];
+    const relay = createRelay({
+      file: f.file, port: 18799, remoteP2p: true,
+      enroll: f.enroll,
+      connect: (options) => {
+        f.started.push(options);
+        // Simulate worker → host signal
+        options.onSignal?.({ t: "signal", sid: "s1", kind: "offer", from: "viewer", sdp: "v=0" });
+        return {
+          stop: f.stops,
+          state: () => "online" as const,
+          sendSignal: (frame) => { sent.push(frame); },
+        };
+      },
+    });
+    await relay.enrollWith("ABCD-EFGH-JKLM", "P2P");
+    const status = await call(relay, "GET", "/api/aiking/remote/p2p/status");
+    expect(status.status).toBe(200);
+    expect((status.payload as { enabled: boolean; pending: number }).enabled).toBe(true);
+    expect((status.payload as { pending: number }).pending).toBeGreaterThanOrEqual(1);
+
+    const inbox = await call(relay, "GET", "/api/aiking/remote/p2p/inbox");
+    expect(inbox.status).toBe(200);
+    const frames = (inbox.payload as { frames: unknown[] }).frames;
+    expect(frames.length).toBeGreaterThanOrEqual(1);
+    expect(frames[0]).toMatchObject({ kind: "offer", from: "viewer" });
+
+    const empty = await call(relay, "GET", "/api/aiking/remote/p2p/inbox");
+    expect((empty.payload as { frames: unknown[] }).frames).toEqual([]);
+
+    const out = await call(relay, "POST", "/api/aiking/remote/p2p/outbox", {
+      t: "signal", sid: "s1", kind: "answer", from: "host", sdp: "answer",
+    });
+    expect(out.status).toBe(200);
+    expect(sent.at(-1)).toMatchObject({ kind: "answer", from: "host" });
+
+    const pathSet = await call(relay, "POST", "/api/aiking/remote/p2p/path", { path: "p2p" });
+    expect(pathSet.status).toBe(200);
+    const again = await call(relay, "GET", "/api/aiking/remote/p2p/status");
+    expect((again.payload as { path: string }).path).toBe("p2p");
+    relay.stop();
+  });
+
+  it("refuses p2p mutations when the request is relayed", async () => {
+    const f = fixture();
+    const relay = createRelay({
+      file: f.file, port: 18799, remoteP2p: true,
+      enroll: f.enroll,
+      connect: (options) => { f.started.push(options); return { stop: f.stops, state: () => "online" as const, sendSignal: () => undefined }; },
+    });
+    await relay.enrollWith("ABCD-EFGH-JKLM", "P2P");
+    const result = await call(relay, "POST", "/api/aiking/remote/p2p/outbox", { t: "signal", kind: "ice" }, { [RELAYED_HEADER]: "1" });
+    expect(result.status).toBe(403);
+    relay.stop();
+  });
+
+  it("switching to relay is reflected on status", async () => {
+    const f = fixture();
+    const relay = createRelay({
+      file: f.file, port: 18799, remoteP2p: true,
+      enroll: f.enroll,
+      connect: (options) => { f.started.push(options); return { stop: f.stops, state: () => "online" as const, sendSignal: () => undefined }; },
+    });
+    await relay.enrollWith("ABCD-EFGH-JKLM", "P2P");
+    const switching = await call(relay, "POST", "/api/aiking/remote/p2p/path", { path: "relay", switching: true });
+    expect(switching.status).toBe(200);
+    expect(switching.payload).toMatchObject({ path: "relay", switching: true });
+    const status = await call(relay, "GET", "/api/aiking/remote/p2p/status");
+    expect(status.payload).toMatchObject({ path: "relay", switching: true });
+    const settled = await call(relay, "POST", "/api/aiking/remote/p2p/path", { path: "relay", switching: false });
+    expect(settled.payload).toMatchObject({ path: "relay", switching: false });
+    const again = await call(relay, "GET", "/api/aiking/remote/p2p/status");
+    expect(again.payload).toMatchObject({ path: "relay", switching: false });
+    relay.stop();
+  });
+});
+

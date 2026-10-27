@@ -189,7 +189,8 @@ const __APP_VERSION__: string;
         /** This computer's own record of what that server's bots did here, newest first. */
         activity(id: string): Promise<DesktopLendingActivity[]>;
       };
-      confirm(message: string): Promise<boolean>;
+      /** Parented native confirm. Labels are localized by the renderer; Cancel (index 1) stays the default. */
+      confirm(message: string, labels?: { confirm?: string; cancel?: string }): Promise<boolean>;
       getCapabilities(): Promise<DesktopCapabilities>;
       onCapabilitiesChanged(cb: (capabilities: DesktopCapabilities) => void): () => void;
       remoteClient?: {
@@ -338,7 +339,9 @@ const __APP_VERSION__: string;
       setCredential?(
         name: "composioApiKey" | "xaiApiKey" | "boxToken" | "opencodeGoApiKey" | "ttsKey" | "fishAudioKey" | "jevApiKey" | "openrouterDeciderKey" | "openaiImageApiKey" | "customImageApiKey" | "openaiLiveKey",
         value: string,
-      ): Promise<ConfigStatus>;
+        /** A credential card submit: the server admits it before the write and returns the claim to report provided with. */
+        card?: { botId: string; threadId: string; messageId: string },
+      ): Promise<ConfigStatus & { claimId?: string }>;
       /** In-app auto-update (packaged app only; dormant in dev). Updates
        * download by themselves. On this computer's page and the person's own
        * Cloud page; any other server's page gets no state. onState fires

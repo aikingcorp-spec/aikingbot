@@ -23,7 +23,6 @@ import {
   type PhonePairingTarget,
 } from "@/lib/phone-pairing";
 import type { CloudAccountState } from "../../electron/cloud-account.mjs";
-import type { CloudMachine } from "../../electron/cloud-home.mjs";
 import { PHONE_APPS, PhoneAppDialog, type PhoneAppConnect } from "./PhoneAppDialog";
 import type { UpdaterState } from "@/lib/updater";
 
@@ -31,7 +30,8 @@ const state = (patch: Partial<UpdaterState>): UpdaterState => ({ status: "idle",
 
 describe("profileInitials", () => {
   it("takes the first letter of the first two words", () => {
-    expect(profileInitials({ name: "AIKING" })).toBe("MS");
+    // Single-token product name → first letter only (was a stale "MS" from an old OpenBot brand).
+    expect(profileInitials({ name: "AIKING" })).toBe("A");
     expect(profileInitials({ name: "Ada Byron Lovelace" })).toBe("AB");
   });
 
@@ -163,7 +163,7 @@ describe("updateNoteworthy", () => {
 describe("outward links", () => {
   it("sends Help Center to the docs the website also links to", () => {
     expect(HELP_CENTER_URL).toBe(DOCS_URL);
-    expect(DOCS_URL).toBe("https://aikingbot.invalid/upstream");
+    expect(DOCS_URL).toBe("https://aikingxbot.com/docs/");
   });
 
   it("sends Send Feedback to the AIKING site", () => {
@@ -173,63 +173,28 @@ describe("outward links", () => {
 
 describe("the phone entries", () => {
   const admin: PhonePairingAccess = { session: { kind: "session", id: "s", label: "Mac", scopes: ["admin", "client"], expiresAt: 1 }, pairingCodes: true };
-  const chatOnly: PhonePairingAccess = { session: { kind: "session", id: "s", label: "Phone", scopes: ["client"], expiresAt: 1 }, pairingCodes: true };
-  const signedIn = { status: "connected", account: { id: "a", email: "p@example.test" } } as const;
-  const paid = (tier: string, machine?: CloudMachine): CloudAccountState => ({ ...signedIn, entitlement: { plan: "pro", tier, status: "active", expiresAt: null, version: 1 }, ...(machine ? { machine } : {}) });
-  const ready: CloudMachine = { status: "ready", origin: "https://home-7f3k2.fly.dev" };
-  const free: CloudAccountState = { ...signedIn, entitlement: { plan: "free", status: "inactive", expiresAt: null, version: 1 } };
   const items = (target: PhonePairingTarget, access: PhonePairingAccess | null, account: CloudAccountState | null = null, connected = false) => {
-    const onConnect = vi.fn(), onGetApp = vi.fn();
+    const onConnect = vi.fn(), onGetApp = vi.fn(), onUnsupported = vi.fn();
     const destinations = phoneDestinations(connectPhoneEntry(target, access), cloudPhoneDestination(account));
-    return { list: phoneMenuItems({ destinations, connected, onConnect, onGetApp }), onConnect, onGetApp };
+    return { list: phoneMenuItems({ destinations, connected, onConnect, onGetApp, onUnsupported }), onConnect, onGetApp, onUnsupported };
   };
-  const shown = (...args: Parameters<typeof items>) => items(...args).list.map((item) => [item.label, item.subtitle ?? null, ...(item.note ? [item.note] : [])]);
-  const APP = ["Get the phone app", null];
 
-  it("on this computer: Connect your phone, to this computer, then Get the phone app", () => {
-    expect(shown("computer", null)).toEqual([["Connect your phone", "to this computer"], APP]);
+  it("stays visible as Sắp có / Coming soon while phone pairing is unsupported", () => {
+    const { list, onConnect, onUnsupported } = items("computer", null);
+    expect(list).toHaveLength(1);
+    expect(list[0]?.key).toBe("connect-phone");
+    expect(list[0]?.subtitle).toBe("Coming soon");
+    list[0]?.onSelect();
+    expect(onUnsupported).toHaveBeenCalledOnce();
+    expect(onConnect).not.toHaveBeenCalled();
   });
 
-  it("on this computer with a paid Cloud that is Ready: both, the Cloud first", () => {
-    for (const tier of ["personal", "pro", "max"]) {
-      expect(shown("computer", null, paid(tier, ready))).toEqual([
-        ["Connect your phone", "to My Cloud (always on)"],
-        ["Connect your phone", "to this computer"],
-        APP,
-      ]);
+  it("does not expose destination pairing actions while unsupported", () => {
+    for (const target of ["computer", "cloud", "server"] as const) {
+      const { list, onConnect } = items(target, admin);
+      expect(list.every((item) => item.key === "connect-phone")).toBe(true);
+      expect(onConnect).not.toHaveBeenCalled();
     }
-  });
-
-  it("on this computer, free or signed out: only this computer", () => {
-    for (const account of [free, { status: "signed-out" } as CloudAccountState, null]) {
-      expect(shown("computer", null, account)).toEqual([["Connect your phone", "to this computer"], APP]);
-    }
-    expect(shown("computer", null, { ...paid("pro", ready), entitlement: { plan: "pro", status: "inactive", expiresAt: null, version: 2 } }))
-      .toEqual([["Connect your phone", "to this computer"], APP]);
-    expect(shown("computer", null, { status: "unavailable", lastPlan: { tier: "pro", active: true }, machine: ready }))
-      .toEqual([["Connect your phone", "to this computer"], APP]);
-  });
-
-  it("on this computer with a paid Cloud that is not Ready: only this computer, and a hint", () => {
-    for (const machine of [undefined, { status: "provisioning" }, { status: "stopped", origin: ready.origin }, { status: "failed", origin: ready.origin }] as Array<CloudMachine | undefined>) {
-      expect(shown("computer", null, paid("pro", machine))).toEqual([
-        ["Connect your phone", "to this computer", "My Cloud shows here once it is ready."],
-        APP,
-      ]);
-    }
-  });
-
-  it("on the person's own Cloud: unchanged, one Connect your phone to My Cloud", () => {
-    expect(shown("cloud", admin)).toEqual([["Connect your phone", "to My Cloud"], APP]);
-    expect(shown("cloud", admin, paid("max", ready))).toEqual([["Connect your phone", "to My Cloud"], APP]);
-    expect(shown("cloud", admin, paid("max"))).toEqual([["Connect your phone", "to My Cloud"], APP]);
-  });
-
-  it("on another server: to this server, and gone for a session that cannot make a pairing code", () => {
-    expect(shown("server", admin, paid("pro", ready))).toEqual([["Connect your phone", "to this server"], APP]);
-    expect(shown("server", chatOnly)).toEqual([APP]);
-    expect(shown("server", { ...admin, pairingCodes: false })).toEqual([APP]);
-    expect(shown("cloud", chatOnly)).toEqual([APP]);
   });
 
   it("never offers the iOS-only entry it replaced", () => {
@@ -237,27 +202,8 @@ describe("the phone entries", () => {
       expect(items(target, null).list.map((item) => item.label)).not.toContain("Get AIKINGBOT for iOS");
     }
   });
-
-  it("each line hands on its own destination", () => {
-    const { list, onConnect, onGetApp } = items("computer", null, paid("pro", ready));
-    list[0]!.onSelect();
-    expect(onConnect).toHaveBeenLastCalledWith(expect.objectContaining({ id: "cloud" }));
-    list[1]!.onSelect();
-    expect(onConnect).toHaveBeenLastCalledWith(expect.objectContaining({ id: "here", target: "computer" }));
-    expect(onGetApp).not.toHaveBeenCalled();
-    list[2]!.onSelect();
-    expect(onGetApp).toHaveBeenCalledOnce();
-  });
-
-  it("shows this computer's live phone on this computer's line only", () => {
-    expect(items("computer", null, null, true).list[0]!.trailing).toBeTruthy();
-    expect(items("computer", null, null, false).list[0]!.trailing).toBeUndefined();
-    const both = items("computer", null, paid("pro", ready), true).list;
-    expect(both[0]!.trailing).toBeUndefined();
-    expect(both[1]!.trailing).toBeTruthy();
-    expect(items("cloud", admin, null, true).list[0]!.trailing).toBeUndefined();
-  });
 });
+
 
 describe("choosing where the phone connects", () => {
   const destinations = (account: CloudAccountState | null) => phoneDestinations(connectPhoneEntry("computer", null), cloudPhoneDestination(account));
@@ -293,8 +239,10 @@ describe("choosing where the phone connects", () => {
 describe("Get the phone app", () => {
   it("offers iPhone and Android with the links the website and Cloud page use", () => {
     expect(PHONE_APPS.map((app) => [app.id, app.url])).toEqual([["ios", IOS_APP_STORE_URL], ["android", ANDROID_APK_URL]]);
-    expect(IOS_APP_STORE_URL).toBe("https://apps.apple.com/in/app/aikingbot/id6803387923");
-    expect(ANDROID_APK_URL).toBe("https://aikingbot.invalid/upstream");
+    // Store/APK URLs redirect to public docs while mobile apps are gated (Sắp có).
+    expect(IOS_APP_STORE_URL).toBe(DOCS_URL);
+    expect(ANDROID_APK_URL).toBe(DOCS_URL);
+    expect(DOCS_URL).toBe("https://aikingxbot.com/docs/");
   });
 
   const render = (connect?: PhoneAppConnect[]) => {
@@ -307,23 +255,12 @@ describe("Get the phone app", () => {
   };
   const to = (key: string, subtitle: string): PhoneAppConnect => ({ key, subtitle, onSelect: () => {} });
 
-  it("draws a code to scan for each, and points on to Connect your phone where this window can pair", () => {
-    const html = render([to("here", "to this computer")]);
-    expect(html).toContain('data-phone-app="ios"');
-    expect(html).toContain('data-phone-app="android"');
-    expect(html.match(/<svg/g)?.length).toBe(2);
-    expect(html).toContain("Open in the App Store");
-    expect(html).toContain("Download the APK");
-    expect(html).toContain("Connect your phone");
-    expect(html).toContain("to this computer");
-    expect(render()).not.toContain("Connect your phone");
-    expect(render([])).not.toContain("Connect your phone");
-  });
-
-  it("offers every destination the menu does, in the same order", () => {
-    const html = render([to("cloud", "to My Cloud (always on)"), to("here", "to this computer")]);
-    expect(html.indexOf('data-phone-app-connect="cloud"')).toBeGreaterThan(-1);
-    expect(html.indexOf('data-phone-app-connect="cloud"')).toBeLessThan(html.indexOf('data-phone-app-connect="here"'));
+  it("draws nothing while mobile apps are gated off (Sắp có), including when open with connect destinations", () => {
+    // mobileAppsAvailable() === false in product-availability.ts
+    expect(render([to("here", "to this computer")])).toBe("");
+    expect(render([to("cloud", "to My Cloud (always on)"), to("here", "to this computer")])).toBe("");
+    expect(render()).toBe("");
+    expect(render([])).toBe("");
   });
 
   it("is not drawn while closed", () => {

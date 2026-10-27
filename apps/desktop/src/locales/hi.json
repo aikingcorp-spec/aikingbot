@@ -1600,5 +1600,7 @@
   "room.holds.resume": "{name} को फिर शुरू करें",
   "room.holds.stop": "{name} को रोकें",
   "room.holds.stopTitle": "सिर्फ़ {name} को रोकें; बाकी रूम चलता रहेगा",
-  "room.holds.avatarHeld": "{name} — रोका गया (आपके द्वारा)"
+  "room.holds.avatarHeld": "{name} — रोका गया (आपके द्वारा)",
+  "workspaces.unavailable": "Team servers cannot be created here ({reason}).",
+  "workspaces.unavailableFix": "Fix: {fix}"
 }

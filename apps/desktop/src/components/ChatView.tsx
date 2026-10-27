@@ -16,7 +16,7 @@ import {
   Download,
   Gauge,
   ListChecks,
-  Monitor,
+  PanelsTopLeft,
   MoreHorizontal,
   Pin,
   RefreshCw,
@@ -68,6 +68,7 @@ import type { LocaleKey } from "@/locales";
 import { isProviderSafetyBlock, PROVIDER_SAFETY_GUIDANCE, PROVIDER_SAFETY_HELP_URL } from "../../shared/provider-safety";
 import { isCancelledTranscriptRow } from "../../shared/client-cancel";
 import { BotAvatar } from "./Avatar";
+import { botBubbleClass, MSG_AVATAR, msgCardOuterClass, userBubbleClass } from "@/lib/chat-column";
 import { TurnPresence } from "./TurnPresence";
 import { showToolCallsEnabled, skillAuthoringEnabled } from "@/lib/feature-flags";
 import { normalizeState, stateForBot } from "@/lib/mascot";
@@ -179,7 +180,7 @@ function useChatRows(): ChatRows {
 }
 
 const drawnBot = (bot: Bot) =>
-  [bot.id, bot.name, bot.hidden, bot.color, bot.mascotBody, bot.mascotExpression, bot.avatarUrl, bot.avatarCrop, bot.avatarZoom, bot.avatarFocusX, bot.avatarFocusY].join("\u0001");
+  [bot.id, bot.name, bot.hidden, bot.color, bot.mascotBody, JSON.stringify(bot.mascotLook ?? null), bot.mascotExpression, bot.avatarUrl, bot.avatarCrop, bot.avatarZoom, bot.avatarFocusX, bot.avatarFocusY].join("\u0001");
 
 function useDrawnBots(bots: readonly Bot[]): readonly Bot[] {
   const signature = bots.map(drawnBot).join("\u0002");
@@ -250,7 +251,7 @@ export function ErrorRow({
   const headline = macCuaReason ?? plainHeadline ?? message;
   return (
     <div className="flex justify-start">
-      <div className="w-fit max-w-[min(42rem,78%)] rounded-xl border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-[13.5px] text-danger">
+      <div className={cn(botBubbleClass, "rounded-xl border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-[13.5px] text-danger")}>
         <div className="flex items-start gap-2">
           <AlertTriangle size={15} className="mt-0.5 shrink-0" />
           <span className="min-w-0 break-words">{headline}</span>
@@ -377,7 +378,7 @@ function BubbleEditor({
     if (draft.trim()) onSubmit(draft.trim());
   };
   return (
-    <div className={cn("w-full max-w-[min(42rem,78%)] rounded-2xl border border-hairline/40 bg-bubble-user px-4 py-3", bubbleStyle && "user-bubble-colored")} style={bubbleStyle}>
+    <div className={cn("w-full max-w-[480px] rounded-2xl border border-hairline/40 bg-bubble-user px-4 py-3", bubbleStyle && "user-bubble-colored")} style={bubbleStyle}>
       <textarea
         ref={ref}
         dir="auto"
@@ -439,7 +440,9 @@ const Bubble = memo(function Bubble({
   replyTarget?: Message;
   onReply: (message: Message) => void;
 }) {
-  const { botId, threadId, botName, voiceId, tts, localVoice, busy, mentionPeers, focus, dispatch, onBranch, bubbleStyle } = useChatRows();
+  const { botId, threadId, botName, voiceId, tts, localVoice, busy, mentionPeers, focus, dispatch, onBranch, bubbleStyle, bots } = useChatRows();
+  const rowBot = bots.find((b) => b.id === botId);
+  const avatarBot = rowBot ?? { name: botName, color: "green" as const };
   const remoteClient = window.ogb?.remoteClient?.active === true;
   const peer = peerLine(message) ?? peerRequest(message, botId);
   const user = message.role === "user" && !peer;
@@ -495,7 +498,7 @@ const Bubble = memo(function Bubble({
 
   if (user && editing && !webhookView && !hasAttachments) {
     return (
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end pl-[36px]">
         <BubbleEditor initial={text} bubbleStyle={bubbleStyle} onCancel={onCancelEdit} onSubmit={(edited) => onSubmitEdit(message.id, edited)} />
       </div>
     );
@@ -510,10 +513,23 @@ const Bubble = memo(function Bubble({
     dispatch({ type: "updateTask", botId, threadId, patch: { pinnedMessageId: pinned ? "" : message.id } });
 
   return (
-    <div {...{ [MESSAGE_ROW]: "" }} className={cn("group flex w-full flex-col", user ? "animate-msg-in items-end" : "items-start")}>
+    <div {...{ [MESSAGE_ROW]: "" }} className={cn("group flex w-full flex-col", user ? "animate-msg-in items-end pl-[36px]" : "items-start")}>
       {peer && <PeerLabel peer={peer} />}
       {user && message.sender?.name && <span data-message-sender className="mb-1 max-w-[78%] truncate text-[11.5px] text-ink-secondary">{message.sender.name}</span>}
-      <div className={cn("flex w-full items-center gap-1.5", user ? "justify-end" : "justify-start")}>
+      <div className={cn("flex w-full gap-2", user ? "items-center justify-end" : "items-start justify-start")}>
+        {!user && (
+          <span className="mt-0.5 shrink-0" aria-hidden={false}>
+            <BotAvatar
+              bot={avatarBot}
+              state={normalizeState(rowBot?.mascotExpression) ?? "happy"}
+              size={MSG_AVATAR}
+              motion="none"
+              motionKey={0}
+              animated={false}
+            />
+          </span>
+        )}
+        <div className={cn("flex min-w-0 items-center gap-1.5", user ? "justify-end" : "justify-start", !user && "flex-1")}>
         {user && (
           <MessageActions
             side="user"
@@ -531,7 +547,8 @@ const Bubble = memo(function Bubble({
         <div
           data-chat-bubble
           className={cn(
-            "w-fit max-w-[min(42rem,78%)] rounded-2xl text-[15px] leading-relaxed",
+            "rounded-2xl text-[15px] leading-relaxed",
+            user ? userBubbleClass : botBubbleClass,
             emerging && "turn-answer",
             user && webhookView
               ? "overflow-hidden border border-accent/25 bg-card text-ink shadow-[0_10px_30px_rgba(0,0,0,0.18)]"
@@ -650,6 +667,7 @@ const Bubble = memo(function Bubble({
         >
           {formatTime(message.at)}
         </span>
+        </div>
       </div>
       {forks.length > 1 && (
         <div className="mt-1 flex items-center gap-0.5 pr-1 text-[12px] text-ink-secondary">
@@ -921,7 +939,7 @@ const MessagesList = memo(function MessagesList({
                 );
               }
               if (!showToolCalls && !m.comm && !m.threadRef && !m.dataResult) return null;
-              return <ActivityChip message={m} place={place} />;
+              return <div className={msgCardOuterClass}><ActivityChip message={m} place={place} /></div>;
             }
             case "digest":
               return showToolCalls ? <DigestChip message={m} /> : null;
@@ -1320,7 +1338,7 @@ export function ChatView({ bot: profile }: { bot: Bot }) {
             )}
             title={t("chat.computer")} aria-label={busy && place === "browser" ? `${t("chat.computer")}, ${t("place.live")}` : t("chat.computer")}
           >
-            <Monitor size={16} />{busy && place === "browser" && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-success" data-testid="computer-button-live" />}
+            <PanelsTopLeft size={16} />{busy && place === "browser" && <span aria-hidden="true" className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-success" data-testid="computer-button-live" />}
           </button>
           <ChatHeaderMenu key={`menu:${bot.threadId}`} bot={bot} messages={messages} findOpen={findOpen} onFind={() => setFindOpen((open) => !open)} />
         </div>

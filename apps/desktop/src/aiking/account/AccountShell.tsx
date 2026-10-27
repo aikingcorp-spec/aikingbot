@@ -43,8 +43,16 @@ export function AccountShell({ initial }: { initial: AccountState }) {
     setError(null);
     const result = await enterWorkspace(id, defaultDeviceLabel());
     if (result.ok) {
-      const url=Reflect.get(Object(result.body),"url");
-      location.replace(typeof url==="string"&&/^\/servers\/[a-f0-9-]{36}\/$/.test(url)?url:"/");
+      const body = Object(result.body) as { url?: unknown; redirect?: unknown; workspace?: { url?: unknown; current?: unknown } };
+      const redirect = typeof body.redirect === "string" ? body.redirect
+        : typeof body.workspace?.url === "string" ? body.workspace.url
+        : null;
+      if (redirect && redirect.startsWith("https://")) {
+        location.replace(redirect);
+        return;
+      }
+      const url = body.url;
+      location.replace(typeof url === "string" && /^\/servers\/[a-f0-9-]{36}\/$/.test(url) ? url : "/");
       return;
     }
     setBusy(null);

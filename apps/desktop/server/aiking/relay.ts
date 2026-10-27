@@ -27,6 +27,13 @@ export type RelayOptions = {
   connect?: (options: RelayConnectorOptions) => RelayConnector;
   /** The owner header of this desktop app, for requests the relay brings in for the signed-in owner. */
   ownerHeader?: RelayConnectorOptions["ownerHeader"];
+  /**
+   * WebRTC P2P (rc8 §9.1). When set (or AIKING_REMOTE_P2P=1), inbound signal frames are queued for the
+   * Electron hidden host via /api/aiking/remote/p2p/inbox; outbox posts call connector.sendSignal.
+   */
+  onSignal?: RelayConnectorOptions["onSignal"];
+  /** Override feature flag (tests). Default: process.env.AIKING_REMOTE_P2P. */
+  remoteP2p?: boolean;
 };
 
 const MESSAGES: Record<string, [number, string]> = {
@@ -61,17 +68,54 @@ export function createRelay(options: RelayOptions) {
     chmodSync(temporary, 0o600);
     renameSync(temporary, options.file);
   }
+  const p2pEnabled = options.remoteP2p === true || options.remoteP2p === false
+    ? options.remoteP2p
+    : process.env.AIKING_REMOTE_P2P === "1" || process.env.AIKING_REMOTE_P2P === "true";
+  /** Inbound viewer→host signal frames waiting for the Electron P2P host to drain. */
+  const p2pInbox: Record<string, unknown>[] = [];
+  const MAX_P2P_INBOX = 64;
+  let p2pPath: "p2p" | "turn" | "relay" = "relay";
+  let p2pSwitching = false;
+  let p2pSwitchingTimer: ReturnType<typeof setTimeout> | undefined;
+  const setSwitching = (next: boolean) => {
+    p2pSwitching = next;
+    if (p2pSwitchingTimer) clearTimeout(p2pSwitchingTimer);
+    p2pSwitchingTimer = undefined;
+    if (next) {
+      p2pSwitchingTimer = setTimeout(() => { p2pSwitching = false; p2pSwitchingTimer = undefined; }, 8_000);
+    }
+  };
+
+  function enqueueSignal(frame: Record<string, unknown>) {
+    options.onSignal?.(frame);
+    if (!p2pEnabled) return;
+    p2pInbox.push(frame);
+    while (p2pInbox.length > MAX_P2P_INBOX) p2pInbox.shift();
+  }
+
   function start() {
     connector?.stop(); connector = null;
     if (!saved) return;
-    connector = connect({ relayUrl: saved.relayUrl, hostId: saved.hostId, token: saved.token, target: { host: "127.0.0.1", port: options.port }, log, markHeader: { name: RELAYED_HEADER, value: nonce }, ownerHeader: options.ownerHeader });
+    connector = connect({
+      relayUrl: saved.relayUrl, hostId: saved.hostId, token: saved.token,
+      target: { host: "127.0.0.1", port: options.port }, log,
+      markHeader: { name: RELAYED_HEADER, value: nonce }, ownerHeader: options.ownerHeader,
+      onSignal: enqueueSignal,
+    });
   }
   const status = (): RelayStatus => ({ configured: Boolean(saved), state: connector?.state() ?? "off", ...(saved?.name ? { name: saved.name } : {}), relayUrl: saved?.relayUrl ?? relayUrl, canJoinWithAccount: Boolean(options.accountToken?.()) });
 
   start();
   return {
     status,
-    stop() { connector?.stop(); connector = null; },
+    /** Host→viewer signal via the relay WebSocket (no-op when offline / P2P off). */
+    sendSignal(frame: Record<string, unknown>) {
+      connector?.sendSignal(frame);
+    },
+    p2pEnabled: () => p2pEnabled,
+    p2pStatus: () => ({ enabled: p2pEnabled, path: p2pPath, switching: p2pSwitching, pending: p2pInbox.length, relay: status() }),
+    setP2pPath(path: "p2p" | "turn" | "relay", switching = false) { p2pPath = path; setSwitching(switching === true); },
+    stop() { if (p2pSwitchingTimer) clearTimeout(p2pSwitchingTimer); p2pSwitchingTimer = undefined; connector?.stop(); connector = null; },
     async enrollWith(code: string, name: string): Promise<RelayStatus> {
       const result = await enroll(relayUrl, code, name).catch((error: Error) => { throw Object.assign(new Error(error.message), { relay: true }); });
       saved = { relayUrl, hostId: result.hostId, token: result.token, name: result.name };
@@ -100,14 +144,57 @@ export function createRelay(options: RelayOptions) {
     },
     async handle(ctx: { req: IncomingMessage; res: ServerResponse; path: string; method: string; json(res: ServerResponse, status: number, body: unknown): void; readBody(req: IncomingMessage): Promise<unknown> }): Promise<boolean> {
       const { res, path, method, json } = ctx;
-      if (!path.startsWith("/api/aiking/relay")) return false;
+      const isRelay = path.startsWith("/api/aiking/relay");
+      const isP2p = path.startsWith("/api/aiking/remote/p2p");
+      if (!isRelay && !isP2p) return false;
       res.setHeader("cache-control", "no-store");
       // Connecting or disconnecting changes who can reach this computer: only someone at this computer may do it.
       if (ctx.req.headers[RELAYED_HEADER] !== undefined && method !== "GET") { json(res, 403, { error: "Manage the web connection from this computer, not from the web." }); return true; }
+
+      // Local Electron host ↔ relay-connector bridge (loopback only; refused when relayed).
+      if (isP2p) {
+        if (!p2pEnabled) { json(res, 404, { error: "Remote P2P is off." }); return true; }
+        if (path === "/api/aiking/remote/p2p/status" && method === "GET") {
+          json(res, 200, { enabled: true, path: p2pPath, switching: p2pSwitching, pending: p2pInbox.length, relay: status() });
+          return true;
+        }
+        if (path === "/api/aiking/remote/p2p/inbox" && method === "GET") {
+          const frames = p2pInbox.splice(0, p2pInbox.length);
+          json(res, 200, { frames });
+          return true;
+        }
+        if (path === "/api/aiking/remote/p2p/outbox" && method === "POST") {
+          const body = Object(await ctx.readBody(ctx.req).catch(() => ({}))) as Record<string, unknown>;
+          if (body.t !== "signal" && body.kind === undefined) { json(res, 400, { error: "signal frame required" }); return true; }
+          const frame = body.t === "signal" ? body : { ...body, t: "signal" };
+          if (typeof frame.path === "string" && (frame.path === "p2p" || frame.path === "turn" || frame.path === "relay")) {
+            p2pPath = frame.path;
+            if (frame.path !== "relay") setSwitching(false);
+          }
+          connector?.sendSignal(frame);
+          json(res, 200, { ok: true });
+          return true;
+        }
+        if (path === "/api/aiking/remote/p2p/path" && method === "POST") {
+          const body = Object(await ctx.readBody(ctx.req).catch(() => ({}))) as { path?: unknown; switching?: unknown };
+          if (body.path !== "p2p" && body.path !== "turn" && body.path !== "relay") {
+            json(res, 400, { error: "path must be p2p, turn, or relay" });
+            return true;
+          }
+          p2pPath = body.path;
+          setSwitching(body.switching === true);
+          json(res, 200, { ok: true, path: p2pPath, switching: p2pSwitching });
+          return true;
+        }
+        json(res, 404, { error: "Unknown request." });
+        return true;
+      }
+
       if (path === "/api/aiking/relay/status" && method === "GET") { json(res, 200, status()); return true; }
       if (path === "/api/aiking/relay/enroll" && method === "POST") {
         const body = Object(await ctx.readBody(ctx.req).catch(() => ({}))) as { code?: unknown; name?: unknown };
         const code = typeof body.code === "string" ? body.code.trim() : "";
+        // eslint-disable-next-line no-control-regex -- strip ASCII controls from relay display names
         const name = typeof body.name === "string" ? body.name.replace(/[\u0000-\u001f]/g, "").trim().slice(0, 60) : "";
         if (!/^[A-Za-z0-9-]{8,24}$/.test(code)) { json(res, 400, { error: "Enter the code shown on the web page." }); return true; }
         try { json(res, 200, await this.enrollWith(code, name || "My computer")); }
@@ -119,6 +206,7 @@ export function createRelay(options: RelayOptions) {
       }
       if (path === "/api/aiking/relay/enroll-account" && method === "POST") {
         const body = Object(await ctx.readBody(ctx.req).catch(() => ({}))) as { name?: unknown };
+        // eslint-disable-next-line no-control-regex -- strip ASCII controls from relay display names
         const name = typeof body.name === "string" ? body.name.replace(/[\u0000-\u001f]/g, "").trim().slice(0, 60) : "";
         try { json(res, 200, await this.enrollWithAccountSignIn(name || "My computer")); }
         catch (error) {

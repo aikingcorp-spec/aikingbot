@@ -27,7 +27,9 @@ export interface AccountWorkspace {
   name: string;
   role: WorkspaceRole;
   /** This server: opening it needs a workspace session, which `enter` issues while membership holds. */
-  current: true;
+  current: boolean;
+  /** Other fleet servers on this VPS: the browser navigates here; that host re-checks membership. */
+  url?: string;
 }
 export interface AccountIdentity { userId: string; email: string }
 
@@ -212,7 +214,7 @@ export interface AccountRoutesOptions {
   directory: AccountDirectory;
   cookieName: string;
   /** This server's memberships for the address: the single authority, read live on every request. */
-  workspacesFor(email: string): AccountWorkspace[];
+  workspacesFor(email: string): AccountWorkspace[] | Promise<AccountWorkspace[]>;
   /** Issues a workspace session for a member (same path as a member's email sign-in); returns its cookie header. */
   enterWorkspace(identity: AccountIdentity, label: string, req: IncomingMessage): string | null;
   /** Ends the workspace session this browser holds, if any; returns the header that clears its cookie. */
@@ -241,9 +243,9 @@ export function createAccountRoutes(options: AccountRoutesOptions) {
   const secureFor = (req: IncomingMessage) => requestOrigin(req)?.startsWith("https://") === true;
   const current = (req: IncomingMessage) => directory.authenticate(parseCookies(req.headers.cookie).get(options.cookieName));
   const isJson = (req: IncomingMessage) => /^application\/json\b/i.test(String(req.headers["content-type"] ?? ""));
-  const summary = (identity: AccountIdentity) => ({
+  const summary = async (identity: AccountIdentity) => ({
     account: { email: identity.email },
-    workspaces: options.workspacesFor(identity.email),
+    workspaces: await options.workspacesFor(identity.email),
     devices: directory.devicesOf(identity.userId),
     hostedComputers: options.hostedComputers === true ? "available" : "not-offered",
   });
@@ -290,7 +292,7 @@ export function createAccountRoutes(options: AccountRoutesOptions) {
         if (!identity) { json(res, 401, { error: "sign in with your email to continue" }); return true; }
         const secure = secureFor(req);
         res.setHeader("set-cookie", serializeAccountCookie(options.cookieName, parseCookies(req.headers.cookie).get(options.cookieName)!, (identity.expiresAt - Date.now()) / 1000, secure));
-        json(res, 200, summary(identity));
+        json(res, 200, await summary(identity));
         return true;
       }
       let body: Record<string, unknown> = {};
@@ -309,8 +311,13 @@ export function createAccountRoutes(options: AccountRoutesOptions) {
       if (!identity) { json(res, 401, { error: "sign in with your email to continue" }); return true; }
       const enter = /^\/api\/account\/workspaces\/([^/]+)\/enter$/.exec(path);
       if (method === "POST" && enter) {
-        const workspace = options.workspacesFor(identity.email).find((entry) => entry.id === decodeURIComponent(enter[1]!));
+        const workspace = (await options.workspacesFor(identity.email)).find((entry) => entry.id === decodeURIComponent(enter[1]!));
         if (!workspace) { json(res, 403, { error: "this account is not a member of that workspace; ask its owner to invite you" }); return true; }
+        if (!workspace.current) {
+          if (!workspace.url) { json(res, 403, { error: "this account is not a member of that workspace; ask its owner to invite you" }); return true; }
+          json(res, 200, { ok: true, workspace, redirect: workspace.url });
+          return true;
+        }
         const cookie = options.enterWorkspace(identity, cleanText(body.label, 80), req);
         if (!cookie) { json(res, 403, { error: "this account is not a member of that workspace; ask its owner to invite you" }); return true; }
         res.setHeader("set-cookie", cookie);

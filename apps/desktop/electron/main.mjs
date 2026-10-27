@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startCua, stopCua, registerCuaIpc, setCuaStateListener } from "./cua.mjs";
+import { startRemoteP2pHost, stopRemoteP2pHost } from "./remote-p2p-host.mjs";
 import { createAndroidDeviceController } from "./android-device.mjs";
 import { finishSpeech, startSpeech, stopSpeech } from "./speech.mjs";
 import { openBlankTerminal } from "./terminal-launch.mjs";
@@ -18,6 +19,7 @@ import {
   installDesktopCrashListeners,
   readSafeLogTail,
 } from "./diagnostics.mjs";
+import { attachWindowRecovery } from "./window-recovery.mjs";
 import { migrateWorkspaceCredentials, workspaceCredentialEnv } from "./workspace-credentials.mjs";
 import { evictStartupCacheOnce } from "./startup-cache-eviction.mjs";
 import { activateExistingWindow, releaseSingleInstanceLock } from "./single-instance.mjs";
@@ -335,6 +337,11 @@ const serverSupervisor = createServerSupervisor({
     serverReady = true;
     serverStartConflictOnly = false;
     slog(`server ready pid=${proc.pid} port=${SERVER_PORT}`);
+    // rc8 §9.1: hidden WebRTC host when AIKING_REMOTE_P2P=1 (no-op otherwise).
+    void startRemoteP2pHost({
+      gatewayOrigin: `http://127.0.0.1:${SERVER_PORT}`,
+      log: (line) => slog(`remote-p2p: ${line}`),
+    }).catch((err) => slog(`remote-p2p start failed: ${err?.message ?? err}`));
     void readCloudOfferBrand();
     syncManagedComposioCredentials();
     syncProPlan();
@@ -1300,6 +1307,16 @@ async function startServerOn(port, dataDir = runningDataDir ?? startupEnvironmen
     AIKING_PORT: String(port),
     AIKING_APP_VERSION: app.getVersion(),
     AIKING_USER_DATA: app.getPath("userData"),
+    AIKING_VAULT_DIR: path.join(app.getPath("userData"), "vault"),
+    // Linux basic_text is obfuscation only — force the file fallback so the UI shows the banner.
+    ...((() => {
+      try {
+        if (process.platform === "linux" && safeStorage.isEncryptionAvailable() && safeStorage.getSelectedStorageBackend() === "basic_text") {
+          return { AIKING_VAULT_BACKEND: "fallback" };
+        }
+      } catch { /* safeStorage may throw before ready */ }
+      return {};
+    })()),
     ...(secureCredentials.composioApiKey
       ? { COMPOSIO_API_KEY: secureCredentials.composioApiKey }
       : {}),
@@ -2321,6 +2338,7 @@ function createWindow({ deferNavigation = false } = {}) {
       slog(`blocked subframe navigation to ${details.url}`);
     }
   });
+  attachWindowRecovery(win, { log: slog });
   win.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
     if (!isMainFrame || errorCode === -3) return; // -3: aborted by a newer navigation
     const remote = activeRemote(environmentsState);
@@ -3091,12 +3109,16 @@ ipcMain.handle("lending:stop", localWorkspaceOnly("lending:stop", async () => {
 }));
 
 // window.confirm() has no parent window, so (tiling) window managers cannot center it over the app.
-ipcMain.handle("dialog:confirm", localWorkspaceOnly("dialog:confirm", async (_event, message) => {
+ipcMain.handle("dialog:confirm", localWorkspaceOnly("dialog:confirm", async (_event, message, labels) => {
   if (typeof message !== "string" || !message.trim() || message.length > 4096 || !mainWindow || mainWindow.isDestroyed()) return false;
+  // Optional renderer-localized button labels; anything malformed falls back to the English defaults.
+  const named = labels && typeof labels === "object" ? labels : {};
+  const confirmLabel = (value, fallback) => typeof value === "string" && value.trim() && value.length <= 40 ? value.trim() : fallback;
   const { response } = await dialog.showMessageBox(mainWindow, {
     type: "warning",
     message,
-    buttons: ["OK", "Cancel"],
+    // Index 1 is always Cancel: defaultId/cancelId keep Enter and Escape on the safe choice.
+    buttons: [confirmLabel(named.confirm, "OK"), confirmLabel(named.cancel, "Cancel")],
     defaultId: 1,
     cancelId: 1,
   });
@@ -3190,7 +3212,7 @@ ipcMain.handle("desktop:capabilities", async (event) =>
   }),
 );
 
-async function saveWorkspaceCredential(name, value) {
+async function saveWorkspaceCredential(name, value, cardContext) {
   const patchFor = CREDENTIAL_PATCH[name];
   if (!patchFor || typeof value !== "string") {
     throw new Error("Unsupported credential");
@@ -3208,7 +3230,8 @@ async function saveWorkspaceCredential(name, value) {
         { "content-type": "application/json" },
         { packaged: app.isPackaged, token: desktopMutationToken },
       ),
-      body: JSON.stringify(patchFor(secret)),
+      // A card write names its claim: the server checks it against its own record before it saves, and records the commit.
+      body: JSON.stringify(cardContext ? { ...patchFor(secret), credentialCard: cardContext } : patchFor(secret)),
     });
     const body = await response.json().catch(() => null);
     if (!response.ok) throw new Error(body?.error || `Could not save credential (HTTP ${response.status})`);
@@ -3227,8 +3250,48 @@ async function saveWorkspaceCredential(name, value) {
   );
 }
 
-ipcMain.handle("credential:set", localOnly("credential:set", (_event, name, value) =>
-  saveWorkspaceCredential(name, value),
+// A card submit is admitted by the server (live, unexpired, same bot/thread/target) before the write; a failed write releases the claim.
+async function cardCall(card, action, extra) {
+  const response = await fetch(
+    `http://127.0.0.1:${SERVER_PORT}/api/bots/${encodeURIComponent(card.botId)}/secret-cards/${encodeURIComponent(card.messageId)}/${action}`,
+    {
+      method: "POST",
+      headers: desktopServerHeaders(
+        { "content-type": "application/json" },
+        { packaged: app.isPackaged, token: desktopMutationToken },
+      ),
+      body: JSON.stringify({ threadId: card.threadId, ...extra }),
+    },
+  );
+  const body = await response.json().catch(() => null);
+  return { ok: response.ok, body };
+}
+
+async function saveCardCredential(name, value, card) {
+  const valid = card && [card.botId, card.threadId, card.messageId].every((part) => typeof part === "string" && part);
+  if (!valid) throw new Error("credential-refused:missing");
+  const claim = await cardCall(card, "claim", { target: name });
+  if (!claim.ok || typeof claim.body?.claimId !== "string") {
+    throw new Error(`credential-refused:${typeof claim.body?.code === "string" ? claim.body.code : "missing"}`);
+  }
+  const claimId = claim.body.claimId;
+  try {
+    const status = await saveWorkspaceCredential(name, value, {
+      botId: card.botId,
+      threadId: card.threadId,
+      messageId: card.messageId,
+      target: name,
+      claimId,
+    });
+    return { ...status, claimId };
+  } catch (error) {
+    await cardCall(card, "release", { claimId }).catch(() => {});
+    throw error;
+  }
+}
+
+ipcMain.handle("credential:set", localOnly("credential:set", (_event, name, value, card) =>
+  card === undefined ? saveWorkspaceCredential(name, value) : saveCardCredential(name, value, card),
 ));
 
 ipcMain.handle("approvals:set-trusted-mode", localOnly("approvals:set-trusted-mode", (_event, botId, mode, options) => {
@@ -3577,6 +3640,7 @@ app.on("before-quit", (e) => {
   const ownedHelperCleanup = Promise.race([
     Promise.all([
       stopCua().catch(() => {}),
+      Promise.resolve().then(() => stopRemoteP2pHost()),
       stopDesktopCompanion({ remember: false }).catch(() => {}),
     ]),
     new Promise((resolve) => setTimeout(resolve, CUA_STOP_TIMEOUT_MS).unref()),

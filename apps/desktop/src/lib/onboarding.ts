@@ -1,4 +1,3 @@
-import { mobileAppsAvailable } from "@/aiking/product-availability";
 export interface OnboardingStatus {
   completedAt: string;
   version: number;
@@ -86,7 +85,8 @@ export function beatsFor(options: BeatOptions): BeatId[] {
   if (options.reel) beats.push("reel");
   beats.push("engines");
   if (options.dictation) beats.push("permissions");
-  if (mobileAppsAvailable()) beats.push("phone");
+  // Phone beat stays in the flow even when pairing is unsupported (Sắp có gate).
+  beats.push("phone");
   beats.push("bot");
   return beats;
 }

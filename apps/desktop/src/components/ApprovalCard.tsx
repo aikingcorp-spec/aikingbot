@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, ShieldCheck, Undo2, X } from "lucide-react";
 import { api, ApiError, type Bot, type Message, type OptionCardData } from "@/state/store";
 import { cn } from "@/lib/cn";
+import { msgCardInnerClass, msgCardOuterClass } from "@/lib/chat-column";
 import { t, tFromServer } from "@/lib/i18n";
 import type { LocaleKey } from "@/locales";
 import { SkillRequestPreview } from "@/components/SkillRequestPreview";
@@ -190,7 +191,7 @@ function AppliedChangeLine({
       .finally(() => setUndoing(false));
   };
   return (
-    <div className="w-full max-w-[840px] text-[13px] text-ink-secondary" data-applied-change={name}>
+    <div className={cn(msgCardOuterClass, "text-[13px] text-ink-secondary")} data-applied-change={name}>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {undone ? <Undo2 size={14} className="shrink-0" /> : <Check size={14} className="shrink-0 text-success" />}
         <span className="min-w-0 break-words">
@@ -274,10 +275,12 @@ export function ApprovalCard({
     : undefined;
 
   return (
+    <div className={msgCardOuterClass}>
     <div
       data-tour={settled || expired ? undefined : "approval"}
       className={cn(
-        "w-full max-w-[840px] rounded-2xl border bg-card p-4",
+        msgCardInnerClass,
+        "rounded-2xl border bg-card p-4",
         settled || expired ? "border-hairline/30 opacity-70" : "border-accent/40",
       )}
     >
@@ -334,6 +337,7 @@ export function ApprovalCard({
           </>
         )}
       </div>
+    </div>
     </div>
   );
 }

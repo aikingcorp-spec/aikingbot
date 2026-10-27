@@ -71,9 +71,15 @@ export function LoginsSettings() {
     finally { setBusy(false); }
   };
 
+  const vaultBanner = state.config?.vault?.banner;
   return (
     <Card title={t("settings.logins.title")} subtitle={t("settings.logins.subtitle")}>
       <div className="flex flex-col gap-3" aria-busy={logins === null || busy}>
+        {vaultBanner && (
+          <p className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-[12px] leading-relaxed text-ink" data-vault-banner role="status">
+            {vaultBanner}
+          </p>
+        )}
         {logins === null && !error && <p className="text-[12px] text-ink-secondary">{t("settings.logins.loading")}</p>}
         {logins?.length === 0 && !adding && <p className="text-[12px] leading-relaxed text-ink-secondary">{t("settings.logins.empty")}</p>}
         {!!logins?.length && (

@@ -41,6 +41,26 @@ test("local confirmation is parented, defaults to Cancel and accepts only explic
   }
 });
 
+test("localized labels keep Cancel as the default and Escape answer", async () => {
+  for (const response of [0, 1, -1]) {
+    const f = fixture(response);
+    assert.equal(await f.confirm(f.event, "Xóa máy ảo?", { confirm: "Xóa", cancel: "Hủy" }), response === 0);
+    assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0][1])), {
+      type: "warning", message: "Xóa máy ảo?", buttons: ["Xóa", "Hủy"], defaultId: 1, cancelId: 1,
+    });
+  }
+});
+
+test("malformed labels fall back to OK/Cancel", async () => {
+  for (const labels of [null, "Xóa", 7, { confirm: "", cancel: " " }, { confirm: "x".repeat(41), cancel: {} }]) {
+    const f = fixture(1);
+    assert.equal(await f.confirm(f.event, "Delete?", labels), false);
+    assert.deepEqual([...f.calls[0][1].buttons], ["OK", "Cancel"]);
+    assert.equal(f.calls[0][1].defaultId, 1);
+    assert.equal(f.calls[0][1].cancelId, 1);
+  }
+});
+
 test("untrusted windows and subframes cannot open a confirmation", () => {
   const f = fixture();
   for (const event of [

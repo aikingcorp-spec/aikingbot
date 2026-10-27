@@ -21,6 +21,7 @@ import { t } from "@/lib/i18n";
 import { COMPACT_SQUARE } from "@/lib/compact-chip";
 import { threadsOnOwnModel } from "../../shared/thread-model";
 import { ThreadModelsLine } from "./ThreadModelsLine";
+import { catalogHitsToOptions, searchModelCatalog } from "@/lib/model-catalog";
 
 type ModelOption = InstanceInfo["models"]["options"][number];
 const COMPACT_MODEL_COUNT = 5;
@@ -472,6 +473,7 @@ export function ModelPicker({
   const [pane, setPane] = useState<"main" | "custom">("main");
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [catalogHits, setCatalogHits] = useState<ModelOption[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [probingLocal, setProbingLocal] = useState<string | null>(null);
   const [scope, setScope] = useState<"bot" | "thread">("thread");
@@ -489,6 +491,7 @@ export function ModelPicker({
   const refreshingRef = useRef(false);
   const lastClaudeIdRef = useRef<string | null>(null);
   const lastOpenaiIdRef = useRef<string | null>(null);
+
 
   const simpleView = !advanced && !fullView;
   const popoverWidth = simpleView ? SIMPLE_POPOVER_WIDTH : POPOVER_WIDTH;
@@ -528,6 +531,31 @@ export function ModelPicker({
   // never local models.
   const hasOfficialModels = Boolean(railInstance?.snapshot.chatgptPlan || railInstance?.models.options.some((option) => !option.custom));
   const customOnly = isCustomOnly(railInstance);
+
+  // Frozen models.dev catalog search for openai-compat show-all / search.
+  useEffect(() => {
+    if (!showAll || !query.trim() || !railInstance || railInstance.driverKind !== "openai-compat") {
+      setCatalogHits([]);
+      return;
+    }
+    const instance = railInstance;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      void searchModelCatalog(query, { limit: 80, signal: controller.signal })
+        .then((hits) => {
+          const known = new Set(instance.models.options.map((option) => option.id));
+          setCatalogHits(catalogHitsToOptions(hits).filter((option) => !known.has(option.id)));
+        })
+        .catch(() => {
+          if (!controller.signal.aborted) setCatalogHits([]);
+        });
+    }, 150);
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [showAll, query, railInstance]);
+
   useEffect(() => {
     if (railId !== null && railId !== displayedInstanceId) {
       setPane(customOnly || !hasOfficialModels ? "custom" : "main");
@@ -682,7 +710,10 @@ export function ModelPicker({
   };
 
   const official = railInstance?.models.options.filter((option) => !option.custom) ?? [];
-  const custom = railInstance?.models.options.filter((option) => option.custom) ?? [];
+  const customBase = railInstance?.models.options.filter((option) => option.custom) ?? [];
+  const custom = catalogHits.length
+    ? [...customBase, ...catalogHits.filter((hit) => !customBase.some((option) => option.id === hit.id))]
+    : customBase;
   const currentModel = selection.instanceId === railInstance?.instanceId ? selection.model : undefined;
   const filteredOfficial = filterCustomModels(official, query);
   const compactOfficial = railInstance
@@ -917,10 +948,13 @@ export function ModelPicker({
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
             {threadId && (
               <div className="shrink-0 border-b border-hairline/40 px-3 py-2">
-                <div role="group" aria-label="Apply model changes to" className="flex gap-1">
+                <div role="group" aria-label="Apply model changes to" data-model-scope="1" className="flex gap-1">
                   {(["thread", "bot"] as const).map((value) => (
                     <button key={value} type="button" aria-pressed={scope === value} onClick={() => setScope(value)}
-                      className={cn("rounded-lg px-2 py-1 text-[12px]", scope === value ? "bg-control text-ink" : "text-ink-secondary hover:bg-control/60")}>
+                      className={cn(
+                        "h-7 rounded-lg px-2.5 text-[12px] font-medium",
+                        scope === value ? "bg-raised text-ink" : "text-ink-secondary hover:bg-control/60",
+                      )}>
                       {value === "bot" ? "Thread + bot default" : "Only this thread"}
                     </button>
                   ))}

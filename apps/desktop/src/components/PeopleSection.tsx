@@ -14,6 +14,17 @@ import { Card } from "./SettingsPrimitives";
 
 export type Role = "admin" | "member";
 
+const DEFAULT_INVITE_LIMIT = 5;
+
+/** Admins + members except the first admin (owner). Each @domain counts as 1. */
+export function countInviteSeats(admins: string[], members: string[]): number {
+  const owner = admins.map((e) => e.trim().toLowerCase()).find(Boolean) ?? null;
+  const unique = new Set([...admins, ...members].map((e) => e.trim().toLowerCase()).filter(Boolean));
+  if (owner) unique.delete(owner);
+  return unique.size;
+}
+
+
 
 export interface Person {
   entry: string;
@@ -189,6 +200,7 @@ export function PeopleSection() {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [draftLimit, setDraftLimit] = useState<string>("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -204,10 +216,12 @@ export function PeopleSection() {
       const current: SignInLists = {
         admins: Array.isArray(config?.signIn?.admins) ? config.signIn.admins : [],
         members: Array.isArray(config?.signIn?.members) ? config.signIn.members : [],
+        inviteLimit: typeof config?.signIn?.inviteLimit === "number" ? config.signIn.inviteLimit : DEFAULT_INVITE_LIMIT,
       };
       const authority = readMembership(config);
       setMembership(authority);
       setLists(current);
+      setDraftLimit(String(current.inviteLimit ?? DEFAULT_INVITE_LIMIT));
       const signedIn = Array.isArray(sessions?.sessions) ? sessions.sessions : [];
       const spent = Array.isArray(usage?.groups) ? usage.groups : [];
       setPeople(authority.authority === "portal" ? peopleFromSessions(signedIn, spent) : mergePeople(current, signedIn, spent));
@@ -252,6 +266,16 @@ export function PeopleSection() {
     setLink(inviteLink(base, entry));
   };
 
+  const saveLimit = async () => {
+    if (!lists || busy) return;
+    const parsed = Number.parseInt(draftLimit, 10);
+    if (!Number.isInteger(parsed) || parsed < 0 || parsed > 5000) {
+      setError(t("people.inviteLimitInvalid"));
+      return;
+    }
+    await save({ ...lists, inviteLimit: parsed });
+  };
+
   if (!canPairDevices(session)) return null;
   if (membership?.authority === "portal") return <PortalPeople peopleUrl={membership.peopleUrl} people={people} />;
   return (
@@ -276,6 +300,27 @@ export function PeopleSection() {
         <button type="button" onClick={() => void load()} disabled={loading || busy} aria-label={t("people.refresh")} title={t("people.refresh")} className="rounded-md p-1.5 text-ink-secondary hover:bg-control hover:text-ink disabled:opacity-50"><RefreshCw size={13} className={cn(loading && "animate-spin")} /></button>
       </form>
       <p className="mt-2 text-[11.5px] leading-relaxed text-ink-secondary">{t("people.inviteHint")}</p>
+      {lists && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-secondary">
+          <span>{t("people.inviteLimitUsage", { used: String(countInviteSeats(lists.admins, lists.members)), limit: String(lists.inviteLimit ?? DEFAULT_INVITE_LIMIT) })}</span>
+          <label className="flex items-center gap-1.5 text-ink">
+            <span className="sr-only">{t("people.inviteLimit")}</span>
+            <input
+              type="number"
+              min={0}
+              max={5000}
+              value={draftLimit}
+              onChange={(e) => setDraftLimit(e.target.value)}
+              disabled={busy}
+              aria-label={t("people.inviteLimit")}
+              className="w-16 rounded-lg border border-hairline/40 bg-inset px-2 py-1 text-[12.5px] text-ink focus:outline-none disabled:opacity-50"
+            />
+          </label>
+          <button type="button" disabled={busy || draftLimit === String(lists.inviteLimit ?? DEFAULT_INVITE_LIMIT)} onClick={() => void saveLimit()} className="ui-button ui-button-sm">
+            {t("people.inviteLimitSave")}
+          </button>
+        </div>
+      )}
       {link && <CopyLink link={link} />}
       {error && <p role="alert" className="mt-2 text-[12px] text-danger">{error}</p>}
       <div className="mt-4">

@@ -1,18 +1,24 @@
-// Sealed under a key of its own (a 0600 file beside it), never the browser engine's, which every browser process gets in
-// its environment. Neither file is ever backed up, exported or moved: a saved password stays on its computer.
+// Sealed under a vault key of its own (OS keychain / secret-tool / fallback outside DATA_DIR), never the browser engine's,
+// which every browser process gets in its environment. Neither ciphertext nor key is backed up or exported.
 import { randomBytes, randomUUID } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 
 import { HELD_SECRET_MASK } from "../shared/redact.ts";
 import { LOGIN_FIELD_MAX, type LoginBots, type LoginSummary } from "../shared/logins.ts";
 import { writeFileAtomic } from "./atomic.ts";
+import { clearVaultDataKeyPrev, installVaultDataKey, readVaultDataKeyPrev, stashVaultDataKeyPrev, vaultDataKey, vaultDataKeyOrNull } from "./vault-key.ts";
 import { decryptBrowserState, encryptBrowserState } from "./browser-sites.ts";
 import type { TotpKey } from "./totp.ts";
 
 export const LOGINS_FILE = "logins.json.enc";
 export const LOGINS_KEY_FILE = "logins-key";
+/** Durable ciphertext backup written before a vault-key rotate swap. Not a raw key. */
+export const LOGINS_PREV_ENC = "vault.prev.enc";
+/** Points at the vault prev-key slot name only — never stores key material. */
+export const LOGINS_PREV_REF = "vault.prev.ref";
+export const LOGINS_PREV_REF_VALUE = "logins-prev";
 
 const totpSchema = z.object({
   secret: z.string().regex(/^[A-Z2-7]{16,}$/u),
@@ -73,6 +79,9 @@ export function summarizeLogin(login: StoredLogin): LoginSummary {
 export class LoginStore {
   private readonly file: string;
   private readonly keyFile: string;
+  private readonly prevEnc: string;
+  private readonly prevRef: string;
+  private readonly dataDir: string;
   private readonly now: () => number;
   private cache: StoreFile | null = null;
   private unreadableWarned = false;
@@ -81,20 +90,26 @@ export class LoginStore {
   constructor(options: { dataDir: string; now?: () => number }) {
     this.file = join(options.dataDir, LOGINS_FILE);
     this.keyFile = join(options.dataDir, LOGINS_KEY_FILE);
+    this.prevEnc = join(options.dataDir, LOGINS_PREV_ENC);
+    this.prevRef = join(options.dataDir, LOGINS_PREV_REF);
+    this.dataDir = options.dataDir;
     this.now = options.now ?? Date.now;
+    this.recoverRotateBackupIfNeeded();
+  }
+
+  private verifyKey(key: string): boolean {
+    if (!existsSync(this.file)) return true;
+    try {
+      fileSchema.parse(JSON.parse(decryptBrowserState(readFileSync(this.file), key)));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private key(create: boolean): string | null {
-    try {
-      const existing = readFileSync(this.keyFile, "utf8").trim();
-      if (/^[0-9a-f]{64}$/u.test(existing)) return existing;
-    } catch {
-    }
-    if (!create) return null;
-    const key = randomBytes(32).toString("hex");
-    mkdirSync(join(this.keyFile, ".."), { recursive: true });
-    writeFileAtomic(this.keyFile, `${key}\n`, { mode: 0o600 });
-    return key;
+    const verify = (key: string) => this.verifyKey(key);
+    return create ? vaultDataKey("logins", this.keyFile, verify) : vaultDataKeyOrNull("logins", this.keyFile, verify);
   }
 
   private read(): StoreFile {
@@ -204,6 +219,136 @@ export class LoginStore {
     const { onePassword: _previous, ...rest } = data;
     this.write(token ? { ...rest, onePassword: { token, connectedAt: this.now() } } : rest);
   }
+
+
+  /** Re-seal every login under a fresh vault key. Fails closed if the current file cannot be opened.
+   * Order: durable prev ciphertext + prev-key slot → encrypt under next → verify in memory →
+   * atomic swap of ciphertext → install the key → delete the backup. If install or restore fails,
+   * the on-disk backup + prev-key slot keep logins recoverable on the next startup. */
+  rotateEncryptionKey(): void {
+    const data = this.read();
+    if (this.unreadableWarned && data === EMPTY && existsSync(this.file)) {
+      throw new Error("saved logins could not be opened; refusing to rotate the vault key");
+    }
+    const parsed = fileSchema.parse(data);
+    const next = randomBytes(32).toString("hex");
+    const ciphertext = encryptBrowserState(JSON.stringify(parsed), next);
+    // Prove the new blob opens before we touch the durable key or replace the file.
+    const verified = fileSchema.parse(JSON.parse(decryptBrowserState(ciphertext, next)));
+    mkdirSync(this.dataDir, { recursive: true, mode: 0o700 });
+    const previousCiphertext = existsSync(this.file) ? readFileSync(this.file) : null;
+    const previousKey = vaultDataKeyOrNull("logins");
+
+    // Durable backup BEFORE the swap: ciphertext beside the vault, previous key only in the vault backend.
+    this.writeRotateBackup(previousCiphertext, previousKey);
+
+    writeFileAtomic(this.file, ciphertext, { mode: 0o600 });
+    try {
+      // Confirm the on-disk blob still opens with next (guards a silent mis-write).
+      fileSchema.parse(JSON.parse(decryptBrowserState(readFileSync(this.file), next)));
+      installVaultDataKey("logins", next);
+    } catch (error) {
+      // Best-effort restore for the still-running process; leave the durable backup for startup recovery.
+      try {
+        if (previousCiphertext !== null) writeFileAtomic(this.file, previousCiphertext, { mode: 0o600 });
+        else if (existsSync(this.file)) unlinkSync(this.file);
+      } catch {
+        /* restore may itself fail — backup remains */
+      }
+      try {
+        if (previousKey && vaultDataKeyOrNull("logins") !== previousKey) {
+          installVaultDataKey("logins", previousKey);
+        }
+      } catch {
+        /* key rollback may itself fail — prev slot remains */
+      }
+      throw error;
+    }
+    this.clearRotateBackup();
+    this.cache = verified;
+    this.version++;
+  }
+
+  private syncDataDir(): void {
+    if (process.platform === "win32") return;
+    const fd = openSync(this.dataDir, "r");
+    try { fsyncSync(fd); } finally { closeSync(fd); }
+  }
+
+  /** Ciphertext backup in DATA_DIR + previous key in the vault backend prev slot; ref file names the slot only. */
+  private writeRotateBackup(previousCiphertext: Buffer | null, previousKey: string | null): void {
+    if (previousCiphertext !== null) {
+      writeFileAtomic(this.prevEnc, previousCiphertext, { mode: 0o600 });
+    } else if (existsSync(this.prevEnc)) {
+      try { unlinkSync(this.prevEnc); } catch { /* absent */ }
+    }
+    if (previousKey) stashVaultDataKeyPrev("logins", previousKey);
+    else clearVaultDataKeyPrev("logins");
+    writeFileAtomic(this.prevRef, `${LOGINS_PREV_REF_VALUE}\n`, { mode: 0o600 });
+    this.syncDataDir();
+  }
+
+  private clearRotateBackup(): void {
+    try { if (existsSync(this.prevEnc)) unlinkSync(this.prevEnc); } catch { /* absent */ }
+    try { if (existsSync(this.prevRef)) unlinkSync(this.prevRef); } catch { /* absent */ }
+    clearVaultDataKeyPrev("logins");
+  }
+
+  /**
+   * If a rotate left vault.prev.enc / vault.prev.ref behind, try every ciphertext×key pair,
+   * keep the one that decrypts, clean up, and log a Vietnamese reason.
+   */
+  private recoverRotateBackupIfNeeded(): void {
+    if (!existsSync(this.prevEnc) && !existsSync(this.prevRef)) return;
+    const currentKey = vaultDataKeyOrNull("logins");
+    const prevKey = readVaultDataKeyPrev("logins");
+    const blobs: { label: string; bytes: Buffer }[] = [];
+    if (existsSync(this.file)) {
+      try { blobs.push({ label: "current", bytes: readFileSync(this.file) }); } catch { /* unreadable */ }
+    }
+    if (existsSync(this.prevEnc)) {
+      try { blobs.push({ label: "prev", bytes: readFileSync(this.prevEnc) }); } catch { /* unreadable */ }
+    }
+    const keys: { label: string; value: string }[] = [];
+    if (currentKey) keys.push({ label: "current", value: currentKey });
+    if (prevKey && prevKey !== currentKey) keys.push({ label: "prev", value: prevKey });
+
+    let recovered: StoreFile | null = null;
+    let winningBlob: Buffer | null = null;
+    let winningKey: string | null = null;
+    for (const blob of blobs) {
+      for (const key of keys) {
+        try {
+          const parsed = fileSchema.parse(JSON.parse(decryptBrowserState(blob.bytes, key.value)));
+          recovered = parsed;
+          winningBlob = blob.bytes;
+          winningKey = key.value;
+          break;
+        } catch {
+          /* try next pair */
+        }
+      }
+      if (recovered) break;
+    }
+
+    if (!recovered || !winningBlob || !winningKey) {
+      console.warn("saved logins: có bản sao rotate nhưng không giải mã được; giữ nguyên để người vận hành xử lý");
+      return;
+    }
+
+    try {
+      writeFileAtomic(this.file, winningBlob, { mode: 0o600 });
+      if (vaultDataKeyOrNull("logins") !== winningKey) installVaultDataKey("logins", winningKey);
+      this.clearRotateBackup();
+      this.cache = recovered;
+      this.version++;
+      // Vietnamese reason for operators / support: rotate double-fault recovery.
+      console.warn("saved logins: đã khôi phục từ bản sao trước khi xoay khóa (lỗi kép lúc rotate)");
+    } catch {
+      console.warn("saved logins: khôi phục bản sao rotate thất bại; giữ nguyên bản sao trên đĩa");
+    }
+  }
+
 
   secretValues(): string[] {
     const data = this.read();

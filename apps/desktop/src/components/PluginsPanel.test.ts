@@ -285,7 +285,7 @@ describe("an answer the server was not sure about", () => {
 });
 
 describe("connected apps setup notice", () => {
-  const base = { configured: false, stale: false, remoteClient: false };
+  const base = { configured: false, stale: false, remoteClient: false, catalog: "ready" as const };
 
   it("tells a fresh install what to do instead of reporting an outage", () => {
     expect(connectorSetupNotice({ ...base, setup: "needs-setup" })).toEqual({
@@ -307,6 +307,18 @@ describe("connected apps setup notice", () => {
 
   it("keeps the warning for an older host that does not say why", () => {
     expect(connectorSetupNotice({ ...base, setup: undefined })).toEqual({
+      key: "connectors.notConfigured",
+      tone: "warning",
+    });
+  });
+
+  it("says nothing while the catalog request is still loading", () => {
+    expect(connectorSetupNotice({ ...base, catalog: "loading", setup: undefined })).toBeNull();
+    expect(connectorSetupNotice({ ...base, catalog: "loading", setup: "needs-setup" })).toBeNull();
+  });
+
+  it("warns when the catalog request itself failed", () => {
+    expect(connectorSetupNotice({ ...base, catalog: "error", setup: undefined })).toEqual({
       key: "connectors.notConfigured",
       tone: "warning",
     });

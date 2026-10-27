@@ -26,7 +26,17 @@ export interface UsageRow {
   costUsd: number | null;
   costSource?: CostSource;
   trigger: UsageTrigger;
+  /** 5.1: what spent the tokens. Rows booked before rc8 carry none and read as their trigger. */
+  source?: UsageSource;
+  /** 5.2 / 5.3: one entry per model call in the turn. */
+  calls?: UsageCall[];
+  retries?: number;
 }
+
+export type UsageSource = "chat" | "routine" | "summary" | "voice" | "bot";
+export const USAGE_SOURCES: readonly UsageSource[] = ["chat", "routine", "summary", "voice", "bot"];
+export interface UsageCall { input: number; output: number; cachedInput?: number; retries?: number }
+const MAX_CALLS = 64;
 
 export type UsageGroupBy = "bot" | "model" | "user" | "day" | "engine" | "routine";
 export const USAGE_GROUPINGS: readonly UsageGroupBy[] = ["bot", "model", "user", "day", "engine", "routine"];
@@ -80,10 +90,18 @@ export function usageRowKey(row: Pick<UsageRow, "at" | "threadId" | "botId">): s
 }
 
 export function appendUsage(dataDir: string, row: Omit<UsageRow, "at"> & { at?: string }): Promise<boolean> {
-  const { promptBytes: rawPromptBytes, ...rest } = row;
+  const { promptBytes: rawPromptBytes, calls: rawCalls, source: rawSource, retries: rawRetries, ...rest } = row;
   const promptBytes = promptBytesOf(rawPromptBytes);
+  const calls = Array.isArray(rawCalls) ? rawCalls.slice(0, MAX_CALLS).map((call): UsageCall => ({
+    input: clean(call?.input), output: clean(call?.output),
+    ...(typeof call?.cachedInput === "number" ? { cachedInput: clean(call.cachedInput) } : {}),
+    ...(typeof call?.retries === "number" && call.retries > 0 ? { retries: clean(call.retries) } : {}),
+  })) : [];
   const record: UsageRow = {
     ...rest,
+    ...(rawSource && USAGE_SOURCES.includes(rawSource) ? { source: rawSource } : {}),
+    ...(calls.length ? { calls } : {}),
+    ...(typeof rawRetries === "number" && rawRetries > 0 ? { retries: clean(rawRetries) } : {}),
     at: row.at ?? new Date().toISOString(),
     input: clean(row.input),
     output: clean(row.output),
@@ -302,4 +320,46 @@ export function usageCsv(rows: UsageRow[], prices: PriceList | null = null): str
     ].map(csvCell).join(","));
   }
   return lines.join("\n") + "\n";
+}
+
+/** 5.1: the source a row counts under; old rows fall back to their trigger. */
+export function usageSourceOf(row: Pick<UsageRow, "source" | "trigger" | "threadId">): UsageSource {
+  if (row.source) return row.source;
+  if (row.trigger.kind === "routine") return "routine";
+  if (/^(?:memory|skill-review)-/.test(row.threadId)) return "summary";
+  if (row.trigger.kind === "bot") return "bot";
+  return "chat";
+}
+
+export interface UsageSourceTotal { source: UsageSource; turns: number; calls: number; input: number; output: number; cachedInput: number; retries: number; tokens: number }
+
+/** 5.1: the top sources by tokens over the last `days` days. */
+export function topSources(rows: readonly UsageRow[], now = new Date(), days = 7, limit = 5): UsageSourceTotal[] {
+  const since = now.getTime() - days * DAY_MS;
+  const totals = new Map<UsageSource, UsageSourceTotal>();
+  for (const row of rows) {
+    const at = Date.parse(row.at);
+    if (!Number.isFinite(at) || at < since || at > now.getTime()) continue;
+    const source = usageSourceOf(row);
+    const total = totals.get(source) ?? { source, turns: 0, calls: 0, input: 0, output: 0, cachedInput: 0, retries: 0, tokens: 0 };
+    total.turns += 1;
+    total.calls += row.calls?.length || 1;
+    total.input += row.input;
+    total.output += row.output;
+    total.cachedInput += row.cachedInput ?? 0;
+    total.retries += row.retries ?? 0;
+    total.tokens += row.input + row.output;
+    totals.set(source, total);
+  }
+  return [...totals.values()].sort((a, b) => b.tokens - a.tokens || a.source.localeCompare(b.source)).slice(0, limit);
+}
+
+/** 1.10: share of prompt tokens the provider billed as cached, over calls that report it; null when none do. */
+export function cacheRatio(calls: readonly UsageCall[]): { ratio: number; perCall: Array<number | null>; reported: number } | null {
+  const perCall = calls.map((call) => call.cachedInput === undefined || call.input <= 0 ? null : Math.min(1, call.cachedInput / call.input));
+  const reported = calls.filter((call) => call.cachedInput !== undefined && call.input > 0);
+  if (!reported.length) return null;
+  const input = reported.reduce((sum, call) => sum + call.input, 0);
+  const cached = reported.reduce((sum, call) => sum + Math.min(call.cachedInput!, call.input), 0);
+  return { ratio: cached / input, perCall, reported: reported.length };
 }

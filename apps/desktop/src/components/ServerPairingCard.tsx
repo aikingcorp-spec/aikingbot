@@ -7,6 +7,12 @@ import { api } from "@/state/store";
 import { isOwnerOrAdmin, readSessionState, type SessionState } from "../lib/session";
 import { readMembership } from "../lib/membership";
 import { revealPhonePairing } from "../lib/phone-pairing";
+import {
+  ComingSoonBadge,
+  PhonePairingUnsupportedModal,
+  blockPhonePairingAction,
+  phonePairingSupported,
+} from "./PhonePairingComingSoon";
 import { Card } from "./SettingsPrimitives";
 
 export interface PairingOffer {
@@ -67,6 +73,7 @@ export function ServerPairingCard({ initialSession = null, initialPairingCodes =
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<CopyFeedback>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [unsupportedOpen, setUnsupportedOpen] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const root = useRef<HTMLDivElement>(null);
   const revealed = useRef(0);
@@ -116,6 +123,7 @@ export function ServerPairingCard({ initialSession = null, initialPairingCodes =
   const listed = shownDevices(devices, cloudHome);
 
   async function create() {
+    if (blockPhonePairingAction(() => setUnsupportedOpen(true))) return;
     setBusy(true);
     setError(null);
     setCopied("idle");
@@ -149,6 +157,12 @@ export function ServerPairingCard({ initialSession = null, initialPairingCodes =
   return (
     <div ref={root} tabIndex={-1} data-phone-pairing="server" className="scroll-mt-4 rounded-xl focus:outline-none">
     <Card title={t("remote.serverPairing.title")} subtitle={t(pairingCodes ? "remote.serverPairing.subtitle" : "remote.serverPairing.portalSubtitle")}>
+      {!phonePairingSupported() ? (
+        <div className="mt-3 flex items-center gap-2" data-server-pairing-soon="1">
+          <ComingSoonBadge />
+          <span className="text-[12.5px] text-ink-secondary">{t("phone.pairing.unsupported")}</span>
+        </div>
+      ) : null}
       {pairingCodes && cloudHome ? <p data-server-pairing-personal className="mt-3 text-[13px] text-ink-secondary">{t("remote.serverPairing.cloudPersonal")}</p> : null}
       {pairingCodes ? <div className="mt-3 flex flex-wrap items-center gap-3">
         {cloudHome ? null : <>
@@ -223,6 +237,7 @@ export function ServerPairingCard({ initialSession = null, initialPairingCodes =
       )}
       {error ? <p className="mt-3 text-[13px] text-danger">{error}</p> : null}
     </Card>
+    <PhonePairingUnsupportedModal open={unsupportedOpen} onClose={() => setUnsupportedOpen(false)} />
     </div>
   );
 }

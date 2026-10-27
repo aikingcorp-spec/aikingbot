@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import type { LocaleKey } from "@/locales";
 import { reserveConnectionPage, reusableConnectionUrl, type PendingAuthorization } from "@/lib/connector-oauth";
 import { mcpSignInLink } from "@/lib/mcp-sign-in";
+import { saveMcpApiKey, startMcpOAuth } from "@/lib/mcp-connect";
 import { cn } from "@/lib/cn";
 import { ASK_PRIMARY_BUTTON, ASK_QUIET_BUTTON, AskCard, AskSettledLine } from "./AskCard";
 
@@ -14,6 +15,7 @@ export function ConnectorCard({ botId, threadId, message }: { botId: string; thr
   const [busy, setBusy] = useState(false);
   const [localError, setLocalError] = useState<string | { key: LocaleKey } | null>(null);
   const [authorization, setAuthorization] = useState<(PendingAuthorization & { target: string }) | null>(null);
+  const [apiKey, setApiKey] = useState("");
   const polling = useRef(false);
   const opening = useRef<ReturnType<typeof reserveConnectionPage> | null>(null);
 
@@ -75,7 +77,10 @@ export function ConnectorCard({ botId, threadId, message }: { botId: string; thr
     try {
       const reusableUrl = reusableConnectionUrl(pendingAuthorization);
       const createdAt = reusableUrl ? pendingAuthorization!.createdAt : Date.now();
-      const result = reusableUrl ? { url: reusableUrl } : await api(`${endpoint}/authorize`, {
+      const statusPath = `${endpoint}/status?threadId=${encodeURIComponent(threadId)}`;
+      const result = reusableUrl ? { url: reusableUrl } : connector.mcp
+        ? { url: await startMcpOAuth(api, connector.mcp, statusPath) }
+        : await api(`${endpoint}/authorize`, {
           method: "POST",
           body: JSON.stringify({ threadId }),
         });
@@ -94,6 +99,21 @@ export function ConnectorCard({ botId, threadId, message }: { botId: string; thr
         opening.current = null;
         setBusy(false);
       }
+    }
+  };
+
+  const saveKey = async () => {
+    if (busy || !connector.mcp) return;
+    setBusy(true);
+    setLocalError(null);
+    try {
+      const connectedNow = await saveMcpApiKey(api, connector.mcp, apiKey, `${endpoint}/status?threadId=${encodeURIComponent(threadId)}`);
+      setApiKey("");
+      if (!connectedNow) setLocalError(t("connectors.card.tryAgain"));
+    } catch (error) {
+      setLocalError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -166,6 +186,12 @@ export function ConnectorCard({ botId, threadId, message }: { botId: string; thr
             {authorizing && <Loader2 size={12} className="shrink-0 animate-spin" />}
             {authorizing ? t("connectors.card.waiting") : t("connectors.card.requested")}
           </span>
+          {connector.mcp?.auth === "api-key" ? (
+            <button type="button" onClick={() => void saveKey()} disabled={busy || !apiKey.trim()} className={ASK_PRIMARY_BUTTON}>
+              {busy ? <Loader2 size={14} className="animate-spin" /> : <PlugZap size={14} />}
+              {t("connectors.card.connectSecurely")}
+            </button>
+          ) : (
           <button type="button" onClick={() => void connect()} disabled={busy} className={ASK_PRIMARY_BUTTON}>
             {busy || authorizing ? <Loader2 size={14} className="animate-spin" /> : <PlugZap size={14} />}
             {authorizing
@@ -174,10 +200,23 @@ export function ConnectorCard({ botId, threadId, message }: { botId: string; thr
                 ? t("connectors.card.tryAgain")
                 : t("connectors.card.connectSecurely")}
           </button>
+          )}
         </>
       }
     >
-      <p className="text-[11.5px] text-ink-tertiary">{t("connectors.card.signInHint")}</p>
+      {connector.mcp?.auth === "api-key" ? (
+        <input
+          type="password"
+          autoComplete="off"
+          spellCheck={false}
+          aria-label={`${connector.label} API key`}
+          placeholder="API key"
+          value={apiKey}
+          onChange={(event) => setApiKey(event.target.value)}
+          onKeyDown={(event) => { if (event.key === "Enter") void saveKey(); }}
+          className="w-full rounded-md border border-line bg-surface px-2 py-1 text-[12.5px]"
+        />
+      ) : <p className="text-[11.5px] text-ink-tertiary">{t("connectors.card.signInHint")}</p>}
       {error && <p role="alert" className="mt-1.5 text-[12px] text-danger">{typeof error === "string" ? error : t(error.key)}</p>}
       {authorizationUrl && (
         <a href={authorizationUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => {

@@ -3,6 +3,7 @@ import { initializeLocale } from "./aiking/initial-locale";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { PanelBoundary } from "./components/PanelBoundary";
 import {
   BROWSER_SIGN_IN_FAILED, previewBrowserSignIn, readSessionState, SERVICE_TRUST_REASON, takeBrowserSignInFromLocation, takePairingCodeFromLocation, takeInvitedEmailFromLocation,
 } from "./lib/session";
@@ -51,5 +52,5 @@ async function chooseRoot(): Promise<React.ReactNode> {
 }
 
 void Promise.all([bootstrapBrand(), chooseRoot(), initializeMarketplace()]).then(([, root]) => {
-  createRoot(document.getElementById("root")!).render(<StrictMode>{root}</StrictMode>);
+  createRoot(document.getElementById("root")!).render(<StrictMode><PanelBoundary name="app">{root}</PanelBoundary></StrictMode>);
 });

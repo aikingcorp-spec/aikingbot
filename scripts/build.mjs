@@ -17,6 +17,8 @@ const run = (entry, args = [], cwd = sourceRoot) => {
   if (result.status !== 0) throw new Error(`${entry} failed (${result.status ?? result.signal}).`);
 };
 if (!options.has("--package-only")) {
+  // catalog.json / core / licenses are git-ignored build outputs; regenerate so a fresh clone builds.
+  run("scripts/prepare-embedded.mjs");
   run("node_modules/typescript/bin/tsc", ["--noEmit"], coreRoot);
   run("aiking/assets.mjs");
   run("node_modules/typescript/bin/tsc", ["-b"]);

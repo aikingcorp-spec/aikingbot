@@ -50,6 +50,10 @@ export interface ModelCatalogDocument {
   source: {
     name: "models.dev";
     url: string;
+    /** ISO 8601 time the source api.json was fetched / frozen into this file. */
+    fetchedAt?: string;
+    /** SHA-256 (hex) of JSON.stringify(providers) — frozen payload integrity. */
+    sha256?: string;
     repository?: string;
     commit?: string;
     etag?: string;

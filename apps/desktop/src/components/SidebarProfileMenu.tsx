@@ -1,4 +1,4 @@
-import { mobileAppsAvailable } from "@/aiking/product-availability";
+import { mobileAppsAvailable, phonePairingSupported } from "@/aiking/product-availability";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownToLine,
@@ -19,6 +19,7 @@ import {
 
 import { InitialsAvatar } from "./Avatar";
 import { AboutDialog } from "./AboutDialog";
+import { PhonePairingUnsupportedModal } from "./PhonePairingComingSoon";
 import { PhoneAppDialog } from "./PhoneAppDialog";
 import { SidebarPopoverMenu, type SidebarMenuItem } from "./SidebarPopoverMenu";
 import { ShortcutHint } from "./ShortcutHint";
@@ -216,12 +217,31 @@ export function phoneMenuItems({
   connected,
   onConnect,
   onGetApp,
+  onUnsupported,
 }: {
   destinations: PhoneDestination[];
   connected: boolean;
   onConnect: (destination: PhoneDestination) => void;
   onGetApp: () => void;
+  onUnsupported?: () => void;
 }): SidebarMenuItem[] {
+  // Keep the connect-phone entry visible even when pairing is unsupported (Sắp có).
+  if (!phonePairingSupported()) {
+    return [
+      {
+        key: "connect-phone",
+        label: t("sidebar.menu.connectPhone"),
+        subtitle: t("phone.pairing.comingSoon"),
+        icon: <Smartphone size={18} />,
+        trailing: (
+          <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[10.5px] font-semibold text-warning">
+            {t("phone.pairing.comingSoon")}
+          </span>
+        ),
+        onSelect: () => onUnsupported?.(),
+      } satisfies SidebarMenuItem,
+    ];
+  }
   if (!mobileAppsAvailable()) return [];
   return [
     ...destinations.map((destination) => ({
@@ -303,6 +323,7 @@ export function SidebarProfileMenu({ iconOnly = false }: { iconOnly?: boolean } 
   const update = useUpdateItem();
   const [aboutOpen, setAboutOpen] = useState(false);
   const [phoneAppOpen, setPhoneAppOpen] = useState(false);
+  const [pairingUnsupportedOpen, setPairingUnsupportedOpen] = useState(false);
   const triggerRef = useRef<HTMLSpanElement>(null);
 
   const profile = state.config?.profile;
@@ -317,6 +338,7 @@ export function SidebarProfileMenu({ iconOnly = false }: { iconOnly?: boolean } 
       connected: phone.kind === "connected",
       onConnect: connectTo,
       onGetApp: () => setPhoneAppOpen(true),
+      onUnsupported: () => setPairingUnsupportedOpen(true),
     }),
     usage: !remote,
     update: update?.item ?? null,
@@ -386,6 +408,7 @@ export function SidebarProfileMenu({ iconOnly = false }: { iconOnly?: boolean } 
         )}
       />
       <AboutDialog open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <PhonePairingUnsupportedModal open={pairingUnsupportedOpen} onClose={() => setPairingUnsupportedOpen(false)} />
       <PhoneAppDialog
         open={phoneAppOpen}
         onClose={() => setPhoneAppOpen(false)}

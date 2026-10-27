@@ -2,8 +2,9 @@
 // and audited, and nothing arrives as a command string.
 import { appendFileSync, chmodSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { defaultFleetDeps, executePlan, loadRegistry, markProvisioningFailed, planFleetAction, type FleetDeps, type FleetInput } from "./fleet-cli.ts";
+import { signInFromConfigText } from "./aiking/fleet-account-workspaces.ts";
 import { assertSlug, fleetLayout, fleetUser, openRouterModelIds, workspaceDataDir, type FleetLayout, type FleetWorkspace } from "./fleet.ts";
 
 export interface FleetAgentOptions {
@@ -136,6 +137,27 @@ export function createFleetAgent(options: FleetAgentOptions): Server {
     };
     try {
       if (method === "GET" && url.pathname === "/health") return send(200, { ok: true });
+      if (method === "GET" && url.pathname === "/workspaces/memberships") {
+        const registry = loadRegistry(layout, deps);
+        const workspaces = [];
+        for (const workspace of Object.values(registry.workspaces).sort((a, b) => a.slug.localeCompare(b.slug))) {
+          const configPath = join(workspaceDataDir(layout, workspace.slug), "config.json");
+          let signIn = { admins: [] as string[], members: [] as string[] };
+          try {
+            const text = deps.readText(configPath, fleetUser(workspace.slug));
+            if (text) signIn = signInFromConfigText(text);
+          } catch {
+            signIn = { admins: [], members: [] };
+          }
+          workspaces.push({
+            slug: workspace.slug,
+            host: workspace.host,
+            status: workspace.status,
+            signIn,
+          });
+        }
+        return send(200, { domain: registry.domain, workspaces });
+      }
       if (method === "GET" && url.pathname === "/workspaces") {
         const registry = loadRegistry(layout, deps);
         const statusOnly = url.searchParams.get("statusOnly") === "true";
