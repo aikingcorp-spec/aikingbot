@@ -39,7 +39,7 @@ describe("vault-key", () => {
     expect(existsSync(join(dataDir, "browser-engine-key"))).toBe(false);
     expect(readFileSync(join(vaultDir, "browser-engine.key"), "utf8").trim()).toBe(key);
     expect(vaultStatus().backend).toBe("fallback");
-    expect(vaultStatus().banner).toMatch(/keychain unavailable/i);
+    expect(vaultStatus().banner).toMatch(/no system keyring/i);
   });
 
   it("migrates a legacy DATA_DIR key only after a verified round-trip", () => {

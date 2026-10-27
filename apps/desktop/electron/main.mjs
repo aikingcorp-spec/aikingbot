@@ -1308,12 +1308,15 @@ async function startServerOn(port, dataDir = runningDataDir ?? startupEnvironmen
     AIKING_APP_VERSION: app.getVersion(),
     AIKING_USER_DATA: app.getPath("userData"),
     AIKING_VAULT_DIR: path.join(app.getPath("userData"), "vault"),
+    // Desktop: the vault key file sits in this OS account's own app folder ("keychain" backend, same file shape as fallback).
     // Linux basic_text is obfuscation only — force the file fallback so the UI shows the banner.
     ...((() => {
       try {
-        if (process.platform === "linux" && safeStorage.isEncryptionAvailable() && safeStorage.getSelectedStorageBackend() === "basic_text") {
+        if (process.platform === "linux" && (!safeStorage.isEncryptionAvailable() || safeStorage.getSelectedStorageBackend() === "basic_text")) {
           return { AIKING_VAULT_BACKEND: "fallback" };
         }
+        // Linux with a real keyring keeps secret-tool (the server picks it); Windows/macOS have no secret-tool.
+        if (process.platform !== "linux" && safeStorage.isEncryptionAvailable()) return { AIKING_VAULT_BACKEND: "keychain" };
       } catch { /* safeStorage may throw before ready */ }
       return {};
     })()),

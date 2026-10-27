@@ -264,7 +264,7 @@ export function vaultStatus(env: NodeJS.ProcessEnv = process.env): VaultStatus {
   if (backend === "fallback") {
     return {
       backend,
-      banner: "Vault keys are stored in a local file outside the data folder (OS keychain unavailable). On a VPS without a screen this is expected.",
+      banner: "No system keyring was found, so the key that protects saved logins is kept in a private file outside the data folder. On a server without a screen this is normal.",
     };
   }
   return { backend };
